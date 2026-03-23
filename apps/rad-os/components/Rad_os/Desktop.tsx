@@ -1,8 +1,9 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useTypewriter } from '@/hooks/useTypewriter';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
@@ -95,9 +96,19 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 // Desktop Component
 // ============================================================================
 
+const TAGLINES = [
+  'Be kind, make rad sh*t',
+  'Est. 2023',
+  'From dawn to dusk',
+  'be the alchemist, be the substance',
+  'all assets open-sourced under the Rad public license',
+];
+
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
   const desktopApps = getDesktopLaunchers();
+  const taglines = useMemo(() => TAGLINES, []);
+  const { displayed, cursorVisible } = useTypewriter(taglines);
 
   // Resolve ambient capability from catalog
   const ambient = getActiveAmbientApp(windows);
@@ -126,8 +137,8 @@ export function Desktop({ className = '' }: DesktopProps) {
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
           <div className="text-sm">
-            all assets open-sourced<br />
-            under the Rad public license
+            {displayed}
+            <span className={cursorVisible ? 'opacity-100' : 'opacity-0'}>&#9608;</span>
           </div>
         </div>
       </div>

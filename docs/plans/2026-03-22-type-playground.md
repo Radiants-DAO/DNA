@@ -2,13 +2,13 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
 
-**Goal:** Replace the static Typography tab in Brand Assets with an interactive type playground — one font at a time, rules on the left, live demonstration on the right, all controls via ToggleGroups and Sliders.
+**Goal:** Replace the static Typography tab in Brand Assets with an interactive type playground — one font at a time, editorial design templates with draggable text, all controls via ToggleGroups and Sliders.
 
 **Worktree:** `.worktrees/type-playground` (branch `feat/type-playground`)
 
-**Architecture:** Extract typography tab into a standalone `TypographyPlayground` component with local state. The "03 Typography" sidebar accordion expands to show sub-tab navigation (ToggleGroup). Each sub-tab renders a two-column layout: left column shows controls or reference data, right column shows a contextual live preview. No dropdowns anywhere — ToggleGroups for all selection controls.
+**Architecture:** Extract typography tab into a standalone `TypographyPlayground` component with local state. The "03 Typography" sidebar accordion expands to show sub-tab navigation (ToggleGroup). Each sub-tab renders a two-column layout: left column shows controls or reference data, right column shows a contextual live preview. The Playground sub-tab renders 8 editorial design templates (3 light, 5 dark) with absolute-positioned text elements wrapped in `react-draggable` for click/drag/move interactivity. No dropdowns anywhere — ToggleGroups for all selection controls.
 
-**Tech Stack:** React 19, `@rdna/radiants` components (ToggleGroup, Slider, Collapsible, Tooltip, Button), Tailwind v4, `@base-ui/react` primitives.
+**Tech Stack:** React 19, `@rdna/radiants` components (ToggleGroup, Slider, Collapsible, Tooltip, Button), Tailwind v4, `@base-ui/react` primitives, `react-draggable` (already installed).
 
 ---
 
@@ -26,6 +26,7 @@
 | Slider component | `packages/radiants/components/core/Slider/Slider.tsx` |
 | Tabs component | `packages/radiants/components/core/Tabs/Tabs.tsx` |
 | RDNA tokens | `packages/radiants/tokens.css`, `packages/radiants/typography.css` |
+| react-draggable usage | `apps/rad-os/components/Rad_os/AppWindow.tsx:4` |
 
 ### Conventions
 
@@ -34,13 +35,33 @@
 - **Accordion sub-items:** Use `settings` prop on `Tabs.Trigger` — renders collapsible content when that tab is active
 - **No dropdowns rule:** All `<select>` elements become `<ToggleGroup>` with `size="sm"`
 - **Container queries:** BrandAssetsApp content uses `@container` — use `@md:` prefix for responsive breakpoints within the window
+- **react-draggable pattern:** Use `nodeRef` prop with `useRef` to avoid `findDOMNode` deprecation
 
-### Component APIs needed
+### RDNA color tokens for templates
 
-- **ToggleGroup:** `value={[string]}`, `onValueChange`, `size="sm"`, `<ToggleGroup.Item value="x">Label</ToggleGroup.Item>`
-- **Slider:** `value`, `onChange`, `min`, `max`, `step`, `size="sm"`, `label`, `showValue`
-- **Collapsible:** `Collapsible.Root defaultOpen` + `Collapsible.Trigger` + `Collapsible.Content`
-- **Tabs.Trigger settings:** `<Tabs.Trigger value="fonts" settings={<JSX />}>` — settings content appears in accordion expanded state
+| Token | Class | Hex equivalent | Use in templates |
+|-------|-------|----------------|------------------|
+| `--color-cream` | `bg-page` | `#FEF8E2` | Light template backgrounds |
+| `--color-sun-yellow` | `bg-accent` | `#FCE184` | Yellow backgrounds, highlight bars, glow |
+| `--color-ink` | `bg-inv` | `#0F0E0C` | Dark template backgrounds |
+| `--color-cream` | `text-flip` | `#FEF8E2` | Text on dark backgrounds |
+| `--color-ink` | `text-main` | `#0F0E0C` | Text on light backgrounds |
+
+### Template design source
+
+8 editorial design templates exported from the user's design tool (CSS + screenshots). Each is a 1:1 square with absolute-positioned text and decorative elements:
+
+**Light mode (3):**
+1. **Editorial** — Cream bg, golden accent block top-right, vertical rule at ~50%, body text left, highlight bar bottom
+2. **Editorial Alt** — Yellow bg, CSS half-circle top-left, vertical rule, body text right
+3. **Display** — Yellow bg, huge headline (~60% of box), wordmark label, commentary
+
+**Dark mode (5):**
+4. **Statement** — Ink bg, centered Joystix headline
+5. **Document** — Ink bg, title + body + numbered list
+6. **Dictionary** — Ink bg, word + pronunciation + definition
+7. **Quote** — Ink bg, large quote + attribution
+8. **Poster** — Ink bg, mixed display type treatment
 
 ---
 
@@ -51,7 +72,7 @@
 
 **Step 1: Create the data file**
 
-Move `FONTS`, `TYPE_SCALE`, `ELEMENT_STYLES` arrays + their types out of `BrandAssetsApp.tsx` into a dedicated module. Add `FONT_KEYS` type and a lookup map.
+Move `FONTS`, `TYPE_SCALE`, `ELEMENT_STYLES` arrays + their types out of `BrandAssetsApp.tsx` into a dedicated module. Add `FONT_KEYS` type, a lookup map, and template metadata.
 
 ```ts
 // apps/rad-os/components/apps/typography-playground/typography-data.ts
@@ -80,8 +101,8 @@ export const FONTS: FontEntry[] = [
     name: 'Joystix Monospace',
     shortName: 'Joystix',
     role: 'Display & Headings',
-    usage: 'h1–h6, labels, captions, buttons',
-    description: 'An open source pixel font — bold and unapologetic. Use for headings, memes, and visual punch.',
+    usage: 'h1-h6, labels, captions, buttons',
+    description: 'An open source pixel font -- bold and unapologetic. Use for headings, memes, and visual punch.',
     className: 'font-joystix',
     cssVar: '--font-heading',
     fontFamily: "'Joystix Monospace', monospace",
@@ -97,7 +118,7 @@ export const FONTS: FontEntry[] = [
     shortName: 'Mondwest',
     role: 'Body & Readability',
     usage: 'paragraphs, descriptions, long-form content',
-    description: "Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.",
+    description: "Radiants' readable font for long-form content. Created by Pangram Pangram -- limited weights for non-commercial use.",
     className: 'font-mondwest',
     cssVar: '--font-sans',
     fontFamily: "'Mondwest', system-ui, sans-serif",
@@ -163,18 +184,33 @@ export const ELEMENT_STYLES = [
   { el: 'label', font: 'Joystix',    fontClass: 'font-joystix',  size: 'xs',   weight: 500, leading: 'normal' },
 ] as const;
 
-/** Default slider values per playground context */
-export type PlaygroundContext = 'sampler' | 'social' | 'document' | 'type-scale' | 'glyphs';
+/** Template IDs */
+export type TemplateId =
+  | 'editorial' | 'editorial-alt' | 'display'
+  | 'statement' | 'document' | 'dictionary' | 'quote' | 'poster';
 
-export const CONTEXT_DEFAULTS: Record<PlaygroundContext, {
-  size: number; leading: number; spacing: number; weight: number; align: 'left' | 'center' | 'right';
-}> = {
-  sampler:      { size: 48, leading: 10, spacing: 0, weight: 700, align: 'center' },
-  social:       { size: 18, leading: 14, spacing: 0, weight: 400, align: 'left' },
-  document:     { size: 14, leading: 15, spacing: 0, weight: 400, align: 'left' },
-  'type-scale': { size: 32, leading: 12, spacing: 0, weight: 400, align: 'left' },
-  glyphs:       { size: 16, leading: 10, spacing: 0, weight: 400, align: 'center' },
-};
+export interface TemplateMeta {
+  id: TemplateId;
+  label: string;
+  mode: 'light' | 'dark';
+}
+
+export const TEMPLATES: TemplateMeta[] = [
+  // Light
+  { id: 'editorial',     label: 'Editorial',   mode: 'light' },
+  { id: 'editorial-alt', label: 'Edit. Alt',   mode: 'light' },
+  { id: 'display',       label: 'Display',     mode: 'light' },
+  // Dark
+  { id: 'statement',     label: 'Statement',   mode: 'dark' },
+  { id: 'document',      label: 'Document',    mode: 'dark' },
+  { id: 'dictionary',    label: 'Dictionary',  mode: 'dark' },
+  { id: 'quote',         label: 'Quote',       mode: 'dark' },
+  { id: 'poster',        label: 'Poster',      mode: 'dark' },
+];
+
+/** Filter templates by mode */
+export const getTemplatesForMode = (mode: 'light' | 'dark') =>
+  TEMPLATES.filter((t) => t.mode === mode);
 ```
 
 **Step 2: Commit**
@@ -194,7 +230,7 @@ git commit -m "feat(type-playground): extract typography data to shared module"
 
 **Step 1: Create the component with state and two-column layout**
 
-This is the main container. It manages all playground state and renders the two-column layout. The sub-tab navigation lives in the sidebar via the `settings` prop (wired in Task 7).
+This is the main container. It manages all playground state and renders the two-column layout. The sub-tab navigation lives in the sidebar via the `settings` prop (wired in Task 6).
 
 ```tsx
 // apps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx
@@ -202,58 +238,59 @@ This is the main container. It manages all playground state and renders the two-
 
 import React, { useState } from 'react';
 import { ToggleGroup } from '@rdna/radiants/components/core';
-import { type FontKey, FONT_MAP, CONTEXT_DEFAULTS, type PlaygroundContext } from './typography-data';
+import {
+  type FontKey, type TemplateId,
+  FONT_MAP, TEMPLATES, getTemplatesForMode,
+} from './typography-data';
 
 export type SubTab = 'playground' | 'scale' | 'elements' | 'css-ref' | 'about';
 
 export function TypographyPlayground() {
-  // ── Font state ──
+  // -- Font state --
   const [activeFont, setActiveFont] = useState<FontKey>('mondwest');
   const font = FONT_MAP[activeFont];
 
-  // ── Sub-tab state ──
+  // -- Sub-tab state --
   const [activeSubTab, setActiveSubTab] = useState<SubTab>('playground');
 
-  // ── Playground controls state ──
-  const [context, setContext] = useState<PlaygroundContext>('sampler');
-  const [size, setSize] = useState(48);
-  const [leading, setLeading] = useState(10);
-  const [spacing, setSpacing] = useState(0);
-  const [weight, setWeight] = useState(700);
-  const [align, setAlign] = useState<'left' | 'center' | 'right'>('center');
+  // -- Template state --
   const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('editorial');
 
-  // ── Context switching resets to defaults ──
-  const switchContext = (ctx: PlaygroundContext) => {
-    setContext(ctx);
-    const d = CONTEXT_DEFAULTS[ctx];
-    setSize(d.size);
-    setLeading(d.leading);
-    setSpacing(d.spacing);
-    setWeight(d.weight);
-    setAlign(d.align);
+  // -- Playground controls --
+  const [size, setSize] = useState(34);
+  const [leading, setLeading] = useState(12);
+  const [spacing, setSpacing] = useState(0);
+  const [weight, setWeight] = useState(400);
+  const [align, setAlign] = useState<'left' | 'center' | 'right'>('left');
+
+  // -- Mode switching selects first template of new mode --
+  const switchMode = (m: 'light' | 'dark') => {
+    setMode(m);
+    const first = getTemplatesForMode(m)[0];
+    if (first) setActiveTemplate(first.id);
   };
 
-  // ── Font switching resets weight to first available ──
+  // -- Font switching resets weight to first available --
   const switchFont = (key: FontKey) => {
     setActiveFont(key);
     setWeight(FONT_MAP[key].weights[0].value);
   };
 
-  // ── Derived style object for preview ──
+  // -- Derived style object for template text --
   const previewStyle: React.CSSProperties = {
     fontSize: `${size}px`,
     lineHeight: (leading / 10).toFixed(1),
-    letterSpacing: `${(spacing / 100)}em`,
+    letterSpacing: `${spacing / 100}em`,
     fontWeight: weight,
     textAlign: align,
   };
 
   return (
     <div className="flex h-full">
-      {/* ── Left column ── */}
+      {/* -- Left column -- */}
       <div className="w-[260px] shrink-0 overflow-y-auto border-r border-rule p-3 space-y-4">
-        {/* Font picker — always visible */}
+        {/* Font picker -- always visible */}
         <div>
           <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Font</div>
           <ToggleGroup
@@ -267,43 +304,28 @@ export function TypographyPlayground() {
           </ToggleGroup>
         </div>
 
-        {/* Sub-tab content renders here — filled in Tasks 3-6 */}
+        {/* Sub-tab content -- filled in Tasks 3-4 */}
         {activeSubTab === 'playground' && (
-          <div>{/* PlaygroundControls — Task 3 */}</div>
+          <div>{/* PlaygroundControls -- Task 3 */}</div>
         )}
         {activeSubTab === 'scale' && (
-          <div>{/* TypeScalePanel — Task 4 */}</div>
+          <div>{/* TypeScalePanel -- Task 4 */}</div>
         )}
         {activeSubTab === 'elements' && (
-          <div>{/* ElementStylesPanel — Task 5 */}</div>
+          <div>{/* ElementStylesPanel -- Task 4 */}</div>
         )}
         {activeSubTab === 'css-ref' && (
-          <div>{/* CssReferencePanel — Task 5 */}</div>
+          <div>{/* CssReferencePanel -- Task 4 */}</div>
         )}
         {activeSubTab === 'about' && (
-          <div>{/* AboutFontPanel — Task 6 */}</div>
+          <div>{/* AboutFontPanel -- Task 4 */}</div>
         )}
       </div>
 
-      {/* ── Right column: preview ── */}
+      {/* -- Right column: preview -- */}
       <div className="flex-1 flex flex-col items-center justify-center p-5 overflow-auto">
-        <div
-          className={`w-full max-w-[420px] aspect-square border border-line flex flex-col ${
-            mode === 'dark' ? 'bg-ink text-cream' : 'bg-pure-white text-ink'
-          }`}
-        >
-          {/* Preview content renders here — contextual per sub-tab */}
-          <div className="flex-1 p-5 flex flex-col overflow-hidden">
-            {/* Placeholder — filled in Tasks 3-6 */}
-            <div
-              className={`flex-1 flex items-center justify-center ${font.className}`}
-              style={previewStyle}
-              contentEditable
-              suppressContentEditableWarning
-            >
-              Type something here
-            </div>
-          </div>
+        <div className="w-full max-w-[420px] aspect-square border border-line overflow-hidden">
+          {/* Preview content -- contextual per sub-tab, filled in Tasks 3-4 */}
         </div>
       </div>
     </div>
@@ -333,16 +355,16 @@ git commit -m "feat(type-playground): scaffold TypographyPlayground shell with s
 
 ---
 
-## Task 3: Build Playground sub-tab (controls + preview contexts)
+## Task 3: Build Playground sub-tab (controls + template previews)
 
 **Files:**
 - Create: `apps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx`
-- Create: `apps/rad-os/components/apps/typography-playground/PreviewContexts.tsx`
+- Create: `apps/rad-os/components/apps/typography-playground/TemplatePreview.tsx`
 - Modify: `apps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx`
 
-**Step 1: Create PlaygroundControls**
+### Step 1: Create PlaygroundControls
 
-Left-column content for the Playground sub-tab. All controls use ToggleGroup or Slider — no dropdowns.
+Left-column content for the Playground sub-tab. Mode toggle filters which templates appear in the template picker.
 
 ```tsx
 // apps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx
@@ -350,12 +372,14 @@ Left-column content for the Playground sub-tab. All controls use ToggleGroup or 
 
 import React from 'react';
 import { ToggleGroup, Slider } from '@rdna/radiants/components/core';
-import { type FontEntry, type PlaygroundContext } from './typography-data';
+import { type FontEntry, type TemplateId, getTemplatesForMode } from './typography-data';
 
 interface PlaygroundControlsProps {
   font: FontEntry;
-  context: PlaygroundContext;
-  onContextChange: (ctx: PlaygroundContext) => void;
+  mode: 'light' | 'dark';
+  onModeChange: (v: 'light' | 'dark') => void;
+  activeTemplate: TemplateId;
+  onTemplateChange: (v: TemplateId) => void;
   size: number;
   onSizeChange: (v: number) => void;
   leading: number;
@@ -366,36 +390,41 @@ interface PlaygroundControlsProps {
   onWeightChange: (v: number) => void;
   align: 'left' | 'center' | 'right';
   onAlignChange: (v: 'left' | 'center' | 'right') => void;
-  mode: 'light' | 'dark';
-  onModeChange: (v: 'light' | 'dark') => void;
 }
 
-const CONTEXTS: { value: PlaygroundContext; label: string }[] = [
-  { value: 'sampler', label: 'Sampler' },
-  { value: 'social', label: 'Social' },
-  { value: 'document', label: 'Doc' },
-  { value: 'type-scale', label: 'Scale' },
-  { value: 'glyphs', label: 'Glyphs' },
-];
-
 export function PlaygroundControls({
-  font, context, onContextChange,
+  font, mode, onModeChange, activeTemplate, onTemplateChange,
   size, onSizeChange, leading, onLeadingChange,
   spacing, onSpacingChange, weight, onWeightChange,
-  align, onAlignChange, mode, onModeChange,
+  align, onAlignChange,
 }: PlaygroundControlsProps) {
+  const templates = getTemplatesForMode(mode);
+
   return (
     <div className="space-y-4">
-      {/* Context switcher */}
+      {/* Mode (filters templates) */}
       <div>
-        <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Preview</div>
+        <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Mode</div>
         <ToggleGroup
-          value={[context]}
-          onValueChange={(v) => v.length && onContextChange(v[0] as PlaygroundContext)}
+          value={[mode]}
+          onValueChange={(v) => v.length && onModeChange(v[0] as 'light' | 'dark')}
           size="sm"
         >
-          {CONTEXTS.map((c) => (
-            <ToggleGroup.Item key={c.value} value={c.value}>{c.label}</ToggleGroup.Item>
+          <ToggleGroup.Item value="light">Sun</ToggleGroup.Item>
+          <ToggleGroup.Item value="dark">Moon</ToggleGroup.Item>
+        </ToggleGroup>
+      </div>
+
+      {/* Template picker */}
+      <div>
+        <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Template</div>
+        <ToggleGroup
+          value={[activeTemplate]}
+          onValueChange={(v) => v.length && onTemplateChange(v[0] as TemplateId)}
+          size="sm"
+        >
+          {templates.map((t) => (
+            <ToggleGroup.Item key={t.id} value={t.id}>{t.label}</ToggleGroup.Item>
           ))}
         </ToggleGroup>
       </div>
@@ -442,197 +471,315 @@ export function PlaygroundControls({
           <ToggleGroup.Item value="right">R</ToggleGroup.Item>
         </ToggleGroup>
       </div>
-
-      {/* Light/Dark */}
-      <div>
-        <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Mode</div>
-        <ToggleGroup
-          value={[mode]}
-          onValueChange={(v) => v.length && onModeChange(v[0] as 'light' | 'dark')}
-          size="sm"
-        >
-          <ToggleGroup.Item value="light">Sun</ToggleGroup.Item>
-          <ToggleGroup.Item value="dark">Moon</ToggleGroup.Item>
-        </ToggleGroup>
-      </div>
     </div>
   );
 }
 ```
 
-**Step 2: Create PreviewContexts**
+### Step 2: Create TemplatePreview
 
-The five interchangeable preview layouts rendered inside the square preview box.
+One file with all 8 template render functions + a `DraggableText` helper + a dispatcher component. Each template is simple JSX with absolute-positioned elements. Text marked as "primary" receives the playground controls style. All text elements are `contentEditable` and wrapped in `DraggableText` for click/drag/move.
+
+**Approach:** No abstraction layer. Each template is a plain function component ~15-25 lines of JSX. One shared `DraggableText` wrapper handles `react-draggable` + `nodeRef` + `contentEditable`.
 
 ```tsx
-// apps/rad-os/components/apps/typography-playground/PreviewContexts.tsx
+// apps/rad-os/components/apps/typography-playground/TemplatePreview.tsx
 'use client';
 
-import React, { useState } from 'react';
-import { type FontEntry, TYPE_SCALE } from './typography-data';
-import { type PlaygroundContext } from './typography-data';
+import React, { useRef } from 'react';
+import Draggable from 'react-draggable';
+import { type FontEntry, type TemplateId } from './typography-data';
 
-interface PreviewProps {
+// -- Shared props for all templates --
+interface TemplateProps {
+  font: FontEntry;
+  style: React.CSSProperties; // from playground controls (size, leading, spacing, weight, align)
+}
+
+// -- DraggableText wrapper --
+// Handles nodeRef for React 19, contentEditable, and cursor styling.
+function DraggableText({
+  children,
+  className = '',
+  style,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <Draggable bounds="parent" nodeRef={ref}>
+      <div
+        ref={ref}
+        className={`cursor-move outline-none ${className}`}
+        style={style}
+        contentEditable
+        suppressContentEditableWarning
+      >
+        {children}
+      </div>
+    </Draggable>
+  );
+}
+
+// ================================================================
+// LIGHT TEMPLATES
+// ================================================================
+
+/** Editorial -- cream bg, accent block, vertical rule, body text, highlight bar */
+function Editorial({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-page text-main">
+      {/* Accent image block */}
+      <div
+        className="absolute top-[8%] right-[8%] w-[35%] h-[38%] bg-accent"
+        style={{ boxShadow: '0 0 120px 20px oklch(0.91 0.12 94 / 0.4)' }}
+      />
+      {/* Vertical rule */}
+      <div className="absolute left-[50%] top-0 bottom-0 w-px bg-main/15" />
+      {/* Primary body text */}
+      <DraggableText
+        className={`absolute top-[52%] left-[8%] w-[40%] ${font.className}`}
+        style={style}
+      >
+        Meticulously crafted bitmap typeface for modern design systems
+      </DraggableText>
+      {/* Highlight bar */}
+      <div className="absolute bottom-[10%] left-[8%] w-[20%] h-1 bg-accent" />
+    </div>
+  );
+}
+
+/** Editorial Alt -- yellow bg, half-circle, vertical rule, body text */
+function EditorialAlt({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-accent text-main">
+      {/* Half-circle decoration */}
+      <div className="absolute top-[6%] left-[6%] w-[18%] aspect-square rounded-full bg-main/10" />
+      {/* Vertical rule */}
+      <div className="absolute left-[48%] top-0 bottom-0 w-px bg-main/15" />
+      {/* Primary body text -- right side */}
+      <DraggableText
+        className={`absolute top-[30%] right-[8%] w-[42%] ${font.className}`}
+        style={style}
+      >
+        Inspired by the classic Grotesks and Serifs of our era
+      </DraggableText>
+    </div>
+  );
+}
+
+/** Display -- yellow bg, huge headline, wordmark, commentary */
+function Display({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-accent text-main overflow-hidden">
+      {/* Huge headline -- primary text, uses controls */}
+      <DraggableText
+        className={`absolute top-[15%] left-[8%] w-[84%] ${font.className} leading-none`}
+        style={{ ...style, fontSize: `${Math.max(parseInt(String(style.fontSize)) * 2.5, 48)}px` }}
+      >
+        Ayyooooo
+      </DraggableText>
+      {/* Wordmark label */}
+      <div className="absolute bottom-[18%] left-[8%] font-joystix text-xs uppercase tracking-tight text-main/60">
+        Radiants Type System
+      </div>
+      {/* Commentary */}
+      <DraggableText
+        className={`absolute bottom-[8%] right-[8%] w-[50%] ${font.className} text-sm text-main/70`}
+      >
+        Three fonts. One system. Endless combinations.
+      </DraggableText>
+    </div>
+  );
+}
+
+// ================================================================
+// DARK TEMPLATES
+// ================================================================
+
+/** Statement -- ink bg, centered Joystix headline */
+function Statement({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-inv text-flip">
+      <DraggableText
+        className={`absolute inset-[8%] flex items-center justify-center ${font.className} leading-tight`}
+        style={{ ...style, fontSize: `${Math.max(parseInt(String(style.fontSize)) * 2, 36)}px` }}
+      >
+        TYPE IS THE VOICE OF THE PAGE
+      </DraggableText>
+    </div>
+  );
+}
+
+/** Document -- ink bg, title + body + list */
+function Document({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-inv text-flip p-[8%]">
+      {/* Title */}
+      <DraggableText
+        className={`${font.className} text-xl font-bold mb-4`}
+      >
+        The Rad Public License
+      </DraggableText>
+      {/* Body -- primary text, uses controls */}
+      <DraggableText
+        className={`${font.className} mb-4`}
+        style={style}
+      >
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this typeface and associated documentation files.
+      </DraggableText>
+      {/* Numbered list */}
+      <div className={`${font.className} space-y-1`} style={{ fontSize: style.fontSize, lineHeight: style.lineHeight }}>
+        <div className="flex gap-3"><span className="text-flip/40 shrink-0">01</span><span>You may use, copy, and distribute</span></div>
+        <div className="flex gap-3"><span className="text-flip/40 shrink-0">02</span><span>You may modify and create derivatives</span></div>
+        <div className="flex gap-3"><span className="text-flip/40 shrink-0">03</span><span>Attribution is appreciated, not required</span></div>
+      </div>
+    </div>
+  );
+}
+
+/** Dictionary -- ink bg, word + pronunciation + definition */
+function Dictionary({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-inv text-flip p-[8%]">
+      {/* Word -- primary text */}
+      <DraggableText
+        className={`${font.className} font-bold mb-1`}
+        style={{ ...style, fontSize: `${Math.max(parseInt(String(style.fontSize)) * 1.8, 28)}px` }}
+      >
+        rad-i-ant
+      </DraggableText>
+      {/* Pronunciation */}
+      <div className={`${font.className} text-sm text-flip/50 mb-4`}>
+        /ˈreɪ.di.ənt/ &middot; adjective
+      </div>
+      {/* Definition -- uses controls */}
+      <DraggableText
+        className={`${font.className} mb-4`}
+        style={style}
+      >
+        Sending out light; shining or glowing brightly. Clearly emanating great joy, love, or health.
+      </DraggableText>
+      {/* Usage */}
+      <div className={`${font.className} text-sm text-flip/60 italic border-l-2 border-flip/20 pl-3`}>
+        "The radiant glow of the pixel grid illuminated the workspace."
+      </div>
+    </div>
+  );
+}
+
+/** Quote -- ink bg, large quote + attribution */
+function Quote({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-inv text-flip p-[8%] flex flex-col justify-center">
+      {/* Decorative quote mark */}
+      <div className="font-joystix text-[80px] text-flip/10 leading-none mb-2">&ldquo;</div>
+      {/* Quote text -- primary */}
+      <DraggableText
+        className={`${font.className} mb-6`}
+        style={style}
+      >
+        Typography is the craft of endowing human language with a durable visual form.
+      </DraggableText>
+      {/* Attribution */}
+      <div className="font-joystix text-xs text-flip/40 uppercase tracking-tight">
+        -- Robert Bringhurst
+      </div>
+    </div>
+  );
+}
+
+/** Poster -- ink bg, mixed display type */
+function Poster({ font, style }: TemplateProps) {
+  return (
+    <div className="relative w-full h-full bg-inv text-flip overflow-hidden">
+      {/* Large display text */}
+      <DraggableText
+        className={`absolute top-[8%] left-[8%] w-[84%] font-joystix leading-none`}
+        style={{ ...style, fontSize: `${Math.max(parseInt(String(style.fontSize)) * 2, 40)}px` }}
+      >
+        PIXEL
+      </DraggableText>
+      {/* Subtext */}
+      <DraggableText
+        className={`absolute top-[40%] left-[8%] w-[84%] ${font.className}`}
+        style={style}
+      >
+        Perfect is the enemy of shipped. Every pixel tells a story.
+      </DraggableText>
+      {/* Bottom label */}
+      <div className="absolute bottom-[8%] left-[8%] font-joystix text-xs uppercase tracking-tight text-flip/30">
+        Radiants Design System / 2026
+      </div>
+      {/* Decorative accent line */}
+      <div className="absolute bottom-[6%] right-[8%] w-[30%] h-px bg-accent/40" />
+    </div>
+  );
+}
+
+// ================================================================
+// DISPATCHER
+// ================================================================
+
+const TEMPLATE_COMPONENTS: Record<TemplateId, React.FC<TemplateProps>> = {
+  editorial: Editorial,
+  'editorial-alt': EditorialAlt,
+  display: Display,
+  statement: Statement,
+  document: Document,
+  dictionary: Dictionary,
+  quote: Quote,
+  poster: Poster,
+};
+
+interface TemplatePreviewProps {
+  templateId: TemplateId;
   font: FontEntry;
   style: React.CSSProperties;
-  mode: 'light' | 'dark';
 }
 
-// ── Sampler ──
-export function SamplerPreview({ font, style }: PreviewProps) {
-  return (
-    <div
-      className={`flex-1 flex items-center justify-center ${font.className} outline-none`}
-      style={style}
-      contentEditable
-      suppressContentEditableWarning
-    >
-      Type something here
-    </div>
-  );
-}
-
-// ── Social Post ──
-export function SocialPreview({ font, style }: PreviewProps) {
-  return (
-    <div className="flex-1 flex flex-col border border-dashed border-line p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-full border border-line bg-depth shrink-0" />
-        <div>
-          <div className={`${font.className} text-sm font-semibold`} contentEditable suppressContentEditableWarning>Display Name</div>
-          <div className="font-mono text-xs text-mute">@handle</div>
-        </div>
-      </div>
-      <div
-        className={`flex-1 ${font.className} outline-none`}
-        style={style}
-        contentEditable
-        suppressContentEditableWarning
-      >
-        This is what a social post looks like in this typeface. Edit me to test your own copy.
-      </div>
-      <div className="mt-auto pt-3 border-t border-dashed border-line flex gap-6">
-        {['Reply', 'Repost', 'Like', 'Share'].map((a) => (
-          <span key={a} className="font-heading text-xs text-mute uppercase tracking-tight">{a}</span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Document ──
-export function DocumentPreview({ font, style }: PreviewProps) {
-  return (
-    <div className="flex-1 flex flex-col gap-3 overflow-hidden">
-      <div
-        className={`${font.className} text-main outline-none`}
-        style={{ ...style, fontSize: `${Math.max(Number.parseInt(String(style.fontSize)) * 1.8, 24)}px`, fontWeight: 700 }}
-        contentEditable
-        suppressContentEditableWarning
-      >
-        Document Heading
-      </div>
-      <div
-        className={`flex-1 ${font.className} text-main outline-none`}
-        style={style}
-        contentEditable
-        suppressContentEditableWarning
-      >
-        Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions.
-      </div>
-      <pre className="font-mono text-sm bg-depth p-2.5 border border-rule overflow-x-auto" contentEditable suppressContentEditableWarning>
-{`const tokens = getDesignTokens();
-console.log(tokens.typography);`}
-      </pre>
-    </div>
-  );
-}
-
-// ── Type Scale ──
-export function TypeScalePreview({ font, style }: PreviewProps) {
-  return (
-    <div className="flex-1 overflow-y-auto space-y-0">
-      {TYPE_SCALE.map(({ label, rem }) => (
-        <div key={label} className="flex items-baseline gap-3 py-1.5 border-b border-rule last:border-0">
-          <span className="font-heading text-xs text-mute w-8 shrink-0 uppercase tracking-tight">{label}</span>
-          <span
-            className={`${font.className} text-main flex-1 truncate outline-none`}
-            style={{ fontSize: rem, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing, fontWeight: style.fontWeight, textAlign: style.textAlign }}
-            contentEditable
-            suppressContentEditableWarning
-          >
-            Radiants Design System
-          </span>
-          <span className="font-mono text-xs text-mute shrink-0">{rem}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── Glyphs ──
-export function GlyphsPreview({ font, mode }: PreviewProps) {
-  const [activeChar, setActiveChar] = useState('A');
-  const [activeCode, setActiveCode] = useState(65);
-
-  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-  const DIGITS = '0123456789';
-
-  const GlyphGrid = ({ chars, label }: { chars: string; label: string }) => (
-    <div>
-      <div className="font-heading text-xs text-mute uppercase tracking-tight mb-1">{label}</div>
-      <div className="grid grid-cols-8 gap-1 mb-3">
-        {chars.split('').map((c) => (
-          <button
-            key={c}
-            className={`aspect-square flex items-center justify-center text-base cursor-pointer
-              ${activeChar === c
-                ? (mode === 'dark' ? 'bg-cream text-ink' : 'bg-ink text-cream')
-                : (mode === 'dark' ? 'bg-page/10' : 'bg-depth')
-              } ${font.className}`}
-            onMouseOver={() => { setActiveChar(c); setActiveCode(c.charCodeAt(0)); }}
-            onClick={() => { setActiveChar(c); setActiveCode(c.charCodeAt(0)); }}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="flex-1 overflow-y-auto">
-      <GlyphGrid chars={UPPER} label="Uppercase" />
-      <GlyphGrid chars={LOWER} label="Lowercase" />
-      <GlyphGrid chars={DIGITS} label="Digits" />
-      <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-line p-3 mt-2">
-        <div className={`${font.className} text-[72px] leading-none`}>{activeChar}</div>
-        <div className="font-mono text-xs text-mute mt-2 uppercase tracking-tight">
-          U+{activeCode.toString(16).toUpperCase().padStart(4, '0')} ({activeCode})
-        </div>
-      </div>
-    </div>
-  );
+export function TemplatePreview({ templateId, font, style }: TemplatePreviewProps) {
+  const Component = TEMPLATE_COMPONENTS[templateId];
+  return <Component font={font} style={style} />;
 }
 ```
 
-**Step 3: Wire into TypographyPlayground**
+### Step 3: Wire into TypographyPlayground
 
 Update `TypographyPlayground.tsx`:
-- Import `PlaygroundControls` and all preview components
+- Import `PlaygroundControls` and `TemplatePreview`
 - Replace placeholder left-column content with `<PlaygroundControls />`
-- Replace placeholder preview with context-switched preview components
+- Replace placeholder preview with `<TemplatePreview />`
 
-**Step 4: Verify it builds**
+The key change in the preview box area:
+
+```tsx
+{/* -- Right column: preview -- */}
+<div className="flex-1 flex flex-col items-center justify-center p-5 overflow-auto">
+  <div className="w-full max-w-[420px] aspect-square border border-line overflow-hidden">
+    {activeSubTab === 'playground' && (
+      <TemplatePreview
+        templateId={activeTemplate}
+        font={font}
+        style={previewStyle}
+      />
+    )}
+    {/* Other sub-tab previews -- Task 4 */}
+  </div>
+</div>
+```
+
+### Step 4: Verify it builds
 
 Run: `pnpm build --filter=rad-os`
 
-**Step 5: Commit**
+### Step 5: Commit
 
 ```bash
 git add apps/rad-os/components/apps/typography-playground/
-git commit -m "feat(type-playground): add playground controls and preview contexts"
+git commit -m "feat(type-playground): add playground controls and 8 editorial template previews"
 ```
 
 ---
@@ -655,7 +802,7 @@ import React, { useState } from 'react';
 import { Tooltip, Button } from '@rdna/radiants/components/core';
 import { type FontEntry, TYPE_SCALE, ELEMENT_STYLES } from './typography-data';
 
-// ── Shared copy helper ──
+// -- Shared copy helper --
 function CopyableValue({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
@@ -676,9 +823,9 @@ function CopyableValue({ value }: { value: string }) {
   );
 }
 
-// ═══════════════════════════════════════════════
+// ===============================================
 // LEFT PANELS (rules)
-// ═══════════════════════════════════════════════
+// ===============================================
 
 export function TypeScalePanel() {
   return (
@@ -698,7 +845,7 @@ export function TypeScalePanel() {
       </div>
       <div className="p-2.5 bg-depth text-sm text-mute leading-relaxed">
         <span className="font-heading text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm uppercase tracking-tight mr-2">Clamp</span>
-        Body scales fluidly 16–18px. <code className="text-xs">clamp(1rem, 1vw, 1.125rem)</code>
+        Body scales fluidly 16-18px. <code className="text-xs">clamp(1rem, 1vw, 1.125rem)</code>
       </div>
     </div>
   );
@@ -786,14 +933,14 @@ export function AboutFontPanel({ font }: { font: FontEntry }) {
   );
 }
 
-// ═══════════════════════════════════════════════
+// ===============================================
 // RIGHT PREVIEWS (demonstrations)
-// ═══════════════════════════════════════════════
+// ===============================================
 
-/** Type Scale demo — renders each scale step in the active font */
+/** Type Scale demo -- renders each scale step in the active font */
 export function TypeScaleDemo({ font }: { font: FontEntry }) {
   return (
-    <div className="flex-1 overflow-y-auto px-2">
+    <div className="h-full overflow-y-auto px-2 bg-page text-main">
       {TYPE_SCALE.map(({ label, rem }) => (
         <div key={label} className="py-2 border-b border-rule last:border-0">
           <span className={`${font.className} text-main leading-none`} style={{ fontSize: rem }}>
@@ -805,10 +952,10 @@ export function TypeScaleDemo({ font }: { font: FontEntry }) {
   );
 }
 
-/** Element Styles demo — renders each element in its mapped font/weight */
+/** Element Styles demo -- renders each element in its mapped font/weight */
 export function ElementStylesDemo({ font }: { font: FontEntry }) {
   return (
-    <div className="flex-1 overflow-y-auto px-2 space-y-3">
+    <div className="h-full overflow-y-auto px-2 space-y-3 bg-page text-main">
       {ELEMENT_STYLES.map(({ el, fontClass, weight }) => (
         <div key={el} className="border-b border-rule pb-2 last:border-0">
           <code className="font-mono text-xs text-mute block mb-0.5">&lt;{el}&gt;</code>
@@ -821,10 +968,10 @@ export function ElementStylesDemo({ font }: { font: FontEntry }) {
   );
 }
 
-/** CSS Reference demo — shows the font in action with copyable class snippets */
+/** CSS Reference demo -- shows the font in action with copyable class snippets */
 export function CssReferenceDemo({ font }: { font: FontEntry }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
+    <div className="h-full flex flex-col items-center justify-center px-4 gap-4 bg-page text-main">
       <span className={`${font.className} text-3xl text-main text-center leading-tight`}>
         AaBbCc
       </span>
@@ -840,13 +987,13 @@ export function CssReferenceDemo({ font }: { font: FontEntry }) {
   );
 }
 
-/** About demo — large specimen of the font */
+/** About demo -- large specimen of the font */
 export function AboutFontDemo({ font }: { font: FontEntry }) {
   const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const LOWER = 'abcdefghijklmnopqrstuvwxyz';
   const DIGITS = '0123456789';
   return (
-    <div className="flex-1 overflow-y-auto px-2 space-y-3">
+    <div className="h-full overflow-y-auto px-2 space-y-3 bg-page text-main">
       <div className={`${font.className} text-lg text-main leading-relaxed break-all tracking-wide`}>{UPPER}</div>
       <div className={`${font.className} text-lg text-main leading-relaxed break-all tracking-wide`}>{LOWER}</div>
       <div className={`${font.className} text-lg text-sub leading-relaxed break-all tracking-wide`}>{DIGITS}</div>
@@ -863,7 +1010,7 @@ export function AboutFontDemo({ font }: { font: FontEntry }) {
 Update `TypographyPlayground.tsx` to import all panels and demos, render the correct left-panel content per `activeSubTab`, and render the correct right-side preview per `activeSubTab`.
 
 The key logic:
-- `activeSubTab === 'playground'`: left = `<PlaygroundControls>`, right = context-switched preview (SamplerPreview, SocialPreview, etc.)
+- `activeSubTab === 'playground'`: left = `<PlaygroundControls>`, right = `<TemplatePreview>`
 - `activeSubTab === 'scale'`: left = `<TypeScalePanel>`, right = `<TypeScaleDemo>`
 - `activeSubTab === 'elements'`: left = `<ElementStylesPanel>`, right = `<ElementStylesDemo>`
 - `activeSubTab === 'css-ref'`: left = `<CssReferencePanel>`, right = `<CssReferenceDemo>`
@@ -1014,9 +1161,13 @@ Run: `pnpm dev` and check:
 - Typography tab shows sub-items in accordion
 - Clicking sub-items switches left panel content
 - Preview box updates contextually
-- All ToggleGroups work (font picker, context, weight, align, mode)
+- Template picker switches between editorial layouts
+- Mode toggle (Sun/Moon) filters templates and auto-selects first
+- Text in templates is draggable (click + drag to reposition)
+- Text in templates is editable (click to type)
+- All ToggleGroups work (font picker, template, weight, align, mode)
 - Sliders work (size, leading, spacing)
-- Text is editable in all preview contexts
+- Adjusting controls updates text in template preview
 
 **Step 5: Commit**
 
@@ -1039,9 +1190,9 @@ pnpm lint --filter=rad-os
 pnpm lint:design-system
 ```
 
-Fix any RDNA lint issues — particularly:
-- `rdna/no-hardcoded-colors` — use semantic tokens, not raw hex in preview backgrounds
-- `rdna/prefer-rdna-components` — ensure no raw `<button>` or `<input>` elements leaked in
+Fix any RDNA lint issues -- particularly:
+- `rdna/no-hardcoded-colors` -- use semantic tokens, not raw hex in preview backgrounds. The templates use RDNA classes (`bg-page`, `bg-accent`, `bg-inv`, `text-main`, `text-flip`). The only inline color is the glow `boxShadow` in Editorial which uses `oklch()` -- this is acceptable since RDNA has no soft-glow token.
+- `rdna/prefer-rdna-components` -- ensure no raw `<button>` or `<input>` elements leaked in (except `contentEditable` divs which are fine)
 
 **Step 2: Check for unused imports**
 
@@ -1068,9 +1219,9 @@ git commit -m "chore(type-playground): lint fixes and dead code cleanup"
 
 | Task | What | Files touched |
 |------|------|---------------|
-| 1 | Extract typography data | `typography-data.ts` (new) |
+| 1 | Extract typography data + template metadata | `typography-data.ts` (new) |
 | 2 | Component shell + state | `TypographyPlayground.tsx`, `index.ts` (new) |
-| 3 | Playground controls + preview contexts | `PlaygroundControls.tsx`, `PreviewContexts.tsx` (new) |
+| 3 | Playground controls + 8 template previews | `PlaygroundControls.tsx`, `TemplatePreview.tsx` (new) |
 | 4 | Reference panels (rules + demos) | `ReferencePanels.tsx` (new) |
 | 5 | Sub-tab nav for sidebar | `SubTabNav.tsx` (new) |
 | 6 | Wire into BrandAssetsApp | `BrandAssetsApp.tsx` (modify), lift state |
@@ -1078,4 +1229,13 @@ git commit -m "chore(type-playground): lint fixes and dead code cleanup"
 
 **New files:** 6 (all in `apps/rad-os/components/apps/typography-playground/`)
 **Modified files:** 1 (`BrandAssetsApp.tsx`)
+**New dependencies:** None (`react-draggable` already installed)
 **Deleted code:** ~200 lines of old inline components (`FontCard`, `TypeScaleSection`, `ElementStylesSection`, `TypeSpecimen`)
+
+### Key design decisions
+
+1. **Templates are plain JSX, not config-driven** -- each template is a ~15-25 line function component with absolute-positioned divs. No abstraction layer to maintain.
+2. **`DraggableText` wrapper** -- one small helper handles `react-draggable` + `nodeRef` + `contentEditable` + cursor styling. All text in templates uses this.
+3. **Mode toggle filters templates** -- Sun shows 3 light templates, Moon shows 5 dark templates. Auto-selects first template when mode changes.
+4. **Existing RDNA styles only** -- `bg-page`, `bg-accent`, `bg-inv`, `text-main`, `text-flip`, `border-rule`. One inline `oklch()` glow on the Editorial template.
+5. **Playground controls apply to primary text** -- the `previewStyle` object (size, leading, spacing, weight, align) is passed into each template and applied to the main text element.
