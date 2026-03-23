@@ -259,10 +259,30 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const darkModeRef = useRef(false);
-  const { darkMode } = usePreferencesStore();
+  const reduceMotionRef = useRef(false);
+  const renderRef = useRef<((time: number) => void) | null>(null);
+  const { darkMode, reduceMotion } = usePreferencesStore();
 
   // Keep ref in sync so the render loop reads the latest value
   darkModeRef.current = darkMode;
+
+  // Sync reduced-motion preference (OS-level + app-level)
+  useEffect(() => {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => {
+      reduceMotionRef.current = reduceMotion || mql.matches;
+    };
+    update();
+    mql.addEventListener('change', update);
+    return () => mql.removeEventListener('change', update);
+  }, [reduceMotion]);
+
+  // Resume animation when reduced-motion is turned off
+  useEffect(() => {
+    if (!reduceMotionRef.current && animationRef.current === null && renderRef.current) {
+      animationRef.current = requestAnimationFrame(renderRef.current);
+    }
+  }, [reduceMotion]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -453,14 +473,21 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       // Draw
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-      animationRef.current = requestAnimationFrame(render);
+      if (!reduceMotionRef.current) {
+        animationRef.current = requestAnimationFrame(render);
+      } else {
+        animationRef.current = null;
+      }
     };
+
+    renderRef.current = render;
 
     // Start animation
     animationRef.current = requestAnimationFrame(render);
 
     // Cleanup
     return () => {
+      renderRef.current = null;
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
