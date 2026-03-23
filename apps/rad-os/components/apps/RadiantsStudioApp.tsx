@@ -223,7 +223,7 @@ function PixelArtCreation() {
     }
   }, [pixels, showGrid]);
 
-  const getPixelCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getPixelCoords = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
@@ -266,14 +266,14 @@ function PixelArtCreation() {
     }
   }, [currentTool, currentColor, fillBucket]);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const coords = getPixelCoords(e);
     if (!coords) return;
     setIsDrawing(true);
     handlePixelAction(coords.x, coords.y);
   }, [getPixelCoords, handlePixelAction]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     const coords = getPixelCoords(e);
     if (!coords) return;
@@ -282,7 +282,7 @@ function PixelArtCreation() {
     }
   }, [isDrawing, getPixelCoords, currentTool, handlePixelAction]);
 
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback(() => {
     setIsDrawing(false);
   }, []);
 
@@ -352,11 +352,11 @@ function PixelArtCreation() {
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
           className="pixel-rounded-sm cursor-crosshair bg-accent"
-          style={{ width: 350, height: 350 }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          style={{ width: 350, height: 350, touchAction: 'none' }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
         />
 
         {/* Tools Sidebar */}

@@ -298,7 +298,7 @@ interface ProgressBarProps {
 function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percent = x / rect.width;
@@ -313,7 +313,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
       {/* Progress track */}
       <div
         className="flex-1 h-1 bg-rule cursor-pointer relative"
-        onClick={handleClick}
+        onPointerUp={handleClick}
       >
         <div
           className="absolute left-0 top-0 h-full bg-inv/60 transition-[width] duration-100"

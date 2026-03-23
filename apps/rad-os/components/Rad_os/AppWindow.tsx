@@ -167,7 +167,7 @@ export function AppWindow({
   }, [focusWindow, id]);
 
   // Handle click anywhere on window to bring to front
-  const handleWindowClick = useCallback((e: React.MouseEvent) => {
+  const handleWindowClick = useCallback((e: React.PointerEvent) => {
     // Bring window to front on any click
     // This doesn't interfere with other interactions (buttons, links, etc.)
     focusWindow(id);
@@ -193,7 +193,7 @@ export function AppWindow({
   );
 
   // Handle resize start
-  const handleResizeStart = useCallback((e: React.MouseEvent, direction: string) => {
+  const handleResizeStart = useCallback((e: React.PointerEvent, direction: string) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -221,7 +221,7 @@ export function AppWindow({
   useEffect(() => {
     if (!isResizing) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       if (!nodeRef.current) return;
 
       const deltaX = e.clientX - resizeStart.x;
@@ -262,17 +262,17 @@ export function AppWindow({
       }
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = () => {
       setIsResizing(false);
       setResizeDirection('');
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerup', handlePointerUp);
     };
   }, [isResizing, resizeStart, resizeDirection, getEffectiveMaxSize, id, updateWindowSize, updateWindowPosition]);
 
@@ -406,7 +406,7 @@ export function AppWindow({
           zIndex: windowState?.zIndex || 100,
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         }}
-        onMouseDown={handleFocus}
+        onPointerDown={handleFocus}
         onClick={handleWindowClick}
         tabIndex={-1}
         data-app-window={id}
@@ -475,7 +475,7 @@ export function AppWindow({
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
           filter: 'drop-shadow(4px 4px 0 var(--color-ink))',
         }}
-        onMouseDown={handleFocus}
+        onPointerDown={handleFocus}
         onClick={handleWindowClick}
         tabIndex={-1}
         data-app-window={id}
@@ -516,37 +516,45 @@ export function AppWindow({
             {/* Corner handles */}
             <div
               className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'nw')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'nw')}
             />
             <div
               className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'ne')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'ne')}
             />
             <div
               className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'sw')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'sw')}
             />
             <div
               className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'se')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'se')}
             />
 
             {/* Edge handles */}
             <div
               className="absolute top-0 left-3 right-3 h-1 cursor-ns-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'n')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'n')}
             />
             <div
               className="absolute bottom-0 left-3 right-3 h-1 cursor-ns-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 's')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 's')}
             />
             <div
               className="absolute left-0 top-3 bottom-3 w-1 cursor-ew-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'w')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'w')}
             />
             <div
               className="absolute right-0 top-3 bottom-3 w-1 cursor-ew-resize z-10"
-              onMouseDown={(e) => handleResizeStart(e, 'e')}
+              style={{ touchAction: 'none' }}
+              onPointerDown={(e) => handleResizeStart(e, 'e')}
             />
           </>
         )}

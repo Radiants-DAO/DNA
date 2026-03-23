@@ -320,7 +320,7 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     let curDarkModeVal = 0;
 
     // Mouse event handler
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
@@ -343,13 +343,13 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       }
     };
 
-    const handleMouseLeave = () => {
+    const handlePointerLeave = () => {
       mouseX = -1000;
       mouseY = -1000;
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerleave', handlePointerLeave);
 
     // Create buffers - using TRIANGLE_STRIP with 4 vertices
     const positionBuffer = gl.createBuffer();
@@ -464,8 +464,8 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerleave', handlePointerLeave);
     };
   }, []);
 

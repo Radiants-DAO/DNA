@@ -84,7 +84,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: PointerEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         // Check if click was on the Start button (don't close in that case)
         const target = e.target as HTMLElement;
@@ -99,11 +99,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
