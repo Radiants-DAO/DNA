@@ -94,7 +94,7 @@ export const AlertMeta = defineComponentMeta<AlertProps>()({
   registry: {
     category: "feedback",
     tags: ["message", "banner", "notification"],
-    renderMode: "inline",
+    renderMode: "custom",
     variants: [
       { label: "Default", props: { variant: "default" } },
       { label: "Success", props: { variant: "success" } },

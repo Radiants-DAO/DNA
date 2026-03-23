@@ -558,7 +558,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const { Component, rawComponent } = entry;
   const violations = getViolationsForComponent(entry.sourcePath);
-  const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
+  const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent && typeof rawComponent === 'function';
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
   const isOverlayActive = overlayPhase === "active";
 
@@ -937,7 +937,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                       className="relative w-full"
                     >
                       <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                        {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
+                        {rawComponent && typeof rawComponent === 'function' && (() => { const V = rawComponent; return <V {...v.props} />; })()}
                       </Suspense>
                       {isToolActive && (
                         <>

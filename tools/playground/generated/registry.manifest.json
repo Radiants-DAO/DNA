@@ -9,7 +9,7 @@
         "schemaPath": "packages/radiants/components/core/Alert/Alert.schema.json",
         "category": "feedback",
         "group": "Feedback",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "message",
           "banner",
@@ -338,7 +338,7 @@
         "schemaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json",
         "category": "navigation",
         "group": "Navigation",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "path",
           "navigation",
@@ -576,7 +576,7 @@
         "schemaPath": "packages/radiants/components/core/Card/Card.schema.json",
         "category": "layout",
         "group": "Layout",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "container",
           "panel",
@@ -2760,7 +2760,7 @@
         "schemaPath": "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
         "category": "feedback",
         "group": "Feedback",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "hint",
           "info",

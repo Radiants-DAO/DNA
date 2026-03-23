@@ -86,6 +86,6 @@ export const TooltipMeta = defineComponentMeta<TooltipProps>()({
   registry: {
     category: "feedback",
     tags: ["hint", "info", "hover"],
-    renderMode: "inline",
+    renderMode: "custom",
   },
 });

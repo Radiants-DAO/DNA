@@ -65,6 +65,6 @@ export const BreadcrumbsMeta = defineComponentMeta<BreadcrumbsProps>()({
   registry: {
     category: "navigation",
     tags: ["path", "navigation", "trail"],
-    renderMode: "inline",
+    renderMode: "custom",
   },
 });

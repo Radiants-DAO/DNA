@@ -71,6 +71,6 @@ export const CardMeta = defineComponentMeta<CardProps>()({
   registry: {
     category: "layout",
     tags: ["container", "panel", "surface"],
-    renderMode: "inline",
+    renderMode: "custom",
   },
 });
