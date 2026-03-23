@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistryMetadata } from '../build-registry-metadata';
+import { pickContractFields } from '../contract-fields';
 
 describe('buildRegistryMetadata', () => {
   it('returns only server-safe metadata', () => {
@@ -92,5 +93,22 @@ describe('buildRegistryMetadata', () => {
     expect(entries.find((entry) => entry.name === 'Popover')?.controlledProps).toEqual([
       'position',
     ]);
+  });
+
+  it("projects sparse contract fields from fixture metadata", () => {
+    const fields = pickContractFields({
+      name: "Toggle",
+      description: "Toggle",
+      props: {},
+      wraps: "@base-ui/react/toggle",
+      a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+      styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+    });
+
+    expect(fields).toEqual({
+      wraps: "@base-ui/react/toggle",
+      a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+      styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+    });
   });
 });

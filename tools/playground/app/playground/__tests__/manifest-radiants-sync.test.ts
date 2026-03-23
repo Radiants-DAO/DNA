@@ -1,8 +1,28 @@
 import { describe, expect, it } from "vitest";
 import { buildRegistryMetadata } from "@rdna/radiants/registry";
 import { getManifestEntry } from "../../../generated/registry";
+import { pickContractFields } from "../../../../../packages/radiants/registry/contract-fields.ts";
+import { buildManifestContractFields } from "../../../scripts/generate-registry.ts";
 
 describe("radiants manifest sync", () => {
+  it("reuses the same sparse contract projection for manifest serialization", () => {
+    const fixture = {
+      name: "Separator",
+      description: "Separator",
+      props: {},
+      replaces: [{ element: "hr", import: "@rdna/radiants/components/core" }],
+      wraps: "@base-ui/react/separator",
+    };
+
+    expect(buildManifestContractFields(fixture)).toEqual(
+      pickContractFields(fixture),
+    );
+  });
+
+  it("keeps manifest contract projection sparse when fields are absent", () => {
+    expect(buildManifestContractFields({ name: "Plain", description: "Plain", props: {} })).toEqual({});
+  });
+
   it("every shared Radiants entry resolves manifest metadata by name", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);

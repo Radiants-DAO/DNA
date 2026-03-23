@@ -215,7 +215,7 @@ function WorkSignalOverlay({ phase }: { phase: WorkOverlayPhase }) {
           </span>
         </div>
       </div>
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .rdna-work-overlay--complete {
           animation: rdna-work-overlay-complete ${WORK_COMPLETION_FLASH_MS}ms ease-out forwards;
         }
@@ -494,7 +494,7 @@ function WorkSignalOverlay({ phase }: { phase: WorkOverlayPhase }) {
             opacity: 0;
           }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 }

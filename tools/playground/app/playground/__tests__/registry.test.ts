@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { registry as sharedRegistry } from "@rdna/radiants/registry";
 import { registry } from "../registry";
 import { appRegistry } from "../app-registry";
 import { isRenderable } from "../types";
@@ -93,6 +94,16 @@ describe("registry", () => {
     expect(input).toBeDefined();
     // Input has exampleProps: { placeholder: 'Type something...' } in display meta
     expect(input!.defaultProps).toHaveProperty("placeholder");
+  });
+
+  it("uses shared registry variants for radiants entries without playground-local presets", () => {
+    const sharedButton = sharedRegistry.find((entry) => entry.name === "Button");
+    const playgroundButton = registry.find(
+      (entry) => entry.packageName === "@rdna/radiants" && entry.componentName === "Button",
+    );
+
+    expect(sharedButton?.variants).toBeDefined();
+    expect(playgroundButton?.variants).toEqual(sharedButton?.variants);
   });
 });
 
