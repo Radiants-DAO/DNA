@@ -17,11 +17,9 @@ import { CountdownTimerMeta } from "../components/core/CountdownTimer/CountdownT
 import { DialogMeta } from "../components/core/Dialog/Dialog.meta";
 import { DrawerMeta } from "../components/core/Drawer/Drawer.meta";
 import { DropdownMenuMeta } from "../components/core/DropdownMenu/DropdownMenu.meta";
-import { FieldMeta } from "../components/core/Field/Field.meta";
-import { FieldsetMeta } from "../components/core/Fieldset/Fieldset.meta";
 import { InputMeta } from "../components/core/Input/Input.meta";
-import { LabelMeta } from "../components/core/Input/Label.meta";
 import { TextAreaMeta } from "../components/core/Input/TextArea.meta";
+import { InputSetMeta } from "../components/core/InputSet/InputSet.meta";
 import { MenubarMeta } from "../components/core/Menubar/Menubar.meta";
 import { MeterMeta } from "../components/core/Meter/Meter.meta";
 import { NavigationMenuMeta } from "../components/core/NavigationMenu/NavigationMenu.meta";
@@ -124,30 +122,20 @@ export const componentMetaIndex = {
     sourcePath: "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
     schemaPath: "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
   },
-  Field: {
-    meta: FieldMeta,
-    sourcePath: "packages/radiants/components/core/Field/Field.tsx",
-    schemaPath: "packages/radiants/components/core/Field/Field.schema.json",
-  },
-  Fieldset: {
-    meta: FieldsetMeta,
-    sourcePath: "packages/radiants/components/core/Fieldset/Fieldset.tsx",
-    schemaPath: "packages/radiants/components/core/Fieldset/Fieldset.schema.json",
-  },
   Input: {
     meta: InputMeta,
     sourcePath: "packages/radiants/components/core/Input/Input.tsx",
     schemaPath: "packages/radiants/components/core/Input/Input.schema.json",
   },
-  Label: {
-    meta: LabelMeta,
-    sourcePath: "packages/radiants/components/core/Input/Input.tsx",
-    schemaPath: "packages/radiants/components/core/Input/Label.schema.json",
-  },
   TextArea: {
     meta: TextAreaMeta,
     sourcePath: "packages/radiants/components/core/Input/Input.tsx",
     schemaPath: "packages/radiants/components/core/Input/TextArea.schema.json",
+  },
+  InputSet: {
+    meta: InputSetMeta,
+    sourcePath: "packages/radiants/components/core/InputSet/InputSet.tsx",
+    schemaPath: "packages/radiants/components/core/InputSet/InputSet.schema.json",
   },
   Menubar: {
     meta: MenubarMeta,

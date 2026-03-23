@@ -54,10 +54,10 @@ describe('buildRegistryMetadata', () => {
 
   it('keeps co-authored components distinct even when they share a source file', () => {
     const entries = buildRegistryMetadata();
-    const label = entries.find((entry) => entry.name === 'Label');
+    const textarea = entries.find((entry) => entry.name === 'TextArea');
     const radio = entries.find((entry) => entry.name === 'Radio');
 
-    expect(label?.props?.children).toBeDefined();
+    expect(textarea?.props?.placeholder).toBeDefined();
     expect(radio?.props?.checked).toBeDefined();
   });
 

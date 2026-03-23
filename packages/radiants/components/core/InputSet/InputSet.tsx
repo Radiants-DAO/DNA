@@ -10,7 +10,7 @@ import { Fieldset as BaseFieldset } from '@base-ui/react/fieldset';
 interface RootProps {
   children: React.ReactNode;
   className?: string;
-  /** Whether all fields in the fieldset are disabled */
+  /** Whether all fields in the group are disabled */
   disabled?: boolean;
 }
 
@@ -30,7 +30,7 @@ interface LegendProps {
 function Root({ children, className = '', disabled }: RootProps): React.ReactNode {
   return (
     <BaseFieldset.Root
-      data-rdna="fieldset"
+      data-rdna="input-set"
       disabled={disabled}
       className={`pixel-rounded-xs p-4 transition-shadow duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-focus ${className}`.trim()}
     >
@@ -40,7 +40,7 @@ function Root({ children, className = '', disabled }: RootProps): React.ReactNod
 }
 
 /**
- * Legend for the fieldset, displayed as the group heading.
+ * Legend for the input set, displayed as the group heading.
  */
 function Legend({ children, className = '' }: LegendProps): React.ReactNode {
   return (
@@ -56,9 +56,9 @@ function Legend({ children, className = '' }: LegendProps): React.ReactNode {
 // Export
 // ============================================================================
 
-export const Fieldset = {
+export const InputSet = {
   Root,
   Legend,
 };
 
-export default Fieldset;
+export default InputSet;
