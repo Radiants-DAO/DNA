@@ -43,15 +43,15 @@
   /* Text */
   --color-main: var(--color-ink);
   --color-head: var(--color-ink);           /* = main in light; pure-white in dark */
-  --color-sub: rgba(15, 14, 12, 0.85);
-  --color-mute: rgba(15, 14, 12, 0.6);
+  --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
+  --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
   --color-flip: var(--color-cream);
   --color-link: var(--color-sky-blue);
 
   /* Borders */
   --color-line: var(--color-ink);
-  --color-rule: rgba(15, 14, 12, 0.2);
-  --color-line-hover: rgba(15, 14, 12, 0.3);
+  --color-rule: oklch(0.1641 0.0044 84.59 / 0.2);
+  --color-line-hover: oklch(0.1641 0.0044 84.59 / 0.3);
   --color-focus: var(--color-sun-yellow);
 
   /* ============================================

@@ -177,7 +177,7 @@ Raw color values. Never use these directly in component code — they exist only
 | `--color-sun-yellow` | `oklch(0.9126 0.1170 93.68)` | Brand accent |
 | `--color-sky-blue` | `oklch(0.7701 0.0527 236.81)` | Secondary accent |
 | `--color-sunset-fuzz` | `oklch(0.8546 0.1039 68.93)` | Warm accent |
-| `--color-sun-red` | `oklch(0.7102 0.1823 25.87)` | Error / destructive |
+| `--color-sun-red` | `oklch(0.7429 0.1568 21.43)` | Error / destructive |
 | `--color-mint` | `oklch(0.9312 0.0702 142.51)` | Success |
 | `--color-pure-white` | `oklch(1.0000 0.0000 0)` | Absolute white (reserved) |
 
