@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePreferencesStore } from '@/store';
-import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent, Toolbar } from '@rdna/radiants/components/core';
+import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent, Toolbar, Switch } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons';
 import { StartMenu } from './StartMenu';
 
@@ -52,39 +52,13 @@ function DarkModeToggle() {
 
   return (
     <Tooltip content={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} position="top">
-      <button
-        type="button"
-        role="switch"
-        aria-checked={darkMode}
-        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        onClick={toggleDarkMode}
-        className="
-          group relative inline-flex items-center
-          w-14 h-7 pixel-rounded-xs cursor-pointer
-          transition-[background-color] duration-150
-          bg-page
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
-        "
-      >
-        {/* Thumb with icon */}
-        <span
-          className={[
-            'absolute top-0 -mt-px -ml-px flex items-center justify-center',
-            'h-7 w-7 pixel-rounded-xs bg-page',
-            'transition-[translate,border-color,background-color] duration-150',
-            'shadow-none',
-            'group-hover:-top-1 group-hover:pixel-shadow-lifted',
-            'group-active:-top-0.5 group-active:pixel-shadow-resting',
-            darkMode ? 'translate-x-7' : 'translate-x-0',
-          ].join(' ')}
-        >
-          <Icon
-            name={darkMode ? 'moon' : 'radiants-logo'}
-            size={16}
-            className="text-main"
-          />
-        </span>
-      </button>
+      <span aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+        <Switch
+          checked={darkMode}
+          onChange={() => toggleDarkMode()}
+          size="lg"
+        />
+      </span>
     </Tooltip>
   );
 }
