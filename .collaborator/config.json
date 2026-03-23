@@ -3,7 +3,8 @@
   "expanded_dirs": [
     "/Users/rivermassey/Desktop/dev/DNA",
     "/Users/rivermassey/Desktop/dev/DNA/docs/upstreams",
-    "/Users/rivermassey/Desktop/dev/DNA/docs/archive"
+    "/Users/rivermassey/Desktop/dev/DNA/docs/archive",
+    "/Users/rivermassey/Desktop/dev/DNA/packages"
   ],
   "agent_skip_permissions": false
 }

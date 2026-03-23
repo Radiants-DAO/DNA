@@ -10,223 +10,179 @@
 
   /* ── Rad-OS Window Shell ── */
   .window-shell {
-    width: 980px;
-    height: 700px;
-    display: flex;
-    flex-direction: column;
+    width: 980px; height: 700px;
+    display: flex; flex-direction: column;
     background: linear-gradient(0deg, #e8e0c0 0%, #f0ece0 100%);
     filter: drop-shadow(4px 4px 0 #111);
     position: relative;
     clip-path: polygon(
-      0px 8px, 1px 8px, 1px 4px, 2px 4px, 2px 2px, 4px 2px, 4px 1px, 8px 1px, 8px 0px,
-      calc(100% - 8px) 0px, calc(100% - 8px) 1px, calc(100% - 4px) 1px, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, calc(100% - 1px) 4px, calc(100% - 1px) 8px, 100% 8px,
-      100% calc(100% - 8px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 8px) 100%,
-      8px 100%, 8px calc(100% - 1px), 4px calc(100% - 1px), 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 1px calc(100% - 4px), 1px calc(100% - 8px), 0px calc(100% - 8px)
+      0px 8px,1px 8px,1px 4px,2px 4px,2px 2px,4px 2px,4px 1px,8px 1px,8px 0px,
+      calc(100% - 8px) 0px,calc(100% - 8px) 1px,calc(100% - 4px) 1px,calc(100% - 4px) 2px,calc(100% - 2px) 2px,calc(100% - 2px) 4px,calc(100% - 1px) 4px,calc(100% - 1px) 8px,100% 8px,
+      100% calc(100% - 8px),calc(100% - 1px) calc(100% - 8px),calc(100% - 1px) calc(100% - 4px),calc(100% - 2px) calc(100% - 4px),calc(100% - 2px) calc(100% - 2px),calc(100% - 4px) calc(100% - 2px),calc(100% - 4px) calc(100% - 1px),calc(100% - 8px) calc(100% - 1px),calc(100% - 8px) 100%,
+      8px 100%,8px calc(100% - 1px),4px calc(100% - 1px),4px calc(100% - 2px),2px calc(100% - 2px),2px calc(100% - 4px),1px calc(100% - 4px),1px calc(100% - 8px),0px calc(100% - 8px)
     );
-    resize: both;
-    overflow: hidden;
-    min-width: 720px;
-    min-height: 500px;
+    resize: both; overflow: hidden; min-width: 720px; min-height: 500px;
   }
-  .window-shell::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid #111;
-    pointer-events: none;
-    clip-path: inherit;
-    z-index: 50;
-  }
+  .window-shell::after { content:''; position:absolute; inset:0; border:1px solid #111; pointer-events:none; clip-path:inherit; z-index:50; }
 
-  /* ── Window Title Bar ── */
-  .window-title-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 4px 0 12px;
-    height: 36px;
-    flex-shrink: 0;
-    cursor: default;
-    user-select: none;
-  }
-  .window-title-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
-  .window-title-icon svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .window-title-text { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #111; white-space: nowrap; }
-  .window-title-sep { flex: 1; height: 1px; background: #111; opacity: 0.25; }
-  .window-btn-group { display: flex; gap: 0; }
-  .window-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; border-radius: 4px; transition: background 0.1s; }
-  .window-btn:hover { background: rgba(0,0,0,0.08); }
-  .window-btn.btn-copy:hover { background: rgba(0,180,100,0.15); }
-  .window-btn.btn-expand:hover { background: rgba(200,160,0,0.2); }
-  .window-btn.btn-close:hover { background: rgba(220,50,50,0.15); }
-  .window-btn svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* ── Title Bar ── */
+  .window-title-bar { display:flex; align-items:center; gap:8px; padding:0 4px 0 12px; height:36px; flex-shrink:0; cursor:default; user-select:none; }
+  .window-title-icon { width:14px; height:14px; display:flex; align-items:center; justify-content:center; }
+  .window-title-icon svg { width:14px; height:14px; stroke:#111; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .window-title-text { font-size:8px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:#111; white-space:nowrap; }
+  .window-title-sep { flex:1; height:1px; background:#111; opacity:0.25; }
+  .window-btn-group { display:flex; gap:0; }
+  .window-btn { width:24px; height:24px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; cursor:pointer; border-radius:4px; transition:background 0.1s; }
+  .window-btn:hover { background:rgba(0,0,0,0.08); }
+  .window-btn.btn-copy:hover { background:rgba(0,180,100,0.15); }
+  .window-btn.btn-expand:hover { background:rgba(200,160,0,0.2); }
+  .window-btn.btn-close:hover { background:rgba(220,50,50,0.15); }
+  .window-btn svg { width:14px; height:14px; stroke:#111; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
   /* ── Window Content ── */
-  .window-content { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+  .window-content { flex:1; display:flex; overflow:hidden; min-height:0; }
 
   /* ── Sidebar nav ── */
-  .sidebar-nav { width: 140px; background: rgba(0,0,0,0.04); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-shrink: 0; }
-  .nav-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
-  .nav-item:hover { background: rgba(0,0,0,0.04); }
-  .nav-item.active { background: #fff; color: #111; font-weight: 700; }
-  .nav-item .nav-chevron { float: right; font-size: 8px; color: #bbb; }
-  .nav-spacer { flex: 1; }
+  .sidebar-nav { width:160px; background:rgba(0,0,0,0.04); border-right:1px solid rgba(0,0,0,0.1); display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+  .nav-item { padding:8px 12px; cursor:pointer; border-bottom:1px solid rgba(0,0,0,0.06); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:#888; display:flex; justify-content:space-between; align-items:center; }
+  .nav-item:hover { background:rgba(0,0,0,0.04); }
+  .nav-item.active { background:#fff; color:#111; font-weight:700; }
+  .nav-chevron { font-size:8px; color:#bbb; transition:transform 0.15s; }
+  .nav-chevron.open { transform:rotate(180deg); }
+
+  /* Sub-items inside accordion */
+  .nav-sub-list { display:none; }
+  .nav-sub-list.open { display:block; }
+  .nav-sub-item { padding:6px 12px 6px 24px; cursor:pointer; border-bottom:1px solid rgba(0,0,0,0.04); font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:#999; }
+  .nav-sub-item:hover { background:rgba(0,0,0,0.03); color:#666; }
+  .nav-sub-item.active { color:#111; font-weight:700; background:rgba(255,255,255,0.6); }
+  .nav-spacer { flex:1; }
 
   /* ── Content area ── */
-  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+  .content { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
 
   /* ── Top bar ── */
-  .top-bar { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(0,0,0,0.04); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
-  .top-bar select { font-family: inherit; font-size: 10px; padding: 4px 8px; border: 1px solid rgba(0,0,0,0.15); background: #fff; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 3px; }
-  .top-bar .sep { width: 1px; height: 16px; background: rgba(0,0,0,0.1); }
-  .top-bar .mode-toggle { display: flex; border: 1px solid rgba(0,0,0,0.15); border-radius: 3px; overflow: hidden; }
-  .top-bar .mode-btn { padding: 3px 8px; font-family: inherit; font-size: 10px; cursor: pointer; background: #fff; border: none; text-transform: uppercase; letter-spacing: 0.05em; }
-  .top-bar .mode-btn.active { background: #111; color: #fff; }
+  .top-bar { display:flex; align-items:center; gap:8px; padding:6px 12px; background:rgba(0,0,0,0.04); border-bottom:1px solid rgba(0,0,0,0.1); flex-shrink:0; }
+  .top-bar select { font-family:inherit; font-size:10px; padding:4px 8px; border:1px solid rgba(0,0,0,0.15); background:#fff; text-transform:uppercase; letter-spacing:0.05em; border-radius:3px; }
+  .top-bar .sep { width:1px; height:16px; background:rgba(0,0,0,0.1); }
+  .top-bar .mode-toggle { display:flex; border:1px solid rgba(0,0,0,0.15); border-radius:3px; overflow:hidden; }
+  .top-bar .mode-btn { padding:3px 8px; font-family:inherit; font-size:10px; cursor:pointer; background:#fff; border:none; text-transform:uppercase; letter-spacing:0.05em; }
+  .top-bar .mode-btn.active { background:#111; color:#fff; }
 
   /* ── Two-column typography layout ── */
-  .typo-layout {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    min-height: 0;
-  }
+  .typo-layout { flex:1; display:flex; overflow:hidden; min-height:0; }
 
-  /* Left column — scrollable controls + reference */
-  .typo-left {
-    width: 280px;
-    flex-shrink: 0;
-    overflow-y: auto;
-    border-right: 1px solid rgba(0,0,0,0.08);
-    background: rgba(0,0,0,0.015);
-  }
+  /* Left column */
+  .typo-left { width:260px; flex-shrink:0; overflow-y:auto; border-right:1px solid rgba(0,0,0,0.08); background:rgba(0,0,0,0.015); padding:12px; }
 
-  /* Control groups */
-  .control-group { border-bottom: 1px solid rgba(0,0,0,0.08); }
-  .control-group-header { padding: 8px 12px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: rgba(0,0,0,0.04); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-  .control-group-header:hover { background: rgba(0,0,0,0.06); }
-  .control-group-body { padding: 10px 12px; }
-  .control-row { margin-bottom: 10px; }
-  .control-row:last-child { margin-bottom: 0; }
-  .control-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
-  .control-slider { width: 100%; height: 3px; -webkit-appearance: none; appearance: none; background: #ccc; outline: none; border-radius: 2px; }
-  .control-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #111; border-radius: 50%; cursor: pointer; }
-  .control-value { font-size: 10px; color: #111; text-align: right; margin-top: 2px; }
-  .control-select { width: 100%; font-family: inherit; font-size: 10px; padding: 3px 4px; border: 1px solid #ccc; background: #fff; }
+  /* Sub-tab content panels */
+  .sub-panel { display:none; }
+  .sub-panel.active { display:block; }
+  .sub-panel-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#111; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid rgba(0,0,0,0.1); }
 
-  /* Reference tables in left column */
-  .ref-table { width: 100%; font-size: 9px; border-collapse: collapse; }
-  .ref-table td { padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.06); color: #666; vertical-align: baseline; }
-  .ref-table td:first-child { color: #111; font-weight: 600; width: 44px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .ref-table td:last-child { text-align: right; color: #aaa; font-size: 8px; }
-  .ref-table tr:last-child td { border-bottom: none; }
+  /* Playground controls */
+  .control-row { margin-bottom:12px; }
+  .control-row:last-child { margin-bottom:0; }
+  .control-label { font-size:9px; color:#888; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .control-slider { width:100%; height:3px; -webkit-appearance:none; appearance:none; background:#ccc; outline:none; border-radius:2px; }
+  .control-slider::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:10px; background:#111; border-radius:50%; cursor:pointer; }
+  .control-value { font-size:10px; color:#111; text-align:right; margin-top:2px; }
+  .control-select { width:100%; font-family:inherit; font-size:10px; padding:4px 6px; border:1px solid #ccc; background:#fff; border-radius:2px; }
+  .align-btn { flex:1; padding:4px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff; color:#111; font-family:inherit; }
+  .align-btn.active { background:#111; color:#fff; }
 
-  .ref-specimen { line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Reference tables */
+  .ref-row { display:flex; align-items:baseline; gap:8px; padding:6px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .ref-row:last-child { border-bottom:none; }
 
-  .ref-element-row { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 9px; }
-  .ref-element-row:last-child { border-bottom: none; }
-  .ref-el-tag { font-weight: 600; width: 40px; flex-shrink: 0; }
-  .ref-el-font { flex: 1; color: #666; }
-  .ref-el-meta { color: #aaa; font-size: 8px; flex-shrink: 0; }
+  /* Scale table */
+  .scale-ref-label { font-size:9px; font-weight:600; width:32px; flex-shrink:0; text-transform:uppercase; letter-spacing:0.04em; }
+  .scale-ref-specimen { flex:1; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .scale-ref-meta { font-size:8px; color:#aaa; flex-shrink:0; }
 
-  .ref-css-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 9px; }
-  .ref-css-row:last-child { border-bottom: none; }
-  .ref-css-label { color: #888; text-transform: uppercase; letter-spacing: 0.05em; font-size: 8px; }
-  .ref-css-value { color: #111; cursor: pointer; }
-  .ref-css-value:hover { text-decoration: underline; }
+  /* Element styles */
+  .elem-tag { font-size:10px; font-weight:600; width:48px; flex-shrink:0; font-family:monospace; }
+  .elem-font { font-size:9px; color:#666; flex:1; }
+  .elem-meta { font-size:8px; color:#aaa; flex-shrink:0; }
+
+  /* CSS Reference */
+  .css-row { display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .css-row:last-child { border-bottom:none; }
+  .css-label { font-size:8px; color:#888; text-transform:uppercase; letter-spacing:0.06em; }
+  .css-value { font-size:10px; color:#111; cursor:pointer; }
+  .css-value:hover { text-decoration:underline; }
+
+  /* About */
+  .about-desc { font-size:10px; color:#666; line-height:1.5; margin-bottom:10px; }
+  .about-weight { font-size:9px; color:#888; padding:3px 0; border-bottom:1px solid rgba(0,0,0,0.04); }
+  .about-weight:last-child { border-bottom:none; }
+  .about-source { font-size:8px; color:#aaa; text-transform:uppercase; letter-spacing:0.06em; margin-top:8px; }
 
   /* Right column — sticky preview */
-  .typo-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.02);
-    overflow: auto;
-    position: sticky;
-    top: 0;
-  }
+  .typo-right { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.02); overflow:auto; }
 
   /* ── Preview box ── */
-  .preview-box { width: min(100%, 420px); aspect-ratio: 1; border: 1.5px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; flex-shrink: 0; }
-  .preview-box.dark-mode { background: #111; color: #eee; border-color: #555; }
-  .preview-label { position: absolute; top: -16px; left: 0; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+  .preview-box { width:min(100%,420px); aspect-ratio:1; border:1.5px solid #111; background:#fff; display:flex; flex-direction:column; position:relative; flex-shrink:0; }
+  .preview-box.dark-mode { background:#111; color:#eee; border-color:#555; }
+  .preview-label { position:absolute; top:-16px; left:0; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:#888; }
 
   /* ── Preview contexts ── */
-  .preview-content { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
-
-  /* Sampler */
-  .sampler-text { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 700; text-align: center; outline: none; word-break: break-word; overflow-wrap: break-word; line-height: 1.0; }
-
-  /* Social Post */
-  .social-frame { flex: 1; display: flex; flex-direction: column; border: 1px dashed #ccc; padding: 16px; }
-  .social-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ccc; background: #eee; flex-shrink: 0; }
-  .social-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .social-handle { font-size: 10px; color: #888; }
-  .social-body { flex: 1; font-size: 18px; line-height: 1.4; outline: none; }
-  .social-footer { margin-top: auto; padding-top: 12px; border-top: 1px dashed #ccc; display: flex; gap: 24px; }
-  .social-action { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; }
-
-  /* Document */
-  .doc-heading { font-size: 28px; font-weight: 700; margin-bottom: 12px; outline: none; line-height: 1.1; }
-  .doc-body { font-size: 14px; line-height: 1.5; margin-bottom: 12px; outline: none; flex: 1; }
-  .doc-code { font-size: 11px; background: #f0f0f0; padding: 10px; border: 1px solid #ddd; font-family: monospace; outline: none; white-space: pre; overflow-x: auto; }
-  .dark-mode .doc-code { background: #222; border-color: #444; }
-
-  /* Type Scale */
-  .scale-row { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px solid #eee; }
-  .scale-label { font-size: 9px; color: #888; width: 28px; flex-shrink: 0; text-transform: uppercase; }
-  .scale-specimen { flex: 1; line-height: 1.2; outline: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .scale-meta { font-size: 9px; color: #aaa; flex-shrink: 0; }
-
-  /* Glyphs */
-  .glyph-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-bottom: 12px; }
-  .glyph-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f0f0f0; font-size: 16px; cursor: pointer; border: 1px solid transparent; }
-  .glyph-cell:hover, .glyph-cell.active { background: #111; color: #fff; }
-  .dark-mode .glyph-cell { background: #222; }
-  .dark-mode .glyph-cell:hover, .dark-mode .glyph-cell.active { background: #fff; color: #111; }
-  .glyph-detail { text-align: center; padding: 12px; border: 1px dashed #ccc; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .glyph-detail-char { font-size: 72px; line-height: 1; }
-  .glyph-detail-info { font-size: 9px; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .glyph-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px; }
-
-  /* ── Info area ── */
-  .info-area { padding: 10px 12px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); flex-shrink: 0; min-height: 36px; }
-  .info-area strong { color: #111; }
+  .preview-content { flex:1; padding:20px; display:flex; flex-direction:column; overflow:hidden; }
+  .sampler-text { flex:1; display:flex; align-items:center; justify-content:center; font-size:48px; font-weight:700; text-align:center; outline:none; word-break:break-word; overflow-wrap:break-word; line-height:1.0; }
+  .social-frame { flex:1; display:flex; flex-direction:column; border:1px dashed #ccc; padding:16px; }
+  .social-avatar { width:28px; height:28px; border-radius:50%; border:1px solid #ccc; background:#eee; flex-shrink:0; }
+  .social-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .social-handle { font-size:10px; color:#888; }
+  .social-body { flex:1; font-size:18px; line-height:1.4; outline:none; }
+  .social-footer { margin-top:auto; padding-top:12px; border-top:1px dashed #ccc; display:flex; gap:24px; }
+  .social-action { font-size:9px; color:#aaa; text-transform:uppercase; letter-spacing:0.08em; }
+  .doc-heading { font-size:28px; font-weight:700; margin-bottom:12px; outline:none; line-height:1.1; }
+  .doc-body { font-size:14px; line-height:1.5; margin-bottom:12px; outline:none; flex:1; }
+  .doc-code { font-size:11px; background:#f0f0f0; padding:10px; border:1px solid #ddd; font-family:monospace; outline:none; white-space:pre; overflow-x:auto; }
+  .dark-mode .doc-code { background:#222; border-color:#444; }
+  .scale-row { display:flex; align-items:baseline; gap:12px; padding:6px 0; border-bottom:1px solid #eee; }
+  .scale-label { font-size:9px; color:#888; width:28px; flex-shrink:0; text-transform:uppercase; }
+  .scale-specimen { flex:1; line-height:1.2; outline:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .scale-meta { font-size:9px; color:#aaa; flex-shrink:0; }
+  .glyph-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; margin-bottom:12px; }
+  .glyph-cell { aspect-ratio:1; display:flex; align-items:center; justify-content:center; background:#f0f0f0; font-size:16px; cursor:pointer; border:1px solid transparent; }
+  .glyph-cell:hover,.glyph-cell.active { background:#111; color:#fff; }
+  .dark-mode .glyph-cell { background:#222; }
+  .dark-mode .glyph-cell:hover,.dark-mode .glyph-cell.active { background:#fff; color:#111; }
+  .glyph-detail { text-align:center; padding:12px; border:1px dashed #ccc; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .glyph-detail-char { font-size:72px; line-height:1; }
+  .glyph-detail-info { font-size:9px; color:#888; margin-top:8px; text-transform:uppercase; letter-spacing:0.08em; }
+  .glyph-section-label { font-size:9px; color:#888; text-transform:uppercase; letter-spacing:0.08em; margin:8px 0 4px; }
 
   /* ── Comment system ── */
-  .comment-layer { position: fixed; top: 0; right: 0; width: 280px; height: 100vh; background: #fff; border-left: 2px solid #111; display: flex; flex-direction: column; z-index: 100; transform: translateX(100%); transition: transform 0.15s ease-out; }
-  .comment-layer.open { transform: translateX(0); }
-  .comment-toggle { position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 101; background: #111; color: #fff; border: none; padding: 8px 6px; font-family: inherit; font-size: 9px; cursor: pointer; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; text-transform: uppercase; }
-  .comment-toggle.shifted { right: 280px; }
-  .comment-header { padding: 10px 12px; background: #111; color: #eee; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; display: flex; justify-content: space-between; align-items: center; }
-  .comment-list { flex: 1; overflow-y: auto; padding: 8px; }
-  .comment-item { padding: 8px; border-bottom: 1px solid #eee; }
-  .comment-item .comment-target { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
-  .comment-item .comment-text { font-size: 11px; line-height: 1.4; color: #222; }
-  .comment-item .comment-time { font-size: 9px; color: #aaa; margin-top: 3px; }
-  .comment-form { padding: 8px; border-top: 1px solid #ddd; background: #f8f8f8; }
-  .comment-form select { width: 100%; font-family: inherit; font-size: 10px; padding: 4px; border: 1px solid #ccc; margin-bottom: 4px; }
-  .comment-form textarea { width: 100%; font-family: inherit; font-size: 11px; padding: 6px; border: 1px solid #ccc; resize: vertical; min-height: 60px; margin-bottom: 4px; }
-  .comment-form button { width: 100%; padding: 6px; background: #111; color: #fff; border: none; font-family: inherit; font-size: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
-  .comment-form button:hover { background: #333; }
-  .comment-empty { padding: 20px; text-align: center; color: #aaa; font-size: 10px; }
+  .comment-layer { position:fixed; top:0; right:0; width:280px; height:100vh; background:#fff; border-left:2px solid #111; display:flex; flex-direction:column; z-index:100; transform:translateX(100%); transition:transform 0.15s ease-out; }
+  .comment-layer.open { transform:translateX(0); }
+  .comment-toggle { position:fixed; top:50%; right:0; transform:translateY(-50%); z-index:101; background:#111; color:#fff; border:none; padding:8px 6px; font-family:inherit; font-size:9px; cursor:pointer; writing-mode:vertical-rl; text-orientation:mixed; letter-spacing:0.1em; text-transform:uppercase; }
+  .comment-toggle.shifted { right:280px; }
+  .comment-header { padding:10px 12px; background:#111; color:#eee; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; display:flex; justify-content:space-between; align-items:center; }
+  .comment-list { flex:1; overflow-y:auto; padding:8px; }
+  .comment-item { padding:8px; border-bottom:1px solid #eee; }
+  .comment-item .comment-target { font-size:9px; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px; }
+  .comment-item .comment-text { font-size:11px; line-height:1.4; color:#222; }
+  .comment-item .comment-time { font-size:9px; color:#aaa; margin-top:3px; }
+  .comment-form { padding:8px; border-top:1px solid #ddd; background:#f8f8f8; }
+  .comment-form select { width:100%; font-family:inherit; font-size:10px; padding:4px; border:1px solid #ccc; margin-bottom:4px; }
+  .comment-form textarea { width:100%; font-family:inherit; font-size:11px; padding:6px; border:1px solid #ccc; resize:vertical; min-height:60px; margin-bottom:4px; }
+  .comment-form button { width:100%; padding:6px; background:#111; color:#fff; border:none; font-family:inherit; font-size:10px; cursor:pointer; text-transform:uppercase; letter-spacing:0.08em; }
+  .comment-form button:hover { background:#333; }
+  .comment-empty { padding:20px; text-align:center; color:#aaa; font-size:10px; }
 
   /* ── Annotation markers ── */
-  [data-region] { position: relative; }
-  [data-region]::after { content: attr(data-region); position: absolute; top: -1px; right: -1px; font-size: 7px; background: #111; color: #fff; padding: 1px 3px; opacity: 0; pointer-events: none; transition: opacity 0.1s; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; }
-  [data-region]:hover::after { opacity: 0.6; }
+  [data-region] { position:relative; }
+  [data-region]::after { content:attr(data-region); position:absolute; top:-1px; right:-1px; font-size:7px; background:#111; color:#fff; padding:1px 3px; opacity:0; pointer-events:none; transition:opacity 0.1s; text-transform:uppercase; letter-spacing:0.05em; z-index:10; }
+  [data-region]:hover::after { opacity:0.6; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════════
-     RAD-OS WINDOW SHELL
-     ══════════════════════════════════════════════════════════════ -->
 <div class="window-shell">
 
-  <!-- ── Window Title Bar ── -->
+  <!-- ── Title Bar ── -->
   <div class="window-title-bar">
     <div class="window-title-icon">
       <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -234,36 +190,42 @@
     <span class="window-title-text">Brand Assets</span>
     <div class="window-title-sep"></div>
     <div class="window-btn-group">
-      <button class="window-btn btn-copy" title="Copy link">
-        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      </button>
-      <button class="window-btn btn-expand" title="Fullscreen">
-        <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-      </button>
-      <button class="window-btn btn-close" title="Close">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="window-btn btn-copy" title="Copy link"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      <button class="window-btn btn-expand" title="Fullscreen"><svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+      <button class="window-btn btn-close" title="Close"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
   </div>
 
   <!-- ── Window Content ── -->
   <div class="window-content">
 
-    <!-- ── Sidebar nav ── -->
+    <!-- ══ Sidebar Nav (accordion) ══ -->
     <div class="sidebar-nav" data-region="nav">
-      <div class="nav-item">01 Logos / Marks <span class="nav-chevron">&#9662;</span></div>
-      <div class="nav-item">02 Color Palette</div>
-      <div class="nav-item active">03 Typography</div>
-      <div class="nav-item">04 UI Toolkit <span class="nav-chevron">&#9662;</span></div>
-      <div class="nav-item">05 Pixels//Patterns <span class="nav-chevron">&#9662;</span></div>
-      <div class="nav-item">06 AI Toolkit</div>
+      <div class="nav-item" onclick="selectTab('logos')">01 Logos / Marks <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item" onclick="selectTab('colors')">02 Color Palette</div>
+
+      <!-- 03 Typography — accordion parent -->
+      <div class="nav-item active" onclick="toggleTypoAccordion()" id="nav-typo">
+        03 Typography <span class="nav-chevron open" id="typo-chevron">&#9662;</span>
+      </div>
+      <div class="nav-sub-list open" id="typo-sub-list">
+        <div class="nav-sub-item active" onclick="selectSubTab('playground')" id="sub-playground">Playground</div>
+        <div class="nav-sub-item" onclick="selectSubTab('scale')" id="sub-scale">Type Scale</div>
+        <div class="nav-sub-item" onclick="selectSubTab('elements')" id="sub-elements">Element Styles</div>
+        <div class="nav-sub-item" onclick="selectSubTab('css-ref')" id="sub-css-ref">CSS Reference</div>
+        <div class="nav-sub-item" onclick="selectSubTab('about')" id="sub-about">About Font</div>
+      </div>
+
+      <div class="nav-item" onclick="selectTab('components')">04 UI Toolkit <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item" onclick="selectTab('patterns')">05 Pixels//Patterns <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item" onclick="selectTab('ai')">06 AI Toolkit</div>
       <div class="nav-spacer"></div>
     </div>
 
-    <!-- ── Content area ── -->
+    <!-- ══ Content Area ══ -->
     <div class="content">
 
-      <!-- ── Top bar ── -->
+      <!-- Top bar -->
       <div class="top-bar" data-region="top-bar">
         <select id="font-select" onchange="switchFont(this.value)">
           <option value="joystix">Joystix Monospace</option>
@@ -275,139 +237,128 @@
           <option value="sampler">Sampler</option>
           <option value="social">Social Post</option>
           <option value="document">Document</option>
-          <option value="scale">Type Scale</option>
+          <option value="type-scale">Type Scale</option>
           <option value="glyphs">Glyphs</option>
         </select>
         <div class="sep"></div>
         <div class="mode-toggle">
-          <button class="mode-btn active" onclick="setMode('light', this)">Sun</button>
-          <button class="mode-btn" onclick="setMode('dark', this)">Moon</button>
+          <button class="mode-btn active" onclick="setMode('light',this)">Sun</button>
+          <button class="mode-btn" onclick="setMode('dark',this)">Moon</button>
         </div>
         <div style="flex:1;"></div>
-        <span style="font-size:9px; color:#888;">1:1 FIXED</span>
+        <span style="font-size:9px;color:#888;">1:1 FIXED</span>
       </div>
 
-      <!-- ── Two-column typography layout ── -->
+      <!-- Two-column layout -->
       <div class="typo-layout">
 
-        <!-- Left column: scrollable controls + reference -->
-        <div class="typo-left" data-region="controls">
+        <!-- ── Left column: sub-tab content ── -->
+        <div class="typo-left" data-region="left-panel">
 
-          <!-- Playground controls -->
-          <div class="control-group">
-            <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
-            <div class="control-group-body">
-              <div class="control-row">
-                <div class="control-label">Size</div>
-                <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
-                <div class="control-value" id="size-val">48</div>
-              </div>
-              <div class="control-row">
-                <div class="control-label">Leading</div>
-                <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
-                <div class="control-value" id="leading-val">1.0</div>
-              </div>
-              <div class="control-row">
-                <div class="control-label">Spacing</div>
-                <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
-                <div class="control-value" id="spacing-val">0</div>
-              </div>
-              <div class="control-row">
-                <div class="control-label">Weight</div>
-                <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
-                  <option value="400">Regular 400</option>
-                  <option value="700" selected>Bold 700</option>
-                </select>
-              </div>
-              <div class="control-row">
-                <div class="control-label">Align</div>
-                <div style="display:flex; gap:2px;">
-                  <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
-                  <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
-                  <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
-                </div>
+          <!-- PLAYGROUND -->
+          <div class="sub-panel active" id="panel-playground">
+            <div class="sub-panel-title">Playground</div>
+            <div class="control-row">
+              <div class="control-label">Size</div>
+              <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
+              <div class="control-value" id="size-val">48</div>
+            </div>
+            <div class="control-row">
+              <div class="control-label">Leading</div>
+              <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
+              <div class="control-value" id="leading-val">1.0</div>
+            </div>
+            <div class="control-row">
+              <div class="control-label">Spacing</div>
+              <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
+              <div class="control-value" id="spacing-val">0</div>
+            </div>
+            <div class="control-row">
+              <div class="control-label">Weight</div>
+              <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
+                <option value="400">Regular 400</option>
+                <option value="700" selected>Bold 700</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <div class="control-label">Align</div>
+              <div style="display:flex;gap:2px;">
+                <button class="align-btn active" onclick="updateAlign('left',this)">L</button>
+                <button class="align-btn" onclick="updateAlign('center',this)">C</button>
+                <button class="align-btn" onclick="updateAlign('right',this)">R</button>
               </div>
             </div>
           </div>
 
-          <!-- Type Scale reference -->
-          <div class="control-group">
-            <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
-            <div class="control-group-body" style="display:none;">
-              <table class="ref-table">
-                <tr><td>3XL</td><td><span class="ref-specimen" style="font-size:18px;">Radiants</span></td><td>2rem</td></tr>
-                <tr><td>2XL</td><td><span class="ref-specimen" style="font-size:16px;">Radiants</span></td><td>1.75rem</td></tr>
-                <tr><td>XL</td><td><span class="ref-specimen" style="font-size:14px;">Radiants</span></td><td>1.5rem</td></tr>
-                <tr><td>LG</td><td><span class="ref-specimen" style="font-size:13px;">Radiants</span></td><td>1.25rem</td></tr>
-                <tr><td>Base</td><td><span class="ref-specimen" style="font-size:11px;">Radiants Design</span></td><td>1rem</td></tr>
-                <tr><td>SM</td><td><span class="ref-specimen" style="font-size:9px;">Radiants Design</span></td><td>0.75rem</td></tr>
-                <tr><td>XS</td><td><span class="ref-specimen" style="font-size:7px;">Radiants Design</span></td><td>0.5rem</td></tr>
-              </table>
+          <!-- TYPE SCALE -->
+          <div class="sub-panel" id="panel-scale">
+            <div class="sub-panel-title">Type Scale <span style="font-weight:400;color:#aaa;font-size:8px;float:right;">tokens.css</span></div>
+            <div class="ref-row"><span class="scale-ref-label">3XL</span><span class="scale-ref-specimen" style="font-size:20px;">Radiants</span><span class="scale-ref-meta">2rem / 32px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">2XL</span><span class="scale-ref-specimen" style="font-size:17px;">Radiants</span><span class="scale-ref-meta">1.75rem / 28px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">XL</span><span class="scale-ref-specimen" style="font-size:15px;">Radiants</span><span class="scale-ref-meta">1.5rem / 24px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">LG</span><span class="scale-ref-specimen" style="font-size:13px;">Radiants</span><span class="scale-ref-meta">1.25rem / 20px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">Base</span><span class="scale-ref-specimen" style="font-size:11px;">Radiants Design System</span><span class="scale-ref-meta">1rem / 16px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">SM</span><span class="scale-ref-specimen" style="font-size:9px;">Radiants Design System</span><span class="scale-ref-meta">0.75rem / 12px</span></div>
+            <div class="ref-row"><span class="scale-ref-label">XS</span><span class="scale-ref-specimen" style="font-size:7px;">Radiants Design System</span><span class="scale-ref-meta">0.5rem / 8px</span></div>
+            <div style="margin-top:12px;padding:8px;background:rgba(0,0,0,0.03);font-size:9px;color:#888;line-height:1.5;">
+              <strong style="color:#111;">Clamp</strong> — <code style="font-size:8px;">font-size: clamp(1rem, 1vw, 1.125rem)</code><br>
+              Body scales fluidly 16–18px. Defined in base.css.
             </div>
           </div>
 
-          <!-- Element Styles reference -->
-          <div class="control-group">
-            <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
-            <div class="control-group-body" style="display:none;">
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;h1&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">4xl / 700</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;h2&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">3xl / 400</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;h3&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">2xl / 600</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;h4&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">xl / 500</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;p&gt;</span><span class="ref-el-font">Mondwest</span><span class="ref-el-meta">base / 400</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;a&gt;</span><span class="ref-el-font">Mondwest</span><span class="ref-el-meta">base / 400</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;code&gt;</span><span class="ref-el-font">PixelCode</span><span class="ref-el-meta">sm / 400</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;pre&gt;</span><span class="ref-el-font">PixelCode</span><span class="ref-el-meta">sm / 400</span></div>
-              <div class="ref-element-row"><span class="ref-el-tag">&lt;label&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">xs / 500</span></div>
+          <!-- ELEMENT STYLES -->
+          <div class="sub-panel" id="panel-elements">
+            <div class="sub-panel-title">Element Styles <span style="font-weight:400;color:#aaa;font-size:8px;float:right;">typography.css</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;h1&gt;</span><span class="elem-font">Joystix</span><span class="elem-meta">4xl / 700 / tight</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;h2&gt;</span><span class="elem-font">Joystix</span><span class="elem-meta">3xl / 400 / tight</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;h3&gt;</span><span class="elem-font">Joystix</span><span class="elem-meta">2xl / 600 / snug</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;h4&gt;</span><span class="elem-font">Joystix</span><span class="elem-meta">xl / 500 / snug</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;p&gt;</span><span class="elem-font">Mondwest</span><span class="elem-meta">base / 400 / relaxed</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;a&gt;</span><span class="elem-font">Mondwest</span><span class="elem-meta">base / 400 / normal</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;code&gt;</span><span class="elem-font">PixelCode</span><span class="elem-meta">sm / 400 / normal</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;pre&gt;</span><span class="elem-font">PixelCode</span><span class="elem-meta">sm / 400 / relaxed</span></div>
+            <div class="ref-row"><span class="elem-tag">&lt;label&gt;</span><span class="elem-font">Joystix</span><span class="elem-meta">xs / 500 / normal</span></div>
+          </div>
+
+          <!-- CSS REFERENCE -->
+          <div class="sub-panel" id="panel-css-ref">
+            <div class="sub-panel-title">CSS Reference</div>
+            <div id="css-ref-content">
+              <div class="css-row"><span class="css-label">CSS Var</span><span class="css-value" onclick="copyText(this)">var(--font-sans)</span></div>
+              <div class="css-row"><span class="css-label">Font Family</span><span class="css-value" onclick="copyText(this)">'Mondwest', system-ui</span></div>
+              <div class="css-row"><span class="css-label">Tailwind</span><span class="css-value" onclick="copyText(this)">font-sans</span></div>
+              <div class="css-row"><span class="css-label">Elements</span><span class="css-value">p, a, descriptions</span></div>
             </div>
           </div>
 
-          <!-- CSS Reference -->
-          <div class="control-group">
-            <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
-            <div class="control-group-body" style="display:none;" id="css-ref-body">
-              <div class="ref-css-row"><span class="ref-css-label">CSS Var</span><span class="ref-css-value" onclick="copyText(this)">var(--font-sans)</span></div>
-              <div class="ref-css-row"><span class="ref-css-label">Family</span><span class="ref-css-value" onclick="copyText(this)">'Mondwest', system-ui</span></div>
-              <div class="ref-css-row"><span class="ref-css-label">Tailwind</span><span class="ref-css-value" onclick="copyText(this)">font-sans</span></div>
-              <div class="ref-css-row"><span class="ref-css-label">Elements</span><span class="ref-css-value">p, a, descriptions</span></div>
-            </div>
-          </div>
-
-          <!-- About this font -->
-          <div class="control-group">
-            <div class="control-group-header" onclick="toggleGroup(this)">About <span>&#9660;</span></div>
-            <div class="control-group-body" style="display:none;" id="about-body">
-              <p style="font-size:10px; color:#666; line-height:1.5;" id="about-text">Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.</p>
-              <div style="margin-top:8px;">
-                <div id="about-weights" style="font-size:9px; color:#888; line-height:1.8;">
-                  <div>Regular 400</div>
-                  <div>Bold 700</div>
-                </div>
-              </div>
+          <!-- ABOUT FONT -->
+          <div class="sub-panel" id="panel-about">
+            <div class="sub-panel-title">About <span style="font-weight:400;color:#aaa;font-size:8px;float:right;" id="about-source">Pangram Pangram</span></div>
+            <p class="about-desc" id="about-text">Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.</p>
+            <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:6px;">Weights</div>
+            <div id="about-weights">
+              <div class="about-weight">Regular 400</div>
+              <div class="about-weight">Bold 700</div>
             </div>
           </div>
 
         </div>
 
-        <!-- Right column: sticky preview -->
+        <!-- ── Right column: sticky preview ── -->
         <div class="typo-right" data-region="preview">
           <div class="preview-box" id="preview-box">
             <span class="preview-label" id="preview-label">Sampler</span>
 
-            <!-- Sampler context -->
             <div class="preview-content" id="ctx-sampler">
-              <div class="sampler-text" contenteditable="true" id="sampler-text">
-                Type something here
-              </div>
+              <div class="sampler-text" contenteditable="true" id="sampler-text">Type something here</div>
             </div>
 
-            <!-- Social Post context -->
             <div class="preview-content" id="ctx-social" style="display:none;">
               <div class="social-frame">
                 <div class="social-header">
                   <div class="social-avatar"></div>
                   <div>
-                    <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
+                    <div style="font-size:11px;font-weight:600;" contenteditable="true">Display Name</div>
                     <div class="social-handle">@handle</div>
                   </div>
                 </div>
@@ -421,16 +372,14 @@
               </div>
             </div>
 
-            <!-- Document context -->
             <div class="preview-content" id="ctx-document" style="display:none;">
               <div class="doc-heading" contenteditable="true">Document Heading</div>
-              <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
+              <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions.</div>
               <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
 console.log(tokens.typography);</div>
             </div>
 
-            <!-- Type Scale context -->
-            <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
+            <div class="preview-content" id="ctx-type-scale" style="display:none;overflow-y:auto;">
               <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
               <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
               <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
@@ -440,8 +389,7 @@ console.log(tokens.typography);</div>
               <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
             </div>
 
-            <!-- Glyphs context -->
-            <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
+            <div class="preview-content" id="ctx-glyphs" style="display:none;overflow-y:auto;">
               <div class="glyph-section-label">Uppercase</div>
               <div class="glyph-grid" id="glyph-upper"></div>
               <div class="glyph-section-label">Lowercase</div>
@@ -455,41 +403,35 @@ console.log(tokens.typography);</div>
             </div>
           </div>
 
-          <!-- Context info below preview -->
-          <div id="info-area" style="margin-top:12px; font-size:10px; color:#888; text-align:center; max-width:420px; line-height:1.4;">
+          <div id="info-area" style="margin-top:12px;font-size:10px;color:#888;text-align:center;max-width:420px;line-height:1.4;">
             <strong style="color:#111;">Sampler</strong> &mdash; Free-text editable. Type anything to preview.
           </div>
         </div>
 
-      </div><!-- /typo-layout -->
-
-    </div><!-- /content -->
-  </div><!-- /window-content -->
-</div><!-- /window-shell -->
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ── Comment panel ── -->
 <button class="comment-toggle" id="comment-toggle" onclick="toggleComments()">Comments</button>
 <div class="comment-layer" id="comment-layer">
-  <div class="comment-header">
-    <span>Comments</span>
-    <span id="comment-count">0</span>
-  </div>
+  <div class="comment-header"><span>Comments</span><span id="comment-count">0</span></div>
   <div class="comment-list" id="comment-list">
     <div class="comment-empty" id="comment-empty">No comments yet. Add one below.</div>
   </div>
   <div class="comment-form">
     <select id="comment-target">
       <option value="general">General</option>
-      <option value="title-bar">Window Title Bar</option>
-      <option value="nav">Sidebar Nav</option>
-      <option value="controls">Left Column (Controls)</option>
+      <option value="nav">Sidebar Nav / Accordion</option>
+      <option value="left-panel">Left Panel Content</option>
       <option value="top-bar">Top Bar</option>
-      <option value="preview">Preview Box (Right)</option>
-      <option value="sampler">Context: Sampler</option>
-      <option value="social">Context: Social Post</option>
-      <option value="document">Context: Document</option>
-      <option value="scale">Context: Type Scale</option>
-      <option value="glyphs">Context: Glyphs</option>
+      <option value="preview">Preview Box</option>
+      <option value="playground">Sub-tab: Playground</option>
+      <option value="type-scale">Sub-tab: Type Scale</option>
+      <option value="element-styles">Sub-tab: Element Styles</option>
+      <option value="css-ref">Sub-tab: CSS Reference</option>
+      <option value="about">Sub-tab: About Font</option>
       <option value="layout">Overall Layout</option>
     </select>
     <textarea id="comment-text" placeholder="Add a comment..."></textarea>
@@ -499,87 +441,66 @@ console.log(tokens.typography);</div>
 
 <script>
 // ── State ──
-let state = {
-  font: 'mondwest',
-  context: 'sampler',
-  mode: 'light',
-  size: 48,
-  leading: 10,
-  spacing: 0,
-  weight: 700,
-  align: 'left',
-};
+let state = { font:'mondwest', context:'sampler', mode:'light', size:48, leading:10, spacing:0, weight:700, align:'left' };
+let activeSubTab = 'playground';
 
 const CONTEXT_DEFAULTS = {
-  sampler:  { size: 48, leading: 10, spacing: 0, weight: 700, align: 'center' },
-  social:   { size: 18, leading: 14, spacing: 0, weight: 400, align: 'left' },
-  document: { size: 14, leading: 15, spacing: 0, weight: 400, align: 'left' },
-  scale:    { size: 32, leading: 12, spacing: 0, weight: 400, align: 'left' },
-  glyphs:   { size: 16, leading: 10, spacing: 0, weight: 400, align: 'center' },
+  sampler:    { size:48, leading:10, spacing:0, weight:700, align:'center' },
+  social:     { size:18, leading:14, spacing:0, weight:400, align:'left' },
+  document:   { size:14, leading:15, spacing:0, weight:400, align:'left' },
+  'type-scale':{ size:32, leading:12, spacing:0, weight:400, align:'left' },
+  glyphs:     { size:16, leading:10, spacing:0, weight:400, align:'center' },
 };
 
 const FONT_WEIGHTS = {
-  joystix:   [{ v: 400, l: 'Regular 400' }],
-  mondwest:  [{ v: 400, l: 'Regular 400' }, { v: 700, l: 'Bold 700' }],
-  pixelcode: [{ v: 300, l: 'Light 300' }, { v: 400, l: 'Regular 400' }, { v: 500, l: 'Medium 500' }, { v: 700, l: 'Bold 700' }],
+  joystix:  [{ v:400, l:'Regular 400' }],
+  mondwest: [{ v:400, l:'Regular 400' },{ v:700, l:'Bold 700' }],
+  pixelcode:[{ v:300, l:'Light 300' },{ v:400, l:'Regular 400' },{ v:500, l:'Medium 500' },{ v:700, l:'Bold 700' }],
 };
 
 const FONT_INFO = {
-  joystix: {
-    cssVar: 'var(--font-heading)', family: "'Joystix Monospace', monospace", tailwind: 'font-heading',
-    elements: 'h1–h6, labels, buttons',
-    about: 'An open source pixel font — bold and unapologetic. Use for headings, memes, and visual punch.',
-    weights: ['Regular 400'],
-  },
-  mondwest: {
-    cssVar: 'var(--font-sans)', family: "'Mondwest', system-ui", tailwind: 'font-sans',
-    elements: 'p, a, descriptions',
-    about: "Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.",
-    weights: ['Regular 400', 'Bold 700'],
-  },
-  pixelcode: {
-    cssVar: 'var(--font-mono)', family: "'PixelCode', monospace", tailwind: 'font-mono',
-    elements: 'code, pre, kbd, data',
-    about: 'A pixel-art monospace font with 4 weights and italic variants. For code blocks, technical labels, and data displays.',
-    weights: ['Light 300', 'Regular 400', 'Medium 500', 'Bold 700'],
-  },
+  joystix:  { cssVar:'var(--font-heading)', family:"'Joystix Monospace', monospace", tailwind:'font-heading', elements:'h1–h6, labels, buttons', about:'An open source pixel font — bold and unapologetic. Use for headings, memes, and visual punch.', weights:['Regular 400'], source:'Open Source' },
+  mondwest: { cssVar:'var(--font-sans)', family:"'Mondwest', system-ui", tailwind:'font-sans', elements:'p, a, descriptions', about:"Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.", weights:['Regular 400','Bold 700'], source:'Pangram Pangram' },
+  pixelcode:{ cssVar:'var(--font-mono)', family:"'PixelCode', monospace", tailwind:'font-mono', elements:'code, pre, kbd, data', about:'A pixel-art monospace font with 4 weights and italic variants. For code blocks, technical labels, and data displays.', weights:['Light 300','Regular 400','Medium 500','Bold 700'], source:'Open Source' },
 };
 
 const INFO_TEXT = {
-  sampler:  '<strong style="color:#111;">Sampler</strong> &mdash; Free-text editable. Type anything to preview.',
-  social:   '<strong style="color:#111;">Social Post</strong> &mdash; Tweet/card mockup. All text is editable.',
-  document: '<strong style="color:#111;">Document</strong> &mdash; Heading + body + code. Realistic reading context.',
-  scale:    '<strong style="color:#111;">Type Scale</strong> &mdash; 7-step scale rendered live in selected font.',
-  glyphs:   '<strong style="color:#111;">Glyphs</strong> &mdash; Full character set. Hover to inspect.',
+  sampler:    '<strong style="color:#111;">Sampler</strong> &mdash; Free-text editable. Type anything to preview.',
+  social:     '<strong style="color:#111;">Social Post</strong> &mdash; Tweet/card mockup. All text is editable.',
+  document:   '<strong style="color:#111;">Document</strong> &mdash; Heading + body + code. Realistic reading context.',
+  'type-scale':'<strong style="color:#111;">Type Scale</strong> &mdash; 7-step scale rendered live in selected font.',
+  glyphs:     '<strong style="color:#111;">Glyphs</strong> &mdash; Full character set. Hover to inspect.',
 };
 
+// ── Sub-tab switching ──
+function selectSubTab(id) {
+  activeSubTab = id;
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.nav-sub-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('sub-' + id).classList.add('active');
+}
+
+function toggleTypoAccordion() {
+  const list = document.getElementById('typo-sub-list');
+  const chev = document.getElementById('typo-chevron');
+  list.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function selectTab(tab) {
+  // Stub — other tabs not implemented in wireframe
+}
+
 // ── Controls ──
-function updateSize(v) {
-  state.size = +v;
-  document.getElementById('size-val').textContent = v;
-  applyStyles();
-}
-function updateLeading(v) {
-  state.leading = +v;
-  document.getElementById('leading-val').textContent = (v / 10).toFixed(1);
-  applyStyles();
-}
-function updateSpacing(v) {
-  state.spacing = +v;
-  document.getElementById('spacing-val').textContent = v;
-  applyStyles();
-}
-function updateWeight(v) {
-  state.weight = +v;
-  applyStyles();
-}
-function updateAlign(a) {
+function updateSize(v) { state.size=+v; document.getElementById('size-val').textContent=v; applyStyles(); }
+function updateLeading(v) { state.leading=+v; document.getElementById('leading-val').textContent=(v/10).toFixed(1); applyStyles(); }
+function updateSpacing(v) { state.spacing=+v; document.getElementById('spacing-val').textContent=v; applyStyles(); }
+function updateWeight(v) { state.weight=+v; applyStyles(); }
+function updateAlign(a, btn) {
   state.align = a;
-  document.querySelectorAll('[onclick^="updateAlign"]').forEach(b => {
-    b.style.background = '#fff'; b.style.color = '#111';
-  });
-  event.target.style.background = '#111';
-  event.target.style.color = '#fff';
+  document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   applyStyles();
 }
 function setMode(m, btn) {
@@ -591,28 +512,24 @@ function setMode(m, btn) {
 
 function switchFont(f) {
   state.font = f;
-  // Update weight select
   const ws = document.getElementById('weight-select');
   ws.innerHTML = FONT_WEIGHTS[f].map(w => `<option value="${w.v}">${w.l}</option>`).join('');
   state.weight = FONT_WEIGHTS[f][0].v;
-  // Update CSS Reference
   const info = FONT_INFO[f];
-  const refBody = document.getElementById('css-ref-body');
-  refBody.innerHTML = `
-    <div class="ref-css-row"><span class="ref-css-label">CSS Var</span><span class="ref-css-value" onclick="copyText(this)">${info.cssVar}</span></div>
-    <div class="ref-css-row"><span class="ref-css-label">Family</span><span class="ref-css-value" onclick="copyText(this)">${info.family}</span></div>
-    <div class="ref-css-row"><span class="ref-css-label">Tailwind</span><span class="ref-css-value" onclick="copyText(this)">${info.tailwind}</span></div>
-    <div class="ref-css-row"><span class="ref-css-label">Elements</span><span class="ref-css-value">${info.elements}</span></div>
-  `;
-  // Update About
+  document.getElementById('css-ref-content').innerHTML = `
+    <div class="css-row"><span class="css-label">CSS Var</span><span class="css-value" onclick="copyText(this)">${info.cssVar}</span></div>
+    <div class="css-row"><span class="css-label">Font Family</span><span class="css-value" onclick="copyText(this)">${info.family}</span></div>
+    <div class="css-row"><span class="css-label">Tailwind</span><span class="css-value" onclick="copyText(this)">${info.tailwind}</span></div>
+    <div class="css-row"><span class="css-label">Elements</span><span class="css-value">${info.elements}</span></div>`;
   document.getElementById('about-text').textContent = info.about;
-  document.getElementById('about-weights').innerHTML = info.weights.map(w => `<div>${w}</div>`).join('');
+  document.getElementById('about-source').textContent = info.source;
+  document.getElementById('about-weights').innerHTML = info.weights.map(w => `<div class="about-weight">${w}</div>`).join('');
   applyStyles();
 }
 
 function switchContext(ctx) {
   state.context = ctx;
-  ['sampler','social','document','scale','glyphs'].forEach(c => {
+  ['sampler','social','document','type-scale','glyphs'].forEach(c => {
     document.getElementById('ctx-' + c).style.display = c === ctx ? '' : 'none';
   });
   const d = CONTEXT_DEFAULTS[ctx];
@@ -620,37 +537,24 @@ function switchContext(ctx) {
   document.querySelector('.control-slider[oninput*="updateSize"]').value = d.size;
   document.getElementById('size-val').textContent = d.size;
   document.querySelector('.control-slider[oninput*="updateLeading"]').value = d.leading;
-  document.getElementById('leading-val').textContent = (d.leading / 10).toFixed(1);
+  document.getElementById('leading-val').textContent = (d.leading/10).toFixed(1);
   document.querySelector('.control-slider[oninput*="updateSpacing"]').value = d.spacing;
   document.getElementById('spacing-val').textContent = d.spacing;
   document.getElementById('info-area').innerHTML = INFO_TEXT[ctx];
-  document.getElementById('preview-label').textContent = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  document.getElementById('preview-label').textContent = ctx === 'type-scale' ? 'Type Scale' : ctx.charAt(0).toUpperCase() + ctx.slice(1);
   applyStyles();
 }
 
 function applyStyles() {
   const ctx = document.getElementById('ctx-' + state.context);
   if (!ctx) return;
-  const editables = ctx.querySelectorAll('[contenteditable]');
-  editables.forEach(el => {
-    if (state.context !== 'scale') el.style.fontSize = state.size + 'px';
-    el.style.lineHeight = (state.leading / 10).toFixed(1);
-    el.style.letterSpacing = (state.spacing / 100) + 'em';
+  ctx.querySelectorAll('[contenteditable]').forEach(el => {
+    if (state.context !== 'type-scale') el.style.fontSize = state.size + 'px';
+    el.style.lineHeight = (state.leading/10).toFixed(1);
+    el.style.letterSpacing = (state.spacing/100) + 'em';
     el.style.fontWeight = state.weight;
     el.style.textAlign = state.align;
   });
-}
-
-function toggleGroup(header) {
-  const body = header.nextElementSibling;
-  const arrow = header.querySelector('span');
-  if (body.style.display === 'none') {
-    body.style.display = '';
-    arrow.innerHTML = '&#9650;';
-  } else {
-    body.style.display = 'none';
-    arrow.innerHTML = '&#9660;';
-  }
 }
 
 function copyText(el) {
@@ -665,16 +569,16 @@ function copyText(el) {
 function buildGlyphs() {
   function fill(id, chars) {
     document.getElementById(id).innerHTML = chars.split('').map(c =>
-      `<div class="glyph-cell" onmouseover="showGlyph('${c}', ${c.charCodeAt(0)})" onclick="showGlyph('${c}', ${c.charCodeAt(0)})">${c}</div>`
+      `<div class="glyph-cell" onmouseover="showGlyph('${c}',${c.charCodeAt(0)})" onclick="showGlyph('${c}',${c.charCodeAt(0)})">${c}</div>`
     ).join('');
   }
-  fill('glyph-upper', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-  fill('glyph-lower', 'abcdefghijklmnopqrstuvwxyz');
-  fill('glyph-digits', '0123456789');
+  fill('glyph-upper','ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  fill('glyph-lower','abcdefghijklmnopqrstuvwxyz');
+  fill('glyph-digits','0123456789');
 }
 function showGlyph(char, code) {
   document.getElementById('glyph-char').textContent = char;
-  document.getElementById('glyph-info').textContent = 'U+' + code.toString(16).toUpperCase().padStart(4, '0') + ' (' + code + ')';
+  document.getElementById('glyph-info').textContent = 'U+' + code.toString(16).toUpperCase().padStart(4,'0') + ' (' + code + ')';
   document.querySelectorAll('.glyph-cell').forEach(c => c.classList.remove('active'));
   if (event && event.target) event.target.classList.add('active');
 }
@@ -682,49 +586,38 @@ function showGlyph(char, code) {
 // ── Comments ──
 let comments = [];
 const STORAGE_KEY = 'type-playground-wireframe-comments';
-
 function loadComments() {
   try {
-    fetch('/api/comments').then(r => r.ok ? r.json() : Promise.reject()).then(data => {
-      comments = data; renderComments();
-    }).catch(() => {
-      const s = localStorage.getItem(STORAGE_KEY);
-      if (s) { comments = JSON.parse(s); renderComments(); }
+    fetch('/api/comments').then(r => r.ok ? r.json() : Promise.reject()).then(data => { comments=data; renderComments(); }).catch(() => {
+      const s=localStorage.getItem(STORAGE_KEY); if(s){comments=JSON.parse(s);renderComments();}
     });
-  } catch {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) { comments = JSON.parse(s); renderComments(); }
-  }
+  } catch { const s=localStorage.getItem(STORAGE_KEY); if(s){comments=JSON.parse(s);renderComments();} }
 }
 function saveComments() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-  fetch('/api/comments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(comments) }).catch(() => {});
+  fetch('/api/comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(comments)}).catch(()=>{});
 }
 function addComment() {
-  const target = document.getElementById('comment-target').value;
-  const text = document.getElementById('comment-text').value.trim();
-  if (!text) return;
-  comments.push({ id: Date.now(), target, text, time: new Date().toLocaleString() });
-  document.getElementById('comment-text').value = '';
+  const target=document.getElementById('comment-target').value;
+  const text=document.getElementById('comment-text').value.trim();
+  if(!text)return;
+  comments.push({id:Date.now(),target,text,time:new Date().toLocaleString()});
+  document.getElementById('comment-text').value='';
   saveComments(); renderComments();
 }
-function deleteComment(id) {
-  comments = comments.filter(c => c.id !== id);
-  saveComments(); renderComments();
-}
+function deleteComment(id) { comments=comments.filter(c=>c.id!==id); saveComments(); renderComments(); }
 function renderComments() {
-  const list = document.getElementById('comment-list');
-  const empty = document.getElementById('comment-empty');
-  document.getElementById('comment-count').textContent = comments.length;
-  if (!comments.length) { empty.style.display = ''; list.innerHTML = ''; list.appendChild(empty); return; }
-  empty.style.display = 'none';
-  list.innerHTML = comments.map(c => `
+  const list=document.getElementById('comment-list');
+  const empty=document.getElementById('comment-empty');
+  document.getElementById('comment-count').textContent=comments.length;
+  if(!comments.length){empty.style.display='';list.innerHTML='';list.appendChild(empty);return;}
+  empty.style.display='none';
+  list.innerHTML=comments.map(c=>`
     <div class="comment-item">
       <div class="comment-target">${c.target} <span style="float:right;cursor:pointer;color:#ccc;" onclick="deleteComment(${c.id})">&times;</span></div>
       <div class="comment-text">${c.text}</div>
       <div class="comment-time">${c.time}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 function toggleComments() {
   document.getElementById('comment-layer').classList.toggle('open');
@@ -732,9 +625,7 @@ function toggleComments() {
 }
 
 // ── Init ──
-buildGlyphs();
-loadComments();
-applyStyles();
+buildGlyphs(); loadComments(); applyStyles();
 </script>
 </body>
 </html>
