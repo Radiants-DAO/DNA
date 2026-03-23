@@ -10,23 +10,24 @@
 
   /* ── Rad-OS Window Shell ── */
   .window-shell {
-    width: 960px;
-    height: 680px;
+    width: 980px;
+    height: 700px;
     display: flex;
     flex-direction: column;
     background: linear-gradient(0deg, #e8e0c0 0%, #f0ece0 100%);
     filter: drop-shadow(4px 4px 0 #111);
     position: relative;
-    /* pixel corners via clip-path */
     clip-path: polygon(
       0px 8px, 1px 8px, 1px 4px, 2px 4px, 2px 2px, 4px 2px, 4px 1px, 8px 1px, 8px 0px,
       calc(100% - 8px) 0px, calc(100% - 8px) 1px, calc(100% - 4px) 1px, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, calc(100% - 1px) 4px, calc(100% - 1px) 8px, 100% 8px,
       100% calc(100% - 8px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 8px) 100%,
       8px 100%, 8px calc(100% - 1px), 4px calc(100% - 1px), 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 1px calc(100% - 4px), 1px calc(100% - 8px), 0px calc(100% - 8px)
     );
+    resize: both;
+    overflow: hidden;
+    min-width: 720px;
+    min-height: 500px;
   }
-
-  /* Pixel border via ::after */
   .window-shell::after {
     content: '';
     position: absolute;
@@ -48,38 +49,12 @@
     cursor: default;
     user-select: none;
   }
-  .window-title-icon {
-    width: 14px; height: 14px;
-    display: flex; align-items: center; justify-content: center;
-  }
+  .window-title-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
   .window-title-icon svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .window-title-text {
-    font-size: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 700;
-    color: #111;
-    white-space: nowrap;
-  }
-  .window-title-sep {
-    flex: 1;
-    height: 1px;
-    background: #111;
-    opacity: 0.25;
-  }
-  .window-btn-group {
-    display: flex;
-    gap: 0;
-  }
-  .window-btn {
-    width: 24px; height: 24px;
-    display: flex; align-items: center; justify-content: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.1s;
-  }
+  .window-title-text { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #111; white-space: nowrap; }
+  .window-title-sep { flex: 1; height: 1px; background: #111; opacity: 0.25; }
+  .window-btn-group { display: flex; gap: 0; }
+  .window-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; border-radius: 4px; transition: background 0.1s; }
   .window-btn:hover { background: rgba(0,0,0,0.08); }
   .window-btn.btn-copy:hover { background: rgba(0,180,100,0.15); }
   .window-btn.btn-expand:hover { background: rgba(200,160,0,0.2); }
@@ -87,12 +62,7 @@
   .window-btn svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   /* ── Window Content ── */
-  .window-content {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    min-height: 0;
-  }
+  .window-content { flex: 1; display: flex; overflow: hidden; min-height: 0; }
 
   /* ── Sidebar nav ── */
   .sidebar-nav { width: 140px; background: rgba(0,0,0,0.04); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-shrink: 0; }
@@ -102,21 +72,8 @@
   .nav-item .nav-chevron { float: right; font-size: 8px; color: #bbb; }
   .nav-spacer { flex: 1; }
 
-  /* ── Sidebar controls ── */
-  .sidebar-controls { width: 140px; border-right: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.02); overflow-y: auto; flex-shrink: 0; }
-  .control-group { border-bottom: 1px solid rgba(0,0,0,0.08); }
-  .control-group-header { padding: 8px 10px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: rgba(0,0,0,0.04); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-  .control-group-header:hover { background: rgba(0,0,0,0.06); }
-  .control-group-body { padding: 8px 10px; }
-  .control-row { margin-bottom: 8px; }
-  .control-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
-  .control-slider { width: 100%; height: 3px; -webkit-appearance: none; appearance: none; background: #ccc; outline: none; border-radius: 2px; }
-  .control-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #111; border-radius: 50%; cursor: pointer; }
-  .control-value { font-size: 10px; color: #111; text-align: right; margin-top: 2px; }
-  .control-select { width: 100%; font-family: inherit; font-size: 10px; padding: 3px 4px; border: 1px solid #ccc; background: #fff; }
-
   /* ── Content area ── */
-  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
   /* ── Top bar ── */
   .top-bar { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(0,0,0,0.04); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
@@ -126,9 +83,73 @@
   .top-bar .mode-btn { padding: 3px 8px; font-family: inherit; font-size: 10px; cursor: pointer; background: #fff; border: none; text-transform: uppercase; letter-spacing: 0.05em; }
   .top-bar .mode-btn.active { background: #111; color: #fff; }
 
-  /* ── Preview area ── */
-  .preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.02); overflow: auto; }
-  .preview-box { width: min(100%, 420px); aspect-ratio: 1; border: 1.5px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; }
+  /* ── Two-column typography layout ── */
+  .typo-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* Left column — scrollable controls + reference */
+  .typo-left {
+    width: 280px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    background: rgba(0,0,0,0.015);
+  }
+
+  /* Control groups */
+  .control-group { border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .control-group-header { padding: 8px 12px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: rgba(0,0,0,0.04); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .control-group-header:hover { background: rgba(0,0,0,0.06); }
+  .control-group-body { padding: 10px 12px; }
+  .control-row { margin-bottom: 10px; }
+  .control-row:last-child { margin-bottom: 0; }
+  .control-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .control-slider { width: 100%; height: 3px; -webkit-appearance: none; appearance: none; background: #ccc; outline: none; border-radius: 2px; }
+  .control-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #111; border-radius: 50%; cursor: pointer; }
+  .control-value { font-size: 10px; color: #111; text-align: right; margin-top: 2px; }
+  .control-select { width: 100%; font-family: inherit; font-size: 10px; padding: 3px 4px; border: 1px solid #ccc; background: #fff; }
+
+  /* Reference tables in left column */
+  .ref-table { width: 100%; font-size: 9px; border-collapse: collapse; }
+  .ref-table td { padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.06); color: #666; vertical-align: baseline; }
+  .ref-table td:first-child { color: #111; font-weight: 600; width: 44px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ref-table td:last-child { text-align: right; color: #aaa; font-size: 8px; }
+  .ref-table tr:last-child td { border-bottom: none; }
+
+  .ref-specimen { line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .ref-element-row { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 9px; }
+  .ref-element-row:last-child { border-bottom: none; }
+  .ref-el-tag { font-weight: 600; width: 40px; flex-shrink: 0; }
+  .ref-el-font { flex: 1; color: #666; }
+  .ref-el-meta { color: #aaa; font-size: 8px; flex-shrink: 0; }
+
+  .ref-css-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 9px; }
+  .ref-css-row:last-child { border-bottom: none; }
+  .ref-css-label { color: #888; text-transform: uppercase; letter-spacing: 0.05em; font-size: 8px; }
+  .ref-css-value { color: #111; cursor: pointer; }
+  .ref-css-value:hover { text-decoration: underline; }
+
+  /* Right column — sticky preview */
+  .typo-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.02);
+    overflow: auto;
+    position: sticky;
+    top: 0;
+  }
+
+  /* ── Preview box ── */
+  .preview-box { width: min(100%, 420px); aspect-ratio: 1; border: 1.5px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; flex-shrink: 0; }
   .preview-box.dark-mode { background: #111; color: #eee; border-color: #555; }
   .preview-label { position: absolute; top: -16px; left: 0; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
 
@@ -170,8 +191,8 @@
   .glyph-detail-info { font-size: 9px; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
   .glyph-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px; }
 
-  /* ── Info area below preview ── */
-  .info-area { padding: 10px 12px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); flex-shrink: 0; min-height: 40px; }
+  /* ── Info area ── */
+  .info-area { padding: 10px 12px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); flex-shrink: 0; min-height: 36px; }
   .info-area strong { color: #111; }
 
   /* ── Comment system ── */
@@ -193,12 +214,9 @@
   .comment-empty { padding: 20px; text-align: center; color: #aaa; font-size: 10px; }
 
   /* ── Annotation markers ── */
-  [data-region] { position: relative; cursor: crosshair; }
+  [data-region] { position: relative; }
   [data-region]::after { content: attr(data-region); position: absolute; top: -1px; right: -1px; font-size: 7px; background: #111; color: #fff; padding: 1px 3px; opacity: 0; pointer-events: none; transition: opacity 0.1s; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; }
   [data-region]:hover::after { opacity: 0.6; }
-
-  /* ── Resize handle ── */
-  .window-shell { resize: both; overflow: hidden; min-width: 700px; min-height: 480px; }
 </style>
 </head>
 <body>
@@ -210,15 +228,11 @@
 
   <!-- ── Window Title Bar ── -->
   <div class="window-title-bar">
-    <!-- Icon (gear) -->
     <div class="window-title-icon">
       <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
-    <!-- Title -->
     <span class="window-title-text">Brand Assets</span>
-    <!-- Separator line -->
     <div class="window-title-sep"></div>
-    <!-- Window buttons -->
     <div class="window-btn-group">
       <button class="window-btn btn-copy" title="Copy link">
         <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -244,89 +258,6 @@
       <div class="nav-item">05 Pixels//Patterns <span class="nav-chevron">&#9662;</span></div>
       <div class="nav-item">06 AI Toolkit</div>
       <div class="nav-spacer"></div>
-    </div>
-
-    <!-- ── Sidebar controls ── -->
-    <div class="sidebar-controls" data-region="controls">
-
-      <!-- Playground group -->
-      <div class="control-group">
-        <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
-        <div class="control-group-body">
-          <div class="control-row">
-            <div class="control-label">Size</div>
-            <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
-            <div class="control-value" id="size-val">48</div>
-          </div>
-          <div class="control-row">
-            <div class="control-label">Leading</div>
-            <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
-            <div class="control-value" id="leading-val">1.0</div>
-          </div>
-          <div class="control-row">
-            <div class="control-label">Spacing</div>
-            <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
-            <div class="control-value" id="spacing-val">0</div>
-          </div>
-          <div class="control-row">
-            <div class="control-label">Weight</div>
-            <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
-              <option value="400">Regular 400</option>
-              <option value="700" selected>Bold 700</option>
-            </select>
-          </div>
-          <div class="control-row">
-            <div class="control-label">Align</div>
-            <div style="display:flex; gap:2px;">
-              <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
-              <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
-              <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Type Scale group -->
-      <div class="control-group">
-        <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
-        <div class="control-group-body" style="display:none;">
-          <div style="font-size:9px; color:#888; line-height:1.5;">
-            <div>3XL &mdash; 2rem / 32px</div>
-            <div>2XL &mdash; 1.75rem / 28px</div>
-            <div>XL &mdash; 1.5rem / 24px</div>
-            <div>LG &mdash; 1.25rem / 20px</div>
-            <div>Base &mdash; 1rem / 16px</div>
-            <div>SM &mdash; 0.75rem / 12px</div>
-            <div>XS &mdash; 0.5rem / 8px</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Element Styles group -->
-      <div class="control-group">
-        <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
-        <div class="control-group-body" style="display:none;">
-          <div style="font-size:9px; color:#888; line-height:1.6;">
-            <div>h1 &rarr; Joystix 4xl/700</div>
-            <div>h2 &rarr; Joystix 3xl/400</div>
-            <div>p &rarr; Mondwest base/400</div>
-            <div>code &rarr; PixelCode sm/400</div>
-            <div>label &rarr; Joystix xs/500</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CSS Reference group -->
-      <div class="control-group">
-        <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
-        <div class="control-group-body" style="display:none;">
-          <div style="font-size:9px; color:#888; line-height:1.6;" id="css-ref">
-            <div>var: --font-heading</div>
-            <div>family: 'Joystix Monospace'</div>
-            <div>tailwind: font-heading</div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ── Content area ── -->
@@ -356,80 +287,184 @@
         <span style="font-size:9px; color:#888;">1:1 FIXED</span>
       </div>
 
-      <!-- ── Preview ── -->
-      <div class="preview-area">
-        <div class="preview-box" id="preview-box" data-region="preview">
-          <span class="preview-label" id="preview-label">Sampler</span>
+      <!-- ── Two-column typography layout ── -->
+      <div class="typo-layout">
 
-          <!-- Sampler context -->
-          <div class="preview-content" id="ctx-sampler">
-            <div class="sampler-text" contenteditable="true" id="sampler-text">
-              Type something here
-            </div>
-          </div>
+        <!-- Left column: scrollable controls + reference -->
+        <div class="typo-left" data-region="controls">
 
-          <!-- Social Post context -->
-          <div class="preview-content" id="ctx-social" style="display:none;">
-            <div class="social-frame">
-              <div class="social-header">
-                <div class="social-avatar"></div>
-                <div>
-                  <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
-                  <div class="social-handle">@handle</div>
+          <!-- Playground controls -->
+          <div class="control-group">
+            <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
+            <div class="control-group-body">
+              <div class="control-row">
+                <div class="control-label">Size</div>
+                <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
+                <div class="control-value" id="size-val">48</div>
+              </div>
+              <div class="control-row">
+                <div class="control-label">Leading</div>
+                <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
+                <div class="control-value" id="leading-val">1.0</div>
+              </div>
+              <div class="control-row">
+                <div class="control-label">Spacing</div>
+                <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
+                <div class="control-value" id="spacing-val">0</div>
+              </div>
+              <div class="control-row">
+                <div class="control-label">Weight</div>
+                <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
+                  <option value="400">Regular 400</option>
+                  <option value="700" selected>Bold 700</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <div class="control-label">Align</div>
+                <div style="display:flex; gap:2px;">
+                  <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
+                  <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
+                  <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
                 </div>
               </div>
-              <div class="social-body" contenteditable="true">This is what a social post looks like in this typeface. Edit me to test your own copy.</div>
-              <div class="social-footer">
-                <span class="social-action">Reply</span>
-                <span class="social-action">Repost</span>
-                <span class="social-action">Like</span>
-                <span class="social-action">Share</span>
+            </div>
+          </div>
+
+          <!-- Type Scale reference -->
+          <div class="control-group">
+            <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
+            <div class="control-group-body" style="display:none;">
+              <table class="ref-table">
+                <tr><td>3XL</td><td><span class="ref-specimen" style="font-size:18px;">Radiants</span></td><td>2rem</td></tr>
+                <tr><td>2XL</td><td><span class="ref-specimen" style="font-size:16px;">Radiants</span></td><td>1.75rem</td></tr>
+                <tr><td>XL</td><td><span class="ref-specimen" style="font-size:14px;">Radiants</span></td><td>1.5rem</td></tr>
+                <tr><td>LG</td><td><span class="ref-specimen" style="font-size:13px;">Radiants</span></td><td>1.25rem</td></tr>
+                <tr><td>Base</td><td><span class="ref-specimen" style="font-size:11px;">Radiants Design</span></td><td>1rem</td></tr>
+                <tr><td>SM</td><td><span class="ref-specimen" style="font-size:9px;">Radiants Design</span></td><td>0.75rem</td></tr>
+                <tr><td>XS</td><td><span class="ref-specimen" style="font-size:7px;">Radiants Design</span></td><td>0.5rem</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Element Styles reference -->
+          <div class="control-group">
+            <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
+            <div class="control-group-body" style="display:none;">
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;h1&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">4xl / 700</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;h2&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">3xl / 400</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;h3&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">2xl / 600</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;h4&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">xl / 500</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;p&gt;</span><span class="ref-el-font">Mondwest</span><span class="ref-el-meta">base / 400</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;a&gt;</span><span class="ref-el-font">Mondwest</span><span class="ref-el-meta">base / 400</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;code&gt;</span><span class="ref-el-font">PixelCode</span><span class="ref-el-meta">sm / 400</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;pre&gt;</span><span class="ref-el-font">PixelCode</span><span class="ref-el-meta">sm / 400</span></div>
+              <div class="ref-element-row"><span class="ref-el-tag">&lt;label&gt;</span><span class="ref-el-font">Joystix</span><span class="ref-el-meta">xs / 500</span></div>
+            </div>
+          </div>
+
+          <!-- CSS Reference -->
+          <div class="control-group">
+            <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
+            <div class="control-group-body" style="display:none;" id="css-ref-body">
+              <div class="ref-css-row"><span class="ref-css-label">CSS Var</span><span class="ref-css-value" onclick="copyText(this)">var(--font-sans)</span></div>
+              <div class="ref-css-row"><span class="ref-css-label">Family</span><span class="ref-css-value" onclick="copyText(this)">'Mondwest', system-ui</span></div>
+              <div class="ref-css-row"><span class="ref-css-label">Tailwind</span><span class="ref-css-value" onclick="copyText(this)">font-sans</span></div>
+              <div class="ref-css-row"><span class="ref-css-label">Elements</span><span class="ref-css-value">p, a, descriptions</span></div>
+            </div>
+          </div>
+
+          <!-- About this font -->
+          <div class="control-group">
+            <div class="control-group-header" onclick="toggleGroup(this)">About <span>&#9660;</span></div>
+            <div class="control-group-body" style="display:none;" id="about-body">
+              <p style="font-size:10px; color:#666; line-height:1.5;" id="about-text">Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.</p>
+              <div style="margin-top:8px;">
+                <div id="about-weights" style="font-size:9px; color:#888; line-height:1.8;">
+                  <div>Regular 400</div>
+                  <div>Bold 700</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Document context -->
-          <div class="preview-content" id="ctx-document" style="display:none;">
-            <div class="doc-heading" contenteditable="true">Document Heading</div>
-            <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
-            <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
+        </div>
+
+        <!-- Right column: sticky preview -->
+        <div class="typo-right" data-region="preview">
+          <div class="preview-box" id="preview-box">
+            <span class="preview-label" id="preview-label">Sampler</span>
+
+            <!-- Sampler context -->
+            <div class="preview-content" id="ctx-sampler">
+              <div class="sampler-text" contenteditable="true" id="sampler-text">
+                Type something here
+              </div>
+            </div>
+
+            <!-- Social Post context -->
+            <div class="preview-content" id="ctx-social" style="display:none;">
+              <div class="social-frame">
+                <div class="social-header">
+                  <div class="social-avatar"></div>
+                  <div>
+                    <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
+                    <div class="social-handle">@handle</div>
+                  </div>
+                </div>
+                <div class="social-body" contenteditable="true">This is what a social post looks like in this typeface. Edit me to test your own copy.</div>
+                <div class="social-footer">
+                  <span class="social-action">Reply</span>
+                  <span class="social-action">Repost</span>
+                  <span class="social-action">Like</span>
+                  <span class="social-action">Share</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Document context -->
+            <div class="preview-content" id="ctx-document" style="display:none;">
+              <div class="doc-heading" contenteditable="true">Document Heading</div>
+              <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
+              <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
 console.log(tokens.typography);</div>
-          </div>
+            </div>
 
-          <!-- Type Scale context -->
-          <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
-            <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
-            <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
-            <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
-            <div class="scale-row"><span class="scale-label">LG</span><span class="scale-specimen" style="font-size:20px;" contenteditable="true">Radiants</span><span class="scale-meta">1.25rem</span></div>
-            <div class="scale-row"><span class="scale-label">Base</span><span class="scale-specimen" style="font-size:16px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">1rem</span></div>
-            <div class="scale-row"><span class="scale-label">SM</span><span class="scale-specimen" style="font-size:12px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.75rem</span></div>
-            <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
-          </div>
+            <!-- Type Scale context -->
+            <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
+              <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
+              <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
+              <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
+              <div class="scale-row"><span class="scale-label">LG</span><span class="scale-specimen" style="font-size:20px;" contenteditable="true">Radiants</span><span class="scale-meta">1.25rem</span></div>
+              <div class="scale-row"><span class="scale-label">Base</span><span class="scale-specimen" style="font-size:16px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">1rem</span></div>
+              <div class="scale-row"><span class="scale-label">SM</span><span class="scale-specimen" style="font-size:12px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.75rem</span></div>
+              <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
+            </div>
 
-          <!-- Glyphs context -->
-          <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
-            <div class="glyph-section-label">Uppercase</div>
-            <div class="glyph-grid" id="glyph-upper"></div>
-            <div class="glyph-section-label">Lowercase</div>
-            <div class="glyph-grid" id="glyph-lower"></div>
-            <div class="glyph-section-label">Digits</div>
-            <div class="glyph-grid" id="glyph-digits"></div>
-            <div class="glyph-detail" id="glyph-detail">
-              <div class="glyph-detail-char" id="glyph-char">A</div>
-              <div class="glyph-detail-info" id="glyph-info">U+0041</div>
+            <!-- Glyphs context -->
+            <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
+              <div class="glyph-section-label">Uppercase</div>
+              <div class="glyph-grid" id="glyph-upper"></div>
+              <div class="glyph-section-label">Lowercase</div>
+              <div class="glyph-grid" id="glyph-lower"></div>
+              <div class="glyph-section-label">Digits</div>
+              <div class="glyph-grid" id="glyph-digits"></div>
+              <div class="glyph-detail" id="glyph-detail">
+                <div class="glyph-detail-char" id="glyph-char">A</div>
+                <div class="glyph-detail-info" id="glyph-info">U+0041</div>
+              </div>
             </div>
           </div>
+
+          <!-- Context info below preview -->
+          <div id="info-area" style="margin-top:12px; font-size:10px; color:#888; text-align:center; max-width:420px; line-height:1.4;">
+            <strong style="color:#111;">Sampler</strong> &mdash; Free-text editable. Type anything to preview.
+          </div>
         </div>
-      </div>
 
-      <!-- ── Info area ── -->
-      <div class="info-area" data-region="info" id="info-area">
-        <strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.
-      </div>
-    </div>
-  </div>
+      </div><!-- /typo-layout -->
 
+    </div><!-- /content -->
+  </div><!-- /window-content -->
 </div><!-- /window-shell -->
 
 <!-- ── Comment panel ── -->
@@ -447,15 +482,15 @@ console.log(tokens.typography);</div>
       <option value="general">General</option>
       <option value="title-bar">Window Title Bar</option>
       <option value="nav">Sidebar Nav</option>
-      <option value="controls">Controls Panel</option>
+      <option value="controls">Left Column (Controls)</option>
       <option value="top-bar">Top Bar</option>
-      <option value="preview">Preview Box</option>
-      <option value="info">Info Area</option>
+      <option value="preview">Preview Box (Right)</option>
       <option value="sampler">Context: Sampler</option>
       <option value="social">Context: Social Post</option>
       <option value="document">Context: Document</option>
       <option value="scale">Context: Type Scale</option>
       <option value="glyphs">Context: Glyphs</option>
+      <option value="layout">Overall Layout</option>
     </select>
     <textarea id="comment-text" placeholder="Add a comment..."></textarea>
     <button onclick="addComment()">Add Comment</button>
@@ -489,18 +524,33 @@ const FONT_WEIGHTS = {
   pixelcode: [{ v: 300, l: 'Light 300' }, { v: 400, l: 'Regular 400' }, { v: 500, l: 'Medium 500' }, { v: 700, l: 'Bold 700' }],
 };
 
-const FONT_CSS_REF = {
-  joystix:   { v: '--font-heading', f: "'Joystix Monospace'", t: 'font-heading' },
-  mondwest:  { v: '--font-sans', f: "'Mondwest'", t: 'font-sans' },
-  pixelcode: { v: '--font-mono', f: "'PixelCode'", t: 'font-mono' },
+const FONT_INFO = {
+  joystix: {
+    cssVar: 'var(--font-heading)', family: "'Joystix Monospace', monospace", tailwind: 'font-heading',
+    elements: 'h1–h6, labels, buttons',
+    about: 'An open source pixel font — bold and unapologetic. Use for headings, memes, and visual punch.',
+    weights: ['Regular 400'],
+  },
+  mondwest: {
+    cssVar: 'var(--font-sans)', family: "'Mondwest', system-ui", tailwind: 'font-sans',
+    elements: 'p, a, descriptions',
+    about: "Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.",
+    weights: ['Regular 400', 'Bold 700'],
+  },
+  pixelcode: {
+    cssVar: 'var(--font-mono)', family: "'PixelCode', monospace", tailwind: 'font-mono',
+    elements: 'code, pre, kbd, data',
+    about: 'A pixel-art monospace font with 4 weights and italic variants. For code blocks, technical labels, and data displays.',
+    weights: ['Light 300', 'Regular 400', 'Medium 500', 'Bold 700'],
+  },
 };
 
 const INFO_TEXT = {
-  sampler:  '<strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.',
-  social:   '<strong>Social Post</strong> &mdash; Tweet/card mockup. See how the typeface works in social media proportions. All text is editable.',
-  document: '<strong>Document</strong> &mdash; Heading + body + code block layout. Tests the font in a realistic reading context.',
-  scale:    '<strong>Type Scale</strong> &mdash; DNA\'s 7-step size scale (text-xs through text-3xl) rendered live in the selected font.',
-  glyphs:   '<strong>Glyphs</strong> &mdash; Full character set. Hover glyphs to inspect. Shows uppercase, lowercase, and digits.',
+  sampler:  '<strong style="color:#111;">Sampler</strong> &mdash; Free-text editable. Type anything to preview.',
+  social:   '<strong style="color:#111;">Social Post</strong> &mdash; Tweet/card mockup. All text is editable.',
+  document: '<strong style="color:#111;">Document</strong> &mdash; Heading + body + code. Realistic reading context.',
+  scale:    '<strong style="color:#111;">Type Scale</strong> &mdash; 7-step scale rendered live in selected font.',
+  glyphs:   '<strong style="color:#111;">Glyphs</strong> &mdash; Full character set. Hover to inspect.',
 };
 
 // ── Controls ──
@@ -509,24 +559,20 @@ function updateSize(v) {
   document.getElementById('size-val').textContent = v;
   applyStyles();
 }
-
 function updateLeading(v) {
   state.leading = +v;
   document.getElementById('leading-val').textContent = (v / 10).toFixed(1);
   applyStyles();
 }
-
 function updateSpacing(v) {
   state.spacing = +v;
   document.getElementById('spacing-val').textContent = v;
   applyStyles();
 }
-
 function updateWeight(v) {
   state.weight = +v;
   applyStyles();
 }
-
 function updateAlign(a) {
   state.align = a;
   document.querySelectorAll('[onclick^="updateAlign"]').forEach(b => {
@@ -536,7 +582,6 @@ function updateAlign(a) {
   event.target.style.color = '#fff';
   applyStyles();
 }
-
 function setMode(m, btn) {
   state.mode = m;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -546,11 +591,22 @@ function setMode(m, btn) {
 
 function switchFont(f) {
   state.font = f;
+  // Update weight select
   const ws = document.getElementById('weight-select');
   ws.innerHTML = FONT_WEIGHTS[f].map(w => `<option value="${w.v}">${w.l}</option>`).join('');
   state.weight = FONT_WEIGHTS[f][0].v;
-  const ref = FONT_CSS_REF[f];
-  document.getElementById('css-ref').innerHTML = `<div>var: ${ref.v}</div><div>family: ${ref.f}</div><div>tailwind: ${ref.t}</div>`;
+  // Update CSS Reference
+  const info = FONT_INFO[f];
+  const refBody = document.getElementById('css-ref-body');
+  refBody.innerHTML = `
+    <div class="ref-css-row"><span class="ref-css-label">CSS Var</span><span class="ref-css-value" onclick="copyText(this)">${info.cssVar}</span></div>
+    <div class="ref-css-row"><span class="ref-css-label">Family</span><span class="ref-css-value" onclick="copyText(this)">${info.family}</span></div>
+    <div class="ref-css-row"><span class="ref-css-label">Tailwind</span><span class="ref-css-value" onclick="copyText(this)">${info.tailwind}</span></div>
+    <div class="ref-css-row"><span class="ref-css-label">Elements</span><span class="ref-css-value">${info.elements}</span></div>
+  `;
+  // Update About
+  document.getElementById('about-text').textContent = info.about;
+  document.getElementById('about-weights').innerHTML = info.weights.map(w => `<div>${w}</div>`).join('');
   applyStyles();
 }
 
@@ -577,18 +633,12 @@ function applyStyles() {
   if (!ctx) return;
   const editables = ctx.querySelectorAll('[contenteditable]');
   editables.forEach(el => {
-    if (state.context !== 'scale') {
-      el.style.fontSize = state.size + 'px';
-    }
+    if (state.context !== 'scale') el.style.fontSize = state.size + 'px';
     el.style.lineHeight = (state.leading / 10).toFixed(1);
     el.style.letterSpacing = (state.spacing / 100) + 'em';
     el.style.fontWeight = state.weight;
     el.style.textAlign = state.align;
   });
-  if (state.context === 'sampler') {
-    const st = document.getElementById('sampler-text');
-    st.style.fontSize = state.size + 'px';
-  }
 }
 
 function toggleGroup(header) {
@@ -603,27 +653,30 @@ function toggleGroup(header) {
   }
 }
 
+function copyText(el) {
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const orig = el.textContent;
+    el.textContent = 'Copied!';
+    setTimeout(() => el.textContent = orig, 1000);
+  });
+}
+
 // ── Glyphs ──
 function buildGlyphs() {
-  const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const lower = 'abcdefghijklmnopqrstuvwxyz';
-  const digits = '0123456789';
-  function fill(containerId, chars) {
-    const el = document.getElementById(containerId);
-    el.innerHTML = chars.split('').map(c =>
+  function fill(id, chars) {
+    document.getElementById(id).innerHTML = chars.split('').map(c =>
       `<div class="glyph-cell" onmouseover="showGlyph('${c}', ${c.charCodeAt(0)})" onclick="showGlyph('${c}', ${c.charCodeAt(0)})">${c}</div>`
     ).join('');
   }
-  fill('glyph-upper', upper);
-  fill('glyph-lower', lower);
-  fill('glyph-digits', digits);
+  fill('glyph-upper', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  fill('glyph-lower', 'abcdefghijklmnopqrstuvwxyz');
+  fill('glyph-digits', '0123456789');
 }
-
 function showGlyph(char, code) {
   document.getElementById('glyph-char').textContent = char;
   document.getElementById('glyph-info').textContent = 'U+' + code.toString(16).toUpperCase().padStart(4, '0') + ' (' + code + ')';
   document.querySelectorAll('.glyph-cell').forEach(c => c.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 }
 
 // ── Comments ──
@@ -633,58 +686,37 @@ const STORAGE_KEY = 'type-playground-wireframe-comments';
 function loadComments() {
   try {
     fetch('/api/comments').then(r => r.ok ? r.json() : Promise.reject()).then(data => {
-      comments = data;
-      renderComments();
+      comments = data; renderComments();
     }).catch(() => {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) { comments = JSON.parse(saved); renderComments(); }
+      const s = localStorage.getItem(STORAGE_KEY);
+      if (s) { comments = JSON.parse(s); renderComments(); }
     });
   } catch {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) { comments = JSON.parse(saved); renderComments(); }
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) { comments = JSON.parse(s); renderComments(); }
   }
 }
-
 function saveComments() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-  fetch('/api/comments', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(comments),
-  }).catch(() => {});
+  fetch('/api/comments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(comments) }).catch(() => {});
 }
-
 function addComment() {
   const target = document.getElementById('comment-target').value;
   const text = document.getElementById('comment-text').value.trim();
   if (!text) return;
-  comments.push({
-    id: Date.now(),
-    target,
-    text,
-    time: new Date().toLocaleString(),
-  });
+  comments.push({ id: Date.now(), target, text, time: new Date().toLocaleString() });
   document.getElementById('comment-text').value = '';
-  saveComments();
-  renderComments();
+  saveComments(); renderComments();
 }
-
 function deleteComment(id) {
   comments = comments.filter(c => c.id !== id);
-  saveComments();
-  renderComments();
+  saveComments(); renderComments();
 }
-
 function renderComments() {
   const list = document.getElementById('comment-list');
   const empty = document.getElementById('comment-empty');
   document.getElementById('comment-count').textContent = comments.length;
-  if (comments.length === 0) {
-    empty.style.display = '';
-    list.innerHTML = '';
-    list.appendChild(empty);
-    return;
-  }
+  if (!comments.length) { empty.style.display = ''; list.innerHTML = ''; list.appendChild(empty); return; }
   empty.style.display = 'none';
   list.innerHTML = comments.map(c => `
     <div class="comment-item">
@@ -694,12 +726,9 @@ function renderComments() {
     </div>
   `).join('');
 }
-
 function toggleComments() {
-  const layer = document.getElementById('comment-layer');
-  const btn = document.getElementById('comment-toggle');
-  layer.classList.toggle('open');
-  btn.classList.toggle('shifted');
+  document.getElementById('comment-layer').classList.toggle('open');
+  document.getElementById('comment-toggle').classList.toggle('shifted');
 }
 
 // ── Init ──

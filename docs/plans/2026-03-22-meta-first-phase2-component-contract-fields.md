@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Extend authored `*.meta.ts` files so component-level contract data lives with the components, then project those fields into registry and generated contract artifacts with a pilot-first rollout.
+**Goal:** Add the first real component-owned contract fields to `*.meta.ts`, project them into registry and generated artifacts, and remove the hand-authored `componentMap` entries that now belong to component metadata.
 
-**Architecture:** Keep `packages/radiants/contract/system.ts` as the system-level baseline for cross-cutting token and motion data, but move component-owned contract facts into `*.meta.ts`. Phase 2 should be allowed to make small component adjustments when that removes awkward metadata one-offs; do not preserve a clumsy component surface just to avoid touching source. The generated outputs should consume the same meta-derived fields for registry, manifest, ESLint contract, and AI contract.
+**Architecture:** Keep `packages/radiants/contract/system.ts` as the home for system-wide token, motion, and shadow data. Move component-owned facts into `*.meta.ts` and thread them through one shared projection path used by registry metadata, the playground manifest, `eslint-contract.json`, and `ai-contract.json`. `Label.meta.ts` is gone and must not be reintroduced; the pilot set for this phase is `Separator`, `Meter`, `Collapsible`, `Toggle`, and `Card`. If a small component API or markup change makes the contract cleaner, change the component instead of encoding a one-off exception.
 
 **Tech Stack:** Node 22 ESM, TypeScript metadata files, React 19 components, Vitest, JSON generated artifacts, pnpm workspaces
 
@@ -12,7 +12,25 @@
 
 ---
 
-### Task 1: Extend `ComponentMeta` With Contract V2 Fields And Keep Schema Output Clean
+### Prerequisite Gate
+
+Run:
+
+```bash
+pnpm --filter @rdna/playground registry:generate
+test ! -f packages/radiants/components/core/Input/Label.meta.ts
+pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts
+```
+
+Expected:
+
+- `registry:generate` passes on the Phase 1 baseline
+- `Label.meta.ts` is absent
+- the existing contract builder test suite passes before Phase 2 work starts
+
+If `Label.meta.ts` exists on the branch, stop and reconcile branch drift before starting. Do not recreate it in this phase.
+
+### Task 1: Extend `ComponentMeta` With Phase 2 Contract Fields And Keep Schema Output Clean
 
 **Files:**
 - Modify: `packages/preview/src/types.ts`
@@ -26,7 +44,7 @@
 Extend `packages/preview/src/__tests__/component-meta.test.ts` with:
 
 ```ts
-it("supports design-contract fields alongside registry metadata", () => {
+it("supports phase-2 contract fields alongside preview metadata", () => {
   const meta = defineComponentMeta<Record<string, unknown>>()({
     name: "Card",
     description: "Card",
@@ -34,33 +52,50 @@ it("supports design-contract fields alongside registry metadata", () => {
     replaces: [{ element: "section", import: "@rdna/radiants/components/core" }],
     pixelCorners: true,
     shadowSystem: "pixel",
-    wraps: "@base-ui/react/button",
+    wraps: "@base-ui/react/toggle",
     styleOwnership: [
-      { attribute: "data-variant", themeOwned: ["default", "raised"] },
+      {
+        attribute: "data-variant",
+        themeOwned: ["default", "raised"],
+        consumerExtensible: ["custom"],
+      },
     ],
-    a11y: { contrastRequirement: "AA" },
-    structuralRules: [
-      { ruleId: "rdna/no-pixel-border", reason: "pixel corners own the border layer" },
-    ],
+    a11y: {
+      role: "button",
+      requiredAttributes: ["aria-pressed"],
+      contrastRequirement: "AA",
+    },
   });
 
   expect(meta.replaces?.[0]?.element).toBe("section");
   expect(meta.styleOwnership?.[0]?.attribute).toBe("data-variant");
-  expect(meta.shadowSystem).toBe("pixel");
+  expect(meta.a11y?.requiredAttributes).toContain("aria-pressed");
 });
 ```
 
-Extend `packages/preview/src/__tests__/generate-schemas.test.ts` so `schema.json` also excludes:
+Update `packages/preview/src/__tests__/generate-schemas.test.ts` so the fixture meta object itself now includes every new field:
+
+```ts
+replaces: [{ element: "section", import: "@rdna/radiants/components/core" }],
+pixelCorners: true,
+shadowSystem: "pixel",
+wraps: "@base-ui/react/toggle",
+styleOwnership: [{ attribute: "data-variant", themeOwned: ["default"] }],
+a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+```
+
+Then add exclusion assertions:
 
 ```ts
 expect(schema.replaces).toBeUndefined();
 expect(schema.pixelCorners).toBeUndefined();
 expect(schema.shadowSystem).toBeUndefined();
-expect(schema.styleOwnership).toBeUndefined();
 expect(schema.wraps).toBeUndefined();
+expect(schema.styleOwnership).toBeUndefined();
 expect(schema.a11y).toBeUndefined();
-expect(schema.structuralRules).toBeUndefined();
 ```
+
+Do not add `structuralRules` yet. It is deferred to Phase 3, when `eslint-contract.json` will start carrying rule-facing component metadata.
 
 **Step 2: Run tests to verify they fail**
 
@@ -74,7 +109,7 @@ Expected: FAIL because `ComponentMeta` does not yet accept the new fields and `g
 
 **Step 3: Extend the metadata types and schema stripper**
 
-Update `packages/preview/src/types.ts` with the exact contract types Phase 2 will use:
+Update `packages/preview/src/types.ts` with the exact Phase 2 contract types:
 
 ```ts
 export interface ElementReplacement {
@@ -82,12 +117,6 @@ export interface ElementReplacement {
   import?: string;
   note?: string;
   qualifier?: string;
-}
-
-export interface StructuralRule {
-  ruleId: string;
-  reason: string;
-  mechanism?: string;
 }
 
 export interface StyleOwnership {
@@ -104,7 +133,7 @@ export interface A11yContract {
 }
 ```
 
-Then extend `ComponentMeta<TProps>` with:
+Extend `ComponentMeta<TProps>` with:
 
 ```ts
 replaces?: ElementReplacement[];
@@ -113,12 +142,11 @@ shadowSystem?: "standard" | "pixel";
 styleOwnership?: StyleOwnership[];
 wraps?: string;
 a11y?: A11yContract;
-structuralRules?: StructuralRule[];
 ```
 
 Update `packages/preview/src/index.ts` to export the new types.
 
-Update `packages/preview/src/generate-schemas.ts` so the schema projection drops all contract-only fields:
+Update `packages/preview/src/generate-schemas.ts` so the schema projection strips every contract-only field:
 
 ```ts
 const {
@@ -131,7 +159,6 @@ const {
   styleOwnership: _styleOwnership,
   wraps: _wraps,
   a11y: _a11y,
-  structuralRules: _structuralRules,
   ...schema
 } = meta as ComponentMeta & {
   registry?: unknown;
@@ -153,12 +180,13 @@ Expected: PASS.
 
 ```bash
 git add packages/preview/src/types.ts packages/preview/src/index.ts packages/preview/src/__tests__/component-meta.test.ts packages/preview/src/generate-schemas.ts packages/preview/src/__tests__/generate-schemas.test.ts
-git commit -m "feat(preview): add component contract metadata fields"
+git commit -m "feat(preview): add phase-2 component contract fields"
 ```
 
-### Task 2: Surface Contract Fields Through Registry Metadata And The Playground Manifest
+### Task 2: Create One Shared Sparse Contract-Field Projection For Registry And Manifest
 
 **Files:**
+- Create: `packages/radiants/registry/contract-fields.ts`
 - Modify: `packages/radiants/registry/types.ts`
 - Modify: `packages/radiants/registry/build-registry-metadata.ts`
 - Modify: `packages/radiants/registry/__tests__/registry-metadata.test.ts`
@@ -167,41 +195,49 @@ git commit -m "feat(preview): add component contract metadata fields"
 
 **Step 1: Write the failing tests**
 
-Extend `packages/radiants/registry/__tests__/registry-metadata.test.ts` with:
+In `packages/radiants/registry/__tests__/registry-metadata.test.ts`, add a fixture-level test that does not depend on real components:
 
 ```ts
-it("surfaces contract metadata when components declare it", () => {
-  const entries = buildRegistryMetadata();
-  const label = entries.find((entry) => entry.name === "Label");
-  const card = entries.find((entry) => entry.name === "Card");
+it("projects sparse contract fields from fixture metadata", () => {
+  const fields = pickContractFields({
+    name: "Toggle",
+    description: "Toggle",
+    props: {},
+    wraps: "@base-ui/react/toggle",
+    a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+    styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+  });
 
-  expect(label?.replaces).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({ element: "label" }),
-    ]),
-  );
-  expect(card?.styleOwnership).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        attribute: "data-variant",
-        themeOwned: expect.arrayContaining(["default", "raised"]),
-      }),
-    ]),
+  expect(fields).toEqual({
+    wraps: "@base-ui/react/toggle",
+    a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+    styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+  });
+});
+```
+
+In `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts`, add a manifest-side fixture test:
+
+```ts
+it("reuses the same sparse contract projection for manifest serialization", () => {
+  const fixture = {
+    name: "Separator",
+    description: "Separator",
+    props: {},
+    replaces: [{ element: "hr", import: "@rdna/radiants/components/core" }],
+    wraps: "@base-ui/react/separator",
+  };
+
+  expect(buildManifestContractFields(fixture)).toEqual(
+    pickContractFields(fixture),
   );
 });
 ```
 
-Extend `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts` with:
+Add one omission assertion so absent fields stay absent:
 
 ```ts
-it("manifest contract fields match registry metadata for every entry that declares them", () => {
-  for (const entry of buildRegistryMetadata()) {
-    const hit = getManifestEntry("@rdna/radiants", entry.name);
-    if (entry.replaces) expect(hit?.replaces, `${entry.name}: replaces mismatch`).toEqual(entry.replaces);
-    if (entry.styleOwnership) expect(hit?.styleOwnership, `${entry.name}: styleOwnership mismatch`).toEqual(entry.styleOwnership);
-    if (entry.wraps) expect(hit?.wraps, `${entry.name}: wraps mismatch`).toBe(entry.wraps);
-  }
-});
+expect(buildManifestContractFields({ name: "Plain", description: "Plain", props: {} })).toEqual({});
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -213,37 +249,42 @@ pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-meta
 pnpm --filter @rdna/playground test -- app/playground/__tests__/manifest-radiants-sync.test.ts
 ```
 
-Expected: FAIL because registry metadata and the manifest do not yet serialize the new contract fields.
+Expected: FAIL because the shared projection helper does not exist and the registry/manifest builders do not yet serialize the new fields.
 
-**Step 3: Extend the registry and manifest projections**
+**Step 3: Add the shared sparse projection helper**
 
-Update `packages/radiants/registry/types.ts` so `RegistryMetadataEntry` carries:
-
-```ts
-replaces?: ElementReplacement[];
-pixelCorners?: boolean;
-shadowSystem?: "standard" | "pixel";
-styleOwnership?: StyleOwnership[];
-wraps?: string;
-a11y?: A11yContract;
-structuralRules?: StructuralRule[];
-```
-
-Update `packages/radiants/registry/build-registry-metadata.ts` to pass those fields through from `data.meta`.
-
-Update `tools/playground/scripts/generate-registry.ts` so `ManifestComponent` includes the same contract fields and `buildRadiantsManifest()` serializes them from `meta`:
+Create `packages/radiants/registry/contract-fields.ts`:
 
 ```ts
-replaces: meta.replaces as ElementReplacement[] | undefined,
-pixelCorners: meta.pixelCorners as boolean | undefined,
-shadowSystem: meta.shadowSystem as "standard" | "pixel" | undefined,
-styleOwnership: meta.styleOwnership as StyleOwnership[] | undefined,
-wraps: meta.wraps as string | undefined,
-a11y: meta.a11y as A11yContract | undefined,
-structuralRules: meta.structuralRules as StructuralRule[] | undefined,
+export function pickContractFields(meta: ComponentMeta<unknown>) {
+  return Object.fromEntries(
+    Object.entries({
+      replaces: meta.replaces,
+      pixelCorners: meta.pixelCorners,
+      shadowSystem: meta.shadowSystem,
+      styleOwnership: meta.styleOwnership,
+      wraps: meta.wraps,
+      a11y: meta.a11y,
+    }).filter(([, value]) => value !== undefined),
+  );
+}
 ```
 
-Keep the manifest sparse for components that do not declare any of these fields yet; omit absent contract fields instead of inventing placeholders.
+Update `packages/radiants/registry/types.ts` so `RegistryMetadataEntry` carries the same fields.
+
+Update `packages/radiants/registry/build-registry-metadata.ts` to spread `pickContractFields(data.meta)` into each entry.
+
+Update `tools/playground/scripts/generate-registry.ts` to export:
+
+```ts
+export function buildManifestContractFields(meta: ComponentMeta<unknown>) {
+  return pickContractFields(meta);
+}
+```
+
+Then spread `buildManifestContractFields(meta)` into each manifest component.
+
+Keep both projections sparse. Do not emit placeholder arrays or empty objects.
 
 **Step 4: Run tests to verify they pass**
 
@@ -259,11 +300,11 @@ Expected: PASS.
 **Step 5: Commit**
 
 ```bash
-git add packages/radiants/registry/types.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/scripts/generate-registry.ts tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts
-git commit -m "feat(registry): project component contract fields"
+git add packages/radiants/registry/contract-fields.ts packages/radiants/registry/types.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/scripts/generate-registry.ts tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts
+git commit -m "feat(registry): share sparse component contract field projection"
 ```
 
-### Task 3: Build Meta-Derived Contract Sections And Add Validation Guardrails
+### Task 3: Build Meta-Derived Contract Sections And Add M-5 Validation Guardrails
 
 **Files:**
 - Create: `tools/playground/scripts/load-radiants-component-contracts.ts`
@@ -273,65 +314,98 @@ git commit -m "feat(registry): project component contract fields"
 
 **Step 1: Write the failing tests**
 
-Extend `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts` with:
+Extend `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts` with pure fixture-based coverage:
 
 ```ts
-import { radiantsSystemContract } from "../../../../../packages/radiants/contract/system.ts";
-import { buildRadiantsContractsFromComponents } from "../../../scripts/build-radiants-contract.ts";
+it("builds componentMap and component sections from meta-derived input", async () => {
+  const { eslintContract, aiContract } = await buildRadiantsContractsFromComponents(
+    radiantsSystemContract,
+    [
+      {
+        name: "Separator",
+        sourcePath: "packages/radiants/components/core/Separator/Separator.tsx",
+        replaces: [{ element: "hr", import: "@rdna/radiants/components/core" }],
+        wraps: "@base-ui/react/separator",
+        a11y: { role: "separator", requiredAttributes: ["aria-orientation"] },
+      },
+      {
+        name: "Card",
+        sourcePath: "packages/radiants/components/core/Card/Card.tsx",
+        pixelCorners: true,
+        shadowSystem: "pixel",
+        styleOwnership: [{ attribute: "data-variant", themeOwned: ["default", "raised"] }],
+        a11y: { contrastRequirement: "AA" },
+      },
+    ],
+  );
 
-it("builds componentMap and component contract entries from meta-derived input", async () => {
-  const { eslintContract, aiContract } = await buildRadiantsContractsFromComponents([
-    {
-      name: "Label",
-      sourcePath: "packages/radiants/components/core/Input/Input.tsx",
-      replaces: [{ element: "label", import: "@rdna/radiants/components/core" }],
-    },
-    {
-      name: "Card",
-      sourcePath: "packages/radiants/components/core/Card/Card.tsx",
-      pixelCorners: true,
-      shadowSystem: "pixel",
-      styleOwnership: [{ attribute: "data-variant", themeOwned: ["default", "raised"] }],
-    },
-  ]);
-
-  expect(eslintContract.componentMap.label.component).toBe("Label");
+  expect(eslintContract.componentMap.hr.component).toBe("Separator");
   expect(eslintContract.components.Card.pixelCorners).toBe(true);
-  expect(eslintContract.themeVariants).toEqual(expect.arrayContaining(["default", "raised"]));
+  expect(eslintContract.components.Separator.a11y?.role).toBe("separator");
   expect(aiContract.components).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ name: "Label", replaces: ["<label>"] }),
+      expect.objectContaining({
+        name: "Separator",
+        replaces: ["<hr>"],
+        a11y: expect.objectContaining({ role: "separator" }),
+      }),
     ]),
   );
 });
+```
 
+Add the M-5 guard tests:
+
+```ts
 it("throws when two components claim the same raw element", async () => {
   await expect(
-    buildRadiantsContractsFromComponents([
+    buildRadiantsContractsFromComponents(radiantsSystemContract, [
       {
-        name: "Label",
-        sourcePath: "packages/radiants/components/core/Input/Input.tsx",
-        replaces: [{ element: "label", import: "@rdna/radiants/components/core" }],
+        name: "Separator",
+        sourcePath: "packages/radiants/components/core/Separator/Separator.tsx",
+        replaces: [{ element: "hr" }],
       },
       {
-        name: "FieldLabel",
-        sourcePath: "packages/radiants/components/core/Field/Field.tsx",
-        replaces: [{ element: "label", import: "@rdna/radiants/components/core" }],
+        name: "FancyRule",
+        sourcePath: "packages/radiants/components/core/FancyRule/FancyRule.tsx",
+        replaces: [{ element: "hr" }],
       },
     ]),
-  ).rejects.toThrow(/label/);
+  ).rejects.toThrow(/hr/);
 });
 
 it("throws when a component declares replaces without a resolved sourcePath", async () => {
   await expect(
-    buildRadiantsContractsFromComponents([
+    buildRadiantsContractsFromComponents(radiantsSystemContract, [
       {
-        name: "GhostLabel",
+        name: "GhostSeparator",
         sourcePath: null,
-        replaces: [{ element: "label", import: "@rdna/radiants/components/core" }],
+        replaces: [{ element: "hr" }],
       },
     ]),
   ).rejects.toThrow(/sourcePath/);
+});
+```
+
+Add one integration test for the public builder so the wiring is specified, not implied:
+
+```ts
+it("loads component contracts before building generated artifacts", async () => {
+  const loadComponents = vi.fn().mockResolvedValue([
+    {
+      name: "Separator",
+      sourcePath: "packages/radiants/components/core/Separator/Separator.tsx",
+      replaces: [{ element: "hr", import: "@rdna/radiants/components/core" }],
+    },
+  ]);
+
+  const { eslintContract } = await buildRadiantsContracts({
+    system: radiantsSystemContract,
+    loadComponents,
+  });
+
+  expect(loadComponents).toHaveBeenCalledTimes(1);
+  expect(eslintContract.componentMap.hr.component).toBe("Separator");
 });
 ```
 
@@ -343,11 +417,11 @@ Run:
 pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts
 ```
 
-Expected: FAIL because the builder does not yet accept meta-derived component contract input or validate duplicates and missing source paths.
+Expected: FAIL because the builder does not yet accept meta-derived component input, does not project `a11y`, and does not validate ghost or duplicate `replaces` declarations.
 
-**Step 3: Refactor the builder around meta-derived component sources**
+**Step 3: Refactor the builder around loaded component contracts**
 
-Create `tools/playground/scripts/load-radiants-component-contracts.ts` that scans the Radiants `*.meta.ts` files once and returns:
+Create `tools/playground/scripts/load-radiants-component-contracts.ts` with:
 
 ```ts
 export interface RadiantsContractComponent {
@@ -359,59 +433,54 @@ export interface RadiantsContractComponent {
   styleOwnership?: StyleOwnership[];
   wraps?: string;
   a11y?: A11yContract;
-  structuralRules?: StructuralRule[];
 }
 ```
 
-Update `tools/playground/scripts/build-radiants-contract.ts` to expose a pure helper:
+Populate it from the same component metadata source the registry builder already walks. Reuse `pickContractFields(meta)` instead of hand-copying field names again.
+
+Update `tools/playground/scripts/build-radiants-contract.ts` to export:
 
 ```ts
 export async function buildRadiantsContractsFromComponents(
+  system: RadiantsSystemContract,
   components: RadiantsContractComponent[],
 ) {
-  // merge meta-derived data into componentMap, components, ai components, and themeVariants
+  // build componentMap, eslintContract.components, aiContract.components, and themeVariants
 }
 ```
 
-Add `eslintContract.components` keyed by component name:
+Add a public entry point that wires the loader into the existing builder:
 
 ```ts
-components: {
-  Card: {
-    pixelCorners: true,
-    shadowSystem: "pixel",
-    styleOwnership: [{ attribute: "data-variant", themeOwned: ["default", "raised"] }],
-  },
+export async function buildRadiantsContracts(options = {}) {
+  const system = options.system ?? radiantsSystemContract;
+  const loadComponents = options.loadComponents ?? loadRadiantsComponentContracts;
+  const components = await loadComponents();
+  return buildRadiantsContractsFromComponents(system, components);
 }
 ```
 
-Build `componentMap` from `replaces` declarations, not from hand-maintained component-specific literals.
-
-Aggregate `themeVariants` as:
-
-```ts
-const themeVariants = Array.from(
-  new Set([
-    ...system.themeVariants,
-    ...components.flatMap((component) =>
-      component.styleOwnership?.flatMap((owner) => owner.themeOwned) ?? [],
-    ),
-  ]),
-);
-```
-
-Validation rules:
+Required validation:
 
 ```ts
 if (component.replaces?.length && !component.sourcePath) {
   throw new Error(`Component ${component.name} declares replaces but has no resolved sourcePath`);
 }
 if (seen.has(replacement.element)) {
-  throw new Error(`Duplicate replaces entry for <${replacement.element}> between ${first.name} and ${component.name}`);
+  throw new Error(
+    `Duplicate replaces entry for <${replacement.element}> between ${first.name} and ${component.name}`,
+  );
 }
 ```
 
-Update `generate-registry.ts` to reuse the new loader instead of re-implementing a second scan.
+Projection rules:
+
+- Build `eslintContract.componentMap` only from `replaces`
+- Build `eslintContract.components[componentName]` from `pixelCorners`, `shadowSystem`, `styleOwnership`, `wraps`, and `a11y`
+- Project `a11y` into `aiContract.components` as well
+- Merge `styleOwnership[*].themeOwned` into `eslintContract.themeVariants`
+
+Update `tools/playground/scripts/generate-registry.ts` to reuse `loadRadiantsComponentContracts()` instead of creating a second component-contract scan.
 
 **Step 4: Run tests to verify they pass**
 
@@ -427,46 +496,56 @@ Expected: PASS.
 
 ```bash
 git add tools/playground/scripts/load-radiants-component-contracts.ts tools/playground/scripts/build-radiants-contract.ts tools/playground/scripts/generate-registry.ts tools/playground/app/playground/__tests__/build-radiants-contract.test.ts
-git commit -m "feat(contract): build component sections from meta fields"
+git commit -m "feat(contract): build generated artifacts from component contract metadata"
 ```
 
-### Task 4: Migrate The Pilot Component Set And Allow Small Component Simplifications
+### Task 4: Migrate The Real Pilot Component Set
 
 **Files:**
-- Modify: `packages/radiants/components/core/Input/Label.meta.ts`
 - Modify: `packages/radiants/components/core/Separator/Separator.meta.ts`
 - Modify: `packages/radiants/components/core/Meter/Meter.meta.ts`
 - Modify: `packages/radiants/components/core/Collapsible/Collapsible.meta.ts`
+- Modify: `packages/radiants/components/core/Toggle/Toggle.meta.ts`
 - Modify: `packages/radiants/components/core/Card/Card.meta.ts`
 - Modify: `packages/radiants/registry/__tests__/registry-metadata.test.ts`
 - Modify: `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts`
+- Modify: `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts`
 
 **Step 1: Write the failing tests**
 
-Add explicit pilot assertions to `packages/radiants/registry/__tests__/registry-metadata.test.ts`:
+Add explicit real-component assertions to `packages/radiants/registry/__tests__/registry-metadata.test.ts`:
 
 ```ts
 it("projects pilot contract fields from real component meta files", () => {
   const entries = buildRegistryMetadata();
-  const label = entries.find((entry) => entry.name === "Label");
   const separator = entries.find((entry) => entry.name === "Separator");
   const meter = entries.find((entry) => entry.name === "Meter");
   const collapsible = entries.find((entry) => entry.name === "Collapsible");
+  const toggle = entries.find((entry) => entry.name === "Toggle");
   const card = entries.find((entry) => entry.name === "Card");
 
-  expect(label?.replaces?.map((item) => item.element)).toEqual(["label"]);
+  expect(separator?.replaces?.map((item) => item.element)).toEqual(["hr"]);
   expect(separator?.wraps).toBe("@base-ui/react/separator");
   expect(meter?.replaces?.map((item) => item.element)).toEqual(["meter", "progress"]);
   expect(collapsible?.replaces?.map((item) => item.element)).toEqual(["details", "summary"]);
+  expect(toggle?.a11y).toEqual(
+    expect.objectContaining({
+      role: "button",
+      requiredAttributes: ["aria-pressed"],
+    }),
+  );
   expect(card?.styleOwnership).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ attribute: "data-variant" }),
+      expect.objectContaining({
+        attribute: "data-variant",
+        themeOwned: expect.arrayContaining(["default", "inverted", "raised"]),
+      }),
     ]),
   );
 });
 ```
 
-Add corresponding generated-contract assertions to `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts`.
+Add matching generated-artifact assertions to `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts` and `manifest-radiants-sync.test.ts`.
 
 **Step 2: Run tests to verify they fail**
 
@@ -474,21 +553,12 @@ Run:
 
 ```bash
 pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
-pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts
+pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts
 ```
 
-Expected: FAIL because the pilot meta files do not yet declare the new contract fields.
+Expected: FAIL because the pilot `*.meta.ts` files do not yet declare the new contract fields.
 
-**Step 3: Add the pilot contract metadata**
-
-Update `packages/radiants/components/core/Input/Label.meta.ts`:
-
-```ts
-replaces: [{ element: "label", import: "@rdna/radiants/components/core" }],
-a11y: {
-  contrastRequirement: "AA",
-},
-```
+**Step 3: Add the pilot metadata**
 
 Update `packages/radiants/components/core/Separator/Separator.meta.ts`:
 
@@ -506,7 +576,7 @@ Update `packages/radiants/components/core/Meter/Meter.meta.ts`:
 ```ts
 replaces: [
   { element: "meter", import: "@rdna/radiants/components/core" },
-  { element: "progress", import: "@rdna/radiants/components/core", note: "Use Meter for progress indicators" },
+  { element: "progress", import: "@rdna/radiants/components/core", note: "Use Meter for progress indicators in v1" },
 ],
 wraps: "@base-ui/react/meter",
 a11y: {
@@ -520,9 +590,20 @@ Update `packages/radiants/components/core/Collapsible/Collapsible.meta.ts`:
 ```ts
 replaces: [
   { element: "details", import: "@rdna/radiants/components/core" },
-  { element: "summary", import: "@rdna/radiants/components/core", note: "Use Collapsible.Trigger" },
+  { element: "summary", import: "@rdna/radiants/components/core", note: "Use Collapsible.Trigger for the summary surface" },
 ],
 wraps: "@base-ui/react/collapsible",
+```
+
+Update `packages/radiants/components/core/Toggle/Toggle.meta.ts`:
+
+```ts
+wraps: "@base-ui/react/toggle",
+a11y: {
+  role: "button",
+  requiredAttributes: ["aria-pressed"],
+  keyboardInteractions: ["Enter", "Space"],
+},
 ```
 
 Update `packages/radiants/components/core/Card/Card.meta.ts`:
@@ -541,7 +622,7 @@ a11y: {
 },
 ```
 
-If a pilot component still exposes an attribute surface that makes the metadata obviously awkward, simplify the component now instead of encoding a one-off contract exception.
+If one of these components exposes awkward contract surfaces, simplify the component source now instead of encoding metadata that describes a known bad API.
 
 **Step 4: Run tests to verify they pass**
 
@@ -549,20 +630,20 @@ Run:
 
 ```bash
 pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
-pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts
+pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts
 pnpm --filter @rdna/playground registry:generate
 ```
 
-Expected: PASS, and the regenerated contract artifacts include pilot-derived entries.
+Expected: PASS, and the regenerated contract artifacts include the pilot-derived entries.
 
 **Step 5: Commit**
 
 ```bash
-git add packages/radiants/components/core/Input/Label.meta.ts packages/radiants/components/core/Separator/Separator.meta.ts packages/radiants/components/core/Meter/Meter.meta.ts packages/radiants/components/core/Collapsible/Collapsible.meta.ts packages/radiants/components/core/Card/Card.meta.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/app/playground/__tests__/build-radiants-contract.test.ts packages/radiants/generated/eslint-contract.json packages/radiants/generated/ai-contract.json tools/playground/generated/registry.manifest.json
+git add packages/radiants/components/core/Separator/Separator.meta.ts packages/radiants/components/core/Meter/Meter.meta.ts packages/radiants/components/core/Collapsible/Collapsible.meta.ts packages/radiants/components/core/Toggle/Toggle.meta.ts packages/radiants/components/core/Card/Card.meta.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/app/playground/__tests__/build-radiants-contract.test.ts tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts packages/radiants/generated/eslint-contract.json packages/radiants/generated/ai-contract.json tools/playground/generated/registry.manifest.json
 git commit -m "feat(contract): add pilot component contract metadata"
 ```
 
-### Task 5: Backfill Legacy Replacement Components And Drain `system.ts` `componentMap`
+### Task 5: Backfill Remaining Replacement Owners And Drain `system.ts` `componentMap`
 
 **Files:**
 - Modify: `packages/radiants/components/core/Button/Button.meta.ts`
@@ -574,6 +655,7 @@ git commit -m "feat(contract): add pilot component contract metadata"
 - Modify: `tools/playground/app/playground/__tests__/build-radiants-contract.test.ts`
 - Modify: `packages/radiants/generated/eslint-contract.json`
 - Modify: `packages/radiants/generated/ai-contract.json`
+- Modify: `tools/playground/generated/registry.manifest.json`
 
 **Step 1: Write the failing tests**
 
@@ -586,9 +668,10 @@ it("no longer relies on hand-authored componentMap entries in system.ts", async 
   const { eslintContract } = await buildRadiantsContracts();
   expect(eslintContract.componentMap.button.component).toBe("Button");
   expect(eslintContract.componentMap.input.component).toBe("Input");
+  expect(eslintContract.componentMap.textarea.component).toBe("TextArea");
   expect(eslintContract.componentMap.select.component).toBe("Select");
-  expect(eslintContract.componentMap.textarea.component).toBe("Input");
   expect(eslintContract.componentMap.dialog.component).toBe("Dialog");
+  expect(eslintContract.componentMap.label).toBeUndefined();
 });
 ```
 
@@ -600,9 +683,9 @@ Run:
 pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts
 ```
 
-Expected: FAIL because `radiantsSystemContract.componentMap` is still hand-authored and the remaining meta files do not yet declare `replaces`.
+Expected: FAIL because `radiantsSystemContract.componentMap` is still hand-authored and the remaining replacement owners have not been backfilled into metadata yet.
 
-**Step 3: Backfill the remaining replacement owners**
+**Step 3: Backfill the remaining replacement declarations**
 
 Update:
 
@@ -616,8 +699,8 @@ Use:
 
 ```ts
 replaces: [{ element: "button", import: "@rdna/radiants/components/core" }]
-replaces: [{ element: "input", import: "@rdna/radiants/components/core", note: "Only enforce for text-like input types in v1" }]
-replaces: [{ element: "textarea", import: "@rdna/radiants/components/core", note: "Use Input with multiline" }]
+replaces: [{ element: "input", import: "@rdna/radiants/components/core", note: "Text-like inputs only in v1" }]
+replaces: [{ element: "textarea", import: "@rdna/radiants/components/core" }]
 replaces: [{ element: "select", import: "@rdna/radiants/components/core" }]
 replaces: [{ element: "dialog", import: "@rdna/radiants/components/core" }]
 ```
@@ -628,7 +711,9 @@ Then reduce `packages/radiants/contract/system.ts` to:
 componentMap: {},
 ```
 
-Do not drain `themeVariants` yet. Phase 2 only removes component-owned replacement data from `system.ts`; theme variant cleanup waits for broader `styleOwnership` coverage.
+Do not add a synthetic `<label>` replacement here. `Label` is deleted, and Phase 2 should leave `label` unmapped until there is a real replacement owner worth enforcing.
+
+Leave `structuralRules` out of Phase 2. Phase 3 will introduce it only once `eslint-contract.json` is carrying rule-facing component metadata.
 
 **Step 4: Run tests to verify they pass**
 
@@ -640,11 +725,11 @@ pnpm --filter @rdna/playground registry:generate
 pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
 ```
 
-Expected: PASS, and the generated contract artifacts stay complete with an empty system-level `componentMap`.
+Expected: PASS, and the generated artifacts stay complete with an empty system-level `componentMap`.
 
 **Step 5: Commit**
 
 ```bash
 git add packages/radiants/components/core/Button/Button.meta.ts packages/radiants/components/core/Input/Input.meta.ts packages/radiants/components/core/Input/TextArea.meta.ts packages/radiants/components/core/Select/Select.meta.ts packages/radiants/components/core/Dialog/Dialog.meta.ts packages/radiants/contract/system.ts tools/playground/app/playground/__tests__/build-radiants-contract.test.ts packages/radiants/generated/eslint-contract.json packages/radiants/generated/ai-contract.json tools/playground/generated/registry.manifest.json
-git commit -m "feat(contract): move replacement map ownership into component meta"
+git commit -m "feat(contract): move replacement ownership into component metadata"
 ```

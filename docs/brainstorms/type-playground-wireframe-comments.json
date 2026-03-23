@@ -1,0 +1,8 @@
+[
+  {
+    "id": 1774229942550,
+    "target": "controls",
+    "text": "This should be \"under/in\" the typography tab accordian. Their sub content should be in the same area as the sampler. Sampler aligned right, controls/type scale aligned left. Sampler should be sticky, while content for type scale/element styles / css reference can be scrolled. We'll use the existing content for it",
+    "time": "3/22/2026, 8:39:02 PM"
+  }
+]
