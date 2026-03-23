@@ -54,3 +54,6 @@ coverage/
 .mcp.json
 .cursor/mcp.json
 .vscode/mcp.json
+
+# Collaborator app state
+.collaborator/
