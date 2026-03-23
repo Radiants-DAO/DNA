@@ -50,13 +50,13 @@ function App() {
 
 ### Available Components
 
-- **Layout**: Card, Divider
+- **Layout**: Card
 - **Actions**: Button, ContextMenu, DropdownMenu
-- **Forms**: Input, TextArea, Select, Checkbox, Radio, Switch, Slider
+- **Forms**: Input, InputSet, TextArea, Select, Checkbox, Radio, Switch, Slider
 - **Feedback**: Alert, Badge, Spinner, Toast, Tooltip
-- **Overlays**: Dialog, Popover, Sheet, HelpPanel
+- **Overlays**: Dialog, Popover, Sheet
 - **Navigation**: Tabs, Breadcrumbs
-- **Specialty**: CountdownTimer, Web3ActionBar
+- **Specialty**: CountdownTimer
 
 ### Hooks
 
