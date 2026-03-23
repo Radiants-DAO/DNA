@@ -155,13 +155,6 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
     tags: ["cta", "action", "click"],
     renderMode: "inline",
     exampleProps: { children: "Button", icon: "go-forward" },
-    variants: [
-      { label: "Solid", props: { mode: "solid", children: "Button" } },
-      { label: "Flat", props: { mode: "flat", children: "Button" } },
-      { label: "Quiet", props: { quiet: true, children: "Button" } },
-      { label: "Text", props: { mode: "text", children: "Button" } },
-      { label: "Pattern", props: { mode: "pattern", children: "Button" } },
-    ],
     states: ["hover", "pressed", "focus", "disabled"],
   },
 });

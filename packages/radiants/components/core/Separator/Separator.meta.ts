@@ -57,14 +57,14 @@ export const SeparatorMeta = defineComponentMeta<SeparatorProps>()({
       ornamentBackground: "accent",
     },
   },
-  variants: [
-    { label: "Solid", props: { variant: "solid" } },
-    { label: "Dashed", props: { variant: "dashed" } },
-    { label: "Decorated", props: { variant: "decorated" } },
-  ],
   registry: {
     category: "layout",
     tags: ["divider", "line", "separator", "hr"],
     renderMode: "inline",
+    variants: [
+      { label: "Solid", props: { variant: "solid" } },
+      { label: "Dashed", props: { variant: "dashed" } },
+      { label: "Decorated", props: { variant: "decorated" } },
+    ],
   },
 });

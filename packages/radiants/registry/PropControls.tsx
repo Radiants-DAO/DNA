@@ -136,6 +136,7 @@ function EnumControl({
         onChange(name, hasNumeric && !Number.isNaN(Number(raw)) ? Number(raw) : raw);
       }}
       size="sm"
+      compact
     >
       {values.map((optionValue) => {
         const label = String(optionValue);

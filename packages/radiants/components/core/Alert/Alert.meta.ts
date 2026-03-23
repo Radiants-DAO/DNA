@@ -95,12 +95,5 @@ export const AlertMeta = defineComponentMeta<AlertProps>()({
     category: "feedback",
     tags: ["message", "banner", "notification"],
     renderMode: "custom",
-    variants: [
-      { label: "Default", props: { variant: "default" } },
-      { label: "Success", props: { variant: "success" } },
-      { label: "Warning", props: { variant: "warning" } },
-      { label: "Error", props: { variant: "error" } },
-      { label: "Info", props: { variant: "info" } },
-    ],
   },
 });

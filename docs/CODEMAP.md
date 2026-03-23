@@ -91,7 +91,7 @@ graph TB
     subgraph ESLINT["eslint/ — eslint-plugin-rdna"]
         direction LR
         ESLINT_INDEX["index.mjs<br/>Plugin entry + configs"]
-        ESLINT_RULES["rules/<br/>11 rules (see CLAUDE.md)"]
+        ESLINT_RULES["rules/<br/>15 rule files"]
         ESLINT_TOKEN_MAP["token-map.mjs<br/>Token validation data"]
         ESLINT_UTILS["utils.mjs<br/>rdna-disable-comment-utils.mjs"]
     end
@@ -151,6 +151,26 @@ graph LR
     style SCHEMA fill:#f3e8ff,stroke:#7c3aed,color:#000
     style TSX fill:#fed7aa,stroke:#ea580c,color:#000
 ```
+
+### Exports Map (`package.json`)
+
+| Export Path | Entry Point | Type |
+|-------------|-------------|------|
+| `.` | `index.css` | Full theme CSS |
+| `./tokens` | `tokens.css` | Token-only CSS |
+| `./dark` | `dark.css` | Dark mode overrides |
+| `./animations` | `animations.css` | Motion CSS |
+| `./base` | `base.css` | Base reset CSS |
+| `./typography` | `typography.css` | Typography styles |
+| `./fonts` | `fonts.css` | Font declarations |
+| `./components/core` | `components/core/index.ts` | All component exports |
+| `./icons` | `icons/index.ts` | 154 icon components + dynamic loader |
+| `./schemas` | `schemas/index.ts` | Generated schema barrel |
+| `./eslint` | `eslint/index.mjs` | ESLint plugin |
+| `./registry` | `registry/index.ts` | Component registry + types |
+| `./meta` | `meta/index.ts` | Component meta index |
+| `./patterns` | `patterns/index.ts` | 51 dither patterns (6 groups) |
+| `./registry/forced-states.css` | `registry/forced-states.css` | Pseudo-state CSS |
 
 ### All 33 Components
 
@@ -222,14 +242,14 @@ graph TB
         INVERT["InvertModeProvider.tsx<br/>InvertOverlay.tsx"]
     end
 
-    subgraph APP_COMPONENTS["components/apps/ — 7 Apps"]
+    subgraph APP_COMPONENTS["components/apps/ — 6 Catalog Apps"]
         ABOUT["AboutApp.tsx"]
         BRAND["BrandAssetsApp.tsx"]
         LINKS["LinksApp.tsx"]
         MANIFESTO["ManifestoApp.tsx"]
         STUDIO["RadiantsStudioApp.tsx"]
         RADIO["RadRadioApp.tsx<br/>+ rad-radio/ambient.tsx"]
-        TYPE_PG["typography-playground/<br/>TypographyPlayground.tsx<br/>PlaygroundControls.tsx<br/>ReferencePanels.tsx<br/>SubTabNav.tsx<br/>TemplatePreview.tsx<br/>TypeManual.tsx<br/>typography-data.ts"]
+        TYPE_PG["typography-playground/<br/>(sub-component of Studio)"]
     end
 
     subgraph STATE["store/ — Zustand"]
@@ -274,6 +294,21 @@ graph TB
     style APP_COMPONENTS fill:#fef3c7,stroke:#d97706,color:#000
     style STATE fill:#dcfce7,stroke:#16a34a,color:#000
 ```
+
+### App Catalog (`lib/apps/catalog.tsx`)
+
+| id | Window Title | Section | Ambient Capable |
+|----|-------------|---------|-----------------|
+| `brand` | Brand Assets | apps | - |
+| `manifesto` | Manifesto | apps | - |
+| `music` | Rad Radio | apps | wallpaper, widget, controller |
+| `links` | Links | apps | - |
+| `about` | About | apps | - |
+| `studio` | Radiants Studio | web3 | - |
+
+### Zustand Store Persistence
+
+Key: `rados-storage` (v1). Persists: `volume`, `reduceMotion`, `darkMode`, `radioFavorites`. Does NOT persist window positions or invertMode.
 
 ---
 
@@ -524,7 +559,38 @@ graph TB
 
 ---
 
-## 10. Quick File Finder
+## 10. Documentation & Research Map
+
+```mermaid
+graph TB
+    subgraph DOCS["docs/"]
+        THEME_SPEC["theme-spec.md<br/>Complete DNA specification"]
+        PROD_READY["production-readiness-*.md<br/>Checklist, execution,<br/>interview, research tracks"]
+
+        subgraph DOCS_SUB["Subdirectories"]
+            PLANS["plans/<br/>23 implementation plans<br/>(2026-03-05 → 2026-03-22)"]
+            BRAINSTORMS["brainstorms/<br/>10 feature explorations"]
+            RESEARCH_D["research/<br/>Token primitives, guard rails,<br/>design contract synthesis"]
+            QA["qa/<br/>Visual compare, lint baseline,<br/>CSS contract hardening"]
+            REPORTS["reports/<br/>Playground spike,<br/>production readiness audit"]
+            SOLUTIONS["solutions/<br/>integration-issues/ (3)<br/>tooling/ (6)"]
+            ARCHIVE["archive/<br/>Legacy conversion guides"]
+        end
+    end
+
+    subgraph RESEARCH["research/"]
+        DG["design-guard/<br/>Architecture candidates,<br/>scorecard, recommendation,<br/>evidence log, loop log"]
+        AUDIT["production-readiness-*<br/>Audit swarm, behavior loop,<br/>cleanup loop, UI browser loop"]
+        CLAUDE_LOOP["claude-max-loop-*<br/>Bootstrap + continuation"]
+    end
+
+    style DOCS fill:#f1f5f9,stroke:#475569,color:#000
+    style RESEARCH fill:#fef9c3,stroke:#ca8a04,color:#000
+```
+
+---
+
+## 11. Quick File Finder
 
 ### Where is...?
 
@@ -569,6 +635,17 @@ graph TB
 | **Design system doc** | `packages/radiants/DESIGN.md` |
 | **Plans archive** | `docs/plans/` |
 | **Research artifacts** | `research/design-guard/` |
+| **Iteration files** | `tools/playground/app/playground/iterations/` |
+| **Iteration prompt builder** | `tools/playground/app/playground/prompts/iteration.prompt.ts` |
+| **Annotation store** | `tools/playground/app/playground/api/agent/annotation-store.ts` |
+| **Signal store** | `tools/playground/app/playground/api/agent/signal-store.ts` |
+| **Window sizing** | `apps/rad-os/lib/windowSizing.ts` |
+| **Konami code easter egg** | `apps/rad-os/hooks/useKonamiCode.ts` |
+| **WebGL background** | `apps/rad-os/components/background/WebGLSun.tsx` |
+| **Preview package types** | `packages/preview/src/types.ts` |
+| **Define component meta** | `packages/preview/src/define-component-meta.ts` |
+| **Prompt templates** | `prompts/dna-conversion/templates/` |
+| **Production readiness** | `docs/production-readiness-checklist.md` |
 
 ### Ports
 

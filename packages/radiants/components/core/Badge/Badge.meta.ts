@@ -48,12 +48,5 @@ export const BadgeMeta = defineComponentMeta<BadgeProps>()({
     category: "feedback",
     tags: ["status", "label", "indicator"],
     renderMode: "inline",
-    variants: [
-      { label: "Default", props: { variant: "default" } },
-      { label: "Success", props: { variant: "success" } },
-      { label: "Warning", props: { variant: "warning" } },
-      { label: "Error", props: { variant: "error" } },
-      { label: "Info", props: { variant: "info" } },
-    ],
   },
 });
