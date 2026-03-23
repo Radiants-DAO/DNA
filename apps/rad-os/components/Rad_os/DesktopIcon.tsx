@@ -47,16 +47,16 @@ export function DesktopIcon({
 
   return (
     <Tooltip content={label} position="top">
-      <div onClick={handleClick} className={className}>
-        <Button
-          quiet
-          size="md"
-          iconOnly={true}
-          icon={icon}
-          active={isActive}
-          aria-label={label}
-        />
-      </div>
+      <Button
+        quiet
+        size="md"
+        iconOnly={true}
+        icon={icon}
+        active={isActive}
+        aria-label={label}
+        onClick={handleClick}
+        className={className}
+      />
     </Tooltip>
   );
 }
