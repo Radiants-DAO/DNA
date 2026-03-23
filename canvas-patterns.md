@@ -1,0 +1,6 @@
+---
+type: reference
+---
+
+# Canvas Patterns
+

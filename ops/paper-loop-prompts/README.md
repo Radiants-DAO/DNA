@@ -60,31 +60,29 @@ This means loop iteration N+1 is always smarter than iteration N.
 | `[x]`  | Done by worker, awaiting review |
 | `[v]`  | Verified by reviewer            |
 
-## Launch Sequence
+## Launch Commands
 
-### 1. Brand Manual (ensure Paper is on "Brand Assets/Icons/etc" page)
+Each workstream runs ONE `/loop` that spawns 3 parallel agents per iteration (worker A top→down, worker B bottom→up, reviewer).
 
-```text
-/loop 3m Read ops/paper-loop-prompts/brand-worker-topdown.md and execute one iteration
-/loop 3m Read ops/paper-loop-prompts/brand-worker-bottomup.md and execute one iteration
-/loop 4m Read ops/paper-loop-prompts/brand-reviewer.md and execute one iteration
+### 1. Brand Manual (Paper on "Brand Assets/Icons/etc" page)
+
+```
+/loop 1m Read ops/paper-loop-prompts/orchestrator-brand.md and execute one iteration
 ```
 
-### 2. Social Graphics (switch Paper to "Social Graphics" page)
+### 2. Social Graphics (Paper on "Social Graphics" page)
 
-```text
-/loop 3m Read ops/paper-loop-prompts/figma-worker-topdown.md (use social graphics checklist) and execute one iteration
-/loop 3m Read ops/paper-loop-prompts/figma-worker-bottomup.md (use social graphics checklist) and execute one iteration
-/loop 4m Read ops/paper-loop-prompts/figma-reviewer.md (use social graphics checklist) and execute one iteration
+```
+/loop 1m Read ops/paper-loop-prompts/orchestrator-social.md and execute one iteration
 ```
 
-### 3. Decks/Pitches (switch Paper to "Decks/Pitches" page)
+### 3. Decks/Pitches (Paper on "Decks/Pitches" page)
 
-```text
-/loop 3m Read ops/paper-loop-prompts/figma-worker-topdown.md (use decks/pitches checklist) and execute one iteration
-/loop 3m Read ops/paper-loop-prompts/figma-worker-bottomup.md (use decks/pitches checklist) and execute one iteration
-/loop 4m Read ops/paper-loop-prompts/figma-reviewer.md (use decks/pitches checklist) and execute one iteration
 ```
+/loop 1m Read ops/paper-loop-prompts/orchestrator-decks.md and execute one iteration
+```
+
+Run all 3 simultaneously if you want all workstreams active, or one at a time for focused work.
 
 ## Key References
 

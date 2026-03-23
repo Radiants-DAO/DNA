@@ -1,29 +1,41 @@
+---
+type: "note"
+---
 # Decks/Pitches Orchestrator
 
-You coordinate three parallel agents to recreate Figma pitch deck slides in Paper.
+You (Opus) coordinate two Haiku worker agents and perform reviews yourself inline.
 
 ## Setup
 
-- **Checklist**: `/Users/rivermassey/Desktop/dev/DNA/ops/paper-decks-pitches-checklist.md`
-- **Learnings**: `/Users/rivermassey/Desktop/dev/DNA/ops/paper-loop-prompts/LEARNINGS.md`
-- **Figma file key**: `MICrnPV32mAQA2kxjGsooA`
-- **Paper page**: "Decks/Pitches"
+* **Checklist**: `/Users/rivermassey/Desktop/dev/DNA/ops/paper-decks-pitches-checklist.md`
+
+* **Learnings**: `/Users/rivermassey/Desktop/dev/DNA/ops/paper-loop-prompts/LEARNINGS.md`
+
+* **Figma file key**: `MICrnPV32mAQA2kxjGsooA`
+
+* **Paper page**: "Decks/Pitches"
 
 ## Each Iteration
 
 ### 1. Read state
 
 Read the checklist and LEARNINGS.md. Assess:
-- `[ ]` items remaining (top and bottom)
-- `[x]` items needing review
-- Convergence status
+
+* `[ ]` items remaining (top and bottom)
+
+* `[x]` items needing review
+
+* Convergence status
 
 If all items are `[v]`, say "Decks complete!" and stop.
 
-### 2. Spawn agents in parallel
+### 2. Spawn Haiku workers (background agents)
+
+Spawn workers as background agents. Both use Haiku.
 
 **Worker A (top→down)** — if `[ ]` items remain from top:
-```
+
+```text
 Read ops/paper-loop-prompts/LEARNINGS.md, then ops/paper-decks-pitches-checklist.md.
 Find the FIRST [ ] item. Do ONE item only.
 
@@ -54,25 +66,34 @@ Log gotchas to LEARNINGS.md. Call finish_working_on_nodes.
 ```
 
 **Worker B (bottom→up)** — if `[ ]` items remain from bottom:
-```
+
+```text
 Same rules as Worker A but find the LAST [ ] item.
 Read LEARNINGS.md, read checklist, find LAST [ ] item, do ONE item.
 Get Figma design, resolve to literal CSS, create artboard, write HTML incrementally.
 Screenshot, verify, mark [x]. Log gotchas. finish_working_on_nodes.
 ```
 
-**Reviewer** — if any `[x]` items exist:
-```
-Read LEARNINGS.md, read checklist, find an [x] item. Review ONE.
+### 3. Review pass (inline, Opus orchestrator)
 
-Get Figma original screenshot (fileKey: MICrnPV32mAQA2kxjGsooA, nodeId from checklist).
-Get Paper artboard screenshot (get_basic_info → find artboard → get_screenshot).
+While workers run in background, review any `[x]` items yourself (do NOT spawn a reviewer agent).
 
-Compare layout, colors, text, images, dimensions.
-PASS → [v]. FAIL → [ ] with notes. Minor fixes → fix then [v].
-Log systemic issues. finish_working_on_nodes.
-```
+For each `[x]` item:
 
-### 3. Report
+1. Get Figma original screenshot (`get_screenshot` with fileKey and nodeId from checklist)
+2. Get Paper artboard screenshot (`get_basic_info` → find artboard → `get_screenshot`)
+3. Compare layout, colors, text, images, dimensions
+4. Verdict:
+   - **PASS** → mark `[v]`
+   - **FAIL** → mark `[ ]` with notes
+   - **Minor fixes** → fix in Paper (`update_styles`/`set_text_content`/`write_html`), then mark `[v]`
+5. Call `finish_working_on_nodes` after any Paper edits
+6. Update checklist, log systemic issues to LEARNINGS.md
+
+Review as many `[x]` items as exist — don't stop at one.
+
+### 4. Report
 
 Summarize: completed, reviewed, remaining, learnings.
+
+⠀
