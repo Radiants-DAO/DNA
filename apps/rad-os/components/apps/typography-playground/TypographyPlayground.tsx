@@ -10,6 +10,16 @@ import {
 } from './typography-data';
 import { PlaygroundControls } from './PlaygroundControls';
 import { TemplatePreview } from './TemplatePreview';
+import {
+  TypeScalePanel,
+  ElementStylesPanel,
+  CssReferencePanel,
+  AboutFontPanel,
+  TypeScaleDemo,
+  ElementStylesDemo,
+  CssReferenceDemo,
+  AboutFontDemo,
+} from './ReferencePanels';
 
 export type SubTab = 'playground' | 'scale' | 'elements' | 'css-ref' | 'about';
 
@@ -64,7 +74,7 @@ export function TypographyPlayground({
     }),
   };
 
-  // Suppress unused-var warnings — wired in Tasks 4-6
+  // Suppress unused-var warnings — wired in Task 6
   void _onSubTabChange;
 
   return (
@@ -111,7 +121,10 @@ export function TypographyPlayground({
             onGlowChange={setGlow}
           />
         )}
-        {/* Reference panels -- Task 4 */}
+        {activeSubTab === 'scale' && <TypeScalePanel />}
+        {activeSubTab === 'elements' && <ElementStylesPanel />}
+        {activeSubTab === 'css-ref' && <CssReferencePanel font={font} />}
+        {activeSubTab === 'about' && <AboutFontPanel font={font} />}
       </div>
 
       {/* -- Right column: preview -- */}
@@ -124,7 +137,10 @@ export function TypographyPlayground({
               style={previewStyle}
             />
           )}
-          {/* Reference demos -- Task 4 */}
+          {activeSubTab === 'scale' && <TypeScaleDemo font={font} />}
+          {activeSubTab === 'elements' && <ElementStylesDemo />}
+          {activeSubTab === 'css-ref' && <CssReferenceDemo font={font} />}
+          {activeSubTab === 'about' && <AboutFontDemo font={font} />}
         </div>
       </div>
     </div>
