@@ -18,6 +18,12 @@ export const InputMeta: ComponentMeta = {
   description: "Text input",
   props: { placeholder: { type: "string" } },
   tokenBindings: { base: { background: "--color-page" } },
+  replaces: [{ element: "section", import: "@rdna/radiants/components/core" }],
+  pixelCorners: true,
+  shadowSystem: "pixel",
+  wraps: "@base-ui/react/toggle",
+  styleOwnership: [{ attribute: "data-variant", themeOwned: ["default"] }],
+  a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
 };`
   );
 
@@ -90,6 +96,12 @@ describe("generate-schemas", () => {
     expect(schema.name).toBe("Input");
     expect(schema.tokenBindings).toBeUndefined();
     expect(schema.registry).toBeUndefined();
+    expect(schema.replaces).toBeUndefined();
+    expect(schema.pixelCorners).toBeUndefined();
+    expect(schema.shadowSystem).toBeUndefined();
+    expect(schema.wraps).toBeUndefined();
+    expect(schema.styleOwnership).toBeUndefined();
+    expect(schema.a11y).toBeUndefined();
   });
 
   it("writes a barrel file with entries for each discovered meta", async () => {

@@ -1,7 +1,9 @@
 export { PreviewPage } from "./PreviewPage";
 export type {
+  A11yContract,
   ComponentMeta,
   ComponentCategory,
+  ElementReplacement,
   ForcedState,
   PropDef,
   PropDefType,
@@ -9,5 +11,6 @@ export type {
   RegistryMeta,
   RegistryVariant,
   SlotDef,
+  StyleOwnership,
 } from "./types";
 export { defineComponentMeta } from "./define-component-meta";

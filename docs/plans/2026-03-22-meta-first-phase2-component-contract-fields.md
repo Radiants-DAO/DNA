@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Add the first real component-owned contract fields to `*.meta.ts`, project them into registry and generated artifacts, and remove the hand-authored `componentMap` entries that now belong to component metadata.
+**Goal:** Add the first real component-owned contract fields to `*.meta.ts`, project them into registry and generated artifacts, remove the hand-authored `componentMap` entries that now belong to component metadata, and keep playground variant rendering sourced only from shared registry/meta data.
 
-**Architecture:** Keep `packages/radiants/contract/system.ts` as the home for system-wide token, motion, and shadow data. Move component-owned facts into `*.meta.ts` and thread them through one shared projection path used by registry metadata, the playground manifest, `eslint-contract.json`, and `ai-contract.json`. `Label.meta.ts` is gone and must not be reintroduced; the pilot set for this phase is `Separator`, `Meter`, `Collapsible`, `Toggle`, and `Card`. If a small component API or markup change makes the contract cleaner, change the component instead of encoding a one-off exception.
+**Architecture:** Keep `packages/radiants/contract/system.ts` as the home for system-wide token, motion, and shadow data. Move component-owned facts into `*.meta.ts` and thread them through one shared projection path used by registry metadata, the playground manifest, `eslint-contract.json`, and `ai-contract.json`. Playground-local hand-authored variant presets are intentionally gone; the shared Radiants registry remains the only source for curated variant cards, so Phase 2 must not recreate an app-layer variant override path. `Label.meta.ts` is gone and must not be reintroduced; the pilot set for this phase is `Separator`, `Meter`, `Collapsible`, `Toggle`, and `Card`. If a small component API or markup change makes the contract cleaner, change the component instead of encoding a one-off exception.
 
 **Tech Stack:** Node 22 ESM, TypeScript metadata files, React 19 components, Vitest, JSON generated artifacts, pnpm workspaces
 
@@ -191,6 +191,8 @@ git commit -m "feat(preview): add phase-2 component contract fields"
 - Modify: `packages/radiants/registry/build-registry-metadata.ts`
 - Modify: `packages/radiants/registry/__tests__/registry-metadata.test.ts`
 - Modify: `tools/playground/scripts/generate-registry.ts`
+- Modify: `tools/playground/app/playground/registry.tsx`
+- Modify: `tools/playground/app/playground/__tests__/registry.test.ts`
 - Modify: `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts`
 
 **Step 1: Write the failing tests**
@@ -240,16 +242,33 @@ Add one omission assertion so absent fields stay absent:
 expect(buildManifestContractFields({ name: "Plain", description: "Plain", props: {} })).toEqual({});
 ```
 
+In `tools/playground/app/playground/__tests__/registry.test.ts`, add a shared-registry regression:
+
+```ts
+import { registry as sharedRegistry } from "@rdna/radiants/registry";
+
+it("uses shared registry variants for radiants entries without playground-local presets", () => {
+  const sharedButton = sharedRegistry.find((entry) => entry.name === "Button");
+  const playgroundButton = registry.find(
+    (entry) => entry.packageName === "@rdna/radiants" && entry.componentName === "Button",
+  );
+
+  expect(sharedButton?.variants).toBeDefined();
+  expect(playgroundButton?.variants).toEqual(sharedButton?.variants);
+});
+```
+
 **Step 2: Run tests to verify they fail**
 
 Run:
 
 ```bash
 pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
+pnpm --filter @rdna/playground test -- app/playground/__tests__/registry.test.ts
 pnpm --filter @rdna/playground test -- app/playground/__tests__/manifest-radiants-sync.test.ts
 ```
 
-Expected: FAIL because the shared projection helper does not exist and the registry/manifest builders do not yet serialize the new fields.
+Expected: FAIL because the shared projection helper does not exist, the registry/manifest builders do not yet serialize the new fields, and the playground registry path is not yet explicitly guarded against reintroducing local variant presets.
 
 **Step 3: Add the shared sparse projection helper**
 
@@ -284,6 +303,8 @@ export function buildManifestContractFields(meta: ComponentMeta<unknown>) {
 
 Then spread `buildManifestContractFields(meta)` into each manifest component.
 
+Update `tools/playground/app/playground/registry.tsx` only if needed so Radiants entries continue to pass through shared `entry.variants` directly. Do not recreate a playground-local variants array, fallback variant preset list, or app-layer merge step for shared Radiants components. If a stale override path still exists on the branch, delete it in this task.
+
 Keep both projections sparse. Do not emit placeholder arrays or empty objects.
 
 **Step 4: Run tests to verify they pass**
@@ -292,6 +313,7 @@ Run:
 
 ```bash
 pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
+pnpm --filter @rdna/playground test -- app/playground/__tests__/registry.test.ts
 pnpm --filter @rdna/playground test -- app/playground/__tests__/manifest-radiants-sync.test.ts
 ```
 
@@ -300,7 +322,7 @@ Expected: PASS.
 **Step 5: Commit**
 
 ```bash
-git add packages/radiants/registry/contract-fields.ts packages/radiants/registry/types.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/scripts/generate-registry.ts tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts
+git add packages/radiants/registry/contract-fields.ts packages/radiants/registry/types.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/registry-metadata.test.ts tools/playground/scripts/generate-registry.ts tools/playground/app/playground/registry.tsx tools/playground/app/playground/__tests__/registry.test.ts tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts
 git commit -m "feat(registry): share sparse component contract field projection"
 ```
 

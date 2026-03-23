@@ -24,6 +24,26 @@ export interface SlotDef {
   description?: string;
 }
 
+export interface ElementReplacement {
+  element: string;
+  import?: string;
+  note?: string;
+  qualifier?: string;
+}
+
+export interface StyleOwnership {
+  attribute: `data-${string}`;
+  themeOwned: string[];
+  consumerExtensible?: string[];
+}
+
+export interface A11yContract {
+  role?: string;
+  requiredAttributes?: string[];
+  keyboardInteractions?: string[];
+  contrastRequirement?: "AA" | "AAA";
+}
+
 export type ForcedState = "hover" | "pressed" | "focus" | "disabled" | "error";
 
 export interface RegistryVariant<TProps> {
@@ -59,6 +79,12 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
   slots?: Record<string, SlotDef>;
   subcomponents?: string[];
   tokenBindings?: Record<string, Record<string, string>>;
+  replaces?: ElementReplacement[];
+  pixelCorners?: boolean;
+  shadowSystem?: "standard" | "pixel";
+  styleOwnership?: StyleOwnership[];
+  wraps?: string;
+  a11y?: A11yContract;
   examples?: Array<{ name: string; code: string }>;
   registry?: RegistryMeta<TProps>;
   /**

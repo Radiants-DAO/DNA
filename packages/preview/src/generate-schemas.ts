@@ -40,7 +40,18 @@ async function processDir(
     const baseName = metaFile.replace(/\.meta\.ts$/, "");
     activeBaseNames.add(baseName);
     const schemaPath = join(dirPath, `${baseName}.schema.json`);
-    const { tokenBindings: _tokenBindings, registry: _registry, sourcePath: _sourcePath, ...schema } = meta as ComponentMeta & {
+    const {
+      tokenBindings: _tokenBindings,
+      registry: _registry,
+      sourcePath: _sourcePath,
+      replaces: _replaces,
+      pixelCorners: _pixelCorners,
+      shadowSystem: _shadowSystem,
+      styleOwnership: _styleOwnership,
+      wraps: _wraps,
+      a11y: _a11y,
+      ...schema
+    } = meta as ComponentMeta & {
       registry?: unknown;
       sourcePath?: string;
     };
