@@ -51,7 +51,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [v] CountdownTimer — Clean pass. All 3 variants (default/compact/large) render correctly with proper hierarchy: label (text-mute), countdown digits (font-heading text-main), unit labels. Large variant uses segment boxes (pixel-rounded-sm + bg-depth). Dark mode: all semantic tokens flip correctly, good contrast. No hardcoded hex, no viewport breakpoints, no z-index issues. Known non-visual issue: type mismatch (schema says string, implementation accepts number|Date).
 
 ### T1g — Dropdowns
-- [ ] ContextMenu — hover/interaction patterns
+- [v] ContextMenu — Clean pass. Right-click trigger opens popup with Edit/Duplicate/Delete items. Hover uses bg-inv + text-flip (inverted pair). Destructive items (Delete) keep text-danger on hover (intentional). Separator uses border-rule. pixel-rounded-sm + pixel-shadow-raised on popup. Dark mode: all tokens flip correctly, good contrast in both default and hover states. z-[1000] legitimate overlay. No hardcoded hex, no viewport breakpoints. Note: items use text-base while Combobox uses text-sm — cross-dropdown consistency is a design-level concern (T1g checklist item).
 - [ ] DropdownMenu — hover/interaction patterns
 - [ ] Menubar — hover/interaction patterns
 - [ ] NavigationMenu — hover/interaction patterns
