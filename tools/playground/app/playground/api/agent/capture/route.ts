@@ -56,7 +56,10 @@ export async function POST(request: Request) {
     if (typeof body.requestId !== "string") {
       return NextResponse.json({ error: "Missing requestId" }, { status: 400 });
     }
-    captureStore.fail(body.requestId, body.error ?? "Unknown error");
+    const found = captureStore.fail(body.requestId, body.error ?? "Unknown error");
+    if (!found) {
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
     return NextResponse.json({ success: true });
   }
 

@@ -43,18 +43,27 @@ export function CaptureService() {
     const captureHandler = (event: Event) => {
       const { previewUrl, requestId } = (event as CustomEvent<CaptureRequestDetail>).detail;
 
+      // Append capture=<requestId> so the preview page triggers auto-capture
+      const url = new URL(previewUrl, window.location.origin);
+      url.searchParams.set("capture", requestId);
+
       const iframe = document.createElement("iframe");
       iframe.style.cssText =
         "position:fixed;top:-9999px;left:-9999px;width:800px;height:600px;border:none;pointer-events:none;";
-      iframe.src = previewUrl;
+      iframe.src = url.toString();
       document.body.appendChild(iframe);
       activeIframes.current.set(requestId, iframe);
 
-      // Timeout safety net
-      setTimeout(() => {
+      // Timeout safety net — also report failure to capture store
+      setTimeout(async () => {
         if (activeIframes.current.has(requestId)) {
           activeIframes.current.get(requestId)?.remove();
           activeIframes.current.delete(requestId);
+          await fetch("/playground/api/agent/capture", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "error", requestId, error: "capture timeout" }),
+          }).catch(() => {});
         }
       }, CAPTURE_TIMEOUT_MS);
     };

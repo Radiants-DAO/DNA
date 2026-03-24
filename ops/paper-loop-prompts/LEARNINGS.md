@@ -534,3 +534,11 @@
 **Rule**: For rotated vector arrows from Figma, preserve the exact container size and rotation angle — Paper handles SVG transform rotation correctly.
 ---
 
+### [CSS] Unicode escape sequences (\u201C) render literally in Paper — use HTML entities instead
+**Agent**: worker-b
+**Item**: #78 Frame 2085660712 (754x754 vulnerability quote)
+**Problem**: Passing curly quotes as `\u201C` and `\u201D` in the HTML string to `write_html` rendered them as literal text "\u201CYou..." instead of as the actual Unicode characters.
+**Solution**: Use HTML entities `&#x201C;` and `&#x201D;` instead of JavaScript Unicode escapes. Paper's HTML parser correctly converts HTML entities to their corresponding characters.
+**Rule**: In Paper `write_html`, use HTML entities (`&#x201C;`, `&#x201D;`, `&#x2019;`, etc.) for special Unicode characters, not JS escape sequences (`\u201C`).
+---
+
