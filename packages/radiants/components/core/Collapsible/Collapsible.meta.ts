@@ -48,6 +48,15 @@ export const CollapsibleMeta = defineComponentMeta<CollapsibleProps>()({
       code: "<Collapsible>\n  <CollapsibleTrigger>Toggle section</CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>Hidden content revealed on click</p>\n  </CollapsibleContent>\n</Collapsible>",
     },
   ],
+  replaces: [
+    { element: "details", import: "@rdna/radiants/components/core" },
+    {
+      element: "summary",
+      import: "@rdna/radiants/components/core",
+      note: "Use Collapsible.Trigger for the summary surface",
+    },
+  ],
+  wraps: "@base-ui/react/collapsible",
   registry: {
     category: "layout",
     tags: ["collapse", "expand", "toggle"],

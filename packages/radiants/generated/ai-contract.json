@@ -379,12 +379,19 @@
       "import": "@rdna/radiants/components/core"
     },
     {
+      "name": "Card",
+      "a11y": {
+        "contrastRequirement": "AA"
+      }
+    },
+    {
       "name": "Collapsible",
       "replaces": [
         "<details>",
         "<summary>"
       ],
-      "import": "@rdna/radiants/components/core"
+      "import": "@rdna/radiants/components/core",
+      "wraps": "@base-ui/react/collapsible"
     },
     {
       "name": "Dialog",
@@ -414,7 +421,12 @@
         "<meter>",
         "<progress>"
       ],
-      "import": "@rdna/radiants/components/core"
+      "import": "@rdna/radiants/components/core",
+      "wraps": "@base-ui/react/meter",
+      "a11y": {
+        "role": "meter",
+        "contrastRequirement": "AA"
+      }
     },
     {
       "name": "Select",
@@ -428,7 +440,28 @@
       "replaces": [
         "<hr>"
       ],
-      "import": "@rdna/radiants/components/core"
+      "import": "@rdna/radiants/components/core",
+      "wraps": "@base-ui/react/separator",
+      "a11y": {
+        "role": "separator",
+        "requiredAttributes": [
+          "aria-orientation"
+        ]
+      }
+    },
+    {
+      "name": "Toggle",
+      "wraps": "@base-ui/react/toggle",
+      "a11y": {
+        "role": "button",
+        "requiredAttributes": [
+          "aria-pressed"
+        ],
+        "keyboardInteractions": [
+          "Enter",
+          "Space"
+        ]
+      }
     }
   ],
   "elementReplacements": {

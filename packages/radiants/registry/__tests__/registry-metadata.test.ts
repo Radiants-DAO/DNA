@@ -112,4 +112,32 @@ describe('buildRegistryMetadata', () => {
       styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
     });
   });
+
+  it("projects pilot contract fields from real component meta files", () => {
+    const entries = buildRegistryMetadata();
+    const separator = entries.find((entry) => entry.name === "Separator");
+    const meter = entries.find((entry) => entry.name === "Meter");
+    const collapsible = entries.find((entry) => entry.name === "Collapsible");
+    const toggle = entries.find((entry) => entry.name === "Toggle");
+    const card = entries.find((entry) => entry.name === "Card");
+
+    expect(separator?.replaces?.map((item) => item.element)).toEqual(["hr"]);
+    expect(separator?.wraps).toBe("@base-ui/react/separator");
+    expect(meter?.replaces?.map((item) => item.element)).toEqual(["meter", "progress"]);
+    expect(collapsible?.replaces?.map((item) => item.element)).toEqual(["details", "summary"]);
+    expect(toggle?.a11y).toEqual(
+      expect.objectContaining({
+        role: "button",
+        requiredAttributes: ["aria-pressed"],
+      }),
+    );
+    expect(card?.styleOwnership).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attribute: "data-variant",
+          themeOwned: expect.arrayContaining(["default", "inverted", "raised"]),
+        }),
+      ]),
+    );
+  });
 });

@@ -23,6 +23,33 @@ describe("radiants manifest sync", () => {
     expect(buildManifestContractFields({ name: "Plain", description: "Plain", props: {} })).toEqual({});
   });
 
+  it("serializes pilot contract fields for real components", () => {
+    const separator = getManifestEntry("@rdna/radiants", "Separator");
+    const meter = getManifestEntry("@rdna/radiants", "Meter");
+    const collapsible = getManifestEntry("@rdna/radiants", "Collapsible");
+    const toggle = getManifestEntry("@rdna/radiants", "Toggle");
+    const card = getManifestEntry("@rdna/radiants", "Card");
+
+    expect(separator?.replaces?.map((item: { element: string }) => item.element)).toEqual(["hr"]);
+    expect(separator?.wraps).toBe("@base-ui/react/separator");
+    expect(meter?.replaces?.map((item: { element: string }) => item.element)).toEqual(["meter", "progress"]);
+    expect(collapsible?.replaces?.map((item: { element: string }) => item.element)).toEqual(["details", "summary"]);
+    expect(toggle?.a11y).toEqual(
+      expect.objectContaining({
+        role: "button",
+        requiredAttributes: ["aria-pressed"],
+      }),
+    );
+    expect(card?.styleOwnership).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attribute: "data-variant",
+          themeOwned: expect.arrayContaining(["default", "inverted", "raised"]),
+        }),
+      ]),
+    );
+  });
+
   it("every shared Radiants entry resolves manifest metadata by name", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);

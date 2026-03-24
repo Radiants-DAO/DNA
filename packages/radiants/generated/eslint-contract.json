@@ -164,7 +164,7 @@
     "summary": {
       "component": "Collapsible",
       "import": "@rdna/radiants/components/core",
-      "note": "Use Collapsible trigger"
+      "note": "Use Collapsible.Trigger for the summary surface"
     },
     "label": {
       "component": "Label",
@@ -177,14 +177,64 @@
     "progress": {
       "component": "Meter",
       "import": "@rdna/radiants/components/core",
-      "note": "Use Meter for progress indicators"
+      "note": "Use Meter for progress indicators in v1"
     },
     "hr": {
       "component": "Separator",
       "import": "@rdna/radiants/components/core"
     }
   },
-  "components": {},
+  "components": {
+    "Card": {
+      "pixelCorners": true,
+      "shadowSystem": "pixel",
+      "styleOwnership": [
+        {
+          "attribute": "data-variant",
+          "themeOwned": [
+            "default",
+            "inverted",
+            "raised"
+          ]
+        }
+      ],
+      "a11y": {
+        "contrastRequirement": "AA"
+      }
+    },
+    "Collapsible": {
+      "wraps": "@base-ui/react/collapsible"
+    },
+    "Meter": {
+      "wraps": "@base-ui/react/meter",
+      "a11y": {
+        "role": "meter",
+        "contrastRequirement": "AA"
+      }
+    },
+    "Separator": {
+      "wraps": "@base-ui/react/separator",
+      "a11y": {
+        "role": "separator",
+        "requiredAttributes": [
+          "aria-orientation"
+        ]
+      }
+    },
+    "Toggle": {
+      "wraps": "@base-ui/react/toggle",
+      "a11y": {
+        "role": "button",
+        "requiredAttributes": [
+          "aria-pressed"
+        ],
+        "keyboardInteractions": [
+          "Enter",
+          "Space"
+        ]
+      }
+    }
+  },
   "pixelCorners": {
     "triggerClasses": [
       "pixel-rounded-xs",

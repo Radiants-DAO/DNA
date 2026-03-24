@@ -648,6 +648,21 @@
             "shadow": "pixel-shadow-raised",
             "bevel": "white-0.2/black-0.08"
           }
+        },
+        "pixelCorners": true,
+        "shadowSystem": "pixel",
+        "styleOwnership": [
+          {
+            "attribute": "data-variant",
+            "themeOwned": [
+              "default",
+              "inverted",
+              "raised"
+            ]
+          }
+        ],
+        "a11y": {
+          "contrastRequirement": "AA"
         }
       },
       {
@@ -790,7 +805,19 @@
             "code": "<Collapsible>\n  <CollapsibleTrigger>Toggle section</CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>Hidden content revealed on click</p>\n  </CollapsibleContent>\n</Collapsible>"
           }
         ],
-        "tokenBindings": null
+        "tokenBindings": null,
+        "replaces": [
+          {
+            "element": "details",
+            "import": "@rdna/radiants/components/core"
+          },
+          {
+            "element": "summary",
+            "import": "@rdna/radiants/components/core",
+            "note": "Use Collapsible.Trigger for the summary surface"
+          }
+        ],
+        "wraps": "@base-ui/react/collapsible"
       },
       {
         "name": "Combobox",
@@ -1395,7 +1422,23 @@
             "code": "<Meter value={75} min={0} max={100} high={80} optimum={50} />"
           }
         ],
-        "tokenBindings": null
+        "tokenBindings": null,
+        "replaces": [
+          {
+            "element": "meter",
+            "import": "@rdna/radiants/components/core"
+          },
+          {
+            "element": "progress",
+            "import": "@rdna/radiants/components/core",
+            "note": "Use Meter for progress indicators in v1"
+          }
+        ],
+        "wraps": "@base-ui/react/meter",
+        "a11y": {
+          "role": "meter",
+          "contrastRequirement": "AA"
+        }
       },
       {
         "name": "NavigationMenu",
@@ -2040,6 +2083,19 @@
             "lineColor": "rule",
             "ornamentBackground": "accent"
           }
+        },
+        "replaces": [
+          {
+            "element": "hr",
+            "import": "@rdna/radiants/components/core"
+          }
+        ],
+        "wraps": "@base-ui/react/separator",
+        "a11y": {
+          "role": "separator",
+          "requiredAttributes": [
+            "aria-orientation"
+          ]
         }
       },
       {
@@ -2614,7 +2670,18 @@
             "code": "<Toggle disabled>Underline</Toggle>"
           }
         ],
-        "tokenBindings": null
+        "tokenBindings": null,
+        "wraps": "@base-ui/react/toggle",
+        "a11y": {
+          "role": "button",
+          "requiredAttributes": [
+            "aria-pressed"
+          ],
+          "keyboardInteractions": [
+            "Enter",
+            "Space"
+          ]
+        }
       },
       {
         "name": "ToggleGroup",

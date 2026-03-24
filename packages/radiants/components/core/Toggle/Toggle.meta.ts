@@ -65,6 +65,12 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
       code: "<Toggle disabled>Underline</Toggle>",
     },
   ],
+  wraps: "@base-ui/react/toggle",
+  a11y: {
+    role: "button",
+    requiredAttributes: ["aria-pressed"],
+    keyboardInteractions: ["Enter", "Space"],
+  },
   registry: {
     category: "action",
     tags: ["toggle", "press", "on-off"],

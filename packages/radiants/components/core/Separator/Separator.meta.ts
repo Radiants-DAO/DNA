@@ -57,6 +57,12 @@ export const SeparatorMeta = defineComponentMeta<SeparatorProps>()({
       ornamentBackground: "accent",
     },
   },
+  replaces: [{ element: "hr", import: "@rdna/radiants/components/core" }],
+  wraps: "@base-ui/react/separator",
+  a11y: {
+    role: "separator",
+    requiredAttributes: ["aria-orientation"],
+  },
   registry: {
     category: "layout",
     tags: ["divider", "line", "separator", "hr"],

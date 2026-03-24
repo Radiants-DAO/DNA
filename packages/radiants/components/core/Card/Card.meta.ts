@@ -68,6 +68,17 @@ export const CardMeta = defineComponentMeta<CardProps>()({
       bevel: "white-0.2/black-0.08",
     },
   },
+  pixelCorners: true,
+  shadowSystem: "pixel",
+  styleOwnership: [
+    {
+      attribute: "data-variant",
+      themeOwned: ["default", "inverted", "raised"],
+    },
+  ],
+  a11y: {
+    contrastRequirement: "AA",
+  },
   registry: {
     category: "layout",
     tags: ["container", "panel", "surface"],

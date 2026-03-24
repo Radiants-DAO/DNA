@@ -58,6 +58,19 @@ export const MeterMeta = defineComponentMeta<MeterProps>()({
       code: "<Meter value={75} min={0} max={100} high={80} optimum={50} />",
     },
   ],
+  replaces: [
+    { element: "meter", import: "@rdna/radiants/components/core" },
+    {
+      element: "progress",
+      import: "@rdna/radiants/components/core",
+      note: "Use Meter for progress indicators in v1",
+    },
+  ],
+  wraps: "@base-ui/react/meter",
+  a11y: {
+    role: "meter",
+    contrastRequirement: "AA",
+  },
   registry: {
     category: "feedback",
     tags: ["meter", "gauge", "measure", "level"],

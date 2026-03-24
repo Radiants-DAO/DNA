@@ -131,4 +131,40 @@ describe("buildRadiantsContracts", () => {
     expect(loadComponents).toHaveBeenCalledTimes(1);
     expect(eslintContract.componentMap.hr.component).toBe("Separator");
   });
+
+  it("projects pilot contract fields from real component metadata into generated artifacts", async () => {
+    const { eslintContract, aiContract } = await buildRadiantsContracts();
+
+    expect(eslintContract.componentMap.hr.component).toBe("Separator");
+    expect(eslintContract.componentMap.meter.component).toBe("Meter");
+    expect(eslintContract.componentMap.details.component).toBe("Collapsible");
+    expect(eslintContract.components.Separator.wraps).toBe("@base-ui/react/separator");
+    expect(eslintContract.components.Toggle.a11y).toEqual(
+      expect.objectContaining({
+        role: "button",
+        requiredAttributes: ["aria-pressed"],
+      }),
+    );
+    expect(eslintContract.components.Card.styleOwnership).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attribute: "data-variant",
+          themeOwned: expect.arrayContaining(["default", "inverted", "raised"]),
+        }),
+      ]),
+    );
+    expect(aiContract.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "Separator",
+          replaces: ["<hr>"],
+          wraps: "@base-ui/react/separator",
+        }),
+        expect.objectContaining({
+          name: "Toggle",
+          a11y: expect.objectContaining({ role: "button" }),
+        }),
+      ]),
+    );
+  });
 });
