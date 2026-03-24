@@ -5,8 +5,10 @@ interface ToggleProps {
   defaultPressed?: boolean;
   onPressedChange?: string;
   disabled?: boolean;
-  size?: string;
-  variant?: string;
+  mode?: "solid" | "flat" | "pattern";
+  tone?: "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
+  size?: "sm" | "md" | "lg";
+  rounded?: "xs" | "sm" | "md" | "lg" | "xl" | "none";
   value?: string;
   children?: string;
 }
@@ -33,13 +35,29 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
       default: false,
       description: "Disable toggle interactions",
     },
-    size: {
-      type: "string",
-      description: "Size variant: sm, md, lg",
+    mode: {
+      type: "enum",
+      options: ["solid", "flat", "pattern"],
+      default: "solid",
+      description: "Visual mode — controls fill treatment",
     },
-    variant: {
-      type: "string",
-      description: "Visual variant",
+    tone: {
+      type: "enum",
+      options: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted"],
+      default: "accent",
+      description: "Color tone",
+    },
+    size: {
+      type: "enum",
+      options: ["sm", "md", "lg"],
+      default: "md",
+      description: "Size preset",
+    },
+    rounded: {
+      type: "enum",
+      options: ["xs", "sm", "md", "lg", "xl", "none"],
+      default: "xs",
+      description: "Pixel-corner roundness",
     },
     value: {
       type: "string",
