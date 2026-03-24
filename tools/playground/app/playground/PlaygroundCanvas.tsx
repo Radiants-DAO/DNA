@@ -20,6 +20,7 @@ import { registryById } from "./registry";
 import type { PlaygroundNode, PlaygroundEdge, GroupNodeData, RegistryEntry } from "./types";
 import { isRenderable } from "./types";
 import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
+import { CAPTURE_REQUEST_EVENT, type CaptureRequestDetail } from "./components/CaptureService";
 import { WorkSignalContext } from "./work-signal-context";
 import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
 import { AnnotationContext } from "./annotation-context";
@@ -169,6 +170,13 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
         refreshAnnotations();
       }
 
+      if (event.type === "capture-request") {
+        document.dispatchEvent(
+          new CustomEvent<CaptureRequestDetail>(CAPTURE_REQUEST_EVENT, {
+            detail: { previewUrl: event.previewUrl, requestId: event.requestId },
+          }),
+        );
+      }
     });
 
     // Build group nodes

@@ -78,6 +78,11 @@ export default function PreviewPage({
             dataUrl,
           }),
         });
+        // Notify parent iframe to clean up immediately
+        window.parent.postMessage(
+          { type: "capture-complete", requestId: captureId },
+          "*",
+        );
       } catch (err) {
         console.error("[preview] capture failed:", err);
         await fetch("/playground/api/agent/capture", {
@@ -89,6 +94,10 @@ export default function PreviewPage({
             error: err instanceof Error ? err.message : String(err),
           }),
         }).catch(() => {});
+        window.parent.postMessage(
+          { type: "capture-complete", requestId: captureId },
+          "*",
+        );
       }
     })();
   }, [captureId, ready]);
