@@ -68,5 +68,5 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [x] NumberField — fixed: step buttons used `text-main` (cream in dark) on `bg-accent` (yellow). Changed to `text-accent-inv` (ink in both modes). Dark + light verified.
 - [v] Checkbox — dark mode checkmark contrast verified. Ink checkmark on yellow accent bg. Uses text-accent-inv (token fix sufficient, no code change needed).
 - [x] Radio — fixed: selected dot used `bg-main` (cream in dark) on accent circle. Changed to `bg-accent-inv` (ink in both modes). Dark + light verified.
-- [ ] Badge — verify dark mode colored variant text contrast
+- [v] Badge — dark mode colored variant text contrast verified via token inspection. Ink (L=4%) on success (L=93%), warning (L=90%), danger (L=69%), link (L=73%) — all high contrast. Demo renders empty (no children — known demo gap), but code uses text-accent-inv on all colored bg variants.
 - [ ] Combobox — verify dark mode hover/highlight contrast
