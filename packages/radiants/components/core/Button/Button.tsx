@@ -59,7 +59,7 @@ type ButtonProps = ButtonOwnProps &
 
 export const buttonRootVariants = cva(
   `group relative inline-flex select-none cursor-pointer overflow-visible
-   focus-visible:outline-none`,
+   focus-visible:outline-none focus-visible:shadow-focused`,
   {
     variants: {
       fullWidth: { true: 'w-full', false: '' },
