@@ -6,11 +6,40 @@
  * rules still get universal focus/disabled treatment.
  */
 
-/* ── Hover: solid + ghost lift 1px with bottom shadow ── */
+/* ── Hover: solid + ghost lift 1px with bottom shadow (light mode) ── */
 [data-force-state="hover"] [data-slot="button-root"][data-mode="solid"]:not([data-state="selected"]),
 [data-force-state="hover"] [data-slot="button-root"][data-mode="ghost"]:not([data-state="selected"]) {
   transform: translateY(-1px);
   filter: drop-shadow(0 1px 0 var(--color-ink));
+}
+
+/* ── Hover: dark mode — glow replaces lift ── */
+.dark [data-force-state="hover"] [data-slot="button-root"] {
+  transform: none !important;
+  filter:
+    drop-shadow(0 0 4px var(--glow-cream-hover))
+    drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
+}
+.dark [data-force-state="hover"] [data-slot="button-root"][data-color="danger"] {
+  filter:
+    drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
+    drop-shadow(0 0 10px var(--glow-sun-red)) !important;
+}
+.dark [data-force-state="hover"] [data-slot="button-root"][data-color="success"] {
+  filter:
+    drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
+    drop-shadow(0 0 10px var(--glow-mint)) !important;
+}
+.dark [data-force-state="hover"] [data-slot="button-root"][data-color="info"] {
+  filter:
+    drop-shadow(0 0 4px oklch(0.7701 0.0527 236.81 / 0.3))
+    drop-shadow(0 0 10px var(--glow-sky-blue)) !important;
+}
+/* Dark mode: suppress face translate on hover/pressed */
+.dark [data-force-state="hover"] [data-slot="button-face"],
+.dark [data-force-state="pressed"] [data-slot="button-face"] {
+  translate: 0 0 !important;
+  transform: none !important;
 }
 
 /* ── Hover: pattern — mist mask fill via ::before so text stays visible ── */
@@ -23,11 +52,34 @@
   image-rendering: pixelated;
 }
 
-/* ── Active: solid + ghost press down 1px with top shadow ── */
+/* ── Active: solid + ghost press down 1px with top shadow (light mode) ── */
 [data-force-state="pressed"] [data-slot="button-root"][data-mode="solid"]:not([data-state="selected"]),
 [data-force-state="pressed"] [data-slot="button-root"][data-mode="ghost"]:not([data-state="selected"]) {
   transform: translateY(1px);
   filter: drop-shadow(0 -1px 0 var(--color-ink));
+}
+
+/* ── Active: dark mode — stronger glow, no translate ── */
+.dark [data-force-state="pressed"] [data-slot="button-root"] {
+  transform: none !important;
+  filter:
+    drop-shadow(0 0 6px var(--glow-cream-active))
+    drop-shadow(0 0 14px var(--glow-sun-yellow)) !important;
+}
+.dark [data-force-state="pressed"] [data-slot="button-root"][data-color="danger"] {
+  filter:
+    drop-shadow(0 0 6px oklch(0.7429 0.1568 21.43 / 0.4))
+    drop-shadow(0 0 14px var(--glow-sun-red)) !important;
+}
+.dark [data-force-state="pressed"] [data-slot="button-root"][data-color="success"] {
+  filter:
+    drop-shadow(0 0 6px oklch(0.9312 0.0702 142.51 / 0.4))
+    drop-shadow(0 0 14px var(--glow-mint)) !important;
+}
+.dark [data-force-state="pressed"] [data-slot="button-root"][data-color="info"] {
+  filter:
+    drop-shadow(0 0 6px oklch(0.7701 0.0527 236.81 / 0.4))
+    drop-shadow(0 0 14px var(--glow-sky-blue)) !important;
 }
 
 /* ── Active: solid diagonal-dot overlay ── */
