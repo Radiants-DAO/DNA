@@ -512,7 +512,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
 
-  const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', variant: 'pill' });
+  const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', mode: 'pill' });
 
   return (
     <Tabs.Provider {...tabs}>

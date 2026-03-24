@@ -5,7 +5,7 @@ import { Tabs, useTabsState } from './Tabs';
 function TestTabs({ defaultValue = 'one' }: { defaultValue?: string }) {
   const { state, actions, meta } = useTabsState({
     defaultValue,
-    variant: 'pill',
+    mode: 'pill',
     layout: 'default',
   });
 
@@ -28,7 +28,7 @@ function TestTabs({ defaultValue = 'one' }: { defaultValue?: string }) {
 function SidebarTabs() {
   const { state, actions, meta } = useTabsState({
     defaultValue: 'one',
-    variant: 'pill',
+    mode: 'pill',
     layout: 'sidebar',
   });
   return (

@@ -4,13 +4,13 @@ import React, { createContext, use, useState, useCallback, useEffect, useRef } f
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
 import { Button } from '../Button/Button';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type TabsVariant = 'pill' | 'line';
+type TabsMode = 'pill' | 'line';
 type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule' | 'accordion';
 
 interface TabsState {
@@ -22,14 +22,8 @@ interface TabsActions {
 }
 
 interface TabsMeta {
-  variant: TabsVariant;
+  mode: TabsMode;
   layout: TabsLayout;
-}
-
-interface TabsContextValue {
-  state: TabsState;
-  actions: TabsActions;
-  meta: TabsMeta;
 }
 
 interface ProviderProps {
@@ -70,7 +64,7 @@ interface ContentProps {
 }
 
 // ============================================================================
-// Context (for meta like variant/layout — Base UI handles tab state)
+// Context (for meta like mode/layout — Base UI handles tab state)
 // ============================================================================
 
 interface TabsInternalContext {
@@ -109,7 +103,7 @@ export const tabTriggerVariants = cva(
    focus-visible:outline-none`,
   {
     variants: {
-      variant: {
+      mode: {
         pill: '',
         line: '',
       },
@@ -119,13 +113,13 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'bg-transparent text-head hover:bg-inv hover:text-accent' },
-      { variant: 'pill', active: true, className: 'bg-accent text-accent-inv' },
-      { variant: 'line', active: false, className: 'rounded-none bg-transparent hover:bg-inv hover:text-accent' },
-      { variant: 'line', active: true, className: 'rounded-none bg-page border-t border-l border-r border-line border-b-0 z-10' },
+      { mode: 'pill', active: false, className: 'bg-transparent text-head hover:bg-inv hover:text-accent' },
+      { mode: 'pill', active: true, className: 'bg-accent text-accent-inv' },
+      { mode: 'line', active: false, className: 'rounded-none bg-transparent hover:bg-inv hover:text-accent' },
+      { mode: 'line', active: true, className: 'rounded-none bg-page border-t border-l border-r border-line border-b-0 z-10' },
     ],
     defaultVariants: {
-      variant: 'pill',
+      mode: 'pill',
       active: false,
     },
   }
@@ -264,7 +258,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 }
 
 function Trigger({ value, children, icon, settings, compact, className = '' }: TriggerProps): React.ReactElement | null {
-  const { variant, layout } = useTabsMeta();
+  const { mode, layout } = useTabsMeta();
   const { registerTab, activeTab, setActiveTab: setActive } = useTabsContext();
 
   // Register this trigger's value for the DotPill
@@ -365,7 +359,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
         }
 
         const classes = tabTriggerVariants({
-          variant,
+          mode,
           active: isActive,
           className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
         });
@@ -375,7 +369,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
             {...props}
             type="button"
             className={classes}
-            data-variant={variant}
+            data-mode={mode}
           >
             {children}
             {icon && (
@@ -392,14 +386,14 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
 }
 
 function Content({ value, children, className = '', keepMounted }: ContentProps): React.ReactElement | null {
-  const { variant, layout } = useTabsMeta();
+  const { mode, layout } = useTabsMeta();
 
   const contentClasses =
     layout === 'sidebar'
       ? `@container flex-1 min-w-0 h-full overflow-auto bg-card ${className}`
       : layout === 'dot' || layout === 'capsule'
         ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
-        : variant === 'line'
+        : mode === 'line'
           ? `bg-page border-r border-line ${className}`
           : className;
 
@@ -422,19 +416,19 @@ function Indicator({ className = '' }: { className?: string }): React.ReactEleme
 // Public API
 // ============================================================================
 
-export type { TabsVariant, TabsLayout, TabsState, TabsActions, TabsMeta };
+export type { TabsMode, TabsLayout, TabsState, TabsActions, TabsMeta };
 
 export function useTabsState({
   defaultValue = '',
   value,
   onValueChange,
-  variant = 'pill',
+  mode = 'pill',
   layout = 'bottom-tabs',
 }: {
   defaultValue?: string;
   value?: string;
   onValueChange?: (value: string) => void;
-  variant?: TabsVariant;
+  mode?: TabsMode;
   layout?: TabsLayout;
 } = {}): { state: TabsState; actions: TabsActions; meta: TabsMeta } {
   const [internalValue, setInternalValue] = useState(defaultValue);
@@ -448,7 +442,7 @@ export function useTabsState({
 
   const state: TabsState = { activeTab };
   const actions: TabsActions = { setActiveTab };
-  const meta: TabsMeta = { variant, layout };
+  const meta: TabsMeta = { mode, layout };
 
   return { state, actions, meta };
 }

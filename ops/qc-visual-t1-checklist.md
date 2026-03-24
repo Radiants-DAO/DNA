@@ -18,7 +18,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 ## Components
 
 ### T1a — Button
-- [ ] Button — default, flat, pattern, quiet modes; hover/press/disabled/focus states; dark+light
+- [!] Button — 6 known issues confirmed, 1 new. CONFIRMED: (1) flat mode no hover/pressed differentiation, (2) focus uses outline not drop-shadow, (3) active/selected has strange ink/cream gradient on ::after border, (4) pattern mode transparent at rest (acts like ghost), (5) pattern hover makes text invisible (mask covers entire face), (6) no "transparent" tone. NEW: bevel gradients use hardcoded rgba(255,255,255) / rgba(0,0,0) in base.css quiet modifier (lines 399-430) — cosmetic, not brand-color violations. Dark mode: solid/accent renders correctly. No hardcoded hex in Button.tsx, no viewport breakpoints, no z-index magic numbers.
 
 ### T1b — Tabs
 - [ ] Tabs — all variants; overflow behavior; dark+light

@@ -44,25 +44,5 @@
       "name": "Vertical separator",
       "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
     }
-  ],
-  "variants": [
-    {
-      "label": "Solid",
-      "props": {
-        "variant": "solid"
-      }
-    },
-    {
-      "label": "Dashed",
-      "props": {
-        "variant": "dashed"
-      }
-    },
-    {
-      "label": "Decorated",
-      "props": {
-        "variant": "decorated"
-      }
-    }
   ]
 }

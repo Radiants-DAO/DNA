@@ -4,7 +4,7 @@ interface TabsProps {
   defaultValue?: string;
   value?: string;
   onValueChange?: string;
-  variant?: "pill" | "line";
+  mode?: "pill" | "line";
   layout?: "default" | "bottom-tabs";
 }
 
@@ -26,11 +26,11 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
       type: "string",
       description: "Callback when active tab changes",
     },
-    variant: {
+    mode: {
       type: "enum",
       options: ["pill", "line"],
       default: "pill",
-      description: "Visual style variant",
+      description: "Visual mode — controls trigger fill treatment",
     },
     layout: {
       type: "enum",

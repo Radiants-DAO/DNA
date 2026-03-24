@@ -19,14 +19,14 @@
       "type": "string",
       "description": "Callback when active tab changes"
     },
-    "variant": {
+    "mode": {
       "type": "enum",
       "options": [
         "pill",
         "line"
       ],
       "default": "pill",
-      "description": "Visual style variant"
+      "description": "Visual mode — controls trigger fill treatment"
     },
     "layout": {
       "type": "enum",
