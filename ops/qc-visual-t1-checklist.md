@@ -21,7 +21,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [!] Button — 6 known issues confirmed, 1 new. CONFIRMED: (1) flat mode no hover/pressed differentiation, (2) focus uses outline not drop-shadow, (3) active/selected has strange ink/cream gradient on ::after border, (4) pattern mode transparent at rest (acts like ghost), (5) pattern hover makes text invisible (mask covers entire face), (6) no "transparent" tone. NEW: bevel gradients use hardcoded rgba(255,255,255) / rgba(0,0,0) in base.css quiet modifier (lines 399-430) — cosmetic, not brand-color violations. Dark mode: solid/accent renders correctly. No hardcoded hex in Button.tsx, no viewport breakpoints, no z-index magic numbers.
 
 ### T1b — Tabs
-- [ ] Tabs — all variants; overflow behavior; dark+light
+- [!] Tabs — Refactor Tasks 1-7 + 12 completed (rename variant→mode, memoize context, unregister on unmount, data-slot/data-mode/data-state attributes, CSS-driven styling, full layout options in schema). Pill mode visually verified. LINE mode known broken (empty CVA classes pre-refactor, now CSS-driven but untested in live view — no line-mode consumers exist yet). Tasks 8-11 deferred (trigger→Button conversion — higher risk, needs dedicated session). Dark mode not yet checked.
 
 ### T1c — Toggle
 - [ ] Toggle — all states; dark+light
