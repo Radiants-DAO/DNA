@@ -643,7 +643,7 @@ body {
   background: var(--color-inv);
 }
 
-[data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
+[data-slot="switch-track"][data-variant="switch"][data-checked] {
   background: var(--color-accent);
 }
 

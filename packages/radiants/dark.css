@@ -702,7 +702,7 @@
     transition: filter 150ms ease-out, border-color 150ms ease-out;
   }
 
-  & [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
+  & [data-slot="switch-track"][data-variant="switch"][data-checked] {
     background: var(--color-accent);
     border-color: var(--color-focus);
   }
