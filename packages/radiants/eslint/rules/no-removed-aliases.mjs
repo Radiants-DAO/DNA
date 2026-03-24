@@ -3,7 +3,9 @@
  * Bans usage of removed token alias names.
  * Scans all string literals and template literals for var(--removed-alias).
  */
-import { removedAliases } from '../token-map.mjs';
+import { tokenMap } from '../contract.mjs';
+
+const removedAliases = tokenMap.removedAliases;
 
 const rule = {
   meta: {

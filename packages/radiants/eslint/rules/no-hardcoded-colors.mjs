@@ -3,7 +3,7 @@
  * Bans non-semantic color usage in className and style props.
  * Auto-fixes arbitrary Tailwind color classes when a 1:1 token mapping exists.
  */
-import { brandPalette, hexToSemantic, oklchToSemantic, semanticColorSuffixes } from '../token-map.mjs';
+import { tokenMap } from '../contract.mjs';
 import {
   getObjectPropertyKey,
   getStaticStringValue,
@@ -19,6 +19,14 @@ import {
   RGB_PATTERN,
   HSL_PATTERN,
 } from '../utils.mjs';
+
+const {
+  brandPalette,
+  hexToSemantic,
+  oklchToSemantic,
+  semanticColorSuffixes,
+  removedAliases,
+} = tokenMap;
 
 /** CSS properties that accept color values. Only these trigger style-object reports. */
 const COLOR_PROPERTIES = new Set([

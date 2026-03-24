@@ -8,11 +8,11 @@
  * - suppresses summary when nested inside details (one diagnostic for the pair)
  * No auto-fix — replacement requires prop mapping.
  */
-import { rdnaComponentMap } from '../token-map.mjs';
+import { componentMap, textLikeInputTypes } from '../contract.mjs';
 import { isRadiantsInternal } from '../utils.mjs';
 
-const bannedElements = new Set(Object.keys(rdnaComponentMap));
-const textLikeInputTypes = new Set(['text', 'email', 'password', 'search', 'url', 'tel', 'number']);
+const bannedElements = new Set(Object.keys(componentMap));
+const textLikeInputTypesSet = new Set(textLikeInputTypes);
 
 const rule = {
   meta: {
@@ -79,7 +79,7 @@ const rule = {
           return;
         }
 
-        const mapping = rdnaComponentMap[element];
+        const mapping = componentMap[element];
         context.report({
           node,
           messageId: 'preferRdnaComponent',
@@ -126,13 +126,13 @@ function isTextLikeInput(node) {
   if (!typeAttr || !typeAttr.value) return true;
 
   if (typeAttr.value.type === 'Literal' && typeof typeAttr.value.value === 'string') {
-    return textLikeInputTypes.has(typeAttr.value.value);
+    return textLikeInputTypesSet.has(typeAttr.value.value);
   }
 
   if (typeAttr.value.type === 'JSXExpressionContainer') {
     const expr = typeAttr.value.expression;
     if (expr.type === 'Literal' && typeof expr.value === 'string') {
-      return textLikeInputTypes.has(expr.value);
+      return textLikeInputTypesSet.has(expr.value);
     }
 
     // Dynamic input types are conservative violations because they may resolve
