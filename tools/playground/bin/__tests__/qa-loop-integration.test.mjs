@@ -1,0 +1,107 @@
+import { readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import { describe, it, expect } from "vitest";
+import { buildTestMatrix } from "../lib/prop-matrix.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PLAYGROUND_ROOT = resolve(__dirname, "../..");
+const MANIFEST_PATH = resolve(
+  PLAYGROUND_ROOT,
+  "generated/registry.manifest.json",
+);
+
+function readManifest() {
+  return JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
+}
+
+function findComponent(name) {
+  const manifest = readManifest();
+  for (const pkg of Object.values(manifest)) {
+    for (const c of pkg.components) {
+      if (c.name === name) return c;
+    }
+  }
+  return null;
+}
+
+describe("visual QA loop integration", () => {
+  it("generates a non-empty matrix for Button", () => {
+    const button = findComponent("Button");
+    expect(button).not.toBeNull();
+
+    const matrix = buildTestMatrix(button);
+
+    expect(matrix.length).toBeGreaterThan(0);
+    expect(matrix[0]).toHaveProperty("label");
+    expect(matrix[0]).toHaveProperty("props");
+    expect(matrix[0]).toHaveProperty("colorMode");
+    expect(matrix[0]).toHaveProperty("state");
+    expect(matrix[0]).toHaveProperty("qaFlags");
+  });
+
+  it("generates matrices for all renderable components", () => {
+    const manifest = readManifest();
+    const components = Object.values(manifest).flatMap((pkg) => pkg.components);
+
+    let skipped = 0;
+    for (const component of components) {
+      const matrix = buildTestMatrix(component);
+      if (matrix.length === 0) {
+        skipped++;
+        continue;
+      }
+      expect(matrix[0]).toHaveProperty("label");
+      expect(matrix[0]).toHaveProperty("props");
+      expect(matrix[0]).toHaveProperty("colorMode");
+      expect(matrix[0]).toHaveProperty("qaFlags");
+    }
+
+    // At least most components should produce a non-empty matrix
+    expect(skipped).toBeLessThan(components.length / 2);
+  });
+
+  it("enriches matrix when Phase 2 contract fields are present", () => {
+    const matrix = buildTestMatrix({
+      props: { mode: { type: "enum", values: ["solid", "flat"] } },
+      pixelCorners: true,
+      shadowSystem: "pixel",
+      styleOwnership: [
+        { attribute: "data-variant", themeOwned: ["default", "raised"] },
+      ],
+      a11y: { contrastRequirement: "AA" },
+      states: ["hover", "pressed"],
+    });
+
+    expect(
+      matrix.some((m) => m.qaFlags.includes("pixel-corners")),
+    ).toBe(true);
+    expect(
+      matrix.some((m) => m.qaFlags.includes("contrast-AA")),
+    ).toBe(true);
+    expect(
+      matrix.some(
+        (m) => m.dataAttributes["data-variant"] === "raised",
+      ),
+    ).toBe(true);
+    expect(matrix.some((m) => m.state === "hover")).toBe(true);
+    expect(matrix.some((m) => m.state === "pressed")).toBe(true);
+  });
+
+  it("Button matrix includes forced states from manifest", () => {
+    const button = findComponent("Button");
+    expect(button).not.toBeNull();
+    expect(button.states).toContain("hover");
+
+    const matrix = buildTestMatrix(button);
+    expect(matrix.some((m) => m.state === "hover")).toBe(true);
+    expect(matrix.some((m) => m.state === "pressed")).toBe(true);
+  });
+
+  it("matrix labels are unique", () => {
+    const button = findComponent("Button");
+    const matrix = buildTestMatrix(button);
+    const labels = matrix.map((m) => m.label);
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+});
