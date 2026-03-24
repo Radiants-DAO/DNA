@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
 import { Button } from '../Button/Button';
@@ -72,9 +72,10 @@ interface TabsInternalContext {
   activeTab: string;
   /** Ref-based tab collection — read `.current` and pair with `tabVersion` for reactivity. */
   tabValuesRef: React.RefObject<string[]>;
-  /** Incremented when a tab registers; subscribe to this for render updates. */
+  /** Incremented when a tab registers/unregisters; subscribe to this for render updates. */
   tabVersion: number;
   registerTab: (value: string) => void;
+  unregisterTab: (value: string) => void;
   setActiveTab: (value: string) => void;
 }
 
@@ -140,10 +141,30 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
     }
   }, []);
 
+  const unregisterTab = useCallback((value: string) => {
+    const tabs = tabValuesRef.current;
+    const idx = tabs.indexOf(value);
+    if (idx !== -1) {
+      tabs.splice(idx, 1);
+      setTabVersion((v) => v + 1);
+    }
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    meta,
+    activeTab: state.activeTab,
+    tabValuesRef,
+    tabVersion,
+    registerTab,
+    unregisterTab,
+    setActiveTab: actions.setActiveTab,
+  }), [meta, state.activeTab, tabVersion, registerTab, unregisterTab, actions.setActiveTab]);
+
   return (
-    <TabsContext value={{ meta, activeTab: state.activeTab, tabValuesRef, tabVersion, registerTab, setActiveTab: actions.setActiveTab }}>
+    <TabsContext value={contextValue}>
       <BaseTabs.Root
         data-rdna="tabs"
+        data-layout={meta.layout}
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
@@ -203,6 +224,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
       <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
         <BaseTabs.List
           activateOnFocus
+          data-slot="tab-list"
           className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 pixel-rounded-xs bg-card"
         >
           {children}
@@ -215,7 +237,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
     return (
       <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
         {/* Hidden triggers for tab registration */}
-        <BaseTabs.List className="hidden">
+        <BaseTabs.List data-slot="tab-list" className="hidden">
           {children}
         </BaseTabs.List>
         <DotPill />
@@ -228,7 +250,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
       <div className={`shrink-0 flex flex-col h-full w-fit bg-card border-r border-line ${className}`}>
         {header}
         <DotPill />
-        <BaseTabs.List activateOnFocus className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
+        <BaseTabs.List activateOnFocus data-slot="tab-list" className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
           {children}
         </BaseTabs.List>
       </div>
@@ -237,7 +259,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
   if (layout === 'accordion') {
     return (
-      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`} data-tabs-accordion="">
+      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`} data-slot="tab-list" data-tabs-accordion="">
         {children}
       </div>
     );
@@ -248,6 +270,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
   return (
     <BaseTabs.List
       activateOnFocus
+      data-slot="tab-list"
       className={`flex items-center justify-between gap-4 px-2 py-2 bg-page border-t border-line ${shrinkClass} ${className}`}
     >
       <div className="flex flex-wrap gap-2 items-center w-full">
@@ -259,12 +282,13 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
 function Trigger({ value, children, icon, settings, compact, className = '' }: TriggerProps): React.ReactElement | null {
   const { mode, layout } = useTabsMeta();
-  const { registerTab, activeTab, setActiveTab: setActive } = useTabsContext();
+  const { registerTab, unregisterTab, activeTab, setActiveTab: setActive } = useTabsContext();
 
-  // Register this trigger's value for the DotPill
+  // Register this trigger's value for the DotPill; unregister on unmount
   useEffect(() => {
     registerTab(value);
-  }, [value, registerTab]);
+    return () => unregisterTab(value);
+  }, [value, registerTab, unregisterTab]);
 
   // Accordion layout: ghost button trigger + collapsible settings panel.
   // When active, the wrapper gets ghost-selected styling to visually
@@ -272,7 +296,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
   if (layout === 'accordion') {
     const isActive = activeTab === value;
     return (
-      <div>
+      <div data-slot="tab-trigger" data-mode="accordion" data-state={isActive ? 'selected' : 'default'}>
         <div className="flex items-center">
           <Button
             mode={compact ? 'pattern' : 'flat'}
@@ -325,6 +349,9 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
             <button
               {...props}
               type="button"
+              data-slot="tab-trigger"
+              data-mode="capsule"
+              data-state={isActive ? 'selected' : 'default'}
               className={`flex items-center justify-center cursor-pointer select-none border-none pixel-rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
                 isActive
                   ? 'gap-1.5 px-2.5 py-1 bg-accent text-accent-inv'
@@ -346,6 +373,9 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
             <button
               {...props}
               type="button"
+              data-slot="tab-trigger"
+              data-mode="sidebar"
+              data-state={isActive ? 'selected' : 'default'}
               className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${
                 isActive
                   ? 'bg-page text-head'
@@ -369,7 +399,9 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
             {...props}
             type="button"
             className={classes}
+            data-slot="tab-trigger"
             data-mode={mode}
+            data-state={isActive ? 'selected' : 'default'}
           >
             {children}
             {icon && (
@@ -399,6 +431,7 @@ function Content({ value, children, className = '', keepMounted }: ContentProps)
 
   return (
     <BaseTabs.Panel
+      data-slot="tab-panel"
       value={value}
       className={contentClasses}
       keepMounted={keepMounted}
