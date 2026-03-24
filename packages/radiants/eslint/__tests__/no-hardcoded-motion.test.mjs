@@ -146,4 +146,21 @@ describe('rdna/no-hardcoded-motion', () => {
       )
     ).toHaveLength(0);
   });
+
+  it('uses contract-backed guidance for class and style suggestions', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-motion', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-motion': 'error' },
+    };
+
+    const classMessages = linter.verify('<div className="ease-[cubic-bezier(0.4,0,0.2,1)]" />', config);
+    expect(classMessages).toHaveLength(1);
+    expect(classMessages[0].message).toContain('ease-standard');
+
+    const styleMessages = linter.verify('<div style={{ transitionTimingFunction: "ease-out" }} />', config);
+    expect(styleMessages).toHaveLength(1);
+    expect(styleMessages[0].message).toContain('--easing-default');
+  });
 });

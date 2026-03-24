@@ -4,6 +4,7 @@
  * Use RDNA motion tokens (duration-instant, duration-fast, duration-base,
  * duration-moderate, duration-slow, ease-standard) instead.
  */
+import { motion } from '../contract.mjs';
 import {
   getClassNameStrings,
   getObjectPropertyKey,
@@ -28,6 +29,10 @@ const motionStyleProps = new Set([
 const HARDCODED_DURATION_RE = /\d+\.?\d*m?s\b/;
 // Detects hardcoded easing values: ease, ease-in, ease-out, ease-in-out, linear, cubic-bezier(...)
 const HARDCODED_EASING_RE = /\b(?:ease-in-out|ease-in|ease-out|ease|linear)\b|cubic-bezier\s*\(/;
+const classEasingSuggestion = motion.allowedEasings.join(', ');
+const cssEasingSuggestion = motion.easingTokens.join(', ');
+const durationSuggestion = motion.durationTokens.join(', ');
+const styleSuggestion = [durationSuggestion, cssEasingSuggestion].filter(Boolean).join('; ');
 
 /**
  * Check if a style string contains hardcoded motion values after stripping
@@ -48,11 +53,11 @@ const rule = {
     },
     messages: {
       arbitraryDuration:
-        'Arbitrary duration "{{raw}}" in className. Use an RDNA duration token (duration-instant, duration-fast, duration-base, duration-moderate, duration-slow).',
+        `Arbitrary duration "{{raw}}" in className. Use an RDNA duration token (${durationSuggestion}).`,
       arbitraryEasing:
-        'Arbitrary easing "{{raw}}" in className. Use an RDNA easing token (ease-standard).',
+        `Arbitrary easing "{{raw}}" in className. Use an RDNA easing token (${classEasingSuggestion}).`,
       hardcodedMotionStyle:
-        'Hardcoded motion value in style prop ({{prop}}). Use a CSS variable: var(--duration-*) or var(--ease-*).',
+        `Hardcoded motion value in style prop ({{prop}}). Use RDNA motion tokens/vars: ${styleSuggestion}.`,
     },
     schema: [],
   },

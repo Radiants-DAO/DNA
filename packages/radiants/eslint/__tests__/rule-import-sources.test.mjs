@@ -8,6 +8,7 @@ const files = [
   { path: "../rules/no-clipped-shadow.mjs", expectedImport: "../contract.mjs" },
   { path: "../rules/no-pixel-border.mjs", expectedImport: "../contract.mjs" },
   { path: "../rules/no-mixed-style-authority.mjs", expectedImport: "../contract.mjs" },
+  { path: "../rules/no-hardcoded-motion.mjs", expectedImport: "../contract.mjs" },
   { path: "../../../../eslint.rdna.config.mjs" },
 ];
 
