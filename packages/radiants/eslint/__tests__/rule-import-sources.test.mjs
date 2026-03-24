@@ -5,6 +5,8 @@ const files = [
   "../rules/prefer-rdna-components.mjs",
   "../rules/no-hardcoded-colors.mjs",
   "../rules/no-removed-aliases.mjs",
+  "../rules/no-clipped-shadow.mjs",
+  "../rules/no-pixel-border.mjs",
 ];
 
 describe("priority rule import sources", () => {

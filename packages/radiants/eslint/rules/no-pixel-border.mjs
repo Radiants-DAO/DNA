@@ -20,9 +20,17 @@ import {
   getClassNameStrings,
   isInsideClassNameAttribute,
 } from '../utils.mjs';
+import { pixelCorners } from '../contract.mjs';
 
-// Pixel-corner classes that trigger clip-path
-const PIXEL_CORNER_RE = /(?:^|\s)(?:[\w-]+:)*(?:pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners)(?:\s|$)/;
+const pixelCornerPattern = pixelCorners.triggerClasses
+  .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  .join('|');
+const PIXEL_CORNER_RE = pixelCornerPattern
+  ? new RegExp(`(?:^|\\s)(?:[\\w-]+:)*(?:${pixelCornerPattern})(?:\\s|$)`)
+  : /$a/;
+const PIXEL_CORNER_TOKEN_RE = pixelCornerPattern
+  ? new RegExp(`(?:^|\\s)((?:[\\w-]+:)*(?:${pixelCornerPattern}))(?=\\s|$)`)
+  : /$a/;
 
 // Border classes that create native CSS borders (clipped by clip-path)
 // Matches: border, border-{side}, border-{color}, border-{width} — excludes border-none/border-0/border-transparent
@@ -69,8 +77,7 @@ function checkElement(context, attrNode) {
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
   if (!hasPixelCorner) return;
 
-  const cornerMatch =
-    fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] ?? 'pixel-rounded';
+  const cornerMatch = extractPixelCorner(fullClassName) ?? 'pixel-rounded';
 
   // Check border-* classes
   const borders = extractBorders(fullClassName);
@@ -103,8 +110,7 @@ function checkCallExpression(context, node) {
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
   if (!hasPixelCorner) return;
 
-  const cornerMatch =
-    fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] ?? 'pixel-rounded';
+  const cornerMatch = extractPixelCorner(fullClassName) ?? 'pixel-rounded';
 
   const borders = extractBorders(fullClassName);
   for (const cls of borders) {
@@ -143,6 +149,12 @@ function findStringNode(strings, target) {
     if (value.includes(target)) return node;
   }
   return null;
+}
+
+function extractPixelCorner(className) {
+  const match = className.match(PIXEL_CORNER_TOKEN_RE);
+  if (!match?.[1]) return null;
+  return match[1].replace(/^(?:[\w-]+:)+/, '');
 }
 
 export default rule;

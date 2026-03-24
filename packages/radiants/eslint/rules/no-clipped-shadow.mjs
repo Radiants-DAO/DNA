@@ -13,27 +13,21 @@ import {
   getClassNameStrings,
   isInsideClassNameAttribute,
 } from '../utils.mjs';
+import { pixelCorners } from '../contract.mjs';
 
-// Pixel-corner classes that trigger clip-path via pixel-corners.css
-// Only pixel-rounded-* and pixel-corners opt in to clip-path; plain rounded-* no longer triggers it.
-const PIXEL_CORNER_RE = /(?:^|\s)(?:[\w-]+:)*(?:pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners)(?:\s|$)/;
+const pixelCornerPattern = pixelCorners.triggerClasses
+  .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  .join('|');
+const PIXEL_CORNER_RE = pixelCornerPattern
+  ? new RegExp(`(?:^|\\s)(?:[\\w-]+:)*(?:${pixelCornerPattern})(?:\\s|$)`)
+  : /$a/;
+const PIXEL_CORNER_TOKEN_RE = pixelCornerPattern
+  ? new RegExp(`(?:^|\\s)((?:[\\w-]+:)*(?:${pixelCornerPattern}))(?=\\s|$)`)
+  : /$a/;
 
 // RDNA shadow tokens that use box-shadow (get clipped by clip-path)
 // Excludes: pixel-shadow-* (correct), shadow-none, shadow-inner, arbitrary shadow-[...]
 const CLIPPABLE_SHADOW_RE = /(?:^|\s)((?:[\w-]+:)*shadow-(?:surface|resting|lifted|raised|floating|focused|glow-(?:success|error|info)))(?:\s|$)/g;
-
-// Map from clippable shadow to pixel-shadow suggestion
-const SHADOW_MIGRATION = {
-  'shadow-surface': 'pixel-shadow-surface',
-  'shadow-resting': 'pixel-shadow-resting',
-  'shadow-lifted': 'pixel-shadow-lifted',
-  'shadow-raised': 'pixel-shadow-raised',
-  'shadow-floating': 'pixel-shadow-floating',
-  'shadow-focused': 'pixel-shadow-floating (or custom filter: drop-shadow)',
-  'shadow-glow-success': 'custom filter: drop-shadow with success color',
-  'shadow-glow-error': 'custom filter: drop-shadow with error color',
-  'shadow-glow-info': 'custom filter: drop-shadow with info color',
-};
 
 const rule = {
   meta: {
@@ -81,7 +75,7 @@ function checkElement(context, attrNode) {
 
   // Case 1: Same-element — this element has both pixel-rounded-* or pixel-corners and shadow-*
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
-  const cornerMatch = hasPixelCorner ? fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] : null;
+  const cornerMatch = hasPixelCorner ? extractPixelCorner(fullClassName) : null;
 
   if (hasPixelCorner) {
     for (const shadow of shadows) {
@@ -128,7 +122,7 @@ function checkCallExpression(context, node) {
   if (shadows.length === 0) return;
 
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
-  const cornerMatch = hasPixelCorner ? fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] : null;
+  const cornerMatch = hasPixelCorner ? extractPixelCorner(fullClassName) : null;
 
   if (hasPixelCorner) {
     for (const shadow of shadows) {
@@ -191,7 +185,7 @@ function findAncestorPixelCorner(attrNode) {
         const combined = strings.map((s) => s.value).join(' ');
 
         if (PIXEL_CORNER_RE.test(combined)) {
-          return combined.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] ?? null;
+          return extractPixelCorner(combined);
         }
       }
     }
@@ -201,10 +195,19 @@ function findAncestorPixelCorner(attrNode) {
 }
 
 /**
+ * Extract the triggering pixel-corner class without modifier prefixes.
+ */
+function extractPixelCorner(className) {
+  const match = className.match(PIXEL_CORNER_TOKEN_RE);
+  if (!match?.[1]) return null;
+  return match[1].replace(/^(?:[\w-]+:)+/, '');
+}
+
+/**
  * Get the migration suggestion for a shadow token.
  */
 function getSuggestion(token) {
-  return SHADOW_MIGRATION[token] ?? `pixel-shadow equivalent or filter: drop-shadow()`;
+  return pixelCorners.shadowMigrationMap[token] ?? `pixel-shadow equivalent or filter: drop-shadow()`;
 }
 
 export default rule;
