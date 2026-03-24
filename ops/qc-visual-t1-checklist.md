@@ -40,7 +40,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 ### T1e — Feedback
 - [v] Alert — Clean pass. All 5 variants render correctly (default/success/warning/error/info) with appropriate bg tokens and auto-icons. Title, description, close button all functional. Pixel-rounded + pixel-shadow. Both light and dark modes clean. No hardcoded hex, no viewport breakpoints, no z-index issues.
 - [!] Badge — All 5 variants render correctly (default/success/warning/error/info) with semantic tokens. pixel-rounded-xs + pixel-shadow-raised. SM/MD sizes. No hardcoded hex, no viewport breakpoints, no z-index issues. Playground demo renders empty (no children passed — demo gap, not component bug). Dark mode: text-accent-inv on colored bg variants (success/warning/error/info) has poor contrast (cream on light color) — same design-level token issue as Select/NumberField/Checkbox/Radio.
-- [ ] Toast — alignment with Alert styling
+- [x] Toast — Already consumes Alert compound component (aligned styling). Fixed: replaced inline SVG close icon with CloseIcon from icon system (matches Alert). Animation: animate-slideIn 200ms ease-out (in spec). z-[400] on viewport is legitimate overlay stacking. No hardcoded hex, no viewport breakpoints. Known limitation: no ToastProvider in playground demo — toast can't be visually triggered (demo gap). `fixed top-4 right-4` positions relative to viewport not window (design consideration for windowed app).
 - [ ] Tooltip — compact variant, dark+light
 
 ### T1f — Other
