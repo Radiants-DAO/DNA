@@ -213,34 +213,58 @@
      to avoid layout shift on non-button elements.
      ============================================ */
 
-  & :not(tr).hover\:bg-hover,
-  & :not(tr).hover\:bg-depth,
-  & :not(tr).hover\:bg-sun-yellow,
-  & :not(tr).hover\:bg-sun-yellow\/50,
-  & :not(tr).hover\:bg-inv {
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-hover,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-depth,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow\/50,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-inv {
     transition: box-shadow 150ms ease-out;
   }
 
-  & :not(tr).hover\:bg-hover:hover,
-  & :not(tr).hover\:bg-depth:hover,
-  & :not(tr).hover\:bg-sun-yellow:hover,
-  & :not(tr).hover\:bg-sun-yellow\/50:hover,
-  & :not(tr).hover\:bg-inv:hover {
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-hover:hover,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-depth:hover,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow:hover,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow\/50:hover,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-inv:hover {
     background-color: transparent !important;
     box-shadow:
       0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
-  & :not(tr).hover\:bg-hover:active,
-  & :not(tr).hover\:bg-depth:active,
-  & :not(tr).hover\:bg-sun-yellow:active,
-  & :not(tr).hover\:bg-sun-yellow\/50:active,
-  & :not(tr).hover\:bg-inv:active {
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-hover:active,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-depth:active,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow:active,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-sun-yellow\/50:active,
+  & :not(tr):not([role="menuitem"]):not([role="option"]).hover\:bg-inv:active {
     background-color: transparent !important;
     box-shadow:
       0 0 6px var(--glow-cream-active),
       0 0 14px var(--glow-sun-yellow);
+  }
+
+  /* ============================================
+     MENU ITEMS — Flat+quiet style (yellow bg, ink text)
+     Overrides global glow pattern for selection areas.
+     ============================================ */
+
+  & [role="menuitem"]:hover,
+  & [role="option"]:hover {
+    background-color: var(--color-accent) !important;
+    color: var(--color-accent-inv) !important;
+    box-shadow: none !important;
+  }
+
+  & [role="menuitem"]:active,
+  & [role="option"]:active {
+    background-color: var(--color-cream) !important;
+    color: var(--color-ink) !important;
+    box-shadow: none !important;
+  }
+
+  /* Destructive menu items keep danger text on yellow hover */
+  & [role="menuitem"].text-danger:hover {
+    color: var(--color-danger) !important;
   }
 
   /* ============================================
@@ -457,7 +481,7 @@
   /* ============================================
      FLAT BUTTON — Moon Mode
      Hover: subtle tint (glow on root handles the visual pop)
-     Press: slightly stronger tint
+     Press: cream bg, ink text
      ============================================ */
 
   & [data-slot="button-face"][data-mode="flat"] {
@@ -468,9 +492,9 @@
     }
 
     &:active {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%) !important;
+      background-color: var(--color-cream) !important;
       background-image: none;
-      color: var(--btn-tint);
+      color: var(--color-ink);
     }
   }
 

@@ -42,6 +42,13 @@
   transform: none !important;
 }
 
+/* Dark mode: flat button pressed → cream bg, ink text */
+.dark [data-force-state="pressed"] [data-slot="button-face"][data-mode="flat"] {
+  background-color: var(--color-cream) !important;
+  background-image: none !important;
+  color: var(--color-ink) !important;
+}
+
 /* ── Hover: pattern — mist mask fill via ::before so text stays visible ── */
 [data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"])::before {
   background-color: var(--color-line);
