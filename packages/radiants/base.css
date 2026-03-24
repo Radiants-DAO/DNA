@@ -296,6 +296,79 @@ body {
 }
 
 /* ============================================================================
+   Tab Trigger — Visual states via data attributes
+   ============================================================================ */
+
+/* Pill mode — inactive */
+[data-slot="tab-trigger"][data-mode="pill"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-head);
+}
+[data-slot="tab-trigger"][data-mode="pill"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Pill mode — active */
+[data-slot="tab-trigger"][data-mode="pill"][data-state="selected"] {
+  background-color: var(--color-accent);
+  color: var(--color-accent-inv);
+}
+
+/* Line mode — inactive */
+[data-slot="tab-trigger"][data-mode="line"][data-state="default"] {
+  background-color: transparent;
+  border-radius: 0;
+}
+[data-slot="tab-trigger"][data-mode="line"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Line mode — active */
+[data-slot="tab-trigger"][data-mode="line"][data-state="selected"] {
+  background-color: var(--color-page);
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-line);
+  border-bottom: none;
+  border-radius: 0;
+  z-index: 10;
+}
+
+/* Capsule mode — inactive */
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-mute);
+}
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Capsule mode — active */
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="selected"] {
+  background-color: var(--color-accent);
+  color: var(--color-accent-inv);
+}
+
+/* Sidebar mode — inactive */
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-main);
+}
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Sidebar mode — active */
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="selected"] {
+  background-color: var(--color-page);
+  color: var(--color-head);
+}
+
+/* ============================================================================
    Button Variants — Sun Mode
    Layout stays in the component; theme-owned colors and state live here.
    ============================================================================ */

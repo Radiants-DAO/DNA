@@ -106,22 +106,11 @@ export const tabTriggerVariants = cva(
     variants: {
       mode: {
         pill: '',
-        line: '',
-      },
-      active: {
-        true: '',
-        false: '',
+        line: 'rounded-none',
       },
     },
-    compoundVariants: [
-      { mode: 'pill', active: false, className: 'bg-transparent text-head hover:bg-inv hover:text-accent' },
-      { mode: 'pill', active: true, className: 'bg-accent text-accent-inv' },
-      { mode: 'line', active: false, className: 'rounded-none bg-transparent hover:bg-inv hover:text-accent' },
-      { mode: 'line', active: true, className: 'rounded-none bg-page border-t border-l border-r border-line border-b-0 z-10' },
-    ],
     defaultVariants: {
       mode: 'pill',
-      active: false,
     },
   }
 );
@@ -353,9 +342,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
               data-mode="capsule"
               data-state={isActive ? 'selected' : 'default'}
               className={`flex items-center justify-center cursor-pointer select-none border-none pixel-rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
-                isActive
-                  ? 'gap-1.5 px-2.5 py-1 bg-accent text-accent-inv'
-                  : 'p-1 bg-transparent text-mute hover:bg-inv hover:text-accent'
+                isActive ? 'gap-1.5 px-2.5 py-1' : 'p-1'
               } ${className}`}
             >
               {icon && <span className="shrink-0 flex items-center justify-center size-4">{icon}</span>}
@@ -376,11 +363,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
               data-slot="tab-trigger"
               data-mode="sidebar"
               data-state={isActive ? 'selected' : 'default'}
-              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${
-                isActive
-                  ? 'bg-page text-head'
-                  : 'bg-transparent text-main hover:bg-inv hover:text-accent'
-              } ${className}`}
+              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${className}`}
             >
               {icon && <span className="shrink-0">{icon}</span>}
               {children}
@@ -390,7 +373,6 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
 
         const classes = tabTriggerVariants({
           mode,
-          active: isActive,
           className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
         });
 
