@@ -632,26 +632,26 @@ body {
 [data-slot="card"][data-variant="raised"] {
   background-color: var(--color-card);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.12) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.12) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px);
   color: var(--color-main);
 }
 
 [data-slot="card"][data-variant="inverted"] {
   background-color: var(--color-inv);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.06) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px);
   color: var(--color-flip);
 }
 
 /* Inverted card: light border for contrast against dark surface */
 [data-slot="card"][data-variant="inverted"]::after {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-flip) 10%, transparent);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {
