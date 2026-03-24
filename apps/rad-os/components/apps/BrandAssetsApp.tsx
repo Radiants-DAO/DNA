@@ -12,7 +12,7 @@ import {
 } from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 import { PatternsTab } from '@/components/ui/PatternsTab';
-import { TypographyPlayground, SubTabNav, type SubTab } from '@/components/apps/typography-playground';
+import { TypographyPlayground, SubTabNav, type SubTab, type LayoutVariant } from '@/components/apps/typography-playground';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { ComponentCategory } from '@rdna/radiants/registry';
 
@@ -511,6 +511,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
+  const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('broadsheet');
 
   const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', variant: 'pill' });
 
@@ -546,7 +547,25 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             </Tabs.Trigger>
             <Tabs.Trigger value="fonts" compact icon={<FontAaIcon size={14} />}
               settings={
-                <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
+                <div className="space-y-2">
+                  <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
+                  {typoSubTab === 'manual' && (
+                    <div className="space-y-1.5">
+                      <span className="font-heading text-xs text-mute uppercase block">Layout</span>
+                      <ToggleGroup
+                        value={[layoutVariant]}
+                        onValueChange={(vals) => {
+                          if (vals.length) setLayoutVariant(vals[0] as LayoutVariant);
+                        }}
+                        size="sm"
+                      >
+                        <ToggleGroup.Item value="broadsheet">Broadsheet</ToggleGroup.Item>
+                        <ToggleGroup.Item value="magazine">Magazine</ToggleGroup.Item>
+                        <ToggleGroup.Item value="specimen">Specimen</ToggleGroup.Item>
+                      </ToggleGroup>
+                    </div>
+                  )}
+                </div>
               }
             >
               03 Typography
