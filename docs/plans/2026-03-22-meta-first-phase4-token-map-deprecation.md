@@ -4,7 +4,7 @@
 
 **Goal:** Delete `packages/radiants/eslint/token-map.mjs` and leave `packages/radiants/eslint/contract.mjs` as the only contract-loading surface.
 
-**Architecture:** This app has no shipped compatibility burden, so Phase 4 is a hard cut. Every active rule and config import should already point at `contract.mjs` by the time this phase begins. This phase adds a guardrail test that fails if `token-map.mjs` still exists or if the old import path reappears in rule/config sources, then deletes the module and the bridge-era test. Tasks 1 and 2 must run in one uninterrupted slice because Task 1 intentionally leaves an uncommitted failing test behind.
+**Architecture:** This app has no shipped compatibility burden, so Phase 4 is a hard cut. Every active rule and config import already points at `contract.mjs`; the remaining `token-map.mjs` file is dead bridge code plus one bridge-era test, while several contract-source tests still mention the old path only as a negative assertion. This phase adds a guardrail test that fails if `token-map.mjs` still exists or if the old import path reappears in live rule/config sources, then deletes the module and the bridge test. Tasks 1 and 2 must run in one uninterrupted slice because Task 1 intentionally leaves an uncommitted failing test behind.
 
 **Tech Stack:** Node 22 ESM, Vitest, `node:fs` path scanning, ripgrep-backed verification, JSON generated artifacts, pnpm workspaces
 
@@ -14,20 +14,24 @@
 
 ### Prerequisite Gate
 
-Run:
+Run the live-source import gate:
 
 ```bash
-rg -l "token-map\\.mjs" packages/radiants/eslint eslint.rdna.config.mjs
+rg -l "token-map\\.mjs" packages/radiants/eslint/rules packages/radiants/eslint/index.mjs eslint.rdna.config.mjs
 ```
 
-Expected:
+Expected: no output.
 
-- `packages/radiants/eslint/token-map.mjs`
-- `packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs`
+Then confirm the two deletion targets still exist:
 
-No other file should appear. If `eslint.rdna.config.mjs`, `packages/radiants/eslint/index.mjs`, or any rule file still shows up here, Phase 3 is incomplete and Phase 4 must not start.
+```bash
+test -f packages/radiants/eslint/token-map.mjs
+test -f packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs
+```
 
-Rollback note if Phase 4 fails after deletion: restore `packages/radiants/eslint/token-map.mjs` and `packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs` from git history, then revert import changes back to `token-map.mjs`.
+Note: do not use a broad `rg -l "token-map\\.mjs" packages/radiants/eslint` gate here. Several Phase 3 tests intentionally contain `"token-map.mjs"` as a negative assertion, and those hits are expected before and after Phase 4.
+
+Rollback note if Phase 4 fails after deletion: restore `packages/radiants/eslint/token-map.mjs` and `packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs` from git history, then rerun the focused contract tests. No live rule or config source should need to point back at `token-map.mjs`.
 
 ### Task 1: Add A Dynamic Guardrail Test That Expects `token-map.mjs` To Be Gone
 
@@ -92,7 +96,7 @@ It does not scan other tests, because some source-assertion tests intentionally 
 Run:
 
 ```bash
-pnpm --filter @rdna/radiants test:components -- eslint/__tests__/token-map-removal.test.mjs
+pnpm --filter @rdna/radiants exec vitest run eslint/__tests__/token-map-removal.test.mjs --cache=false
 ```
 
 Expected: FAIL because `packages/radiants/eslint/token-map.mjs` still exists.
@@ -116,13 +120,13 @@ Do not commit in this task.
 
 **Step 1: Re-run the Phase 3 completion gate**
 
-Run:
+Run the live-source gate again:
 
 ```bash
-rg -l "token-map\\.mjs" packages/radiants/eslint eslint.rdna.config.mjs
+rg -l "token-map\\.mjs" packages/radiants/eslint/rules packages/radiants/eslint/index.mjs eslint.rdna.config.mjs
 ```
 
-Expected: only the old module and the bridge test remain. If any rule, `index.mjs`, or config file still appears, stop and finish Phase 3 first.
+Expected: no output. If any rule, `index.mjs`, or config file appears, stop and finish Phase 3 first.
 
 **Step 2: Delete the old module and clean any stale bridge-era naming**
 
@@ -133,18 +137,19 @@ packages/radiants/eslint/token-map.mjs
 packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs
 ```
 
-Then clean any leftover bridge-era terminology:
+Then clean any leftover bridge-era terminology or source assertions:
 
 - if `contract-surface.test.mjs` still uses `tokenMap`-bridge wording, rename it to direct contract wording
 - if `rule-import-sources.test.mjs` still has a too-small file list, expand it before continuing
 - if `root-eslint-config.test.mjs` still imports the old path, remove it now
+- do not delete the existing negative-assertion tests that mention `"token-map.mjs"` as a forbidden string; they remain valid after the bridge file is gone
 
 **Step 3: Run the removal guardrail and focused contract tests**
 
 Run:
 
 ```bash
-pnpm --filter @rdna/radiants test:components -- eslint/__tests__/token-map-removal.test.mjs eslint/__tests__/contract-surface.test.mjs eslint/__tests__/rule-import-sources.test.mjs eslint/__tests__/root-eslint-config.test.mjs
+pnpm --filter @rdna/radiants exec vitest run eslint/__tests__/token-map-removal.test.mjs eslint/__tests__/contract-surface.test.mjs eslint/__tests__/rule-import-sources.test.mjs eslint/__tests__/root-eslint-config.test.mjs --cache=false
 ```
 
 Expected: PASS.
@@ -179,7 +184,7 @@ Expected: PASS, with generated artifacts refreshed from the direct contract pipe
 Run:
 
 ```bash
-pnpm --filter @rdna/radiants test:components
+pnpm --filter @rdna/radiants exec vitest run --cache=false
 ```
 
 Expected: PASS. This replaces any hand-maintained file list and catches transitive breakage across the ESLint package.
@@ -189,8 +194,8 @@ Expected: PASS. This replaces any hand-maintained file list and catches transiti
 Run:
 
 ```bash
-pnpm --filter @rdna/playground test -- app/playground/__tests__/build-radiants-contract.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts app/playground/__tests__/registry-freshness.test.ts
-pnpm --filter @rdna/radiants test:components -- registry/__tests__/registry-metadata.test.ts
+pnpm --filter @rdna/playground exec vitest run app/playground/__tests__/build-radiants-contract.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts app/playground/__tests__/registry-freshness.test.ts --cache=false
+pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry-metadata.test.ts --cache=false
 ```
 
 Expected: PASS.

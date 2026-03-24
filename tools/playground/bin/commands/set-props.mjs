@@ -1,26 +1,5 @@
-import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PLAYGROUND_ROOT = resolve(__dirname, "../..");
+import { readFullComponent } from "../lib/manifest.mjs";
 const BASE_URL = process.env.PLAYGROUND_URL || "http://localhost:3004";
-
-function readComponentProps(componentId) {
-  const raw = readFileSync(
-    resolve(PLAYGROUND_ROOT, "generated/registry.manifest.json"),
-    "utf-8",
-  );
-  const manifest = JSON.parse(raw);
-  for (const pkg of Object.values(manifest)) {
-    for (const c of pkg.components) {
-      if (c.name.toLowerCase() === componentId.toLowerCase()) {
-        return c.props ?? {};
-      }
-    }
-  }
-  return null;
-}
 
 export async function run(args) {
   const componentId = args[0];
@@ -31,11 +10,12 @@ export async function run(args) {
     process.exit(1);
   }
 
-  const knownProps = readComponentProps(componentId);
-  if (knownProps === null) {
+  const component = readFullComponent(componentId);
+  if (!component) {
     console.error(`Unknown component: ${componentId}`);
     process.exit(1);
   }
+  const knownProps = component.props ?? {};
 
   // Parse flags and key=value pairs
   const params = new URLSearchParams();

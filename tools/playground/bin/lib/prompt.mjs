@@ -1,10 +1,10 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { lookupComponent } from "./manifest.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PLAYGROUND_ROOT = resolve(__dirname, "../..");
-const MONO_ROOT = resolve(PLAYGROUND_ROOT, "../..");
+const MONO_ROOT = resolve(__dirname, "../../..");
 
 function tryRead(relPath) {
   try {
@@ -12,29 +12,6 @@ function tryRead(relPath) {
   } catch {
     return `[file not found: ${relPath}]`;
   }
-}
-
-function readManifest() {
-  const raw = readFileSync(
-    resolve(PLAYGROUND_ROOT, "generated/registry.manifest.json"),
-    "utf-8",
-  );
-  const manifest = JSON.parse(raw);
-  return Object.values(manifest).flatMap((pkg) =>
-    pkg.components.map((c) => ({
-      id: c.name.toLowerCase(),
-      label: c.name,
-      sourcePath: c.sourcePath ?? "",
-      schemaPath: c.schemaPath,
-    })),
-  );
-}
-
-export function lookupComponent(componentId) {
-  const registry = readManifest();
-  const entry = registry.find((e) => e.id === componentId.toLowerCase());
-  if (!entry) throw new Error(`Unknown component: ${componentId}`);
-  return entry;
 }
 
 const RDNA_RULES = `### Token usage

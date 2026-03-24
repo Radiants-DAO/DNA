@@ -1,33 +1,10 @@
-import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
 import { describe, it, expect } from "vitest";
 import { buildTestMatrix } from "../lib/prop-matrix.mjs";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PLAYGROUND_ROOT = resolve(__dirname, "../..");
-const MANIFEST_PATH = resolve(
-  PLAYGROUND_ROOT,
-  "generated/registry.manifest.json",
-);
-
-function readManifest() {
-  return JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
-}
-
-function findComponent(name) {
-  const manifest = readManifest();
-  for (const pkg of Object.values(manifest)) {
-    for (const c of pkg.components) {
-      if (c.name === name) return c;
-    }
-  }
-  return null;
-}
+import { readManifest, readFullComponent } from "../lib/manifest.mjs";
 
 describe("visual QA loop integration", () => {
   it("generates a non-empty matrix for Button", () => {
-    const button = findComponent("Button");
+    const button = readFullComponent("Button");
     expect(button).not.toBeNull();
 
     const matrix = buildTestMatrix(button);
@@ -100,14 +77,14 @@ describe("visual QA loop integration", () => {
   });
 
   it("Button states are present in manifest", () => {
-    const button = findComponent("Button");
+    const button = readFullComponent("Button");
     expect(button).not.toBeNull();
     expect(button.states).toContain("hover");
     expect(button.states).toContain("pressed");
   });
 
   it("matrix labels are unique", () => {
-    const button = findComponent("Button");
+    const button = readFullComponent("Button");
     const matrix = buildTestMatrix(button);
     const labels = matrix.map((m) => m.label);
     expect(new Set(labels).size).toBe(labels.length);
