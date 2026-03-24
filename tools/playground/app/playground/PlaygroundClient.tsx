@@ -30,11 +30,11 @@ export function PlaygroundClient() {
     setColorMode((m) => (m === "light" ? "dark" : "light"));
   }, []);
 
-  // Playground chrome is always dark — color mode only affects component cards.
-  // Component cards scope their own color mode via the colorMode prop.
+  // Playground chrome is always dark via hardcoded colors (bg-[#0F0E0C] etc.).
+  // Keep document root classless so the `dark`/`light` class on each
+  // ComponentCard's sub-cards wrapper is the sole authority for semantic tokens.
   useEffect(() => {
-    document.documentElement.classList.add("dark");
-    document.documentElement.classList.remove("light");
+    document.documentElement.classList.remove("dark", "light");
   }, []);
 
   const handleFocusNode = useCallback((registryId: string, variantLabel?: string) => {

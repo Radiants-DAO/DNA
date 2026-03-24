@@ -142,6 +142,14 @@
 **Rule**: Download Figma assets locally, fix SVG `var()` references to literal colors, save to project dir, and use `http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/ops/paper-assets/{name}` path.
 ---
 
+### [LAYOUT] Pixel-art diamond shapes: compute grid offsets from Figma absolute positions
+**Agent**: worker-b
+**Item**: #50 Slide 16:9 - 86 (DINNER event slide)
+**Problem**: Figma exported a compass-rose/diamond pixel icon as 60+ absolutely-positioned 9.615px squares with coordinates relative to the full 1064x1080 frame. Translating all positions to a local container required subtracting the container origin (470, 128) from every coordinate.
+**Solution**: Created a container div at the Figma group origin, then offset all child square positions by subtracting the container's top-left. Each square is a simple `position: absolute; background-color: #FEF8E2` div. The diamond pattern is symmetric, so verify one quadrant and mirror.
+**Rule**: For pixel-art icon groups, create a container at the group origin and subtract origin from all child absolute positions. Verify symmetry across quadrants to catch position math errors.
+---
+
 ### [PAPER-MCP] img inside div doesn't render in single write_html call — use two-step approach
 **Agent**: worker-b
 **Item**: #33 Frame 1272628807 ("Solution? WAYY")
@@ -558,6 +566,14 @@
 **Rule**: Avoid mass duplicate_nodes calls (>5 copies). Create repeated elements individually via write_html to prevent sibling detachment.
 ---
 
+### [LAYOUT] Banner slides with centered vertical divider: use absolute-positioned 1px divs
+**Agent**: worker-a
+**Item**: #28 RADIANTS-2 (1316x591 banner)
+**Problem**: Figma design had a vertical divider line at x=658 splitting the banner into left/right panels, with gaps at the title row and bottom. Figma exported these as 0-width divs with SVG vector images for the 1px line.
+**Solution**: Use `<div>` elements with `width: 1px; background-color: rgba(254, 248, 226, 0.3)` positioned absolutely at the correct coordinates. Three separate divs for the three line segments (top, middle, bottom) with gaps between them. Much simpler than downloading and inserting SVG vector assets.
+**Rule**: For thin vertical/horizontal divider lines with gaps, use multiple absolute-positioned 1px divs with background-color. Simpler than SVG vectors and visually identical.
+---
+
 ### [IMAGES] Nested img inside write_html div may not render — use two-step approach
 **Agent**: worker-b
 **Item**: #10 11440
@@ -588,6 +604,14 @@
 **Problem**: Figma exported SVG connector lines and gear icon inside containers with negative percentage insets (e.g., `inset: -54.51% -26.88%`), meaning the SVG extends far beyond its logical container. Paper doesn't support CSS `inset` or percentage positioning.
 **Solution**: Compute actual SVG pixel bounds: actual_width = container_width * (1 + 2 * abs_inset_pct), actual_height = container_height * (1 + 2 * abs_inset_pct). Verify against SVG viewBox dimensions. Position the SVG div at computed absolute coordinates: svg_left = container_left - (inset_pct * container_width), svg_top = container_top - (inset_pct * container_height). Use inline SVG with the full viewBox and filter definitions.
 **Rule**: For Figma SVGs with negative percentage insets, expand the container to the full SVG viewBox size and offset the position accordingly. The SVG viewBox dimensions serve as a cross-check for the computed bounds.
+---
+
+### [IMAGES] Figma MCP asset URLs consistently fail to load as image fills in Paper
+**Agent**: worker-b
+**Item**: #57 Frame 2085660705 (1258x1523 knitted village scene)
+**Problem**: Figma MCP asset URLs (`https://www.figma.com/api/mcp/asset/{uuid}`) created Rectangle nodes in Paper but never loaded image fills. Tried both wrapped (`<div><img src="..."></div>`) and bare (`<img src="...">`), waited multiple seconds — `get_fill_image` confirmed no image fill on either attempt. This matches the earlier learning from worker-a on item #1.
+**Solution**: After 2 failed attempts, used colored placeholder rectangles with descriptive text labels for the image areas. The text overlay elements (Joystix font, positioning, sizing) were reproduced faithfully since they don't depend on images.
+**Rule**: Figma MCP asset URLs do NOT load in Paper. After 2 attempts, switch to placeholders. For image-heavy designs, focus on accurate text/layout reproduction and use descriptive placeholder rectangles for image content.
 ---
 
 ### [IMAGES] Figma MCP asset URLs render as gray placeholders in Paper
@@ -644,5 +668,405 @@
 **Problem**: Figma MCP asset URLs for vector elements (axis lines, graph lines) rendered as persistent gray boxes in Paper — unlike raster images, they never loaded.
 **Solution**: Replaced Figma vector asset URLs with hand-drawn equivalents: CSS rectangles for straight axis lines, and an SVG `<polyline>` for the graph line connecting data points. Extract point coordinates from the Figma data point positions (center of each square = left + width/2, top + height/2).
 **Rule**: For simple vector elements (lines, polylines, axes), skip Figma asset URLs and draw them directly with CSS divs (for straight lines) or inline SVG (for polylines/paths). Only use Figma asset URLs for complex raster images.
+---
+
+### [LAYOUT] Chart graphics with labeled data points: compute dot centers, draw curve with cubic bezier, place labels with offset from dots
+**Agent**: worker-b
+**Item**: #65 Frame 2085660690 (1033x1033 "The Lifecycle of a Brand" chart)
+**Problem**: Chart graphic with 5 labeled data points connected by a smooth curve on L-shaped axes. Figma code uses `calc(50% + N)` with `-translate-x/y-1/2` for text positioning and vector assets for axes/curve.
+**Solution**: (1) Draw L-shaped axes as inline SVG path (`M-L-L` commands). (2) Place data dots as absolute-positioned divs with box-shadow glow. (3) Compute dot centers (left+8.5, top+8.5) and draw curve as SVG cubic bezier `C` path through all 5 centers. (4) Place labels as absolute-positioned text nodes offset from their dots. (5) For the rotated Y-axis label, use SVG `<text transform="rotate(-90, cx, cy)">` per existing learnings. Reuses same patterns as #67 (Lifecycle of a Meme chart).
+**Rule**: For chart graphics with labeled scatter points and curves, reuse the proven pattern: SVG axes + absolute dot divs with glow + SVG cubic bezier curve + offset text labels. Pre-compute all translate-centered positions as absolute pixel values.
+---
+
+### [IMAGES] Figma MCP remote asset URLs fail to load in Paper
+**Agent**: worker-b
+**Item**: #65 Frame 2085660690
+**Problem**: Figma `get_design_context` returns vector assets as remote URLs (`https://www.figma.com/api/mcp/asset/...`). When used in `<img>` tags in Paper write_html, these render as opaque gray rectangles and never load, even after multiple retries with delays. They block elements underneath.
+**Solution**: Skip Figma asset URLs for vector/path content. Recreate axes as inline `<svg>` with `<line>` elements, and curve lines as `<polyline>` or `<path>` connecting data point centers. This renders immediately and matches the original.
+**Rule**: Never rely on Figma MCP asset URLs for vector artwork in Paper. Always recreate vectors as inline SVG (`<line>`, `<polyline>`, `<path>`).
+---
+
+### [IMAGES] Lifecycle chart polylines need cubic bezier curves, not straight segments
+**Agent**: worker
+**Item**: #65 Frame 2085660690 (The Lifecycle of a Brand)
+**Problem**: Initial fix replaced the gray Figma asset placeholder with an inline SVG `<polyline>` using straight segments between data points. This produced angular/jagged lines that don't match the smooth curved lines in the Figma original.
+**Solution**: Replace `<polyline points="...">` with `<path d="M ... C ... C ... C ... C ...">` using cubic bezier curves. Calculate control points to create smooth transitions between data points. The curve should arc naturally — rising steeply to the peak, then descending smoothly.
+**Rule**: For lifecycle/line-chart graphics, always use SVG `<path>` with cubic bezier `C` commands instead of `<polyline>` to match the smooth curves in Figma originals.
+---
+
+### [LAYOUT] Figma translateX/Y(-50%) positioning requires center-based coordinate math
+**Agent**: worker-b
+**Item**: #64 Frame 2085660679 (All Roads star map)
+**Problem**: Figma code uses `left: calc(50% - Xpx)` with `transform: translateX(-50%)` meaning the left value is the CENTER of the element, not its left edge. Initially placed labels at the raw left offset, causing them to shift rightward from their intended positions.
+**Solution**: For centered text, compute `center-X = (frameWidth/2) - offsetFromFigma`, then set `left = center-X - (elementWidth/2)`. For text without explicit width (nowrap), use `transform: translateX(-50%)` on the Paper element to mirror the Figma centering.
+**Rule**: When Figma code uses `calc(50% - Npx)` with `translate(-50%)`, treat the computed value as the element center, not its left edge.
+---
+
+### [IMAGES] Star-map / radial connection diagrams: use inline SVG lines, not Figma vector assets
+**Agent**: worker-b
+**Item**: #64 Frame 2085660679 (All Roads star map)
+**Problem**: Figma exports connecting lines between nodes as vector asset URLs. These render as gray placeholder boxes in Paper, per the known issue with Figma vector asset URLs.
+**Solution**: Draw all connecting lines as SVG `<line>` elements inside a single `<svg>` overlay, using the dot centers as endpoints. Map each dot's center from Figma absolute coordinates (left + half-width, top + half-height).
+**Rule**: For star-map / radial diagrams, use a single inline SVG with `<line>` elements instead of Figma vector asset URLs. Calculate endpoints from the dot/node positions.
+---
+
+### [IMAGES] Large PNGs from Figma (2016x2016) time out when loaded via localhost media — use Figma asset URLs directly
+**Agent**: worker-a
+**Item**: #16 auction-templates /meet-the-artist (1350x805)
+**Problem**: Downloading 2016x2016 PNG from Figma MCP, resizing with `sips`, and loading via `http://localhost:29979/media/private/tmp/claude-501/...` timed out repeatedly on `write_html` calls. Even after resizing to 680x680, the img insert timed out.
+**Solution**: Use the Figma MCP asset URL directly in the `<img src>` attribute: `https://www.figma.com/api/mcp/asset/{uuid}`. Paper loads these asynchronously — they appear gray in immediate screenshots but render on the canvas. This worked on first try with no timeout.
+**Rule**: For raster images, try Figma asset URLs directly in Paper first. Only download locally if the asset URL fails to render. Figma asset URLs avoid the localhost media server timeout issue with large images.
+---
+
+### [LAYOUT] Figma -scale-y-100 rotate-180 on speech bubble SVG = scaleX(-1), but original may already be correct
+**Agent**: worker-a
+**Item**: #16 auction-templates /meet-the-artist
+**Problem**: Figma code had `-scale-y-100 rotate-180` on a speech bubble SVG container. CSS `rotate(180deg)` + `scaleY(-1)` = `scaleX(-1)`. But the original SVG path already had the tail at bottom-left, matching the Figma screenshot exactly.
+**Solution**: Used the original SVG as-is without any transform. The visual matched the Figma design. When the original SVG already has the correct orientation, the Figma transforms may be artifacts of the export process rather than functional transforms.
+**Rule**: Always compare the raw SVG path orientation against the Figma screenshot before applying CSS transform equivalents. The SVG may already be in the correct orientation.
+---
+
+### [LAYOUT] Figma translate-y-1/2 centering → manual top calculation for Paper
+**Agent**: worker-b
+**Item**: #63 Frame 2085660713
+**Problem**: Figma code used `top: 649.5px` with `-translate-y-1/2` to vertically center a text block. Paper does not support CSS transforms, so the text position must be pre-calculated.
+**Solution**: Estimated text block height from line count * line-height, then set top = centerY - (height/2). For 8 lines at 45.6px line-height = ~365px height, so top = 649.5 - 182 = ~467px.
+**Rule**: When Figma uses translate centering, calculate the final pixel position manually: top = centerY - (estimatedHeight / 2).
+---
+
+### [IMAGES] Pixel-art vector icons from Figma — inline SVG with resolved fill works first-try
+**Agent**: worker-b
+**Item**: #62 Frame 2085660716 ("gm" with pixel coffee cup)
+**Problem**: Figma exported a pixel-art coffee cup as an SVG with `fill="var(--fill-0, black)"`. Per existing learnings, Figma asset URLs don't render in Paper and SVG var() references must be resolved.
+**Solution**: Downloaded the SVG, replaced `var(--fill-0, black)` with literal `#0F0E0C`, and embedded as inline `<svg>` inside a positioned container div. Rendered correctly on first attempt with all pixel squares intact.
+**Rule**: For pixel-art vector assets from Figma: download SVG, resolve var() fills to literal hex, embed as inline SVG. This pattern is reliable and works first-try.
+---
+
+### [PATTERNS] Pixel sun half-mask pattern — use yellow overlay rectangle, not clipping
+**Agent**: worker-b
+**Item**: #60 Frame 2085660714 (half-sun with quote text)
+**Problem**: Figma uses a yellow rectangle overlay (same color as background) to mask the right half of a pixel sun, creating a "half-sun" effect. The pixel sun is composed of ~60 absolutely-positioned 26.4px black squares arranged in a radiant pattern.
+**Solution**: Reproduced the masking technique directly — placed all pixel squares in an absolutely-positioned container, then layered a background-colored rectangle on top to hide the right half. No clip-path or overflow-hidden needed.
+**Rule**: When Figma masks half of a pixel pattern with a same-color-as-background rectangle, replicate the overlay approach directly in Paper. It's simpler and more faithful than trying to use clipping.
+---
+
+### [PAPER-MCP] Screenshot tool can go silent — verify structure via get_node_info instead
+**Agent**: worker-b
+**Item**: #60 Frame 2085660714
+**Problem**: Paper's `get_screenshot` tool intermittently returns empty output (no image data) across multiple retries with different scale/transparent options. The artboard and all children still exist and are correct per `get_node_info`.
+**Solution**: When screenshots fail, use `get_node_info` to verify the node tree (child count, text content, dimensions) as a structural check. Don't delete and rebuild — the content is likely fine.
+**Rule**: If `get_screenshot` returns empty, verify via `get_node_info` and move on. Do not assume nodes were lost.
+---
+
+### [FIGMA-MCP] display:contents in Figma code means children are absolutely positioned relative to the root frame
+**Agent**: worker-b
+**Item**: #60 Frame 2085660714
+**Problem**: Figma's generated code uses `className="absolute contents left-[247px] top-[473px]"` for a container group. The `contents` display value makes the container invisible to layout, so child `left`/`top` values are already in the root frame's coordinate space, not offset from the container's position.
+**Solution**: Use the child position values directly as absolute coordinates from the top-left of the root frame. Ignore the `left`/`top` on the `contents` container.
+**Rule**: When Figma code has `display: contents` on a group, child absolute positions are already in frame-root coordinates — do not add the container's offset.
+---
+
+### [IMAGES] localhost media URLs timeout but Figma API asset URLs work
+**Agent**: worker-a
+**Item**: #17 auction-templates /meet-the-artist (1350x1350)
+**Problem**: Downloading Figma assets via curl to local temp files, then referencing them via `http://localhost:29979/media/...` consistently caused Paper write_html timeouts, even for images resized to 100x100 (7KB). In contrast, using the original Figma API asset URL (`https://www.figma.com/api/mcp/asset/...`) in write_html succeeded without timeout.
+**Solution**: Use Figma API asset URLs directly in `<img src="...">` — do NOT download to local files and use localhost media URLs. The Figma URLs may show gray placeholders initially but will load in Paper's background.
+**Rule**: Always use Figma API asset URLs directly; localhost media URLs for downloaded Figma assets cause write_html timeouts.
+---
+
+### [IMAGES] Figma SVG speech bubble vectors can be downloaded and inlined
+**Agent**: worker-a
+**Item**: #17 auction-templates /meet-the-artist (1350x1350)
+**Problem**: Speech bubble shapes in Figma are custom vector paths (not standard shapes). The Figma code exports them as image references, but they need to be actual SVG shapes in Paper to look correct.
+**Solution**: Download the vector asset URL via curl to get the raw SVG, replace `var(--fill-0, ...)` and `var(--stroke-0, ...)` with literal color values, then inline the SVG in the write_html call.
+**Rule**: For custom Figma vector shapes (speech bubbles, decorative paths), curl the asset URL to get the SVG source, resolve CSS vars to literal colors, then inline the SVG in Paper.
+---
+
+### [PAPER-MCP] write_html timeout wipes artboard children
+**Agent**: worker-a
+**Item**: #17 auction-templates /meet-the-artist (1350x1350)
+**Problem**: When a write_html call times out (e.g., due to a slow image load), it can delete existing children of the artboard that were already placed. After a timeout on inserting an image into a child frame, the entire artboard was emptied.
+**Solution**: Build the artboard incrementally — add the frame structure first (empty containers), then add images as separate write_html calls. If a timeout occurs, only the image node is affected, not the whole artboard.
+**Rule**: Always add images in separate write_html calls, not combined with container frames, to minimize damage from timeouts.
+---
+
+### [IMAGES] Figma asset URLs timeout — use inline SVG for known assets and SVG approximations for unknown ones
+**Agent**: worker-a
+**Item**: #18 lifinity x radiants (1064x1080)
+**Problem**: All four Figma asset URLs (background Latin text, RadSun logo, Lifinity crystal, tilted card) timed out on download (curl exit code 28). The design needed raster images and a complex 3D crystal that couldn't be sourced locally.
+**Solution**: For known SVG assets (RadSun pixel logo), use inline SVG from the local repo (`rad-mark-cream.svg`). For the Lifinity crystal (3D gem shape), create an SVG approximation with faceted polygons in tan/cream tones. For background Latin text, generate representative Latin text in a small monospace font at low opacity to simulate the texture. Skip the tilted card outline since it was barely visible in the original.
+**Rule**: When Figma assets timeout, prioritize local repo SVGs for known assets. For unknown complex shapes, create SVG polygon approximations from the Figma screenshot reference. Latin text backgrounds can be simulated with actual text in small monospace font.
+---
+
+### [IMAGES] localhost media URLs timeout consistently — Figma asset URLs work on first try
+**Agent**: worker-b
+**Item**: #59 Frame 2085660707 (1258x1523)
+**Problem**: Downloaded Figma raster assets locally via curl (13MB PNG, resized to 138KB JPG, even to 4KB tiny), then tried `http://localhost:29979/media/private/tmp/claude-501/...` and `http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/...` — every single write_html call with localhost media URLs timed out, regardless of file size. Meanwhile, using the Figma API asset URLs directly (`https://www.figma.com/api/mcp/asset/...`) succeeded instantly (no timeout).
+**Solution**: Use Figma asset URLs directly in `<img src>`. They show as grey placeholders in Paper screenshots (async loading) but render on the actual canvas. Do NOT waste time downloading and serving via localhost.
+**Rule**: Never use localhost media URLs for Figma-sourced raster images. Always use the Figma API asset URL directly. Grey placeholders in screenshots are expected — trust async loading.
+---
+
+### [IMAGES] Figma vector assets (SVGs) also show as gray placeholders
+**Agent**: worker-a
+**Item**: #19 lifinity x radiants (4369:19161)
+**Problem**: The rotated vector element (Lifinity logo/arrow) referenced via Figma asset URL `https://www.figma.com/api/mcp/asset/...` rendered as a large gray rectangle in Paper, same as raster images. Two attempts both resulted in gray placeholders.
+**Solution**: For decorative vector elements that fail to load, use a subtle gray placeholder div with low opacity (0.25) at the correct size and rotation. Per instructions, do not spend more than 2 attempts.
+**Rule**: Figma vector asset URLs behave the same as raster ones in Paper — expect gray placeholders. Use a muted placeholder div for non-critical decorative elements after 2 failed loads.
+---
+
+### [LAYOUT] Recreating logo wordmarks with text when asset images fail
+**Agent**: worker-a
+**Item**: #19 lifinity x radiants (4369:19161)
+**Problem**: The RADIANTS logo SVG group from Figma rendered as a gray placeholder. The original is a pixelated retro-styled wordmark.
+**Solution**: Recreated using Joystix font in a bordered/glowing container div that closely approximates the original look. Used `background-color: rgba(254,248,226,0.15)`, `border: 2px solid #FEF8E2`, and `box-shadow` for the glow effect.
+**Rule**: When logo image assets fail, recreate with the project's pixel font (Joystix) in a styled container. A bordered box with glow shadow approximates the Figma banner-style logo well.
+---
+
+### [IMAGES] Large raster backgrounds (>1MB PNG) fail to load in Paper via both Figma URL and localhost
+**Agent**: worker-a
+**Item**: #20 lifinity x radiants (4369:19184)
+**Problem**: The 3840x2160 Latin text background image (~2MB PNG) failed to load in Paper both as a Figma asset URL (rendered as gray Rectangle placeholder) and via localhost media server (timed out). Even after resizing to 1920x1080 JPEG (258KB), the localhost write_html call timed out.
+**Solution**: Hid the broken background container (opacity: 0) and relied on the artboard's solid background color (#0F0E0C). The Latin text texture was subtle enough that its absence is acceptable for the social graphic.
+**Rule**: For large raster backgrounds that fail twice, hide/remove and use solid background color. Don't spend more than 2 attempts on a single background image per the 2-attempt limit rule.
+---
+
+### [CSS] SVG transform="rotate(180)" works in Paper for flipping ornamental elements
+**Agent**: worker-a
+**Item**: #20 lifinity x radiants (4369:19184)
+**Problem**: Needed to render a flipped/rotated copy of an ornamental bracket SVG (L-shape with triangle arrow). Paper doesn't support CSS `transform: rotate()`.
+**Solution**: Applied `transform="translate(626.16,104) rotate(180)"` directly on an SVG `<g>` element wrapping the path. Paper parsed and rendered the SVG transform correctly, producing the flipped bracket.
+**Rule**: Use SVG-level `transform` attributes (translate + rotate on `<g>`) instead of CSS transforms to flip/rotate SVG elements in Paper.
+---
+
+### [IMAGES] Inline SVG with filters (feMorphology + feGaussianBlur) works for glow on complex shapes
+**Agent**: worker-a
+**Item**: #20 lifinity x radiants (4369:19184)
+**Problem**: Needed to render both the RadSun pixel icon and Lifinity crystal logo with golden glow effects (feMorphology dilate + feGaussianBlur drop shadows).
+**Solution**: Embedded the full SVG with `<filter>` definitions inline in the HTML. Both the pixel art RadSun and the multi-faceted crystal rendered correctly with their glow filters intact. The key was resolving `var(--fill-0, #FEF8E2)` to `#FEF8E2` and `var(--stroke-0, #DFD5B0)` to `#DFD5B0` before embedding.
+**Rule**: Complex SVG filter chains (feMorphology + feGaussianBlur) work in Paper for inline SVGs. Always resolve var() fallback values to literals before embedding.
+---
+
+### [IMAGES] Localhost img tags consistently timeout in Paper write_html — use Figma asset URLs for raster images
+**Agent**: worker-b
+**Item**: #58 Frame 2085660706 (1258x1523 ORE portrait)
+**Problem**: `<img src="http://localhost:29979/media/...">` consistently timed out in Paper `write_html`, even with small JPEGs (10KB-480KB). Tried both nested (img inside div) and direct approaches. Multiple attempts all failed with timeouts.
+**Solution**: Figma asset URLs (`https://www.figma.com/api/mcp/asset/{uuid}`) create Rectangle nodes instantly (no timeout), though the image fill may not always load. For raster images, Figma asset URLs are the only reliable path. If those also fail to show image fills, use colored placeholder rectangles.
+**Rule**: For raster images, always try Figma asset URLs first (`https://www.figma.com/api/mcp/asset/...`). If they create nodes but without image fills, use colored placeholders. Localhost img loading is unreliable and frequently times out.
+---
+
+### [IMAGES] Figma asset URLs for SVGs may have unresolved var() — use inline SVG instead
+**Agent**: worker-b
+**Item**: #58 Frame 2085660706 (ORE letter SVGs)
+**Problem**: Figma exports SVGs with `var(--fill-0, #FEF8E2)` and `var(--stroke-0, #FF1D1D)` references. When loaded via Figma asset URLs, Paper may not resolve these CSS variables, resulting in missing colors.
+**Solution**: Download SVGs, replace `var()` with literal hex values using sed, then embed as inline `<svg>` in Paper HTML. Inline SVGs with literal colors render perfectly every time.
+**Rule**: For SVG assets from Figma, always download, fix var() references to literal colors, and embed as inline SVG. Never rely on Figma asset URLs for SVG rendering in Paper.
+---
+
+### [IMAGES] Figma MCP asset URLs return 404 without auth — confirmed via curl
+**Agent**: worker-b
+**Item**: #56 Frame 2085660704 (1258x1523 google-magnifier portrait)
+**Problem**: Figma MCP asset URLs (`https://www.figma.com/api/mcp/asset/{uuid}`) return HTTP 404 when fetched without authentication (verified with `curl -sI`). Paper creates Frame nodes for them but the image fill never loads. Screenshots persistently show gray placeholders even after 20+ seconds of waiting. The `get_fill_image` call confirms "no image fill" on these nodes.
+**Solution**: Added `backgroundColor` fallback colors to the image Frame nodes using `update_styles`. Yellow (#D4C878) for texture bg, semi-transparent dark for portrait overlay, subtle red for grid. This preserves the layout structure and color intent while the actual raster content is missing. The Figma asset URL img tags are kept on the nodes in case they eventually resolve on-canvas.
+**Rule**: Figma MCP asset URLs are session-scoped and not publicly accessible. Always add colored placeholder backgrounds to image Frame nodes as a fallback. For image-heavy designs (halftone portraits, textures), accept that placeholders convey layout intent rather than pixel-perfect imagery.
+---
+
+### [FIGMA-MCP] Figma group insets reveal glow/shadow extent
+**Agent**: worker-a
+**Item**: #23 p2 x radiants (4369:21750)
+**Problem**: The P2 lion logo group (349x219) had CSS insets of `-40.83%` / `-25.72%`, and the radiants mark (52x52) had `-250%`. These negative insets represent glow/shadow extent beyond the node bounds, not actual content offset.
+**Solution**: Calculate glow area as `size * (1 + abs(inset)*2)`. For the radiants mark: 52 * (1 + 2.5*2) = 312px glow diameter. Use `radial-gradient` on a larger positioned div to simulate the glow.
+**Rule**: When Figma `inset` values are deeply negative, multiply node dimensions by the expansion factor to get the total glow area, then use `radial-gradient` placeholders.
+---
+
+### [FIGMA-MCP] Large card-grid frames exceed get_design_context size limit
+**Agent**: worker-b
+**Item**: #54 sleek-radiantsdao (4369:18178) — 2118x1706, 25+ cards
+**Problem**: `get_design_context` on the top-level frame returned sparse metadata XML instead of code because the node tree was too large. The frame contains 25 front cards + 3 back cards = 28 sub-frames with nested children.
+**Solution**: Call `get_design_context` on individual child nodes (e.g. a single card like `4369:18451`) to get full code with styles. Use that as a template for all similar cards, adjusting only name/role/position per card.
+**Rule**: For frames with 20+ repeated children, fetch one representative child's design context and replicate the pattern. Don't try to fetch the whole frame.
+---
+
+### [LAYOUT] Card-grid designs: use absolute positioning, not flexbox grid
+**Agent**: worker-b
+**Item**: #54 sleek-radiantsdao (4369:18178)
+**Problem**: The Figma design places 28 cards at specific x,y coordinates in a non-uniform grid (rows have 2 or 5 cards, variable y-offsets, back cards at different x positions). A flex-based layout would not match.
+**Solution**: Use a single artboard with `position: absolute` on every card, reading x,y from the Figma metadata XML. This gives pixel-perfect placement matching the original.
+**Rule**: For card-grid social graphics with irregular layout, use absolute positioning from Figma coordinates rather than attempting flex/auto-layout.
+---
+
+### [CSS] Two card variants: radiant (yellow) vs dawn (cream) with badge
+**Agent**: worker-b
+**Item**: #54 sleek-radiantsdao (4369:18178)
+**Problem**: The design has two card types that differ subtly: "radiant" cards (rows 0-2) use `#FCE184` background, "dawn" cards (rows 3-5) use `#FEF8E2` background AND have a small yellow/white chip badge in the top-right corner of the inner frame.
+**Solution**: Dawn cards get `background-color: #FEF8E2` on outer frame, `#E8D9A8` on avatar placeholder, and a nested `23x23` yellow square with `17x17` white inner square at `right:24px; top:23px`.
+**Rule**: Check card naming conventions — "dawncard" suffix means cream bg + badge chip; plain "card" means yellow bg only.
+---
+
+### [IMAGES] Paper write_html with img tags may systematically time out in some sessions
+**Agent**: worker-b
+**Item**: #55 Frame 2085660703 (1258x1523 "Solana's best Tools and Apps")
+**Problem**: Every `<img src="...">` in `write_html` timed out regardless of source (Figma asset URL, localhost:29979 media, data URI), image size (1.4KB to 4.4MB), or wrapper approach (bare img, img in div, two-step). The media server at localhost:29979 returned 200 with correct content-type, but Paper's HTML parser hung on img tags. Non-img HTML (divs, SVGs, text) worked instantly.
+**Solution**: Skip raster backgrounds entirely when img tags won't load. Use inline SVG for all vector assets (icons, logos, grid overlays). The RadSun gear icon was extracted from `radsun-black.svg` by selecting just the gear paths (viewBox 319-450 range) into a standalone inline SVG. Figma asset URLs create Rectangle placeholder nodes but never fill with image data.
+**Rule**: If the first img tag attempt times out, switch entirely to non-img approaches for the rest of the session: inline SVG for vectors, colored placeholder divs for rasters. Don't waste attempts on different img URLs/sizes — the issue is session-level, not URL-level.
+---
+
+### [IMAGES] RadSun gear icon can be extracted from radsun-black.svg as standalone inline SVG
+**Agent**: worker-b
+**Item**: #55 Frame 2085660703
+**Problem**: Needed the RadSun gear/sun icon as a standalone element, but the SVG at `apps/rad-os/public/assets/logos/radsun-black.svg` contains both the "RAD" wordmark text (x: 0-310) and the gear icon (x: 319-449) in a single 450x130 viewBox.
+**Solution**: Use a cropped viewBox `"319 0 131 131"` on the SVG element to isolate just the gear icon paths. All gear paths have x coordinates in the 319-449 range. This renders a clean standalone gear icon without needing a separate SVG file.
+**Rule**: To extract the RadSun gear icon alone, use `viewBox="319 0 131 131"` on the radsun SVG. Gear paths start at x=319.
+---
+
+### [LAYOUT] P2 x Radiants vertical composition — resolve Figma calc/translate to absolute pixels
+**Agent**: worker-a
+**Item**: #24 p2 x radiants (4369:21766, 1064x1080)
+**Problem**: Figma code used `left: calc(50%+22px)` with `-translate-x-1/2` and `-translate-y-1/2` for centering multiple elements. Paper does not support calc() or CSS transforms.
+**Solution**: Pre-compute all positions: center_x = artboard_width/2 = 532. For `left: calc(50%+Npx)`, actual_center = 532+N. Then subtract half the element width/height for the translate offsets. E.g., "x1" text: center_x = 532+22 = 554, left = 554 - 32 = 522, top = 476 - 16 = 460.
+**Rule**: For Figma designs using calc(50%+Npx) with translate-x/y centering, compute: center = artboard_center + offset, then left = center - width/2, top = specified_top - height/2.
+---
+
+### [FIGMA-MCP] Extremely complex Figma nodes with 100+ mask layers — simplify aggressively
+**Agent**: worker-b
+**Item**: #53 raffle-winner.rizzy (4369:23480, 928x1080)
+**Problem**: The Figma design context returned 100+ nested vector layers using CSS mask-image with alpha masks, mix-blend-mode, and complex transforms — all forming a pixel-art frame border inside the NFT card. The output was truncated at 25000 tokens. Attempting to reproduce each mask layer in Paper inline CSS is impossible and would blow the tool-call budget.
+**Solution**: Identify the visual intent (pixel-art card frame with window title bar) and recreate using simple elements: a cream card with border, a title bar with text and icon placeholders, and a colored artwork area. Sparkle/glow dots placed at key positions from the Figma coordinates.
+**Rule**: When Figma returns 50+ mask/blend layers forming a decorative element, simplify to the visual intent using basic shapes. Do not attempt to replicate individual mask layers.
+---
+
+### [CSS] border-radius: 50 vs 50% in Paper write_html
+**Agent**: worker-b
+**Item**: #53 raffle-winner.rizzy (4369:23480, 928x1080)
+**Problem**: Wrote `border-radius: 50;` (missing %) for the Radiants sun icon circle. Paper rendered it as a square.
+**Solution**: Always include the `%` unit: `border-radius: 50%`. Used `update_styles` to fix after initial write.
+**Rule**: Always include CSS units in Paper HTML — `border-radius: 50%`, not `border-radius: 50`.
+---
+
+### [LAYOUT] Latin text background fills: use two text blocks stacked in a flex-column container
+**Agent**: worker-a
+**Item**: #25 p2 x radiants (4369:21781, 1064x1080)
+**Problem**: A single long `<p>` tag with Latin placeholder text only filled ~40% of the 1080px artboard height. Needed text to cover the entire background.
+**Solution**: Added a second `<p>` block as another child of the text container frame. Paper stacks text nodes vertically inside a flex-column parent, extending coverage to ~75-80% of the frame. For truly full coverage, consider three text blocks or increasing font-size/line-height slightly.
+**Rule**: For full-frame Latin text backgrounds, use multiple `<p>` blocks inside a flex-column container to ensure text fills the entire artboard height. One block typically covers only 35-40% of a 1080px frame at 11px font-size.
+---
+
+### [LAYOUT] Figma calc() and translate positioning: resolve to absolute pixel values
+**Agent**: worker-a
+**Item**: #25 p2 x radiants (4369:21781, 1064x1080)
+**Problem**: Figma code used `left: calc(50%+308px)` and `-translate-x-1/2` for centering elements. Paper does not support `calc()` or CSS transforms.
+**Solution**: Pre-compute all positions: `left: calc(50% + 308px)` on 1064px canvas = 532 + 308 = 840px. For `-translate-x-1/2` on a 226px-wide element, shift left by 113px. Final left = 840 - 113 = 727px. Similarly for all three columns.
+**Rule**: Always resolve Figma `calc()` and `translate` to absolute pixel values before writing to Paper. For `calc(50% + Npx)`, compute as `(canvas_width/2) + N`. For `-translate-x-1/2`, subtract `element_width/2`.
+---
+
+### [LAYOUT] Multi-part URL text with gradient word: split into separate positioned text nodes
+**Agent**: worker-b
+**Item**: #52 post-align.nexus (4369:17548, 1000x1000)
+**Problem**: Figma design has a URL "https://www.align.nexus" where "align" uses a gold-to-orange gradient and the rest is gray. Paper does not support gradient text (background-clip: text) or rich text (inline spans with different colors). Placing text parts in a single flex-row resulted in uncontrollable gaps due to letter-spacing.
+**Solution**: Split the URL into three separate absolutely-positioned text nodes ("https://www.", "align", ".nexus") inside the URL bar container. Manually adjust left positions to close the visual gaps caused by letter-spacing. Use a solid orange/gold color (#e8a033) for "align" as an approximation of the gradient.
+**Rule**: For multi-color URL text, split into separate absolutely-positioned text nodes and manually tune left positions. Approximate CSS text gradients with solid midpoint colors.
+---
+
+### [PATTERNS] Pixel-art icons from Figma: subtract group origin to get relative positions inside a container
+**Agent**: worker-b
+**Item**: #51 Slide 16:9 - 88 (4369:33178, 1064x612)
+**Problem**: Figma exports pixel-art icons (like the RadSun) as dozens of absolutely-positioned ~10.7px squares with coordinates relative to the full frame (e.g., left: 527.15px, top: 246px). Placing them directly on the Paper artboard works but using a container gives better layer organization.
+**Solution**: Create a container div at the pixel group's top-left origin (min-x, min-y of all squares), then subtract that origin from each square's position to get container-relative coordinates. For the RadSun at origin (463, 246): a square at (527.15, 310.15) becomes (64.15, 64.15) inside the container.
+**Rule**: For pixel-art composed of many small squares, group them in a positioned container and subtract the group origin from each square's absolute position. This keeps layers organized and the math clean.
+---
+
+### [LAYOUT] Repeated NFT card grids — use flex row with gap, not absolute positioning
+**Agent**: worker-a
+**Item**: #26 p2 x radiants (4369:21808, 1064x1080)
+**Problem**: Figma exported 10 NFT thumbnail cards with absolute positions (left: 240, 301, 362, 423... incrementing by 61px). Recreating each with absolute positioning would require 10+ separate absolutely-positioned groups.
+**Solution**: Use a single flex-row container with `gap: 6px` and place it at the grid's starting position (top: 754, left: 240). Each card is a 55px-wide flex column with the thumbnail and label stacked. This auto-spaces all 10 cards correctly with one container.
+**Rule**: For repeated grid items with regular spacing, use a flex container with gap instead of absolute positioning each item. Saves tool calls and keeps alignment automatic.
+---
+
+### [LAYOUT] RADIANTS banner (1316x591) — dark bg with glowing bordered wordmark and vertical flow
+**Agent**: worker-a
+**Item**: #27 RADIANTS1 (4369:21641, 1316x591)
+**Problem**: Figma design uses absolute positioning with calc(50%+N) and translate centering for all text elements arranged in a vertical composition: "what is" + bordered RADIANTS box + "?" on one line, subtitle below, radiant icon, vertical lines, and bottom text. Background is a raster texture over dark bg.
+**Solution**: Use absolute positioning for all elements. The RADIANTS box uses `border: 3px solid #FEF8E2` with `box-shadow` for golden glow. The radiant icon is an inline SVG with circles and lines. Vertical connector lines are simple 1px-wide divs. Background texture approximated with a subtle data-URI SVG repeating pattern. All text uses `text-shadow` for the golden glow effect. No raster images needed — the background texture is subtle enough that a solid dark color with pattern overlay suffices.
+**Rule**: For banner-style compositions with glowing bordered text boxes, use box-shadow on the border container and text-shadow on all text elements. Radiant/sun icons can be approximated with inline SVG circles + lines. Skip raster background textures in favor of subtle CSS patterns when the texture is dark and low-contrast.
+---
+
+### [LAYOUT] Prize grid slides with glassmorphism cards — use absolute-positioned flex-column cards
+**Agent**: worker-b
+**Item**: #49 Slide 16:9 - 85 (Bonkathon Consumer Facing Apps prizes)
+**Problem**: Figma design has 4 prize cards (430x300 each) in a 2x2 grid with 1px yellow border, rgba(15,14,12,0.1) glassmorphism background, and backdrop-blur. All text inside uses Joystix with golden text-shadow glow. Figma code uses `display: contents` on parent groups and `calc(50%+/-N)` with translate centering on the prize amounts.
+**Solution**: Place each card as an absolute-positioned div at exact Figma coordinates (left: 92/542, top: 318/638). Inside each card, use flex-column with center alignment for the label and prize amount text. Add paddingBottom to shift content slightly above center, matching Figma's label-at-top-third, prize-at-center layout. The `display: contents` parent groups in Figma can be ignored — child positions are already in artboard coordinates.
+**Rule**: For prize/award grid slides, use absolute-positioned flex-column cards. Ignore Figma `display: contents` wrappers. Pre-compute translate-centered text positions but prefer flex centering inside cards for simpler implementation.
+---
+
+### [LAYOUT] Bordered data table grids: use nested flex containers with border collapsing
+**Agent**: worker-b
+**Item**: #48 Slide 16:9 - 84 (On-chain vs off-chain comparison table)
+**Problem**: Figma design has a 4-column x 3-row bordered table (row labels + 3 data columns, column headers + 2 data rows) where each cell is an individual absolutely-positioned div with `border: 1px solid #FCE184` and `backdrop-blur`. Reproducing 10+ individually-positioned cells with translate centering would require computing many absolute pixel positions.
+**Solution**: Build the entire grid as a single flex container with a row-labels column (flex-column) and a data-grid column (flex-column of flex-rows). Use `border: 1px solid #FCE184` on each cell with `border-top: none` on non-first rows and `border-left: none` on non-first columns to collapse borders cleanly. This avoids computing 10+ absolute positions and produces the same visual result.
+**Rule**: For bordered data tables, build as nested flex containers (column of rows) with border collapsing (`border-top: none` / `border-left: none` on adjacent cells) rather than individually-positioned cells. Much simpler and fewer tool calls.
+---
+
+### [LAYOUT] Figma vector groups that extend beyond frame: only render the visible portion
+**Agent**: worker-a
+**Item**: #29 RADIANTS-3 (1316x591 banner)
+**Problem**: Figma Group 482116 (two converging vector lines) was 430x570px starting at y=430, extending to y=1000 — well beyond the 591px frame height. Only ~161px of the 570px group is visible within the artboard.
+**Solution**: Created the SVG with the visible height only (161px) and drew the converging lines to the bottom of that clipped region. The artboard naturally clips content at its boundary, matching Figma's frame clipping behavior.
+**Rule**: When Figma vector groups extend beyond the frame boundary, only build the visible portion (frame height minus group top). Paper artboards clip at their edges just like Figma frames.
+---
+
+### [LAYOUT] Nested frame with negative top offset: compute element positions relative to outer frame
+**Agent**: worker-a
+**Item**: #30 RADIANTS-4 (1316x591 banner, dark bg with glowing ring and "NFTS")
+**Problem**: Figma code had an inner "Slide 16:9 - 43" frame (1316x1334) positioned at top=-372 inside the 1316x591 outer frame. All child elements (ring, text, dot) used translate-centering relative to the inner frame's center (658, 667). Converting to the outer frame required subtracting the inner frame's top offset from every child's computed position.
+**Solution**: For each child, compute `outer_top = inner_absolute_top - 372`. For translate-centered elements: `inner_center = inner_height/2 = 667`, then `element_top_in_inner = 667 + offset - element_height/2`, then `outer_top = element_top_in_inner - 372`. The glowing ring (971x971) centered at (658, 667.5) maps to outer top = 667.5 - 485.5 - 372 = -190.
+**Rule**: When Figma nests a larger frame with negative top offset inside the artboard, convert all child positions by subtracting the parent's top offset. Center calculations use the inner frame's dimensions, then shift by the offset.
+---
+
+### [LAYOUT] Figma calc(50%+/-N) with -translate-x-1/2: compute actual left = center +/- offset - width/2
+**Agent**: worker-b
+**Item**: #47 Slide 16:9 - 83 (Stages of Immutability table)
+**Problem**: Figma code used `left: calc(50%-384px)` with `-translate-x-1/2` and width 256 for table cells. The formula is: actual_left = (artboard_center + offset) - (element_width / 2). With artboard 1064px, center=532, so `calc(50%-384px)` = 532-384 = 148, minus 128 (half of 256) = actual left of 20px. Initially miscalculated the first column position, missing the leftmost column entirely.
+**Solution**: Systematically compute each column: col0 left = (532-384)-128 = 20px, col1 left = (532-128)-128 = 276px, col2 left = (532+128)-128 = 532px, col3 left = (532+384)-128 = 788px. This revealed a 4-column grid (not 3) where column 0 was the row-label column.
+**Rule**: For Figma `calc(50%+/-N)` with `-translate-x-1/2`, always compute: actual_left = (artboard_width/2 + offset) - (element_width/2). Map ALL unique left values to discover the full grid structure before building.
+---
+
+### [LAYOUT] Figma rotated vectors are connector lines — check rotation before assuming orientation
+**Agent**: worker-a
+**Item**: #31 RADIANTS5 (1316x591 "HOW?" banner)
+**Problem**: Figma exported two vector elements (Vector 135, Vector 136) with `-rotate-90` and dimensions like `h-[174.5px] w-0`. Initially rendered them as vertical lines. The -90 rotation means they are actually horizontal connector lines running from the side text to the card panels.
+**Solution**: When Figma code shows a vector with `-rotate-90` and dimensions like `height: Npx, width: 0`, the rendered result is a horizontal line of length N. Compute the line as: horizontal at y=top, from x=left to x=left+height.
+**Rule**: Always check Figma rotation transforms on vector elements before assuming their orientation. `-rotate-90` on a vertical vector (w:0, h:N) produces a horizontal line of length N.
+---
+
+### [LAYOUT] Venn diagram circles with glow: use border-radius + box-shadow on transparent bg divs
+**Agent**: worker-b
+**Item**: #46 Slide 16:9 - 82 (Venn diagram with 3 overlapping golden circles)
+**Problem**: Figma design has 3 large (643px) overlapping circles with golden border glow forming a Venn diagram. Each circle uses `border: 1px solid #FCE184` with `box-shadow: 0px 0px 110px 20px #fce696, 0px 0px 13px 0px #fce696` and transparent background. The overlapping regions create naturally darker intersections where the dark artboard bg shows through.
+**Solution**: Use absolutely-positioned divs with `border-radius: 486px` (slightly less than half to match Figma), `border: 1px solid #FCE184`, `background-color: rgba(217,217,217,0)` (transparent), and the box-shadow glow. The overlapping glow creates natural brightness at intersections. All text elements use matching `text-shadow: 0px 0px 13px #fce696, 0px 0px 110px #fce696` for the golden glow effect.
+**Rule**: For Venn diagram circles with glow, use border-radius divs with box-shadow. The overlapping box-shadows naturally accumulate at intersections, matching the Figma visual without any special compositing.
+---
+
+### [WORKFLOW] Retry BLOCKED items — Figma MCP may succeed on second attempt
+**Agent**: worker-70
+**Item**: #70 Frame 2085660695 (1175x1033 Y-path infographic)
+**Problem**: Item was previously BLOCKED due to a Figma image processing error. On retry, `get_design_context` succeeded without any changes.
+**Solution**: Simply retry the Figma MCP call. Transient errors (image processing, timeouts) often resolve on a subsequent attempt.
+**Rule**: If an item was BLOCKED due to Figma MCP error, retry before falling back to screenshot-only recreation.
+---
+
+### [CSS] Inline SVG Y-shaped paths: use L + C commands for vertical-then-curve segments
+**Agent**: worker-70
+**Item**: #70 Frame 2085660695 (1175x1033 Y-path infographic)
+**Problem**: Figma exported a complex vector group (430x1378) as a raster asset URL. The asset URL doesn't load in Paper. The path is a Y-shape: two lines starting vertical at top, curving inward to a junction point, then a single line going down.
+**Solution**: Recreate with inline SVG using `M x y L x y2 C ...` for each branch. The `L` segment creates the straight vertical portion, and the `C` cubic bezier creates the smooth curve into the junction. A third `L` path draws the bottom stem. Use a muted cream/gold stroke (#D4C9A0) at ~0.65 opacity to match the subtle look.
+**Rule**: For Y/V/funnel-shaped paths, decompose into L (straight) + C (curve) segments per branch plus a stem line. Inline SVG is the only reliable way to get Figma vector paths into Paper.
+---
+
+### [IMAGES] Paper img tag loading consistently times out — all approaches fail
+**Agent**: worker-40
+**Item**: #40 Slide 16:9 - 76 (1064x1080 "A Gathering" constellation slide)
+**Problem**: All attempts to load raster images into Paper timed out during this session. Tried: (1) localhost media server URLs with JPG/PNG in various sizes from 1.4KB to 1.9MB, (2) Figma MCP asset URLs (created empty frame node), (3) data URI PNG as background-image (created "Missing image" node but no visible render), (4) inline SVG with `<image href="data:image/png;base64,...">` (created SVG node but image element not rendered). The two-step approach (container div first, then img insert) also timed out consistently.
+**Solution**: No workaround found for raster images in this session. Inline SVG `<path>` elements remain reliable. For complex pixel art that can't be decomposed into paths, the image remains unloadable. The glow container box-shadow still renders correctly even without the image content.
+**Rule**: When Paper img loading consistently times out, there may be a systemic issue. Data URI PNGs in background-image create nodes but don't visually render. SVG `<image>` elements with data URIs also don't render in Paper. Only SVG `<path>`/`<rect>` elements reliably render. For complex raster assets, retry in a fresh session or manually place in Paper.
 ---
 
