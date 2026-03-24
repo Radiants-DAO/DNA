@@ -82,7 +82,7 @@ const numberInputVariants = cva(
 const stepButtonVariants = cva(
   `flex items-center justify-center
    bg-accent border-line
-   text-main font-sans text-sm
+   text-accent-inv font-sans text-sm
    hover:bg-inv hover:text-flip
    focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed

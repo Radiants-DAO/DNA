@@ -65,7 +65,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 
 ### Visual Verification (post-fix)
 - [v] Select — dark mode hover/selected contrast verified. Ink text (L=4%) on yellow accent (L=90%) = high contrast. Both hover and selected states correct.
-- [ ] NumberField — verify dark mode step button icons
+- [x] NumberField — fixed: step buttons used `text-main` (cream in dark) on `bg-accent` (yellow). Changed to `text-accent-inv` (ink in both modes). Dark + light verified.
 - [ ] Checkbox — verify dark mode checkmark contrast
 - [ ] Radio — verify dark mode selected dot contrast
 - [ ] Badge — verify dark mode colored variant text contrast
