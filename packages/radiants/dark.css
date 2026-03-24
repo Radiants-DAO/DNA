@@ -315,6 +315,11 @@
     background-image: none !important;
   }
 
+  /* Pressed pattern overlay: use --color-line (not --color-main which is cream in dark) */
+  & [data-slot="button-face"][data-mode="solid"]:active::before {
+    background: var(--color-line) !important;
+  }
+
   & [data-slot="button-face"][data-mode="solid"] {
     background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
     background-image: none;
@@ -344,13 +349,58 @@
 
   /* Danger tone on solid — pixel border color overrides */
   & [data-slot="button-face"][data-mode="solid"][data-color="danger"] {
-    &:hover::after {
-      background: oklch(0.7429 0.1568 21.43 / 0.4);
-    }
+    &::after { background: oklch(from var(--color-danger) l c h / 0.3); }
+    &:hover::after { background: oklch(0.7429 0.1568 21.43 / 0.4); }
+    &:active::after { background: var(--color-sun-red); }
+    &[data-state="selected"]::after { background: var(--color-sun-red); }
+  }
 
-    &:active::after {
-      background: var(--color-sun-red);
-    }
+  /* Success tone on solid — green border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="success"] {
+    &::after { background: oklch(from var(--color-success) l c h / 0.3); }
+    &:hover::after { background: oklch(from var(--color-success) l c h / 0.5); }
+    &:active::after { background: var(--color-success); }
+    &[data-state="selected"]::after { background: var(--color-success); }
+  }
+
+  /* Info tone on solid — blue border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="info"] {
+    &::after { background: oklch(from var(--color-sky-blue) l c h / 0.3); }
+    &:hover::after { background: oklch(from var(--color-sky-blue) l c h / 0.5); }
+    &:active::after { background: var(--color-sky-blue); }
+    &[data-state="selected"]::after { background: var(--color-sky-blue); }
+  }
+
+  /* Neutral tone on solid — muted cream border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="neutral"] {
+    &::after { background: var(--color-rule); }
+    &:hover::after { background: var(--color-line); }
+    &:active::after { background: var(--color-line-hover); }
+    &[data-state="selected"]::after { background: var(--color-line-hover); }
+  }
+
+  /* Cream tone on solid — cream border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="cream"] {
+    &::after { background: oklch(from var(--color-cream) l c h / 0.25); }
+    &:hover::after { background: oklch(from var(--color-cream) l c h / 0.4); }
+    &:active::after { background: var(--color-cream); }
+    &[data-state="selected"]::after { background: var(--color-cream); }
+  }
+
+  /* White tone on solid — white border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="white"] {
+    &::after { background: oklch(from var(--color-pure-white) l c h / 0.25); }
+    &:hover::after { background: oklch(from var(--color-pure-white) l c h / 0.4); }
+    &:active::after { background: var(--color-pure-white); }
+    &[data-state="selected"]::after { background: var(--color-pure-white); }
+  }
+
+  /* Tinted tone on solid — accent-soft border */
+  & [data-slot="button-face"][data-mode="solid"][data-color="tinted"] {
+    &::after { background: oklch(from var(--color-accent-soft) l c h / 0.3); }
+    &:hover::after { background: oklch(from var(--color-accent-soft) l c h / 0.5); }
+    &:active::after { background: var(--color-accent-soft); }
+    &[data-state="selected"]::after { background: var(--color-accent-soft); }
   }
 
   /* ============================================
@@ -406,21 +456,21 @@
 
   /* ============================================
      FLAT BUTTON — Moon Mode
-     Hover: yellow bg (accent), ink text
-     Press: cream bg, ink text
+     Hover: subtle tint (glow on root handles the visual pop)
+     Press: slightly stronger tint
      ============================================ */
 
   & [data-slot="button-face"][data-mode="flat"] {
     &:hover {
-      background-color: var(--color-accent) !important;
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 10%) !important;
       background-image: none;
-      color: var(--color-accent-inv);
+      color: var(--btn-tint);
     }
 
     &:active {
-      background-color: var(--color-cream) !important;
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%) !important;
       background-image: none;
-      color: var(--color-ink);
+      color: var(--btn-tint);
     }
   }
 
@@ -472,30 +522,30 @@
   }
 
   /* ============================================
-     TEXT BUTTON — Border on hover, no bg change
+     TEXT BUTTON — No border ever, glow only
      ============================================ */
 
   & [data-slot="button-face"][data-mode="text"] {
     background: transparent;
-    border: 1px solid transparent;
+    border: none !important;
     box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    transition: color 150ms ease-out;
 
     &:hover {
       background: transparent !important;
-      border-color: var(--color-line-hover);
+      border: none !important;
       box-shadow: none;
     }
 
     &:active {
       background: transparent !important;
-      border-color: var(--color-focus);
+      border: none !important;
       box-shadow: none;
     }
 
     &[data-state="selected"] {
       background: transparent !important;
-      border-color: var(--color-focus);
+      border: none !important;
       box-shadow: none;
     }
   }
@@ -610,18 +660,23 @@
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
   & [data-slot="button-face"][data-mode="solid"],
   & [data-slot="button-face"][data-mode="pattern"],
+  & [data-slot="button-face"][data-mode="flat"],
   & [data-slot="button-face"][data-quiet],
   & [data-slot="button-face"][data-mode="text"] {
     &:hover,
     &:active,
     &[data-state="selected"] {
-      translate: 0 0;
+      translate: 0 0 !important;
+      transform: none !important;
     }
   }
 
   /* ============================================
      BUTTON GLOW — On root wrapper (outside clip-path)
-     Tone-aware: accent (default), danger, success, neutral
+     Tone-aware: accent (default), danger, success, neutral,
+     info, cream, white, tinted.
+     !important needed to override high-specificity base.css
+     hover/active selectors (6x :not() pseudo-classes).
      ============================================ */
 
   & [data-slot="button-root"] {
@@ -630,19 +685,19 @@
     &:hover {
       filter:
         drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
     }
 
     &:active {
       filter:
         drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+        drop-shadow(0 0 14px var(--glow-sun-yellow)) !important;
     }
 
     &[data-state="selected"] {
       filter:
         drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
     }
   }
 
@@ -651,19 +706,19 @@
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
-        drop-shadow(0 0 10px var(--glow-sun-red));
+        drop-shadow(0 0 10px var(--glow-sun-red)) !important;
     }
 
     &:active {
       filter:
         drop-shadow(0 0 6px oklch(0.7429 0.1568 21.43 / 0.4))
-        drop-shadow(0 0 14px var(--glow-sun-red));
+        drop-shadow(0 0 14px var(--glow-sun-red)) !important;
     }
 
     &[data-state="selected"] {
       filter:
         drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
-        drop-shadow(0 0 10px var(--glow-sun-red));
+        drop-shadow(0 0 10px var(--glow-sun-red)) !important;
     }
   }
 
@@ -672,19 +727,40 @@
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
-        drop-shadow(0 0 10px var(--glow-mint));
+        drop-shadow(0 0 10px var(--glow-mint)) !important;
     }
 
     &:active {
       filter:
         drop-shadow(0 0 6px oklch(0.9312 0.0702 142.51 / 0.4))
-        drop-shadow(0 0 14px var(--glow-mint));
+        drop-shadow(0 0 14px var(--glow-mint)) !important;
     }
 
     &[data-state="selected"] {
       filter:
         drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
-        drop-shadow(0 0 10px var(--glow-mint));
+        drop-shadow(0 0 10px var(--glow-mint)) !important;
+    }
+  }
+
+  /* Info tone — blue glow */
+  & [data-slot="button-root"][data-color="info"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px oklch(0.7701 0.0527 236.81 / 0.3))
+        drop-shadow(0 0 10px var(--glow-sky-blue)) !important;
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px oklch(0.7701 0.0527 236.81 / 0.4))
+        drop-shadow(0 0 14px var(--glow-sky-blue)) !important;
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px oklch(0.7701 0.0527 236.81 / 0.3))
+        drop-shadow(0 0 10px var(--glow-sky-blue)) !important;
     }
   }
 
@@ -692,20 +768,83 @@
   & [data-slot="button-root"][data-color="neutral"] {
     &:hover {
       filter:
-        drop-shadow(0 0 3px rgba(252, 225, 132, 0.15))
-        drop-shadow(0 0 8px rgba(252, 225, 132, 0.08));
+        drop-shadow(0 0 3px oklch(0.9126 0.1170 93.68 / 0.15))
+        drop-shadow(0 0 8px oklch(0.9126 0.1170 93.68 / 0.08)) !important;
     }
 
     &:active {
       filter:
-        drop-shadow(0 0 4px rgba(252, 225, 132, 0.2))
-        drop-shadow(0 0 10px rgba(252, 225, 132, 0.12));
+        drop-shadow(0 0 4px oklch(0.9126 0.1170 93.68 / 0.2))
+        drop-shadow(0 0 10px oklch(0.9126 0.1170 93.68 / 0.12)) !important;
     }
 
     &[data-state="selected"] {
       filter:
-        drop-shadow(0 0 3px rgba(252, 225, 132, 0.15))
-        drop-shadow(0 0 8px rgba(252, 225, 132, 0.08));
+        drop-shadow(0 0 3px oklch(0.9126 0.1170 93.68 / 0.15))
+        drop-shadow(0 0 8px oklch(0.9126 0.1170 93.68 / 0.08)) !important;
+    }
+  }
+
+  /* Cream tone — warm cream glow */
+  & [data-slot="button-root"][data-color="cream"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-cream-hover)) !important;
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-cream-active)) !important;
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-cream-hover)) !important;
+    }
+  }
+
+  /* White tone — bright white glow */
+  & [data-slot="button-root"][data-color="white"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px oklch(1.0 0 0 / 0.25))
+        drop-shadow(0 0 10px oklch(1.0 0 0 / 0.12)) !important;
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px oklch(1.0 0 0 / 0.35))
+        drop-shadow(0 0 14px oklch(1.0 0 0 / 0.18)) !important;
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px oklch(1.0 0 0 / 0.25))
+        drop-shadow(0 0 10px oklch(1.0 0 0 / 0.12)) !important;
+    }
+  }
+
+  /* Tinted tone — warm sunset glow */
+  & [data-slot="button-root"][data-color="tinted"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px var(--glow-sun-yellow-subtle))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px var(--glow-sun-yellow))
+        drop-shadow(0 0 14px var(--glow-sun-yellow-subtle)) !important;
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px var(--glow-sun-yellow-subtle))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
     }
   }
 
@@ -846,10 +985,11 @@
   }
 
 
-  /* Button — no translate in dark mode */
-  & [data-slot="button-root"]:not([data-mode="text"]):hover,
-  & [data-slot="button-root"]:not([data-mode="text"]):active {
-    transform: none;
+  /* Button — no translate in dark mode (glow replaces lift for all modes) */
+  & [data-slot="button-root"]:hover,
+  & [data-slot="button-root"]:active {
+    transform: none !important;
+    translate: 0 0 !important;
   }
 
   /* ============================================

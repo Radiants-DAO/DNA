@@ -541,24 +541,24 @@ body {
 [data-slot="button-face"][data-mode="text"] {
   background: transparent;
   color: var(--color-main);
-  border-color: transparent;
+  border: none;
 }
 
 [data-slot="button-face"][data-mode="text"]:hover {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--btn-tint);
 }
 
 [data-slot="button-face"][data-mode="text"]:active {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--color-ink);
 }
 
 [data-slot="button-face"][data-mode="text"][data-state="selected"] {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--color-ink);
 }
 

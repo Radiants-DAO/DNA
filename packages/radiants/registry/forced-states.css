@@ -31,6 +31,7 @@
 }
 
 /* ── Active: solid diagonal-dot overlay ── */
+/* Uses --color-line in dark (--color-main is cream, looks white on dark bg) */
 [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]::before {
   background: var(--color-main);
   -webkit-mask-image: var(--pat-diagonal-dots);
@@ -38,6 +39,10 @@
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
   image-rendering: pixelated;
+}
+
+.dark [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]::before {
+  background: var(--color-line);
 }
 
 /* ── Active: pattern — spray-grid mask fill via ::before so text stays visible ── */
