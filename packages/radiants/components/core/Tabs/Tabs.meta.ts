@@ -5,7 +5,7 @@ interface TabsProps {
   value?: string;
   onValueChange?: string;
   mode?: "pill" | "line";
-  layout?: "default" | "bottom-tabs";
+  layout?: "default" | "bottom-tabs" | "sidebar" | "dot" | "capsule" | "accordion";
 }
 
 export const TabsMeta = defineComponentMeta<TabsProps>()({
@@ -34,9 +34,9 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
     },
     layout: {
       type: "enum",
-      options: ["default", "bottom-tabs"],
+      options: ["default", "bottom-tabs", "sidebar", "dot", "capsule", "accordion"],
       default: "default",
-      description: "Layout mode for tab positioning",
+      description: "Arrangement of tab list relative to content panels",
     },
   },
   slots: {},

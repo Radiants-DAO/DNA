@@ -32,10 +32,14 @@
       "type": "enum",
       "options": [
         "default",
-        "bottom-tabs"
+        "bottom-tabs",
+        "sidebar",
+        "dot",
+        "capsule",
+        "accordion"
       ],
       "default": "default",
-      "description": "Layout mode for tab positioning"
+      "description": "Arrangement of tab list relative to content panels"
     }
   },
   "slots": {},
