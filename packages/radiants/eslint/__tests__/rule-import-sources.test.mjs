@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const files = [
+  { path: "../index.mjs" },
   { path: "../rules/prefer-rdna-components.mjs", expectedImport: "../contract.mjs" },
   { path: "../rules/no-hardcoded-colors.mjs", expectedImport: "../contract.mjs" },
   { path: "../rules/no-removed-aliases.mjs", expectedImport: "../contract.mjs" },
