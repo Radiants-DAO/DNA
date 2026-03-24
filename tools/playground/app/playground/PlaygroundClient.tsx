@@ -5,6 +5,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
 import { ModeToolbar, type EditorMode, type FeedbackType } from "./ModeToolbar";
 import { EditorModeContext } from "./editor-mode-context";
+import { CaptureService } from "./components/CaptureService";
 import { registry } from "./registry";
 import { isRenderable } from "./types";
 
@@ -76,6 +77,7 @@ export function PlaygroundClient() {
             />
           </div>
         </div>
+        <CaptureService />
       </EditorModeContext.Provider>
     </ReactFlowProvider>
   );
