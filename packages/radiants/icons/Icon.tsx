@@ -1,12 +1,19 @@
 'use client';
 
 import { memo, useEffect, useState } from 'react';
+import type { IconSet } from './types';
 
 interface IconProps {
   /** Icon name (filename without .svg extension) */
   name: string;
-  /** Icon size in pixels (applies to both width and height) */
+  /** Render size in pixels (applies to both width and height) */
   size?: number;
+  /**
+   * Which icon set to load from (16px pixel-art or 24px detailed).
+   * Defaults based on size: ≤20 → 16, >20 → 24.
+   * When switching sets, the name is resolved through ICON_16_TO_24 / ICON_24_TO_16 maps.
+   */
+  iconSet?: IconSet;
   /** Additional CSS classes for styling (use text-* for color) */
   className?: string;
   /** Accessible label for screen readers */
@@ -15,27 +22,7 @@ interface IconProps {
   basePath?: string;
 }
 
-/**
- * Dynamic Icon component - loads SVGs at runtime.
- *
- * Icons automatically use currentColor, inheriting the parent's text color.
- *
- * @example
- * ```tsx
- * // Inherits parent text color
- * <div className="text-blue-500">
- *   <Icon name="copy-to-clipboard" size={24} />
- * </div>
- *
- * // Override color with className
- * <Icon name="checkmark" size={20} className="text-green-500" />
- *
- * // Custom base path
- * <Icon name="custom-icon" basePath="/my-icons" />
- * ```
- */
-
-// Icon name aliases for backward compatibility
+// Icon name aliases for backward compatibility (within the 16px set)
 const ICON_ALIASES: Record<string, string> = {
   refresh: 'refresh1',
   settings: 'settings-cog',
@@ -85,17 +72,44 @@ const ICON_ALIASES: Record<string, string> = {
   'resize-corner': 'resize-corner',
 };
 
+/**
+ * Dynamic Icon component — loads SVGs at runtime from the appropriate size directory.
+ *
+ * Icons automatically use currentColor, inheriting the parent's text color.
+ *
+ * @example
+ * ```tsx
+ * // 16px pixel-art icon (default for small sizes)
+ * <Icon name="search" size={16} />
+ *
+ * // 24px detailed icon (auto-selected for larger sizes)
+ * <Icon name="search" size={24} />
+ *
+ * // Force a specific icon set regardless of render size
+ * <Icon name="search" size={20} iconSet={24} />
+ *
+ * // Use a 24px-only icon directly
+ * <Icon name="coding-apps-websites-database" size={24} />
+ * ```
+ */
 function IconComponent({
   name,
-  size = 24,
+  size = 16,
+  iconSet,
   className = '',
   'aria-label': ariaLabel,
   basePath = '/assets/icons',
 }: IconProps) {
   const [svgContent, setSvgContent] = useState<string | null>(null);
-  // Resolve icon name through aliases
-  const resolvedName = ICON_ALIASES[name] || name;
-  const iconPath = `${basePath}/${resolvedName}.svg`;
+
+  // Determine which icon set to use
+  const set: IconSet = iconSet ?? (size > 20 ? 24 : 16);
+
+  // Resolve icon name through aliases (only for 16px set)
+  const resolvedName = set === 16 ? (ICON_ALIASES[name] || name) : name;
+
+  // Build the path: /assets/icons/16px/search.svg or /assets/icons/24px/interface-essential-search-1.svg
+  const iconPath = `${basePath}/${set}px/${resolvedName}.svg`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -119,8 +133,8 @@ function IconComponent({
         // Extract original width and height for viewBox if needed
         const widthMatch = cleanedText.match(/width=["'](\d+)["']/i);
         const heightMatch = cleanedText.match(/height=["'](\d+)["']/i);
-        const originalWidth = widthMatch ? parseInt(widthMatch[1]) : 16;
-        const originalHeight = heightMatch ? parseInt(heightMatch[1]) : 16;
+        const originalWidth = widthMatch ? parseInt(widthMatch[1]) : set;
+        const originalHeight = heightMatch ? parseInt(heightMatch[1]) : set;
 
         // Remove existing width and height attributes
         let svgProcessed = cleanedText.replace(
@@ -146,15 +160,14 @@ function IconComponent({
       .catch((err) => {
         if (err.name !== 'AbortError') {
           console.error(
-            `Failed to load icon: ${name} (resolved: ${resolvedName})`,
+            `Failed to load icon: ${name} (resolved: ${resolvedName}, set: ${set}px)`,
             err
           );
         }
-        // Don't set svgContent, so it renders empty span
       });
 
     return () => controller.abort();
-  }, [name, resolvedName, iconPath]);
+  }, [name, resolvedName, iconPath, set]);
 
   if (!svgContent) {
     return (
