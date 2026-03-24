@@ -38,7 +38,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [v] InputSet — Clean pass. Pixel-rounded fieldset with legend heading, nested inputs correctly grouped. Both light and dark modes render clean. All semantic tokens. No hardcoded hex, no viewport breakpoints, no z-index issues.
 
 ### T1e — Feedback
-- [ ] Alert — string/icon/heading props, closable
+- [v] Alert — Clean pass. All 5 variants render correctly (default/success/warning/error/info) with appropriate bg tokens and auto-icons. Title, description, close button all functional. Pixel-rounded + pixel-shadow. Both light and dark modes clean. No hardcoded hex, no viewport breakpoints, no z-index issues.
 - [ ] Badge — string prop, visual variants
 - [ ] Toast — alignment with Alert styling
 - [ ] Tooltip — compact variant, dark+light
