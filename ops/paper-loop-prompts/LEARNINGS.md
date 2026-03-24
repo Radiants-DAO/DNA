@@ -526,3 +526,11 @@
 **Rule**: Same as above — defer unnamed frames with unknown content when Figma MCP is rate-limited.
 ---
 
+### [LAYOUT] Rotated SVG arrows in diagram graphics
+**Agent**: worker (batch2)
+**Item**: #79 Frame 2085660680 (738x738 treasury governance diagram)
+**Problem**: Figma exports arrow vectors as thin SVGs with CSS `transform: rotate()` to create diagonal lines. Paper supports SVG with inline style rotation. The key is matching the exact container dimensions and rotation angles from Figma.
+**Solution**: Use inline SVG elements inside absolutely-positioned div containers. Match the Figma container width/height and apply the same rotation via `style="transform: rotate(Xdeg)"` on the SVG itself. For mirrored arrows, add `scaleY(-1)` to the transform.
+**Rule**: For rotated vector arrows from Figma, preserve the exact container size and rotation angle — Paper handles SVG transform rotation correctly.
+---
+
