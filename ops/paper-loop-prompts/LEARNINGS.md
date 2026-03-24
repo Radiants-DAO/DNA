@@ -606,3 +606,35 @@
 **Rule**: In SVG `<text>` elements in Paper, use the fullwidth ampersand `＆` (U+FF06) instead of any standard `&` encoding. Standard `&` entities get double-escaped to `&AMP;`.
 ---
 
+### [LAYOUT] Chart graphics with curves: use inline SVG cubic bezier through pre-computed dot centers
+**Agent**: worker-b
+**Item**: #67 Frame 2085660692 (1033x1033 "The Lifecycle of a Meme" chart)
+**Problem**: Figma exported the chart curve and axes as two separate vector SVG assets (imgVector78 for L-shaped axes, imgVector79 for the data curve). Figma asset URLs don't render in Paper. The curve needs to pass through 5 specific data points with smooth curvature.
+**Solution**: Draw the L-shaped axes as a simple SVG `<path>` with `M-L-L` commands. For the curve, compute dot center coordinates relative to the SVG container origin, then use cubic bezier `C` commands with control points tuned to create a smooth curve passing through all 5 data points. Each segment's control points should approximate the visual curvature from the Figma screenshot.
+**Rule**: For chart curves connecting data points, compute dot centers in SVG coordinates and use cubic bezier `C` segments with manually tuned control points. Draw axes as simple SVG paths rather than downloading Figma vector assets.
+---
+
+### [IMAGES] NFT selection UI with many thumbnails: download all assets individually, use two-step img approach
+**Agent**: worker-a
+**Item**: #14 11446 (1080x1080 "use your Netrunner NFTs" social graphic)
+**Problem**: Design contained 10 NFT thumbnail images plus a main card image, card background, silhouette overlay SVG, and connection line SVG with glow filters. Each thumbnail needed to be inside a bordered container with a label below it.
+**Solution**: Download all raster assets (thumbnails, card bg, main NFT art, checkmark) individually. For SVGs (silhouette, connection lines, select button), download and fix var() references with sed. Create each thumbnail container as an absolute-positioned Frame with `display: flex` and `overflow: hidden`, then insert each image via a second write_html call (two-step approach). Labels are separate absolute-positioned divs below each thumbnail.
+**Rule**: For UI graphics with many small image thumbnails, download all assets individually and use absolute positioning with the two-step img insert for each. Avoid flex-row containers with nested img+label cards in a single call — build each piece separately.
+---
+
+### [LAYOUT] Auction template "wanted poster" layout uses layered absolute positioning
+**Agent**: worker-a
+**Item**: #15 auction-templates /reminder (1080x1350)
+**Problem**: The design has a complex layered structure: a large bordered image frame with a cream "WANTED" banner overlaid on top, plus a full-width cream band behind it. Multiple z-layers need careful ordering.
+**Solution**: Build each layer as a separate absolute-positioned element in Paper: yellow bg rect, full-width cream band, art frame with thick border, cream overlay on art, then the "WANTED" banner box on top. Layer order in Paper follows insertion order (later = on top).
+**Rule**: For poster-style designs with overlapping bands/banners, insert background layers first and foreground layers last. Paper uses insertion order for z-stacking.
+---
+
+### [IMAGES] Figma MCP asset URLs render as gray placeholders initially in Paper
+**Agent**: worker-a
+**Item**: #15 auction-templates /reminder (1080x1350)
+**Problem**: All images from Figma MCP asset URLs (https://www.figma.com/api/mcp/asset/...) show as gray rectangles in Paper screenshots. The "images not finished loading" note appears.
+**Solution**: This is expected behavior — the URLs are valid but Paper's screenshot captures before the remote images finish loading. The images will render correctly in the actual Paper canvas after a moment.
+**Rule**: Don't retry or re-download images just because they show gray in Paper screenshots. Figma asset URLs load asynchronously; verify layout/text first, trust images will appear.
+---
+

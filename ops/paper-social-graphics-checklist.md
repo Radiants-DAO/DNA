@@ -23,9 +23,9 @@ Target: Paper (social graphics page)
 | 11 | [v] | 4369:22379 | 11441 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22379) |
 | 12 | [v] | 4369:22441 | 11444 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22441) |
 | 13 | [v] | 4369:22464 | 11445 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22464) |
-| 14 | [ ] | 4369:22467 | 11446 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22467) |
+| 14 | [v] | 4369:22467 | 11446 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22467) |
 | | | | **Auction Templates** | | |
-| 15 | [ ] | 4369:32735 | auction-templates /reminder | 1080x1350 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-32735) |
+| 15 | [v] | 4369:32735 | auction-templates /reminder | 1080x1350 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-32735) |
 | 16 | [ ] | 4369:32799 | auction-templates /meet-the-artist | 1350x805 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-32799) |
 | 17 | [ ] | 4369:32815 | auction-templates /meet-the-artist | 1350x1350 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-32815) |
 | | | | **Lifinity x Radiants** | | |
@@ -85,10 +85,10 @@ Target: Paper (social graphics page)
 | | | | **Unnamed Frames (1033x1033 squares)** | | |
 | 64 | [ ] | 4369:16351 | Frame 2085660679 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16351) |
 | 65 | [ ] | 4369:17013 | Frame 2085660690 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17013) |
-| 66 | [ ] | 4369:17032 | Frame 2085660691 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17032) |
-| 67 | [ ] | 4369:17051 | Frame 2085660692 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17051) |
+| 66 | [x] | 4369:17032 | Frame 2085660691 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17032) |
+| 67 | [v] | 4369:17051 | Frame 2085660692 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17051) |
 | | | | **Unnamed Frames (1175x1033)** | | |
-| 68 | [x] | 4369:16424 | Frame 2085660681 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16424) |
+| 68 | [v] | 4369:16424 | Frame 2085660681 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16424) |
 | 69 | [v] | 4369:16436 | Frame 2085660682 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16436) |
 | 70 | [ ] | 4369:17233 | Frame 2085660695 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17233) |
 | 71 | [v] | 4369:17245 | Frame 2085660696 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17245) |
@@ -115,5 +115,5 @@ Target: Paper (social graphics page)
 
 ## Progress
 - Total: 89
-- Done: 35
-- Remaining: 54
+- Done: 38
+- Remaining: 51
