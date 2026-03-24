@@ -122,7 +122,7 @@ export function Slider({
             data-slot="slider-track"
           >
             <BaseSlider.Indicator
-              className="z-[1] bg-accent pixel-rounded-xs pointer-events-none"
+              className="z-[1] bg-accent pointer-events-none"
               style={indicatorStyle}
             />
             <BaseSlider.Thumb

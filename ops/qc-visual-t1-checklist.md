@@ -30,7 +30,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 ### T1d — Form Controls
 - [!] Select — Light mode clean. Dark mode hover contrast issue confirmed: option hover uses bg-accent + text-accent-inv but accent-inv resolves to cream in dark mode (poor contrast on yellow). Dropdown position issue NOT reproduced (opened downward correctly). No hardcoded hex, no viewport breakpoints. All 3 known issues are design-level (token changes needed).
 - [x] NumberField — Fixed: border-l on both step buttons → decrement now border-r, increment border-l (inner edges only). Dark mode: text-main resolves to cream on bg-accent (yellow) — icons nearly invisible. Same accent-inv token issue as Select (design-level, not auto-fixable). No hardcoded hex, no viewport breakpoints, no z-index issues.
-- [ ] Slider — border on filled part, variants
+- [x] Slider — Fixed: removed pixel-rounded-xs from Indicator (caused extra border on filled part; Track clip-path handles clipping). Dark mode clean. z-[1]/z-[2] are local stacking (indicator below thumb), not global magic. No hardcoded hex, no viewport breakpoints. Known: fader/stepped variants not yet implemented (feature request, not a bug).
 - [ ] Switch — dark mode colors, glow states, thumb colors
 - [ ] Checkbox — System 7 styling, dark+light
 - [ ] Radio — System 7 styling, dark+light
