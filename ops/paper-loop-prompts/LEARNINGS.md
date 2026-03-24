@@ -598,3 +598,11 @@
 **Rule**: When Figma assets are simple geometric shapes (brackets, arrows, lines), skip the asset URL and draw them with CSS borders or inline SVG instead. Reserve Figma asset URLs for raster images and complex vector art only.
 ---
 
+### [FONTS] Ampersand (&) in SVG text is double-escaped by Paper — use fullwidth ampersand
+**Agent**: worker-b
+**Item**: #68 Frame 2085660681 (1175x1033 funnel diagram)
+**Problem**: Paper double-escapes `&` in SVG `<text>` elements. Using `&amp;`, `&#38;`, `&#x0026;`, or `&#x26;` all render as literal `&AMP;` in the SVG text output. This affects only SVG text — regular Paper Text nodes handle `&#x26;` correctly.
+**Solution**: Use the fullwidth ampersand character `＆` (U+FF06) instead of the standard `&` (U+0026). Paper renders the fullwidth ampersand correctly in SVG text, and in pixel fonts like Joystix it is visually indistinguishable from the standard ampersand.
+**Rule**: In SVG `<text>` elements in Paper, use the fullwidth ampersand `＆` (U+FF06) instead of any standard `&` encoding. Standard `&` entities get double-escaped to `&AMP;`.
+---
+
