@@ -12,21 +12,195 @@
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { radiantsSystemContract } from "../../../packages/radiants/contract/system.ts";
+import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
+import type { A11yContract, StyleOwnership } from "../../../packages/preview/src/index.ts";
+import type { RadiantsContractComponent } from "./load-radiants-component-contracts.ts";
 
 type SystemContract = typeof radiantsSystemContract;
 
+interface EslintComponentMapEntry {
+  component: string;
+  import: string;
+  note?: string;
+  qualifier?: string;
+}
+
+interface EslintComponentEntry {
+  pixelCorners?: boolean;
+  shadowSystem?: "standard" | "pixel";
+  styleOwnership?: StyleOwnership[];
+  wraps?: string;
+  a11y?: A11yContract;
+}
+
+interface AiComponentEntry {
+  name: string;
+  import?: string;
+  replaces?: string[];
+  wraps?: string;
+  a11y?: A11yContract;
+}
+
+function dedupe(values: Iterable<string>) {
+  return [...new Set(values)];
+}
+
+function buildLegacyAiComponentEntries(componentMap: SystemContract["componentMap"]) {
+  const grouped = new Map<string, { component: string; import: string; replaces: string[] }>();
+
+  for (const [element, mapping] of Object.entries(componentMap)) {
+    const existing = grouped.get(mapping.component);
+    if (existing) {
+      existing.replaces.push(`<${element}>`);
+      continue;
+    }
+
+    grouped.set(mapping.component, {
+      component: mapping.component,
+      import: mapping.import,
+      replaces: [`<${element}>`],
+    });
+  }
+
+  return Array.from(grouped.values())
+    .map(({ component, import: importPath, replaces }) => ({
+      name: component,
+      replaces,
+      import: importPath,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function mergeAiComponents(base: AiComponentEntry[], next: AiComponentEntry[]) {
+  const merged = new Map<string, AiComponentEntry>();
+
+  const mergeEntry = (entry: AiComponentEntry) => {
+    const existing = merged.get(entry.name);
+    if (!existing) {
+      merged.set(entry.name, {
+        ...entry,
+        replaces: entry.replaces ? [...entry.replaces] : undefined,
+      });
+      return;
+    }
+
+    existing.import = entry.import ?? existing.import;
+    existing.wraps = entry.wraps ?? existing.wraps;
+    existing.a11y = entry.a11y ?? existing.a11y;
+
+    if (entry.replaces?.length) {
+      existing.replaces = dedupe([...(existing.replaces ?? []), ...entry.replaces]);
+    }
+  };
+
+  for (const entry of base) mergeEntry(entry);
+  for (const entry of next) mergeEntry(entry);
+
+  return Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function deriveComponentContractSections(components: RadiantsContractComponent[]) {
+  const componentMap: Record<string, EslintComponentMapEntry> = {};
+  const componentEntries: Record<string, EslintComponentEntry> = {};
+  const aiComponents: AiComponentEntry[] = [];
+  const elementReplacements: Record<string, string> = {};
+  const themeVariants = new Set<string>();
+  const seenReplacements = new Map<string, { name: string }>();
+
+  for (const component of components) {
+    if (component.replaces?.length && !component.sourcePath) {
+      throw new Error(
+        `Component ${component.name} declares replaces but has no resolved sourcePath`,
+      );
+    }
+
+    const eslintEntry: EslintComponentEntry = {};
+    if (component.pixelCorners !== undefined) eslintEntry.pixelCorners = component.pixelCorners;
+    if (component.shadowSystem) eslintEntry.shadowSystem = component.shadowSystem;
+    if (component.styleOwnership?.length) eslintEntry.styleOwnership = component.styleOwnership;
+    if (component.wraps) eslintEntry.wraps = component.wraps;
+    if (component.a11y) eslintEntry.a11y = component.a11y;
+
+    if (Object.keys(eslintEntry).length > 0) {
+      componentEntries[component.name] = eslintEntry;
+    }
+
+    const aiEntry: AiComponentEntry = { name: component.name };
+    let hasAiFields = false;
+
+    if (component.replaces?.length) {
+      aiEntry.replaces = component.replaces.map((replacement) => `<${replacement.element}>`);
+      aiEntry.import =
+        component.replaces[0]?.import ?? "@rdna/radiants/components/core";
+      hasAiFields = true;
+
+      for (const replacement of component.replaces) {
+        const firstClaim = seenReplacements.get(replacement.element);
+        if (firstClaim) {
+          throw new Error(
+            `Duplicate replaces entry for <${replacement.element}> between ${firstClaim.name} and ${component.name}`,
+          );
+        }
+
+        seenReplacements.set(replacement.element, { name: component.name });
+        elementReplacements[replacement.element] = component.name;
+        componentMap[replacement.element] = {
+          component: component.name,
+          import: replacement.import ?? "@rdna/radiants/components/core",
+          ...(replacement.note ? { note: replacement.note } : {}),
+          ...(replacement.qualifier ? { qualifier: replacement.qualifier } : {}),
+        };
+      }
+    }
+
+    if (component.wraps) {
+      aiEntry.wraps = component.wraps;
+      hasAiFields = true;
+    }
+
+    if (component.a11y) {
+      aiEntry.a11y = component.a11y;
+      hasAiFields = true;
+    }
+
+    if (hasAiFields) {
+      aiComponents.push(aiEntry);
+    }
+
+    for (const ownership of component.styleOwnership ?? []) {
+      for (const variant of ownership.themeOwned) {
+        themeVariants.add(variant);
+      }
+    }
+  }
+
+  return {
+    componentMap,
+    componentEntries,
+    aiComponents: aiComponents.sort((a, b) => a.name.localeCompare(b.name)),
+    elementReplacements,
+    themeVariants: [...themeVariants].sort(),
+  };
+}
+
 // ---------------------------------------------------------------------------
-// ESLint contract — direct passthrough of the system contract
+// ESLint contract
 // ---------------------------------------------------------------------------
 
-function buildEslintContract(system: SystemContract) {
+function buildEslintContract(
+  system: SystemContract,
+  componentMap: Record<string, EslintComponentMapEntry>,
+  componentEntries: Record<string, EslintComponentEntry>,
+  themeVariants: string[],
+) {
   return {
     $schema: "./eslint-contract.schema.json",
     contractVersion: system.contractVersion,
     tokenMap: system.tokenMap,
-    componentMap: system.componentMap,
+    componentMap,
+    components: componentEntries,
     pixelCorners: system.pixelCorners,
-    themeVariants: system.themeVariants,
+    themeVariants,
     motion: system.motion,
     shadows: system.shadows,
     typography: system.typography,
@@ -73,7 +247,6 @@ function categorizeColorSuffixes(suffixes: readonly string[]): Record<string, Se
     }
   }
 
-  // Remove empty categories
   for (const key of Object.keys(result)) {
     if (result[key].length === 0) delete result[key];
   }
@@ -81,31 +254,11 @@ function categorizeColorSuffixes(suffixes: readonly string[]): Record<string, Se
   return result;
 }
 
-function buildComponentEntries(componentMap: SystemContract["componentMap"]) {
-  // Group by component name, collecting replaced elements
-  const grouped = new Map<string, { component: string; import: string; replaces: string[] }>();
-
-  for (const [element, mapping] of Object.entries(componentMap)) {
-    const existing = grouped.get(mapping.component);
-    if (existing) {
-      existing.replaces.push(`<${element}>`);
-    } else {
-      grouped.set(mapping.component, {
-        component: mapping.component,
-        import: mapping.import,
-        replaces: [`<${element}>`],
-      });
-    }
-  }
-
-  return Array.from(grouped.values()).map(({ component, import: importPath, replaces }) => ({
-    name: component,
-    replaces,
-    import: importPath,
-  }));
-}
-
-function buildAiContract(system: SystemContract) {
+function buildAiContract(
+  system: SystemContract,
+  components: AiComponentEntry[],
+  elementReplacements: Record<string, string>,
+) {
   return {
     $schema: "./ai-contract.schema.json",
     contractVersion: system.contractVersion,
@@ -187,11 +340,8 @@ function buildAiContract(system: SystemContract) {
       },
     },
 
-    components: buildComponentEntries(system.componentMap),
-
-    elementReplacements: Object.fromEntries(
-      Object.entries(system.componentMap).map(([el, { component }]) => [el, component]),
-    ),
+    components,
+    elementReplacements,
   };
 }
 
@@ -199,10 +349,59 @@ function buildAiContract(system: SystemContract) {
 // Public API
 // ---------------------------------------------------------------------------
 
-export async function buildRadiantsContracts() {
-  const eslintContract = buildEslintContract(radiantsSystemContract);
-  const aiContract = buildAiContract(radiantsSystemContract);
-  return { eslintContract, aiContract };
+export async function buildRadiantsContractsFromComponents(
+  system: SystemContract,
+  components: RadiantsContractComponent[],
+) {
+  const derived = deriveComponentContractSections(components);
+  const themeVariants = dedupe([...system.themeVariants, ...derived.themeVariants]).sort();
+
+  return {
+    eslintContract: buildEslintContract(
+      system,
+      derived.componentMap,
+      derived.componentEntries,
+      themeVariants,
+    ),
+    aiContract: buildAiContract(system, derived.aiComponents, derived.elementReplacements),
+  };
+}
+
+interface BuildRadiantsContractsOptions {
+  system?: SystemContract;
+  loadComponents?: () => Promise<RadiantsContractComponent[]>;
+}
+
+export async function buildRadiantsContracts(
+  options: BuildRadiantsContractsOptions = {},
+) {
+  const system = options.system ?? radiantsSystemContract;
+  const loadComponents = options.loadComponents ?? loadRadiantsComponentContracts;
+  const components = await loadComponents();
+
+  const derived = await buildRadiantsContractsFromComponents(system, components);
+  const legacyAiComponents = buildLegacyAiComponentEntries(system.componentMap);
+  const legacyElementReplacements = Object.fromEntries(
+    Object.entries(system.componentMap).map(([element, { component }]) => [element, component]),
+  );
+
+  return {
+    eslintContract: {
+      ...derived.eslintContract,
+      componentMap: {
+        ...system.componentMap,
+        ...derived.eslintContract.componentMap,
+      },
+    },
+    aiContract: {
+      ...derived.aiContract,
+      components: mergeAiComponents(legacyAiComponents, derived.aiContract.components),
+      elementReplacements: {
+        ...legacyElementReplacements,
+        ...derived.aiContract.elementReplacements,
+      },
+    },
+  };
 }
 
 export async function writeRadiantsContractArtifacts(outputDir: string) {

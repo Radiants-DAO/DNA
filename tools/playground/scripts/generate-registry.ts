@@ -18,13 +18,15 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 // CATEGORY_LABELS is the only import needed from radiants — pure constants, safe for Node 22.
+import { componentMetaIndex } from "../../../packages/radiants/meta/index.ts";
 import { pickContractFields } from "../../../packages/radiants/registry/contract-fields.ts";
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
 import type { ComponentMeta } from "../../../packages/preview/src/index.ts";
 import { writeRadiantsContractArtifacts } from "./build-radiants-contract.ts";
+import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const APP_ROOT = resolve(__dirname, "..");
@@ -117,99 +119,61 @@ interface ManifestPackage {
   components: ManifestComponent[];
 }
 
+type MetaIndexEntry = {
+  meta: ComponentMeta<Record<string, unknown>>;
+  sourcePath: string | null;
+  schemaPath: string;
+};
+
 // ---------------------------------------------------------------------------
 // Build Radiants manifest using canonical metadata + schema scanning
 // ---------------------------------------------------------------------------
 
-/**
- * Build the Radiants component manifest by scanning co-located *.meta.ts files.
- *
- * This is the single authoritative assembler for Radiants metadata in the
- * playground. It reads each component's *.meta.ts as the canonical source for:
- *   - registry facts (category, renderMode, tags, exampleProps, states, …)
- *   - schema facts (props, slots, subcomponents, examples, description)
- *   - tokenBindings
- *
- * No central metadata files (component-display-meta.ts, component-paths.ts)
- * are consulted. The *.meta.ts files are the single source of truth.
- */
 async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
-  const components: ManifestComponent[] = [];
-  const radiantsDir = resolve(MONO_ROOT, "packages/radiants/components/core");
+  const contractFieldsByName = new Map(
+    (await loadRadiantsComponentContracts()).map((component) => [component.name, component]),
+  );
 
-  for (const dirName of readdirSync(radiantsDir)) {
-    const componentDir = resolve(radiantsDir, dirName);
-    if (!statSync(componentDir).isDirectory()) continue;
+  return (Object.entries(componentMetaIndex) as [string, MetaIndexEntry][])
+    .flatMap(([name, entry]) => {
+      const meta = entry.meta;
+      const reg = meta.registry;
+      if (reg?.exclude) return [];
 
-    const metaFiles = readdirSync(componentDir).filter((f) => f.endsWith(".meta.ts"));
+      const componentName = meta.name ?? name;
+      const category = reg?.category ?? "layout";
+      const group = CATEGORY_LABELS[category] ?? category;
+      const contractFields = contractFieldsByName.get(componentName) ?? {};
 
-    for (const metaFileName of metaFiles) {
-      const metaFilePath = resolve(componentDir, metaFileName);
-      let meta: Record<string, unknown> | undefined;
-
-      try {
-        const mod = await import(pathToFileURL(metaFilePath).href);
-        meta = Object.values(mod).find(
-          (v): v is Record<string, unknown> =>
-            typeof v === "object" && v !== null && "name" in v && "props" in v,
-        ) as Record<string, unknown> | undefined;
-      } catch {
-        continue;
-      }
-
-      if (!meta) continue;
-
-      const reg = meta.registry as Record<string, unknown> | undefined;
-      if (reg?.exclude) continue;
-
-      const componentName = meta.name as string;
-      const category = (reg?.category ?? "layout") as string;
-      const group = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
-      const renderMode = (reg?.renderMode ?? "inline") as string;
-      const baseName = metaFileName.replace(".meta.ts", "");
-
-      // Honor explicit sourcePath overrides for co-authored components like
-      // Radio/Label/TextArea before falling back to same-named source files.
-      const sourcePathOverride =
-        typeof meta.sourcePath === "string" ? meta.sourcePath : null;
-      const sourceFile = resolve(componentDir, `${baseName}.tsx`);
-      const sourcePath = sourcePathOverride
-        ?? (existsSync(sourceFile)
-          ? `packages/radiants/components/core/${dirName}/${baseName}.tsx`
-          : null);
-      const schemaPath = `packages/radiants/components/core/${dirName}/${baseName}.schema.json`;
-      const tokenBindings =
-        typeof meta.tokenBindings === "object" && meta.tokenBindings !== null
-          ? (meta.tokenBindings as Record<string, Record<string, string>>)
-          : null;
-
-      components.push({
-        name: componentName,
-        description: (meta.description ?? "") as string,
-        sourcePath,
-        schemaPath,
-        category,
-        group,
-        renderMode,
-        tags: reg?.tags as string[] | undefined,
-        exampleProps: reg?.exampleProps as Record<string, unknown> | undefined,
-        controlledProps: reg?.controlledProps as string[] | undefined,
-        states: reg?.states as string[] | undefined,
-        props: (meta.props ?? {}) as Record<string, unknown>,
-        slots: normalizeSlots(meta.slots),
-        subcomponents: (meta.subcomponents ?? []) as string[],
-        examples: (meta.examples ?? []) as Array<{ name: string; code: string }>,
-        tokenBindings,
-        ...buildManifestContractFields(meta as ComponentMeta<unknown>),
-      });
-    }
-  }
-
-  return components.sort((a, b) => a.name.localeCompare(b.name));
+      return [
+        {
+          name: componentName,
+          description: meta.description ?? "",
+          sourcePath: entry.sourcePath ?? null,
+          schemaPath: entry.schemaPath,
+          category,
+          group,
+          renderMode: reg?.renderMode ?? "inline",
+          tags: reg?.tags,
+          exampleProps: reg?.exampleProps,
+          controlledProps: reg?.controlledProps,
+          states: reg?.states,
+          props: meta.props ?? {},
+          slots: normalizeSlots(meta.slots),
+          subcomponents: meta.subcomponents ?? [],
+          examples: meta.examples ?? [],
+          tokenBindings: meta.tokenBindings ?? null,
+          ...buildManifestContractFields(contractFields),
+        },
+      ];
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function buildManifestContractFields(meta: ComponentMeta<unknown>) {
-  return pickContractFields(meta);
+export function buildManifestContractFields(
+  meta: Partial<Pick<ComponentMeta<unknown>, "replaces" | "pixelCorners" | "shadowSystem" | "styleOwnership" | "wraps" | "a11y">>,
+) {
+  return pickContractFields(meta as ComponentMeta<unknown>);
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +241,7 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
 async function main() {
   const manifest: Record<string, ManifestPackage> = {};
 
-  // @rdna/radiants: use canonical metadata (async — loads meta.ts files for canonical registry facts)
+  // @rdna/radiants: use canonical metadata + shared contract loader
   const radiantsComponents = await buildRadiantsManifest();
   if (radiantsComponents.length > 0) {
     manifest["@rdna/radiants"] = {
