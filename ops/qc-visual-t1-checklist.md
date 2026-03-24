@@ -45,7 +45,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 
 ### T1f — Other
 - [!] Pattern — Component code is clean: CSS mask-image with semantic color token (--color-main via --pat-color fallback), correctly flips in dark mode. No hardcoded hex, no viewport breakpoints, no z-index. Known demo issues confirmed: (1) preview renders 0-height (pattern div has no intrinsic height — demo needs explicit dimensions), (2) pat ToggleGroup overflows horizontally (too many options for available width — needs dropdown/grid selector). Both are playground/demo issues, not component bugs.
-- [ ] ScrollArea — themed scrollbar, auto-hide
+- [v] ScrollArea — Clean pass. Themed scrollbar with bg-line/40 thumb (hover: bg-line), auto-hide via data-[scrolling]/data-[hovering] attrs, duration-150 ease-out transition. Corner uses bg-page. Both light and dark modes clean — thumb uses semantic --color-line token which flips correctly. No hardcoded hex, no viewport breakpoints, no z-index issues.
 - [ ] Separator — visual check
 - [ ] Combobox — pixelated borders, dropdown behavior
 - [ ] CountdownTimer — visual check
