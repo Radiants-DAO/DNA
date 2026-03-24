@@ -1,9 +1,12 @@
+---
+type: "note"
+---
 # DNA Codemap
 
-> Agent-navigable architecture map for the DNA (Design Nexus Architecture) monorepo.
+> Agent-navigable architecture map for the DNA (Design Nexus Architecture) monorepo.\
 > Turborepo + pnpm workspaces. All diagrams render in GitHub, VS Code (with extension), and Obsidian.
 
----
+***
 
 ## 1. Monorepo Workspace Graph
 
@@ -42,7 +45,7 @@ graph TB
     style PREVIEW fill:#fef3c7,stroke:#d97706,color:#000
 ```
 
----
+***
 
 ## 2. Package: `@rdna/radiants` — Theme System
 
@@ -154,67 +157,67 @@ graph LR
 
 ### Exports Map (`package.json`)
 
-| Export Path | Entry Point | Type |
-|-------------|-------------|------|
-| `.` | `index.css` | Full theme CSS |
-| `./tokens` | `tokens.css` | Token-only CSS |
-| `./dark` | `dark.css` | Dark mode overrides |
-| `./animations` | `animations.css` | Motion CSS |
-| `./base` | `base.css` | Base reset CSS |
-| `./typography` | `typography.css` | Typography styles |
-| `./fonts` | `fonts.css` | Font declarations |
-| `./components/core` | `components/core/index.ts` | All component exports |
-| `./icons` | `icons/index.ts` | 154 icon components + dynamic loader |
-| `./schemas` | `schemas/index.ts` | Generated schema barrel |
-| `./eslint` | `eslint/index.mjs` | ESLint plugin |
-| `./registry` | `registry/index.ts` | Component registry + types |
-| `./meta` | `meta/index.ts` | Component meta index |
-| `./patterns` | `patterns/index.ts` | 51 dither patterns (6 groups) |
-| `./registry/forced-states.css` | `registry/forced-states.css` | Pseudo-state CSS |
+| Export Path                    | Entry Point                  | Type                                 |
+| ------------------------------ | ---------------------------- | ------------------------------------ |
+| `.`                            | `index.css`                  | Full theme CSS                       |
+| `./tokens`                     | `tokens.css`                 | Token-only CSS                       |
+| `./dark`                       | `dark.css`                   | Dark mode overrides                  |
+| `./animations`                 | `animations.css`             | Motion CSS                           |
+| `./base`                       | `base.css`                   | Base reset CSS                       |
+| `./typography`                 | `typography.css`             | Typography styles                    |
+| `./fonts`                      | `fonts.css`                  | Font declarations                    |
+| `./components/core`            | `components/core/index.ts`   | All component exports                |
+| `./icons`                      | `icons/index.ts`             | 154 icon components + dynamic loader |
+| `./schemas`                    | `schemas/index.ts`           | Generated schema barrel              |
+| `./eslint`                     | `eslint/index.mjs`           | ESLint plugin                        |
+| `./registry`                   | `registry/index.ts`          | Component registry + types           |
+| `./meta`                       | `meta/index.ts`              | Component meta index                 |
+| `./patterns`                   | `patterns/index.ts`          | 51 dither patterns (6 groups)        |
+| `./registry/forced-states.css` | `registry/forced-states.css` | Pseudo-state CSS                     |
 
 ### All 33 Components
 
-| Directory | Component | Has Tests | Base-UI Wrap |
-|-----------|-----------|-----------|-------------|
-| `Alert/` | Alert | - | - |
-| `AlertDialog/` | AlertDialog | yes | yes |
-| `Avatar/` | Avatar | - | - |
-| `Badge/` | Badge | - | - |
-| `Breadcrumbs/` | Breadcrumbs | - | - |
-| `Button/` | Button | yes | - |
-| `Card/` | Card | - | - |
-| `Checkbox/` | Checkbox, Radio | yes | yes |
-| `Collapsible/` | Collapsible | - | yes |
-| `Combobox/` | Combobox | yes | - |
-| `ContextMenu/` | ContextMenu | yes | - |
-| `CountdownTimer/` | CountdownTimer | - | - |
-| `Dialog/` | Dialog | yes | yes |
-| `Drawer/` | Drawer | yes | - |
-| `DropdownMenu/` | DropdownMenu | yes | - |
-| `Input/` | Input, TextArea | yes | yes |
-| `InputSet/` | InputSet | yes | - |
-| `Menubar/` | Menubar | - | - |
-| `Meter/` | Meter | - | yes |
-| `NavigationMenu/` | NavigationMenu | - | - |
-| `NumberField/` | NumberField | yes | yes |
-| `Pattern/` | Pattern | - | - |
-| `Popover/` | Popover | yes | yes |
-| `PreviewCard/` | PreviewCard | yes | yes |
-| `ScrollArea/` | ScrollArea | yes | - |
-| `Select/` | Select | yes | yes |
-| `Separator/` | Separator | - | yes |
-| `Sheet/` | Sheet | yes | - |
-| `Slider/` | Slider | yes | yes |
-| `Spinner/` | Spinner | - | - |
-| `Switch/` | Switch | yes | yes |
-| `Tabs/` | Tabs | yes | yes |
-| `Toast/` | Toast | yes | - |
-| `Toggle/` | Toggle | yes | yes |
-| `ToggleGroup/` | ToggleGroup | - | yes |
-| `Toolbar/` | Toolbar | - | - |
-| `Tooltip/` | Tooltip | yes | yes |
+| Directory         | Component       | Has Tests | Base-UI Wrap |
+| ----------------- | --------------- | --------- | ------------ |
+| `Alert/`          | Alert           | -         | -            |
+| `AlertDialog/`    | AlertDialog     | yes       | yes          |
+| `Avatar/`         | Avatar          | -         | -            |
+| `Badge/`          | Badge           | -         | -            |
+| `Breadcrumbs/`    | Breadcrumbs     | -         | -            |
+| `Button/`         | Button          | yes       | -            |
+| `Card/`           | Card            | -         | -            |
+| `Checkbox/`       | Checkbox, Radio | yes       | yes          |
+| `Collapsible/`    | Collapsible     | -         | yes          |
+| `Combobox/`       | Combobox        | yes       | -            |
+| `ContextMenu/`    | ContextMenu     | yes       | -            |
+| `CountdownTimer/` | CountdownTimer  | -         | -            |
+| `Dialog/`         | Dialog          | yes       | yes          |
+| `Drawer/`         | Drawer          | yes       | -            |
+| `DropdownMenu/`   | DropdownMenu    | yes       | -            |
+| `Input/`          | Input, TextArea | yes       | yes          |
+| `InputSet/`       | InputSet        | yes       | -            |
+| `Menubar/`        | Menubar         | -         | -            |
+| `Meter/`          | Meter           | -         | yes          |
+| `NavigationMenu/` | NavigationMenu  | -         | -            |
+| `NumberField/`    | NumberField     | yes       | yes          |
+| `Pattern/`        | Pattern         | -         | -            |
+| `Popover/`        | Popover         | yes       | yes          |
+| `PreviewCard/`    | PreviewCard     | yes       | yes          |
+| `ScrollArea/`     | ScrollArea      | yes       | -            |
+| `Select/`         | Select          | yes       | yes          |
+| `Separator/`      | Separator       | -         | yes          |
+| `Sheet/`          | Sheet           | yes       | -            |
+| `Slider/`         | Slider          | yes       | yes          |
+| `Spinner/`        | Spinner         | -         | -            |
+| `Switch/`         | Switch          | yes       | yes          |
+| `Tabs/`           | Tabs            | yes       | yes          |
+| `Toast/`          | Toast           | yes       | -            |
+| `Toggle/`         | Toggle          | yes       | yes          |
+| `ToggleGroup/`    | ToggleGroup     | -         | yes          |
+| `Toolbar/`        | Toolbar         | -         | -            |
+| `Tooltip/`        | Tooltip         | yes       | yes          |
 
----
+***
 
 ## 3. App: `rad-os` — Desktop OS UI
 
@@ -297,20 +300,20 @@ graph TB
 
 ### App Catalog (`lib/apps/catalog.tsx`)
 
-| id | Window Title | Section | Ambient Capable |
-|----|-------------|---------|-----------------|
-| `brand` | Brand Assets | apps | - |
-| `manifesto` | Manifesto | apps | - |
-| `music` | Rad Radio | apps | wallpaper, widget, controller |
-| `links` | Links | apps | - |
-| `about` | About | apps | - |
-| `studio` | Radiants Studio | web3 | - |
+| id          | Window Title    | Section | Ambient Capable               |
+| ----------- | --------------- | ------- | ----------------------------- |
+| `brand`     | Brand Assets    | apps    | -                             |
+| `manifesto` | Manifesto       | apps    | -                             |
+| `music`     | Rad Radio       | apps    | wallpaper, widget, controller |
+| `links`     | Links           | apps    | -                             |
+| `about`     | About           | apps    | -                             |
+| `studio`    | Radiants Studio | web3    | -                             |
 
 ### Zustand Store Persistence
 
 Key: `rados-storage` (v1). Persists: `volume`, `reduceMotion`, `darkMode`, `radioFavorites`. Does NOT persist window positions or invertMode.
 
----
+***
 
 ## 4. Tool: `@rdna/playground` — Component Playground
 
@@ -385,7 +388,7 @@ graph TB
     style PG_GENERATED fill:#f3e8ff,stroke:#7c3aed,color:#000
 ```
 
----
+***
 
 ## 5. Data Flow: Registry Pipeline
 
@@ -404,7 +407,7 @@ graph LR
     style G fill:#fce7f3,stroke:#db2777,color:#000
 ```
 
----
+***
 
 ## 6. Data Flow: Token System
 
@@ -440,7 +443,7 @@ graph TD
     style DARK fill:#1e293b,stroke:#64748b,color:#f8fafc
 ```
 
----
+***
 
 ## 7. Data Flow: Agent Workflow (Playground)
 
@@ -469,7 +472,7 @@ sequenceDiagram
     Store->>UI: Remove overlay
 ```
 
----
+***
 
 ## 8. ESLint Plugin Architecture
 
@@ -520,7 +523,7 @@ graph TB
     style REPO_RULES fill:#fef3c7,stroke:#d97706,color:#000
 ```
 
----
+***
 
 ## 9. Root Scripts & Infrastructure
 
@@ -557,7 +560,7 @@ graph TB
     style HOOKS fill:#fef9c3,stroke:#ca8a04,color:#000
 ```
 
----
+***
 
 ## 10. Documentation & Research Map
 
@@ -588,81 +591,83 @@ graph TB
     style RESEARCH fill:#fef9c3,stroke:#ca8a04,color:#000
 ```
 
----
+***
 
 ## 11. Quick File Finder
 
 ### Where is...?
 
-| Looking for | Path |
-|-------------|------|
-| **Design tokens** | `packages/radiants/tokens.css` |
-| **Dark mode overrides** | `packages/radiants/dark.css` |
-| **Typography styles** | `packages/radiants/typography.css` |
-| **Font declarations** | `packages/radiants/fonts.css` |
-| **Animation tokens** | `packages/radiants/animations.css` |
-| **Pixel corner CSS** | `packages/radiants/pixel-corners.css` + `.generated.css` |
-| **A specific component** | `packages/radiants/components/core/{Name}/{Name}.tsx` |
-| **Component metadata** | `packages/radiants/components/core/{Name}/{Name}.meta.ts` |
-| **Component schema** | `packages/radiants/components/core/{Name}/{Name}.schema.json` |
-| **All component exports** | `packages/radiants/components/core/index.ts` |
-| **All meta exports** | `packages/radiants/meta/index.ts` |
-| **Icon components** | `packages/radiants/icons/generated.tsx` |
-| **Icon source SVGs** | `packages/radiants/assets/icons/` |
-| **ESLint plugin entry** | `packages/radiants/eslint/index.mjs` |
-| **ESLint rule impl** | `packages/radiants/eslint/rules/{rule-name}.mjs` |
-| **ESLint token map** | `packages/radiants/eslint/token-map.mjs` |
-| **Registry API** | `packages/radiants/registry/index.ts` |
-| **AI contract (generated)** | `packages/radiants/generated/ai-contract.json` |
-| **Design contract types** | `packages/radiants/contract/system.ts` |
-| **Pattern definitions** | `packages/radiants/patterns/registry.ts` |
-| **rad-os entry** | `apps/rad-os/app/page.tsx` |
-| **rad-os globals CSS** | `apps/rad-os/app/globals.css` |
-| **App catalog** | `apps/rad-os/lib/apps/catalog.tsx` |
-| **Window system** | `apps/rad-os/components/Rad_os/` |
-| **Zustand store** | `apps/rad-os/store/index.ts` |
-| **Store slices** | `apps/rad-os/store/slices/{name}Slice.ts` |
-| **Playground page** | `tools/playground/app/playground/page.tsx` |
-| **Playground CLI** | `tools/playground/bin/rdna-playground.mjs` |
-| **Playground registry** | `tools/playground/generated/registry.ts` |
+| Looking for                    | Path                                                            |
+| ------------------------------ | --------------------------------------------------------------- |
+| **Design tokens**              | `packages/radiants/tokens.css`                                  |
+| **Dark mode overrides**        | `packages/radiants/dark.css`                                    |
+| **Typography styles**          | `packages/radiants/typography.css`                              |
+| **Font declarations**          | `packages/radiants/fonts.css`                                   |
+| **Animation tokens**           | `packages/radiants/animations.css`                              |
+| **Pixel corner CSS**           | `packages/radiants/pixel-corners.css` + `.generated.css`        |
+| **A specific component**       | `packages/radiants/components/core/{Name}/{Name}.tsx`           |
+| **Component metadata**         | `packages/radiants/components/core/{Name}/{Name}.meta.ts`       |
+| **Component schema**           | `packages/radiants/components/core/{Name}/{Name}.schema.json`   |
+| **All component exports**      | `packages/radiants/components/core/index.ts`                    |
+| **All meta exports**           | `packages/radiants/meta/index.ts`                               |
+| **Icon components**            | `packages/radiants/icons/generated.tsx`                         |
+| **Icon source SVGs**           | `packages/radiants/assets/icons/`                               |
+| **ESLint plugin entry**        | `packages/radiants/eslint/index.mjs`                            |
+| **ESLint rule impl**           | `packages/radiants/eslint/rules/{rule-name}.mjs`                |
+| **ESLint token map**           | `packages/radiants/eslint/token-map.mjs`                        |
+| **Registry API**               | `packages/radiants/registry/index.ts`                           |
+| **AI contract (generated)**    | `packages/radiants/generated/ai-contract.json`                  |
+| **Design contract types**      | `packages/radiants/contract/system.ts`                          |
+| **Pattern definitions**        | `packages/radiants/patterns/registry.ts`                        |
+| **rad-os entry**               | `apps/rad-os/app/page.tsx`                                      |
+| **rad-os globals CSS**         | `apps/rad-os/app/globals.css`                                   |
+| **App catalog**                | `apps/rad-os/lib/apps/catalog.tsx`                              |
+| **Window system**              | `apps/rad-os/components/Rad_os/`                                |
+| **Zustand store**              | `apps/rad-os/store/index.ts`                                    |
+| **Store slices**               | `apps/rad-os/store/slices/{name}Slice.ts`                       |
+| **Playground page**            | `tools/playground/app/playground/page.tsx`                      |
+| **Playground CLI**             | `tools/playground/bin/rdna-playground.mjs`                      |
+| **Playground registry**        | `tools/playground/generated/registry.ts`                        |
 | **Playground annotations API** | `tools/playground/app/playground/api/agent/annotation/route.ts` |
-| **Playground signals API** | `tools/playground/app/playground/api/agent/signal/route.ts` |
-| **Schema generator** | `packages/preview/src/generate-schemas.ts` |
-| **PreviewPage component** | `packages/preview/src/PreviewPage.tsx` |
-| **RDNA lint config** | `eslint.rdna.config.mjs` (root) |
-| **Registry guard** | `scripts/registry-guard.mjs` |
-| **Design spec** | `docs/theme-spec.md` |
-| **Design system doc** | `packages/radiants/DESIGN.md` |
-| **Plans archive** | `docs/plans/` |
-| **Research artifacts** | `research/design-guard/` |
-| **Iteration files** | `tools/playground/app/playground/iterations/` |
-| **Iteration prompt builder** | `tools/playground/app/playground/prompts/iteration.prompt.ts` |
-| **Annotation store** | `tools/playground/app/playground/api/agent/annotation-store.ts` |
-| **Signal store** | `tools/playground/app/playground/api/agent/signal-store.ts` |
-| **Window sizing** | `apps/rad-os/lib/windowSizing.ts` |
-| **Konami code easter egg** | `apps/rad-os/hooks/useKonamiCode.ts` |
-| **WebGL background** | `apps/rad-os/components/background/WebGLSun.tsx` |
-| **Preview package types** | `packages/preview/src/types.ts` |
-| **Define component meta** | `packages/preview/src/define-component-meta.ts` |
-| **Prompt templates** | `prompts/dna-conversion/templates/` |
-| **Production readiness** | `docs/production-readiness-checklist.md` |
+| **Playground signals API**     | `tools/playground/app/playground/api/agent/signal/route.ts`     |
+| **Schema generator**           | `packages/preview/src/generate-schemas.ts`                      |
+| **PreviewPage component**      | `packages/preview/src/PreviewPage.tsx`                          |
+| **RDNA lint config**           | `eslint.rdna.config.mjs` (root)                                 |
+| **Registry guard**             | `scripts/registry-guard.mjs`                                    |
+| **Design spec**                | `docs/theme-spec.md`                                            |
+| **Design system doc**          | `packages/radiants/DESIGN.md`                                   |
+| **Plans archive**              | `docs/plans/`                                                   |
+| **Research artifacts**         | `research/design-guard/`                                        |
+| **Iteration files**            | `tools/playground/app/playground/iterations/`                   |
+| **Iteration prompt builder**   | `tools/playground/app/playground/prompts/iteration.prompt.ts`   |
+| **Annotation store**           | `tools/playground/app/playground/api/agent/annotation-store.ts` |
+| **Signal store**               | `tools/playground/app/playground/api/agent/signal-store.ts`     |
+| **Window sizing**              | `apps/rad-os/lib/windowSizing.ts`                               |
+| **Konami code easter egg**     | `apps/rad-os/hooks/useKonamiCode.ts`                            |
+| **WebGL background**           | `apps/rad-os/components/background/WebGLSun.tsx`                |
+| **Preview package types**      | `packages/preview/src/types.ts`                                 |
+| **Define component meta**      | `packages/preview/src/define-component-meta.ts`                 |
+| **Prompt templates**           | `prompts/dna-conversion/templates/`                             |
+| **Production readiness**       | `docs/production-readiness-checklist.md`                        |
 
 ### Ports
 
-| Service | Port | Command |
-|---------|------|---------|
-| rad-os | 3000 | `pnpm dev` |
+| Service    | Port | Command    |
+| ---------- | ---- | ---------- |
+| rad-os     | 3000 | `pnpm dev` |
 | playground | 3004 | `pnpm dev` |
 
 ### Key Dependencies
 
-| Dep | Used By | Purpose |
-|-----|---------|---------|
-| `@base-ui/react` ^1.3.0 | radiants components | Headless primitives |
-| `class-variance-authority` | radiants, playground | Variant styling |
-| `zustand` ^5 | rad-os | State management |
-| `react-draggable` | rad-os | Window dragging |
-| `@xyflow/react` | playground | Node canvas |
-| `next` 16.1.6 | rad-os, playground | Framework |
-| `tailwindcss` ^4 | all | CSS engine |
-| `vitest` | all | Testing |
+| Dep                        | Used By              | Purpose             |
+| -------------------------- | -------------------- | ------------------- |
+| `@base-ui/react` ^1.3.0    | radiants components  | Headless primitives |
+| `class-variance-authority` | radiants, playground | Variant styling     |
+| `zustand` ^5               | rad-os               | State management    |
+| `react-draggable`          | rad-os               | Window dragging     |
+| `@xyflow/react`            | playground           | Node canvas         |
+| `next` 16.1.6              | rad-os, playground   | Framework           |
+| `tailwindcss` ^4           | all                  | CSS engine          |
+| `vitest`                   | all                  | Testing             |
+
+⠀

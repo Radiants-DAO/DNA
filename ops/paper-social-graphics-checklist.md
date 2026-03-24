@@ -101,7 +101,7 @@ Target: Paper (social graphics page)
 | 77 | [ ] | 4369:16507 | Frame 2085660688 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16507) |
 | 78 | [ ] | 4369:33151 | Frame 2085660712 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-33151) |
 | | | | **Unnamed Frames (other sizes)** | | |
-| 79 | [x] | 4369:16386 | Frame 2085660680 | 738x738 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16386) |
+| 79 | [v] | 4369:16386 | Frame 2085660680 | 738x738 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16386) |
 | 80 | [v] | 4369:16533 | Frame 2085660689 | 372x372 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16533) |
 | 81 | [v] | 4369:17070 | Frame 2085660693 | 979x947 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17070) |
 | 82 | [v] | 4369:17083 | Frame 2085660694 | 1440x1050 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17083) |
@@ -115,5 +115,5 @@ Target: Paper (social graphics page)
 
 ## Progress
 - Total: 89
-- Done: 20
-- Remaining: 69
+- Done: 21
+- Remaining: 68
