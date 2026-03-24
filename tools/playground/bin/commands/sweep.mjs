@@ -2,12 +2,7 @@ import { writeFileSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { post, get } from "../lib/api.mjs";
 import { buildTestMatrix } from "../lib/prop-matrix.mjs";
-import { readFileSync } from "fs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PLAYGROUND_ROOT = resolve(__dirname, "../..");
+import { readFullComponent } from "../lib/manifest.mjs";
 
 const POLL_INTERVAL_MS = 200;
 const POLL_TIMEOUT_MS = 15_000;
@@ -150,22 +145,6 @@ export async function run(args) {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function readFullComponent(componentId) {
-  const raw = readFileSync(
-    resolve(PLAYGROUND_ROOT, "generated/registry.manifest.json"),
-    "utf-8",
-  );
-  const manifest = JSON.parse(raw);
-  for (const pkg of Object.values(manifest)) {
-    for (const c of pkg.components) {
-      if (c.name.toLowerCase() === componentId.toLowerCase()) {
-        return c;
-      }
-    }
-  }
-  return null;
-}
 
 async function pollCapture(requestId) {
   const start = Date.now();

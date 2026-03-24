@@ -92,14 +92,15 @@ describe("buildTestMatrix", () => {
     expect(matrix.length).toBe(4);
   });
 
-  it("includes boolean props as true/false variants", () => {
+  it("adds boolean props as additive true variants", () => {
     const matrix = buildTestMatrix({
       props: {
         disabled: { type: "boolean" },
       },
     });
-    // 2 boolean values * 2 colorModes = 4
+    // 1 base + 1 disabled=true variant, * 2 colorModes = 4
     expect(matrix.length).toBe(4);
+    expect(matrix.some((m) => m.props.disabled === true)).toBe(true);
   });
 
   it("returns minimal matrix for empty props", () => {
