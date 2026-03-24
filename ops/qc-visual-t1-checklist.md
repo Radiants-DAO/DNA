@@ -44,7 +44,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [v] Tooltip — Clean pass. Dark pill with light text (bg-inv + text-flip) renders correctly in both modes — permanent inverted pair, always high contrast. TOP/BOTTOM positions verified. rounded-xs (not pixel-rounded). z-[1000] legitimate overlay. duration-100 ease-out transition in spec. No hardcoded hex, no viewport breakpoints. Known feature requests: compact variant (PixelCode font) and pixelated borders — not bugs.
 
 ### T1f — Other
-- [ ] Pattern — display in UI Toolkit, ToggleGroup options, dark/light adherence
+- [!] Pattern — Component code is clean: CSS mask-image with semantic color token (--color-main via --pat-color fallback), correctly flips in dark mode. No hardcoded hex, no viewport breakpoints, no z-index. Known demo issues confirmed: (1) preview renders 0-height (pattern div has no intrinsic height — demo needs explicit dimensions), (2) pat ToggleGroup overflows horizontally (too many options for available width — needs dropdown/grid selector). Both are playground/demo issues, not component bugs.
 - [ ] ScrollArea — themed scrollbar, auto-hide
 - [ ] Separator — visual check
 - [ ] Combobox — pixelated borders, dropdown behavior
