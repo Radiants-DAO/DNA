@@ -901,7 +901,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {hasVariants &&
             entry.variants!.map((v) => {
               return (
-                <div key={v.label} data-no-clip className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
+                <div key={v.label} data-no-clip className={`rounded-sm border border-line bg-page ${currentColorMode}`} data-variant-label={v.label}>
                   <div className="flex items-center border-b border-line px-2 py-1">
                     <span className="font-mono text-xs text-mute">{v.label}</span>
                   </div>
