@@ -1,6 +1,5 @@
 import tseslint from 'typescript-eslint';
 import rdna from './packages/radiants/eslint/index.mjs';
-import { themeVariants } from './packages/radiants/eslint/token-map.mjs';
 
 // The design-system scan is intentionally RDNA-focused. Some app files still carry
 // inline disables for framework rules that are not part of this config; register
@@ -90,9 +89,7 @@ export default [
       ...rdna.configs.internals.rules,
       'rdna/require-exception-metadata': 'error',
       'rdna/no-broad-rdna-disables': 'error',
-      'rdna/no-mixed-style-authority': ['error', {
-        themeVariants,
-      }],
+      'rdna/no-mixed-style-authority': 'error',
     },
   },
 ];

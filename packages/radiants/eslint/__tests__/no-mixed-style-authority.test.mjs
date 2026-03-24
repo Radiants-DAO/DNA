@@ -1,6 +1,6 @@
 import { Linter } from 'eslint';
 import { describe, expect, it } from 'vitest';
-import rule from '../rules/no-mixed-style-authority.mjs';
+import rule, { deriveThemeOwnedVariants } from '../rules/no-mixed-style-authority.mjs';
 
 describe('rdna/no-mixed-style-authority', () => {
   function lint(code, themeVariants = [
@@ -233,5 +233,29 @@ describe('rdna/no-mixed-style-authority', () => {
     const result = lint(code);
     expect(result).toHaveLength(1);
     expect(result[0].message).toContain('inverted');
+  });
+
+  it('flags theme-owned variants without requiring rule options', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-mixed-style-authority', rule);
+
+    const result = linter.verify(
+      `
+        function Card() {
+          return <div data-variant="raised" className="bg-surface-primary text-content-primary" />;
+        }
+      `,
+      {
+        parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+        rules: { 'rdna/no-mixed-style-authority': 'error' },
+      },
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('raised');
+  });
+
+  it('degrades cleanly when contract style data is empty', () => {
+    expect([...deriveThemeOwnedVariants({}, [], undefined)]).toEqual([]);
   });
 });

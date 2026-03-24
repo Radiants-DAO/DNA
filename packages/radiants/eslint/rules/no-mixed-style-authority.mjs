@@ -6,13 +6,29 @@
  * When theme CSS targets [data-variant="X"], the component should not also hardcode
  * semantic color utilities — that creates two competing sources of truth for color.
  *
- * Config: Pass themeVariants via rule options to specify which variant values are
- * targeted by theme CSS. Falls back to an empty list (no reports).
+ * Uses generated contract data by default. Rule options may still override the
+ * theme-owned variants list for targeted tests or local experimentation.
  */
+import { components, themeVariants } from '../contract.mjs';
 import { getClassNameStrings, getStaticStringValue } from '../utils.mjs';
 
 // Ported from scripts/audit-style-authority.mjs
 const SEMANTIC_COLOR_UTILITY_RE = /\b(?:!|[a-z-]+:)*?(?:bg|text|border)-(?:surface|content|action|edge|status)-[a-z0-9-]+\b/;
+
+export function deriveThemeOwnedVariants(
+  contractComponents = components,
+  contractThemeVariants = themeVariants,
+  overrideVariants,
+) {
+  const defaultThemeOwnedVariants = new Set([
+    ...(contractThemeVariants ?? []),
+    ...Object.values(contractComponents ?? {}).flatMap((component) =>
+      component.styleOwnership?.flatMap((owner) => owner.themeOwned) ?? [],
+    ),
+  ]);
+
+  return new Set(overrideVariants ?? [...defaultThemeOwnedVariants]);
+}
 
 const rule = {
   meta: {
@@ -41,8 +57,12 @@ const rule = {
 
   create(context) {
     const options = context.options[0] || {};
-    const themeVariants = new Set(options.themeVariants || []);
-    if (themeVariants.size === 0) return {};
+    const themeOwnedVariants = deriveThemeOwnedVariants(
+      components,
+      themeVariants,
+      options.themeVariants,
+    );
+    if (themeOwnedVariants.size === 0) return {};
 
     // Track identifiers that resolve to cva itself or to simple cva wrappers.
     const cvaFactoryCandidates = new Map();
@@ -98,7 +118,7 @@ const rule = {
         // Track data-variant attributes
         if (node.name.type === 'JSXIdentifier' && node.name.name === 'data-variant') {
           const variant = getStaticStringValue(node.value);
-          if (variant && themeVariants.has(variant)) {
+          if (variant && themeOwnedVariants.has(variant)) {
             if (!variantNodes.has(variant)) variantNodes.set(variant, new Set());
             variantNodes.get(variant).add(openingEl);
           }
