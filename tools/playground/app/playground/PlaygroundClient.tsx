@@ -5,6 +5,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
 import { ModeToolbar, type EditorMode, type FeedbackType } from "./ModeToolbar";
 import { EditorModeContext } from "./editor-mode-context";
+import { ColorModeContext } from "./color-mode-context";
 import { CaptureService } from "./components/CaptureService";
 import { registry } from "./registry";
 import { isRenderable } from "./types";
@@ -64,6 +65,7 @@ export function PlaygroundClient() {
   return (
     <ReactFlowProvider>
       <EditorModeContext.Provider value={{ editorMode, setEditorMode }}>
+      <ColorModeContext.Provider value={{ colorMode, toggleColorMode }}>
         <div className="flex h-screen w-screen flex-col overflow-hidden">
           <PlaygroundCanvas ref={canvasRef} entries={entries} />
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
@@ -80,6 +82,7 @@ export function PlaygroundClient() {
           </div>
         </div>
         <CaptureService />
+      </ColorModeContext.Provider>
       </EditorModeContext.Provider>
     </ReactFlowProvider>
   );

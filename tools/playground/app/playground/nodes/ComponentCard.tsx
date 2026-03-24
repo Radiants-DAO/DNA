@@ -16,6 +16,7 @@ import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AdoptComposer } from "../components/AdoptComposer";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useEditorMode } from "../editor-mode-context";
+import { useColorMode } from "../color-mode-context";
 import {
   getWorkOverlayCopy,
   WORK_COMPLETION_FLASH_MS,
@@ -581,11 +582,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
 
-  // Current color mode from DOM
-  const currentColorMode: "light" | "dark" =
-    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
-      ? "dark"
-      : "light";
+  // Color mode from context — scoped to component cards, not the playground chrome
+  const { colorMode: currentColorMode } = useColorMode();
 
   const { zoom } = useViewport();
 
@@ -820,7 +818,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {/* Default render */}
           {Component && (() => {
             return (
-            <div data-no-clip className="rounded-sm border border-line bg-page" data-variant-label="default">
+            <div data-no-clip className={`rounded-sm border border-line bg-page ${currentColorMode}`} data-variant-label="default">
               <div className="flex items-center border-b border-line px-2 py-1">
                 <span className="font-mono text-xs text-mute">default</span>
               </div>
