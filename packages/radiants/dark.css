@@ -404,6 +404,26 @@
     &:hover, &:active { background-image: none; }
   }
 
+  /* ============================================
+     FLAT BUTTON — Moon Mode
+     Hover: yellow bg (accent), ink text
+     Press: cream bg, ink text
+     ============================================ */
+
+  & [data-slot="button-face"][data-mode="flat"] {
+    &:hover {
+      background-color: var(--color-accent) !important;
+      background-image: none;
+      color: var(--color-accent-inv);
+    }
+
+    &:active {
+      background-color: var(--color-cream) !important;
+      background-image: none;
+      color: var(--color-ink);
+    }
+  }
+
 
   /* ============================================
      OUTLINE BUTTON — Transparent, glow on hover
