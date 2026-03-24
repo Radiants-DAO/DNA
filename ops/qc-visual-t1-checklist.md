@@ -24,8 +24,8 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [!] Tabs — Refactor Tasks 1-7 + 12 completed (rename variant→mode, memoize context, unregister on unmount, data-slot/data-mode/data-state attributes, CSS-driven styling, full layout options in schema). Pill mode visually verified. LINE mode known broken (empty CVA classes pre-refactor, now CSS-driven but untested in live view — no line-mode consumers exist yet). Tasks 8-11 deferred (trigger→Button conversion — higher risk, needs dedicated session). Dark mode not yet checked.
 
 ### T1c — Toggle
-- [ ] Toggle — all states; dark+light
-- [ ] ToggleGroup — cascade from Toggle/Button; dark+light
+- [x] Toggle — Visually clean in both light and dark. Uses Button's visual system (buttonRootVariants/buttonFaceVariants). No hardcoded hex, no viewport breakpoints, no z-index issues. Fixed: meta/schema were stale (variant string → mode/tone/size/rounded enums). Known checklist issues (pattern inheritance, cascade) appear resolved — Toggle now inherits all Button modes/tones.
+- [x] ToggleGroup — Visually clean. LEFT/CENTER/RIGHT renders correctly with separators. Selected item fills with accent, unselected transparent (quiet default). Context passes mode/tone/size/rounded. Dark mode verified.
 
 ### T1d — Form Controls
 - [ ] Select — dropdown position, border clipping, dark mode hover
