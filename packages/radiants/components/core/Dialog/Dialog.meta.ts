@@ -40,6 +40,7 @@ export const DialogMeta = defineComponentMeta<DialogProps>()({
       code: '<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>',
     },
   ],
+  replaces: [{ element: "dialog", import: "@rdna/radiants/components/core" }],
   registry: {
     category: "overlay",
     tags: ["modal", "popup", "confirm"],

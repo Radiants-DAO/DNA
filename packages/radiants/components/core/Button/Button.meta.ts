@@ -150,6 +150,7 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
       text: "main",
     },
   },
+  replaces: [{ element: "button", import: "@rdna/radiants/components/core" }],
   registry: {
     category: "action",
     tags: ["cta", "action", "click"],

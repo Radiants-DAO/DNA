@@ -85,6 +85,13 @@ export const InputMeta = defineComponentMeta<InputProps>()({
       code: '<Input.Root>\n  <Input.Label>Message</Input.Label>\n  <TextArea placeholder="Write a message..." />\n</Input.Root>',
     },
   ],
+  replaces: [
+    {
+      element: "input",
+      import: "@rdna/radiants/components/core",
+      note: "Text-like inputs only in v1",
+    },
+  ],
   registry: {
     category: "form",
     tags: ["text", "field", "form", "input", "label", "validation"],

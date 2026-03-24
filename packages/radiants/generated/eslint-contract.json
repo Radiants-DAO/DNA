@@ -139,24 +139,6 @@
       "component": "Button",
       "import": "@rdna/radiants/components/core"
     },
-    "input": {
-      "component": "Input",
-      "import": "@rdna/radiants/components/core",
-      "note": "Only enforce for text-like input types in v1"
-    },
-    "select": {
-      "component": "Select",
-      "import": "@rdna/radiants/components/core"
-    },
-    "textarea": {
-      "component": "Input",
-      "import": "@rdna/radiants/components/core",
-      "note": "Use Input with multiline"
-    },
-    "dialog": {
-      "component": "Dialog",
-      "import": "@rdna/radiants/components/core"
-    },
     "details": {
       "component": "Collapsible",
       "import": "@rdna/radiants/components/core"
@@ -166,9 +148,14 @@
       "import": "@rdna/radiants/components/core",
       "note": "Use Collapsible.Trigger for the summary surface"
     },
-    "label": {
-      "component": "Label",
+    "dialog": {
+      "component": "Dialog",
       "import": "@rdna/radiants/components/core"
+    },
+    "input": {
+      "component": "Input",
+      "import": "@rdna/radiants/components/core",
+      "note": "Text-like inputs only in v1"
     },
     "meter": {
       "component": "Meter",
@@ -179,8 +166,16 @@
       "import": "@rdna/radiants/components/core",
       "note": "Use Meter for progress indicators in v1"
     },
+    "select": {
+      "component": "Select",
+      "import": "@rdna/radiants/components/core"
+    },
     "hr": {
       "component": "Separator",
+      "import": "@rdna/radiants/components/core"
+    },
+    "textarea": {
+      "component": "TextArea",
       "import": "@rdna/radiants/components/core"
     }
   },

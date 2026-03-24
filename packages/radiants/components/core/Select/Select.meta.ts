@@ -53,6 +53,7 @@ export const SelectMeta = defineComponentMeta<SelectProps>()({
     { name: "Full width", code: "<Select options={options} value={selected} onChange={setSelected} fullWidth />" },
     { name: "Error state", code: "<Select options={options} value={selected} onChange={setSelected} error />" },
   ],
+  replaces: [{ element: "select", import: "@rdna/radiants/components/core" }],
   registry: {
     category: "form",
     tags: ["dropdown", "picker", "choice"],

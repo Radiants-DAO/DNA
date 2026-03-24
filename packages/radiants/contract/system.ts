@@ -77,19 +77,7 @@ export const radiantsSystemContract = {
     ],
   },
 
-  componentMap: {
-    button:   { component: "Button",      import: "@rdna/radiants/components/core" },
-    input:    { component: "Input",       import: "@rdna/radiants/components/core", note: "Only enforce for text-like input types in v1" },
-    select:   { component: "Select",      import: "@rdna/radiants/components/core" },
-    textarea: { component: "Input",       import: "@rdna/radiants/components/core", note: "Use Input with multiline" },
-    dialog:   { component: "Dialog",      import: "@rdna/radiants/components/core" },
-    details:  { component: "Collapsible", import: "@rdna/radiants/components/core" },
-    summary:  { component: "Collapsible", import: "@rdna/radiants/components/core", note: "Use Collapsible trigger" },
-    label:    { component: "Label",       import: "@rdna/radiants/components/core" },
-    meter:    { component: "Meter",       import: "@rdna/radiants/components/core" },
-    progress: { component: "Meter",       import: "@rdna/radiants/components/core", note: "Use Meter for progress indicators" },
-    hr:       { component: "Separator",   import: "@rdna/radiants/components/core" },
-  },
+  componentMap: {},
 
   pixelCorners: {
     triggerClasses: [

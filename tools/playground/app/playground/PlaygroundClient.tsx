@@ -29,10 +29,12 @@ export function PlaygroundClient() {
     setColorMode((m) => (m === "light" ? "dark" : "light"));
   }, []);
 
+  // Playground chrome is always dark — color mode only affects component cards.
+  // Component cards scope their own color mode via the colorMode prop.
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", colorMode === "dark");
-    document.documentElement.classList.toggle("light", colorMode === "light");
-  }, [colorMode]);
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("light");
+  }, []);
 
   const handleFocusNode = useCallback((registryId: string, variantLabel?: string) => {
     canvasRef.current?.focusNode(registryId, variantLabel);

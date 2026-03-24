@@ -58,6 +58,7 @@ export const TextAreaMeta = defineComponentMeta<TextAreaProps>()({
       code: '<Input.Root>\n  <Input.Label>Message</Input.Label>\n  <TextArea placeholder="Your message here" />\n</Input.Root>',
     },
   ],
+  replaces: [{ element: "textarea", import: "@rdna/radiants/components/core" }],
   registry: {
     category: "form",
     tags: ["text", "multiline", "textarea"],

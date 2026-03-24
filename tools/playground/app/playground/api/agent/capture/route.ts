@@ -20,6 +20,7 @@ export async function GET(request: Request) {
     id: req.id,
     status: req.status,
     dataUrl: req.dataUrl ?? null,
+    error: req.error ?? null,
   });
 }
 
@@ -44,7 +45,18 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    captureStore.complete(body.requestId, body.dataUrl);
+    const found = captureStore.complete(body.requestId, body.dataUrl);
+    if (!found) {
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
+    return NextResponse.json({ success: true });
+  }
+
+  if (body.action === "error") {
+    if (typeof body.requestId !== "string") {
+      return NextResponse.json({ error: "Missing requestId" }, { status: 400 });
+    }
+    captureStore.fail(body.requestId, body.error ?? "Unknown error");
     return NextResponse.json({ success: true });
   }
 

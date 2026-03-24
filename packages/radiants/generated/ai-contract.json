@@ -403,15 +403,7 @@
     {
       "name": "Input",
       "replaces": [
-        "<input>",
-        "<textarea>"
-      ],
-      "import": "@rdna/radiants/components/core"
-    },
-    {
-      "name": "Label",
-      "replaces": [
-        "<label>"
+        "<input>"
       ],
       "import": "@rdna/radiants/components/core"
     },
@@ -450,6 +442,13 @@
       }
     },
     {
+      "name": "TextArea",
+      "replaces": [
+        "<textarea>"
+      ],
+      "import": "@rdna/radiants/components/core"
+    },
+    {
       "name": "Toggle",
       "wraps": "@base-ui/react/toggle",
       "a11y": {
@@ -466,15 +465,14 @@
   ],
   "elementReplacements": {
     "button": "Button",
-    "input": "Input",
-    "select": "Select",
-    "textarea": "Input",
-    "dialog": "Dialog",
     "details": "Collapsible",
     "summary": "Collapsible",
-    "label": "Label",
+    "dialog": "Dialog",
+    "input": "Input",
     "meter": "Meter",
     "progress": "Meter",
-    "hr": "Separator"
+    "select": "Select",
+    "hr": "Separator",
+    "textarea": "TextArea"
   }
 }

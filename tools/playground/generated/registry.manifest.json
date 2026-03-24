@@ -567,7 +567,13 @@
             "background": "accent",
             "text": "main"
           }
-        }
+        },
+        "replaces": [
+          {
+            "element": "button",
+            "import": "@rdna/radiants/components/core"
+          }
+        ]
       },
       {
         "name": "Card",
@@ -1049,7 +1055,13 @@
             "code": "<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>"
           }
         ],
-        "tokenBindings": null
+        "tokenBindings": null,
+        "replaces": [
+          {
+            "element": "dialog",
+            "import": "@rdna/radiants/components/core"
+          }
+        ]
       },
       {
         "name": "Drawer",
@@ -1269,7 +1281,14 @@
             "focusRing": "danger",
             "errorText": "danger"
           }
-        }
+        },
+        "replaces": [
+          {
+            "element": "input",
+            "import": "@rdna/radiants/components/core",
+            "note": "Text-like inputs only in v1"
+          }
+        ]
       },
       {
         "name": "InputSet",
@@ -2013,7 +2032,13 @@
             "backgroundSelected": "accent",
             "backgroundHover": "accent"
           }
-        }
+        },
+        "replaces": [
+          {
+            "element": "select",
+            "import": "@rdna/radiants/components/core"
+          }
+        ]
       },
       {
         "name": "Separator",
@@ -2541,7 +2566,13 @@
             "border": "danger",
             "focusRing": "danger"
           }
-        }
+        },
+        "replaces": [
+          {
+            "element": "textarea",
+            "import": "@rdna/radiants/components/core"
+          }
+        ]
       },
       {
         "name": "Toast",
