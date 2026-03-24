@@ -39,7 +39,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 
 ### T1e — Feedback
 - [v] Alert — Clean pass. All 5 variants render correctly (default/success/warning/error/info) with appropriate bg tokens and auto-icons. Title, description, close button all functional. Pixel-rounded + pixel-shadow. Both light and dark modes clean. No hardcoded hex, no viewport breakpoints, no z-index issues.
-- [ ] Badge — string prop, visual variants
+- [!] Badge — All 5 variants render correctly (default/success/warning/error/info) with semantic tokens. pixel-rounded-xs + pixel-shadow-raised. SM/MD sizes. No hardcoded hex, no viewport breakpoints, no z-index issues. Playground demo renders empty (no children passed — demo gap, not component bug). Dark mode: text-accent-inv on colored bg variants (success/warning/error/info) has poor contrast (cream on light color) — same design-level token issue as Select/NumberField/Checkbox/Radio.
 - [ ] Toast — alignment with Alert styling
 - [ ] Tooltip — compact variant, dark+light
 
