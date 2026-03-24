@@ -17,6 +17,7 @@ import CountdownTimerSchema from "../components/core/CountdownTimer/CountdownTim
 import DialogSchema from "../components/core/Dialog/Dialog.schema.json";
 import DrawerSchema from "../components/core/Drawer/Drawer.schema.json";
 import DropdownMenuSchema from "../components/core/DropdownMenu/DropdownMenu.schema.json";
+import IconSchema from "../components/core/Icon/Icon.schema.json";
 import InputSchema from "../components/core/Input/Input.schema.json";
 import TextAreaSchema from "../components/core/Input/TextArea.schema.json";
 import InputSetSchema from "../components/core/InputSet/InputSet.schema.json";
@@ -58,6 +59,7 @@ export const componentData = {
   Dialog: { schema: DialogSchema },
   Drawer: { schema: DrawerSchema },
   DropdownMenu: { schema: DropdownMenuSchema },
+  Icon: { schema: IconSchema },
   Input: { schema: InputSchema },
   TextArea: { schema: TextAreaSchema },
   InputSet: { schema: InputSetSchema },

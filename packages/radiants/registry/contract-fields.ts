@@ -7,6 +7,7 @@ export function pickContractFields(meta: ComponentMeta<unknown>) {
       pixelCorners: meta.pixelCorners,
       shadowSystem: meta.shadowSystem,
       styleOwnership: meta.styleOwnership,
+      structuralRules: meta.structuralRules,
       wraps: meta.wraps,
       a11y: meta.a11y,
     }).filter(([, value]) => value !== undefined),

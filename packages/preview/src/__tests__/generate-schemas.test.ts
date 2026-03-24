@@ -24,6 +24,7 @@ export const InputMeta: ComponentMeta = {
   wraps: "@base-ui/react/toggle",
   styleOwnership: [{ attribute: "data-variant", themeOwned: ["default"] }],
   a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
+  structuralRules: [{ ruleId: "rdna/no-pixel-border", reason: "pixel corners own the border layer" }],
 };`
   );
 
@@ -102,6 +103,7 @@ describe("generate-schemas", () => {
     expect(schema.wraps).toBeUndefined();
     expect(schema.styleOwnership).toBeUndefined();
     expect(schema.a11y).toBeUndefined();
+    expect(schema.structuralRules).toBeUndefined();
   });
 
   it("writes a barrel file with entries for each discovered meta", async () => {

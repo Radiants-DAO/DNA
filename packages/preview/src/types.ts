@@ -37,6 +37,12 @@ export interface StyleOwnership {
   consumerExtensible?: string[];
 }
 
+export interface StructuralRule {
+  ruleId: string;
+  reason: string;
+  mechanism?: string;
+}
+
 export interface A11yContract {
   role?: string;
   requiredAttributes?: string[];
@@ -83,6 +89,7 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
   pixelCorners?: boolean;
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
+  structuralRules?: StructuralRule[];
   wraps?: string;
   a11y?: A11yContract;
   examples?: Array<{ name: string; code: string }>;

@@ -17,6 +17,7 @@ import { CountdownTimerMeta } from "../components/core/CountdownTimer/CountdownT
 import { DialogMeta } from "../components/core/Dialog/Dialog.meta.ts";
 import { DrawerMeta } from "../components/core/Drawer/Drawer.meta.ts";
 import { DropdownMenuMeta } from "../components/core/DropdownMenu/DropdownMenu.meta.ts";
+import { IconMeta } from "../components/core/Icon/Icon.meta.ts";
 import { InputMeta } from "../components/core/Input/Input.meta.ts";
 import { TextAreaMeta } from "../components/core/Input/TextArea.meta.ts";
 import { InputSetMeta } from "../components/core/InputSet/InputSet.meta.ts";
@@ -121,6 +122,11 @@ export const componentMetaIndex = {
     meta: DropdownMenuMeta,
     sourcePath: "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
     schemaPath: "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
+  },
+  Icon: {
+    meta: IconMeta,
+    sourcePath: "packages/radiants/components/core/Icon/Icon.tsx",
+    schemaPath: "packages/radiants/components/core/Icon/Icon.schema.json",
   },
   Input: {
     meta: InputMeta,

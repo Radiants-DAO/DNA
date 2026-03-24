@@ -170,6 +170,31 @@ describe("buildRadiantsContracts", () => {
     );
   });
 
+  it("projects structuralRules into eslint contract component sections", async () => {
+    const { eslintContract } = await buildRadiantsContractsFromComponents(
+      radiantsSystemContract,
+      [
+        {
+          name: "Card",
+          sourcePath: "packages/radiants/components/core/Card/Card.tsx",
+          structuralRules: [
+            {
+              ruleId: "rdna/no-pixel-border",
+              reason: "pixel corners own the border layer",
+            },
+          ],
+        },
+      ],
+    );
+
+    expect(eslintContract.components.Card.structuralRules).toEqual([
+      {
+        ruleId: "rdna/no-pixel-border",
+        reason: "pixel corners own the border layer",
+      },
+    ]);
+  });
+
   it("no longer relies on hand-authored componentMap entries in system.ts", async () => {
     expect(Object.keys(radiantsSystemContract.componentMap)).toHaveLength(0);
 

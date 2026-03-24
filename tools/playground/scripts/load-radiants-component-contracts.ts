@@ -4,6 +4,7 @@ import type {
   A11yContract,
   ComponentMeta,
   ElementReplacement,
+  StructuralRule,
   StyleOwnership,
 } from "../../../packages/preview/src/index.ts";
 
@@ -14,6 +15,7 @@ export interface RadiantsContractComponent {
   pixelCorners?: boolean;
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
+  structuralRules?: StructuralRule[];
   wraps?: string;
   a11y?: A11yContract;
 }

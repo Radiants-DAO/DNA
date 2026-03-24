@@ -5,6 +5,7 @@ export type {
   ForcedState,
   PropDef,
   SlotDef,
+  StructuralRule,
   StyleOwnership,
 } from '@rdna/preview';
 
@@ -16,6 +17,7 @@ import type {
   ForcedState,
   PropDef,
   SlotDef,
+  StructuralRule,
   StyleOwnership,
 } from '@rdna/preview';
 
@@ -113,6 +115,8 @@ export interface RegistryMetadataEntry {
   shadowSystem?: 'standard' | 'pixel';
   /** Style surface ownership between theme and consumer */
   styleOwnership?: StyleOwnership[];
+  /** Structural lint rules owned by the component contract */
+  structuralRules?: StructuralRule[];
   /** Upstream primitive the component wraps */
   wraps?: string;
   /** Accessibility contract metadata */

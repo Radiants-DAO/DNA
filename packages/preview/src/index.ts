@@ -11,6 +11,7 @@ export type {
   RegistryMeta,
   RegistryVariant,
   SlotDef,
+  StructuralRule,
   StyleOwnership,
 } from "./types";
 export { defineComponentMeta } from "./define-component-meta";

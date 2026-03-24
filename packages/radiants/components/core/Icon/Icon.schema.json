@@ -1,0 +1,47 @@
+{
+  "name": "Icon",
+  "description": "Dynamic SVG icon loader with dual-size support. Loads pixel-art icons (16px) or detailed icons (24px) based on size, with automatic name translation between sets via the size map.",
+  "props": {
+    "name": {
+      "type": "string",
+      "description": "Icon name (filename without .svg). Aliases like 'search', 'home', 'trash' resolve automatically."
+    },
+    "size": {
+      "type": "number",
+      "default": 16,
+      "description": "Render size in pixels. Also determines icon set: ≤20 → 16px, >20 → 24px."
+    },
+    "iconSet": {
+      "type": "enum",
+      "values": [
+        16,
+        24
+      ],
+      "description": "Force a specific icon set regardless of size. Overrides the automatic size-based selection."
+    },
+    "className": {
+      "type": "string",
+      "default": "",
+      "description": "CSS classes for styling. Use text-* classes for color."
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "16px pixel-art",
+      "code": "<Icon name=\"search\" size={16} />"
+    },
+    {
+      "name": "24px detailed",
+      "code": "<Icon name=\"search\" size={24} />"
+    },
+    {
+      "name": "Forced icon set",
+      "code": "<Icon name=\"search\" size={20} iconSet={24} />"
+    },
+    {
+      "name": "24px-only icon",
+      "code": "<Icon name=\"coding-apps-websites-database\" size={24} />"
+    }
+  ]
+}

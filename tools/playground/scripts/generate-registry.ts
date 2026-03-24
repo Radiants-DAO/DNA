@@ -110,6 +110,7 @@ interface ManifestComponent {
   pixelCorners?: boolean;
   shadowSystem?: ComponentMeta["shadowSystem"];
   styleOwnership?: ComponentMeta["styleOwnership"];
+  structuralRules?: ComponentMeta["structuralRules"];
   wraps?: string;
   a11y?: ComponentMeta["a11y"];
 }
@@ -171,7 +172,7 @@ async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
 }
 
 export function buildManifestContractFields(
-  meta: Partial<Pick<ComponentMeta<unknown>, "replaces" | "pixelCorners" | "shadowSystem" | "styleOwnership" | "wraps" | "a11y">>,
+  meta: Partial<Pick<ComponentMeta<unknown>, "replaces" | "pixelCorners" | "shadowSystem" | "styleOwnership" | "structuralRules" | "wraps" | "a11y">>,
 ) {
   return pickContractFields(meta as ComponentMeta<unknown>);
 }

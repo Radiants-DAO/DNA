@@ -56,4 +56,20 @@ describe("defineComponentMeta", () => {
     expect(meta.styleOwnership?.[0]?.attribute).toBe("data-variant");
     expect(meta.a11y?.requiredAttributes).toContain("aria-pressed");
   });
+
+  it("supports structuralRules once eslint-contract consumes them", () => {
+    const meta = defineComponentMeta<Record<string, unknown>>()({
+      name: "Card",
+      description: "Card",
+      props: {},
+      structuralRules: [
+        {
+          ruleId: "rdna/no-pixel-border",
+          reason: "pixel corners own the border layer",
+        },
+      ],
+    });
+
+    expect(meta.structuralRules?.[0]?.ruleId).toBe("rdna/no-pixel-border");
+  });
 });

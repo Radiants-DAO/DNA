@@ -13,7 +13,11 @@ import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { radiantsSystemContract } from "../../../packages/radiants/contract/system.ts";
 import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
-import type { A11yContract, StyleOwnership } from "../../../packages/preview/src/index.ts";
+import type {
+  A11yContract,
+  StructuralRule,
+  StyleOwnership,
+} from "../../../packages/preview/src/index.ts";
 import type { RadiantsContractComponent } from "./load-radiants-component-contracts.ts";
 
 type SystemContract = typeof radiantsSystemContract;
@@ -29,6 +33,7 @@ interface EslintComponentEntry {
   pixelCorners?: boolean;
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
+  structuralRules?: StructuralRule[];
   wraps?: string;
   a11y?: A11yContract;
 }
@@ -118,6 +123,7 @@ function deriveComponentContractSections(components: RadiantsContractComponent[]
     if (component.pixelCorners !== undefined) eslintEntry.pixelCorners = component.pixelCorners;
     if (component.shadowSystem) eslintEntry.shadowSystem = component.shadowSystem;
     if (component.styleOwnership?.length) eslintEntry.styleOwnership = component.styleOwnership;
+    if (component.structuralRules?.length) eslintEntry.structuralRules = component.structuralRules;
     if (component.wraps) eslintEntry.wraps = component.wraps;
     if (component.a11y) eslintEntry.a11y = component.a11y;
 
