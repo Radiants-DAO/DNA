@@ -339,9 +339,9 @@
     background-image: none !important;
   }
 
-  /* Pressed pattern overlay: use --color-line (not --color-main which is cream in dark) */
+  /* Pressed pattern overlay: tone-matched (--btn-tint is set per data-color) */
   & [data-slot="button-face"][data-mode="solid"]:active::before {
-    background: var(--color-line) !important;
+    background: var(--btn-tint) !important;
   }
 
   & [data-slot="button-face"][data-mode="solid"] {

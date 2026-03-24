@@ -101,7 +101,7 @@
 }
 
 .dark [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]::before {
-  background: var(--color-line);
+  background: var(--btn-tint);
 }
 
 /* ── Active: pattern — spray-grid mask fill via ::before so text stays visible ── */
