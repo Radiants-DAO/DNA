@@ -410,9 +410,25 @@ body {
   border-radius: 4px;
 }
 
+/* Pattern children sit above the ::before overlay so text stays visible */
+[data-slot="button-face"][data-mode="pattern"] > * {
+  position: relative;
+  z-index: 1;
+}
 
-[data-slot="button-face"][data-mode="pattern"]:hover {
-  background-color: var(--color-main);
+/* Pattern overlay — uses ::before so the mask only affects the background layer,
+   not the text content. Color uses semantic border token (--color-line). */
+[data-slot="button-face"][data-mode="pattern"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+[data-slot="button-face"][data-mode="pattern"]:hover::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
   -webkit-mask-size: 4px 4px;
@@ -420,8 +436,8 @@ body {
   image-rendering: pixelated;
 }
 
-[data-slot="button-face"][data-mode="pattern"]:active {
-  background-color: var(--color-main);
+[data-slot="button-face"][data-mode="pattern"]:active::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
@@ -491,10 +507,10 @@ body {
 [data-slot="button-face"][data-quiet]:hover {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -505,10 +521,10 @@ body {
 [data-slot="button-face"][data-quiet]:active {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -554,7 +570,7 @@ body {
    ============================================================================ */
 
 [data-slot="button-face"][data-mode="solid"][data-state="selected"]::after {
-  background: linear-gradient(to bottom, var(--color-ink) 50%, var(--color-cream) 50%);
+  background: var(--color-line);
 }
 
 [data-slot="button-face"][data-mode="solid"][data-state="selected"]::before {
@@ -566,41 +582,45 @@ body {
   mask-image: var(--pat-mist);
 }
 
+/* Pattern selected — overlay via ::before so text remains visible */
 [data-slot="button-face"][data-mode="pattern"][data-state="selected"] {
-  background-color: var(--color-main);
+  box-shadow: none;
+}
+
+[data-slot="button-face"][data-mode="pattern"][data-state="selected"]::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
   mask-size: 4px 4px;
   image-rendering: pixelated;
-  box-shadow: none;
 }
 
 /* Switch thumb bevel */
 .switch-thumb {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.12);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 30%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 12%, transparent);
 }
 
 .group:active .switch-thumb {
   box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.3),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.12);
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-flip) 30%, transparent),
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-inv) 12%, transparent);
 }
 
 /* Card bevel — lighter than Button (passive container, not interactive) */
 [data-slot="card"][data-variant="default"],
 [data-slot="card"][data-variant="raised"] {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.2),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 20%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 8%, transparent);
 }
 
 [data-slot="card"][data-variant="inverted"] {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.06),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 6%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 25%, transparent);
 }
 
 /* ============================================================================
