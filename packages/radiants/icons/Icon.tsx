@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useState } from 'react';
 import type { IconSet } from './types';
+import { ICON_16_TO_24, ICON_24_TO_16 } from './size-map';
 
 interface IconProps {
   /** Icon name (filename without .svg extension) */
@@ -11,7 +12,8 @@ interface IconProps {
   /**
    * Which icon set to load from (16px pixel-art or 24px detailed).
    * Defaults based on size: ≤20 → 16, >20 → 24.
-   * When switching sets, the name is resolved through ICON_16_TO_24 / ICON_24_TO_16 maps.
+   * When switching sets, names are auto-translated through the size map.
+   * If no mapping exists, falls back to the 16px set.
    */
   iconSet?: IconSet;
   /** Additional CSS classes for styling (use text-* for color) */
@@ -73,6 +75,49 @@ const ICON_ALIASES: Record<string, string> = {
 };
 
 /**
+ * Resolve icon name and set.
+ *
+ * When the target set is 24px and the name is a 16px name:
+ *   - If a mapping exists in ICON_16_TO_24, use the 24px equivalent
+ *   - If no mapping, fall back to 16px set (render the 16px icon at the larger size)
+ *
+ * When the target set is 16px and the name is a 24px name:
+ *   - If a mapping exists in ICON_24_TO_16, use the 16px equivalent
+ *   - If no mapping, keep as-is (will 404 if the name doesn't exist in 16px/)
+ */
+function resolveIcon(
+  name: string,
+  requestedSet: IconSet
+): { resolvedName: string; resolvedSet: IconSet } {
+  // First, resolve aliases (16px set only)
+  const aliased = ICON_ALIASES[name] || name;
+
+  if (requestedSet === 24) {
+    // Check if this is a 16px name that has a 24px mapping
+    if (aliased in ICON_16_TO_24) {
+      return { resolvedName: ICON_16_TO_24[aliased], resolvedSet: 24 };
+    }
+    // Check if the name already exists as a 24px icon name (pass through)
+    if (aliased in ICON_24_TO_16) {
+      return { resolvedName: aliased, resolvedSet: 24 };
+    }
+    // No mapping found — fall back to 16px set
+    return { resolvedName: aliased, resolvedSet: 16 };
+  }
+
+  if (requestedSet === 16) {
+    // Check if this is a 24px name that has a 16px mapping
+    if (aliased in ICON_24_TO_16) {
+      return { resolvedName: ICON_24_TO_16[aliased], resolvedSet: 16 };
+    }
+    // Assume it's already a 16px name
+    return { resolvedName: aliased, resolvedSet: 16 };
+  }
+
+  return { resolvedName: aliased, resolvedSet: requestedSet };
+}
+
+/**
  * Dynamic Icon component — loads SVGs at runtime from the appropriate size directory.
  *
  * Icons automatically use currentColor, inheriting the parent's text color.
@@ -82,7 +127,7 @@ const ICON_ALIASES: Record<string, string> = {
  * // 16px pixel-art icon (default for small sizes)
  * <Icon name="search" size={16} />
  *
- * // 24px detailed icon (auto-selected for larger sizes)
+ * // 24px detailed icon (auto-selected, name auto-translated)
  * <Icon name="search" size={24} />
  *
  * // Force a specific icon set regardless of render size
@@ -90,6 +135,9 @@ const ICON_ALIASES: Record<string, string> = {
  *
  * // Use a 24px-only icon directly
  * <Icon name="coding-apps-websites-database" size={24} />
+ *
+ * // 16px icon with no 24px mapping — stays 16px even at larger size
+ * <Icon name="chevron-left" size={24} />
  * ```
  */
 function IconComponent({
@@ -102,14 +150,14 @@ function IconComponent({
 }: IconProps) {
   const [svgContent, setSvgContent] = useState<string | null>(null);
 
-  // Determine which icon set to use
-  const set: IconSet = iconSet ?? (size > 20 ? 24 : 16);
+  // Determine target set from size or explicit prop
+  const requestedSet: IconSet = iconSet ?? (size > 20 ? 24 : 16);
 
-  // Resolve icon name through aliases (only for 16px set)
-  const resolvedName = set === 16 ? (ICON_ALIASES[name] || name) : name;
+  // Resolve name + set through aliases and size-map
+  const { resolvedName, resolvedSet } = resolveIcon(name, requestedSet);
 
   // Build the path: /assets/icons/16px/search.svg or /assets/icons/24px/interface-essential-search-1.svg
-  const iconPath = `${basePath}/${set}px/${resolvedName}.svg`;
+  const iconPath = `${basePath}/${resolvedSet}px/${resolvedName}.svg`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -133,8 +181,12 @@ function IconComponent({
         // Extract original width and height for viewBox if needed
         const widthMatch = cleanedText.match(/width=["'](\d+)["']/i);
         const heightMatch = cleanedText.match(/height=["'](\d+)["']/i);
-        const originalWidth = widthMatch ? parseInt(widthMatch[1]) : set;
-        const originalHeight = heightMatch ? parseInt(heightMatch[1]) : set;
+        const originalWidth = widthMatch
+          ? parseInt(widthMatch[1])
+          : resolvedSet;
+        const originalHeight = heightMatch
+          ? parseInt(heightMatch[1])
+          : resolvedSet;
 
         // Remove existing width and height attributes
         let svgProcessed = cleanedText.replace(
@@ -160,14 +212,14 @@ function IconComponent({
       .catch((err) => {
         if (err.name !== 'AbortError') {
           console.error(
-            `Failed to load icon: ${name} (resolved: ${resolvedName}, set: ${set}px)`,
+            `Failed to load icon: ${name} (resolved: ${resolvedName}, set: ${resolvedSet}px)`,
             err
           );
         }
       });
 
     return () => controller.abort();
-  }, [name, resolvedName, iconPath, set]);
+  }, [name, resolvedName, iconPath, resolvedSet]);
 
   if (!svgContent) {
     return (

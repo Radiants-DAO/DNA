@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   CHECKED_PATHS,
   getRepoRoot,
@@ -28,5 +30,20 @@ describe("check-registry-freshness", () => {
     expect(
       getRepoRoot("/repo/tools/playground/scripts/check-registry-freshness.mjs"),
     ).toBe("/repo");
+  });
+
+  it("makes registry:generate regenerate radiants schemas before the manifest", () => {
+    const packageJson = JSON.parse(
+      readFileSync(resolve(getRepoRoot(), "tools/playground/package.json"), "utf8"),
+    ) as {
+      scripts?: Record<string, string>;
+    };
+
+    expect(packageJson.scripts?.["registry:generate"]).toContain(
+      "pnpm --filter @rdna/radiants generate:schemas",
+    );
+    expect(packageJson.scripts?.["registry:generate"]).toContain(
+      "scripts/generate-registry.ts",
+    );
   });
 });
