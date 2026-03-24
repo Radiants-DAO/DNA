@@ -28,7 +28,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [x] ToggleGroup — Visually clean. LEFT/CENTER/RIGHT renders correctly with separators. Selected item fills with accent, unselected transparent (quiet default). Context passes mode/tone/size/rounded. Dark mode verified.
 
 ### T1d — Form Controls
-- [ ] Select — dropdown position, border clipping, dark mode hover
+- [!] Select — Light mode clean. Dark mode hover contrast issue confirmed: option hover uses bg-accent + text-accent-inv but accent-inv resolves to cream in dark mode (poor contrast on yellow). Dropdown position issue NOT reproduced (opened downward correctly). No hardcoded hex, no viewport breakpoints. All 3 known issues are design-level (token changes needed).
 - [ ] NumberField — button borders, dark mode
 - [ ] Slider — border on filled part, variants
 - [ ] Switch — dark mode colors, glow states, thumb colors
