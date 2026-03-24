@@ -35,7 +35,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [!] Checkbox — Visually functional in both modes: unchecked=page/card bg, checked=accent bg with pixel-art checkmark. Checkmark uses text-accent-inv (cream in dark mode on yellow — low contrast but visible). No hardcoded hex, no viewport breakpoints, no z-index. Known: full System 7 visual refactor pending (design-level). Radio focus glow has hardcoded rgba(254,248,226,0.3) in shared file (should use glow token).
 - [!] Radio — Visually functional both modes: unselected=page bg + border-line circle, selected=accent bg + dark dot. Dark mode dot uses bg-main (cream on yellow — low contrast, same pattern). Focus glow has hardcoded rgba(254,248,226,0.3) in Checkbox.tsx:245 (should use glow token). No hardcoded hex, no viewport breakpoints, no z-index. Known: System 7 visual refactor pending (design-level).
 - [v] Input — Clean pass. Light: cream bg, pixel-rounded, muted placeholder. Dark: dark bg, correct token flipping. Label, description, error sub-components all use semantic tokens. No hardcoded hex, no viewport breakpoints, no z-index issues.
-- [ ] InputSet — layout and grouping
+- [v] InputSet — Clean pass. Pixel-rounded fieldset with legend heading, nested inputs correctly grouped. Both light and dark modes render clean. All semantic tokens. No hardcoded hex, no viewport breakpoints, no z-index issues.
 
 ### T1e — Feedback
 - [ ] Alert — string/icon/heading props, closable
