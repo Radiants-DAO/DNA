@@ -699,7 +699,7 @@ body {
   --color-focus: var(--color-sun-yellow);
 
   --color-accent: var(--color-sun-yellow);
-  --color-accent-inv: var(--color-cream);
+  --color-accent-inv: var(--color-ink);
   --color-accent-soft: var(--color-sunset-fuzz);
   --color-danger: var(--color-sun-red);
   --color-success: var(--color-mint);

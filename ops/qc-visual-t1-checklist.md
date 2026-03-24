@@ -61,7 +61,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 **Root cause:** `--color-accent-inv` resolves to `var(--color-cream)` in dark mode (dark.css:91 + base.css:702). Cream text on yellow accent bg = low contrast. Rule: always high-contrast pairs (ink on yellow, cream on ink). Fix: change dark mode `--color-accent-inv` to `var(--color-ink)`, then verify each affected component.
 
 ### Token Fix
-- [ ] Fix `--color-accent-inv` in dark.css and base.css dark theme — change from `var(--color-cream)` to `var(--color-ink)`
+- [x] Fix `--color-accent-inv` in dark.css and base.css dark theme — changed from `var(--color-cream)` to `var(--color-ink)`. Now ink (dark) on yellow in both modes. All 4 definitions verified: tokens.css:102, base.css:702, base.css:731, dark.css:91 — all `var(--color-ink)`.
 
 ### Visual Verification (post-fix)
 - [ ] Select — verify dark mode hover/selected contrast
