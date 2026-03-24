@@ -1,9 +1,14 @@
 export { buildRegistry } from './build-registry';
 export { buildRegistryMetadata } from './build-registry-metadata';
 export { PropControls, getControllableProps } from './PropControls';
+export {
+  getPreviewStateNames,
+  resolvePreviewState,
+  type ActivePreviewState,
+} from './preview-states';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
 export { useShowcaseProps } from './useShowcaseProps';
-export type { PropDef, SlotDef, ComponentCategory, ForcedState } from './types';
+export type { PropDef, SlotDef, ComponentCategory, ForcedState, PreviewState } from './types';
 export type {
   RegistryEntry,
   RegistryMetadataEntry,

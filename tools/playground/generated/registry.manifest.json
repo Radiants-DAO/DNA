@@ -418,10 +418,24 @@
           "icon": "go-forward"
         },
         "states": [
-          "hover",
-          "pressed",
-          "focus",
-          "disabled"
+          {
+            "name": "hover",
+            "driver": "wrapper"
+          },
+          {
+            "name": "pressed",
+            "driver": "wrapper"
+          },
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "mode": {
@@ -688,9 +702,20 @@
           "label": "Accept terms"
         },
         "states": [
-          "hover",
-          "focus",
-          "disabled"
+          {
+            "name": "hover",
+            "driver": "wrapper"
+          },
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "label": {
@@ -840,8 +865,14 @@
           "select"
         ],
         "states": [
-          "focus",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "wrapper"
+          }
         ],
         "props": {
           "value": {
@@ -1176,7 +1207,7 @@
         "sourcePath": "packages/radiants/components/core/Icon/Icon.tsx",
         "schemaPath": "packages/radiants/components/core/Icon/Icon.schema.json",
         "category": "media",
-        "group": "media",
+        "group": "Media",
         "renderMode": "custom",
         "tags": [
           "icon",
@@ -1255,9 +1286,22 @@
           "placeholder": "Type something..."
         },
         "states": [
-          "focus",
-          "error",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "error",
+            "driver": "prop",
+            "prop": "error",
+            "value": true
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "size": {
@@ -1590,8 +1634,16 @@
           "numeric"
         ],
         "states": [
-          "focus",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "defaultValue": {
@@ -1895,9 +1947,20 @@
           "choice"
         ],
         "states": [
-          "hover",
-          "focus",
-          "disabled"
+          {
+            "name": "hover",
+            "driver": "wrapper"
+          },
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "label": {
@@ -2017,9 +2080,22 @@
           "fullWidth"
         ],
         "states": [
-          "focus",
-          "error",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "error",
+            "driver": "prop",
+            "prop": "error",
+            "value": true
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "options": {
@@ -2264,8 +2340,16 @@
           "onChange"
         ],
         "states": [
-          "focus",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "value": {
@@ -2431,8 +2515,16 @@
           "onChange"
         ],
         "states": [
-          "focus",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "checked": {
@@ -2578,9 +2670,22 @@
           "textarea"
         ],
         "states": [
-          "focus",
-          "error",
-          "disabled"
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "error",
+            "driver": "prop",
+            "prop": "error",
+            "value": true
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "error": {
@@ -2710,10 +2815,24 @@
           "children": "Toggle"
         },
         "states": [
-          "hover",
-          "pressed",
-          "focus",
-          "disabled"
+          {
+            "name": "hover",
+            "driver": "wrapper"
+          },
+          {
+            "name": "pressed",
+            "driver": "wrapper"
+          },
+          {
+            "name": "focus",
+            "driver": "wrapper"
+          },
+          {
+            "name": "disabled",
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
+          }
         ],
         "props": {
           "pressed": {

@@ -22,7 +22,7 @@ const DEFAULT_STATES = ["default"];
 export function buildTestMatrix(component) {
   const enumProps = extractEnumProps(component.props ?? {});
   const booleanProps = extractBooleanProps(component.props ?? {});
-  const forcedStates = [...DEFAULT_STATES, ...(component.states ?? [])];
+  const forcedStates = [...DEFAULT_STATES, ...extractForcedStates(component.states)];
   const themeVariants = extractThemeVariants(component.styleOwnership);
   const qaFlags = deriveQaFlags(component);
 
@@ -103,6 +103,13 @@ function extractBooleanProps(props) {
     }
   }
   return dims;
+}
+
+function extractForcedStates(states) {
+  if (!Array.isArray(states)) return [];
+  return states
+    .map((state) => (typeof state === "string" ? state : state?.name))
+    .filter((state) => typeof state === "string");
 }
 
 /** Extract theme-owned data-attribute variants from styleOwnership */

@@ -56,11 +56,11 @@ describe('Component Registry', () => {
     }
   });
 
-  it('components with enum props get auto-generated variants', () => {
-    const button = registry.find((e) => e.name === 'Button');
-    expect(button).toBeDefined();
-    expect(button!.variants).toBeDefined();
-    expect(button!.variants!.length).toBeGreaterThan(0);
+  it('components with authored variants expose them in the registry', () => {
+    const separator = registry.find((e) => e.name === 'Separator');
+    expect(separator).toBeDefined();
+    expect(separator!.variants).toBeDefined();
+    expect(separator!.variants!.length).toBeGreaterThan(0);
   });
 
   it('compound components have custom or description-only render mode', () => {

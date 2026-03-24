@@ -7,7 +7,7 @@
  * runtime without coupling to the raw JSON shape.
  */
 
-import type { PropDef, SlotDef } from "@rdna/radiants/registry";
+import type { PreviewState, PropDef, SlotDef } from "@rdna/radiants/registry";
 import manifestData from "./registry.manifest.json";
 
 // ---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ export interface ManifestComponent {
   tags?: string[];
   exampleProps?: Record<string, unknown>;
   controlledProps?: string[];
-  states?: string[];
+  states?: PreviewState[];
   // Schema-level fields
   props: Record<string, ManifestProp>;
   slots: Record<string, ManifestSlot>;

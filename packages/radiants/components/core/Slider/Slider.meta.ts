@@ -54,6 +54,9 @@ export const SliderMeta = defineComponentMeta<SliderProps>()({
     tags: ["range", "volume", "adjust"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],
-    states: ["focus", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

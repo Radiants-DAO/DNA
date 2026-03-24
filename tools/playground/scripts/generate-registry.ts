@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 import { componentMetaIndex } from "../../../packages/radiants/meta/index.ts";
 import { pickContractFields } from "../../../packages/radiants/registry/contract-fields.ts";
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
-import type { ComponentMeta } from "../../../packages/preview/src/index.ts";
+import type { ComponentMeta, PreviewState } from "../../../packages/preview/src/index.ts";
 import { writeRadiantsContractArtifacts } from "./build-radiants-contract.ts";
 import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
 
@@ -99,7 +99,7 @@ interface ManifestComponent {
   tags?: string[];
   exampleProps?: Record<string, unknown>;
   controlledProps?: string[];
-  states?: string[];
+  states?: PreviewState[];
   // Schema-level fields
   props: Record<string, unknown>;
   slots: Record<string, { description: string }>;

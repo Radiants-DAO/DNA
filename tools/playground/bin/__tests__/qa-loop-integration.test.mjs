@@ -47,7 +47,10 @@ describe("visual QA loop integration", () => {
         { attribute: "data-variant", themeOwned: ["default", "raised"] },
       ],
       a11y: { contrastRequirement: "AA" },
-      states: ["hover", "pressed"],
+      states: [
+        { name: "hover", driver: "wrapper" },
+        { name: "pressed", driver: "wrapper" },
+      ],
     });
 
     expect(
@@ -69,7 +72,10 @@ describe("visual QA loop integration", () => {
     // Use a simpler component so the matrix isn't pruned
     const matrix = buildTestMatrix({
       props: { mode: { type: "enum", values: ["solid"] } },
-      states: ["hover", "pressed"],
+      states: [
+        { name: "hover", driver: "wrapper" },
+        { name: "pressed", driver: "wrapper" },
+      ],
     });
     // 1 mode * 2 colorModes * 3 states = 6, well under MAX_MATRIX
     expect(matrix.some((m) => m.state === "hover")).toBe(true);
@@ -79,8 +85,8 @@ describe("visual QA loop integration", () => {
   it("Button states are present in manifest", () => {
     const button = readFullComponent("Button");
     expect(button).not.toBeNull();
-    expect(button.states).toContain("hover");
-    expect(button.states).toContain("pressed");
+    expect(button.states.map((state) => state.name)).toContain("hover");
+    expect(button.states.map((state) => state.name)).toContain("pressed");
   });
 
   it("matrix labels are unique", () => {

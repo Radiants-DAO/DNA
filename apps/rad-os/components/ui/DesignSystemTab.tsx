@@ -5,7 +5,9 @@ import {
   registry,
   CATEGORIES,
   CATEGORY_LABELS,
+  getPreviewStateNames,
   PropControls,
+  resolvePreviewState,
   useShowcaseProps,
 } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
@@ -19,7 +21,9 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
   const Component = entry.component;
   const { props, remountKey, setPropValue, resetProps } = useShowcaseProps(entry);
   const [forcedState, setForcedState] = useState<'default' | ForcedState>('default');
-  const stateAttr = forcedState === 'default' ? undefined : forcedState;
+  const availableStates = ['default', ...getPreviewStateNames(entry.states)] as const;
+  const { wrapperState, propOverrides } = resolvePreviewState(forcedState, entry.states);
+  const renderProps = { ...props, ...propOverrides };
   const hasControllableProps =
     Object.keys(entry.props).length > 0 &&
     !(entry.renderMode === 'custom' && entry.controlledProps?.length === 0);
@@ -44,11 +48,11 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
       {entry.renderMode === 'description-only' ? null : (
         <div className="border-t border-rule pt-3">
           <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
-          <div data-force-state={stateAttr} key={remountKey}>
+          <div data-force-state={wrapperState} key={remountKey}>
             {entry.Demo ? (
-              <entry.Demo {...props} />
+              <entry.Demo {...renderProps} />
             ) : Component ? (
-              <Component {...props} />
+              <Component {...renderProps} />
             ) : null}
           </div>
         </div>
@@ -57,7 +61,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
       {/* Forced state strip */}
       {entry.states && entry.states.length > 0 && (
         <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
-          {(['default', ...entry.states] as const).map((s) => (
+          {availableStates.map((s) => (
             <button
               key={s}
               type="button"

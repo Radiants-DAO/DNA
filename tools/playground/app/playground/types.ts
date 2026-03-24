@@ -1,6 +1,11 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { ComponentType } from "react";
-import type { PropDef, VariantDemo } from "@rdna/radiants/registry";
+import type {
+  ForcedState as SharedForcedState,
+  PreviewState,
+  PropDef,
+  VariantDemo,
+} from "@rdna/radiants/registry";
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -32,14 +37,14 @@ export interface RegistryEntry {
   /** Which props the Demo actually forwards (custom renderMode only) */
   controlledProps?: string[];
   /** Forced pseudo-states available for design inspection (from canonical meta) */
-  states?: string[];
+  states?: PreviewState[];
 }
 
 // ---------------------------------------------------------------------------
 // Forced pseudo-states for design inspection
 // ---------------------------------------------------------------------------
 
-export type ForcedState = "default" | "hover" | "pressed" | "focus" | "disabled" | "error";
+export type ForcedState = "default" | SharedForcedState;
 
 /** Type guard: entry has a renderable Component */
 export function isRenderable(

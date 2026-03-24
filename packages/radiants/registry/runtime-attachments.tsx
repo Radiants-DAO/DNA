@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import * as coreComponents from '../components/core';
 import {
   Alert,
   AlertDialog,
   Avatar,
-  Badge,
   Breadcrumbs,
   Button,
   Card, CardHeader, CardBody, CardFooter,
-  Checkbox,
   Collapsible,
   Combobox,
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
@@ -18,6 +17,7 @@ import {
   Drawer,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuLabel,
+  Icon,
   Input, TextArea,
   InputSet,
   Menubar,
@@ -30,7 +30,6 @@ import {
   Radio, RadioGroup,
   ScrollArea,
   Select,
-  Separator,
   Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription,
   SheetBody, SheetFooter, SheetClose,
   Slider,
@@ -38,7 +37,6 @@ import {
   Switch,
   Tabs,
   ToastProvider, useToast,
-  Toggle,
   ToggleGroup,
   Toolbar,
   Tooltip,
@@ -46,14 +44,44 @@ import {
 import { Pencil, CodeWindow, Eye } from '../icons';
 import type { RuntimeAttachment } from './types';
 
-export const runtimeAttachments: Record<string, RuntimeAttachment> = {
-  // ── Plain components (inline render) ─────────────────────────────────
-  Badge: { component: Badge },
-  Button: { component: Button },
-  Checkbox: { component: Checkbox },
-  Pattern: { component: Pattern as any },
-  Separator: { component: Separator },
-  Toggle: { component: Toggle },
+const NON_COMPONENT_EXPORTS = new Set([
+  'alertVariants',
+  'badgeVariants',
+  'buttonFaceVariants',
+  'buttonRootVariants',
+  'buttonVariants',
+  'cardVariants',
+  'inputVariants',
+  'selectTriggerVariants',
+  'switchTrackVariants',
+  'tabTriggerVariants',
+  'useAlertDialogState',
+  'useComboboxFilter',
+  'useDialogState',
+  'useDrawerState',
+  'useSelectState',
+  'useTabsState',
+  'useToast',
+]);
+
+function isRuntimeComponentExport(
+  name: string,
+  value: unknown,
+): value is NonNullable<RuntimeAttachment['component']> {
+  return (
+    /^[A-Z]/.test(name) &&
+    !NON_COMPONENT_EXPORTS.has(name) &&
+    (typeof value === 'function' || (typeof value === 'object' && value !== null))
+  );
+}
+
+const autoRuntimeAttachments = Object.fromEntries(
+  Object.entries(coreComponents)
+    .filter(([name, value]) => isRuntimeComponentExport(name, value))
+    .map(([name, component]) => [name, { component } satisfies RuntimeAttachment]),
+) as Record<string, RuntimeAttachment>;
+
+const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   // ── Custom Demo components ────────────────────────────────────────────
 
@@ -317,6 +345,19 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
           </div>
         </InputSet.Root>
       </div>
+    ),
+  },
+
+  Icon: {
+    component: Icon,
+    Demo: ({ name = 'search', size = 16, iconSet, className, ...rest }: Record<string, unknown>) => (
+      <Icon
+        name={name as string}
+        size={size as number}
+        {...(iconSet !== undefined ? { iconSet: iconSet as 16 | 24 } : {})}
+        {...(className ? { className: className as string } : {})}
+        {...rest}
+      />
     ),
   },
 
@@ -665,4 +706,9 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
     ),
   },
 
+};
+
+export const runtimeAttachments: Record<string, RuntimeAttachment> = {
+  ...autoRuntimeAttachments,
+  ...customRuntimeAttachments,
 };

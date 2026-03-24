@@ -20,12 +20,17 @@ describe("defineComponentMeta", () => {
       props: {},
       registry: {
         category: "action",
-        states: ["hover", "pressed", "focus"],
+        states: [
+          { name: "hover", driver: "wrapper" },
+          { name: "pressed", driver: "wrapper" },
+          { name: "disabled", driver: "prop", prop: "disabled", value: true },
+        ],
         exampleProps: { mode: "solid", disabled: false },
       },
     });
 
-    expect(meta.registry?.states).toContain("hover");
+    expect(meta.registry?.states?.[0]?.name).toBe("hover");
+    expect(meta.registry?.states?.[2]?.prop).toBe("disabled");
     expect(meta.registry?.exampleProps?.mode).toBe("solid");
   });
 

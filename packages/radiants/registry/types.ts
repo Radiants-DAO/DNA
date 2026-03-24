@@ -3,6 +3,7 @@ export type {
   ComponentCategory,
   ElementReplacement,
   ForcedState,
+  PreviewState,
   PropDef,
   SlotDef,
   StructuralRule,
@@ -15,6 +16,7 @@ import type {
   ComponentCategory,
   ElementReplacement,
   ForcedState,
+  PreviewState,
   PropDef,
   SlotDef,
   StructuralRule,
@@ -37,6 +39,7 @@ export const CATEGORIES: ComponentCategory[] = [
   'navigation',
   'overlay',
   'data-display',
+  'media',
   'dev',
 ];
 
@@ -48,6 +51,7 @@ export const CATEGORY_LABELS: Record<ComponentCategory, string> = {
   navigation: 'Navigation',
   overlay: 'Overlays',
   'data-display': 'Data Display',
+  media: 'Media',
   dev: 'Dev Tools',
 };
 
@@ -88,7 +92,7 @@ export interface RegistryMetadataEntry {
   /** Search tags */
   tags?: string[];
   /** Forced pseudo-states available for design inspection */
-  states?: ForcedState[];
+  states?: PreviewState[];
   /** Stable client id */
   id: string;
   /** Display label */

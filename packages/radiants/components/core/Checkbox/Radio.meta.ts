@@ -42,6 +42,10 @@ export const RadioMeta = defineComponentMeta<RadioProps>()({
     category: "form",
     tags: ["radio", "option", "choice"],
     renderMode: "custom",
-    states: ["hover", "focus", "disabled"],
+    states: [
+      { name: "hover", driver: "wrapper" },
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

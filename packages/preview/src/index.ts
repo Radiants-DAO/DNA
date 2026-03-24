@@ -5,6 +5,8 @@ export type {
   ComponentCategory,
   ElementReplacement,
   ForcedState,
+  PreviewState,
+  PreviewStateDriver,
   PropDef,
   PropDefType,
   PropEnumValue,

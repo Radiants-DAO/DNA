@@ -60,6 +60,9 @@ export const ComboboxMeta = defineComponentMeta<ComboboxProps>()({
     category: "form",
     tags: ["combobox", "autocomplete", "search", "select"],
     renderMode: "custom",
-    states: ["focus", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "wrapper" },
+    ],
   },
 });

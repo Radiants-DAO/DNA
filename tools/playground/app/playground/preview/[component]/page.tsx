@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { use, useEffect, useRef, useState } from "react";
+import { resolvePreviewState, type ForcedState } from "@rdna/radiants/registry";
 import { registryById } from "../../registry";
 
 /** Params that control rendering context, not component props */
@@ -45,6 +46,12 @@ export default function PreviewPage({
   const colorMode = searchParams.get("colorMode") ?? "light";
   const forcedState = searchParams.get("state");
   const captureId = searchParams.get("capture");
+  const declaredStates = new Set((entry?.states ?? []).map((state) => state.name));
+  const activeState: "default" | ForcedState =
+    forcedState && declaredStates.has(forcedState as ForcedState)
+      ? (forcedState as ForcedState)
+      : "default";
+  const { wrapperState, propOverrides } = resolvePreviewState(activeState, entry?.states);
 
   // Apply color mode to document
   useEffect(() => {
@@ -115,10 +122,10 @@ export default function PreviewPage({
       ref={containerRef}
       data-qa-ready={ready || undefined}
       data-qa-component={component}
-      data-force-state={forcedState ?? undefined}
+      data-force-state={wrapperState}
       className="inline-flex p-4"
     >
-      <Component {...props} />
+      <Component {...props} {...propOverrides} />
     </div>
   );
 }

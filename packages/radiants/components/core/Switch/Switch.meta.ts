@@ -59,6 +59,9 @@ export const SwitchMeta = defineComponentMeta<SwitchProps>()({
     tags: ["toggle", "on-off", "boolean"],
     renderMode: "custom",
     controlledProps: ["checked", "onChange"],
-    states: ["focus", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

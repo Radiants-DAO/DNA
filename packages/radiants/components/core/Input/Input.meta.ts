@@ -97,6 +97,10 @@ export const InputMeta = defineComponentMeta<InputProps>()({
     tags: ["text", "field", "form", "input", "label", "validation"],
     renderMode: "custom",
     exampleProps: { placeholder: "Type something..." },
-    states: ["focus", "error", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "error", driver: "prop", prop: "error", value: true },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

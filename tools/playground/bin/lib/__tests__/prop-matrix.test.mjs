@@ -46,7 +46,11 @@ describe("buildTestMatrix", () => {
   it("includes forced states from registry.states", () => {
     const matrix = buildTestMatrix({
       props: { mode: { type: "enum", values: ["solid"] } },
-      states: ["hover", "pressed", "disabled"],
+      states: [
+        { name: "hover", driver: "wrapper" },
+        { name: "pressed", driver: "wrapper" },
+        { name: "disabled", driver: "prop", prop: "disabled", value: true },
+      ],
     });
     // 1 mode * 2 colorModes * 4 states (default + 3 forced)
     expect(matrix.length).toBe(8);

@@ -45,6 +45,10 @@ export const CheckboxMeta = defineComponentMeta<CheckboxProps>()({
     tags: ["toggle", "check", "boolean"],
     renderMode: "inline",
     exampleProps: { label: "Accept terms" },
-    states: ["hover", "focus", "disabled"],
+    states: [
+      { name: "hover", driver: "wrapper" },
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

@@ -63,6 +63,10 @@ export const TextAreaMeta = defineComponentMeta<TextAreaProps>()({
     category: "form",
     tags: ["text", "multiline", "textarea"],
     renderMode: "custom",
-    states: ["focus", "error", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "error", driver: "prop", prop: "error", value: true },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

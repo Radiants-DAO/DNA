@@ -52,6 +52,15 @@ export interface A11yContract {
 
 export type ForcedState = "hover" | "pressed" | "focus" | "disabled" | "error";
 
+export type PreviewStateDriver = "wrapper" | "prop";
+
+export interface PreviewState<TProps = Record<string, unknown>> {
+  name: ForcedState;
+  driver: PreviewStateDriver;
+  prop?: keyof TProps & string;
+  value?: unknown;
+}
+
 export interface RegistryVariant<TProps> {
   label: string;
   props: Partial<TProps>;
@@ -65,6 +74,7 @@ export type ComponentCategory =
   | "navigation"
   | "overlay"
   | "data-display"
+  | "media"
   | "dev";
 
 export interface RegistryMeta<TProps> {
@@ -75,7 +85,7 @@ export interface RegistryMeta<TProps> {
   exampleProps?: Partial<TProps>;
   variants?: RegistryVariant<TProps>[];
   controlledProps?: Array<keyof TProps & string>;
-  states?: ForcedState[];
+  states?: PreviewState<TProps>[];
 }
 
 export interface ComponentMeta<TProps = Record<string, unknown>> {

@@ -67,6 +67,9 @@ export const NumberFieldMeta = defineComponentMeta<NumberFieldProps>()({
     category: "form",
     tags: ["number", "input", "stepper", "numeric"],
     renderMode: "custom",
-    states: ["focus", "disabled"],
+    states: [
+      { name: "focus", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
+    ],
   },
 });

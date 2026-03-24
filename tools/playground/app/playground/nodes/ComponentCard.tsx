@@ -4,7 +4,12 @@ import { memo, Suspense, useCallback, useEffect, useRef, useState, type Componen
 import { createPortal } from "react-dom";
 import { useViewport } from "@xyflow/react";
 import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
-import { PropControls, useShowcaseProps } from "@rdna/radiants/registry";
+import {
+  getPreviewStateNames,
+  PropControls,
+  resolvePreviewState,
+  useShowcaseProps,
+} from "@rdna/radiants/registry";
 import type { ForcedState, RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
@@ -504,7 +509,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const [forcedState, setForcedState] = useState<ForcedState>("default");
   // States are driven by canonical registry.states in each component's *.meta.ts.
   // "default" is always present; additional states appear when the component declares them.
-  const availableStates: ForcedState[] = ["default", ...((entry.states ?? []) as ForcedState[])];
+  const availableStates: ForcedState[] = ["default", ...getPreviewStateNames(entry.states)];
   const hasStateStrip = availableStates.length > 1;
   const workSignals = useWorkSignalSet();
   const isWorking = workSignals.has(entry.id);
@@ -560,7 +565,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const { Component, rawComponent } = entry;
   const violations = getViolationsForComponent(entry.sourcePath);
   const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent && typeof rawComponent === 'function';
-  const stateAttr = forcedState !== "default" ? forcedState : undefined;
+  const { wrapperState, propOverrides } = resolvePreviewState(forcedState, entry.states);
+  const renderProps = { ...props, ...propOverrides };
   const isOverlayActive = overlayPhase === "active";
 
   const { annotationsForComponent } = useAnnotationContext();
@@ -829,11 +835,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               >
                 {/* Component render — overlay intercepts all pointer events in comment mode */}
                 <div
-                  data-force-state={stateAttr}
+                  data-force-state={wrapperState}
                   className="relative w-full"
                 >
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
-                    <Component key={remountKey} {...props} />
+                    <Component key={remountKey} {...renderProps} />
                   </Suspense>
                   {isToolActive && (
                     <>
@@ -911,11 +917,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     }`}
                   >
                     <div
-                      data-force-state={stateAttr}
+                      data-force-state={wrapperState}
                       className="relative w-full"
                     >
                       <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                        {rawComponent && typeof rawComponent === 'function' && (() => { const V = rawComponent; return <V {...v.props} />; })()}
+                        {rawComponent && typeof rawComponent === 'function' && (() => { const V = rawComponent; return <V {...v.props} {...propOverrides} />; })()}
                       </Suspense>
                       {isToolActive && (
                         <>
@@ -995,7 +1001,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         </div>
         {/* Props panel — below content */}
         {hasControllableProps && (
-          <div className="border-t border-[rgba(254,248,226,0.1)]">
+          <div className="dark border-t border-[rgba(254,248,226,0.1)]">
             <PropControls
               props={entry.props}
               values={props}

@@ -7,7 +7,7 @@ import { Button } from "@rdna/radiants/components/core/Button/Button";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
 
-const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
+const STATES: ForcedState[] = ["default", "hover", "pressed", "focus", "disabled", "error"];
 
 interface PlaygroundToolbarProps {
   selectedPackage: string;
