@@ -15,6 +15,8 @@ const COMMANDS = {
   dismiss: () => import("./commands/annotate.mjs").then((m) => m.dismiss(args)),
   "list-states": () => import("./commands/list-states.mjs").then((m) => m.run(args)),
   "set-props": () => import("./commands/set-props.mjs").then((m) => m.run(args)),
+  screenshot: () => import("./commands/screenshot.mjs").then((m) => m.run(args)),
+  sweep: () => import("./commands/sweep.mjs").then((m) => m.run(args)),
   help: () => printHelp(),
 };
 
