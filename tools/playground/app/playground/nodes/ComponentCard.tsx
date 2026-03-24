@@ -994,7 +994,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           )}
         </div>
         </div>
-
+        </div>
         {/* Props panel — below content */}
         {hasControllableProps && (
           <div className="border-t border-[rgba(254,248,226,0.1)]">

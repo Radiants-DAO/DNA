@@ -10,10 +10,11 @@ import {
 } from "../../../scripts/build-radiants-contract.ts";
 
 describe("buildRadiantsContracts", () => {
-  it("builds eslint and ai contracts from the system contract", async () => {
+  it("builds eslint and ai contracts from system tokens plus loaded component contracts", async () => {
     const { eslintContract, aiContract } = await buildRadiantsContracts();
 
-    expect(eslintContract.componentMap.label.component).toBe("Label");
+    expect(eslintContract.componentMap.button.component).toBe("Button");
+    expect(eslintContract.componentMap.label).toBeUndefined();
     expect(eslintContract.themeVariants).toContain("default");
     expect(eslintContract.tokenMap.semanticColorSuffixes).toContain("content-primary");
     // AI contract has LLM-oriented shape
@@ -31,6 +32,7 @@ describe("buildRadiantsContracts", () => {
       ]),
     );
     expect(aiContract.elementReplacements.button).toBe("Button");
+    expect(aiContract.elementReplacements.label).toBeUndefined();
   });
 
   it("writes eslint and ai contract JSON artifacts to disk", async () => {
@@ -166,5 +168,17 @@ describe("buildRadiantsContracts", () => {
         }),
       ]),
     );
+  });
+
+  it("no longer relies on hand-authored componentMap entries in system.ts", async () => {
+    expect(Object.keys(radiantsSystemContract.componentMap)).toHaveLength(0);
+
+    const { eslintContract } = await buildRadiantsContracts();
+    expect(eslintContract.componentMap.button.component).toBe("Button");
+    expect(eslintContract.componentMap.input.component).toBe("Input");
+    expect(eslintContract.componentMap.textarea.component).toBe("TextArea");
+    expect(eslintContract.componentMap.select.component).toBe("Select");
+    expect(eslintContract.componentMap.dialog.component).toBe("Dialog");
+    expect(eslintContract.componentMap.label).toBeUndefined();
   });
 });

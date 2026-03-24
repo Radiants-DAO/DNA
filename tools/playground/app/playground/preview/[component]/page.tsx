@@ -63,18 +63,33 @@ export default function PreviewPage({
   useEffect(() => {
     if (!captureId || !ready || !containerRef.current) return;
 
+    const node = containerRef.current;
+
     (async () => {
-      const { toPng } = await import("html-to-image");
-      const dataUrl = await toPng(containerRef.current!, { pixelRatio: 2 });
-      await fetch("/playground/api/agent/capture", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "complete",
-          requestId: captureId,
-          dataUrl,
-        }),
-      });
+      try {
+        const { toPng } = await import("html-to-image");
+        const dataUrl = await toPng(node, { pixelRatio: 2 });
+        await fetch("/playground/api/agent/capture", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "complete",
+            requestId: captureId,
+            dataUrl,
+          }),
+        });
+      } catch (err) {
+        console.error("[preview] capture failed:", err);
+        await fetch("/playground/api/agent/capture", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "error",
+            requestId: captureId,
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        }).catch(() => {});
+      }
     })();
   }, [captureId, ready]);
 
