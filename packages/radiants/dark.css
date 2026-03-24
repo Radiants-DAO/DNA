@@ -690,6 +690,148 @@
   }
 
   /* ============================================
+     FORCED PREVIEW STATES — keep preview wrappers aligned with dark theme
+     ============================================ */
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+    background-image: none;
+
+    &::after { background: var(--color-line-hover); }
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+    background-image: none;
+
+    &::after { background: var(--color-focus); }
+  }
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-mode="solid"][data-color="danger"]:not([data-state="selected"])::after {
+    background: oklch(0.7429 0.1568 21.43 / 0.4);
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"][data-color="danger"]:not([data-state="selected"])::after {
+    background: var(--color-sun-red);
+  }
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+    color: var(--btn-tint);
+
+    &::after { background: var(--color-line-hover); }
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+    background-image:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+    color: var(--btn-tint);
+
+    &::after { background: var(--color-focus); }
+  }
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-mode="flat"][data-quiet]:not([data-state="selected"]),
+  & [data-force-state="pressed"] [data-slot="button-face"][data-mode="flat"][data-quiet]:not([data-state="selected"]) {
+    background-image: none;
+  }
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+    background-color: transparent !important;
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+
+    &::after { background: var(--color-line-hover); }
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+    background-color: transparent !important;
+    background-image:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+      linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+      linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+
+    &::after { background: var(--color-focus); }
+  }
+
+  & [data-force-state="hover"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
+    background: transparent !important;
+    border-color: var(--color-line-hover);
+    box-shadow: none;
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
+    background: transparent !important;
+    border-color: var(--color-focus);
+    box-shadow: none;
+  }
+
+  & [data-force-state="hover"] [data-slot="button-root"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 4px var(--glow-cream-hover))
+      drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-root"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 6px var(--glow-cream-active))
+      drop-shadow(0 0 14px var(--glow-sun-yellow));
+  }
+
+  & [data-force-state="hover"] [data-slot="button-root"][data-color="danger"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
+      drop-shadow(0 0 10px var(--glow-sun-red));
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-root"][data-color="danger"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 6px oklch(0.7429 0.1568 21.43 / 0.4))
+      drop-shadow(0 0 14px var(--glow-sun-red));
+  }
+
+  & [data-force-state="hover"] [data-slot="button-root"][data-color="success"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
+      drop-shadow(0 0 10px var(--glow-mint));
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-root"][data-color="success"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 6px oklch(0.9312 0.0702 142.51 / 0.4))
+      drop-shadow(0 0 14px var(--glow-mint));
+  }
+
+  & [data-force-state="hover"] [data-slot="button-root"][data-color="neutral"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 3px rgba(252, 225, 132, 0.15))
+      drop-shadow(0 0 8px rgba(252, 225, 132, 0.08));
+  }
+
+  & [data-force-state="pressed"] [data-slot="button-root"][data-color="neutral"]:not([data-state="selected"]) {
+    filter:
+      drop-shadow(0 0 4px rgba(252, 225, 132, 0.2))
+      drop-shadow(0 0 10px rgba(252, 225, 132, 0.12));
+  }
+
+  & [data-force-state="hover"] [data-slot="button-root"]:not([data-mode="text"]):not([data-state="selected"]),
+  & [data-force-state="pressed"] [data-slot="button-root"]:not([data-mode="text"]):not([data-state="selected"]) {
+    transform: none;
+  }
+
+  /* ============================================
      SWITCH — Moon Mode overrides
      Track: ink bg at rest, glow on hover
      Thumb: flat, glow + yellow border on hover
@@ -855,4 +997,3 @@
     text-shadow: none;
   }
 }
-

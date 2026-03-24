@@ -256,7 +256,7 @@ function ElementStylesTable() {
           <span className="font-mono text-xs text-mute uppercase">Specimen</span>
           <span className="font-mono text-xs text-mute uppercase text-right">Size/Wt/Lead</span>
         </div>
-        {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
+        {ELEMENT_STYLES.map(({ el, fontClass, size, weight, leading }) => (
           <div
             key={el}
             className="grid grid-cols-[3rem_1fr_auto] gap-2 py-1.5 items-baseline"

@@ -749,7 +749,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Fonts */}
         {tabs.state.activeTab === 'fonts' && (
-          <TypographyPlayground activeSubTab={typoSubTab} />
+          <TypographyPlayground activeSubTab={typoSubTab} layoutVariant={layoutVariant} />
         )}
 
         {/* Components */}

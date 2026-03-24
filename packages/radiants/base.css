@@ -495,6 +495,138 @@ body {
   box-shadow: none;
 }
 
+/* ============================================================================
+   Forced Preview States — canonical wrapper-driven inspection
+   Mirrors interactive button and field states without a separate preview sheet.
+   ============================================================================ */
+
+[data-force-state="hover"] [data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 1px 0 var(--color-ink));
+}
+
+[data-force-state="pressed"] [data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
+  transform: translateY(1px);
+  filter: drop-shadow(0 -1px 0 var(--color-ink));
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"])::before {
+  background: var(--color-main);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  image-rendering: pixelated;
+  -webkit-mask-image: var(--pat-diagonal-dots);
+  mask-image: var(--pat-diagonal-dots);
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-mist);
+  mask-image: var(--pat-mist);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-spray-grid);
+  mask-image: var(--pat-spray-grid);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+  color: var(--btn-text);
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"])::after {
+  background: var(--color-line);
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+  color: var(--btn-text);
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"])::after {
+  background: var(--color-line);
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-mode="flat"][data-quiet]:not([data-state="selected"]),
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="flat"][data-quiet]:not([data-state="selected"]) {
+  background-image: none;
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--btn-tint);
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+[data-force-state="focus"] button,
+[data-force-state="focus"] input,
+[data-force-state="focus"] textarea,
+[data-force-state="focus"] select,
+[data-force-state="focus"] [role="button"],
+[data-force-state="focus"] [role="checkbox"],
+[data-force-state="focus"] [role="combobox"],
+[data-force-state="focus"] [role="switch"],
+[data-force-state="focus"] [role="slider"],
+[data-force-state="focus"] [tabindex="0"] {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+[data-force-state="disabled"] button,
+[data-force-state="disabled"] input,
+[data-force-state="disabled"] textarea,
+[data-force-state="disabled"] select,
+[data-force-state="disabled"] [role="button"],
+[data-force-state="disabled"] [role="checkbox"],
+[data-force-state="disabled"] [role="combobox"],
+[data-force-state="disabled"] [role="radio"],
+[data-force-state="disabled"] [role="switch"],
+[data-force-state="disabled"] [role="slider"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+[data-force-state="error"] input,
+[data-force-state="error"] textarea,
+[data-force-state="error"] [role="combobox"],
+[data-force-state="error"] select {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+[data-force-state="error"] [data-slot="field-root"] {
+  --field-error: 1;
+}
+
+[data-force-state="error"] label {
+  color: var(--color-danger);
+}
+
 /* Switch thumb bevel */
 .switch-thumb {
   box-shadow:
@@ -672,4 +804,3 @@ body {
   outline: none;
   box-shadow: var(--shadow-focused);
 }
-
