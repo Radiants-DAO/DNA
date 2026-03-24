@@ -813,12 +813,12 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           </div>
         </div>
 
-        {/* Sub-cards */}
-        <div className="flex flex-col gap-2 p-2">
+        {/* Sub-cards — scoped color mode so semantic tokens flip only inside render areas */}
+        <div className={`flex flex-col gap-2 p-2 ${currentColorMode}`}>
           {/* Default render */}
           {Component && (() => {
             return (
-            <div data-no-clip className={`rounded-sm border border-line bg-page ${currentColorMode}`} data-variant-label="default">
+            <div data-no-clip className="rounded-sm border border-line bg-page" data-variant-label="default">
               <div className="flex items-center border-b border-line px-2 py-1">
                 <span className="font-mono text-xs text-mute">default</span>
               </div>
@@ -901,7 +901,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {hasVariants &&
             entry.variants!.map((v) => {
               return (
-                <div key={v.label} data-no-clip className={`rounded-sm border border-line bg-page ${currentColorMode}`} data-variant-label={v.label}>
+                <div key={v.label} data-no-clip className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
                   <div className="flex items-center border-b border-line px-2 py-1">
                     <span className="font-mono text-xs text-mute">{v.label}</span>
                   </div>

@@ -26,13 +26,19 @@ export function buildTestMatrix(component) {
   const themeVariants = extractThemeVariants(component.styleOwnership);
   const qaFlags = deriveQaFlags(component);
 
-  // Build prop combos (cartesian product of enums + booleans)
-  const allDimensions = [...enumProps, ...booleanProps];
-  let propCombos = cartesian(allDimensions);
+  // Build base combos from enum cross-product
+  let baseCombos = cartesian(enumProps);
+  if (baseCombos.length === 0) baseCombos = [{}];
 
-  // If no prop dimensions, start with a single empty combo
-  if (propCombos.length === 0) {
-    propCombos = [{}];
+  // Booleans: add each boolean=true as a separate variant of the first
+  // base combo, rather than cross-producting all booleans (which explodes).
+  // This gives: all enum combos + one extra combo per boolean flag.
+  let propCombos = [...baseCombos];
+  if (booleanProps.length > 0) {
+    const firstBase = baseCombos[0];
+    for (const bp of booleanProps) {
+      propCombos.push({ ...firstBase, [bp.key]: true });
+    }
   }
 
   // Cross with theme variant dimension if present
@@ -88,12 +94,12 @@ function extractEnumProps(props) {
   return dims;
 }
 
-/** Extract boolean-type props as {key, values: [false, true]} arrays */
+/** Extract boolean-type props as {key, values: [true]} for additive mode */
 function extractBooleanProps(props) {
   const dims = [];
   for (const [key, def] of Object.entries(props)) {
     if (def.type === "boolean") {
-      dims.push({ key, values: [false, true] });
+      dims.push({ key, values: [true] });
     }
   }
   return dims;
@@ -103,7 +109,6 @@ function extractBooleanProps(props) {
 function extractThemeVariants(styleOwnership) {
   if (!Array.isArray(styleOwnership) || styleOwnership.length === 0) return [];
 
-  // Build cartesian of all style ownership attributes
   const dims = styleOwnership
     .filter((so) => Array.isArray(so.themeOwned) && so.themeOwned.length > 0)
     .map((so) => ({
@@ -113,7 +118,6 @@ function extractThemeVariants(styleOwnership) {
 
   if (dims.length === 0) return [];
 
-  // Each result is a Record<attribute, value>
   let results = [{}];
   for (const dim of dims) {
     const next = [];
@@ -161,12 +165,14 @@ function cartesian(dimensions) {
 function buildLabel(props, dataAttributes, colorMode, state) {
   const parts = [];
 
-  // Prop values
-  for (const value of Object.values(props)) {
-    parts.push(String(value));
+  for (const [key, value] of Object.entries(props)) {
+    if (value === true) {
+      parts.push(key);
+    } else if (value !== false && value !== undefined) {
+      parts.push(String(value));
+    }
   }
 
-  // Data attribute values
   for (const value of Object.values(dataAttributes)) {
     parts.push(String(value));
   }
@@ -179,8 +185,6 @@ function buildLabel(props, dataAttributes, colorMode, state) {
 
 /** Prune matrix to maxSize by sampling evenly across color modes and states */
 function pruneMatrix(matrix, maxSize) {
-  // Keep a representative sample: prioritize default state, light mode
-  // Sort by priority: default state first, light mode first
   const sorted = [...matrix].sort((a, b) => {
     if (a.state === "default" && b.state !== "default") return -1;
     if (a.state !== "default" && b.state === "default") return 1;

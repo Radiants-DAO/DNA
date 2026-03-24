@@ -13,6 +13,8 @@ const COMMANDS = {
   annotations: () => import("./commands/annotate.mjs").then((m) => m.list(args)),
   resolve: () => import("./commands/annotate.mjs").then((m) => m.resolve(args)),
   dismiss: () => import("./commands/annotate.mjs").then((m) => m.dismiss(args)),
+  "list-states": () => import("./commands/list-states.mjs").then((m) => m.run(args)),
+  "set-props": () => import("./commands/set-props.mjs").then((m) => m.run(args)),
   help: () => printHelp(),
 };
 
@@ -31,6 +33,10 @@ Usage:
   rdna-playground annotations [component] [--status pending]
   rdna-playground resolve <annotation-id> [summary]
   rdna-playground dismiss <annotation-id> <reason>
+  rdna-playground list-states <component> [--json]
+  rdna-playground set-props <component> key=value [...] [--color-mode light|dark] [--state hover]
+  rdna-playground screenshot <component> [--out path] [--props key=val...] [--color-mode light|dark] [--state hover]
+  rdna-playground sweep <component> [--out-dir path] [--max N]
 `);
 }
 
