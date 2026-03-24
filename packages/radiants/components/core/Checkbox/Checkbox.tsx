@@ -254,7 +254,7 @@ export function Radio({
       )}
     >
       <BaseRadio.Indicator className="flex items-center justify-center">
-        <div className="w-2 h-2 bg-main rounded-full" />
+        <div className="w-2 h-2 bg-accent-inv rounded-full" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>
   );
