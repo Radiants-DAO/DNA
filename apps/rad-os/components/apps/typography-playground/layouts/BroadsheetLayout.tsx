@@ -281,7 +281,7 @@ function ElementStylesTable() {
         ))}
       </div>
       <p className="font-mono text-xs text-mute">
-        Source: typography.css / {font.name} per element role
+        Source: typography.css -- one font per element role
       </p>
     </section>
   );
