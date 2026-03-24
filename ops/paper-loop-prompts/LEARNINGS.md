@@ -542,3 +542,59 @@
 **Rule**: In Paper `write_html`, use HTML entities (`&#x201C;`, `&#x201D;`, `&#x2019;`, etc.) for special Unicode characters, not JS escape sequences (`\u201C`).
 ---
 
+### [LAYOUT] NFT card grids: group cards into flex-row containers, insert images per card frame
+**Agent**: worker-a
+**Item**: #10 11440 (1080x1080 "Gleam's former Ape Energy Labs NFT's" social graphic)
+**Problem**: Figma design had 17 small NFT card thumbnails (~41x55px each) arranged in 3 rows across 3 column groups, each with yellow borders and golden glow box-shadow. Creating each card individually with absolute positioning would be tedious and fragile.
+**Solution**: Group cards into flex-row containers (one per row-group) with `gap: 6px`, where each card is a `display: flex` div (Frame) with border and box-shadow. Then insert `<img>` into each card Frame as a second step. Using `display: flex` on the card div ensures it creates a Frame (not a Rectangle), which can accept children. Empty divs without `display: flex` become Rectangles that reject children.
+**Rule**: For grids of small image cards, create flex-row container divs with card children using `display: flex` on each card. Insert images into each card Frame individually. The `display: flex` ensures Frame creation (not Rectangle) so children can be added.
+---
+
+### [PAPER-MCP] Mass duplicate_nodes detaches sibling nodes from artboard
+**Agent**: worker-b
+**Item**: #10 11440
+**Problem**: Calling `duplicate_nodes` with 16 copies of the same node in a single call caused ALL other sibling children of the artboard to be detached (parentId became null, childCount became 0). The artboard's childIds only listed the duplicated nodes. All carefully built elements (background, heading, card, connection lines, etc.) were orphaned and lost.
+**Solution**: Do NOT mass-duplicate 16+ nodes in a single `duplicate_nodes` call. Either create each node individually via `write_html`, or duplicate in small batches (1-3 at a time). For repeated elements at different positions, creating each one individually with `write_html` + `insert-children` is safer and more reliable.
+**Rule**: Avoid mass duplicate_nodes calls (>5 copies). Create repeated elements individually via write_html to prevent sibling detachment.
+---
+
+### [IMAGES] Nested img inside write_html div may not render — use two-step approach
+**Agent**: worker-b
+**Item**: #10 11440
+**Problem**: Writing `<div><img src="..." /></div>` in a single write_html call sometimes results in the div being created but the img child not rendering (childCount=0). The image loads as black or is invisible.
+**Solution**: Use the two-step approach: (1) create the container div via write_html, (2) insert the img as a separate write_html call targeting the container as parent. This reliably creates the image as a Rectangle with the fill loaded.
+**Rule**: Always use two-step approach for images inside containers: create container first, then insert img separately.
+---
+
+### [FIGMA-MCP] Some Figma frames are empty solid-color backgrounds with no children
+**Agent**: worker-b
+**Item**: #75 Frame 2085660686 (754x754)
+**Problem**: Figma MCP returned only `bg-[var(--black,#0f0e0c)] size-full` with no children. Screenshot confirmed a solid dark square. Spent extra API calls verifying there was no hidden content.
+**Solution**: Create a simple artboard with matching dimensions and background color. No children needed.
+**Rule**: When Figma design context and screenshot both show only a solid background with no children, trust the data — create a matching artboard and move on. Don't over-investigate.
+---
+
+### [IMAGES] Flipping SVGs vertically: use SVG transform on the group element, not CSS
+**Agent**: worker-a
+**Item**: #11 11441 (1080x1080 "Together, we'll chart a new course" social graphic)
+**Problem**: Figma code used `-scale-y-100` CSS transform to flip a pixel-art icon SVG vertically. Paper doesn't support CSS transforms.
+**Solution**: Edit the SVG file to add `transform="scale(1,-1) translate(0,-H)"` on the `<g>` element wrapping the paths, where H is the viewBox height. This flips the paths within the SVG's own coordinate system. The SVG's built-in glow filter still renders correctly with the transform applied.
+**Rule**: For vertically flipped SVGs, add `transform="scale(1,-1) translate(0,-viewBoxHeight)"` to the inner `<g>` element. SVG filters survive group transforms.
+---
+
+### [LAYOUT] Figma negative-inset SVG overlays: compute actual SVG bounds from percentage insets
+**Agent**: worker-a
+**Item**: #12 11444 (1080x1080 "Phase Passports" social graphic)
+**Problem**: Figma exported SVG connector lines and gear icon inside containers with negative percentage insets (e.g., `inset: -54.51% -26.88%`), meaning the SVG extends far beyond its logical container. Paper doesn't support CSS `inset` or percentage positioning.
+**Solution**: Compute actual SVG pixel bounds: actual_width = container_width * (1 + 2 * abs_inset_pct), actual_height = container_height * (1 + 2 * abs_inset_pct). Verify against SVG viewBox dimensions. Position the SVG div at computed absolute coordinates: svg_left = container_left - (inset_pct * container_width), svg_top = container_top - (inset_pct * container_height). Use inline SVG with the full viewBox and filter definitions.
+**Rule**: For Figma SVGs with negative percentage insets, expand the container to the full SVG viewBox size and offset the position accordingly. The SVG viewBox dimensions serve as a cross-check for the computed bounds.
+---
+
+### [IMAGES] Figma MCP asset URLs render as gray placeholders in Paper
+**Agent**: worker-b
+**Item**: #71 Frame 2085660696 (The Waitress Problem, 1175x1033)
+**Problem**: Figma MCP asset URLs (`https://www.figma.com/api/mcp/asset/...`) for vector SVG exports (bracket connectors, arrows) render as gray placeholder rectangles in Paper. The images never load even after waiting.
+**Solution**: Replace Figma asset SVGs with CSS-drawn equivalents (border-based brackets) or inline `<svg>` elements (for arrows with polygon arrowheads). CSS borders work perfectly for bracket/connector shapes; inline SVG with `<polygon>` and `<line>` elements render correctly in Paper.
+**Rule**: When Figma assets are simple geometric shapes (brackets, arrows, lines), skip the asset URL and draw them with CSS borders or inline SVG instead. Reserve Figma asset URLs for raster images and complex vector art only.
+---
+

@@ -19,10 +19,10 @@ Target: Paper (social graphics page)
 | 7 | [v] | 4369:22268 | 11437 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22268) |
 | 8 | [v] | 4369:22279 | 11438 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22279) |
 | 9 | [v] | 4369:22334 | 11439 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22334) |
-| 10 | [ ] | 4369:22342 | 11440 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22342) |
-| 11 | [ ] | 4369:22379 | 11441 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22379) |
-| 12 | [ ] | 4369:22441 | 11444 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22441) |
-| 13 | [ ] | 4369:22464 | 11445 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22464) |
+| 10 | [v] | 4369:22342 | 11440 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22342) |
+| 11 | [v] | 4369:22379 | 11441 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22379) |
+| 12 | [v] | 4369:22441 | 11444 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22441) |
+| 13 | [v] | 4369:22464 | 11445 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22464) |
 | 14 | [ ] | 4369:22467 | 11446 | 1080x1080 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-22467) |
 | | | | **Auction Templates** | | |
 | 15 | [ ] | 4369:32735 | auction-templates /reminder | 1080x1350 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-32735) |
@@ -88,17 +88,17 @@ Target: Paper (social graphics page)
 | 66 | [ ] | 4369:17032 | Frame 2085660691 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17032) |
 | 67 | [ ] | 4369:17051 | Frame 2085660692 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17051) |
 | | | | **Unnamed Frames (1175x1033)** | | |
-| 68 | [ ] | 4369:16424 | Frame 2085660681 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16424) |
-| 69 | [ ] | 4369:16436 | Frame 2085660682 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16436) |
+| 68 | [x] | 4369:16424 | Frame 2085660681 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16424) |
+| 69 | [v] | 4369:16436 | Frame 2085660682 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16436) |
 | 70 | [ ] | 4369:17233 | Frame 2085660695 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17233) |
-| 71 | [ ] | 4369:17245 | Frame 2085660696 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17245) |
+| 71 | [v] | 4369:17245 | Frame 2085660696 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17245) |
 | | | | **Unnamed Frames (754x754 squares)** | | |
-| 72 | [ ] | 4369:16449 | Frame 2085660683 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16449) |
-| 73 | [ ] | 4369:16474 | Frame 2085660684 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16474) |
-| 74 | [ ] | 4369:16478 | Frame 2085660685 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16478) |
-| 75 | [ ] | 4369:16481 | Frame 2085660686 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16481) |
-| 76 | [ ] | 4369:16482 | Frame 2085660687 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16482) |
-| 77 | [x] | 4369:16507 | Frame 2085660688 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16507) |
+| 72 | [v] | 4369:16449 | Frame 2085660683 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16449) |
+| 73 | [v] | 4369:16474 | Frame 2085660684 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16474) |
+| 74 | [v] | 4369:16478 | Frame 2085660685 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16478) |
+| 75 | [v] | 4369:16481 | Frame 2085660686 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16481) |
+| 76 | [v] | 4369:16482 | Frame 2085660687 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16482) |
+| 77 | [v] | 4369:16507 | Frame 2085660688 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16507) |
 | 78 | [v] | 4369:33151 | Frame 2085660712 | 754x754 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-33151) |
 | | | | **Unnamed Frames (other sizes)** | | |
 | 79 | [v] | 4369:16386 | Frame 2085660680 | 738x738 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16386) |
@@ -115,5 +115,5 @@ Target: Paper (social graphics page)
 
 ## Progress
 - Total: 89
-- Done: 22
-- Remaining: 67
+- Done: 35
+- Remaining: 54
