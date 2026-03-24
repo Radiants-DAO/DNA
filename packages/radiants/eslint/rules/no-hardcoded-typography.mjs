@@ -3,6 +3,7 @@
  * Bans arbitrary font sizes and font weights.
  * Allows only RDNA token-mapped text-* and font-* classes.
  */
+import { typography } from '../contract.mjs';
 import {
   getClassNameStrings,
   getObjectPropertyKey,
@@ -15,6 +16,9 @@ import {
   ARBITRARY_TEXT_SIZE_CLASS,
 } from '../utils.mjs';
 
+const sizeSuggestion = typography.validSizes.join(', ');
+const weightSuggestion = typography.validWeights.join(', ');
+
 const rule = {
   meta: {
     type: 'problem',
@@ -23,9 +27,9 @@ const rule = {
     },
     messages: {
       arbitraryTextSize:
-        'Arbitrary font size "{{raw}}". Use an RDNA text size: text-xs, text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl.',
+        `Arbitrary font size "{{raw}}". Use an RDNA text size: ${sizeSuggestion}.`,
       arbitraryFontWeight:
-        'Arbitrary font weight "{{raw}}". Use a standard weight: font-normal, font-medium, font-semibold, font-bold.',
+        `Arbitrary font weight "{{raw}}". Use a standard weight: ${weightSuggestion}.`,
       hardcodedTypographyStyle:
         'Hardcoded typography value in style prop. Use CSS variable: var(--font-size-*) or var(--font-weight-*).',
     },

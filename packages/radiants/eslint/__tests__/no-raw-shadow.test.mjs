@@ -125,4 +125,18 @@ describe('rdna/no-raw-shadow', () => {
     expect(linter.verify('<div style={{ ["boxShadow"]: "var(--shadow-floating)" }} />', styleConfig)).toHaveLength(0);
     expect(linter.verify('<div style={{ ["filter"]: "drop-shadow(var(--shadow-floating))" }} />', styleConfig)).toHaveLength(0);
   });
+
+  it('uses contract-backed shadow guidance text', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-shadow', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-shadow': 'error' },
+    };
+
+    const messages = linter.verify('<div className="shadow-[0_0_0_1px_#000]" />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].message).toContain('shadow-card');
+    expect(messages[0].message).toContain('pixel-shadow-raised');
+  });
 });

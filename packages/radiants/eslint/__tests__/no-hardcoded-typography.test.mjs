@@ -142,4 +142,21 @@ describe('rdna/no-hardcoded-typography', () => {
       )
     ).toHaveLength(0);
   });
+
+  it('uses contract-backed typography guidance text', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-typography', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-typography': 'error' },
+    };
+
+    const sizeMessages = linter.verify('<p className="text-[44px]" />', config);
+    expect(sizeMessages).toHaveLength(1);
+    expect(sizeMessages[0].message).toContain('text-xl');
+
+    const weightMessages = linter.verify('<p className="font-[450]" />', config);
+    expect(weightMessages).toHaveLength(1);
+    expect(weightMessages[0].message).toContain('font-semibold');
+  });
 });

@@ -3,6 +3,7 @@
  * Bans arbitrary shadow values in className and style props.
  * Use RDNA elevation/shadow tokens (shadow-resting, shadow-raised, shadow-floating, etc.) instead.
  */
+import { shadows } from '../contract.mjs';
 import {
   getClassNameStrings,
   getObjectPropertyKey,
@@ -14,6 +15,12 @@ import {
   ARBITRARY_SHADOW_CLASS,
 } from '../utils.mjs';
 
+const allowedShadowTokens = [
+  ...shadows.validStandard,
+  ...shadows.validPixel,
+  ...shadows.validGlow,
+].join(', ');
+
 const rule = {
   meta: {
     type: 'problem',
@@ -22,7 +29,7 @@ const rule = {
     },
     messages: {
       arbitraryShadow:
-        'Arbitrary shadow "{{raw}}" in className. Use an RDNA shadow utility (shadow-resting, shadow-raised, shadow-floating, etc.).',
+        `Arbitrary shadow "{{raw}}" in className. Use an RDNA shadow utility (${allowedShadowTokens}).`,
       hardcodedShadowStyle:
         'Hardcoded boxShadow in style prop. Use a CSS variable: var(--shadow-*).',
     },
