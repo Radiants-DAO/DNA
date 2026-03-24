@@ -26,6 +26,18 @@ export function parsePlaygroundSignalEvent(raw: string): PlaygroundSignalEvent |
       };
     }
 
+    if (
+      data.type === "capture-request" &&
+      typeof data.previewUrl === "string" &&
+      typeof data.requestId === "string"
+    ) {
+      return {
+        type: "capture-request",
+        previewUrl: data.previewUrl,
+        requestId: data.requestId,
+      };
+    }
+
   } catch {
     return null;
   }
