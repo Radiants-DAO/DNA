@@ -55,3 +55,18 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [v] DropdownMenu — Clean pass. Click trigger opens popup with group label (ACCOUNT), items (Profile/Settings), separator, destructive item (Sign out). Hover uses bg-inv + text-flip matching ContextMenu pattern. Destructive keeps text-danger on hover. pixel-rounded-sm + pixel-shadow-raised. Open/close animation: duration-150 ease-out with blur-sm on exit. Dark mode: all tokens flip correctly. z-50 Tailwind utility. No hardcoded hex, no viewport breakpoints, no z-index issues.
 - [v] Menubar — Clean pass. Dark bar (bg-inv) with cream triggers (text-flip) — System 7-style. File menu opens with items + keyboard shortcuts (right-aligned text-mute). Hover uses bg-hover (softer than ContextMenu/DropdownMenu's bg-inv). Content uses bg-card + pixel-rounded-xs. Separator uses bg-rule. Dark mode: bar stays dark (already bg-inv), popup flips correctly. Animation: duration-150 ease-out + blur-sm exit. z-50 Tailwind utility. No hardcoded hex, no viewport breakpoints. Note: different hover/size/bg tokens than ContextMenu/DropdownMenu — design-level consistency concern (T1g).
 - [v] NavigationMenu — Clean pass. Horizontal nav with trigger+flyout items (Components, Documentation) and standalone link (About). Triggers use Button visual system via data-slot="button-face" data-quiet data-color="accent". Chevron rotates on open (duration-150 ease-out). Flyout uses bg-card + pixel-rounded-xs + pixel-shadow-raised. Links are underlined in flyout. Dark mode: all tokens flip correctly, good contrast. No z-index values, no hardcoded hex, no viewport breakpoints.
+
+## Batch 2 — Dark Mode accent-inv Contrast Fix
+
+**Root cause:** `--color-accent-inv` resolves to `var(--color-cream)` in dark mode (dark.css:91 + base.css:702). Cream text on yellow accent bg = low contrast. Rule: always high-contrast pairs (ink on yellow, cream on ink). Fix: change dark mode `--color-accent-inv` to `var(--color-ink)`, then verify each affected component.
+
+### Token Fix
+- [ ] Fix `--color-accent-inv` in dark.css and base.css dark theme — change from `var(--color-cream)` to `var(--color-ink)`
+
+### Visual Verification (post-fix)
+- [ ] Select — verify dark mode hover/selected contrast
+- [ ] NumberField — verify dark mode step button icons
+- [ ] Checkbox — verify dark mode checkmark contrast
+- [ ] Radio — verify dark mode selected dot contrast
+- [ ] Badge — verify dark mode colored variant text contrast
+- [ ] Combobox — verify dark mode hover/highlight contrast
