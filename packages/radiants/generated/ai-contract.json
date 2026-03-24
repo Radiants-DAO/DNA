@@ -379,17 +379,10 @@
       "import": "@rdna/radiants/components/core"
     },
     {
-      "name": "Input",
+      "name": "Collapsible",
       "replaces": [
-        "<input>",
-        "<textarea>"
-      ],
-      "import": "@rdna/radiants/components/core"
-    },
-    {
-      "name": "Select",
-      "replaces": [
-        "<select>"
+        "<details>",
+        "<summary>"
       ],
       "import": "@rdna/radiants/components/core"
     },
@@ -401,10 +394,10 @@
       "import": "@rdna/radiants/components/core"
     },
     {
-      "name": "Collapsible",
+      "name": "Input",
       "replaces": [
-        "<details>",
-        "<summary>"
+        "<input>",
+        "<textarea>"
       ],
       "import": "@rdna/radiants/components/core"
     },
@@ -420,6 +413,13 @@
       "replaces": [
         "<meter>",
         "<progress>"
+      ],
+      "import": "@rdna/radiants/components/core"
+    },
+    {
+      "name": "Select",
+      "replaces": [
+        "<select>"
       ],
       "import": "@rdna/radiants/components/core"
     },

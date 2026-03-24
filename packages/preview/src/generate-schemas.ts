@@ -124,10 +124,10 @@ function writeMetaBarrel(
     "",
   ];
 
-  // Import lines (barrelDir-relative, no .ts extension for TypeScript compat)
+  // Import lines (barrelDir-relative, keep .ts extension so Node ESM can resolve generated barrels)
   for (const entry of entries) {
     const metaPath = join(componentsDir, entry.dirName, entry.metaFileName);
-    const relPath = relative(barrelDir, metaPath).replace(/\.ts$/, "");
+    const relPath = relative(barrelDir, metaPath);
     const importPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
     const exportName = `${entry.name}Meta`;
     lines.push(`import { ${exportName} } from "${importPath}";`);
