@@ -58,4 +58,19 @@ describe("eslint contract surface", () => {
       }),
     ).toThrow("unexpected");
   });
+
+  it("fills missing sections from the empty contract when generated JSON is partial", () => {
+    const contract = loadContract(() => ({
+      tokenMap: {
+        removedAliases: ["--legacy-token"],
+      },
+      themeVariants: ["default"],
+    }));
+
+    expect(contract.tokenMap.removedAliases).toEqual(["--legacy-token"]);
+    expect(contract.tokenMap.brandPalette).toEqual({});
+    expect(contract.pixelCorners.triggerClasses).toEqual([]);
+    expect(contract.motion.easingTokens).toEqual([]);
+    expect(contract.textLikeInputTypes).toEqual([]);
+  });
 });

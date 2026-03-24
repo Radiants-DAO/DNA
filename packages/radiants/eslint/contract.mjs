@@ -24,9 +24,45 @@ function defaultReadContract() {
   return require("../generated/eslint-contract.json");
 }
 
+function isObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function mergeObjectSection(section, fallback) {
+  return {
+    ...fallback,
+    ...(isObject(section) ? section : {}),
+  };
+}
+
+function mergeArraySection(section, fallback) {
+  return Array.isArray(section) ? section : fallback;
+}
+
+function normalizeContract(rawContract) {
+  const contract = isObject(rawContract) ? rawContract : {};
+
+  return {
+    ...EMPTY_CONTRACT,
+    ...contract,
+    tokenMap: mergeObjectSection(contract.tokenMap, EMPTY_CONTRACT.tokenMap),
+    componentMap: isObject(contract.componentMap) ? contract.componentMap : EMPTY_CONTRACT.componentMap,
+    components: isObject(contract.components) ? contract.components : EMPTY_CONTRACT.components,
+    pixelCorners: mergeObjectSection(contract.pixelCorners, EMPTY_CONTRACT.pixelCorners),
+    themeVariants: mergeArraySection(contract.themeVariants, EMPTY_CONTRACT.themeVariants),
+    motion: mergeObjectSection(contract.motion, EMPTY_CONTRACT.motion),
+    shadows: mergeObjectSection(contract.shadows, EMPTY_CONTRACT.shadows),
+    typography: mergeObjectSection(contract.typography, EMPTY_CONTRACT.typography),
+    textLikeInputTypes: mergeArraySection(
+      contract.textLikeInputTypes,
+      EMPTY_CONTRACT.textLikeInputTypes,
+    ),
+  };
+}
+
 export function loadContract(readContract = defaultReadContract) {
   try {
-    return readContract();
+    return normalizeContract(readContract());
   } catch (error) {
     if (error?.code === "MODULE_NOT_FOUND" || error instanceof SyntaxError) {
       return EMPTY_CONTRACT;
