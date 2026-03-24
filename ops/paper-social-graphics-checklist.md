@@ -85,7 +85,7 @@ Target: Paper (social graphics page)
 | | | | **Unnamed Frames (1033x1033 squares)** | | |
 | 64 | [ ] | 4369:16351 | Frame 2085660679 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16351) |
 | 65 | [ ] | 4369:17013 | Frame 2085660690 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17013) |
-| 66 | [x] | 4369:17032 | Frame 2085660691 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17032) |
+| 66 | [v] | 4369:17032 | Frame 2085660691 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17032) |
 | 67 | [v] | 4369:17051 | Frame 2085660692 | 1033x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-17051) |
 | | | | **Unnamed Frames (1175x1033)** | | |
 | 68 | [v] | 4369:16424 | Frame 2085660681 | 1175x1033 | [link](https://www.figma.com/design/MICrnPV32mAQA2kxjGsooA/?node-id=4369-16424) |
@@ -115,5 +115,5 @@ Target: Paper (social graphics page)
 
 ## Progress
 - Total: 89
-- Done: 38
-- Remaining: 51
+- Done: 39
+- Remaining: 50

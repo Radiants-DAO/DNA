@@ -638,3 +638,11 @@
 **Rule**: Don't retry or re-download images just because they show gray in Paper screenshots. Figma asset URLs load asynchronously; verify layout/text first, trust images will appear.
 ---
 
+### [IMAGES] Figma vector assets (lines/paths) can be replaced with inline SVG
+**Agent**: worker-b
+**Item**: #66 Frame 2085660691 (1033x1033)
+**Problem**: Figma MCP asset URLs for vector elements (axis lines, graph lines) rendered as persistent gray boxes in Paper — unlike raster images, they never loaded.
+**Solution**: Replaced Figma vector asset URLs with hand-drawn equivalents: CSS rectangles for straight axis lines, and an SVG `<polyline>` for the graph line connecting data points. Extract point coordinates from the Figma data point positions (center of each square = left + width/2, top + height/2).
+**Rule**: For simple vector elements (lines, polylines, axes), skip Figma asset URLs and draw them directly with CSS divs (for straight lines) or inline SVG (for polylines/paths). Only use Figma asset URLs for complex raster images.
+---
+
