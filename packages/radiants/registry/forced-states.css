@@ -13,9 +13,9 @@
   filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
-/* ── Hover: pattern — mist mask fill ── */
-[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
-  background-color: var(--color-main);
+/* ── Hover: pattern — mist mask fill via ::before so text stays visible ── */
+[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"])::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
   -webkit-mask-size: 4px 4px;
@@ -40,9 +40,9 @@
   image-rendering: pixelated;
 }
 
-/* ── Active: pattern — spray-grid mask fill ── */
-[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
-  background-color: var(--color-main);
+/* ── Active: pattern — spray-grid mask fill via ::before so text stays visible ── */
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"])::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
