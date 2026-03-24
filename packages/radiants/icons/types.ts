@@ -1,14 +1,17 @@
 /**
  * Radiants Icon System Types
  *
- * Pixel-art icons for the radiants design system.
- * All icons use a 16x16 grid with currentColor for theming.
+ * Dual-size icon system: 16px pixel-art icons and 24px detailed icons.
+ * All icons use currentColor for theming.
  */
 
 import type { SVGProps } from 'react';
 
+/** The two icon sets available */
+export type IconSet = 16 | 24;
+
 export interface IconProps extends SVGProps<SVGSVGElement> {
-  /** Icon size in pixels (applies to both width and height) */
+  /** Render size in pixels (applies to both width and height) */
   size?: number | string;
   /** Additional CSS classes */
   className?: string;
