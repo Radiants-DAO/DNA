@@ -64,7 +64,7 @@ Dev server: `localhost:3004` (playground) or `localhost:3000` (rad-os).
 - [x] Fix `--color-accent-inv` in dark.css and base.css dark theme — changed from `var(--color-cream)` to `var(--color-ink)`. Now ink (dark) on yellow in both modes. All 4 definitions verified: tokens.css:102, base.css:702, base.css:731, dark.css:91 — all `var(--color-ink)`.
 
 ### Visual Verification (post-fix)
-- [ ] Select — verify dark mode hover/selected contrast
+- [v] Select — dark mode hover/selected contrast verified. Ink text (L=4%) on yellow accent (L=90%) = high contrast. Both hover and selected states correct.
 - [ ] NumberField — verify dark mode step button icons
 - [ ] Checkbox — verify dark mode checkmark contrast
 - [ ] Radio — verify dark mode selected dot contrast
