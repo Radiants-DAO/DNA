@@ -61,16 +61,38 @@
   outline-offset: 1px;
 }
 
-/* ── Disabled: universal opacity + cursor ── */
+/* ── Disabled: pattern overlay + cursor (matches real disabled attr styling) ── */
 [data-force-state="disabled"] button,
 [data-force-state="disabled"] input,
 [data-force-state="disabled"] [role="button"],
 [data-force-state="disabled"] [role="checkbox"],
 [data-force-state="disabled"] [role="switch"],
 [data-force-state="disabled"] [role="slider"] {
-  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+  position: relative;
+}
+
+[data-force-state="disabled"] [data-slot="button-face"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  position: relative;
+}
+
+[data-force-state="disabled"] [data-slot="button-face"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-diagonal-right);
+  mask-image: var(--pat-diagonal-right);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
 }
 
 /* ── Error: danger border + ring on form elements ── */
