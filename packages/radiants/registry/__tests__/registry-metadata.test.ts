@@ -32,6 +32,9 @@ describe('buildRegistryMetadata', () => {
     const button = buildRegistryMetadata().find((entry) => entry.name === 'Button');
     const badge = buildRegistryMetadata().find((entry) => entry.name === 'Badge');
     const separator = buildRegistryMetadata().find((entry) => entry.name === 'Separator');
+    const input = buildRegistryMetadata().find((entry) => entry.name === 'Input');
+    const textarea = buildRegistryMetadata().find((entry) => entry.name === 'TextArea');
+    const radio = buildRegistryMetadata().find((entry) => entry.name === 'Radio');
 
     expect(button?.category).toBe('action');
     expect(button?.id).toBe('button');
@@ -39,7 +42,25 @@ describe('buildRegistryMetadata', () => {
     expect(button?.group).toBe('Actions');
     expect(button?.props?.mode?.type).toBe('enum');
     expect(button?.slots).toEqual(expect.any(Object));
-    expect(button?.states).toContain('hover');
+    expect(button?.states).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: 'hover', driver: 'wrapper' })]),
+    );
+    expect(input?.states).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: 'error', driver: 'wrapper' })]),
+    );
+    expect(textarea?.states).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: 'error', driver: 'wrapper' })]),
+    );
+    expect(radio?.states).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'disabled',
+          driver: 'prop',
+          prop: 'disabled',
+          value: true,
+        }),
+      ]),
+    );
 
     expect(badge?.category).toBe('feedback');
     expect(separator?.variants).toEqual(expect.any(Array));

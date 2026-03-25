@@ -56,6 +56,21 @@ describe("buildTestMatrix", () => {
     expect(matrix.length).toBe(8);
   });
 
+  it("does not duplicate prop-driven boolean states as additive prop variants", () => {
+    const matrix = buildTestMatrix({
+      props: {
+        disabled: { type: "boolean" },
+      },
+      states: [
+        { name: "disabled", driver: "prop", prop: "disabled", value: true },
+      ],
+    });
+
+    expect(matrix.length).toBe(4);
+    expect(matrix.some((m) => m.props.disabled === true && m.state === "default")).toBe(false);
+    expect(matrix.some((m) => m.state === "disabled")).toBe(true);
+  });
+
   it("prunes matrix when it exceeds threshold", () => {
     const matrix = buildTestMatrix({
       props: {

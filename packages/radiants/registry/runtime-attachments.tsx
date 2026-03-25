@@ -497,15 +497,22 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Radio: {
     component: Radio,
-    Demo: () => {
+    Demo: ({ disabled }: Record<string, unknown>) => {
       const [selected, setSelected] = useState('md');
+      const isDisabled = disabled === true;
       return (
-        <RadioGroup value={selected} onValueChange={setSelected} className="flex flex-col gap-2">
+        <RadioGroup
+          value={selected}
+          onValueChange={setSelected}
+          disabled={isDisabled}
+          className="flex flex-col gap-2"
+        >
           {(['sm', 'md', 'lg'] as const).map((size) => (
             <Radio
               key={size}
               label={size === 'sm' ? 'Small' : size === 'md' ? 'Medium' : 'Large'}
               value={size}
+              disabled={isDisabled}
             />
           ))}
         </RadioGroup>

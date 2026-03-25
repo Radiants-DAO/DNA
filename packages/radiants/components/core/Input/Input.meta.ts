@@ -99,7 +99,7 @@ export const InputMeta = defineComponentMeta<InputProps>()({
     exampleProps: { placeholder: "Type something..." },
     states: [
       { name: "focus", driver: "wrapper" },
-      { name: "error", driver: "prop", prop: "error", value: true },
+      { name: "error", driver: "wrapper" },
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },

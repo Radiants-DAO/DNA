@@ -21,7 +21,7 @@ const DEFAULT_STATES = ["default"];
  */
 export function buildTestMatrix(component) {
   const enumProps = extractEnumProps(component.props ?? {});
-  const booleanProps = extractBooleanProps(component.props ?? {});
+  const booleanProps = extractBooleanProps(component.props ?? {}, component.states);
   const forcedStates = [...DEFAULT_STATES, ...extractForcedStates(component.states)];
   const themeVariants = extractThemeVariants(component.styleOwnership);
   const qaFlags = deriveQaFlags(component);
@@ -95,14 +95,34 @@ function extractEnumProps(props) {
 }
 
 /** Extract boolean-type props as {key, values: [true]} for additive mode */
-function extractBooleanProps(props) {
+function extractBooleanProps(props, states) {
+  const propDrivenStateProps = extractPropDrivenBooleanStateProps(props, states);
   const dims = [];
   for (const [key, def] of Object.entries(props)) {
-    if (def.type === "boolean") {
+    if (def.type === "boolean" && !propDrivenStateProps.has(key)) {
       dims.push({ key, values: [true] });
     }
   }
   return dims;
+}
+
+function extractPropDrivenBooleanStateProps(props, states) {
+  const propNames = new Set();
+  if (!Array.isArray(states)) return propNames;
+
+  for (const state of states) {
+    if (
+      typeof state === "object" &&
+      state !== null &&
+      state.driver === "prop" &&
+      typeof state.prop === "string" &&
+      props[state.prop]?.type === "boolean"
+    ) {
+      propNames.add(state.prop);
+    }
+  }
+
+  return propNames;
 }
 
 function extractForcedStates(states) {

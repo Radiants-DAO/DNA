@@ -1292,9 +1292,7 @@
           },
           {
             "name": "error",
-            "driver": "prop",
-            "prop": "error",
-            "value": true
+            "driver": "wrapper"
           },
           {
             "name": "disabled",
@@ -2676,9 +2674,7 @@
           },
           {
             "name": "error",
-            "driver": "prop",
-            "prop": "error",
-            "value": true
+            "driver": "wrapper"
           },
           {
             "name": "disabled",
