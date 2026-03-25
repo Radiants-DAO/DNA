@@ -7,6 +7,7 @@ interface ComboboxProps {
   onOpenChange?: (open: boolean) => void;
   onInputValueChange?: (value: string) => void;
   autoHighlight?: boolean;
+  disabled?: boolean;
 }
 
 export const ComboboxMeta = defineComponentMeta<ComboboxProps>()({
@@ -26,6 +27,11 @@ export const ComboboxMeta = defineComponentMeta<ComboboxProps>()({
   props: {
     value: { type: "string", description: "The controlled selected value" },
     defaultValue: { type: "string", description: "Default selected value for uncontrolled usage" },
+    disabled: {
+      type: "boolean",
+      default: false,
+      description: "Disable combobox interactions",
+    },
     autoHighlight: {
       type: "boolean",
       default: true,
@@ -62,7 +68,7 @@ export const ComboboxMeta = defineComponentMeta<ComboboxProps>()({
     renderMode: "custom",
     states: [
       { name: "focus", driver: "wrapper" },
-      { name: "disabled", driver: "wrapper" },
+      { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
 });

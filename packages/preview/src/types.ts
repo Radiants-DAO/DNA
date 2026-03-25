@@ -50,6 +50,21 @@ export interface A11yContract {
   contrastRequirement?: "AA" | "AAA";
 }
 
+/**
+ * Preview states are inspectable UI states that the preview runtime can execute.
+ *
+ * Authoring rules:
+ * - Use wrapper-driven states for interaction overlays like hover/focus/pressed.
+ * - Use prop-driven states for real API states like disabled and error/invalid.
+ * - Keep authored scenarios such as placeholder-visible, long-text, no-results,
+ *   or prefilled-value in `exampleProps` or curated variants instead of `states`.
+ * - Keep environment axes such as light/dark, RTL, or reduced motion outside of
+ *   component state metadata.
+ *
+ * The current runtime only supports these executable states. Composite states
+ * such as "open" or "current-tab" need a future demo/harness driver instead of
+ * being squeezed into the wrapper/prop split.
+ */
 export type ForcedState = "hover" | "pressed" | "focus" | "disabled" | "error";
 
 export type PreviewStateDriver = "wrapper" | "prop";
@@ -85,6 +100,7 @@ export interface RegistryMeta<TProps> {
   exampleProps?: Partial<TProps>;
   variants?: RegistryVariant<TProps>[];
   controlledProps?: Array<keyof TProps & string>;
+  /** Executable preview states only. Use variants/exampleProps for scenarios. */
   states?: PreviewState<TProps>[];
 }
 

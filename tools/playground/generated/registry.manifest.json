@@ -871,7 +871,9 @@
           },
           {
             "name": "disabled",
-            "driver": "wrapper"
+            "driver": "prop",
+            "prop": "disabled",
+            "value": true
           }
         ],
         "props": {
@@ -882,6 +884,11 @@
           "defaultValue": {
             "type": "string",
             "description": "Default selected value for uncontrolled usage"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable combobox interactions"
           },
           "autoHighlight": {
             "type": "boolean",
@@ -2817,7 +2824,9 @@
           },
           {
             "name": "pressed",
-            "driver": "wrapper"
+            "driver": "prop",
+            "prop": "pressed",
+            "value": true
           },
           {
             "name": "focus",

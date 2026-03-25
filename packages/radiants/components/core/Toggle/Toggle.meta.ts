@@ -78,7 +78,7 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
     exampleProps: { children: "Toggle" },
     states: [
       { name: "hover", driver: "wrapper" },
-      { name: "pressed", driver: "wrapper" },
+      { name: "pressed", driver: "prop", prop: "pressed", value: true },
       { name: "focus", driver: "wrapper" },
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],

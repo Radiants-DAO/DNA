@@ -22,6 +22,8 @@ interface ComboboxRootProps<V = string> {
   onInputValueChange?: (inputValue: string) => void;
   /** Whether to auto-highlight the first matching item */
   autoHighlight?: boolean;
+  /** Whether the combobox should ignore user interaction */
+  disabled?: boolean;
 }
 
 interface ComboboxInputProps {
@@ -93,6 +95,7 @@ function Root<V = string>({
   onOpenChange,
   onInputValueChange,
   autoHighlight = true,
+  disabled = false,
 }: ComboboxRootProps<V>) {
   return (
     <BaseCombobox.Root
@@ -103,6 +106,7 @@ function Root<V = string>({
       onOpenChange={onOpenChange ? (open, eventDetails) => onOpenChange(open, eventDetails) : undefined}
       onInputValueChange={onInputValueChange ? (val: string) => onInputValueChange(val) : undefined}
       autoHighlight={autoHighlight}
+      disabled={disabled}
       openOnInputClick
     >
       {children}

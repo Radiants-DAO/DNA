@@ -4,9 +4,15 @@ import { Combobox } from './Combobox';
 
 const fruits = ['Apple', 'Banana', 'Mango', 'Melon'];
 
-function TestCombobox({ onOpenChange }: { onOpenChange?: (open: boolean, eventDetails?: unknown) => void }) {
+function TestCombobox({
+  disabled,
+  onOpenChange,
+}: {
+  disabled?: boolean;
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+}) {
   return (
-    <Combobox.Root onOpenChange={onOpenChange}>
+    <Combobox.Root disabled={disabled} onOpenChange={onOpenChange}>
       <Combobox.Input placeholder="Search fruit" />
       <Combobox.Portal>
         <Combobox.Popup>
@@ -41,5 +47,10 @@ describe('Combobox', () => {
     render(<TestCombobox onOpenChange={onOpenChange} />);
     await user.click(screen.getByRole('combobox'));
     expect(onOpenChange).toHaveBeenCalled();
+  });
+
+  test('propagates disabled from root to the combobox input', () => {
+    render(<TestCombobox disabled />);
+    expect(screen.getByRole('combobox')).toBeDisabled();
   });
 });
