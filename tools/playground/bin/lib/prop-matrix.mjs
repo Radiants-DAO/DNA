@@ -96,21 +96,30 @@ function extractEnumProps(props) {
 
 /** Extract boolean-type props as {key, values: [true]} for additive mode */
 function extractBooleanProps(props, states) {
-  const propDrivenStateProps = extractPropDrivenBooleanStateProps(props, states);
+  const stateManagedBooleanProps = extractStateManagedBooleanProps(props, states);
   const dims = [];
   for (const [key, def] of Object.entries(props)) {
-    if (def.type === "boolean" && !propDrivenStateProps.has(key)) {
+    if (def.type === "boolean" && !stateManagedBooleanProps.has(key)) {
       dims.push({ key, values: [true] });
     }
   }
   return dims;
 }
 
-function extractPropDrivenBooleanStateProps(props, states) {
+function extractStateManagedBooleanProps(props, states) {
   const propNames = new Set();
   if (!Array.isArray(states)) return propNames;
 
   for (const state of states) {
+    if (
+      typeof state === "object" &&
+      state !== null &&
+      typeof state.name === "string" &&
+      props[state.name]?.type === "boolean"
+    ) {
+      propNames.add(state.name);
+    }
+
     if (
       typeof state === "object" &&
       state !== null &&

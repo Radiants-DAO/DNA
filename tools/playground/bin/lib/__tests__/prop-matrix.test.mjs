@@ -71,6 +71,22 @@ describe("buildTestMatrix", () => {
     expect(matrix.some((m) => m.state === "disabled")).toBe(true);
   });
 
+  it("does not duplicate wrapper-driven states when a same-named boolean prop exists", () => {
+    const matrix = buildTestMatrix({
+      props: {
+        error: { type: "boolean" },
+      },
+      states: [
+        { name: "error", driver: "wrapper" },
+      ],
+    });
+
+    expect(matrix.length).toBe(4);
+    expect(matrix.some((m) => m.props.error === true && m.state === "default")).toBe(false);
+    expect(matrix.some((m) => m.props.error === true && m.state === "error")).toBe(false);
+    expect(matrix.some((m) => m.state === "error")).toBe(true);
+  });
+
   it("prunes matrix when it exceeds threshold", () => {
     const matrix = buildTestMatrix({
       props: {
