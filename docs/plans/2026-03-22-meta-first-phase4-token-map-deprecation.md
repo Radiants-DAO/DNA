@@ -187,7 +187,7 @@ Run:
 pnpm --filter @rdna/radiants exec vitest run --cache=false
 ```
 
-Expected: PASS. This replaces any hand-maintained file list and catches transitive breakage across the ESLint package.
+Expected: if the repo-wide Radiants baseline is green, PASS. If unrelated component, icon, or registry suites are still red outside the Phase 4 token-map surface, treat this as a non-blocking baseline check: record the failing areas explicitly, then rely on the focused ESLint removal tests plus the generator/registry sync checks as the actual Phase 4 acceptance gate.
 
 **Step 3: Run the generator and consumer sync checks**
 
