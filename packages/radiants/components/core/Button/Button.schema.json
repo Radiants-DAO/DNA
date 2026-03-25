@@ -33,7 +33,8 @@
       "values": [
         "sm",
         "md",
-        "lg"
+        "lg",
+        "xl"
       ],
       "default": "md",
       "description": "Size preset controlling height, padding, and text size"

@@ -4,8 +4,8 @@ interface TabsProps {
   defaultValue?: string;
   value?: string;
   onValueChange?: string;
-  variant?: "pill" | "line";
-  layout?: "default" | "bottom-tabs";
+  mode?: "pill" | "line";
+  layout?: "default" | "bottom-tabs" | "sidebar" | "dot" | "capsule" | "accordion";
 }
 
 export const TabsMeta = defineComponentMeta<TabsProps>()({
@@ -26,17 +26,17 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
       type: "string",
       description: "Callback when active tab changes",
     },
-    variant: {
+    mode: {
       type: "enum",
       options: ["pill", "line"],
       default: "pill",
-      description: "Visual style variant",
+      description: "Visual mode — controls trigger fill treatment",
     },
     layout: {
       type: "enum",
-      options: ["default", "bottom-tabs"],
+      options: ["default", "bottom-tabs", "sidebar", "dot", "capsule", "accordion"],
       default: "default",
-      description: "Layout mode for tab positioning",
+      description: "Arrangement of tab list relative to content panels",
     },
   },
   slots: {},

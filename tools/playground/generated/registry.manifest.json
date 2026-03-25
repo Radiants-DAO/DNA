@@ -469,7 +469,8 @@
             "values": [
               "sm",
               "md",
-              "lg"
+              "lg",
+              "xl"
             ],
             "default": "md",
             "description": "Size preset controlling height, padding, and text size"
@@ -2628,23 +2629,27 @@
             "type": "string",
             "description": "Callback when active tab changes"
           },
-          "variant": {
+          "mode": {
             "type": "enum",
             "options": [
               "pill",
               "line"
             ],
             "default": "pill",
-            "description": "Visual style variant"
+            "description": "Visual mode — controls trigger fill treatment"
           },
           "layout": {
             "type": "enum",
             "options": [
               "default",
-              "bottom-tabs"
+              "bottom-tabs",
+              "sidebar",
+              "dot",
+              "capsule",
+              "accordion"
             ],
             "default": "default",
-            "description": "Layout mode for tab positioning"
+            "description": "Arrangement of tab list relative to content panels"
           }
         },
         "slots": {},
@@ -2857,13 +2862,53 @@
             "default": false,
             "description": "Disable toggle interactions"
           },
-          "size": {
-            "type": "string",
-            "description": "Size variant: sm, md, lg"
+          "mode": {
+            "type": "enum",
+            "options": [
+              "solid",
+              "flat",
+              "pattern"
+            ],
+            "default": "solid",
+            "description": "Visual mode — controls fill treatment"
           },
-          "variant": {
-            "type": "string",
-            "description": "Visual variant"
+          "tone": {
+            "type": "enum",
+            "options": [
+              "accent",
+              "danger",
+              "success",
+              "neutral",
+              "cream",
+              "white",
+              "info",
+              "tinted"
+            ],
+            "default": "accent",
+            "description": "Color tone"
+          },
+          "size": {
+            "type": "enum",
+            "options": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset"
+          },
+          "rounded": {
+            "type": "enum",
+            "options": [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+              "none"
+            ],
+            "default": "xs",
+            "description": "Pixel-corner roundness"
           },
           "value": {
             "type": "string",

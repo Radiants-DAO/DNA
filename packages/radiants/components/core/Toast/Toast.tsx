@@ -3,6 +3,7 @@
 import React, { createContext, use, useCallback, useMemo, useRef } from 'react';
 import { Toast as BaseToast } from '@base-ui/react/toast';
 import { Alert } from '../Alert/Alert';
+import { Close as CloseIcon } from '../../../icons/generated';
 
 // ============================================================================
 // Types
@@ -256,12 +257,7 @@ function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
           )}
         </Alert.Content>
         <BaseToast.Close aria-label="Close alert">
-          {renderCloseIcon ? renderCloseIcon() : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          )}
+          {renderCloseIcon ? renderCloseIcon() : <CloseIcon size={14} />}
         </BaseToast.Close>
       </Alert.Root>
     </BaseToast.Root>

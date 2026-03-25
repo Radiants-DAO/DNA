@@ -74,7 +74,7 @@ function WindowTabsTrigger({ value, children, icon }: WindowTabsTriggerProps) {
 // ============================================================================
 
 function WindowTabsBase({ defaultValue, children, className = '' }: WindowTabsProps) {
-  const tabs = useTabsState({ defaultValue, variant: 'pill' });
+  const tabs = useTabsState({ defaultValue, mode: 'pill' });
 
   return (
     <div className={`h-full flex flex-col ${className}`}>

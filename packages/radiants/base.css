@@ -296,6 +296,79 @@ body {
 }
 
 /* ============================================================================
+   Tab Trigger — Visual states via data attributes
+   ============================================================================ */
+
+/* Pill mode — inactive */
+[data-slot="tab-trigger"][data-mode="pill"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-head);
+}
+[data-slot="tab-trigger"][data-mode="pill"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Pill mode — active */
+[data-slot="tab-trigger"][data-mode="pill"][data-state="selected"] {
+  background-color: var(--color-accent);
+  color: var(--color-accent-inv);
+}
+
+/* Line mode — inactive */
+[data-slot="tab-trigger"][data-mode="line"][data-state="default"] {
+  background-color: transparent;
+  border-radius: 0;
+}
+[data-slot="tab-trigger"][data-mode="line"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Line mode — active */
+[data-slot="tab-trigger"][data-mode="line"][data-state="selected"] {
+  background-color: var(--color-page);
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-line);
+  border-bottom: none;
+  border-radius: 0;
+  z-index: 10;
+}
+
+/* Capsule mode — inactive */
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-mute);
+}
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Capsule mode — active */
+[data-slot="tab-trigger"][data-mode="capsule"][data-state="selected"] {
+  background-color: var(--color-accent);
+  color: var(--color-accent-inv);
+}
+
+/* Sidebar mode — inactive */
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="default"] {
+  background-color: transparent;
+  color: var(--color-main);
+}
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="default"]:hover {
+  background-color: var(--color-inv);
+  color: var(--color-accent);
+}
+
+/* Sidebar mode — active */
+[data-slot="tab-trigger"][data-mode="sidebar"][data-state="selected"] {
+  background-color: var(--color-page);
+  color: var(--color-head);
+}
+
+/* ============================================================================
    Button Variants — Sun Mode
    Layout stays in the component; theme-owned colors and state live here.
    ============================================================================ */
@@ -337,9 +410,25 @@ body {
   border-radius: 4px;
 }
 
+/* Pattern children sit above the ::before overlay so text stays visible */
+[data-slot="button-face"][data-mode="pattern"] > * {
+  position: relative;
+  z-index: 1;
+}
 
-[data-slot="button-face"][data-mode="pattern"]:hover {
-  background-color: var(--color-main);
+/* Pattern overlay — uses ::before so the mask only affects the background layer,
+   not the text content. Color uses semantic border token (--color-line). */
+[data-slot="button-face"][data-mode="pattern"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+[data-slot="button-face"][data-mode="pattern"]:hover::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
   -webkit-mask-size: 4px 4px;
@@ -347,8 +436,8 @@ body {
   image-rendering: pixelated;
 }
 
-[data-slot="button-face"][data-mode="pattern"]:active {
-  background-color: var(--color-main);
+[data-slot="button-face"][data-mode="pattern"]:active::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
@@ -363,10 +452,18 @@ body {
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-mode="flat"]:hover,
-[data-slot="button-face"][data-mode="flat"]:active {
-  background-color: var(--btn-fill);
+/* Flat hover — ink bg, cream text (matches dropdown hover pattern) */
+[data-slot="button-face"][data-mode="flat"]:hover {
+  background-color: var(--color-inv);
   background-image: none;
+  color: var(--color-flip);
+}
+
+/* Flat press — ink bg, white text (brighter than hover) */
+[data-slot="button-face"][data-mode="flat"]:active {
+  background-color: var(--color-inv);
+  background-image: none;
+  color: var(--color-pure-white);
 }
 
 [data-slot="button-root"][data-mode="flat"]:hover,
@@ -396,10 +493,10 @@ body {
 [data-slot="button-face"][data-quiet][data-state="selected"] {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -410,10 +507,10 @@ body {
 [data-slot="button-face"][data-quiet]:hover {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -424,10 +521,10 @@ body {
 [data-slot="button-face"][data-quiet]:active {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -444,24 +541,24 @@ body {
 [data-slot="button-face"][data-mode="text"] {
   background: transparent;
   color: var(--color-main);
-  border-color: transparent;
+  border: none;
 }
 
 [data-slot="button-face"][data-mode="text"]:hover {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--btn-tint);
 }
 
 [data-slot="button-face"][data-mode="text"]:active {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--color-ink);
 }
 
 [data-slot="button-face"][data-mode="text"][data-state="selected"] {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--color-ink);
 }
 
@@ -473,7 +570,7 @@ body {
    ============================================================================ */
 
 [data-slot="button-face"][data-mode="solid"][data-state="selected"]::after {
-  background: linear-gradient(to bottom, var(--color-ink) 50%, var(--color-cream) 50%);
+  background: var(--color-line);
 }
 
 [data-slot="button-face"][data-mode="solid"][data-state="selected"]::before {
@@ -485,14 +582,18 @@ body {
   mask-image: var(--pat-mist);
 }
 
+/* Pattern selected — overlay via ::before so text remains visible */
 [data-slot="button-face"][data-mode="pattern"][data-state="selected"] {
-  background-color: var(--color-main);
+  box-shadow: none;
+}
+
+[data-slot="button-face"][data-mode="pattern"][data-state="selected"]::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
   mask-size: 4px 4px;
   image-rendering: pixelated;
-  box-shadow: none;
 }
 
 /* ============================================================================
@@ -519,8 +620,8 @@ body {
   mask-image: var(--pat-diagonal-dots);
 }
 
-[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
-  background-color: var(--color-main);
+[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"])::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
   -webkit-mask-size: 4px 4px;
@@ -528,8 +629,8 @@ body {
   image-rendering: pixelated;
 }
 
-[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
-  background-color: var(--color-main);
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"])::before {
+  background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
   -webkit-mask-size: 4px 4px;
@@ -540,10 +641,10 @@ body {
 [data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -554,15 +655,27 @@ body {
 [data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
   background-color: var(--btn-fill);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
 [data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"])::after {
   background: var(--color-line);
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-mode="flat"]:not([data-state="selected"]) {
+  background-color: var(--color-inv);
+  background-image: none;
+  color: var(--color-flip);
+}
+
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="flat"]:not([data-state="selected"]) {
+  background-color: var(--color-inv);
+  background-image: none;
+  color: var(--color-pure-white);
 }
 
 [data-force-state="hover"] [data-slot="button-face"][data-mode="flat"][data-quiet]:not([data-state="selected"]),
@@ -572,14 +685,19 @@ body {
 
 [data-force-state="hover"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--btn-tint);
 }
 
 [data-force-state="pressed"] [data-slot="button-face"][data-mode="text"]:not([data-state="selected"]) {
   background: var(--color-inv);
-  border-color: var(--color-line);
+  border: none;
   color: var(--color-ink);
+}
+
+[data-force-state="focus"] [data-slot="button-root"] {
+  outline: none !important;
+  box-shadow: var(--shadow-focused);
 }
 
 [data-force-state="focus"] button,
@@ -630,28 +748,28 @@ body {
 /* Switch thumb bevel */
 .switch-thumb {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.12);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 30%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 12%, transparent);
 }
 
 .group:active .switch-thumb {
   box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.3),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.12);
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-flip) 30%, transparent),
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-inv) 12%, transparent);
 }
 
 /* Card bevel — lighter than Button (passive container, not interactive) */
 [data-slot="card"][data-variant="default"],
 [data-slot="card"][data-variant="raised"] {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.2),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 20%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 8%, transparent);
 }
 
 [data-slot="card"][data-variant="inverted"] {
   box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.06),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
+    inset 1px 1px 0 0 color-mix(in srgb, var(--color-flip) 6%, transparent),
+    inset -1px -1px 0 0 color-mix(in srgb, var(--color-inv) 25%, transparent);
 }
 
 /* ============================================================================
@@ -663,26 +781,26 @@ body {
 [data-slot="card"][data-variant="raised"] {
   background-color: var(--color-card);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.12) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.12) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px);
   color: var(--color-main);
 }
 
 [data-slot="card"][data-variant="inverted"] {
   background-color: var(--color-inv);
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.06) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
+    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px),
+    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px);
   color: var(--color-flip);
 }
 
 /* Inverted card: light border for contrast against dark surface */
 [data-slot="card"][data-variant="inverted"]::after {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-flip) 10%, transparent);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {
@@ -702,7 +820,7 @@ body {
   background: var(--color-inv);
 }
 
-[data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
+[data-slot="switch-track"][data-variant="switch"][data-checked] {
   background: var(--color-accent);
 }
 
@@ -758,7 +876,7 @@ body {
   --color-focus: var(--color-sun-yellow);
 
   --color-accent: var(--color-sun-yellow);
-  --color-accent-inv: var(--color-cream);
+  --color-accent-inv: var(--color-ink);
   --color-accent-soft: var(--color-sunset-fuzz);
   --color-danger: var(--color-sun-red);
   --color-success: var(--color-mint);

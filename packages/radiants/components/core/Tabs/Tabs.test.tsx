@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tabs, useTabsState } from './Tabs';
@@ -5,7 +6,7 @@ import { Tabs, useTabsState } from './Tabs';
 function TestTabs({ defaultValue = 'one' }: { defaultValue?: string }) {
   const { state, actions, meta } = useTabsState({
     defaultValue,
-    variant: 'pill',
+    mode: 'pill',
     layout: 'default',
   });
 
@@ -28,7 +29,7 @@ function TestTabs({ defaultValue = 'one' }: { defaultValue?: string }) {
 function SidebarTabs() {
   const { state, actions, meta } = useTabsState({
     defaultValue: 'one',
-    variant: 'pill',
+    mode: 'pill',
     layout: 'sidebar',
   });
   return (
@@ -55,6 +56,28 @@ function StatefulTabs({ keepMounted }: { keepMounted?: boolean }) {
         <input defaultValue="draft value" />
       </Tabs.Content>
       <Tabs.Content value="two" keepMounted={keepMounted}>Panel Two</Tabs.Content>
+    </Tabs.Provider>
+  );
+}
+
+function DynamicTabs() {
+  const [showThird, setShowThird] = useState(true);
+  const { state, actions, meta } = useTabsState({
+    defaultValue: 'one',
+    mode: 'pill',
+    layout: 'dot',
+  });
+  return (
+    <Tabs.Provider state={state} actions={actions} meta={meta}>
+      <Tabs.List>
+        <Tabs.Trigger value="one">Tab One</Tabs.Trigger>
+        <Tabs.Trigger value="two">Tab Two</Tabs.Trigger>
+        {showThird && <Tabs.Trigger value="three">Tab Three</Tabs.Trigger>}
+      </Tabs.List>
+      <Tabs.Content value="one">Panel One</Tabs.Content>
+      <button type="button" data-testid="toggle" onClick={() => setShowThird((v) => !v)}>
+        Toggle
+      </button>
     </Tabs.Provider>
   );
 }
@@ -124,6 +147,22 @@ describe('Tabs', () => {
 
   test('Tabs.Indicator is exported', () => {
     expect(Tabs.Indicator).toBeDefined();
+  });
+
+  test('removes tab from DotPill when trigger unmounts', async () => {
+    const user = userEvent.setup();
+    render(<DynamicTabs />);
+
+    // 3 dot indicators initially
+    const dots = screen.getAllByRole('button', { name: /Go to/ });
+    expect(dots).toHaveLength(3);
+
+    // Remove third tab
+    await user.click(screen.getByTestId('toggle'));
+
+    // Should now be 2
+    const dotsAfter = screen.getAllByRole('button', { name: /Go to/ });
+    expect(dotsAfter).toHaveLength(2);
   });
 
   test('arrow key focus activates tab on focus', async () => {

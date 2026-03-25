@@ -83,10 +83,10 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 ### T1a — Button (7 issues)
 
-* [ ] Flat mode: add pressed + hover states
+* [x] Flat mode: add pressed + hover states ✅ merged from `qc-visual-t1`
 * [ ] Disabled: reconcile `disabled` prop vs disabled state (prop has correct styles, state does not)
-* [ ] Focus state: replace outline with drop shadow or similar accessible alternative
-* [ ] Active prop: fix strange linear gradient on border
+* [x] Focus state: replace outline with drop shadow or similar accessible alternative ✅ merged from `qc-visual-t1`
+* [x] Active prop: fix strange linear gradient on border ✅ merged from `qc-visual-t1`
 * [ ] Pattern mode: rest state should show pattern (currently acts like quiet). Fix invisible text/icons in rest + superstate
 * [ ] Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
 * [x] ~~Investigate/remove ~~`focusableWhenDisabled`~~ if no clear purpose~~ ✅ Documented in meta, tested — keeps tab focus via `aria-disabled`
@@ -94,7 +94,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 ### T1b — Tabs (worktree needs recreation — `/private/tmp/claude/tabs-refactor` was pruned)
 
-* [ ] Execute existing tabs refactor plan
+* [x] Execute existing tabs refactor plan ✅ merged from `qc-visual-t1`
 * [ ] Fix known bugs (most-used UI pattern — bugs here cascade everywhere)
 
 ### T1c — Toggle / ToggleGroup
@@ -109,16 +109,16 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 * [ ] Fix dropdown popping over on top
 * [ ] Fix clipped border on dropdown
-* [ ] Fix dark mode hover color (cream on yellow — unreadable)
+* [x] Fix dark mode hover color (cream on yellow — unreadable) ✅ merged from `qc-visual-t1`
 
 **NumberField:**
 
-* [ ] +/- buttons: borders only on inner edges (- has border on wrong side)
-* [ ] Fix dark mode (buttons white on yellow)
+* [x] +/- buttons: borders only on inner edges (- has border on wrong side) ✅ merged from `qc-visual-t1`
+* [x] Fix dark mode (buttons white on yellow) ✅ merged from `qc-visual-t1`
 
 **Slider:**
 
-* [ ] Remove extra border on filled part
+* [x] Remove extra border on filled part ✅ merged from `qc-visual-t1`
 * [ ] Add variants: fader, stepped with dots
 
 **Switch:**

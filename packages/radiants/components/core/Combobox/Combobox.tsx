@@ -194,7 +194,6 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
           bg-card
           pixel-rounded-xs
           py-1
-          overflow-hidden
           ${className}
         `.trim()}>
           <BaseCombobox.List className="max-h-48 overflow-y-auto">

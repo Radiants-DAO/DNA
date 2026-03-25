@@ -81,8 +81,8 @@ const numberInputVariants = cva(
 
 const stepButtonVariants = cva(
   `flex items-center justify-center
-   bg-accent border-l border-line
-   text-main font-sans text-sm
+   bg-accent border-line
+   text-accent-inv font-sans text-sm
    hover:bg-inv hover:text-flip
    focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed
@@ -149,7 +149,7 @@ function Input({ className = '', placeholder }: InputProps): React.ReactNode {
 function Increment({ children, className = '' }: IncrementProps): React.ReactNode {
   return (
     <BaseNumberField.Increment
-      className={stepButtonVariants({ className: className || undefined })}
+      className={stepButtonVariants({ className: `border-l ${className}`.trim() })}
     >
       {children ?? <Plus size={14} />}
     </BaseNumberField.Increment>
@@ -162,7 +162,7 @@ function Increment({ children, className = '' }: IncrementProps): React.ReactNod
 function Decrement({ children, className = '' }: DecrementProps): React.ReactNode {
   return (
     <BaseNumberField.Decrement
-      className={stepButtonVariants({ className: className || undefined })}
+      className={stepButtonVariants({ className: `border-r ${className}`.trim() })}
     >
       {children ?? <Minus size={14} />}
     </BaseNumberField.Decrement>

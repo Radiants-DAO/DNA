@@ -606,8 +606,8 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Tabs: {
     component: Tabs as any,
-    Demo: ({ variant = 'pill', layout = 'default', ...rest }: Record<string, unknown>) => {
-      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant: variant as string, layout: layout as string });
+    Demo: ({ mode = 'pill', layout = 'default', ...rest }: Record<string, unknown>) => {
+      const tabs = Tabs.useTabsState({ defaultValue: 'design', mode: mode as string, layout: layout as string });
       return (
         <div className="w-full max-w-[24rem]">
           <Tabs.Provider {...tabs} {...rest}>

@@ -24,7 +24,7 @@ export function scanForLegacyColors(css, filename) {
     { type: 'lab', re: /(?<!ok)lab\(\s*[^)]+\)/gi },
     { type: 'lch', re: /(?<!ok)lch\(\s*[^)]+\)/gi },
     { type: 'oklab', re: /oklab\(\s*[^)]+\)/gi },
-    { type: 'color-mix', re: /color-mix\(\s*[^)]+\)/gi },
+    { type: 'color-mix', re: /color-mix\(\s*(?!in\s+oklch\b)[^)]+\)/gi },
     { type: 'color', re: /color\(\s*[^)]+\)/gi },
     { type: 'device-cmyk', re: /device-cmyk\(\s*[^)]+\)/gi },
   ];

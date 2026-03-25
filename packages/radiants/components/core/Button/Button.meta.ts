@@ -2,7 +2,7 @@ import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 type ButtonMode = "solid" | "flat" | "text" | "pattern";
 type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonSize = "sm" | "md" | "lg" | "xl";
 type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
 
 interface ButtonProps {
@@ -44,7 +44,7 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
     },
     size: {
       type: "enum",
-      values: ["sm", "md", "lg"],
+      values: ["sm", "md", "lg", "xl"],
       default: "md",
       description: "Size preset controlling height, padding, and text size",
     },

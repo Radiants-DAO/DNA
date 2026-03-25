@@ -11,7 +11,7 @@ import { Icon } from '../../../icons/Icon';
 
 type ButtonMode = 'solid' | 'flat' | 'text' | 'pattern';
 type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 interface ButtonOwnProps {
@@ -59,7 +59,7 @@ type ButtonProps = ButtonOwnProps &
 
 export const buttonRootVariants = cva(
   `group relative inline-flex select-none cursor-pointer overflow-visible
-   focus-visible:outline-none`,
+   focus-visible:outline-none focus-visible:shadow-focused`,
   {
     variants: {
       fullWidth: { true: 'w-full', false: '' },
@@ -91,7 +91,8 @@ export const buttonFaceVariants = cva(
       size: {
         sm: 'h-6 text-xs gap-0.5 [&_svg]:size-4',
         md: 'h-7 text-xs gap-0.5 [&_svg]:size-4',
-        lg: 'h-8 text-sm gap-1 [&_svg]:size-5',
+        lg: 'h-8 text-sm gap-1 [&_svg]:size-4',
+        xl: 'h-10 text-sm gap-1.5 [&_svg]:size-6',
       },
       iconOnly: {
         true: 'px-0 py-0 justify-center',
@@ -109,14 +110,17 @@ export const buttonFaceVariants = cva(
       { iconOnly: false, textOnly: true, size: 'sm', className: 'pl-1.5 pr-1.5' },
       { iconOnly: false, textOnly: true, size: 'md', className: 'pl-2 pr-2' },
       { iconOnly: false, textOnly: true, size: 'lg', className: 'pl-3 pr-3' },
+      { iconOnly: false, textOnly: true, size: 'xl', className: 'pl-4 pr-4' },
       // Default: full left padding, half right (icon takes up right side)
       { iconOnly: false, textOnly: false, size: 'sm', className: 'pl-1.5 pr-0.5' },
       { iconOnly: false, textOnly: false, size: 'md', className: 'pl-2 pr-1' },
       { iconOnly: false, textOnly: false, size: 'lg', className: 'pl-3 pr-1.5' },
+      { iconOnly: false, textOnly: false, size: 'xl', className: 'pl-4 pr-2' },
       // Icon-only: square
       { iconOnly: true, size: 'sm', className: 'w-6' },
       { iconOnly: true, size: 'md', className: 'w-7' },
       { iconOnly: true, size: 'lg', className: 'w-8' },
+      { iconOnly: true, size: 'xl', className: 'w-10' },
     ],
     defaultVariants: {
       mode: 'solid',

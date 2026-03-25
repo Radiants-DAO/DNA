@@ -242,7 +242,7 @@ export function Radio({
             rounded-full
             flex items-center justify-center
             transition-colors
-            focus-visible:outline-none focus-visible:shadow-[0_0_6px_var(--color-sun-yellow),0_0_14px_rgba(254,248,226,0.3)]
+            focus-visible:outline-none focus-visible:shadow-focused
             cursor-pointer
             ${state.checked
               ? 'bg-accent'
@@ -254,7 +254,7 @@ export function Radio({
       )}
     >
       <BaseRadio.Indicator className="flex items-center justify-center">
-        <div className="w-2 h-2 bg-main rounded-full" />
+        <div className="w-2 h-2 bg-accent-inv rounded-full" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>
   );
