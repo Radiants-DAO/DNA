@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>RDNA Tabletop — D&D Control Surface</title>
+<style>
+  /* ── RDNA Brand Colors ── */
+  :root {
+    --ink: #0F0E0C;
+    --cream: #FEF8E2;
+    --sun-yellow: #FCE184;
+    --sky-blue: #95BAD2;
+    --sunset-fuzz: #FCC383;
+    --sun-red: #FF7F7F;
+    --mint: #CEF5CA;
+    --pure-black: #000000;
+    --pure-white: #FFFFFF;
+    --stone: #3A3832;
+    --stone-light: #5A584F;
+    --water-deep: #4A7A9E;
+    --water-shallow: #6A9ABE;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--ink);
+    font-family: 'Courier New', monospace;
+    color: var(--cream);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    cursor: default;
+  }
+
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Game Board Canvas ── */
+  #board {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: 2px solid var(--sun-yellow);
+    box-shadow:
+      0 0 20px rgba(252, 225, 132, 0.3),
+      0 0 60px rgba(252, 225, 132, 0.1),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ── Player Panels ── */
+  .player-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(15, 14, 12, 0.92);
+    border: 2px solid rgba(252, 225, 132, 0.25);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.4s, box-shadow 0.4s;
+    z-index: 10;
+  }
+
+  .player-panel.active {
+    border-color: var(--sun-yellow);
+    box-shadow: 0 0 24px rgba(252, 225, 132, 0.4), 0 0 60px rgba(252, 225, 132, 0.15);
+  }
+
+  .player-panel.south { bottom: 12px; left: 50%; transform: translateX(-50%); }
+  .player-panel.north { top: 12px; left: 50%; transform: translateX(-50%) rotate(180deg); }
+  .player-panel.west  { left: 12px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+  .player-panel.east  { right: 12px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+  .player-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    image-rendering: pixelated;
+    border: 2px solid rgba(252, 225, 132, 0.3);
+    flex-shrink: 0;
+  }
+
+  .player-info { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+
+  .player-name {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .player-class {
+    font-size: 10px;
+    opacity: 0.6;
+    letter-spacing: 1px;
+  }
+
+  .hp-bar-outer {
+    width: 100%;
+    height: 8px;
+    background: rgba(252, 225, 132, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(252, 225, 132, 0.15);
+  }
+
+  .hp-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease-out;
+  }
+
+  .move-counter {
+    font-size: 10px;
+    opacity: 0.5;
+    letter-spacing: 1px;
+  }
+
+  .end-turn-btn {
+    padding: 8px 14px;
+    background: transparent;
+    border: 2px solid var(--sun-yellow);
+    color: var(--sun-yellow);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .end-turn-btn:hover, .end-turn-btn:active {
+    background: var(--sun-yellow);
+    color: var(--ink);
+  }
+
+  .end-turn-btn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* ── D20 Dice Roller ── */
+  .dice-roller {
+    position: absolute;
+    bottom: 80px;
+    right: 80px;
+    z-index: 20;
+  }
+
+  .dice-btn {
+    width: 72px;
+    height: 72px;
+    background: rgba(15, 14, 12, 0.9);
+    border: 2px solid var(--sun-yellow);
+    border-radius: 12px;
+    color: var(--sun-yellow);
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    box-shadow: 0 0 16px rgba(252, 225, 132, 0.2);
+  }
+
+  .dice-btn:hover, .dice-btn:active {
+    background: var(--sun-yellow);
+    color: var(--ink);
+    transform: scale(1.05);
+  }
+
+  .dice-btn.rolling {
+    animation: dice-shake 0.1s infinite alternate;
+  }
+
+  @keyframes dice-shake {
+    from { transform: rotate(-5deg) scale(1.05); }
+    to { transform: rotate(5deg) scale(1.05); }
+  }
+
+  .dice-result {
+    position: absolute;
+    bottom: 80px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--sun-yellow);
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .dice-result.visible { opacity: 1; }
+
+  .dice-result.crit { color: var(--sun-red); font-weight: bold; }
+  .dice-result.nat1 { color: var(--sky-blue); }
+
+  /* ── Turn Banner ── */
+  .turn-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--sun-yellow);
+    text-shadow: 0 0 30px rgba(252, 225, 132, 0.6);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  .turn-banner.visible {
+    opacity: 1;
+    animation: banner-fade 2s forwards;
+  }
+
+  @keyframes banner-fade {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ── Title ── */
+  .table-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+    text-align: center;
+    opacity: 0.08;
+    font-size: 10px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--sun-yellow);
+  }
+
+  /* ── Ambient corner marks ── */
+  .corner-mark {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: rgba(252, 225, 132, 0.15);
+    border-style: solid;
+    z-index: 2;
+  }
+  .corner-mark.tl { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+  .corner-mark.tr { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
+  .corner-mark.bl { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
+  .corner-mark.br { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <!-- Corner marks for table registration -->
+  <div class="corner-mark tl"></div>
+  <div class="corner-mark tr"></div>
+  <div class="corner-mark bl"></div>
+  <div class="corner-mark br"></div>
+
+  <!-- Game board -->
+  <canvas id="board"></canvas>
+
+  <!-- Player 1 — South (Warrior) -->
+  <div class="player-panel south active" id="panel-0">
+    <canvas class="player-avatar" id="avatar-0" width="48" height="48"></canvas>
+    <div class="player-info">
+      <div class="player-name" style="color: var(--sun-red)">Vargrim</div>
+      <div class="player-class">Warrior · Lvl 5</div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-0" style="width:100%; background: var(--sun-red)"></div></div>
+      <div class="move-counter" id="moves-0">Moves: 5</div>
+    </div>
+    <button class="end-turn-btn" id="end-turn-0" onclick="endTurn()">End Turn</button>
+  </div>
+
+  <!-- Player 2 — North (Mage) -->
+  <div class="player-panel north" id="panel-1">
+    <canvas class="player-avatar" id="avatar-1" width="48" height="48"></canvas>
+    <div class="player-info">
+      <div class="player-name" style="color: var(--sky-blue)">Elyndra</div>
+      <div class="player-class">Mage · Lvl 5</div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-1" style="width:80%; background: var(--sky-blue)"></div></div>
+      <div class="move-counter" id="moves-1">Moves: 5</div>
+    </div>
+    <button class="end-turn-btn" id="end-turn-1" onclick="endTurn()">End Turn</button>
+  </div>
+
+  <!-- Player 3 — West (Rogue) -->
+  <div class="player-panel west" id="panel-2">
+    <canvas class="player-avatar" id="avatar-2" width="48" height="48"></canvas>
+    <div class="player-info">
+      <div class="player-name" style="color: var(--mint)">Shade</div>
+      <div class="player-class">Rogue · Lvl 5</div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-2" style="width:90%; background: var(--mint)"></div></div>
+      <div class="move-counter" id="moves-2">Moves: 5</div>
+    </div>
+    <button class="end-turn-btn" id="end-turn-2" onclick="endTurn()">End Turn</button>
+  </div>
+
+  <!-- Player 4 — East (Cleric) -->
+  <div class="player-panel east" id="panel-3">
+    <canvas class="player-avatar" id="avatar-3" width="48" height="48"></canvas>
+    <div class="player-info">
+      <div class="player-name" style="color: var(--sun-yellow)">Solara</div>
+      <div class="player-class">Cleric · Lvl 5</div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-3" style="width:100%; background: var(--sun-yellow)"></div></div>
+      <div class="move-counter" id="moves-3">Moves: 5</div>
+    </div>
+    <button class="end-turn-btn" id="end-turn-3" onclick="endTurn()">End Turn</button>
+  </div>
+
+  <!-- D20 Dice Roller -->
+  <div class="dice-roller">
+    <button class="dice-btn" id="dice-btn" onclick="rollD20()">D20</button>
+    <div class="dice-result" id="dice-result"></div>
+  </div>
+
+  <!-- Turn Banner -->
+  <div class="turn-banner" id="turn-banner"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────
+// RDNA TABLETOP — D&D Control Surface Prototype
+// ─────────────────────────────────────────────────
+
+const COLORS = {
+  ink:          '#0F0E0C',
+  cream:        '#FEF8E2',
+  sunYellow:    '#FCE184',
+  skyBlue:      '#95BAD2',
+  sunsetFuzz:   '#FCC383',
+  sunRed:       '#FF7F7F',
+  mint:         '#CEF5CA',
+  pureWhite:    '#FFFFFF',
+  stone:        '#2A2822',
+  stoneLight:   '#3A3832',
+  stoneMid:     '#4A4842',
+  waterDeep:    '#3A6A8E',
+  waterShallow: '#5A8AAE',
+  wallDark:     '#1A1812',
+  wallLight:    '#2E2C24',
+  skin:         '#FFDBA4',
+  skinShadow:   '#D4A574',
+  hair:         '#5C3A1A',
+  metal:        '#999999',
+  metalDark:    '#666666',
+  brown:        '#8B6914',
+  darkBrown:    '#5C4A1A',
+  greenDark:    '#3A6C2F',
+  green:        '#5AA04A',
+  greenLight:   '#7AC06A',
+  lava:         '#CC4422',
+  torch:        '#FFAA44',
+};
+
+// ── Dungeon Map (16x16) ──
+// 0=floor, 1=wall, 2=water, 3=rubble, 4=pillar, 5=chest, 6=torch-wall
+const GRID_SIZE = 16;
+const MAP = [
+  [1,1,1,1,1,6,1,1,1,1,6,1,1,1,1,1],
+  [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,4,0,0,0,0,0,0,0,0,4,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,3,0,0,0,0,3,0,0,0,0,6],
+  [1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1],
+  [1,1,0,0,0,0,2,2,2,2,0,0,0,0,1,1],
+  [1,1,0,0,0,0,2,2,2,2,0,0,0,0,1,1],
+  [1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1],
+  [6,0,0,0,0,3,0,0,0,0,3,0,0,0,0,6],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,4,0,0,0,0,0,0,0,0,4,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1],
+  [1,1,1,1,1,6,1,1,1,1,6,1,1,1,1,1],
+];
+
+// Obstacles placed on floor tiles: [row, col, type]
+// type: 'rock', 'barrel', 'crate'
+const OBJECTS = [
+  [2, 5, 'rock'], [2, 10, 'rock'],
+  [5, 2, 'barrel'], [5, 13, 'barrel'],
+  [10, 2, 'crate'], [10, 13, 'crate'],
+  [13, 5, 'rock'], [13, 10, 'rock'],
+  [7, 4, 'barrel'], [8, 11, 'barrel'],
+  [3, 7, 'chest'], [12, 8, 'chest'],
+];
+
+// ── Player State ──
+const PLAYERS = [
+  { name: 'Vargrim',  cls: 'Warrior', color: COLORS.sunRed,    hp: 45, maxHp: 45, row: 14, col: 7,  moves: 5, maxMoves: 5 },
+  { name: 'Elyndra',  cls: 'Mage',    color: COLORS.skyBlue,   hp: 28, maxHp: 35, row: 1,  col: 8,  moves: 5, maxMoves: 5 },
+  { name: 'Shade',    cls: 'Rogue',   color: COLORS.mint,      hp: 32, maxHp: 35, row: 7,  col: 1,  moves: 5, maxMoves: 5 },
+  { name: 'Solara',   cls: 'Cleric',  color: COLORS.sunYellow, hp: 38, maxHp: 38, row: 8,  col: 14, moves: 5, maxMoves: 5 },
+];
+
+let currentPlayer = 0;
+let selectedPlayer = null;
+let animFrame = 0;
+let diceRolling = false;
+
+// ── Sprite Definitions (10x10 pixel art, string-encoded) ──
+// . = transparent, other chars map to palette
+const SPRITE_DATA = {
+  warrior: {
+    palette: { 'h':'#5C3A1A', 's':'#FFDBA4', 'r':'#CC4444', 'R':'#FF7F7F', 'm':'#888888', 'M':'#AAAAAA', 'k':'#0F0E0C', 'b':'#5C4A1A', 'B':'#8B6914' },
+    pixels: [
+      '..mMMMm...',
+      '.mMhhhMm..',
+      '.Ms.k.sM..',
+      '.MsssssM..',
+      '..RRRRR...',
+      'M.RRRRR.M.',
+      'M..RRR..M.',
+      '...RbR....',
+      '...R.R....',
+      '..Bb.bB...',
+    ]
+  },
+  mage: {
+    palette: { 'h':'#D4A574', 's':'#FFDBA4', 'b':'#4477AA', 'B':'#5599CC', 'p':'#95BAD2', 'k':'#0F0E0C', 'w':'#AAAAAA', 'W':'#CCCCCC', 'g':'#FCE184' },
+    pixels: [
+      '....gp....',
+      '...ppp....',
+      '..phhp....',
+      '..s.ks....',
+      '..sssss...',
+      '.BBBBBBw..',
+      '..BBBBB...',
+      '..bBBBb...',
+      '...b.b....',
+      '..bb.bb...',
+    ]
+  },
+  rogue: {
+    palette: { 'h':'#5C3A1A', 's':'#FFDBA4', 'g':'#4A7A3F', 'G':'#6AAA5A', 'k':'#0F0E0C', 'd':'#888888', 'D':'#AAAAAA', 'b':'#3A3A2A', 'B':'#5A5A4A' },
+    pixels: [
+      '..gGGGg...',
+      '.gGhhhGg..',
+      '.Gs.k.sG..',
+      '..sssssg..',
+      '..GGGGGg..',
+      'D.GGGGGgD.',
+      '...GGG.D..',
+      '...GbG....',
+      '...b.b....',
+      '..Bb.bB...',
+    ]
+  },
+  cleric: {
+    palette: { 'h':'#D4A574', 's':'#FFDBA4', 'y':'#CCAA33', 'Y':'#FCE184', 'w':'#DDDDDD', 'W':'#FFFFFF', 'k':'#0F0E0C', 'b':'#8B6914', 'g':'#FCE184' },
+    pixels: [
+      '...gYg....',
+      '..YhhhY...',
+      '..s.k.s...',
+      '..sssss...',
+      '.WWYWWW...',
+      '.WWYWWW...',
+      '..WWWWW...',
+      '..WYbYW...',
+      '...W.W....',
+      '..bb.bb...',
+    ]
+  }
+};
+
+// ── Object Sprites (8x8) ──
+const OBJECT_SPRITES = {
+  rock: {
+    palette: { 'a':'#5A584F', 'b':'#3A3832', 'c':'#7A786F', 'k':'#2A2822' },
+    pixels: [
+      '...bc...',
+      '..bcca..',
+      '.bccca..',
+      'bccccab.',
+      'bcccaab.',
+      '.bccab..',
+      '..bba...',
+      '........',
+    ]
+  },
+  barrel: {
+    palette: { 'w':'#8B6914', 'W':'#AA8834', 'm':'#666644', 'k':'#3A3A2A' },
+    pixels: [
+      '..mmmm..',
+      '.mWWWWm.',
+      '.wWWWWw.',
+      '.mWWWWm.',
+      '.wWWWWw.',
+      '.mWWWWm.',
+      '.wWWWWw.',
+      '..kkkk..',
+    ]
+  },
+  crate: {
+    palette: { 'w':'#8B6914', 'W':'#AA8834', 'k':'#3A3A2A', 'm':'#666644' },
+    pixels: [
+      'kkkkkkkk',
+      'kWWkkWWk',
+      'kWWkkWWk',
+      'kkkkkkk.',
+      'kkkkkkkk',
+      'kWWkkWWk',
+      'kWWkkWWk',
+      'kkkkkkkk',
+    ]
+  },
+  chest: {
+    palette: { 'w':'#8B6914', 'W':'#AA8834', 'g':'#FCE184', 'G':'#CCAA33', 'k':'#3A3A2A' },
+    pixels: [
+      '........',
+      '.kkkkkk.',
+      '.kWWWWk.',
+      '.kWgWWk.',
+      '.kGggGk.',
+      '.kWWWWk.',
+      '.kWWWWk.',
+      '.kkkkkk.',
+    ]
+  }
+};
+
+// ── Canvas Setup ──
+const canvas = document.getElementById('board');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Grid takes up ~65% of the smaller dimension, leaving room for panels
+  const maxSide = Math.min(vw * 0.65, vh * 0.72);
+  const cellSize = Math.floor(maxSide / GRID_SIZE);
+  const boardPx = cellSize * GRID_SIZE;
+
+  canvas.width = boardPx;
+  canvas.height = boardPx;
+  canvas.style.width = boardPx + 'px';
+  canvas.style.height = boardPx + 'px';
+  canvas.dataset.cellSize = cellSize;
+
+  renderAll();
+  renderAvatars();
+}
+
+// ── Rendering ──
+function renderAll() {
+  const cs = parseInt(canvas.dataset.cellSize) || 40;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw tiles
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      drawTile(r, c, cs);
+    }
+  }
+
+  // Draw grid lines
+  ctx.strokeStyle = 'rgba(252, 225, 132, 0.08)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= GRID_SIZE; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * cs, 0);
+    ctx.lineTo(i * cs, GRID_SIZE * cs);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i * cs);
+    ctx.lineTo(GRID_SIZE * cs, i * cs);
+    ctx.stroke();
+  }
+
+  // Draw objects
+  OBJECTS.forEach(([r, c, type]) => {
+    drawObjectSprite(r, c, type, cs);
+  });
+
+  // Draw movement highlights
+  if (selectedPlayer !== null) {
+    const p = PLAYERS[selectedPlayer];
+    const adj = getAdjacentCells(p.row, p.col);
+    adj.forEach(([ar, ac]) => {
+      ctx.fillStyle = `rgba(252, 225, 132, ${0.12 + 0.04 * Math.sin(animFrame * 0.08)})`;
+      ctx.fillRect(ac * cs, ar * cs, cs, cs);
+      ctx.strokeStyle = `rgba(252, 225, 132, ${0.3 + 0.1 * Math.sin(animFrame * 0.08)})`;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(ac * cs + 1, ar * cs + 1, cs - 2, cs - 2);
+    });
+  }
+
+  // Draw characters
+  PLAYERS.forEach((p, i) => {
+    drawCharacter(p, i, cs);
+  });
+
+  // Draw torch flickers on torch-wall tiles
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (MAP[r][c] === 6) {
+        drawTorchGlow(r, c, cs);
+      }
+    }
+  }
+}
+
+function drawTile(r, c, cs) {
+  const tile = MAP[r][c];
+  const x = c * cs;
+  const y = r * cs;
+
+  switch (tile) {
+    case 0: // Floor
+      ctx.fillStyle = COLORS.stone;
+      ctx.fillRect(x, y, cs, cs);
+      // Subtle texture: pseudo-random noise
+      const seed = r * 31 + c * 17;
+      if ((seed % 7) < 2) {
+        ctx.fillStyle = COLORS.stoneLight;
+        const sx = x + (seed % 5) * (cs / 6);
+        const sy = y + ((seed * 3) % 5) * (cs / 6);
+        ctx.fillRect(sx, sy, cs / 6, cs / 6);
+      }
+      break;
+
+    case 1: // Wall
+      ctx.fillStyle = COLORS.wallDark;
+      ctx.fillRect(x, y, cs, cs);
+      // Wall brick pattern
+      ctx.fillStyle = COLORS.wallLight;
+      const bh = cs / 3;
+      for (let row = 0; row < 3; row++) {
+        const offset = (row % 2 === 0) ? 0 : cs / 4;
+        for (let bx = offset; bx < cs; bx += cs / 2) {
+          ctx.fillRect(x + bx + 1, y + row * bh + 1, cs / 2 - 2, bh - 2);
+        }
+      }
+      break;
+
+    case 2: // Water
+      const waveOffset = Math.sin(animFrame * 0.04 + r * 0.5 + c * 0.3) * 0.5;
+      ctx.fillStyle = waveOffset > 0 ? COLORS.waterDeep : COLORS.waterShallow;
+      ctx.fillRect(x, y, cs, cs);
+      // Animated wave highlights
+      ctx.fillStyle = `rgba(149, 186, 210, ${0.15 + waveOffset * 0.15})`;
+      const wx = x + cs * 0.2 + Math.sin(animFrame * 0.03 + c) * cs * 0.1;
+      ctx.fillRect(wx, y + cs * 0.3, cs * 0.4, cs * 0.15);
+      break;
+
+    case 3: // Rubble
+      ctx.fillStyle = COLORS.stone;
+      ctx.fillRect(x, y, cs, cs);
+      ctx.fillStyle = COLORS.stoneMid;
+      // Small rubble pieces
+      for (let i = 0; i < 4; i++) {
+        const rx = x + ((r * 7 + c * 13 + i * 11) % 6) * (cs / 8);
+        const ry = y + ((r * 11 + c * 7 + i * 5) % 6) * (cs / 8);
+        ctx.fillRect(rx, ry, cs / 5, cs / 5);
+      }
+      break;
+
+    case 4: // Pillar
+      ctx.fillStyle = COLORS.stone;
+      ctx.fillRect(x, y, cs, cs);
+      // Draw pillar
+      const margin = cs * 0.2;
+      ctx.fillStyle = COLORS.stoneMid;
+      ctx.fillRect(x + margin, y + margin * 0.5, cs - margin * 2, cs - margin);
+      ctx.fillStyle = '#5A584F';
+      ctx.fillRect(x + margin - 2, y + margin * 0.3, cs - margin * 2 + 4, cs * 0.15);
+      ctx.fillRect(x + margin - 2, y + cs - margin * 0.8, cs - margin * 2 + 4, cs * 0.15);
+      break;
+
+    case 5: // Chest
+      ctx.fillStyle = COLORS.stone;
+      ctx.fillRect(x, y, cs, cs);
+      break;
+
+    case 6: // Torch wall
+      ctx.fillStyle = COLORS.wallDark;
+      ctx.fillRect(x, y, cs, cs);
+      ctx.fillStyle = COLORS.wallLight;
+      const tbh = cs / 3;
+      for (let row = 0; row < 3; row++) {
+        const toff = (row % 2 === 0) ? 0 : cs / 4;
+        for (let bx = toff; bx < cs; bx += cs / 2) {
+          ctx.fillRect(x + bx + 1, y + row * tbh + 1, cs / 2 - 2, tbh - 2);
+        }
+      }
+      // Torch bracket
+      ctx.fillStyle = COLORS.torch;
+      ctx.fillRect(x + cs * 0.4, y + cs * 0.2, cs * 0.2, cs * 0.3);
+      // Flame
+      const flicker = Math.sin(animFrame * 0.15 + r + c) * cs * 0.05;
+      ctx.fillStyle = '#FFCC44';
+      ctx.beginPath();
+      ctx.arc(x + cs * 0.5 + flicker, y + cs * 0.15, cs * 0.12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#FF8822';
+      ctx.beginPath();
+      ctx.arc(x + cs * 0.5 - flicker * 0.5, y + cs * 0.12, cs * 0.07, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+  }
+}
+
+function drawTorchGlow(r, c, cs) {
+  const x = c * cs + cs / 2;
+  const y = r * cs + cs / 2;
+  const radius = cs * 2.5;
+  const flicker = 0.08 + Math.sin(animFrame * 0.12 + r * 3 + c * 5) * 0.03;
+  const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  grad.addColorStop(0, `rgba(255, 170, 68, ${flicker})`);
+  grad.addColorStop(0.5, `rgba(255, 170, 68, ${flicker * 0.3})`);
+  grad.addColorStop(1, 'rgba(255, 170, 68, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+}
+
+function drawSprite(spriteData, x, y, cs, pixelSize) {
+  const { palette, pixels } = spriteData;
+  const spriteW = pixels[0].length;
+  const spriteH = pixels.length;
+  const px = pixelSize || (cs / Math.max(spriteW, spriteH));
+  const offsetX = x + (cs - spriteW * px) / 2;
+  const offsetY = y + (cs - spriteH * px) / 2;
+
+  for (let r = 0; r < spriteH; r++) {
+    for (let c = 0; c < spriteW; c++) {
+      const ch = pixels[r][c];
+      if (ch !== '.' && palette[ch]) {
+        ctx.fillStyle = palette[ch];
+        ctx.fillRect(
+          Math.floor(offsetX + c * px),
+          Math.floor(offsetY + r * px),
+          Math.ceil(px),
+          Math.ceil(px)
+        );
+      }
+    }
+  }
+}
+
+function drawObjectSprite(r, c, type, cs) {
+  const sprite = OBJECT_SPRITES[type];
+  if (!sprite) return;
+  drawSprite(sprite, c * cs, r * cs, cs);
+}
+
+function drawCharacter(player, index, cs) {
+  const x = player.col * cs;
+  const y = player.row * cs;
+  const spriteKeys = ['warrior', 'mage', 'rogue', 'cleric'];
+  const spriteData = SPRITE_DATA[spriteKeys[index]];
+
+  // Selection / active glow
+  if (index === currentPlayer) {
+    const glowRadius = cs * 0.6;
+    const pulse = 0.25 + Math.sin(animFrame * 0.06) * 0.1;
+    const grad = ctx.createRadialGradient(
+      x + cs / 2, y + cs / 2, cs * 0.1,
+      x + cs / 2, y + cs / 2, glowRadius
+    );
+    grad.addColorStop(0, player.color + '66');
+    grad.addColorStop(1, player.color + '00');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x - cs * 0.1, y - cs * 0.1, cs * 1.2, cs * 1.2);
+  }
+
+  if (selectedPlayer === index) {
+    ctx.strokeStyle = COLORS.sunYellow;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(x + 2, y + 2, cs - 4, cs - 4);
+    ctx.setLineDash([]);
+  }
+
+  // Idle bobbing
+  const bob = Math.sin(animFrame * 0.05 + index * 1.5) * 2;
+
+  // Draw sprite
+  drawSprite(spriteData, x, y + bob, cs);
+}
+
+function renderAvatars() {
+  const spriteKeys = ['warrior', 'mage', 'rogue', 'cleric'];
+  for (let i = 0; i < 4; i++) {
+    const avatarCanvas = document.getElementById(`avatar-${i}`);
+    const actx = avatarCanvas.getContext('2d');
+    actx.clearRect(0, 0, 48, 48);
+    actx.fillStyle = COLORS.stone;
+    actx.fillRect(0, 0, 48, 48);
+
+    const sprite = SPRITE_DATA[spriteKeys[i]];
+    const spriteW = sprite.pixels[0].length;
+    const spriteH = sprite.pixels.length;
+    const px = 48 / Math.max(spriteW, spriteH);
+    const ox = (48 - spriteW * px) / 2;
+    const oy = (48 - spriteH * px) / 2;
+
+    for (let r = 0; r < spriteH; r++) {
+      for (let c = 0; c < spriteW; c++) {
+        const ch = sprite.pixels[r][c];
+        if (ch !== '.' && sprite.palette[ch]) {
+          actx.fillStyle = sprite.palette[ch];
+          actx.fillRect(
+            Math.floor(ox + c * px),
+            Math.floor(oy + r * px),
+            Math.ceil(px),
+            Math.ceil(px)
+          );
+        }
+      }
+    }
+  }
+}
+
+// ── Movement Logic ──
+function getAdjacentCells(row, col) {
+  const dirs = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
+  return dirs
+    .map(([dr, dc]) => [row + dr, col + dc])
+    .filter(([r, c]) => {
+      if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return false;
+      const tile = MAP[r][c];
+      if (tile === 1 || tile === 2 || tile === 4 || tile === 6) return false; // walls, water, pillars, torch-walls
+      // Check for other players
+      if (PLAYERS.some(p => p.row === r && p.col === c)) return false;
+      // Check for blocking objects
+      if (OBJECTS.some(([or, oc]) => or === r && oc === c)) return false;
+      return true;
+    });
+}
+
+function isPassable(r, c) {
+  if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return false;
+  const tile = MAP[r][c];
+  if (tile === 1 || tile === 2 || tile === 4 || tile === 6) return false;
+  if (PLAYERS.some(p => p.row === r && p.col === c)) return false;
+  if (OBJECTS.some(([or, oc]) => or === r && oc === c)) return false;
+  return true;
+}
+
+// ── Input ──
+canvas.addEventListener('click', handleBoardClick);
+canvas.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  const touch = e.changedTouches[0];
+  const rect = canvas.getBoundingClientRect();
+  handleBoardClickAt(touch.clientX - rect.left, touch.clientY - rect.top);
+});
+
+function handleBoardClick(e) {
+  const rect = canvas.getBoundingClientRect();
+  handleBoardClickAt(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+function handleBoardClickAt(mx, my) {
+  const cs = parseInt(canvas.dataset.cellSize) || 40;
+  const col = Math.floor(mx / cs);
+  const row = Math.floor(my / cs);
+  if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) return;
+
+  const p = PLAYERS[currentPlayer];
+
+  // Check if clicking the current player's character to select/deselect
+  if (p.row === row && p.col === col) {
+    selectedPlayer = selectedPlayer === currentPlayer ? null : currentPlayer;
+    renderAll();
+    return;
+  }
+
+  // If a player is selected and we click an adjacent passable cell, move there
+  if (selectedPlayer === currentPlayer && p.moves > 0) {
+    const adj = getAdjacentCells(p.row, p.col);
+    const target = adj.find(([ar, ac]) => ar === row && ac === col);
+    if (target) {
+      p.row = row;
+      p.col = col;
+      p.moves--;
+      updateUI();
+      renderAll();
+
+      if (p.moves <= 0) {
+        selectedPlayer = null;
+      }
+      return;
+    }
+  }
+
+  // Check if clicking another player's character (for targeting, etc.)
+  const clickedPlayer = PLAYERS.findIndex(pl => pl.row === row && pl.col === col);
+  if (clickedPlayer !== -1) {
+    // Flash the clicked player (future: targeting)
+    flashCell(row, col, PLAYERS[clickedPlayer].color);
+  }
+}
+
+function flashCell(row, col, color) {
+  const cs = parseInt(canvas.dataset.cellSize) || 40;
+  ctx.fillStyle = color + '44';
+  ctx.fillRect(col * cs, row * cs, cs, cs);
+  setTimeout(() => renderAll(), 300);
+}
+
+// ── Turn Management ──
+function endTurn() {
+  selectedPlayer = null;
+  PLAYERS[currentPlayer].moves = PLAYERS[currentPlayer].maxMoves;
+  currentPlayer = (currentPlayer + 1) % 4;
+  PLAYERS[currentPlayer].moves = PLAYERS[currentPlayer].maxMoves;
+
+  // Show turn banner
+  showTurnBanner(PLAYERS[currentPlayer].name);
+  updateUI();
+  renderAll();
+}
+
+function showTurnBanner(name) {
+  const banner = document.getElementById('turn-banner');
+  banner.textContent = `${name}'s Turn`;
+  banner.style.color = PLAYERS[currentPlayer].color;
+  banner.className = 'turn-banner visible';
+  setTimeout(() => { banner.className = 'turn-banner'; }, 2000);
+}
+
+function updateUI() {
+  for (let i = 0; i < 4; i++) {
+    const panel = document.getElementById(`panel-${i}`);
+    panel.classList.toggle('active', i === currentPlayer);
+
+    const movesEl = document.getElementById(`moves-${i}`);
+    movesEl.textContent = `Moves: ${PLAYERS[i].moves}`;
+
+    const hpEl = document.getElementById(`hp-${i}`);
+    hpEl.style.width = (PLAYERS[i].hp / PLAYERS[i].maxHp * 100) + '%';
+
+    const btn = document.getElementById(`end-turn-${i}`);
+    btn.disabled = i !== currentPlayer;
+  }
+}
+
+// ── D20 Dice Roller ──
+function rollD20() {
+  if (diceRolling) return;
+  diceRolling = true;
+
+  const btn = document.getElementById('dice-btn');
+  const result = document.getElementById('dice-result');
+  btn.classList.add('rolling');
+  result.className = 'dice-result';
+
+  let rollCount = 0;
+  const maxRolls = 15;
+  const rollInterval = setInterval(() => {
+    const tempVal = Math.floor(Math.random() * 20) + 1;
+    btn.textContent = tempVal;
+    rollCount++;
+
+    if (rollCount >= maxRolls) {
+      clearInterval(rollInterval);
+      const finalVal = Math.floor(Math.random() * 20) + 1;
+      btn.textContent = finalVal;
+      btn.classList.remove('rolling');
+      diceRolling = false;
+
+      result.textContent = finalVal === 20 ? 'NAT 20!' : finalVal === 1 ? 'NAT 1...' : `Rolled: ${finalVal}`;
+      result.className = 'dice-result visible' + (finalVal === 20 ? ' crit' : finalVal === 1 ? ' nat1' : '');
+      setTimeout(() => { result.className = 'dice-result'; }, 3000);
+    }
+  }, 80);
+}
+
+// ── Animation Loop ──
+function animate() {
+  animFrame++;
+  renderAll();
+  requestAnimationFrame(animate);
+}
+
+// ── Initialize ──
+window.addEventListener('resize', resize);
+resize();
+updateUI();
+showTurnBanner(PLAYERS[0].name);
+animate();
+</script>
+</body>
+</html>
