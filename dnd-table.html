@@ -5,268 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>RDNA Tabletop — D&D Control Surface</title>
 <style>
-  /* ── RDNA Brand Colors ── */
+  @font-face { font-family: 'Waves Blackletter CPC'; src: url('./fonts/WavesBlackletterCPC-Base.otf') format('opentype'); font-display: swap; }
+  @font-face { font-family: 'Waves Tiny CPC'; src: url('./fonts/WavesTinyCPC-Extended.otf') format('opentype'); font-display: swap; }
+
   :root {
-    --ink: #0F0E0C;
-    --cream: #FEF8E2;
-    --sun-yellow: #FCE184;
-    --sky-blue: #95BAD2;
-    --sunset-fuzz: #FCC383;
-    --sun-red: #FF7F7F;
-    --mint: #CEF5CA;
-    --pure-black: #000000;
-    --pure-white: #FFFFFF;
-    --stone: #3A3832;
-    --stone-light: #5A584F;
-    --water-deep: #4A7A9E;
-    --water-shallow: #6A9ABE;
+    --ink: #0F0E0C; --cream: #FEF8E2; --sun-yellow: #FCE184; --sky-blue: #95BAD2;
+    --sunset-fuzz: #FCC383; --sun-red: #FF7F7F; --mint: #CEF5CA;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html, body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: var(--ink);
-    font-family: 'Courier New', monospace;
-    color: var(--cream);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: none;
-    cursor: default;
+    width: 100vw; height: 100vh; overflow: hidden; background: var(--ink);
+    font-family: 'Courier New', monospace; color: var(--cream);
+    user-select: none; -webkit-user-select: none; touch-action: none; cursor: default;
   }
+  #game-container { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; }
 
-  #game-container {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ── Game Board Canvas ── */
   #board {
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    image-rendering: pixelated; image-rendering: crisp-edges;
     border: 2px solid var(--sun-yellow);
-    box-shadow:
-      0 0 20px rgba(252, 225, 132, 0.3),
-      0 0 60px rgba(252, 225, 132, 0.1),
-      inset 0 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(252,225,132,0.3), 0 0 60px rgba(252,225,132,0.1), inset 0 0 30px rgba(0,0,0,0.5);
+    cursor: grab;
   }
+  #board:active { cursor: grabbing; }
 
   /* ── Player Panels ── */
   .player-panel {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    background: rgba(15, 14, 12, 0.92);
-    border: 2px solid rgba(252, 225, 132, 0.25);
-    border-radius: 8px;
-    backdrop-filter: blur(8px);
-    transition: border-color 0.4s, box-shadow 0.4s;
-    z-index: 10;
+    position: absolute; display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+    background: rgba(15,14,12,0.92); border: 2px solid rgba(252,225,132,0.25);
+    border-radius: 8px; backdrop-filter: blur(8px); transition: border-color 0.4s, box-shadow 0.4s; z-index: 10;
   }
-
-  .player-panel.active {
-    border-color: var(--sun-yellow);
-    box-shadow: 0 0 24px rgba(252, 225, 132, 0.4), 0 0 60px rgba(252, 225, 132, 0.15);
-  }
-
+  .player-panel.active { border-color: var(--sun-yellow); box-shadow: 0 0 24px rgba(252,225,132,0.4); }
   .player-panel.south { bottom: 12px; left: 50%; transform: translateX(-50%); }
   .player-panel.north { top: 12px; left: 50%; transform: translateX(-50%) rotate(180deg); }
   .player-panel.west  { left: 12px; top: 50%; transform: translateY(-50%) rotate(90deg); }
   .player-panel.east  { right: 12px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
-
-  .player-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 4px;
-    image-rendering: pixelated;
-    border: 2px solid rgba(252, 225, 132, 0.3);
-    flex-shrink: 0;
-  }
-
+  .player-avatar { width: 56px; height: 56px; border-radius: 6px; image-rendering: pixelated; border: 2px solid rgba(252,225,132,0.3); flex-shrink: 0; object-fit: cover; background: var(--ink); }
   .player-info { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
-
-  .player-name {
-    font-size: 14px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .player-class {
-    font-size: 10px;
-    opacity: 0.6;
-    letter-spacing: 1px;
-  }
-
-  .hp-bar-outer {
-    width: 100%;
-    height: 8px;
-    background: rgba(252, 225, 132, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid rgba(252, 225, 132, 0.15);
-  }
-
-  .hp-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.5s ease-out;
-  }
-
-  .move-counter {
-    font-size: 10px;
-    opacity: 0.5;
-    letter-spacing: 1px;
-  }
-
+  .player-name { font-family: 'Waves Blackletter CPC', monospace; font-size: 20px; letter-spacing: 1px; }
+  .player-class { font-family: 'Waves Tiny CPC', monospace; font-size: 11px; opacity: 0.6; }
+  .hp-bar-outer { width: 100%; height: 8px; background: rgba(252,225,132,0.1); border-radius: 4px; overflow: hidden; border: 1px solid rgba(252,225,132,0.15); }
+  .hp-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
+  .move-counter { font-family: 'Waves Tiny CPC', monospace; font-size: 10px; opacity: 0.5; }
   .end-turn-btn {
-    padding: 8px 14px;
-    background: transparent;
-    border: 2px solid var(--sun-yellow);
-    color: var(--sun-yellow);
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    text-transform: uppercase;
+    padding: 8px 14px; background: transparent; border: 2px solid var(--sun-yellow); color: var(--sun-yellow);
+    font-family: 'Waves Tiny CPC', monospace; font-size: 12px; letter-spacing: 2px; cursor: pointer;
+    border-radius: 4px; transition: all 0.2s; flex-shrink: 0; text-transform: uppercase;
   }
+  .end-turn-btn:hover, .end-turn-btn:active { background: var(--sun-yellow); color: var(--ink); }
+  .end-turn-btn:disabled { opacity: 0.3; pointer-events: none; }
 
-  .end-turn-btn:hover, .end-turn-btn:active {
-    background: var(--sun-yellow);
-    color: var(--ink);
+  /* ── DM Panel ── */
+  .dm-panel {
+    position: absolute; bottom: 12px; left: 12px; width: 280px;
+    background: rgba(15,14,12,0.95); border: 2px solid rgba(252,225,132,0.35);
+    border-radius: 10px; z-index: 15; overflow: hidden;
+    box-shadow: 0 0 30px rgba(252,225,132,0.15);
   }
-
-  .end-turn-btn:disabled {
-    opacity: 0.3;
-    pointer-events: none;
+  .dm-header {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border-bottom: 1px solid rgba(252,225,132,0.15);
   }
-
-  /* ── D20 Dice Roller ── */
-  .dice-roller {
-    position: absolute;
-    bottom: 80px;
-    right: 80px;
-    z-index: 20;
+  .dm-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--sun-yellow); object-fit: cover; image-rendering: pixelated; flex-shrink: 0; }
+  .dm-title { font-family: 'Waves Blackletter CPC', monospace; font-size: 18px; color: var(--sun-yellow); }
+  .dm-subtitle { font-family: 'Waves Tiny CPC', monospace; font-size: 9px; opacity: 0.5; letter-spacing: 1px; }
+  .dm-narration {
+    padding: 10px 12px; height: 100px; overflow-y: auto; font-size: 12px; line-height: 1.5;
+    color: var(--cream); opacity: 0.85; scrollbar-width: thin; scrollbar-color: rgba(252,225,132,0.2) transparent;
   }
+  .dm-narration p { margin-bottom: 6px; }
+  .dm-narration p.dm-text { color: var(--sun-yellow); font-style: italic; }
+  .dm-voice-bar {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-top: 1px solid rgba(252,225,132,0.1); font-size: 10px; opacity: 0.6;
+  }
+  .mic-btn {
+    width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(252,225,132,0.3);
+    background: transparent; color: var(--cream); cursor: pointer; display: flex;
+    align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s;
+  }
+  .mic-btn.listening { border-color: var(--sun-red); color: var(--sun-red); animation: mic-pulse 1s infinite; }
+  @keyframes mic-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,127,127,0.4); } 50% { box-shadow: 0 0 0 8px rgba(255,127,127,0); } }
+  .voice-text { flex: 1; font-style: italic; opacity: 0.7; min-height: 16px; }
 
+  /* ── D20 Dice ── */
+  .dice-roller { position: absolute; bottom: 80px; right: 80px; z-index: 20; }
   .dice-btn {
-    width: 72px;
-    height: 72px;
-    background: rgba(15, 14, 12, 0.9);
-    border: 2px solid var(--sun-yellow);
-    border-radius: 12px;
-    color: var(--sun-yellow);
-    font-family: 'Courier New', monospace;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    box-shadow: 0 0 16px rgba(252, 225, 132, 0.2);
+    width: 72px; height: 72px; background: rgba(15,14,12,0.9); border: 2px solid var(--sun-yellow);
+    border-radius: 12px; color: var(--sun-yellow); font-family: 'Waves Blackletter CPC', monospace;
+    font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; box-shadow: 0 0 16px rgba(252,225,132,0.2);
   }
-
-  .dice-btn:hover, .dice-btn:active {
-    background: var(--sun-yellow);
-    color: var(--ink);
-    transform: scale(1.05);
-  }
-
-  .dice-btn.rolling {
-    animation: dice-shake 0.1s infinite alternate;
-  }
-
-  @keyframes dice-shake {
-    from { transform: rotate(-5deg) scale(1.05); }
-    to { transform: rotate(5deg) scale(1.05); }
-  }
-
+  .dice-btn:hover { background: var(--sun-yellow); color: var(--ink); transform: scale(1.05); }
+  .dice-btn.rolling { animation: dice-shake 0.1s infinite alternate; }
+  @keyframes dice-shake { from { transform: rotate(-5deg) scale(1.05); } to { transform: rotate(5deg) scale(1.05); } }
   .dice-result {
-    position: absolute;
-    bottom: 80px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    color: var(--sun-yellow);
-    white-space: nowrap;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.4s;
+    position: absolute; bottom: 80px; font-family: 'Waves Tiny CPC', monospace; font-size: 14px;
+    color: var(--sun-yellow); white-space: nowrap; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.4s;
   }
-
   .dice-result.visible { opacity: 1; }
-
   .dice-result.crit { color: var(--sun-red); font-weight: bold; }
   .dice-result.nat1 { color: var(--sky-blue); }
 
   /* ── Turn Banner ── */
   .turn-banner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 28px;
-    font-weight: bold;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: var(--sun-yellow);
-    text-shadow: 0 0 30px rgba(252, 225, 132, 0.6);
-    opacity: 0;
-    transition: opacity 0.4s;
-    pointer-events: none;
-    z-index: 30;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-family: 'Waves Blackletter CPC', monospace; font-size: 42px; color: var(--sun-yellow);
+    text-shadow: 0 0 30px rgba(252,225,132,0.6), 0 0 80px rgba(252,225,132,0.2);
+    opacity: 0; pointer-events: none; z-index: 30; white-space: nowrap;
+  }
+  .turn-banner.visible { opacity: 1; animation: banner-fade 2s forwards; }
+  @keyframes banner-fade { 0% { opacity:0; transform: translate(-50%,-50%) scale(0.8); } 20% { opacity:1; transform: translate(-50%,-50%) scale(1); } 80% { opacity:1; } 100% { opacity:0; } }
+
+  /* ── Minimap ── */
+  .minimap {
+    position: absolute; top: 12px; right: 12px; border: 1px solid rgba(252,225,132,0.3);
+    border-radius: 4px; z-index: 15; image-rendering: pixelated; opacity: 0.8;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
   }
 
-  .turn-banner.visible {
-    opacity: 1;
-    animation: banner-fade 2s forwards;
-  }
-
-  @keyframes banner-fade {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  /* ── Title ── */
-  .table-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 5;
-    text-align: center;
-    opacity: 0.08;
-    font-size: 10px;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    color: var(--sun-yellow);
-  }
-
-  /* ── Ambient corner marks ── */
-  .corner-mark {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-color: rgba(252, 225, 132, 0.15);
-    border-style: solid;
-    z-index: 2;
-  }
+  /* ── Corner marks ── */
+  .corner-mark { position: absolute; width: 24px; height: 24px; border-color: rgba(252,225,132,0.15); border-style: solid; z-index: 2; }
   .corner-mark.tl { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
   .corner-mark.tr { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
   .corner-mark.bl { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
@@ -274,738 +132,619 @@
 </style>
 </head>
 <body>
-
 <div id="game-container">
-  <!-- Corner marks for table registration -->
-  <div class="corner-mark tl"></div>
-  <div class="corner-mark tr"></div>
-  <div class="corner-mark bl"></div>
-  <div class="corner-mark br"></div>
+  <div class="corner-mark tl"></div><div class="corner-mark tr"></div>
+  <div class="corner-mark bl"></div><div class="corner-mark br"></div>
 
-  <!-- Game board -->
   <canvas id="board"></canvas>
+  <canvas class="minimap" id="minimap" width="128" height="128"></canvas>
 
-  <!-- Player 1 — South (Warrior) -->
+  <!-- Player panels -->
   <div class="player-panel south active" id="panel-0">
-    <canvas class="player-avatar" id="avatar-0" width="48" height="48"></canvas>
+    <img class="player-avatar" src="./dnd-assets/warrior.png" alt="Warrior">
     <div class="player-info">
-      <div class="player-name" style="color: var(--sun-red)">Vargrim</div>
+      <div class="player-name" style="color:var(--sun-red)">Vargrim</div>
       <div class="player-class">Warrior · Lvl 5</div>
-      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-0" style="width:100%; background: var(--sun-red)"></div></div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-0" style="width:100%;background:var(--sun-red)"></div></div>
       <div class="move-counter" id="moves-0">Moves: 5</div>
     </div>
     <button class="end-turn-btn" id="end-turn-0" onclick="endTurn()">End Turn</button>
   </div>
-
-  <!-- Player 2 — North (Mage) -->
   <div class="player-panel north" id="panel-1">
-    <canvas class="player-avatar" id="avatar-1" width="48" height="48"></canvas>
+    <img class="player-avatar" src="./dnd-assets/mage.png" alt="Mage">
     <div class="player-info">
-      <div class="player-name" style="color: var(--sky-blue)">Elyndra</div>
+      <div class="player-name" style="color:var(--sky-blue)">Elyndra</div>
       <div class="player-class">Mage · Lvl 5</div>
-      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-1" style="width:80%; background: var(--sky-blue)"></div></div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-1" style="width:80%;background:var(--sky-blue)"></div></div>
       <div class="move-counter" id="moves-1">Moves: 5</div>
     </div>
     <button class="end-turn-btn" id="end-turn-1" onclick="endTurn()">End Turn</button>
   </div>
-
-  <!-- Player 3 — West (Rogue) -->
   <div class="player-panel west" id="panel-2">
-    <canvas class="player-avatar" id="avatar-2" width="48" height="48"></canvas>
+    <img class="player-avatar" src="./dnd-assets/rogue.png" alt="Rogue">
     <div class="player-info">
-      <div class="player-name" style="color: var(--mint)">Shade</div>
+      <div class="player-name" style="color:var(--mint)">Shade</div>
       <div class="player-class">Rogue · Lvl 5</div>
-      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-2" style="width:90%; background: var(--mint)"></div></div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-2" style="width:90%;background:var(--mint)"></div></div>
       <div class="move-counter" id="moves-2">Moves: 5</div>
     </div>
     <button class="end-turn-btn" id="end-turn-2" onclick="endTurn()">End Turn</button>
   </div>
-
-  <!-- Player 4 — East (Cleric) -->
   <div class="player-panel east" id="panel-3">
-    <canvas class="player-avatar" id="avatar-3" width="48" height="48"></canvas>
+    <img class="player-avatar" src="./dnd-assets/cleric.png" alt="Cleric">
     <div class="player-info">
-      <div class="player-name" style="color: var(--sun-yellow)">Solara</div>
+      <div class="player-name" style="color:var(--sun-yellow)">Solara</div>
       <div class="player-class">Cleric · Lvl 5</div>
-      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-3" style="width:100%; background: var(--sun-yellow)"></div></div>
+      <div class="hp-bar-outer"><div class="hp-bar-fill" id="hp-3" style="width:100%;background:var(--sun-yellow)"></div></div>
       <div class="move-counter" id="moves-3">Moves: 5</div>
     </div>
     <button class="end-turn-btn" id="end-turn-3" onclick="endTurn()">End Turn</button>
   </div>
 
-  <!-- D20 Dice Roller -->
+  <!-- DM Panel -->
+  <div class="dm-panel" id="dm-panel">
+    <div class="dm-header">
+      <img class="dm-avatar" src="./dnd-assets/dm.png" alt="DM" onerror="this.style.background='var(--sun-yellow)';this.alt='DM'">
+      <div>
+        <div class="dm-title">The Oracle</div>
+        <div class="dm-subtitle">Dungeon Master · AI</div>
+      </div>
+    </div>
+    <div class="dm-narration" id="dm-narration">
+      <p class="dm-text">The dungeon awaits. Four souls stand at the threshold of the unknown...</p>
+    </div>
+    <div class="dm-voice-bar">
+      <button class="mic-btn" id="mic-btn" onclick="toggleVoice()">🎤</button>
+      <div class="voice-text" id="voice-text">Tap to speak your turn</div>
+    </div>
+  </div>
+
   <div class="dice-roller">
     <button class="dice-btn" id="dice-btn" onclick="rollD20()">D20</button>
     <div class="dice-result" id="dice-result"></div>
   </div>
-
-  <!-- Turn Banner -->
   <div class="turn-banner" id="turn-banner"></div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────────
-// RDNA TABLETOP — D&D Control Surface Prototype
-// ─────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+// RDNA TABLETOP v2 — D&D Control Surface + AI DM
+// ═══════════════════════════════════════════════════
 
-const COLORS = {
-  ink:          '#0F0E0C',
-  cream:        '#FEF8E2',
-  sunYellow:    '#FCE184',
-  skyBlue:      '#95BAD2',
-  sunsetFuzz:   '#FCC383',
-  sunRed:       '#FF7F7F',
-  mint:         '#CEF5CA',
-  pureWhite:    '#FFFFFF',
-  stone:        '#2A2822',
-  stoneLight:   '#3A3832',
-  stoneMid:     '#4A4842',
-  waterDeep:    '#3A6A8E',
-  waterShallow: '#5A8AAE',
-  wallDark:     '#1A1812',
-  wallLight:    '#2E2C24',
-  skin:         '#FFDBA4',
-  skinShadow:   '#D4A574',
-  hair:         '#5C3A1A',
-  metal:        '#999999',
-  metalDark:    '#666666',
-  brown:        '#8B6914',
-  darkBrown:    '#5C4A1A',
-  greenDark:    '#3A6C2F',
-  green:        '#5AA04A',
-  greenLight:   '#7AC06A',
-  lava:         '#CC4422',
-  torch:        '#FFAA44',
+const C = {
+  ink:'#0F0E0C', cream:'#FEF8E2', sunYellow:'#FCE184', skyBlue:'#95BAD2',
+  sunRed:'#FF7F7F', mint:'#CEF5CA', stone:'#2A2822', stoneLight:'#3A3832',
+  stoneMid:'#4A4842', waterDeep:'#3A6A8E', waterShallow:'#5A8AAE',
+  wallDark:'#1A1812', wallLight:'#2E2C24', torch:'#FFAA44',
 };
 
-// ── Dungeon Map (16x16) ──
-// 0=floor, 1=wall, 2=water, 3=rubble, 4=pillar, 5=chest, 6=torch-wall
-const GRID_SIZE = 16;
-const MAP = [
-  [1,1,1,1,1,6,1,1,1,1,6,1,1,1,1,1],
-  [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,4,0,0,0,0,0,0,0,0,4,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [6,0,0,0,0,3,0,0,0,0,3,0,0,0,0,6],
-  [1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1],
-  [1,1,0,0,0,0,2,2,2,2,0,0,0,0,1,1],
-  [1,1,0,0,0,0,2,2,2,2,0,0,0,0,1,1],
-  [1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1],
-  [6,0,0,0,0,3,0,0,0,0,3,0,0,0,0,6],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,4,0,0,0,0,0,0,0,0,4,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1],
-  [1,1,1,1,1,6,1,1,1,1,6,1,1,1,1,1],
+// ── Map Generation (32x32) ──
+const GRID = 32;
+const MAP = Array.from({length: GRID}, () => Array(GRID).fill(1));
+const FOG = Array.from({length: GRID}, () => Array(GRID).fill(0)); // 0=hidden, 1=explored, 2=visible
+
+// Rooms: [row1, col1, row2, col2]
+const ROOMS = [
+  [2,2,6,6],[2,25,6,29],[25,2,29,6],[25,25,29,29],  // corners
+  [13,13,18,18],                                       // central
+  [2,13,5,18],[26,13,29,18],                           // N/S halls
+  [13,2,18,6],[13,25,18,29],                           // W/E halls
+  [8,8,11,12],[8,19,11,23],[20,8,23,12],[20,19,23,23], // mid rooms
+  [9,14,11,17],[20,14,22,17],                           // vertical passages
 ];
 
-// Obstacles placed on floor tiles: [row, col, type]
-// type: 'rock', 'barrel', 'crate'
+function buildMap() {
+  // Carve rooms
+  ROOMS.forEach(([r1,c1,r2,c2]) => {
+    for (let r=r1;r<=r2;r++) for (let c=c1;c<=c2;c++) MAP[r][c] = 0;
+  });
+  // Corridors (horizontal then vertical)
+  const corridors = [
+    [[4,6,4,13],[4,18,4,25]],   // top E-W
+    [[27,6,27,13],[27,18,27,25]],// bot E-W
+    [[15,6,15,13],[15,18,15,25]],// mid E-W
+    [[6,4,13,4],[18,4,25,4]],    // left N-S
+    [[6,27,13,27],[18,27,25,27]],// right N-S
+    [[6,15,13,15],[18,15,25,15]],// center N-S
+    [[11,10,13,10],[18,10,20,10]],// cross L
+    [[11,21,13,21],[18,21,20,21]],// cross R
+    [[10,12,10,14],[10,17,10,19]],// top cross
+    [[21,12,21,14],[21,17,21,19]],// bot cross
+  ];
+  corridors.forEach(segs => segs.forEach(([r1,c1,r2,c2]) => {
+    for (let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++)
+      for (let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++) MAP[r][c] = 0;
+  }));
+  // Water in central chamber
+  for (let r=14;r<=17;r++) for (let c=14;c<=17;c++) MAP[r][c] = 2;
+  MAP[15][15] = 0; MAP[15][16] = 0; MAP[16][15] = 0; MAP[16][16] = 0; // island
+  // Torch walls
+  [[0,5],[0,10],[0,21],[0,26],[31,5],[31,10],[31,21],[31,26],
+   [5,0],[10,0],[21,0],[26,0],[5,31],[10,31],[21,31],[26,31],
+   [2,13],[2,18],[29,13],[29,18],[13,2],[18,2],[13,29],[18,29]
+  ].forEach(([r,c]) => { if(MAP[r][c]===1) MAP[r][c]=6; });
+  // Pillars
+  [[3,3],[3,28],[28,3],[28,28],[14,14],[14,17],[17,14],[17,17],
+   [9,9],[9,22],[22,9],[22,22]
+  ].forEach(([r,c]) => MAP[r][c] = 4);
+  // Rubble
+  [[5,10],[10,5],[21,5],[26,10],[5,21],[10,26],[21,26],[26,21]
+  ].forEach(([r,c]) => MAP[r][c] = 3);
+}
+buildMap();
+
+// Objects on floor
 const OBJECTS = [
-  [2, 5, 'rock'], [2, 10, 'rock'],
-  [5, 2, 'barrel'], [5, 13, 'barrel'],
-  [10, 2, 'crate'], [10, 13, 'crate'],
-  [13, 5, 'rock'], [13, 10, 'rock'],
-  [7, 4, 'barrel'], [8, 11, 'barrel'],
-  [3, 7, 'chest'], [12, 8, 'chest'],
+  [3,5,'barrel'],[3,26,'barrel'],[28,5,'crate'],[28,26,'crate'],
+  [9,10,'chest'],[9,21,'chest'],[22,10,'chest'],[22,21,'chest'],
+  [15,15,'chest'],[4,15,'barrel'],[27,16,'barrel'],
+  [10,3,'rock'],[10,28,'rock'],[21,3,'rock'],[21,28,'rock'],
 ];
 
-// ── Player State ──
+// ── Players ──
 const PLAYERS = [
-  { name: 'Vargrim',  cls: 'Warrior', color: COLORS.sunRed,    hp: 45, maxHp: 45, row: 14, col: 7,  moves: 5, maxMoves: 5 },
-  { name: 'Elyndra',  cls: 'Mage',    color: COLORS.skyBlue,   hp: 28, maxHp: 35, row: 1,  col: 8,  moves: 5, maxMoves: 5 },
-  { name: 'Shade',    cls: 'Rogue',   color: COLORS.mint,      hp: 32, maxHp: 35, row: 7,  col: 1,  moves: 5, maxMoves: 5 },
-  { name: 'Solara',   cls: 'Cleric',  color: COLORS.sunYellow, hp: 38, maxHp: 38, row: 8,  col: 14, moves: 5, maxMoves: 5 },
+  { name:'Vargrim', cls:'Warrior', color:C.sunRed,    hp:45, maxHp:45, row:27, col:4,  moves:5, maxMoves:5 },
+  { name:'Elyndra', cls:'Mage',    color:C.skyBlue,   hp:28, maxHp:35, row:4,  col:27, moves:5, maxMoves:5 },
+  { name:'Shade',   cls:'Rogue',   color:C.mint,      hp:32, maxHp:35, row:15, col:3,  moves:5, maxMoves:5 },
+  { name:'Solara',  cls:'Cleric',  color:C.sunYellow, hp:38, maxHp:38, row:16, col:28, moves:5, maxMoves:5 },
 ];
 
-let currentPlayer = 0;
-let selectedPlayer = null;
-let animFrame = 0;
-let diceRolling = false;
+let currentPlayer = 0, selectedPlayer = null, animFrame = 0, diceRolling = false;
+let camX = 0, camY = 0; // camera offset in pixels
+let isDragging = false, dragStartX = 0, dragStartY = 0, camStartX = 0, camStartY = 0;
+const VISION_RADIUS = 5;
 
-// ── Sprite Definitions (10x10 pixel art, string-encoded) ──
-// . = transparent, other chars map to palette
+// ── Sprite Data ──
 const SPRITE_DATA = {
-  warrior: {
-    palette: { 'h':'#5C3A1A', 's':'#FFDBA4', 'r':'#CC4444', 'R':'#FF7F7F', 'm':'#888888', 'M':'#AAAAAA', 'k':'#0F0E0C', 'b':'#5C4A1A', 'B':'#8B6914' },
-    pixels: [
-      '..mMMMm...',
-      '.mMhhhMm..',
-      '.Ms.k.sM..',
-      '.MsssssM..',
-      '..RRRRR...',
-      'M.RRRRR.M.',
-      'M..RRR..M.',
-      '...RbR....',
-      '...R.R....',
-      '..Bb.bB...',
-    ]
-  },
-  mage: {
-    palette: { 'h':'#D4A574', 's':'#FFDBA4', 'b':'#4477AA', 'B':'#5599CC', 'p':'#95BAD2', 'k':'#0F0E0C', 'w':'#AAAAAA', 'W':'#CCCCCC', 'g':'#FCE184' },
-    pixels: [
-      '....gp....',
-      '...ppp....',
-      '..phhp....',
-      '..s.ks....',
-      '..sssss...',
-      '.BBBBBBw..',
-      '..BBBBB...',
-      '..bBBBb...',
-      '...b.b....',
-      '..bb.bb...',
-    ]
-  },
-  rogue: {
-    palette: { 'h':'#5C3A1A', 's':'#FFDBA4', 'g':'#4A7A3F', 'G':'#6AAA5A', 'k':'#0F0E0C', 'd':'#888888', 'D':'#AAAAAA', 'b':'#3A3A2A', 'B':'#5A5A4A' },
-    pixels: [
-      '..gGGGg...',
-      '.gGhhhGg..',
-      '.Gs.k.sG..',
-      '..sssssg..',
-      '..GGGGGg..',
-      'D.GGGGGgD.',
-      '...GGG.D..',
-      '...GbG....',
-      '...b.b....',
-      '..Bb.bB...',
-    ]
-  },
-  cleric: {
-    palette: { 'h':'#D4A574', 's':'#FFDBA4', 'y':'#CCAA33', 'Y':'#FCE184', 'w':'#DDDDDD', 'W':'#FFFFFF', 'k':'#0F0E0C', 'b':'#8B6914', 'g':'#FCE184' },
-    pixels: [
-      '...gYg....',
-      '..YhhhY...',
-      '..s.k.s...',
-      '..sssss...',
-      '.WWYWWW...',
-      '.WWYWWW...',
-      '..WWWWW...',
-      '..WYbYW...',
-      '...W.W....',
-      '..bb.bb...',
-    ]
-  }
+  warrior: { p:{'h':'#5C3A1A','s':'#FFDBA4','r':'#CC4444','R':'#FF7F7F','m':'#888','M':'#AAA','k':'#0F0E0C','b':'#5C4A1A','B':'#8B6914'},
+    d:['..mMMMm...', '.mMhhhMm..', '.Ms.k.sM..', '.MsssssM..', '..RRRRR...', 'M.RRRRR.M.', 'M..RRR..M.', '...RbR....', '...R.R....', '..Bb.bB...']},
+  mage: { p:{'h':'#D4A574','s':'#FFDBA4','b':'#4477AA','B':'#5599CC','p':'#95BAD2','k':'#0F0E0C','w':'#AAA','W':'#CCC','g':'#FCE184'},
+    d:['....gp....', '...ppp....', '..phhp....', '..s.ks....', '..sssss...', '.BBBBBBw..', '..BBBBB...', '..bBBBb...', '...b.b....', '..bb.bb...']},
+  rogue: { p:{'h':'#5C3A1A','s':'#FFDBA4','g':'#4A7A3F','G':'#6AAA5A','k':'#0F0E0C','d':'#888','D':'#AAA','b':'#3A3A2A','B':'#5A5A4A'},
+    d:['..gGGGg...', '.gGhhhGg..', '.Gs.k.sG..', '..sssssg..', '..GGGGGg..', 'D.GGGGGgD.', '...GGG.D..', '...GbG....', '...b.b....', '..Bb.bB...']},
+  cleric: { p:{'h':'#D4A574','s':'#FFDBA4','y':'#CCAA33','Y':'#FCE184','w':'#DDD','W':'#FFF','k':'#0F0E0C','b':'#8B6914','g':'#FCE184'},
+    d:['...gYg....', '..YhhhY...', '..s.k.s...', '..sssss...', '.WWYWWW...', '.WWYWWW...', '..WWWWW...', '..WYbYW...', '...W.W....', '..bb.bb...']},
+};
+const OBJ_SPRITES = {
+  rock: { p:{'a':'#5A584F','b':'#3A3832','c':'#7A786F'}, d:['...bc...','..bcca..', '.bccca..','bccccab.','bcccaab.','.bccab..','..bba...','........']},
+  barrel: { p:{'w':'#8B6914','W':'#AA8834','m':'#666644','k':'#3A3A2A'}, d:['..mmmm..','.mWWWWm.','.wWWWWw.','.mWWWWm.','.wWWWWw.','.mWWWWm.','.wWWWWw.','..kkkk..']},
+  crate: { p:{'w':'#8B6914','W':'#AA8834','k':'#3A3A2A'}, d:['kkkkkkkk','kWWkkWWk','kWWkkWWk','kkkkkkk.','kkkkkkkk','kWWkkWWk','kWWkkWWk','kkkkkkkk']},
+  chest: { p:{'w':'#8B6914','W':'#AA8834','g':'#FCE184','G':'#CCAA33','k':'#3A3A2A'}, d:['........','.kkkkkk.','.kWWWWk.','.kWgWWk.','.kGggGk.','.kWWWWk.','.kWWWWk.','.kkkkkk.']},
 };
 
-// ── Object Sprites (8x8) ──
-const OBJECT_SPRITES = {
-  rock: {
-    palette: { 'a':'#5A584F', 'b':'#3A3832', 'c':'#7A786F', 'k':'#2A2822' },
-    pixels: [
-      '...bc...',
-      '..bcca..',
-      '.bccca..',
-      'bccccab.',
-      'bcccaab.',
-      '.bccab..',
-      '..bba...',
-      '........',
-    ]
-  },
-  barrel: {
-    palette: { 'w':'#8B6914', 'W':'#AA8834', 'm':'#666644', 'k':'#3A3A2A' },
-    pixels: [
-      '..mmmm..',
-      '.mWWWWm.',
-      '.wWWWWw.',
-      '.mWWWWm.',
-      '.wWWWWw.',
-      '.mWWWWm.',
-      '.wWWWWw.',
-      '..kkkk..',
-    ]
-  },
-  crate: {
-    palette: { 'w':'#8B6914', 'W':'#AA8834', 'k':'#3A3A2A', 'm':'#666644' },
-    pixels: [
-      'kkkkkkkk',
-      'kWWkkWWk',
-      'kWWkkWWk',
-      'kkkkkkk.',
-      'kkkkkkkk',
-      'kWWkkWWk',
-      'kWWkkWWk',
-      'kkkkkkkk',
-    ]
-  },
-  chest: {
-    palette: { 'w':'#8B6914', 'W':'#AA8834', 'g':'#FCE184', 'G':'#CCAA33', 'k':'#3A3A2A' },
-    pixels: [
-      '........',
-      '.kkkkkk.',
-      '.kWWWWk.',
-      '.kWgWWk.',
-      '.kGggGk.',
-      '.kWWWWk.',
-      '.kWWWWk.',
-      '.kkkkkk.',
-    ]
+// ── Audio Engine ──
+let audioCtx;
+function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+function playSound(type) {
+  initAudio();
+  const now = audioCtx.currentTime;
+  if (type === 'step') {
+    const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    osc.connect(g); g.connect(audioCtx.destination);
+    osc.type = 'square'; osc.frequency.value = 80 + Math.random() * 40;
+    g.gain.setValueAtTime(0.08, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.start(now); osc.stop(now + 0.08);
+  } else if (type === 'dice') {
+    for (let i = 0; i < 12; i++) {
+      const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      osc.connect(g); g.connect(audioCtx.destination);
+      osc.type = 'triangle'; osc.frequency.value = 300 + Math.random() * 600;
+      const t = now + i * 0.06;
+      g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+      osc.start(t); osc.stop(t + 0.05);
+    }
+  } else if (type === 'turn') {
+    [440,554,659].forEach((f, i) => {
+      const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      osc.connect(g); g.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.value = f;
+      const t = now + i * 0.12;
+      g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      osc.start(t); osc.stop(t + 0.2);
+    });
+  } else if (type === 'crit') {
+    [523,659,784,1047].forEach((f, i) => {
+      const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      osc.connect(g); g.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.value = f;
+      const t = now + i * 0.1;
+      g.gain.setValueAtTime(0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      osc.start(t); osc.stop(t + 0.3);
+    });
   }
+}
+
+// ── DM Narration ──
+const DM_LINES = {
+  turnStart: [
+    "{name} steps forward, the torchlight dancing across their face...",
+    "The dungeon holds its breath. {name} must act...",
+    "Shadows shift. {name}'s turn begins...",
+    "The Oracle watches as {name} considers the darkness ahead...",
+  ],
+  move: [
+    "{name} moves carefully across the cold stone.",
+    "Footsteps echo as {name} advances deeper.",
+    "{name} picks their way through the gloom.",
+    "The floor groans beneath {name}'s weight.",
+  ],
+  nat20: ["The fates rejoice! A NATURAL 20! The Oracle smiles.", "Destiny bends to {name}'s will! NAT 20!"],
+  nat1: ["The gods look away... a critical failure.", "Misfortune strikes. The Oracle winces."],
+  rollHigh: ["A strong roll. Fortune favors {name}.", "The dice land well. The Oracle nods."],
+  rollLow: ["The dice are unkind. {name} grimaces.", "A poor throw. The shadows grow darker."],
 };
+
+function dmNarrate(category, name) {
+  const lines = DM_LINES[category];
+  if (!lines) return;
+  const text = lines[Math.floor(Math.random() * lines.length)].replace('{name}', name);
+  const el = document.getElementById('dm-narration');
+  const p = document.createElement('p');
+  p.className = 'dm-text';
+  p.textContent = text;
+  el.appendChild(p);
+  el.scrollTop = el.scrollHeight;
+}
+
+// ── Voice Recognition ──
+let recognition = null, isListening = false;
+function toggleVoice() {
+  initAudio();
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    document.getElementById('voice-text').textContent = 'Voice not supported';
+    return;
+  }
+  if (isListening) { recognition.stop(); return; }
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'en-US';
+  const micBtn = document.getElementById('mic-btn');
+  const voiceText = document.getElementById('voice-text');
+  recognition.onstart = () => { isListening = true; micBtn.classList.add('listening'); voiceText.textContent = 'Listening...'; };
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    voiceText.textContent = transcript;
+    if (e.results[0].isFinal) {
+      const el = document.getElementById('dm-narration');
+      const p = document.createElement('p');
+      p.textContent = `[${PLAYERS[currentPlayer].name}]: "${transcript}"`;
+      el.appendChild(p);
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+  recognition.onend = () => { isListening = false; micBtn.classList.remove('listening'); voiceText.textContent = 'Tap to speak your turn'; };
+  recognition.onerror = () => { isListening = false; micBtn.classList.remove('listening'); voiceText.textContent = 'Tap to speak your turn'; };
+  recognition.start();
+}
+
+// ── Fog of War ──
+function updateFog() {
+  // Reset all to explored (keep memory)
+  for (let r = 0; r < GRID; r++)
+    for (let c = 0; c < GRID; c++)
+      if (FOG[r][c] === 2) FOG[r][c] = 1;
+  // Mark visible around each player
+  PLAYERS.forEach(p => {
+    for (let dr = -VISION_RADIUS; dr <= VISION_RADIUS; dr++) {
+      for (let dc = -VISION_RADIUS; dc <= VISION_RADIUS; dc++) {
+        const nr = p.row + dr, nc = p.col + dc;
+        if (nr < 0 || nr >= GRID || nc < 0 || nc >= GRID) continue;
+        if (dr*dr + dc*dc <= VISION_RADIUS * VISION_RADIUS) FOG[nr][nc] = 2;
+      }
+    }
+  });
+}
 
 // ── Canvas Setup ──
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
+const miniCanvas = document.getElementById('minimap');
+const mctx = miniCanvas.getContext('2d');
+let cellSize = 40, viewCols = 16, viewRows = 16;
 
 function resize() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  // Grid takes up ~65% of the smaller dimension, leaving room for panels
-  const maxSide = Math.min(vw * 0.65, vh * 0.72);
-  const cellSize = Math.floor(maxSide / GRID_SIZE);
-  const boardPx = cellSize * GRID_SIZE;
-
-  canvas.width = boardPx;
-  canvas.height = boardPx;
-  canvas.style.width = boardPx + 'px';
-  canvas.style.height = boardPx + 'px';
-  canvas.dataset.cellSize = cellSize;
-
-  renderAll();
-  renderAvatars();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const maxSide = Math.min(vw * 0.6, vh * 0.7);
+  cellSize = Math.floor(maxSide / 16);
+  viewCols = 16; viewRows = 16;
+  canvas.width = cellSize * viewCols; canvas.height = cellSize * viewRows;
+  canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px';
+  centerOnPlayer(currentPlayer);
+  updateFog(); renderAll(); renderMinimap();
 }
 
-// ── Rendering ──
-function renderAll() {
-  const cs = parseInt(canvas.dataset.cellSize) || 40;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function centerOnPlayer(idx) {
+  const p = PLAYERS[idx];
+  camX = p.col * cellSize - canvas.width / 2 + cellSize / 2;
+  camY = p.row * cellSize - canvas.height / 2 + cellSize / 2;
+  clampCamera();
+}
 
-  // Draw tiles
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      drawTile(r, c, cs);
-    }
+function clampCamera() {
+  const maxX = GRID * cellSize - canvas.width;
+  const maxY = GRID * cellSize - canvas.height;
+  camX = Math.max(0, Math.min(maxX, camX));
+  camY = Math.max(0, Math.min(maxY, camY));
+}
+
+// ── Pan/Drag ──
+canvas.addEventListener('pointerdown', e => {
+  isDragging = true; dragStartX = e.clientX; dragStartY = e.clientY;
+  camStartX = camX; camStartY = camY; canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', e => {
+  if (!isDragging) return;
+  camX = camStartX - (e.clientX - dragStartX);
+  camY = camStartY - (e.clientY - dragStartY);
+  clampCamera();
+});
+canvas.addEventListener('pointerup', e => {
+  const dx = Math.abs(e.clientX - dragStartX), dy = Math.abs(e.clientY - dragStartY);
+  isDragging = false;
+  if (dx < 5 && dy < 5) handleClick(e); // was a tap, not a drag
+});
+
+function handleClick(e) {
+  initAudio();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const col = Math.floor((mx + camX) / cellSize);
+  const row = Math.floor((my + camY) / cellSize);
+  if (row < 0 || row >= GRID || col < 0 || col >= GRID) return;
+
+  const p = PLAYERS[currentPlayer];
+  if (p.row === row && p.col === col) {
+    selectedPlayer = selectedPlayer === currentPlayer ? null : currentPlayer;
+    return;
   }
-
-  // Draw grid lines
-  ctx.strokeStyle = 'rgba(252, 225, 132, 0.08)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= GRID_SIZE; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * cs, 0);
-    ctx.lineTo(i * cs, GRID_SIZE * cs);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0, i * cs);
-    ctx.lineTo(GRID_SIZE * cs, i * cs);
-    ctx.stroke();
-  }
-
-  // Draw objects
-  OBJECTS.forEach(([r, c, type]) => {
-    drawObjectSprite(r, c, type, cs);
-  });
-
-  // Draw movement highlights
-  if (selectedPlayer !== null) {
-    const p = PLAYERS[selectedPlayer];
+  if (selectedPlayer === currentPlayer && p.moves > 0) {
     const adj = getAdjacentCells(p.row, p.col);
-    adj.forEach(([ar, ac]) => {
-      ctx.fillStyle = `rgba(252, 225, 132, ${0.12 + 0.04 * Math.sin(animFrame * 0.08)})`;
-      ctx.fillRect(ac * cs, ar * cs, cs, cs);
-      ctx.strokeStyle = `rgba(252, 225, 132, ${0.3 + 0.1 * Math.sin(animFrame * 0.08)})`;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(ac * cs + 1, ar * cs + 1, cs - 2, cs - 2);
-    });
-  }
-
-  // Draw characters
-  PLAYERS.forEach((p, i) => {
-    drawCharacter(p, i, cs);
-  });
-
-  // Draw torch flickers on torch-wall tiles
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if (MAP[r][c] === 6) {
-        drawTorchGlow(r, c, cs);
-      }
+    if (adj.some(([ar,ac]) => ar===row && ac===col)) {
+      p.row = row; p.col = col; p.moves--;
+      playSound('step'); dmNarrate('move', p.name);
+      updateFog(); updateUI(); renderMinimap();
+      if (p.moves <= 0) selectedPlayer = null;
+      return;
     }
   }
 }
 
-function drawTile(r, c, cs) {
-  const tile = MAP[r][c];
-  const x = c * cs;
-  const y = r * cs;
-
-  switch (tile) {
-    case 0: // Floor
-      ctx.fillStyle = COLORS.stone;
-      ctx.fillRect(x, y, cs, cs);
-      // Subtle texture: pseudo-random noise
-      const seed = r * 31 + c * 17;
-      if ((seed % 7) < 2) {
-        ctx.fillStyle = COLORS.stoneLight;
-        const sx = x + (seed % 5) * (cs / 6);
-        const sy = y + ((seed * 3) % 5) * (cs / 6);
-        ctx.fillRect(sx, sy, cs / 6, cs / 6);
-      }
-      break;
-
-    case 1: // Wall
-      ctx.fillStyle = COLORS.wallDark;
-      ctx.fillRect(x, y, cs, cs);
-      // Wall brick pattern
-      ctx.fillStyle = COLORS.wallLight;
-      const bh = cs / 3;
-      for (let row = 0; row < 3; row++) {
-        const offset = (row % 2 === 0) ? 0 : cs / 4;
-        for (let bx = offset; bx < cs; bx += cs / 2) {
-          ctx.fillRect(x + bx + 1, y + row * bh + 1, cs / 2 - 2, bh - 2);
-        }
-      }
-      break;
-
-    case 2: // Water
-      const waveOffset = Math.sin(animFrame * 0.04 + r * 0.5 + c * 0.3) * 0.5;
-      ctx.fillStyle = waveOffset > 0 ? COLORS.waterDeep : COLORS.waterShallow;
-      ctx.fillRect(x, y, cs, cs);
-      // Animated wave highlights
-      ctx.fillStyle = `rgba(149, 186, 210, ${0.15 + waveOffset * 0.15})`;
-      const wx = x + cs * 0.2 + Math.sin(animFrame * 0.03 + c) * cs * 0.1;
-      ctx.fillRect(wx, y + cs * 0.3, cs * 0.4, cs * 0.15);
-      break;
-
-    case 3: // Rubble
-      ctx.fillStyle = COLORS.stone;
-      ctx.fillRect(x, y, cs, cs);
-      ctx.fillStyle = COLORS.stoneMid;
-      // Small rubble pieces
-      for (let i = 0; i < 4; i++) {
-        const rx = x + ((r * 7 + c * 13 + i * 11) % 6) * (cs / 8);
-        const ry = y + ((r * 11 + c * 7 + i * 5) % 6) * (cs / 8);
-        ctx.fillRect(rx, ry, cs / 5, cs / 5);
-      }
-      break;
-
-    case 4: // Pillar
-      ctx.fillStyle = COLORS.stone;
-      ctx.fillRect(x, y, cs, cs);
-      // Draw pillar
-      const margin = cs * 0.2;
-      ctx.fillStyle = COLORS.stoneMid;
-      ctx.fillRect(x + margin, y + margin * 0.5, cs - margin * 2, cs - margin);
-      ctx.fillStyle = '#5A584F';
-      ctx.fillRect(x + margin - 2, y + margin * 0.3, cs - margin * 2 + 4, cs * 0.15);
-      ctx.fillRect(x + margin - 2, y + cs - margin * 0.8, cs - margin * 2 + 4, cs * 0.15);
-      break;
-
-    case 5: // Chest
-      ctx.fillStyle = COLORS.stone;
-      ctx.fillRect(x, y, cs, cs);
-      break;
-
-    case 6: // Torch wall
-      ctx.fillStyle = COLORS.wallDark;
-      ctx.fillRect(x, y, cs, cs);
-      ctx.fillStyle = COLORS.wallLight;
-      const tbh = cs / 3;
-      for (let row = 0; row < 3; row++) {
-        const toff = (row % 2 === 0) ? 0 : cs / 4;
-        for (let bx = toff; bx < cs; bx += cs / 2) {
-          ctx.fillRect(x + bx + 1, y + row * tbh + 1, cs / 2 - 2, tbh - 2);
-        }
-      }
-      // Torch bracket
-      ctx.fillStyle = COLORS.torch;
-      ctx.fillRect(x + cs * 0.4, y + cs * 0.2, cs * 0.2, cs * 0.3);
-      // Flame
-      const flicker = Math.sin(animFrame * 0.15 + r + c) * cs * 0.05;
-      ctx.fillStyle = '#FFCC44';
-      ctx.beginPath();
-      ctx.arc(x + cs * 0.5 + flicker, y + cs * 0.15, cs * 0.12, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#FF8822';
-      ctx.beginPath();
-      ctx.arc(x + cs * 0.5 - flicker * 0.5, y + cs * 0.12, cs * 0.07, 0, Math.PI * 2);
-      ctx.fill();
-      break;
-  }
-}
-
-function drawTorchGlow(r, c, cs) {
-  const x = c * cs + cs / 2;
-  const y = r * cs + cs / 2;
-  const radius = cs * 2.5;
-  const flicker = 0.08 + Math.sin(animFrame * 0.12 + r * 3 + c * 5) * 0.03;
-  const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-  grad.addColorStop(0, `rgba(255, 170, 68, ${flicker})`);
-  grad.addColorStop(0.5, `rgba(255, 170, 68, ${flicker * 0.3})`);
-  grad.addColorStop(1, 'rgba(255, 170, 68, 0)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
-}
-
-function drawSprite(spriteData, x, y, cs, pixelSize) {
-  const { palette, pixels } = spriteData;
-  const spriteW = pixels[0].length;
-  const spriteH = pixels.length;
-  const px = pixelSize || (cs / Math.max(spriteW, spriteH));
-  const offsetX = x + (cs - spriteW * px) / 2;
-  const offsetY = y + (cs - spriteH * px) / 2;
-
-  for (let r = 0; r < spriteH; r++) {
-    for (let c = 0; c < spriteW; c++) {
-      const ch = pixels[r][c];
-      if (ch !== '.' && palette[ch]) {
-        ctx.fillStyle = palette[ch];
-        ctx.fillRect(
-          Math.floor(offsetX + c * px),
-          Math.floor(offsetY + r * px),
-          Math.ceil(px),
-          Math.ceil(px)
-        );
-      }
-    }
-  }
-}
-
-function drawObjectSprite(r, c, type, cs) {
-  const sprite = OBJECT_SPRITES[type];
-  if (!sprite) return;
-  drawSprite(sprite, c * cs, r * cs, cs);
-}
-
-function drawCharacter(player, index, cs) {
-  const x = player.col * cs;
-  const y = player.row * cs;
-  const spriteKeys = ['warrior', 'mage', 'rogue', 'cleric'];
-  const spriteData = SPRITE_DATA[spriteKeys[index]];
-
-  // Selection / active glow
-  if (index === currentPlayer) {
-    const glowRadius = cs * 0.6;
-    const pulse = 0.25 + Math.sin(animFrame * 0.06) * 0.1;
-    const grad = ctx.createRadialGradient(
-      x + cs / 2, y + cs / 2, cs * 0.1,
-      x + cs / 2, y + cs / 2, glowRadius
-    );
-    grad.addColorStop(0, player.color + '66');
-    grad.addColorStop(1, player.color + '00');
-    ctx.fillStyle = grad;
-    ctx.fillRect(x - cs * 0.1, y - cs * 0.1, cs * 1.2, cs * 1.2);
-  }
-
-  if (selectedPlayer === index) {
-    ctx.strokeStyle = COLORS.sunYellow;
-    ctx.lineWidth = 2;
-    ctx.setLineDash([4, 4]);
-    ctx.strokeRect(x + 2, y + 2, cs - 4, cs - 4);
-    ctx.setLineDash([]);
-  }
-
-  // Idle bobbing
-  const bob = Math.sin(animFrame * 0.05 + index * 1.5) * 2;
-
-  // Draw sprite
-  drawSprite(spriteData, x, y + bob, cs);
-}
-
-function renderAvatars() {
-  const spriteKeys = ['warrior', 'mage', 'rogue', 'cleric'];
-  for (let i = 0; i < 4; i++) {
-    const avatarCanvas = document.getElementById(`avatar-${i}`);
-    const actx = avatarCanvas.getContext('2d');
-    actx.clearRect(0, 0, 48, 48);
-    actx.fillStyle = COLORS.stone;
-    actx.fillRect(0, 0, 48, 48);
-
-    const sprite = SPRITE_DATA[spriteKeys[i]];
-    const spriteW = sprite.pixels[0].length;
-    const spriteH = sprite.pixels.length;
-    const px = 48 / Math.max(spriteW, spriteH);
-    const ox = (48 - spriteW * px) / 2;
-    const oy = (48 - spriteH * px) / 2;
-
-    for (let r = 0; r < spriteH; r++) {
-      for (let c = 0; c < spriteW; c++) {
-        const ch = sprite.pixels[r][c];
-        if (ch !== '.' && sprite.palette[ch]) {
-          actx.fillStyle = sprite.palette[ch];
-          actx.fillRect(
-            Math.floor(ox + c * px),
-            Math.floor(oy + r * px),
-            Math.ceil(px),
-            Math.ceil(px)
-          );
-        }
-      }
-    }
-  }
-}
-
-// ── Movement Logic ──
 function getAdjacentCells(row, col) {
-  const dirs = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
-  return dirs
-    .map(([dr, dc]) => [row + dr, col + dc])
-    .filter(([r, c]) => {
-      if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return false;
-      const tile = MAP[r][c];
-      if (tile === 1 || tile === 2 || tile === 4 || tile === 6) return false; // walls, water, pillars, torch-walls
-      // Check for other players
-      if (PLAYERS.some(p => p.row === r && p.col === c)) return false;
-      // Check for blocking objects
-      if (OBJECTS.some(([or, oc]) => or === r && oc === c)) return false;
+  return [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]
+    .map(([dr,dc]) => [row+dr, col+dc])
+    .filter(([r,c]) => {
+      if (r<0||r>=GRID||c<0||c>=GRID) return false;
+      const t = MAP[r][c]; if (t===1||t===2||t===4||t===6) return false;
+      if (PLAYERS.some(p => p.row===r && p.col===c)) return false;
+      if (OBJECTS.some(([or,oc]) => or===r && oc===c)) return false;
       return true;
     });
 }
 
-function isPassable(r, c) {
-  if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return false;
-  const tile = MAP[r][c];
-  if (tile === 1 || tile === 2 || tile === 4 || tile === 6) return false;
-  if (PLAYERS.some(p => p.row === r && p.col === c)) return false;
-  if (OBJECTS.some(([or, oc]) => or === r && oc === c)) return false;
-  return true;
-}
+// ── Rendering ──
+function renderAll() {
+  const cs = cellSize;
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// ── Input ──
-canvas.addEventListener('click', handleBoardClick);
-canvas.addEventListener('touchend', (e) => {
-  e.preventDefault();
-  const touch = e.changedTouches[0];
-  const rect = canvas.getBoundingClientRect();
-  handleBoardClickAt(touch.clientX - rect.left, touch.clientY - rect.top);
-});
+  const startCol = Math.floor(camX / cs), startRow = Math.floor(camY / cs);
+  const offX = -(camX % cs), offY = -(camY % cs);
 
-function handleBoardClick(e) {
-  const rect = canvas.getBoundingClientRect();
-  handleBoardClickAt(e.clientX - rect.left, e.clientY - rect.top);
-}
+  // Tiles + fog
+  for (let vr = -1; vr <= viewRows + 1; vr++) {
+    for (let vc = -1; vc <= viewCols + 1; vc++) {
+      const mr = startRow + vr, mc = startCol + vc;
+      if (mr < 0 || mr >= GRID || mc < 0 || mc >= GRID) continue;
+      const sx = vc * cs + offX, sy = vr * cs + offY;
+      const fog = FOG[mr][mc];
+      if (fog === 0) continue; // fully hidden
 
-function handleBoardClickAt(mx, my) {
-  const cs = parseInt(canvas.dataset.cellSize) || 40;
-  const col = Math.floor(mx / cs);
-  const row = Math.floor(my / cs);
-  if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) return;
+      drawTile(mr, mc, sx, sy, cs);
 
-  const p = PLAYERS[currentPlayer];
-
-  // Check if clicking the current player's character to select/deselect
-  if (p.row === row && p.col === col) {
-    selectedPlayer = selectedPlayer === currentPlayer ? null : currentPlayer;
-    renderAll();
-    return;
-  }
-
-  // If a player is selected and we click an adjacent passable cell, move there
-  if (selectedPlayer === currentPlayer && p.moves > 0) {
-    const adj = getAdjacentCells(p.row, p.col);
-    const target = adj.find(([ar, ac]) => ar === row && ac === col);
-    if (target) {
-      p.row = row;
-      p.col = col;
-      p.moves--;
-      updateUI();
-      renderAll();
-
-      if (p.moves <= 0) {
-        selectedPlayer = null;
+      // Fog overlay
+      if (fog === 1) {
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(sx, sy, cs, cs);
       }
-      return;
     }
   }
 
-  // Check if clicking another player's character (for targeting, etc.)
-  const clickedPlayer = PLAYERS.findIndex(pl => pl.row === row && pl.col === col);
-  if (clickedPlayer !== -1) {
-    // Flash the clicked player (future: targeting)
-    flashCell(row, col, PLAYERS[clickedPlayer].color);
+  // Grid lines (visible area only)
+  ctx.strokeStyle = 'rgba(252,225,132,0.06)'; ctx.lineWidth = 1;
+  for (let vc = 0; vc <= viewCols + 1; vc++) {
+    const x = vc * cs + offX; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+  for (let vr = 0; vr <= viewRows + 1; vr++) {
+    const y = vr * cs + offY; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+
+  // Objects
+  OBJECTS.forEach(([r,c,type]) => {
+    if (FOG[r][c] < 2) return;
+    const sx = (c - startCol) * cs + offX, sy = (r - startRow) * cs + offY;
+    drawSprite(OBJ_SPRITES[type], sx, sy, cs);
+  });
+
+  // Movement highlights
+  if (selectedPlayer !== null) {
+    const p = PLAYERS[selectedPlayer];
+    getAdjacentCells(p.row, p.col).forEach(([ar,ac]) => {
+      const sx = (ac - startCol) * cs + offX, sy = (ar - startRow) * cs + offY;
+      const pulse = 0.12 + 0.04 * Math.sin(animFrame * 0.08);
+      ctx.fillStyle = `rgba(252,225,132,${pulse})`; ctx.fillRect(sx, sy, cs, cs);
+      ctx.strokeStyle = `rgba(252,225,132,${pulse+0.2})`; ctx.lineWidth = 2;
+      ctx.strokeRect(sx+1, sy+1, cs-2, cs-2);
+    });
+  }
+
+  // Characters
+  const spriteKeys = ['warrior','mage','rogue','cleric'];
+  PLAYERS.forEach((p, i) => {
+    if (FOG[p.row][p.col] < 1) return; // not even explored
+    const sx = (p.col - startCol) * cs + offX, sy = (p.row - startRow) * cs + offY;
+    // Active glow
+    if (i === currentPlayer) {
+      const grad = ctx.createRadialGradient(sx+cs/2,sy+cs/2,cs*0.1,sx+cs/2,sy+cs/2,cs*0.6);
+      grad.addColorStop(0, p.color+'66'); grad.addColorStop(1, p.color+'00');
+      ctx.fillStyle = grad; ctx.fillRect(sx-cs*0.1,sy-cs*0.1,cs*1.2,cs*1.2);
+    }
+    if (selectedPlayer === i) {
+      ctx.strokeStyle = C.sunYellow; ctx.lineWidth = 2; ctx.setLineDash([4,4]);
+      ctx.strokeRect(sx+2,sy+2,cs-4,cs-4); ctx.setLineDash([]);
+    }
+    const bob = Math.sin(animFrame * 0.05 + i * 1.5) * 2;
+    drawSprite(SPRITE_DATA[spriteKeys[i]], sx, sy + bob, cs);
+  });
+
+  // Torch glow (visible only)
+  for (let vr = -2; vr <= viewRows + 2; vr++) {
+    for (let vc = -2; vc <= viewCols + 2; vc++) {
+      const mr = startRow + vr, mc = startCol + vc;
+      if (mr<0||mr>=GRID||mc<0||mc>=GRID) continue;
+      if (MAP[mr][mc] === 6 && FOG[mr][mc] >= 1) {
+        const sx = vc * cs + offX + cs/2, sy = vr * cs + offY + cs/2;
+        const rad = cs * 2.5;
+        const fl = 0.08 + Math.sin(animFrame*0.12+mr*3+mc*5)*0.03;
+        const grad = ctx.createRadialGradient(sx,sy,0,sx,sy,rad);
+        grad.addColorStop(0,`rgba(255,170,68,${fl})`);
+        grad.addColorStop(0.5,`rgba(255,170,68,${fl*0.3})`);
+        grad.addColorStop(1,'rgba(255,170,68,0)');
+        ctx.fillStyle = grad; ctx.fillRect(sx-rad,sy-rad,rad*2,rad*2);
+      }
+    }
   }
 }
 
-function flashCell(row, col, color) {
-  const cs = parseInt(canvas.dataset.cellSize) || 40;
-  ctx.fillStyle = color + '44';
-  ctx.fillRect(col * cs, row * cs, cs, cs);
-  setTimeout(() => renderAll(), 300);
+function drawTile(r, c, x, y, cs) {
+  const tile = MAP[r][c];
+  switch (tile) {
+    case 0: // Floor
+      ctx.fillStyle = C.stone; ctx.fillRect(x,y,cs,cs);
+      const seed = r*31+c*17;
+      if ((seed%7)<2) { ctx.fillStyle = C.stoneLight; ctx.fillRect(x+(seed%5)*(cs/6),y+((seed*3)%5)*(cs/6),cs/6,cs/6); }
+      break;
+    case 1: // Wall
+      ctx.fillStyle = C.wallDark; ctx.fillRect(x,y,cs,cs);
+      ctx.fillStyle = C.wallLight;
+      const bh = cs/3;
+      for (let row=0;row<3;row++) { const off=(row%2===0)?0:cs/4; for(let bx=off;bx<cs;bx+=cs/2) ctx.fillRect(x+bx+1,y+row*bh+1,cs/2-2,bh-2); }
+      break;
+    case 2: // Water
+      const w = Math.sin(animFrame*0.04+r*0.5+c*0.3)*0.5;
+      ctx.fillStyle = w>0?C.waterDeep:C.waterShallow; ctx.fillRect(x,y,cs,cs);
+      ctx.fillStyle = `rgba(149,186,210,${0.15+w*0.15})`;
+      ctx.fillRect(x+cs*0.2+Math.sin(animFrame*0.03+c)*cs*0.1,y+cs*0.3,cs*0.4,cs*0.15);
+      break;
+    case 3: // Rubble
+      ctx.fillStyle = C.stone; ctx.fillRect(x,y,cs,cs);
+      ctx.fillStyle = C.stoneMid;
+      for (let i=0;i<4;i++) ctx.fillRect(x+((r*7+c*13+i*11)%6)*(cs/8),y+((r*11+c*7+i*5)%6)*(cs/8),cs/5,cs/5);
+      break;
+    case 4: // Pillar
+      ctx.fillStyle = C.stone; ctx.fillRect(x,y,cs,cs);
+      const m=cs*0.2; ctx.fillStyle=C.stoneMid; ctx.fillRect(x+m,y+m*0.5,cs-m*2,cs-m);
+      ctx.fillStyle='#5A584F'; ctx.fillRect(x+m-2,y+m*0.3,cs-m*2+4,cs*0.15); ctx.fillRect(x+m-2,y+cs-m*0.8,cs-m*2+4,cs*0.15);
+      break;
+    case 6: // Torch wall
+      ctx.fillStyle=C.wallDark; ctx.fillRect(x,y,cs,cs);
+      ctx.fillStyle=C.wallLight; const tbh=cs/3;
+      for(let row=0;row<3;row++){const to=(row%2===0)?0:cs/4;for(let bx=to;bx<cs;bx+=cs/2)ctx.fillRect(x+bx+1,y+row*tbh+1,cs/2-2,tbh-2);}
+      ctx.fillStyle=C.torch; ctx.fillRect(x+cs*0.4,y+cs*0.2,cs*0.2,cs*0.3);
+      const fl=Math.sin(animFrame*0.15+r+c)*cs*0.05;
+      ctx.fillStyle='#FFCC44'; ctx.beginPath(); ctx.arc(x+cs*0.5+fl,y+cs*0.15,cs*0.12,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#FF8822'; ctx.beginPath(); ctx.arc(x+cs*0.5-fl*0.5,y+cs*0.12,cs*0.07,0,Math.PI*2); ctx.fill();
+      break;
+  }
 }
 
-// ── Turn Management ──
+function drawSprite(sprite, x, y, cs) {
+  const pal = sprite.p, pix = sprite.d;
+  const sw = pix[0].length, sh = pix.length;
+  const px = cs / Math.max(sw, sh);
+  const ox = x + (cs - sw*px)/2, oy = y + (cs - sh*px)/2;
+  for (let r=0;r<sh;r++) for (let c=0;c<sw;c++) {
+    const ch = pix[r][c]; if (ch!=='.'&&pal[ch]) {
+      ctx.fillStyle = pal[ch];
+      ctx.fillRect(Math.floor(ox+c*px), Math.floor(oy+r*px), Math.ceil(px), Math.ceil(px));
+    }
+  }
+}
+
+// ── Minimap ──
+function renderMinimap() {
+  const s = 128 / GRID;
+  mctx.fillStyle = '#000'; mctx.fillRect(0,0,128,128);
+  for (let r=0;r<GRID;r++) for (let c=0;c<GRID;c++) {
+    if (FOG[r][c]===0) continue;
+    const t = MAP[r][c];
+    mctx.fillStyle = FOG[r][c]===1 ? '#1A1A18' :
+      t===0?'#3A3832':t===2?'#3A6A8E':t===1||t===6?'#2E2C24':'#4A4842';
+    mctx.fillRect(c*s,r*s,s,s);
+  }
+  // Player dots
+  PLAYERS.forEach((p,i) => { mctx.fillStyle = p.color; mctx.fillRect(p.col*s-1,p.row*s-1,3,3); });
+  // Viewport rect
+  mctx.strokeStyle = C.sunYellow+'88'; mctx.lineWidth = 1;
+  mctx.strokeRect(camX/cellSize*s, camY/cellSize*s, viewCols*s, viewRows*s);
+}
+
+// ── Turn System ──
 function endTurn() {
   selectedPlayer = null;
   PLAYERS[currentPlayer].moves = PLAYERS[currentPlayer].maxMoves;
   currentPlayer = (currentPlayer + 1) % 4;
   PLAYERS[currentPlayer].moves = PLAYERS[currentPlayer].maxMoves;
-
-  // Show turn banner
+  playSound('turn');
+  centerOnPlayer(currentPlayer);
+  updateFog(); renderMinimap();
   showTurnBanner(PLAYERS[currentPlayer].name);
+  dmNarrate('turnStart', PLAYERS[currentPlayer].name);
   updateUI();
-  renderAll();
 }
 
 function showTurnBanner(name) {
-  const banner = document.getElementById('turn-banner');
-  banner.textContent = `${name}'s Turn`;
-  banner.style.color = PLAYERS[currentPlayer].color;
-  banner.className = 'turn-banner visible';
-  setTimeout(() => { banner.className = 'turn-banner'; }, 2000);
+  const b = document.getElementById('turn-banner');
+  b.textContent = `${name}'s Turn`; b.style.color = PLAYERS[currentPlayer].color;
+  b.className = 'turn-banner visible';
+  setTimeout(() => b.className = 'turn-banner', 2000);
 }
 
 function updateUI() {
-  for (let i = 0; i < 4; i++) {
-    const panel = document.getElementById(`panel-${i}`);
-    panel.classList.toggle('active', i === currentPlayer);
-
-    const movesEl = document.getElementById(`moves-${i}`);
-    movesEl.textContent = `Moves: ${PLAYERS[i].moves}`;
-
-    const hpEl = document.getElementById(`hp-${i}`);
-    hpEl.style.width = (PLAYERS[i].hp / PLAYERS[i].maxHp * 100) + '%';
-
-    const btn = document.getElementById(`end-turn-${i}`);
-    btn.disabled = i !== currentPlayer;
+  for (let i=0;i<4;i++) {
+    document.getElementById(`panel-${i}`).classList.toggle('active', i===currentPlayer);
+    document.getElementById(`moves-${i}`).textContent = `Moves: ${PLAYERS[i].moves}`;
+    document.getElementById(`hp-${i}`).style.width = (PLAYERS[i].hp/PLAYERS[i].maxHp*100)+'%';
+    document.getElementById(`end-turn-${i}`).disabled = i !== currentPlayer;
   }
 }
 
-// ── D20 Dice Roller ──
+// ── D20 ──
 function rollD20() {
-  if (diceRolling) return;
-  diceRolling = true;
-
-  const btn = document.getElementById('dice-btn');
-  const result = document.getElementById('dice-result');
-  btn.classList.add('rolling');
-  result.className = 'dice-result';
-
-  let rollCount = 0;
-  const maxRolls = 15;
-  const rollInterval = setInterval(() => {
-    const tempVal = Math.floor(Math.random() * 20) + 1;
-    btn.textContent = tempVal;
-    rollCount++;
-
-    if (rollCount >= maxRolls) {
-      clearInterval(rollInterval);
-      const finalVal = Math.floor(Math.random() * 20) + 1;
-      btn.textContent = finalVal;
-      btn.classList.remove('rolling');
-      diceRolling = false;
-
-      result.textContent = finalVal === 20 ? 'NAT 20!' : finalVal === 1 ? 'NAT 1...' : `Rolled: ${finalVal}`;
-      result.className = 'dice-result visible' + (finalVal === 20 ? ' crit' : finalVal === 1 ? ' nat1' : '');
-      setTimeout(() => { result.className = 'dice-result'; }, 3000);
+  if (diceRolling) return; diceRolling = true; initAudio(); playSound('dice');
+  const btn = document.getElementById('dice-btn'), res = document.getElementById('dice-result');
+  btn.classList.add('rolling'); res.className = 'dice-result';
+  let count = 0;
+  const iv = setInterval(() => {
+    btn.textContent = Math.floor(Math.random()*20)+1; count++;
+    if (count >= 15) {
+      clearInterval(iv);
+      const val = Math.floor(Math.random()*20)+1;
+      btn.textContent = val; btn.classList.remove('rolling'); diceRolling = false;
+      res.textContent = val===20?'NAT 20!':val===1?'NAT 1...':'Rolled: '+val;
+      res.className = 'dice-result visible'+(val===20?' crit':val===1?' nat1':'');
+      if (val===20) { playSound('crit'); dmNarrate('nat20',PLAYERS[currentPlayer].name); }
+      else if (val===1) dmNarrate('nat1',PLAYERS[currentPlayer].name);
+      else if (val>=15) dmNarrate('rollHigh',PLAYERS[currentPlayer].name);
+      else if (val<=5) dmNarrate('rollLow',PLAYERS[currentPlayer].name);
+      setTimeout(() => res.className = 'dice-result', 3000);
     }
   }, 80);
 }
 
-// ── Animation Loop ──
-function animate() {
-  animFrame++;
-  renderAll();
-  requestAnimationFrame(animate);
-}
+// ── Loop ──
+function animate() { animFrame++; renderAll(); requestAnimationFrame(animate); }
 
-// ── Initialize ──
 window.addEventListener('resize', resize);
-resize();
-updateUI();
-showTurnBanner(PLAYERS[0].name);
-animate();
+resize(); updateUI(); dmNarrate('turnStart', PLAYERS[0].name); animate();
 </script>
 </body>
 </html>
