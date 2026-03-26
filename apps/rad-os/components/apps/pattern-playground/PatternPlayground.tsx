@@ -28,6 +28,15 @@ const RDNA_COLOR_OPTIONS = [
   { value: 'transparent',             label: 'Transparent' },
 ];
 
+const GLOW_BASE_OPTIONS = [
+  { value: 'oklch(0.45 0.01 85)',  label: 'Warm Grey (default)' },
+  { value: 'oklch(0.35 0.02 85)',  label: 'Dark Warm' },
+  { value: 'oklch(0.5 0.01 85)',   label: 'Mid Grey' },
+  { value: 'oklch(0.3 0.01 160)',  label: 'Dark Cool' },
+  { value: 'oklch(0.4 0.02 60)',   label: 'Dark Amber' },
+  { value: 'oklch(0.25 0.005 85)', label: 'Near Black' },
+];
+
 // ============================================================================
 // DialKit-driven controls — remounts on preset change via key
 // ============================================================================
@@ -47,28 +56,12 @@ function PlaygroundControls({
     background: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.bg },
     scale: [initial.scale, 1, 4, 1],
 
-    // ── Hover ──
-    hover: {
-      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.hoverColor },
-      bg: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.hoverBg },
-      scale: [initial.hoverScale, 0.8, 1.3, 0.01],
-      opacity: [initial.hoverOpacity, 0, 1],
-    },
-
-    // ── Pressed ──
-    pressed: {
-      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.pressedColor },
-      bg: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.pressedBg },
-      scale: [initial.pressedScale, 0.8, 1.1, 0.01],
-      translateY: [initial.pressedTranslateY, 0, 6, 0.5],
-    },
-
-    // ── Glow ──
+    // ── Glow (mouse follower) ──
     glow: {
       enabled: initial.glowEnabled,
-      center: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.glowCenter },
-      spread: [initial.glowSpread, 10, 80, 1],
-      fade: [initial.glowFade, 50, 100, 1],
+      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.glowCenter },
+      radius: [initial.glowRadius, 50, 400, 10],
+      base: { type: 'select' as const, options: GLOW_BASE_OPTIONS, default: initial.glowBase },
     },
 
     // ── Actions ──
@@ -85,31 +78,20 @@ function PlaygroundControls({
     },
   });
 
-  // Sync DialKit → playground state on every render
+  // Sync DialKit → playground state
   useEffect(() => {
-    const hover = params.hover as { color: string; bg: string; scale: number; opacity: number };
-    const pressed = params.pressed as { color: string; bg: string; scale: number; translateY: number };
-    const glow = params.glow as { enabled: boolean; center: string; spread: number; fade: number };
+    const glow = params.glow as { enabled: boolean; color: string; radius: number; base: string };
 
     const next: Partial<PatternPlaygroundState> = {
       color: params.foreground as string,
       bg: params.background as string,
       scale: Math.round(params.scale as number) as 1 | 2 | 3 | 4,
-      hoverColor: hover.color,
-      hoverBg: hover.bg,
-      hoverScale: hover.scale,
-      hoverOpacity: hover.opacity,
-      pressedColor: pressed.color,
-      pressedBg: pressed.bg,
-      pressedScale: pressed.scale,
-      pressedTranslateY: pressed.translateY,
       glowEnabled: glow.enabled,
-      glowCenter: glow.center,
-      glowSpread: glow.spread,
-      glowFade: glow.fade,
+      glowCenter: glow.color,
+      glowRadius: glow.radius,
+      glowBase: glow.base,
     };
 
-    // Only sync if something changed
     const prev = stateRef.current;
     const changed = (Object.keys(next) as (keyof PatternPlaygroundState)[]).some(
       (k) => (next as Record<string, unknown>)[k] !== (prev as Record<string, unknown>)[k]
@@ -130,7 +112,6 @@ function PlaygroundControls({
 export function PatternPlayground() {
   const [state, setState] = useState<PatternPlaygroundState>(DEFAULT_STATE);
   const [activePreset, setActivePreset] = useState(0);
-  // Key forces DialKit remount when preset changes — resets all controls to preset values
   const [dialKey, setDialKey] = useState(0);
 
   const handlePatternSelect = useCallback((name: string) => {
@@ -140,7 +121,7 @@ export function PatternPlayground() {
   const handlePreset = useCallback((index: number) => {
     setActivePreset(index);
     setState(PRESETS[index].state);
-    setDialKey((k) => k + 1); // force DialKit remount
+    setDialKey((k) => k + 1);
   }, []);
 
   const handleSync = useCallback((partial: Partial<PatternPlaygroundState>) => {
