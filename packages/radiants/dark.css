@@ -1220,3 +1220,34 @@
     text-shadow: none;
   }
 }
+
+/* =============================================================================
+   Dark Mode Pattern Glow
+   Patterns use mask-image on background-color. In dark mode, swap to a radial
+   gradient so pattern dots glow warm from the center of the element.
+   Tunable per-instance via --pat-glow-* custom properties on the element.
+   ============================================================================= */
+
+.dark {
+  --pat-glow-center: var(--color-sun-yellow);
+  --pat-glow-mid: oklch(0.75 0.08 85);
+  --pat-glow-edge: var(--color-main);
+  --pat-glow-spread: 40%;
+  --pat-glow-fade: 80%;
+}
+
+.dark .rdna-pat {
+  background-color: transparent;
+  background-image: radial-gradient(
+    circle at center,
+    var(--pat-glow-center) 0%,
+    var(--pat-glow-mid) var(--pat-glow-spread),
+    var(--pat-glow-edge) var(--pat-glow-fade)
+  );
+}
+
+/* Escape hatch: flat color patterns that shouldn't glow */
+.dark .rdna-pat--no-glow {
+  background-image: none;
+  background-color: var(--pat-color, var(--color-main));
+}
