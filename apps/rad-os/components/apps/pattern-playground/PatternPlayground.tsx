@@ -29,6 +29,15 @@ const RDNA_COLOR_OPTIONS = [
   { value: 'transparent',             label: 'Transparent' },
 ];
 
+const GLOW_MID_OPTIONS = [
+  { value: 'oklch(0.6 0.04 85)',  label: 'Warm Mid (default)' },
+  { value: 'oklch(0.7 0.06 90)',  label: 'Bright Warm' },
+  { value: 'oklch(0.5 0.05 160)', label: 'Cool Mid' },
+  { value: 'oklch(0.55 0.05 60)', label: 'Amber Mid' },
+  { value: 'oklch(0.65 0.06 85)', label: 'Light Warm' },
+  { value: 'oklch(0.45 0.03 85)', label: 'Dim Warm' },
+];
+
 const GLOW_BASE_OPTIONS = [
   { value: 'oklch(0.45 0.01 85)',  label: 'Warm Grey (default)' },
   { value: 'oklch(0.35 0.02 85)',  label: 'Dark Warm' },
@@ -36,6 +45,11 @@ const GLOW_BASE_OPTIONS = [
   { value: 'oklch(0.3 0.01 160)',  label: 'Dark Cool' },
   { value: 'oklch(0.4 0.02 60)',   label: 'Dark Amber' },
   { value: 'oklch(0.25 0.005 85)', label: 'Near Black' },
+];
+
+const GLOW_SHAPE_OPTIONS = [
+  { value: 'circle',  label: 'Circle' },
+  { value: 'ellipse', label: 'Ellipse' },
 ];
 
 // ============================================================================
@@ -57,12 +71,15 @@ function PlaygroundControls({
     background: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.bg },
     scale: [initial.scale, 1, 4, 1],
 
-    // ── Glow (mouse follower) ──
-    glow: {
+    // ── Gradient (mouse follower) ──
+    gradient: {
       enabled: initial.glowEnabled,
-      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.glowCenter },
-      radius: [initial.glowRadius, 50, 400, 10],
+      shape: { type: 'select' as const, options: GLOW_SHAPE_OPTIONS, default: initial.glowShape },
+      center: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.glowCenter },
+      mid: { type: 'select' as const, options: GLOW_MID_OPTIONS, default: initial.glowMid },
+      midStop: [initial.glowMidStop, 10, 80, 1],
       base: { type: 'select' as const, options: GLOW_BASE_OPTIONS, default: initial.glowBase },
+      radius: [initial.glowRadius, 50, 400, 10],
     },
 
     // ── Actions ──
@@ -81,16 +98,22 @@ function PlaygroundControls({
 
   // Sync DialKit → playground state
   useEffect(() => {
-    const glow = params.glow as { enabled: boolean; color: string; radius: number; base: string };
+    const grad = params.gradient as {
+      enabled: boolean; shape: string; center: string;
+      mid: string; midStop: number; base: string; radius: number;
+    };
 
     const next: Partial<PatternPlaygroundState> = {
       color: params.foreground as string,
       bg: params.background as string,
       scale: Math.round(params.scale as number) as 1 | 2 | 3 | 4,
-      glowEnabled: glow.enabled,
-      glowCenter: glow.color,
-      glowRadius: glow.radius,
-      glowBase: glow.base,
+      glowEnabled: grad.enabled,
+      glowShape: grad.shape as 'circle' | 'ellipse',
+      glowCenter: grad.center,
+      glowMid: grad.mid,
+      glowMidStop: grad.midStop,
+      glowBase: grad.base,
+      glowRadius: grad.radius,
     };
 
     const prev = stateRef.current;

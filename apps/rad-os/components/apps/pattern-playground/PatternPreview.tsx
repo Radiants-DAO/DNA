@@ -46,7 +46,10 @@ function MouseFollowerPanel({
 
   const glowOverrides: React.CSSProperties | undefined = state.glowEnabled
     ? {
+        '--pat-glow-shape': state.glowShape,
         '--pat-glow-color': state.glowCenter,
+        '--pat-glow-mid': state.glowMid,
+        '--pat-glow-mid-stop': `${state.glowMidStop}%`,
         '--pat-glow-radius': `${state.glowRadius}px`,
         '--pat-glow-base': state.glowBase,
       } as React.CSSProperties

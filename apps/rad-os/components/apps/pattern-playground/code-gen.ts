@@ -11,13 +11,16 @@ function generateJSX(s: PatternPlaygroundState): string {
 
   if (s.glowEnabled) {
     lines.push('');
-    lines.push('/* Dark mode mouse-follower glow');
+    lines.push('/* Dark mode mouse-follower gradient');
     lines.push('   Set --mouse-x / --mouse-y on a parent via onMouseMove:');
     lines.push('   el.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`)');
     lines.push('   el.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`) */');
     lines.push('');
-    lines.push('// Override glow per-instance via style:');
+    lines.push('// Gradient overrides (inline style on parent):');
+    lines.push(`// --pat-glow-shape: ${s.glowShape}`);
     lines.push(`// --pat-glow-color: ${s.glowCenter}`);
+    lines.push(`// --pat-glow-mid: ${s.glowMid}`);
+    lines.push(`// --pat-glow-mid-stop: ${s.glowMidStop}%`);
     lines.push(`// --pat-glow-radius: ${s.glowRadius}px`);
     lines.push(`// --pat-glow-base: ${s.glowBase}`);
   }
@@ -39,19 +42,20 @@ function generateCSS(s: PatternPlaygroundState): string {
 
   if (s.glowEnabled) {
     lines.push('');
-    lines.push('/* Dark mode mouse-follower glow */');
+    lines.push('/* Dark mode mouse-follower gradient */');
     lines.push('.my-pattern-container {');
-    lines.push('  /* Set via JS onMouseMove */');
     lines.push('  --mouse-x: -9999px;');
     lines.push('  --mouse-y: -9999px;');
     lines.push('');
+    lines.push(`  --pat-glow-shape: ${s.glowShape};`);
     lines.push(`  --pat-glow-color: ${s.glowCenter};`);
+    lines.push(`  --pat-glow-mid: ${s.glowMid};`);
+    lines.push(`  --pat-glow-mid-stop: ${s.glowMidStop}%;`);
     lines.push(`  --pat-glow-radius: ${s.glowRadius}px;`);
     lines.push(`  --pat-glow-base: ${s.glowBase};`);
     lines.push('}');
     lines.push('');
-    lines.push('/* Click burst — add .rdna-pat--active on mousedown */');
-    lines.push('/* (handled by dark.css — wider + brighter gradient) */');
+    lines.push('/* Click burst — add [data-pat-active] on mousedown */');
   }
 
   return lines.join('\n');
@@ -70,8 +74,11 @@ function generateTailwind(s: PatternPlaygroundState): string {
 
   if (s.glowEnabled) {
     lines.push('');
-    lines.push('/* Dark mode glow — set on parent container style */');
+    lines.push('/* Gradient overrides (on parent container style) */');
+    lines.push(`// --pat-glow-shape: ${s.glowShape}`);
     lines.push(`// --pat-glow-color: ${s.glowCenter}`);
+    lines.push(`// --pat-glow-mid: ${s.glowMid}`);
+    lines.push(`// --pat-glow-mid-stop: ${s.glowMidStop}%`);
     lines.push(`// --pat-glow-radius: ${s.glowRadius}px`);
     lines.push(`// --pat-glow-base: ${s.glowBase}`);
     lines.push('');
@@ -81,13 +88,6 @@ function generateTailwind(s: PatternPlaygroundState): string {
     lines.push('//   e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);');
     lines.push('//   e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);');
     lines.push('// }}');
-    lines.push('// onMouseLeave={(e) => {');
-    lines.push('//   e.currentTarget.style.setProperty("--mouse-x", "-9999px");');
-    lines.push('//   e.currentTarget.style.setProperty("--mouse-y", "-9999px");');
-    lines.push('// }}');
-    lines.push('');
-    lines.push('/* Click burst — toggle class on mousedown/mouseup */');
-    lines.push('// Add "rdna-pat--active" to pattern element on mousedown');
   }
 
   return lines.join('\n');
