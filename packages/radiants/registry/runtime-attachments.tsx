@@ -62,6 +62,7 @@ const NON_COMPONENT_EXPORTS = new Set([
   'useSelectState',
   'useTabsState',
   'useToast',
+  'useDialKit',
 ]);
 
 function isRuntimeComponentExport(

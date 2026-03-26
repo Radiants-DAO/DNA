@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { DialRoot, useDialKit } from 'dialkit';
-import 'dialkit/styles.css';
-import './dialkit-rdna.css';
-import { Button } from '@rdna/radiants/components/core';
+import { DialPanel, useDialKit, Button } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';
 import { PRESETS, DEFAULT_STATE } from './presets';
@@ -126,7 +123,7 @@ function PlaygroundControls({
     }
   });
 
-  return null; // DialKit renders via DialRoot
+  return null; // DialKit renders via DialPanel
 }
 
 // ============================================================================
@@ -195,7 +192,7 @@ export function PatternPlayground() {
             key={dialKey}
             className="flex-1 min-h-0 overflow-y-auto [&_.dialkit-panel]:!bg-transparent [&_.dialkit-panel]:!border-0 [&_.dialkit-panel]:!shadow-none"
           >
-            <DialRoot mode="inline" />
+            <DialPanel />
             <PlaygroundControls initial={state} onSync={handleSync} />
           </div>
         </div>

@@ -39,3 +39,5 @@ export { Pattern } from './Pattern/Pattern';
 export type { PatternProps } from './Pattern/Pattern';
 export { Icon } from './Icon/Icon';
 export type { IconSet } from './Icon/Icon';
+export { DialPanel, useDialKit } from './DialPanel/DialPanel';
+export type { DialPanelProps } from './DialPanel/DialPanel';
