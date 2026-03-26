@@ -1222,27 +1222,41 @@
 }
 
 /* =============================================================================
-   Dark Mode Pattern Glow
+   Dark Mode Pattern Glow — Mouse Follower
    Patterns use mask-image on background-color. In dark mode, swap to a radial
-   gradient so pattern dots glow warm from the center of the element.
-   Tunable per-instance via --pat-glow-* custom properties on the element.
+   gradient centered on the cursor so pattern dots glow warm near the mouse.
+   JS sets --mouse-x / --mouse-y on the element or a parent container.
+   Without JS (or before first mousemove), patterns render in muted grey.
    ============================================================================= */
 
 .dark {
-  --pat-glow-center: var(--color-sun-yellow);
-  --pat-glow-mid: oklch(0.75 0.08 85);
-  --pat-glow-edge: var(--color-main);
-  --pat-glow-spread: 40%;
-  --pat-glow-fade: 80%;
+  /* Mouse position — updated by JS, defaults to off-screen */
+  --mouse-x: -9999px;
+  --mouse-y: -9999px;
+
+  /* Glow tuning — override per-instance via inline style */
+  --pat-glow-color: var(--color-sun-yellow);
+  --pat-glow-radius: 180px;
+  --pat-glow-base: oklch(0.45 0.01 85);
 }
 
 .dark .rdna-pat {
   background-color: transparent;
   background-image: radial-gradient(
-    circle at center,
-    var(--pat-glow-center) 0%,
-    var(--pat-glow-mid) var(--pat-glow-spread),
-    var(--pat-glow-edge) var(--pat-glow-fade)
+    circle var(--pat-glow-radius) at var(--mouse-x) var(--mouse-y),
+    var(--pat-glow-color) 0%,
+    oklch(0.6 0.04 85) 40%,
+    var(--pat-glow-base) 100%
+  );
+}
+
+/* Click/active burst — brighter + wider */
+.dark .rdna-pat--active {
+  background-image: radial-gradient(
+    circle calc(var(--pat-glow-radius) * 1.5) at var(--mouse-x) var(--mouse-y),
+    var(--color-sun-yellow) 0%,
+    oklch(0.75 0.08 85) 30%,
+    var(--pat-glow-base) 100%
   );
 }
 
