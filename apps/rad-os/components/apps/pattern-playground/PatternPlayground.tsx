@@ -94,7 +94,7 @@ function PlaygroundControls({
 
     const prev = stateRef.current;
     const changed = (Object.keys(next) as (keyof PatternPlaygroundState)[]).some(
-      (k) => (next as Record<string, unknown>)[k] !== (prev as Record<string, unknown>)[k]
+      (k) => (next as unknown as Record<string, unknown>)[k] !== (prev as unknown as Record<string, unknown>)[k]
     );
     if (changed) {
       stateRef.current = { ...prev, ...next };

@@ -72,13 +72,13 @@ function MouseFollowerPanel({
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         style={dark ? glowOverrides : undefined}
+        {...(pressing && dark ? { 'data-pat-active': '' } : {})}
       >
         <Pattern
           pat={state.pat}
           color={state.color}
           bg={state.bg !== 'transparent' ? state.bg : undefined}
           scale={state.scale}
-          className={pressing && dark ? 'rdna-pat--active' : ''}
           style={{ position: 'absolute', inset: 0 }}
         />
         {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dark-preview-label owner:design expires:2027-01-01 issue:DNA-001 */}

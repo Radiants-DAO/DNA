@@ -1250,8 +1250,9 @@
   );
 }
 
-/* Click/active burst — brighter + wider */
-.dark .rdna-pat--active {
+/* Click/active burst — brighter + wider radius */
+.dark [data-pat-active] .rdna-pat,
+.dark .rdna-pat.rdna-pat--active {
   background-image: radial-gradient(
     circle calc(var(--pat-glow-radius) * 1.5) at var(--mouse-x) var(--mouse-y),
     var(--color-sun-yellow) 0%,
