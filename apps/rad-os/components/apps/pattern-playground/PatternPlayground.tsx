@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { DialRoot, useDialKit } from 'dialkit';
 import 'dialkit/styles.css';
-import { Button, ToggleGroup } from '@rdna/radiants/components/core';
+import { Button } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';
 import { PRESETS, DEFAULT_STATE } from './presets';
@@ -13,44 +13,62 @@ import { PatternCodeOutput } from './PatternCodeOutput';
 import { generateCode } from './code-gen';
 
 // ============================================================================
-// DialKit-driven controls component
+// RDNA color options for DialKit select controls
+// ============================================================================
+
+const RDNA_COLOR_OPTIONS = [
+  { value: 'var(--color-ink)',         label: 'Ink' },
+  { value: 'var(--color-cream)',       label: 'Cream' },
+  { value: 'var(--color-sun-yellow)',  label: 'Sun Yellow' },
+  { value: 'var(--color-sunset-fuzz)', label: 'Sunset Fuzz' },
+  { value: 'var(--color-sun-red)',     label: 'Sun Red' },
+  { value: 'var(--color-sky-blue)',    label: 'Sky Blue' },
+  { value: 'var(--color-mint)',        label: 'Mint' },
+  { value: 'var(--color-pure-white)',  label: 'White' },
+  { value: 'transparent',             label: 'Transparent' },
+];
+
+// ============================================================================
+// DialKit-driven controls — remounts on preset change via key
 // ============================================================================
 
 function PlaygroundControls({
-  state,
-  onChange,
+  initial,
+  onSync,
 }: {
-  state: PatternPlaygroundState;
-  onChange: (next: PatternPlaygroundState) => void;
+  initial: PatternPlaygroundState;
+  onSync: (next: Partial<PatternPlaygroundState>) => void;
 }) {
+  const stateRef = useRef(initial);
+
   const params = useDialKit('Dithwather', {
     // ── Base ──
-    foreground: state.color,
-    background: state.bg === 'transparent' ? '#FFFFFF00' : state.bg,
-    scale: [state.scale, 1, 4, 1],
+    foreground: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.color },
+    background: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.bg },
+    scale: [initial.scale, 1, 4, 1],
 
     // ── Hover ──
     hover: {
-      color: state.hoverColor,
-      bg: state.hoverBg === 'transparent' ? '#FFFFFF00' : state.hoverBg,
-      scale: [state.hoverScale, 0.8, 1.3, 0.01],
-      opacity: [state.hoverOpacity, 0, 1],
+      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.hoverColor },
+      bg: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.hoverBg },
+      scale: [initial.hoverScale, 0.8, 1.3, 0.01],
+      opacity: [initial.hoverOpacity, 0, 1],
     },
 
     // ── Pressed ──
     pressed: {
-      color: state.pressedColor,
-      bg: state.pressedBg === 'transparent' ? '#FFFFFF00' : state.pressedBg,
-      scale: [state.pressedScale, 0.8, 1.1, 0.01],
-      translateY: [state.pressedTranslateY, 0, 6, 0.5],
+      color: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.pressedColor },
+      bg: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.pressedBg },
+      scale: [initial.pressedScale, 0.8, 1.1, 0.01],
+      translateY: [initial.pressedTranslateY, 0, 6, 0.5],
     },
 
     // ── Glow ──
     glow: {
-      enabled: state.glowEnabled,
-      center: state.glowCenter,
-      spread: [state.glowSpread, 10, 80, 1],
-      fade: [state.glowFade, 50, 100, 1],
+      enabled: initial.glowEnabled,
+      center: { type: 'select' as const, options: RDNA_COLOR_OPTIONS, default: initial.glowCenter },
+      spread: [initial.glowSpread, 10, 80, 1],
+      fade: [initial.glowFade, 50, 100, 1],
     },
 
     // ── Actions ──
@@ -59,40 +77,47 @@ function PlaygroundControls({
   }, {
     onAction: (action: string) => {
       if (action === 'copyJSX') {
-        navigator.clipboard.writeText(generateCode('jsx', state));
+        navigator.clipboard.writeText(generateCode('jsx', stateRef.current));
       }
       if (action === 'copyCSS') {
-        navigator.clipboard.writeText(generateCode('css', state));
+        navigator.clipboard.writeText(generateCode('css', stateRef.current));
       }
     },
   });
 
-  // Sync DialKit values → playground state
+  // Sync DialKit → playground state on every render
   useEffect(() => {
-    const next: PatternPlaygroundState = {
-      ...state,
+    const hover = params.hover as { color: string; bg: string; scale: number; opacity: number };
+    const pressed = params.pressed as { color: string; bg: string; scale: number; translateY: number };
+    const glow = params.glow as { enabled: boolean; center: string; spread: number; fade: number };
+
+    const next: Partial<PatternPlaygroundState> = {
       color: params.foreground as string,
-      bg: (params.background as string) === '#FFFFFF00' ? 'transparent' : params.background as string,
+      bg: params.background as string,
       scale: Math.round(params.scale as number) as 1 | 2 | 3 | 4,
-      hoverColor: (params.hover as { color: string }).color,
-      hoverBg: (params.hover as { bg: string }).bg === '#FFFFFF00' ? 'transparent' : (params.hover as { bg: string }).bg,
-      hoverScale: (params.hover as { scale: number }).scale,
-      hoverOpacity: (params.hover as { opacity: number }).opacity,
-      pressedColor: (params.pressed as { color: string }).color,
-      pressedBg: (params.pressed as { bg: string }).bg === '#FFFFFF00' ? 'transparent' : (params.pressed as { bg: string }).bg,
-      pressedScale: (params.pressed as { scale: number }).scale,
-      pressedTranslateY: (params.pressed as { translateY: number }).translateY,
-      glowEnabled: (params.glow as { enabled: boolean }).enabled,
-      glowCenter: (params.glow as { center: string }).center,
-      glowSpread: (params.glow as { spread: number }).spread,
-      glowFade: (params.glow as { fade: number }).fade,
+      hoverColor: hover.color,
+      hoverBg: hover.bg,
+      hoverScale: hover.scale,
+      hoverOpacity: hover.opacity,
+      pressedColor: pressed.color,
+      pressedBg: pressed.bg,
+      pressedScale: pressed.scale,
+      pressedTranslateY: pressed.translateY,
+      glowEnabled: glow.enabled,
+      glowCenter: glow.center,
+      glowSpread: glow.spread,
+      glowFade: glow.fade,
     };
 
-    // Only fire onChange if something actually changed
+    // Only sync if something changed
+    const prev = stateRef.current;
     const changed = (Object.keys(next) as (keyof PatternPlaygroundState)[]).some(
-      (k) => next[k] !== state[k]
+      (k) => (next as Record<string, unknown>)[k] !== (prev as Record<string, unknown>)[k]
     );
-    if (changed) onChange(next);
+    if (changed) {
+      stateRef.current = { ...prev, ...next };
+      onSync(next);
+    }
   });
 
   return null; // DialKit renders via DialRoot
@@ -105,6 +130,8 @@ function PlaygroundControls({
 export function PatternPlayground() {
   const [state, setState] = useState<PatternPlaygroundState>(DEFAULT_STATE);
   const [activePreset, setActivePreset] = useState(0);
+  // Key forces DialKit remount when preset changes — resets all controls to preset values
+  const [dialKey, setDialKey] = useState(0);
 
   const handlePatternSelect = useCallback((name: string) => {
     setState((prev) => ({ ...prev, pat: name }));
@@ -113,10 +140,11 @@ export function PatternPlayground() {
   const handlePreset = useCallback((index: number) => {
     setActivePreset(index);
     setState(PRESETS[index].state);
+    setDialKey((k) => k + 1); // force DialKit remount
   }, []);
 
-  const handleChange = useCallback((next: PatternPlaygroundState) => {
-    setState(next);
+  const handleSync = useCallback((partial: Partial<PatternPlaygroundState>) => {
+    setState((prev) => ({ ...prev, ...partial }));
   }, []);
 
   return (
@@ -158,9 +186,12 @@ export function PatternPlayground() {
           </div>
 
           {/* DialKit inline panel */}
-          <div className="flex-1 min-h-0 overflow-hidden [&_.dialkit-panel]:!bg-transparent [&_.dialkit-panel]:!border-0 [&_.dialkit-panel]:!shadow-none">
+          <div
+            key={dialKey}
+            className="flex-1 min-h-0 overflow-y-auto [&_.dialkit-panel]:!bg-transparent [&_.dialkit-panel]:!border-0 [&_.dialkit-panel]:!shadow-none"
+          >
             <DialRoot mode="inline" />
-            <PlaygroundControls state={state} onChange={handleChange} />
+            <PlaygroundControls initial={state} onSync={handleSync} />
           </div>
         </div>
 

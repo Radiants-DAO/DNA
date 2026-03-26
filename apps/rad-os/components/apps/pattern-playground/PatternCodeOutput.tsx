@@ -47,7 +47,7 @@ export function PatternCodeOutput({ state }: PatternCodeOutputProps) {
 
       {/* Code block */}
       <div className="px-3 pb-3">
-        <pre className="font-mono text-xs text-sub bg-page border border-rule pixel-rounded-xs p-3 overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap">
+        <pre className="font-mono text-xs text-sub bg-page pixel-rounded-xs p-3 overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap">
           {code}
         </pre>
       </div>

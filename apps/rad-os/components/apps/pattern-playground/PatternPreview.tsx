@@ -16,48 +16,30 @@ function PreviewTile({
   state,
   whileHover,
   whileTap,
-  glowStyle,
-  darkWrap,
 }: {
   label: string;
   state: PatternPlaygroundState;
   whileHover?: Record<string, number>;
   whileTap?: Record<string, number>;
-  glowStyle?: React.CSSProperties;
-  darkWrap?: boolean;
 }) {
-  const inner = (
-    <motion.div
-      className="relative w-full h-full pixel-rounded-sm overflow-hidden cursor-pointer"
-      whileHover={whileHover}
-      whileTap={whileTap}
-      transition={SPRING}
-    >
-      <Pattern
-        pat={state.pat}
-        color={state.color}
-        bg={state.bg !== 'transparent' ? state.bg : undefined}
-        scale={state.scale}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          ...glowStyle,
-        }}
-      />
-    </motion.div>
-  );
-
   return (
     <div className="flex flex-col gap-1.5">
       <span className="font-heading text-xs text-mute uppercase tracking-wide">{label}</span>
       <div className="aspect-square">
-        {darkWrap ? (
-          <div className="dark w-full h-full bg-ink pixel-rounded-sm" style={glowStyle}>
-            {inner}
-          </div>
-        ) : (
-          inner
-        )}
+        <motion.div
+          className="relative w-full h-full pixel-rounded-sm cursor-pointer"
+          whileHover={whileHover}
+          whileTap={whileTap}
+          transition={SPRING}
+        >
+          <Pattern
+            pat={state.pat}
+            color={state.color}
+            bg={state.bg !== 'transparent' ? state.bg : undefined}
+            scale={state.scale}
+            style={{ position: 'absolute', inset: 0 }}
+          />
+        </motion.div>
       </div>
     </div>
   );
@@ -108,7 +90,7 @@ export function PatternPreview({ state }: PatternPreviewProps) {
         </span>
         <div className="grid grid-cols-2 gap-3">
           {/* Light */}
-          <div className="h-28 relative pixel-rounded-sm overflow-hidden border border-rule">
+          <div className="h-28 relative pixel-rounded-sm">
             <Pattern
               pat={state.pat}
               color={state.color}
@@ -122,7 +104,8 @@ export function PatternPreview({ state }: PatternPreviewProps) {
           </div>
 
           {/* Dark */}
-          <div className="dark h-28 relative pixel-rounded-sm overflow-hidden border border-rule bg-ink">
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dark-preview-panel owner:design expires:2027-01-01 issue:DNA-001 */}
+          <div className="dark h-28 relative pixel-rounded-sm bg-ink">
             <Pattern
               pat={state.pat}
               color={state.color}

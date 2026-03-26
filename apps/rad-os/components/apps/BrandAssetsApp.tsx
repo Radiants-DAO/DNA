@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input, Tabs } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, ToggleGroup, Input, Tabs } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
   Icon,
@@ -11,7 +11,7 @@ import {
   FontAaIcon,
 } from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
-import { PatternsTab } from '@/components/ui/PatternsTab';
+import { PatternPlayground } from '@/components/apps/pattern-playground';
 import { TypographyPlayground, SubTabNav, type SubTab, type LayoutVariant } from '@/components/apps/typography-playground';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { ComponentCategory } from '@rdna/radiants/registry';
@@ -171,27 +171,6 @@ const SEMANTIC_CATEGORIES: SemanticCategory[] = [
   },
 ];
 
-// ============================================================================
-// Pattern controls (lifted from PatternsTab)
-// ============================================================================
-
-const RDNA_COLORS = [
-  { label: 'Ink',          value: 'var(--color-ink)' },
-  { label: 'Pure White',   value: 'var(--color-pure-white)' },
-  { label: 'Cream',        value: 'var(--color-cream)' },
-  { label: 'Sun Yellow',   value: 'var(--color-sun-yellow)' },
-  { label: 'Sunset Fuzz',  value: 'var(--color-sunset-fuzz)' },
-  { label: 'Sun Red',      value: 'var(--color-sun-red)' },
-  { label: 'Sky Blue',     value: 'var(--color-sky-blue)' },
-  { label: 'Mint',         value: 'var(--color-mint)' },
-];
-
-const SCALE_OPTIONS: { value: 1 | 2 | 3 | 4; label: string }[] = [
-  { value: 1, label: '1x' },
-  { value: 2, label: '2x' },
-  { value: 3, label: '3x' },
-  { value: 4, label: '4x' },
-];
 
 // ============================================================================
 // Sub-components
@@ -505,9 +484,6 @@ const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
 
 export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
-  const [patColor, setPatColor] = useState('var(--color-ink)');
-  const [patScale, setPatScale] = useState<1 | 2 | 3 | 4>(1);
-  const [patBgColor, setPatBgColor] = useState('transparent');
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
@@ -612,69 +588,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             >
               04 UI Toolkit
             </Tabs.Trigger>
-            <Tabs.Trigger value="patterns" compact icon={<Icon name="grid-3x3" size={14} />}
-              settings={
-                <div className="space-y-2">
-                  <div className="space-y-1.5">
-                    <span className="font-heading text-xs text-mute uppercase block">Pattern Color</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {RDNA_COLORS.map((preset) => (
-                        <button
-                          key={preset.label}
-                          type="button"
-                          title={preset.label}
-                          onClick={() => setPatColor(preset.value)}
-                          className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
-                            patColor === preset.value ? 'pixel-shadow-raised' : ''
-                          }`}
-                          style={{ backgroundColor: preset.value }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <span className="font-heading text-xs text-mute uppercase block">Bg Color</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      <button
-                        type="button"
-                        title="Transparent"
-                        onClick={() => setPatBgColor('transparent')}
-                        className={`w-6 h-6 rounded-sm cursor-pointer transition-shadow border border-rule ${
-                          patBgColor === 'transparent' ? 'pixel-shadow-raised' : ''
-                        }`}
-                        style={{ background: 'repeating-conic-gradient(var(--color-rule) 0% 25%, transparent 0% 50%) 50% / 8px 8px' }}
-                      />
-                      {RDNA_COLORS.map((preset) => (
-                        <button
-                          key={preset.label}
-                          type="button"
-                          title={preset.label}
-                          onClick={() => setPatBgColor(preset.value)}
-                          className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
-                            patBgColor === preset.value ? 'pixel-shadow-raised' : ''
-                          }`}
-                          style={{ backgroundColor: preset.value }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <span className="font-heading text-xs text-mute uppercase block">Scale</span>
-                    <ToggleGroup
-                      value={[String(patScale)]}
-                      onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 1 | 2 | 3 | 4); }}
-                      size="sm"
-                    >
-                      {SCALE_OPTIONS.map((opt) => (
-                        <ToggleGroup.Item key={opt.value} value={String(opt.value)}>
-                          {opt.label}
-                        </ToggleGroup.Item>
-                      ))}
-                    </ToggleGroup>
-                  </div>
-                </div>
-              }
-            >
+            <Tabs.Trigger value="patterns" compact icon={<Icon name="grid-3x3" size={14} />}>
               05 Pixels//Patterns
             </Tabs.Trigger>
             <Tabs.Trigger value="ai-gen" compact icon={<Icon name="usericon" size={14} />}>
@@ -778,9 +692,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Patterns */}
         {tabs.state.activeTab === 'patterns' && (
-          <div className="p-5">
-            <PatternsTab color={patColor} scale={patScale} bg={patBgColor !== 'transparent' ? patBgColor : undefined} />
-          </div>
+          <PatternPlayground />
         )}
         </div>
       </div>
