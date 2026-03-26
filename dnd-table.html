@@ -65,7 +65,7 @@
     display: flex; align-items: center; gap: 10px; padding: 10px 12px;
     border-bottom: 1px solid rgba(252,225,132,0.15);
   }
-  .dm-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--sun-yellow); object-fit: cover; image-rendering: pixelated; flex-shrink: 0; }
+  .dm-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--sun-yellow); flex-shrink: 0; overflow: hidden; }
   .dm-title { font-family: 'Waves Blackletter CPC', monospace; font-size: 18px; color: var(--sun-yellow); }
   .dm-subtitle { font-family: 'Waves Tiny CPC', monospace; font-size: 9px; opacity: 0.5; letter-spacing: 1px; }
   .dm-narration {
@@ -184,7 +184,23 @@
   <!-- DM Panel -->
   <div class="dm-panel" id="dm-panel">
     <div class="dm-header">
-      <img class="dm-avatar" src="./dnd-assets/dm.png" alt="DM" onerror="this.style.background='var(--sun-yellow)';this.alt='DM'">
+      <svg class="dm-avatar" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-label="DM">
+        <rect width="48" height="48" rx="24" fill="#0F0E0C"/>
+        <!-- hood -->
+        <path d="M8 38 L24 6 L40 38 Q36 42 24 44 Q12 42 8 38Z" fill="#1a1918"/>
+        <!-- face shadow -->
+        <ellipse cx="24" cy="28" rx="9" ry="10" fill="#2a2826"/>
+        <!-- eyes - glowing yellow -->
+        <rect x="18" y="25" width="4" height="3" rx="1" fill="#FCE184"/>
+        <rect x="26" y="25" width="4" height="3" rx="1" fill="#FCE184"/>
+        <!-- eye glow -->
+        <rect x="19" y="26" width="2" height="1" fill="#FFF8E0"/>
+        <rect x="27" y="26" width="2" height="1" fill="#FFF8E0"/>
+        <!-- hood brim -->
+        <path d="M10 34 Q17 22 24 20 Q31 22 38 34" fill="none" stroke="#FCE184" stroke-width="1" opacity="0.4"/>
+        <!-- crystal ball glow at bottom -->
+        <circle cx="24" cy="40" r="3" fill="#FCE184" opacity="0.15"/>
+      </svg>
       <div>
         <div class="dm-title">The Oracle</div>
         <div class="dm-subtitle">Dungeon Master · AI</div>
