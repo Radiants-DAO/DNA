@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { DialRoot, useDialKit } from 'dialkit';
 import 'dialkit/styles.css';
+import './dialkit-rdna.css';
 import { Button } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';

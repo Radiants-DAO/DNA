@@ -10,12 +10,18 @@ export interface PatternPlaygroundState {
 
   // ── Dark mode mouse-follower glow ──
   glowEnabled: boolean;
+  /** Gradient shape: circle or ellipse */
+  glowShape: 'circle' | 'ellipse';
   /** Color at the cursor center */
   glowCenter: string;
+  /** Mid-tone color between center and edge */
+  glowMid: string;
+  /** Base color when cursor is away (muted) */
+  glowBase: string;
   /** Radius of the glow in px */
   glowRadius: number;
-  /** Base color when cursor is away (muted grey) */
-  glowBase: string;
+  /** Where the mid color sits (% of radius) */
+  glowMidStop: number;
 }
 
 export type CodeFormat = 'jsx' | 'css' | 'tailwind';
