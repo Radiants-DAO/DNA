@@ -22,6 +22,8 @@ describe("check-registry-freshness", () => {
       expect.arrayContaining([
         "packages/radiants/generated/eslint-contract.json",
         "packages/radiants/generated/ai-contract.json",
+        "packages/radiants/generated/figma",
+        ".component-contracts.example",
       ]),
     );
   });
@@ -41,6 +43,9 @@ describe("check-registry-freshness", () => {
 
     expect(packageJson.scripts?.["registry:generate"]).toContain(
       "pnpm --filter @rdna/radiants generate:schemas",
+    );
+    expect(packageJson.scripts?.["registry:generate"]).toContain(
+      "pnpm --filter @rdna/radiants generate:figma-contracts",
     );
     expect(packageJson.scripts?.["registry:generate"]).toContain(
       "scripts/generate-registry.ts",

@@ -1,3 +1,6 @@
+---
+type: "note"
+---
 # Meta-First Phase 4 Token Map Removal Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
@@ -10,7 +13,7 @@
 
 **Relevant skills:** @test-driven-development, @verification-before-completion
 
----
+***
 
 ### Prerequisite Gate
 
@@ -36,7 +39,8 @@ Rollback note if Phase 4 fails after deletion: restore `packages/radiants/eslint
 ### Task 1: Add A Dynamic Guardrail Test That Expects `token-map.mjs` To Be Gone
 
 **Files:**
-- Create: `packages/radiants/eslint/__tests__/token-map-removal.test.mjs`
+
+* Create: `packages/radiants/eslint/__tests__/token-map-removal.test.mjs`
 
 **Step 1: Write the failing test**
 
@@ -84,10 +88,13 @@ describe("token-map removal", () => {
 
 This intentionally covers:
 
-- every current and future `packages/radiants/eslint/rules/*.mjs`
-- every current and future top-level `packages/radiants/eslint/*.mjs`, including `index.mjs`
-- `packages/radiants/eslint/__tests__/root-eslint-config.test.mjs`
-- `eslint.rdna.config.mjs`
+* every current and future `packages/radiants/eslint/rules/*.mjs`
+
+* every current and future top-level `packages/radiants/eslint/*.mjs`, including `index.mjs`
+
+* `packages/radiants/eslint/__tests__/root-eslint-config.test.mjs`
+
+* `eslint.rdna.config.mjs`
 
 It does not scan other tests, because some source-assertion tests intentionally mention the old path as a negative assertion.
 
@@ -112,11 +119,16 @@ Do not commit in this task.
 ### Task 2: Delete `token-map.mjs` And The Bridge Test
 
 **Files:**
-- Delete: `packages/radiants/eslint/token-map.mjs`
-- Delete: `packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs`
-- Modify: `packages/radiants/eslint/__tests__/contract-surface.test.mjs`
-- Modify: `packages/radiants/eslint/__tests__/rule-import-sources.test.mjs`
-- Modify: `packages/radiants/eslint/__tests__/root-eslint-config.test.mjs`
+
+* Delete: `packages/radiants/eslint/token-map.mjs`
+
+* Delete: `packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs`
+
+* Modify: `packages/radiants/eslint/__tests__/contract-surface.test.mjs`
+
+* Modify: `packages/radiants/eslint/__tests__/rule-import-sources.test.mjs`
+
+* Modify: `packages/radiants/eslint/__tests__/root-eslint-config.test.mjs`
 
 **Step 1: Re-run the Phase 3 completion gate**
 
@@ -139,10 +151,13 @@ packages/radiants/eslint/__tests__/token-map-contract-bridge.test.mjs
 
 Then clean any leftover bridge-era terminology or source assertions:
 
-- if `contract-surface.test.mjs` still uses `tokenMap`-bridge wording, rename it to direct contract wording
-- if `rule-import-sources.test.mjs` still has a too-small file list, expand it before continuing
-- if `root-eslint-config.test.mjs` still imports the old path, remove it now
-- do not delete the existing negative-assertion tests that mention `"token-map.mjs"` as a forbidden string; they remain valid after the bridge file is gone
+* if `contract-surface.test.mjs` still uses `tokenMap`-bridge wording, rename it to direct contract wording
+
+* if `rule-import-sources.test.mjs` still has a too-small file list, expand it before continuing
+
+* if `root-eslint-config.test.mjs` still imports the old path, remove it now
+
+* do not delete the existing negative-assertion tests that mention `"token-map.mjs"` as a forbidden string; they remain valid after the bridge file is gone
 
 **Step 3: Run the removal guardrail and focused contract tests**
 
@@ -165,9 +180,12 @@ git commit -m "refactor(eslint): remove token-map module"
 ### Task 3: Run The Post-Removal Verification Sweep
 
 **Files:**
-- Modify: `packages/radiants/generated/eslint-contract.json`
-- Modify: `packages/radiants/generated/ai-contract.json`
-- Modify: `tools/playground/generated/registry.manifest.json`
+
+* Modify: `packages/radiants/generated/eslint-contract.json`
+
+* Modify: `packages/radiants/generated/ai-contract.json`
+
+* Modify: `tools/playground/generated/registry.manifest.json`
 
 **Step 1: Regenerate artifacts**
 
@@ -216,3 +234,5 @@ If it exits non-zero, commit:
 git add packages/radiants/generated/eslint-contract.json packages/radiants/generated/ai-contract.json tools/playground/generated/registry.manifest.json
 git commit -m "test(contract): verify post-token-map contract pipeline"
 ```
+
+⠀

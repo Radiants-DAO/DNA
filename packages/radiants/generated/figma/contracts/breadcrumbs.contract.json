@@ -1,0 +1,100 @@
+{
+  "id": "breadcrumbs",
+  "name": "Breadcrumbs",
+  "description": "Hierarchical navigation trail showing the current page location within the site structure.",
+  "sourcePath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
+  "schemaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "navigation",
+  "renderMode": "custom",
+  "tags": [
+    "path",
+    "navigation",
+    "trail"
+  ],
+  "props": {
+    "items": {
+      "type": "array",
+      "description": "Ordered list of breadcrumb items, each with a label and optional href"
+    },
+    "separator": {
+      "type": "string",
+      "default": "/",
+      "description": "Character or string rendered between breadcrumb items"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes applied to the breadcrumb container"
+    }
+  },
+  "slots": {
+    "items": {
+      "description": "Breadcrumb item nodes when composing manually"
+    }
+  },
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic breadcrumbs",
+      "code": "<Breadcrumbs items={[{ label: \"Home\", href: \"/\" }, { label: \"Settings\", href: \"/settings\" }, { label: \"Profile\" }]} />"
+    },
+    {
+      "name": "Custom separator",
+      "code": "<Breadcrumbs separator=\"›\" items={[{ label: \"Home\", href: \"/\" }, { label: \"Docs\", href: \"/docs\" }, { label: \"API\" }]} />"
+    },
+    {
+      "name": "Single item",
+      "code": "<Breadcrumbs items={[{ label: \"Home\" }]} />"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "separator.text": "main/40",
+      "link.text": "main/60",
+      "link.textHover": "main",
+      "current.text": "main",
+      "inactive.text": "main/60"
+    },
+    "spacing": {
+      "base.gap": "spacing-sm"
+    },
+    "typography": {
+      "base.font": "heading",
+      "current.fontWeight": "semibold"
+    }
+  },
+  "tokenBindings": {
+    "base": {
+      "font": "heading",
+      "gap": "spacing-sm"
+    },
+    "separator": {
+      "text": "main/40"
+    },
+    "link": {
+      "text": "main/60",
+      "textHover": "main"
+    },
+    "current": {
+      "text": "main",
+      "fontWeight": "semibold"
+    },
+    "inactive": {
+      "text": "main/60"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

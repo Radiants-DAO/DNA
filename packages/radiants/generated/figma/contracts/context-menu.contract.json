@@ -1,0 +1,52 @@
+{
+  "id": "context-menu",
+  "name": "ContextMenu",
+  "description": "Right-click context menu with keyboard navigation support.",
+  "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
+  "schemaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "action",
+  "renderMode": "custom",
+  "tags": [
+    "right-click",
+    "menu"
+  ],
+  "props": {
+    "className": {
+      "type": "string",
+      "description": "Additional CSS class names"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Trigger element and ContextMenuContent"
+    }
+  },
+  "subcomponents": [
+    "ContextMenuContent",
+    "ContextMenuItem",
+    "ContextMenuSeparator"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic context menu",
+      "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem>Copy</ContextMenuItem>\n    <ContextMenuItem>Paste</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

@@ -13,7 +13,7 @@
     "start": "next start",
     "lint": "eslint",
     "verify:iterations": "node scripts/verify-generated-variation.mjs",
-    "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && node --experimental-strip-types scripts/generate-registry.ts",
+    "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/radiants generate:figma-contracts && node --experimental-strip-types scripts/generate-registry.ts",
     "violations:generate": "node scripts/generate-violations-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest",

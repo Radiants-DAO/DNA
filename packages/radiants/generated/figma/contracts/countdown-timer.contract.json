@@ -1,0 +1,86 @@
+{
+  "id": "countdown-timer",
+  "name": "CountdownTimer",
+  "description": "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
+  "sourcePath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+  "schemaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "data-display",
+  "renderMode": "custom",
+  "tags": [
+    "timer",
+    "clock",
+    "deadline"
+  ],
+  "props": {
+    "endTime": {
+      "type": "number",
+      "required": true,
+      "description": "Target timestamp (Unix ms or Date object)"
+    },
+    "startTime": {
+      "type": "number",
+      "description": "Optional start timestamp (Unix ms or Date object)"
+    },
+    "variant": {
+      "type": "enum",
+      "options": [
+        "default",
+        "compact",
+        "large"
+      ],
+      "default": "default",
+      "description": "Visual size variant"
+    },
+    "label": {
+      "type": "string",
+      "description": "Label displayed above the timer"
+    },
+    "onComplete": {
+      "type": "function",
+      "description": "Callback fired when countdown reaches zero"
+    },
+    "endedMessage": {
+      "type": "string",
+      "default": "Ended",
+      "description": "Text displayed after countdown completes"
+    },
+    "upcomingMessage": {
+      "type": "string",
+      "description": "Text displayed before countdown starts"
+    },
+    "showDays": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the days unit in the display"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic countdown",
+      "code": "<CountdownTimer endTime=\"2026-12-31T23:59:59Z\" label=\"New Year\" />"
+    },
+    {
+      "name": "Compact variant",
+      "code": "<CountdownTimer endTime=\"2026-06-01T00:00:00Z\" variant=\"compact\" />"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

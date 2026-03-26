@@ -1,0 +1,113 @@
+{
+  "id": "radio",
+  "name": "Radio",
+  "description": "Retro-styled radio button with pixel-art dot indicator. Uses Base UI Radio internally for accessibility.",
+  "sourcePath": "packages/radiants/components/core/Checkbox/Checkbox.tsx",
+  "schemaPath": "packages/radiants/components/core/Checkbox/Radio.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "form",
+  "renderMode": "custom",
+  "tags": [
+    "radio",
+    "option",
+    "choice"
+  ],
+  "props": {
+    "label": {
+      "type": "string",
+      "description": "Label text displayed next to the radio"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable radio interactions"
+    },
+    "checked": {
+      "type": "boolean",
+      "description": "Controlled checked state"
+    },
+    "name": {
+      "type": "string",
+      "description": "Input name for form submission (groups radios together)"
+    },
+    "value": {
+      "type": "string",
+      "description": "Input value for form submission"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [
+    {
+      "name": "hover",
+      "driver": "wrapper"
+    },
+    {
+      "name": "focus",
+      "driver": "wrapper"
+    },
+    {
+      "name": "disabled",
+      "driver": "prop",
+      "prop": "disabled",
+      "value": true
+    }
+  ],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic radio",
+      "code": "<Radio label=\"Option A\" name=\"choice\" value=\"a\" />"
+    },
+    {
+      "name": "Radio group",
+      "code": "<>\n  <Radio label=\"Small\" name=\"size\" value=\"sm\" />\n  <Radio label=\"Medium\" name=\"size\" value=\"md\" checked />\n  <Radio label=\"Large\" name=\"size\" value=\"lg\" />\n</>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "input.background": "page",
+      "input.border": "line",
+      "input.backgroundChecked": "accent",
+      "input.focusRing": "focus",
+      "dot.background": "main",
+      "label.text": "main"
+    },
+    "spacing": {
+      "container.gap": "spacing-xs"
+    },
+    "typography": {
+      "label.font": "mondwest"
+    }
+  },
+  "tokenBindings": {
+    "container": {
+      "gap": "spacing-xs"
+    },
+    "input": {
+      "background": "page",
+      "border": "line",
+      "backgroundChecked": "accent",
+      "focusRing": "focus"
+    },
+    "dot": {
+      "background": "main"
+    },
+    "label": {
+      "text": "main",
+      "font": "mondwest"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

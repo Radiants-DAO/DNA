@@ -78,6 +78,43 @@ Use semantic token classes instead of hardcoded colors:
 <div className="bg-[#FEF8E2] text-[#0F0E0C]">
 ```
 
+## Generated Figma Contracts
+
+The authored sources of truth stay the same:
+
+- `tokens.css`
+- `dark.css`
+- `components/core/*/*.meta.ts`
+
+Generate Figma-ready artifacts from those files with:
+
+```bash
+pnpm --filter @rdna/radiants generate:figma-contracts
+```
+
+Or run the full pipeline:
+
+```bash
+pnpm registry:generate
+```
+
+Generated outputs:
+
+- `generated/figma/primitive/color.tokens.json`
+- `generated/figma/primitive/space.tokens.json`
+- `generated/figma/primitive/shape.tokens.json`
+- `generated/figma/primitive/motion.tokens.json`
+- `generated/figma/primitive/typography.tokens.json`
+- `generated/figma/semantic/semantic.tokens.json`
+- `generated/figma/contracts/*.contract.json`
+
+The generator also refreshes `.component-contracts.example` at the repo root. Copy it to `.component-contracts`, add `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY`, then point agents to:
+
+- `TOKENS_DIR=packages/radiants/generated/figma`
+- `CONTRACTS_DIR=packages/radiants/generated/figma/contracts`
+
+That matches the local Figma skills shipped in this repo, including `.claude/skills/cc-figma-tokens/SKILL.md` and `.claude/skills/cc-figma-component/SKILL.md`.
+
 ### Token Categories
 
 | Category | Examples | Purpose |

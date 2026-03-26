@@ -1,0 +1,90 @@
+{
+  "id": "meter",
+  "name": "Meter",
+  "description": "Gauge component for displaying a scalar measurement within a known range. Maps to the HTML meter element semantics.",
+  "sourcePath": "packages/radiants/components/core/Meter/Meter.tsx",
+  "schemaPath": "packages/radiants/components/core/Meter/Meter.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "feedback",
+  "renderMode": "custom",
+  "tags": [
+    "meter",
+    "gauge",
+    "measure",
+    "level"
+  ],
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "description": "Current measured value"
+    },
+    "min": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum value of the range"
+    },
+    "max": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum value of the range"
+    },
+    "low": {
+      "type": "number",
+      "description": "Value below which the range is considered low"
+    },
+    "high": {
+      "type": "number",
+      "description": "Value above which the range is considered high"
+    },
+    "optimum": {
+      "type": "number",
+      "description": "The optimum or ideal value within the range"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic meter",
+      "code": "<Meter value={60} min={0} max={100} />"
+    },
+    {
+      "name": "Storage meter",
+      "code": "<Meter value={75} min={0} max={100} high={80} optimum={50} />"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [
+    {
+      "element": "meter",
+      "import": "@rdna/radiants/components/core"
+    },
+    {
+      "element": "progress",
+      "import": "@rdna/radiants/components/core",
+      "note": "Use Meter for progress indicators in v1"
+    }
+  ],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": "@base-ui/react/meter",
+  "a11y": {
+    "role": "meter",
+    "contrastRequirement": "AA"
+  }
+}

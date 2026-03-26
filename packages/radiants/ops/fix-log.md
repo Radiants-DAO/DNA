@@ -335,3 +335,28 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** make the hover state its rest state, pressed state its hover state, and add spray-grid pattern to the pressed state
 **Resolution:** Shifted solid button CSS states forward — hover now shows inverted bevel + mist overlay (was active), active now shows inverted bevel + spray-grid pattern with var(--color-ink) color (new)
 **Files:** packages/radiants/base.css
+
+## 2026-03-25 — button [P1/change]
+**Problem:** in dark mode, icon is not inheriting currentColor
+**Resolution:** Fixed in Icon.tsx — runtime SVG processing now replaces hardcoded fill="black"/#000001 with fill="currentColor" so icons inherit parent text color in all modes
+**Files:** packages/radiants/icons/Icon.tsx
+
+## 2026-03-25 — button [-/change]
+**Problem:** also not inheriting in light mode
+**Resolution:** Same root cause — Icon.tsx now replaces hardcoded fills with currentColor at runtime
+**Files:** packages/radiants/icons/Icon.tsx
+
+## 2026-03-25 — button [-/change]
+**Problem:** icon is not inheriting current color correctly
+**Resolution:** Same root cause — Icon.tsx now replaces hardcoded fills with currentColor at runtime
+**Files:** packages/radiants/icons/Icon.tsx
+
+## 2026-03-25 — contextmenu [P1/change]
+**Problem:** in dark mode, dropdown is not switching (use semantic variables)
+**Resolution:** Added explicit text-main to ContextMenuContent popup wrapper so portalled content uses semantic color token instead of inheriting from outside dark scope
+**Files:** packages/radiants/components/core/ContextMenu/ContextMenu.tsx
+
+## 2026-03-25 — alert [P2/change]
+**Problem:** both this and the close button should inherit their currentColor from the border/glow (use accent/danger/info/etc states for all alert children except for text)
+**Resolution:** Added text-main to Title and Description for readable text. Close button now reads alert variant from context and maps to matching Button tone (success→success, error→danger, info→info, warning→accent, default→neutral)
+**Files:** packages/radiants/components/core/Alert/Alert.tsx

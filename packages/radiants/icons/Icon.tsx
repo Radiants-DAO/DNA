@@ -207,7 +207,13 @@ function IconComponent({
           /<svg([^>]*)>/,
           `<svg$1 width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style="display: block;">`
         );
-        setSvgContent(svgWithSize);
+
+        // Replace hardcoded black fill/stroke values so icons inherit currentColor
+        const svgColorFixed = svgWithSize
+          .replace(/fill="(black|#000001|#000000|#000)"/gi, 'fill="currentColor"')
+          .replace(/stroke="(black|#000001|#000000|#000)"/gi, 'stroke="currentColor"');
+
+        setSvgContent(svgColorFixed);
       })
       .catch((err) => {
         if (err.name !== 'AbortError') {

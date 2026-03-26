@@ -1,0 +1,84 @@
+{
+  "id": "spinner",
+  "name": "Spinner",
+  "description": "Animated loading indicator with two display modes: a classic rotating spinner and a dot-pulse animation. Accepts a completed state to signal task completion.",
+  "sourcePath": "packages/radiants/components/core/Spinner/Spinner.tsx",
+  "schemaPath": "packages/radiants/components/core/Spinner/Spinner.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "feedback",
+  "renderMode": "custom",
+  "tags": [
+    "loading",
+    "spinner",
+    "animation"
+  ],
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": [
+        "default",
+        "dots"
+      ],
+      "default": "default",
+      "description": "Animation style — rotating ring or pulsing dots"
+    },
+    "size": {
+      "type": "number",
+      "default": 24,
+      "description": "Diameter of the spinner in pixels"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, renders a completion state instead of animating"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Default spinner",
+      "code": "<Spinner />"
+    },
+    {
+      "name": "Loading dots",
+      "code": "<Spinner variant=\"dots\" />"
+    },
+    {
+      "name": "Completed state",
+      "code": "<Spinner completed />"
+    },
+    {
+      "name": "Large spinner",
+      "code": "<Spinner size={48} />"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "base.text": "main"
+    },
+    "typography": {
+      "base.font": "monospace"
+    }
+  },
+  "tokenBindings": {
+    "base": {
+      "text": "main",
+      "font": "monospace"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

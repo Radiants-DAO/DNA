@@ -1,0 +1,122 @@
+{
+  "id": "separator",
+  "name": "Separator",
+  "description": "Accessible separator element for visually dividing content sections. Supports solid, dashed, and decorated (diamond ornament) variants.",
+  "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
+  "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "layout",
+  "renderMode": "inline",
+  "tags": [
+    "divider",
+    "line",
+    "separator",
+    "hr"
+  ],
+  "props": {
+    "orientation": {
+      "type": "enum",
+      "values": [
+        "horizontal",
+        "vertical"
+      ],
+      "default": "horizontal",
+      "description": "Separator direction: horizontal or vertical"
+    },
+    "variant": {
+      "type": "enum",
+      "values": [
+        "solid",
+        "dashed",
+        "decorated"
+      ],
+      "default": "solid",
+      "description": "Visual style of the separator line"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [],
+  "variants": [
+    {
+      "label": "Solid",
+      "props": {
+        "variant": "solid"
+      }
+    },
+    {
+      "label": "Dashed",
+      "props": {
+        "variant": "dashed"
+      }
+    },
+    {
+      "label": "Decorated",
+      "props": {
+        "variant": "decorated"
+      }
+    }
+  ],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Horizontal solid",
+      "code": "<Separator />"
+    },
+    {
+      "name": "Horizontal dashed",
+      "code": "<Separator variant=\"dashed\" />"
+    },
+    {
+      "name": "Decorated with diamond",
+      "code": "<Separator variant=\"decorated\" />"
+    },
+    {
+      "name": "Vertical separator",
+      "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "base.background": "line",
+      "base.border": "rule",
+      "decorated.lineColor": "rule",
+      "decorated.ornamentBackground": "accent"
+    }
+  },
+  "tokenBindings": {
+    "base": {
+      "background": "line",
+      "border": "rule"
+    },
+    "decorated": {
+      "lineColor": "rule",
+      "ornamentBackground": "accent"
+    }
+  },
+  "replaces": [
+    {
+      "element": "hr",
+      "import": "@rdna/radiants/components/core"
+    }
+  ],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": "@base-ui/react/separator",
+  "a11y": {
+    "role": "separator",
+    "requiredAttributes": [
+      "aria-orientation"
+    ]
+  }
+}

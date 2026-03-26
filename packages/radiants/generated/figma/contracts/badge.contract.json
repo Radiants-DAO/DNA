@@ -1,0 +1,140 @@
+{
+  "id": "badge",
+  "name": "Badge",
+  "description": "Status indicator and label component with semantic color variants.",
+  "sourcePath": "packages/radiants/components/core/Badge/Badge.tsx",
+  "schemaPath": "packages/radiants/components/core/Badge/Badge.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "feedback",
+  "renderMode": "inline",
+  "tags": [
+    "status",
+    "label",
+    "indicator"
+  ],
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": [
+        "default",
+        "success",
+        "warning",
+        "error",
+        "info"
+      ],
+      "default": "default",
+      "description": "Visual variant determining background color for status indication"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "description": "Size preset controlling padding and text size"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Badge label text or content"
+    }
+  },
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Default badge",
+      "code": "<Badge>Label</Badge>"
+    },
+    {
+      "name": "Success status",
+      "code": "<Badge variant=\"success\">Active</Badge>"
+    },
+    {
+      "name": "Warning status",
+      "code": "<Badge variant=\"warning\">Pending</Badge>"
+    },
+    {
+      "name": "Error status",
+      "code": "<Badge variant=\"error\">Failed</Badge>"
+    },
+    {
+      "name": "Info status",
+      "code": "<Badge variant=\"info\">New</Badge>"
+    },
+    {
+      "name": "Small badge",
+      "code": "<Badge size=\"sm\">Tiny</Badge>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "base.border": "line",
+      "base.text": "main",
+      "default.background": "page",
+      "default.text": "main",
+      "default.border": "line",
+      "success.background": "success",
+      "success.text": "main",
+      "success.border": "line",
+      "warning.background": "warning",
+      "warning.text": "main",
+      "warning.border": "line",
+      "error.background": "danger",
+      "error.text": "main",
+      "error.border": "line",
+      "info.background": "link",
+      "info.text": "main",
+      "info.border": "line"
+    },
+    "typography": {
+      "base.font": "heading"
+    }
+  },
+  "tokenBindings": {
+    "base": {
+      "font": "heading",
+      "border": "line",
+      "text": "main"
+    },
+    "default": {
+      "background": "page",
+      "text": "main",
+      "border": "line"
+    },
+    "success": {
+      "background": "success",
+      "text": "main",
+      "border": "line"
+    },
+    "warning": {
+      "background": "warning",
+      "text": "main",
+      "border": "line"
+    },
+    "error": {
+      "background": "danger",
+      "text": "main",
+      "border": "line"
+    },
+    "info": {
+      "background": "link",
+      "text": "main",
+      "border": "line"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

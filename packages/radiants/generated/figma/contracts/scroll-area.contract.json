@@ -1,0 +1,59 @@
+{
+  "id": "scroll-area",
+  "name": "ScrollArea",
+  "description": "Custom scrollable container with styled scrollbars. Provides consistent scroll UI across browsers.",
+  "sourcePath": "packages/radiants/components/core/ScrollArea/ScrollArea.tsx",
+  "schemaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "layout",
+  "renderMode": "custom",
+  "tags": [
+    "scroll",
+    "overflow",
+    "container"
+  ],
+  "props": {
+    "orientation": {
+      "type": "string",
+      "description": "Scroll direction: horizontal, vertical, or both"
+    },
+    "type": {
+      "type": "string",
+      "description": "Scrollbar visibility behavior: auto, always, scroll, hover"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Scrollable content"
+    }
+  },
+  "subcomponents": [
+    "ScrollAreaViewport"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Vertical scroll area",
+      "code": "<ScrollArea className=\"h-48\">\n  <div className=\"p-4\">\n    {Array.from({length: 20}, (_, i) => <p key={i}>Item {i + 1}</p>)}\n  </div>\n</ScrollArea>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

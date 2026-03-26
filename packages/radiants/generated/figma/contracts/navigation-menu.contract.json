@@ -1,0 +1,67 @@
+{
+  "id": "navigation-menu",
+  "name": "NavigationMenu",
+  "description": "Site navigation component with flyout content panels. Supports horizontal and vertical orientations.",
+  "sourcePath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx",
+  "schemaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "navigation",
+  "renderMode": "custom",
+  "tags": [
+    "navigation",
+    "nav",
+    "flyout",
+    "site-nav"
+  ],
+  "props": {
+    "orientation": {
+      "type": "string",
+      "default": "horizontal",
+      "description": "Layout orientation"
+    },
+    "value": {
+      "type": "string",
+      "description": "Controlled active item"
+    },
+    "defaultValue": {
+      "type": "string",
+      "description": "Default active item"
+    },
+    "onValueChange": {
+      "type": "string",
+      "description": "Callback when active item changes"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "NavigationMenu.Root",
+    "NavigationMenu.List",
+    "NavigationMenu.Item",
+    "NavigationMenu.Trigger",
+    "NavigationMenu.Content",
+    "NavigationMenu.Link",
+    "NavigationMenu.Viewport"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic navigation menu",
+      "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"/\">Home</NavigationMenu.Link>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>\n      <NavigationMenu.Content>...</NavigationMenu.Content>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n</NavigationMenu.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

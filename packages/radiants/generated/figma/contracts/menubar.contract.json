@@ -1,0 +1,60 @@
+{
+  "id": "menubar",
+  "name": "Menubar",
+  "description": "Desktop-style application menu bar with keyboard navigation and nested menus.",
+  "sourcePath": "packages/radiants/components/core/Menubar/Menubar.tsx",
+  "schemaPath": "packages/radiants/components/core/Menubar/Menubar.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "navigation",
+  "renderMode": "custom",
+  "tags": [
+    "menubar",
+    "menu",
+    "desktop",
+    "file-menu"
+  ],
+  "props": {
+    "modal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether menu traps focus (modal mode)"
+    },
+    "orientation": {
+      "type": "string",
+      "default": "horizontal",
+      "description": "Orientation of the menubar"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "Menubar.Root",
+    "Menubar.Menu",
+    "Menubar.Trigger",
+    "Menubar.Content",
+    "Menubar.Item",
+    "Menubar.Separator",
+    "Menubar.Label"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic menubar",
+      "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item>New</Menubar.Item>\n      <Menubar.Item>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item>Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

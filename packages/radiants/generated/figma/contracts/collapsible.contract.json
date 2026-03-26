@@ -1,0 +1,79 @@
+{
+  "id": "collapsible",
+  "name": "Collapsible",
+  "description": "Expandable content section with animated transition. Triggered by a designated trigger element.",
+  "sourcePath": "packages/radiants/components/core/Collapsible/Collapsible.tsx",
+  "schemaPath": "packages/radiants/components/core/Collapsible/Collapsible.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "layout",
+  "renderMode": "custom",
+  "tags": [
+    "collapse",
+    "expand",
+    "toggle"
+  ],
+  "props": {
+    "defaultOpen": {
+      "type": "boolean",
+      "description": "Initial expanded state for uncontrolled usage"
+    },
+    "open": {
+      "type": "boolean",
+      "description": "Controlled expanded state"
+    },
+    "onOpenChange": {
+      "type": "string",
+      "description": "Callback when expanded state changes"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Prevent toggling"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "CollapsibleTrigger and CollapsibleContent elements"
+    }
+  },
+  "subcomponents": [
+    "CollapsibleTrigger",
+    "CollapsibleContent"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic collapsible",
+      "code": "<Collapsible>\n  <CollapsibleTrigger>Toggle section</CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>Hidden content revealed on click</p>\n  </CollapsibleContent>\n</Collapsible>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [
+    {
+      "element": "details",
+      "import": "@rdna/radiants/components/core"
+    },
+    {
+      "element": "summary",
+      "import": "@rdna/radiants/components/core",
+      "note": "Use Collapsible.Trigger for the summary surface"
+    }
+  ],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": "@base-ui/react/collapsible",
+  "a11y": null
+}

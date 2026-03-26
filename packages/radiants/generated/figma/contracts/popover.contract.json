@@ -1,0 +1,60 @@
+{
+  "id": "popover",
+  "name": "Popover",
+  "description": "Floating panel anchored to a trigger element. Supports keyboard navigation and focus management.",
+  "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
+  "schemaPath": "packages/radiants/components/core/Popover/Popover.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "overlay",
+  "renderMode": "custom",
+  "tags": [
+    "popup",
+    "tooltip",
+    "float"
+  ],
+  "props": {
+    "open": {
+      "type": "boolean"
+    },
+    "defaultOpen": {
+      "type": "boolean"
+    },
+    "onOpenChange": {
+      "type": "string",
+      "description": "Callback fired when popover opens or closes"
+    },
+    "position": {
+      "type": "string",
+      "description": "Preferred popover placement relative to trigger"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "PopoverTrigger",
+    "PopoverContent"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [
+    "position"
+  ],
+  "examples": [
+    {
+      "name": "Basic popover",
+      "code": "<Popover.Root>\n  <PopoverTrigger>Open</PopoverTrigger>\n  <PopoverContent>Popover content here</PopoverContent>\n</Popover.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

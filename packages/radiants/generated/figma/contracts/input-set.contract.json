@@ -1,0 +1,71 @@
+{
+  "id": "input-set",
+  "name": "InputSet",
+  "description": "Groups related form fields with a legend, providing accessible form grouping via Base UI Fieldset.",
+  "sourcePath": "packages/radiants/components/core/InputSet/InputSet.tsx",
+  "schemaPath": "packages/radiants/components/core/InputSet/InputSet.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "form",
+  "renderMode": "custom",
+  "tags": [
+    "fieldset",
+    "form",
+    "group",
+    "legend",
+    "input-set"
+  ],
+  "props": {
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether all fields within the group are disabled"
+    }
+  },
+  "slots": {
+    "Legend": {
+      "description": "Heading text for the field group"
+    }
+  },
+  "subcomponents": [
+    "InputSet.Root",
+    "InputSet.Legend"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic input set",
+      "code": "<InputSet.Root>\n  <InputSet.Legend>Personal Info</InputSet.Legend>\n  <Input.Root>\n    <Input.Label>Name</Input.Label>\n    <Input placeholder=\"Jane Doe\" />\n  </Input.Root>\n</InputSet.Root>"
+    },
+    {
+      "name": "Disabled input set",
+      "code": "<InputSet.Root disabled>\n  <InputSet.Legend>Locked Section</InputSet.Legend>\n</InputSet.Root>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "default.border": "line"
+    },
+    "misc": {
+      "default.legend": "head"
+    }
+  },
+  "tokenBindings": {
+    "default": {
+      "border": "line",
+      "legend": "head"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

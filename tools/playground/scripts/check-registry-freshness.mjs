@@ -21,6 +21,8 @@ export const CHECKED_PATHS = [
   "packages/radiants/schemas/index.ts",
   "packages/radiants/generated/eslint-contract.json",
   "packages/radiants/generated/ai-contract.json",
+  "packages/radiants/generated/figma",
+  ".component-contracts.example",
   "tools/playground/generated/registry.manifest.json",
 ];
 
@@ -40,7 +42,7 @@ export function main() {
   console.log("Regenerating schemas...");
   run("pnpm", ["--filter", "@rdna/radiants", "generate:schemas"]);
 
-  console.log("\nRegenerating playground manifest...");
+  console.log("\nRegenerating Figma contracts and playground manifest...");
   run("pnpm", ["--filter", "@rdna/playground", "registry:generate"]);
 
   console.log("\nChecking for drift in generated artifacts...");

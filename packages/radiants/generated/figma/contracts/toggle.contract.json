@@ -1,0 +1,154 @@
+{
+  "id": "toggle",
+  "name": "Toggle",
+  "description": "Pressable toggle button that holds a pressed/unpressed state. Used as standalone or inside ToggleGroup.",
+  "sourcePath": "packages/radiants/components/core/Toggle/Toggle.tsx",
+  "schemaPath": "packages/radiants/components/core/Toggle/Toggle.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "action",
+  "renderMode": "inline",
+  "tags": [
+    "toggle",
+    "press",
+    "on-off"
+  ],
+  "props": {
+    "pressed": {
+      "type": "boolean",
+      "description": "Controlled pressed state"
+    },
+    "defaultPressed": {
+      "type": "boolean",
+      "description": "Initial pressed state for uncontrolled usage"
+    },
+    "onPressedChange": {
+      "type": "string",
+      "description": "Callback when pressed state changes"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable toggle interactions"
+    },
+    "mode": {
+      "type": "enum",
+      "options": [
+        "solid",
+        "flat",
+        "pattern"
+      ],
+      "default": "solid",
+      "description": "Visual mode — controls fill treatment"
+    },
+    "tone": {
+      "type": "enum",
+      "options": [
+        "accent",
+        "danger",
+        "success",
+        "neutral",
+        "cream",
+        "white",
+        "info",
+        "tinted"
+      ],
+      "default": "accent",
+      "description": "Color tone"
+    },
+    "size": {
+      "type": "enum",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "description": "Size preset"
+    },
+    "rounded": {
+      "type": "enum",
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "none"
+      ],
+      "default": "xs",
+      "description": "Pixel-corner roundness"
+    },
+    "value": {
+      "type": "string",
+      "description": "Value when used inside ToggleGroup"
+    },
+    "children": {
+      "type": "string",
+      "description": "Toggle content"
+    }
+  },
+  "slots": {},
+  "subcomponents": [],
+  "states": [
+    {
+      "name": "hover",
+      "driver": "wrapper"
+    },
+    {
+      "name": "pressed",
+      "driver": "prop",
+      "prop": "pressed",
+      "value": true
+    },
+    {
+      "name": "focus",
+      "driver": "wrapper"
+    },
+    {
+      "name": "disabled",
+      "driver": "prop",
+      "prop": "disabled",
+      "value": true
+    }
+  ],
+  "variants": [],
+  "exampleProps": {
+    "children": "Toggle"
+  },
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic toggle",
+      "code": "<Toggle>Bold</Toggle>"
+    },
+    {
+      "name": "Pressed state",
+      "code": "<Toggle defaultPressed>Italic</Toggle>"
+    },
+    {
+      "name": "Disabled",
+      "code": "<Toggle disabled>Underline</Toggle>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": "@base-ui/react/toggle",
+  "a11y": {
+    "role": "button",
+    "requiredAttributes": [
+      "aria-pressed"
+    ],
+    "keyboardInteractions": [
+      "Enter",
+      "Space"
+    ]
+  }
+}

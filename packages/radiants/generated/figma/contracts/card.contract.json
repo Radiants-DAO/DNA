@@ -1,0 +1,126 @@
+{
+  "id": "card",
+  "name": "Card",
+  "description": "Container with retro pixel-corner bevels and theme-owned colors. Use CardHeader, CardBody, CardFooter for structured layouts.",
+  "sourcePath": "packages/radiants/components/core/Card/Card.tsx",
+  "schemaPath": "packages/radiants/components/core/Card/Card.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "layout",
+  "renderMode": "custom",
+  "tags": [
+    "container",
+    "panel",
+    "surface"
+  ],
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": [
+        "default",
+        "inverted",
+        "raised"
+      ],
+      "default": "default",
+      "description": "Visual variant controlling background and bevel treatment"
+    },
+    "rounded": {
+      "type": "enum",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "lg",
+      "description": "Pixel-corner roundness"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Card content. Use CardHeader, CardBody, CardFooter sub-components for structured layouts, or pass content directly with padding via className."
+    }
+  },
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Default card with sections",
+      "code": "<Card><CardHeader>Title</CardHeader><CardBody>Content</CardBody><CardFooter>Actions</CardFooter></Card>"
+    },
+    {
+      "name": "Simple padded card",
+      "code": "<Card className=\"p-4\">Simple content</Card>"
+    },
+    {
+      "name": "Inverted card",
+      "code": "<Card variant=\"inverted\"><CardBody>Dark surface</CardBody></Card>"
+    },
+    {
+      "name": "Raised card with shadow",
+      "code": "<Card variant=\"raised\"><CardBody>Elevated content</CardBody></Card>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "default.background": "card",
+      "default.text": "main",
+      "default.border": "line",
+      "inverted.background": "inv",
+      "inverted.text": "flip",
+      "inverted.border": "line",
+      "raised.background": "card",
+      "raised.text": "main",
+      "raised.border": "line"
+    },
+    "shape": {
+      "default.bevel": "white-0.2/black-0.08",
+      "inverted.bevel": "white-0.12/black-0.15",
+      "raised.shadow": "pixel-shadow-raised",
+      "raised.bevel": "white-0.2/black-0.08"
+    }
+  },
+  "tokenBindings": {
+    "default": {
+      "background": "card",
+      "text": "main",
+      "border": "line",
+      "bevel": "white-0.2/black-0.08"
+    },
+    "inverted": {
+      "background": "inv",
+      "text": "flip",
+      "border": "line",
+      "bevel": "white-0.12/black-0.15"
+    },
+    "raised": {
+      "background": "card",
+      "text": "main",
+      "border": "line",
+      "shadow": "pixel-shadow-raised",
+      "bevel": "white-0.2/black-0.08"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": true,
+  "shadowSystem": "pixel",
+  "styleOwnership": [
+    {
+      "attribute": "data-variant",
+      "themeOwned": [
+        "default",
+        "inverted",
+        "raised"
+      ]
+    }
+  ],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": {
+    "contrastRequirement": "AA"
+  }
+}

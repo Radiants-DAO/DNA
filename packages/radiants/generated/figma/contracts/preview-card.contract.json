@@ -1,0 +1,55 @@
+{
+  "id": "preview-card",
+  "name": "PreviewCard",
+  "description": "Hover-triggered floating card for rich content previews. Appears on hover with a configurable delay.",
+  "sourcePath": "packages/radiants/components/core/PreviewCard/PreviewCard.tsx",
+  "schemaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "overlay",
+  "renderMode": "custom",
+  "tags": [
+    "preview",
+    "hover",
+    "card",
+    "popup"
+  ],
+  "props": {
+    "open": {
+      "type": "boolean"
+    },
+    "defaultOpen": {
+      "type": "boolean"
+    },
+    "onOpenChange": {
+      "type": "string",
+      "description": "Callback fired when card opens or closes"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "PreviewCardTrigger",
+    "PreviewCardContent"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic preview card",
+      "code": "<PreviewCard.Root>\n  <PreviewCardTrigger>Hover me</PreviewCardTrigger>\n  <PreviewCardContent>\n    <h3>Preview title</h3>\n    <p>Preview description</p>\n  </PreviewCardContent>\n</PreviewCard.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

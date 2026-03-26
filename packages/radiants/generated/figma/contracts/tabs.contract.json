@@ -1,0 +1,78 @@
+{
+  "id": "tabs",
+  "name": "Tabs",
+  "description": "Accessible tabbed navigation with keyboard support. Supports pill and line visual variants.",
+  "sourcePath": "packages/radiants/components/core/Tabs/Tabs.tsx",
+  "schemaPath": "packages/radiants/components/core/Tabs/Tabs.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "navigation",
+  "renderMode": "custom",
+  "tags": [
+    "sections",
+    "switch"
+  ],
+  "props": {
+    "defaultValue": {
+      "type": "string",
+      "description": "Default selected tab value"
+    },
+    "value": {
+      "type": "string",
+      "description": "Controlled selected tab value"
+    },
+    "onValueChange": {
+      "type": "string",
+      "description": "Callback when active tab changes"
+    },
+    "mode": {
+      "type": "enum",
+      "options": [
+        "pill",
+        "line"
+      ],
+      "default": "pill",
+      "description": "Visual mode — controls trigger fill treatment"
+    },
+    "layout": {
+      "type": "enum",
+      "options": [
+        "default",
+        "bottom-tabs",
+        "sidebar",
+        "dot",
+        "capsule",
+        "accordion"
+      ],
+      "default": "default",
+      "description": "Arrangement of tab list relative to content panels"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "TabsList",
+    "TabsTrigger",
+    "TabsContent"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic tabs",
+      "code": "<Tabs defaultValue=\"tab1\">\n  <TabsList>\n    <TabsTrigger value=\"tab1\">Tab 1</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Tab 2</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Content 1</TabsContent>\n  <TabsContent value=\"tab2\">Content 2</TabsContent>\n</Tabs>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

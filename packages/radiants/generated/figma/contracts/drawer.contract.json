@@ -1,0 +1,75 @@
+{
+  "id": "drawer",
+  "name": "Drawer",
+  "description": "Slide-in panel anchored to a viewport edge. Dismissable by clicking the overlay or pressing Escape.",
+  "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
+  "schemaPath": "packages/radiants/components/core/Drawer/Drawer.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "overlay",
+  "renderMode": "custom",
+  "tags": [
+    "drawer",
+    "bottom-sheet",
+    "slide",
+    "mobile"
+  ],
+  "props": {
+    "open": {
+      "type": "boolean"
+    },
+    "defaultOpen": {
+      "type": "boolean"
+    },
+    "onOpenChange": {
+      "type": "string",
+      "description": "Callback fired when drawer opens or closes"
+    },
+    "direction": {
+      "type": "enum",
+      "options": [
+        "bottom",
+        "top",
+        "left",
+        "right"
+      ],
+      "default": "bottom",
+      "description": "Which edge the drawer slides from"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "DrawerTrigger",
+    "DrawerContent",
+    "DrawerHeader",
+    "DrawerTitle",
+    "DrawerDescription",
+    "DrawerBody",
+    "DrawerFooter",
+    "DrawerClose"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [
+    "direction",
+    "defaultOpen"
+  ],
+  "examples": [
+    {
+      "name": "Bottom drawer",
+      "code": "<Drawer.Root>\n  <DrawerTrigger>Open Drawer</DrawerTrigger>\n  <DrawerContent direction=\"bottom\">\n    <DrawerHeader><DrawerTitle>Drawer</DrawerTitle></DrawerHeader>\n    <DrawerBody>Content</DrawerBody>\n  </DrawerContent>\n</Drawer.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

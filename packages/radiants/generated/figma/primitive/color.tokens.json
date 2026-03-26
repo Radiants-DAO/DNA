@@ -1,0 +1,57 @@
+{
+  "$description": "Primitive RDNA Radiants color tokens generated from packages/radiants/tokens.css.",
+  "color": {
+    "cream": {
+      "$type": "color",
+      "$value": "oklch(0.9780 0.0295 94.34)"
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "oklch(0.1641 0.0044 84.59)"
+    },
+    "pure-black": {
+      "$type": "color",
+      "$value": "oklch(0.0000 0.0000 0)"
+    },
+    "sun-yellow": {
+      "$type": "color",
+      "$value": "oklch(0.9126 0.1170 93.68)"
+    },
+    "sky-blue": {
+      "$type": "color",
+      "$value": "oklch(0.7701 0.0527 236.81)"
+    },
+    "sunset-fuzz": {
+      "$type": "color",
+      "$value": "oklch(0.8546 0.1039 68.93)"
+    },
+    "sun-red": {
+      "$type": "color",
+      "$value": "oklch(0.7429 0.1568 21.43)"
+    },
+    "mint": {
+      "$type": "color",
+      "$value": "oklch(0.9312 0.0702 142.51)"
+    },
+    "pure-white": {
+      "$type": "color",
+      "$value": "oklch(1.0000 0.0000 0)"
+    },
+    "success-mint": {
+      "$type": "color",
+      "$value": "{color.mint}"
+    },
+    "warning-yellow": {
+      "$type": "color",
+      "$value": "{color.sun-yellow}"
+    },
+    "error-red": {
+      "$type": "color",
+      "$value": "{color.sun-red}"
+    },
+    "focus-state": {
+      "$type": "color",
+      "$value": "{color.sky-blue}"
+    }
+  }
+}

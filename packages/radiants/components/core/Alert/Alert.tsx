@@ -47,15 +47,15 @@ const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; c
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 pixel-rounded-xs pixel-shadow-raised text-main',
+  'p-4 pixel-rounded-xs pixel-shadow-raised',
   {
     variants: {
       variant: {
-        default: 'bg-page',
-        success: 'bg-success',
-        warning: 'bg-warning',
-        error: 'bg-danger',
-        info: 'bg-link',
+        default: 'bg-page text-main',
+        success: 'bg-success text-success',
+        warning: 'bg-warning text-warning',
+        error: 'bg-danger text-danger',
+        info: 'bg-link text-link',
       },
     },
     defaultVariants: {
@@ -84,22 +84,33 @@ function Content({ children, className = '' }: AlertChildProps): React.ReactElem
 
 function Title({ children, className = '' }: AlertChildProps): React.ReactElement {
   return (
-    <h4 className={`text-sm font-heading uppercase tracking-tight leading-none mb-1 text-balance ${className}`}>
+    <h4 className={`text-sm font-heading uppercase tracking-tight leading-none mb-1 text-balance text-main ${className}`}>
       {children}
     </h4>
   );
 }
 
 function Description({ children, className = '' }: AlertChildProps): React.ReactElement {
-  return <p className={`font-sans text-sm text-pretty ${className}`}>{children}</p>;
+  return <p className={`font-sans text-sm text-pretty text-main ${className}`}>{children}</p>;
 }
 
+const VARIANT_TO_TONE: Record<AlertVariant, 'accent' | 'danger' | 'success' | 'neutral' | 'info'> = {
+  default: 'neutral',
+  success: 'success',
+  warning: 'accent',
+  error: 'danger',
+  info: 'info',
+};
+
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {
+  const variant = use(AlertVariantContext);
+  const tone = VARIANT_TO_TONE[variant];
   return (
     <Button
       quiet
       size="sm"
       iconOnly
+      tone={tone}
       onClick={onClick}
       aria-label="Close alert"
       className={`flex-shrink-0 ${className}`}

@@ -1,0 +1,66 @@
+{
+  "id": "dialog",
+  "name": "Dialog",
+  "description": "Modal dialog with focus trap and overlay. Provides accessible dialog interactions through compound components.",
+  "sourcePath": "packages/radiants/components/core/Dialog/Dialog.tsx",
+  "schemaPath": "packages/radiants/components/core/Dialog/Dialog.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "overlay",
+  "renderMode": "custom",
+  "tags": [
+    "modal",
+    "popup",
+    "confirm"
+  ],
+  "props": {
+    "open": {
+      "type": "boolean",
+      "description": "Controlled open state"
+    },
+    "defaultOpen": {
+      "type": "boolean"
+    },
+    "onOpenChange": {
+      "type": "string",
+      "description": "Callback fired when dialog opens or closes"
+    }
+  },
+  "slots": {},
+  "subcomponents": [
+    "DialogTrigger",
+    "DialogContent",
+    "DialogHeader",
+    "DialogTitle",
+    "DialogDescription",
+    "DialogBody",
+    "DialogFooter",
+    "DialogClose"
+  ],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic dialog",
+      "code": "<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>"
+    }
+  ],
+  "tokens": {},
+  "tokenBindings": {},
+  "replaces": [
+    {
+      "element": "dialog",
+      "import": "@rdna/radiants/components/core"
+    }
+  ],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

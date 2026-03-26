@@ -69,7 +69,7 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
         <BaseContextMenu.Popup
           className="z-[1000] min-w-[160px] pixel-shadow-raised"
         >
-          <div className={`bg-page pixel-rounded-sm py-0 ${className}`.trim()}>
+          <div className={`bg-page text-main pixel-rounded-sm py-0 ${className}`.trim()}>
             {children}
           </div>
         </BaseContextMenu.Popup>

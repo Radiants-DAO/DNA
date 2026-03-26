@@ -1,0 +1,128 @@
+{
+  "id": "combobox",
+  "name": "Combobox",
+  "description": "Searchable select / autocomplete input. Combines a text input with a filterable dropdown list. Supports keyboard navigation, custom filtering, groups, and empty states.",
+  "sourcePath": "packages/radiants/components/core/Combobox/Combobox.tsx",
+  "schemaPath": "packages/radiants/components/core/Combobox/Combobox.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "form",
+  "renderMode": "custom",
+  "tags": [
+    "combobox",
+    "autocomplete",
+    "search",
+    "select"
+  ],
+  "props": {
+    "value": {
+      "type": "string",
+      "description": "The controlled selected value"
+    },
+    "defaultValue": {
+      "type": "string",
+      "description": "Default selected value for uncontrolled usage"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable combobox interactions"
+    },
+    "autoHighlight": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the first matching item is highlighted automatically"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Combobox.Input and Combobox.Portal wrapping Combobox.Popup with Combobox.Item children"
+    }
+  },
+  "subcomponents": [
+    "Combobox.Root",
+    "Combobox.Input",
+    "Combobox.Portal",
+    "Combobox.Popup",
+    "Combobox.Item",
+    "Combobox.Empty",
+    "Combobox.Group",
+    "Combobox.GroupLabel"
+  ],
+  "states": [
+    {
+      "name": "focus",
+      "driver": "wrapper"
+    },
+    {
+      "name": "disabled",
+      "driver": "prop",
+      "prop": "disabled",
+      "value": true
+    }
+  ],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic combobox",
+      "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search frameworks...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Item value=\"react\">React</Combobox.Item>\n      <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      <Combobox.Empty>No results found</Combobox.Empty>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "input.text": "main",
+      "input.background": "page",
+      "input.border": "line",
+      "input.placeholder": "mute",
+      "popup.background": "card",
+      "popup.border": "line",
+      "item.text": "main",
+      "item.backgroundHighlighted": "accent",
+      "item.textHighlighted": "accent-inv",
+      "item.backgroundSelected": "accent",
+      "item.textSelected": "accent-inv",
+      "empty.text": "mute",
+      "groupLabel.text": "mute"
+    },
+    "shape": {
+      "popup.shadow": "raised"
+    }
+  },
+  "tokenBindings": {
+    "input": {
+      "text": "main",
+      "background": "page",
+      "border": "line",
+      "placeholder": "mute"
+    },
+    "popup": {
+      "background": "card",
+      "border": "line",
+      "shadow": "raised"
+    },
+    "item": {
+      "text": "main",
+      "backgroundHighlighted": "accent",
+      "textHighlighted": "accent-inv",
+      "backgroundSelected": "accent",
+      "textSelected": "accent-inv"
+    },
+    "empty": {
+      "text": "mute"
+    },
+    "groupLabel": {
+      "text": "mute"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

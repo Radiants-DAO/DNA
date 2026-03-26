@@ -1,0 +1,121 @@
+{
+  "id": "tooltip",
+  "name": "Tooltip",
+  "description": "A floating label that appears on hover or focus of a trigger element. Supports four placement directions, configurable show delay, and three size variants.",
+  "sourcePath": "packages/radiants/components/core/Tooltip/Tooltip.tsx",
+  "schemaPath": "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
+  "importPath": "@rdna/radiants/components/core",
+  "platforms": [
+    "web"
+  ],
+  "category": "feedback",
+  "renderMode": "custom",
+  "tags": [
+    "hint",
+    "info",
+    "hover"
+  ],
+  "props": {
+    "content": {
+      "type": "node",
+      "required": true,
+      "description": "Text or element displayed inside the tooltip bubble"
+    },
+    "position": {
+      "type": "enum",
+      "values": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "default": "top",
+      "description": "Which side of the trigger the tooltip appears on"
+    },
+    "delay": {
+      "type": "number",
+      "default": 0,
+      "description": "Milliseconds to wait before showing the tooltip"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "description": "Controls padding and font size of the tooltip bubble"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes applied to the trigger wrapper"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Trigger element — the tooltip appears relative to this node"
+    },
+    "content": {
+      "description": "Tooltip bubble content, passed via the content prop"
+    }
+  },
+  "subcomponents": [],
+  "states": [],
+  "variants": [],
+  "exampleProps": {},
+  "controlledProps": [],
+  "examples": [
+    {
+      "name": "Basic tooltip",
+      "code": "<Tooltip content=\"Tooltip text\"><button>Hover me</button></Tooltip>"
+    },
+    {
+      "name": "Bottom position",
+      "code": "<Tooltip content=\"Below\" position=\"bottom\"><button>Hover me</button></Tooltip>"
+    },
+    {
+      "name": "With delay",
+      "code": "<Tooltip content=\"Delayed\" delay={500}><button>Hover me</button></Tooltip>"
+    },
+    {
+      "name": "Large size",
+      "code": "<Tooltip content=\"Large tooltip\" size=\"lg\"><button>Hover me</button></Tooltip>"
+    }
+  ],
+  "tokens": {
+    "color": {
+      "base.background": "inv",
+      "base.text": "flip",
+      "base.borderRadius": "sm",
+      "arrow.border": "inv"
+    },
+    "spacing": {
+      "base.paddingX": "spacing-sm",
+      "base.paddingY": "spacing-xs"
+    },
+    "typography": {
+      "base.font": "heading"
+    }
+  },
+  "tokenBindings": {
+    "base": {
+      "background": "inv",
+      "text": "flip",
+      "font": "heading",
+      "borderRadius": "sm",
+      "paddingX": "spacing-sm",
+      "paddingY": "spacing-xs"
+    },
+    "arrow": {
+      "border": "inv"
+    }
+  },
+  "replaces": [],
+  "pixelCorners": false,
+  "shadowSystem": null,
+  "styleOwnership": [],
+  "structuralRules": [],
+  "wraps": null,
+  "a11y": null
+}

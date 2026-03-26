@@ -43,6 +43,7 @@ dna/
 │   │   ├── typography.css         # Element styles
 │   │   ├── fonts.css              # @font-face declarations
 │   │   ├── components/core/       # UI components with meta + generated schemas
+│   │   ├── generated/figma/       # Generated DTCG tokens + component contracts for Figma/agents
 │   │   └── registry/              # Runtime registry, prop controls, showcase hooks
 │   │
 │   └── preview/                   # @rdna/preview — Shared PreviewPage component
@@ -193,6 +194,35 @@ See `docs/archive/dna-conversion.md` for the archived guide.
 - **Claude Code / Cursor** — AI assistants that use schemas for context
 - **`@base-ui/react`** — Headless primitive layer for all interactive components
 - **[json-render](https://github.com/vercel-labs/json-render)** — Planned runtime format for AI-generated UI (not yet integrated)
+
+## Figma Contracts
+
+Radiants can now generate Figma-ready token and component contract artifacts directly from the authored CSS tokens and `*.meta.ts` files.
+
+```bash
+pnpm registry:generate
+```
+
+That command now refreshes:
+
+- `packages/radiants/generated/figma/primitive/*.tokens.json`
+- `packages/radiants/generated/figma/semantic/semantic.tokens.json`
+- `packages/radiants/generated/figma/contracts/*.contract.json`
+- `.component-contracts.example`
+
+### Agent Quick Start
+
+1. Run `pnpm registry:generate`.
+2. Copy `.component-contracts.example` to `.component-contracts`.
+3. Fill in `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY`.
+4. Point token-sync agents at `TOKENS_DIR=packages/radiants/generated/figma`.
+5. Point component-generation agents at `CONTRACTS_DIR=packages/radiants/generated/figma/contracts`.
+
+In this repo, the local Figma skills already expect that layout:
+
+- `.claude/skills/cc-figma-tokens/SKILL.md` reads `TOKENS_DIR`
+- `.claude/skills/cc-figma-component/SKILL.md` reads `CONTRACTS_DIR`
+- `.claude/skills/sync-figma-token/SKILL.md` can diff the generated token JSON against Figma variables
 
 ## Key Decisions
 
