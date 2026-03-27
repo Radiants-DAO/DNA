@@ -184,7 +184,7 @@ Work signals bracket every agent modification so the playground UI reflects real
 
 ### Fix Log
 
-`packages/radiants/ops/fix-log.md` is an append-only record of every design system fix made through the playground.
+`docs/ops/playground-fix-log.md` is an append-only record of every design system fix made through the playground.
 
 - Agents append via `cat >> ... <<'EOF'` — never read the file
 - Entry format:

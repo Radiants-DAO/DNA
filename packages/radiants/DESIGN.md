@@ -853,6 +853,7 @@ Every component's `*.meta.ts` MUST explicitly declare a `variants` array. This p
 
 - **No `forwardRef`** — ref is a regular prop in React 19
 - **Use `use()` hook** for reading Context (not `useContext`)
+- **Use `createCompoundContext()`** for compound component state contexts so the provider/hook pair stays consistent
 - Children composition over render props for static structure
 
 ### State Management
@@ -1303,8 +1304,8 @@ Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tr
 | Type | Import | Use |
 |------|--------|-----|
 | **CoreIcons** (inline SVGs) | `import { X, Check, Plus } from '@rdna/radiants/icons'` | ~80 pre-rendered icons. Best performance — no network requests. |
-| **DesktopIcons** (pixel-art) | `import { RadMarkIcon, TreeIcon } from '@rdna/radiants/icons'` | Brand-specific pixel art icons for desktop, taskbar, start menu. |
-| **Dynamic Icon** (runtime SVG loader) | `import { Icon } from '@rdna/radiants/icons'` | `<Icon name="icon-name" />` — loads from `/assets/icons/`. Use for custom or less common icons. |
+| **DesktopIcons** (pixel-art) | `import { RadMarkIcon, TreeIcon } from '@rdna/radiants/icons/runtime'` | Brand-specific pixel art icons for desktop, taskbar, start menu. |
+| **Dynamic Icon** (runtime SVG loader) | `import { Icon } from '@rdna/radiants/icons/runtime'` | `<Icon name="icon-name" />` — loads from `/assets/icons/`. Use for custom or less common icons. |
 
 ### Priority order
 
@@ -1317,7 +1318,7 @@ Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tr
 ```tsx
 // DO: Import from radiants
 import { X, Check, ChevronDown } from '@rdna/radiants/icons';
-import { Icon } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons/runtime';
 
 <X size={16} />
 <Icon name="broadcast-dish" size={20} />

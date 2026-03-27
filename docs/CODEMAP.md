@@ -636,8 +636,8 @@ graph TB
 | **Registry guard**             | `scripts/registry-guard.mjs`                                    |
 | **Design spec**                | `docs/theme-spec.md`                                            |
 | **Design system doc**          | `packages/radiants/DESIGN.md`                                   |
-| **Plans archive**              | `docs/plans/`                                                   |
-| **Research artifacts**         | `research/design-guard/`                                        |
+| **Plans archive**              | `archive/plans/`                                                |
+| **Research artifacts**         | `archive/research/design-guard/`                                |
 | **Iteration files**            | `tools/playground/app/playground/iterations/`                   |
 | **Iteration prompt builder**   | `tools/playground/app/playground/prompts/iteration.prompt.ts`   |
 | **Annotation store**           | `tools/playground/app/playground/api/agent/annotation-store.ts` |
@@ -647,7 +647,7 @@ graph TB
 | **WebGL background**           | `apps/rad-os/components/background/WebGLSun.tsx`                |
 | **Preview package types**      | `packages/preview/src/types.ts`                                 |
 | **Define component meta**      | `packages/preview/src/define-component-meta.ts`                 |
-| **Prompt templates**           | `prompts/dna-conversion/templates/`                             |
+| **Prompt templates**           | `archive/prompts/dna-conversion/templates/`                     |
 | **Production readiness**       | `docs/production-readiness-checklist.md`                        |
 
 ### Ports
