@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #08111e;
+  --color-card: #0f2236;
+  --color-panel: #173149;
+  --color-line: #2d4f6d;
+  --color-main: #f4ead5;
+  --color-muted: #93afc7;
+  --color-accent: #ffb347;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255, 179, 71, 0.14), transparent 28%),
+    linear-gradient(180deg, #08111e 0%, #0d1929 52%, #122338 100%);
+  color: var(--color-main);
+  font-family:
+    "IBM Plex Sans",
+    "Avenir Next",
+    "Segoe UI",
+    sans-serif;
+}
