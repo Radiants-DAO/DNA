@@ -20,7 +20,8 @@
     "registry:test:playground": "pnpm --filter @rdna/playground exec vitest run app/playground/__tests__/registry-freshness.test.ts app/playground/__tests__/registry.test.ts app/playground/__tests__/props-panel.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts --cache=false",
     "registry:check:fast": "pnpm lint:design-system:staged && pnpm registry:check:freshness",
     "registry:check:full": "pnpm registry:check:freshness && pnpm registry:test:radiants && pnpm registry:test:playground",
-    "test:scripts": "node --test scripts/__tests__/*.test.mjs"
+    "test:scripts": "node --test scripts/__tests__/*.test.mjs",
+    "test:create": "pnpm --filter @rdna/create test"
   },
   "devDependencies": {
     "eslint": "^9",
