@@ -10,8 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "create-app": "npx ts-node scripts/create-app.ts"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@rdna/radiants": "workspace:*",

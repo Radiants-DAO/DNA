@@ -193,8 +193,8 @@ export const APP_CATALOG: AppCatalogEntry[] = [
 
 ### Siloed Development (Optional)
 For AI workflow optimization:
-- Apps can be developed in isolation using an `@radiants/app-template` npm package
-- Package includes: design tokens, UI component stubs, TypeScript interfaces, AI prompts
+- Apps can be scaffolded in isolation using the `@rdna/create` workspace package
+- The scaffold generates a standalone Next.js prototype that depends on `@rdna/radiants` and keeps the control-surface seam in `lib/controlSurface.ts`
 - Merge workflow: Copy finished app into monorepo, register in `lib/apps/catalog.tsx`
 
 ---
