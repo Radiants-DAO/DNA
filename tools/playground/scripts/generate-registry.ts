@@ -22,10 +22,22 @@ import { fileURLToPath } from "node:url";
 
 // CATEGORY_LABELS is the only import needed from radiants — pure constants, safe for Node 22.
 import { componentMetaIndex } from "../../../packages/radiants/meta/index.ts";
-import { pickContractFields } from "../../../packages/radiants/registry/contract-fields.ts";
+import {
+  pickContractFields,
+  type ContractFieldSource,
+} from "../../../packages/radiants/registry/contract-fields.ts";
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
-import type { ComponentMeta, PreviewState } from "../../../packages/preview/src/index.ts";
+import type {
+  ComponentMeta,
+  DensityContract,
+  CompositionRules,
+  PreviewState,
+} from "../../../packages/preview/src/index.ts";
 import { writeRadiantsContractArtifacts } from "./build-radiants-contract.ts";
+import {
+  REGISTRY_FRESHNESS_BASENAME,
+  computeGeneratedArtifactFreshness,
+} from "./generated-artifact-hashes.mjs";
 import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -33,6 +45,15 @@ const APP_ROOT = resolve(__dirname, "..");
 const MONO_ROOT = resolve(APP_ROOT, "../..");
 const OUTPUT_DIR = resolve(APP_ROOT, "generated");
 const OUTPUT_FILE = resolve(OUTPUT_DIR, "registry.manifest.json");
+
+function writeJsonIfChanged(filePath: string, value: unknown) {
+  const next = `${JSON.stringify(value, null, 2)}\n`;
+  if (existsSync(filePath) && readFileSync(filePath, "utf8") === next) {
+    return false;
+  }
+  writeFileSync(filePath, next);
+  return true;
+}
 
 // ---------------------------------------------------------------------------
 // Schema scanning helpers (unchanged from previous generator)
@@ -60,8 +81,6 @@ interface SchemaFile {
 /** Read schema data for a single component directory. */
 function scanComponentDir(
   componentDir: string,
-  dirName: string,
-  packageDir: string,
 ): Array<{
   baseName: string;
   schemaFile: string;
@@ -111,6 +130,8 @@ interface ManifestComponent {
   shadowSystem?: ComponentMeta["shadowSystem"];
   styleOwnership?: ComponentMeta["styleOwnership"];
   structuralRules?: ComponentMeta["structuralRules"];
+  density?: DensityContract;
+  composition?: CompositionRules;
   wraps?: string;
   a11y?: ComponentMeta["a11y"];
 }
@@ -172,9 +193,9 @@ async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
 }
 
 export function buildManifestContractFields(
-  meta: Partial<Pick<ComponentMeta<unknown>, "replaces" | "pixelCorners" | "shadowSystem" | "styleOwnership" | "structuralRules" | "wraps" | "a11y">>,
+  meta: ContractFieldSource,
 ) {
-  return pickContractFields(meta as ComponentMeta<unknown>);
+  return pickContractFields(meta);
 }
 
 // ---------------------------------------------------------------------------
@@ -213,7 +234,7 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
     const componentDir = resolve(pkg.dir, dirName);
     if (!statSync(componentDir).isDirectory()) continue;
 
-    const scanned = scanComponentDir(componentDir, dirName, pkg.packageDir);
+    const scanned = scanComponentDir(componentDir);
     for (const { schema, hasSource, schemaFile, baseName } of scanned) {
       const sourceFile = `${baseName}.tsx`;
       components.push({
@@ -260,11 +281,16 @@ async function main() {
   }
 
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
-  writeFileSync(OUTPUT_FILE, JSON.stringify(manifest, null, 2) + "\n");
+  const freshness = computeGeneratedArtifactFreshness(MONO_ROOT);
+  const manifestChanged = writeJsonIfChanged(OUTPUT_FILE, manifest);
+  const manifestFreshnessChanged = writeJsonIfChanged(
+    resolve(OUTPUT_DIR, REGISTRY_FRESHNESS_BASENAME),
+    freshness.registryManifest,
+  );
 
   // Emit design-system contract artifacts alongside the registry manifest
   const CONTRACT_OUTPUT_DIR = resolve(MONO_ROOT, "packages/radiants/generated");
-  await writeRadiantsContractArtifacts(CONTRACT_OUTPUT_DIR);
+  await writeRadiantsContractArtifacts(CONTRACT_OUTPUT_DIR, freshness.radiantsContracts);
   console.log(`Wrote contract artifacts to ${CONTRACT_OUTPUT_DIR}`);
 
   const totalComponents = Object.values(manifest).reduce(
@@ -272,7 +298,9 @@ async function main() {
     0,
   );
 
-  console.log(`Wrote ${OUTPUT_FILE}`);
+  console.log(
+    `${manifestChanged || manifestFreshnessChanged ? "Updated" : "Verified"} ${OUTPUT_FILE}`,
+  );
   console.log(`${Object.keys(manifest).length} package(s), ${totalComponents} component(s).`);
   for (const [pkgName, pkgData] of Object.entries(manifest)) {
     console.log(`  ${pkgName}: ${pkgData.components.length} components`);

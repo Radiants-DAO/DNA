@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 type ButtonMode = "solid" | "flat" | "text" | "pattern";
@@ -21,6 +22,7 @@ interface ButtonProps {
   focusableWhenDisabled?: boolean;
   href?: string;
   target?: string;
+  children?: ReactNode;
 }
 
 export const ButtonMeta = defineComponentMeta<ButtonProps>()({

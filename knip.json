@@ -1,0 +1,40 @@
+{
+  "$schema": "https://knip.dev/schema.json",
+  "ignoreWorkspaces": [
+    ".",
+    "apps/*",
+    "tools/*",
+    "templates/*"
+  ],
+  "ignore": [
+    ".component-contracts.example",
+    "**/.DS_Store",
+    "**/.next/**",
+    "**/.turbo/**",
+    "packages/radiants/generated/figma/**"
+  ],
+  "workspaces": {
+    "packages/create": {
+      "ignoreFiles": [
+        "scripts/sync-templates.mjs"
+      ]
+    },
+    "packages/preview": {
+      "ignoreFiles": [
+        "src/generate-schemas.ts"
+      ]
+    },
+    "packages/radiants": {
+      "ignoreFiles": [
+        "contract/system.ts",
+        "eslint/lib/no-legacy-color-format.mjs",
+        "scripts/generate-figma-contracts.ts",
+        "scripts/generate-icons.mjs",
+        "scripts/generate-icons.ts",
+        "scripts/generate-pixel-corners.mjs",
+        "scripts/pixel-corners-lib.mjs",
+        "scripts/pixel-corners.config.mjs"
+      ]
+    }
+  }
+}

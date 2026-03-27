@@ -161,6 +161,7 @@ export function Checkbox({
         )}
       >
         <BaseCheckbox.Indicator
+          keepMounted
           data-slot="indicator"
           className="absolute inset-0 flex items-center justify-center"
         >

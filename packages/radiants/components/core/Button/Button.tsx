@@ -130,7 +130,6 @@ export const buttonFaceVariants = cva(
       iconOnly: false,
       textOnly: false,
       fullWidth: false,
-      disabled: false,
     },
   }
 );
@@ -185,7 +184,6 @@ export function Button({
     iconOnly,
     textOnly: textOnly || !resolvedIcon,
     fullWidth,
-    disabled: isDisabled,
     className: `${justifyClass} ${className}`.trim(),
   });
 
@@ -210,6 +208,7 @@ export function Button({
     <span
       className={faceClasses}
       data-slot="button-face"
+      data-variant={mode}
       data-mode={mode}
       data-color={tone}
       data-state={dataState}
@@ -230,6 +229,7 @@ export function Button({
         className={rootClasses}
         data-rdna="button"
         data-slot="button-root"
+        data-variant={mode}
         data-color={tone}
         data-mode={mode}
         data-state={dataState}
@@ -245,6 +245,7 @@ export function Button({
       className={rootClasses}
       data-rdna="button"
       data-slot="button-root"
+      data-variant={mode}
       data-color={tone}
       data-mode={mode}
       data-state={dataState}

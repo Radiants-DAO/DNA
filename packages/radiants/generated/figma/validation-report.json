@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "semanticTokens": 46,
+    "primitiveColorTokens": 56,
+    "issues": 3
+  },
+  "issues": {
+    "missingSemanticTokens": [
+      "surface-primary",
+      "surface-secondary",
+      "surface-elevated"
+    ],
+    "invalidColorTokens": [],
+    "gamutBoundaryViolations": [],
+    "unresolvedSrgbFallbacks": []
+  }
+}

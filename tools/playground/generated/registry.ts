@@ -7,7 +7,17 @@
  * runtime without coupling to the raw JSON shape.
  */
 
-import type { PreviewState, PropDef, SlotDef } from "@rdna/radiants/registry";
+import type {
+  A11yContract,
+  DensityContract,
+  CompositionRules,
+  ElementReplacement,
+  PreviewState,
+  PropDef,
+  SlotDef,
+  StructuralRule,
+  StyleOwnership,
+} from "@rdna/radiants/registry";
 import manifestData from "./registry.manifest.json";
 
 // ---------------------------------------------------------------------------
@@ -42,6 +52,15 @@ export interface ManifestComponent {
   subcomponents: string[];
   examples: ManifestExample[];
   tokenBindings: Record<string, Record<string, string>> | null;
+  replaces?: ElementReplacement[];
+  pixelCorners?: boolean;
+  shadowSystem?: "standard" | "pixel";
+  styleOwnership?: StyleOwnership[];
+  structuralRules?: StructuralRule[];
+  density?: DensityContract;
+  composition?: CompositionRules;
+  wraps?: string;
+  a11y?: A11yContract;
 }
 
 export interface ManifestPackage {

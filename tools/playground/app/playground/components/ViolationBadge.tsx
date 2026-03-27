@@ -39,7 +39,7 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
       : {};
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={`relative ${compact ? "scale-[0.96] origin-top-right" : ""}`}>
       <button
         onClick={(e) => {
           e.stopPropagation();

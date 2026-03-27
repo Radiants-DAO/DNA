@@ -5,7 +5,17 @@ import { componentData } from '../../schemas';
 
 describe('Component Registry', () => {
   it('contains entries for all non-excluded components', () => {
-    expect(registry.length).toBeGreaterThanOrEqual(39);
+    const excludedNames = new Set(
+      Object.entries(componentMetaIndex)
+        .filter(([, entry]) => entry.meta.registry?.exclude)
+        .map(([name]) => name),
+    );
+    const expectedCount = Object.keys(componentData).filter(
+      (name) => !excludedNames.has(name),
+    ).length;
+
+    expect(expectedCount).toBeGreaterThanOrEqual(40);
+    expect(registry).toHaveLength(expectedCount);
   });
 
   it('every entry has required fields', () => {

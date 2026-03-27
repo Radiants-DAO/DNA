@@ -5,17 +5,22 @@ import { describe, expect, it } from "vitest";
 import {
   buildFigmaArtifacts,
   writeFigmaArtifacts,
-} from "../scripts/generate-figma-contracts.ts";
+} from "../scripts/generate-figma-contracts";
 
 describe("generate-figma-contracts", () => {
   it("builds primitive and semantic token artifacts from the authored CSS sources", () => {
-    const { tokenFiles } = buildFigmaArtifacts();
+    const { tokenFiles, textFiles } = buildFigmaArtifacts();
 
     expect(tokenFiles["primitive/color.tokens.json"]).toMatchObject({
       color: {
         cream: {
           $type: "color",
           $value: "oklch(0.9780 0.0295 94.34)",
+          $extensions: {
+            rdna: {
+              srgb: "#fef8e2",
+            },
+          },
         },
       },
     });
@@ -44,6 +49,32 @@ describe("generate-figma-contracts", () => {
       $description: expect.any(String),
       space: {},
     });
+    expect(tokenFiles["rdna.tokens.json"]).toMatchObject({
+      primitive: expect.objectContaining({
+        color: expect.any(Object),
+      }),
+      semantic: expect.objectContaining({
+        surface: expect.any(Object),
+      }),
+    });
+    expect(tokenFiles["validation-report.json"]).toMatchObject({
+      summary: expect.objectContaining({
+        issues: 3,
+      }),
+      issues: {
+        missingSemanticTokens: [
+          "surface-primary",
+          "surface-secondary",
+          "surface-elevated",
+        ],
+        invalidColorTokens: [],
+        gamutBoundaryViolations: [],
+        unresolvedSrgbFallbacks: [],
+      },
+    });
+    expect(textFiles["tokens.d.ts"]).toContain("export type PrimitiveColorTokenName");
+    expect(textFiles["tokens.d.ts"]).toContain("'color.cream'");
+    expect(textFiles["tokens.d.ts"]).toContain("export type SemanticColorTokenName");
   });
 
   it("builds per-component contract files from authored component metadata", () => {
@@ -71,6 +102,7 @@ describe("generate-figma-contracts", () => {
         base: expect.any(Object),
       }),
     });
+    expect(contractFiles["button.contract.json"].density).toBeUndefined();
 
     expect(contractFiles["dialog.contract.json"]).toMatchObject({
       id: "dialog",
@@ -82,6 +114,7 @@ describe("generate-figma-contracts", () => {
         },
       },
     });
+    expect(contractFiles["dialog.contract.json"].density).toBeUndefined();
   });
 
   it("writes token files, component contracts, and the local config template", () => {
@@ -98,6 +131,9 @@ describe("generate-figma-contracts", () => {
     expect(existsSync(join(outputDir, "primitive/color.tokens.json"))).toBe(true);
     expect(existsSync(join(outputDir, "primitive/shape.tokens.json"))).toBe(true);
     expect(existsSync(join(outputDir, "semantic/semantic.tokens.json"))).toBe(true);
+    expect(existsSync(join(outputDir, "rdna.tokens.json"))).toBe(true);
+    expect(existsSync(join(outputDir, "validation-report.json"))).toBe(true);
+    expect(existsSync(join(outputDir, "tokens.d.ts"))).toBe(true);
     expect(existsSync(join(outputDir, "contracts/button.contract.json"))).toBe(true);
 
     const buttonContract = JSON.parse(

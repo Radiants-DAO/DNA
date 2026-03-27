@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const EntertainmentEventsHobbiesCardGameCardClub = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M21.499 5.503H20.495V9.5H21.499V5.503ZM20.495 9.5H19.498V12.499H20.495V9.5ZM19.498 12.499H18.5V16.502H19.498V12.499ZM18.5 16.502H17.496V20.499H18.5V16.502Z" /><path d="M16.4984 5.50318H20.495V4.49912H16.4984V2.49756H15.4944V21.5026H17.4959V20.4985H16.4984V5.50318Z" /><path d="M15.495 21.502H3.498V22.5H15.495V21.502ZM14.497 18.497H13.5V20.499H14.497V18.497ZM10.5 7.498H8.499V9.5H6.497V11.501H8.499V12.499H7.495V13.503H11.498V12.499H10.5V11.501H12.495V9.5H10.5V7.498ZM5.5 3.501H4.496V5.503H5.5V3.501ZM15.495 1.5H3.498V2.498H15.495V1.5ZM3.498 2.498H2.501V21.503H3.498V2.498Z" /></g></svg>;
+EntertainmentEventsHobbiesCardGameCardClub.displayName = 'EntertainmentEventsHobbiesCardGameCardClub';
+
+export default EntertainmentEventsHobbiesCardGameCardClub;

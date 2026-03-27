@@ -21,7 +21,7 @@ describe('runtime attachments prop forwarding', () => {
     expect(source).toContain(
       "Demo: ({ direction = 'bottom', defaultOpen }: Record<string, unknown>) => {",
     );
-    expect(source).toContain("<Sheet side={side as string} {...rest}>");
-    expect(source).toContain("<Popover position={position as string} {...rest}>");
+    expect(source).toContain("<Sheet side={side as any} {...rest}>");
+    expect(source).toContain("<Popover position={position as any} {...rest}>");
   });
 });

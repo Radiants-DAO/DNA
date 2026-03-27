@@ -5,7 +5,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { execSync } from "child_process";
 import {
   groupIterationsByComponent,
-  listAllIterations,
   writeVerifiedIteration,
 } from "../iterations.server";
 

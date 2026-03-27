@@ -13,8 +13,6 @@ export type FeedbackType = "comment" | "question";
 interface ModeToolbarProps {
   editorMode: EditorMode;
   onSetEditorMode: (mode: EditorMode) => void;
-  activeFeedbackType: FeedbackType | null;
-  onSetActiveFeedbackType: (type: FeedbackType) => void;
   colorMode: "light" | "dark";
   onToggleColorMode: () => void;
   selectedPackage: string;
@@ -24,8 +22,6 @@ interface ModeToolbarProps {
 export function ModeToolbar({
   editorMode,
   onSetEditorMode,
-  activeFeedbackType,
-  onSetActiveFeedbackType,
   colorMode,
   onToggleColorMode,
   selectedPackage,
@@ -79,13 +75,14 @@ export function ModeToolbar({
         {/* Mode buttons */}
         <Tooltip content="Annotate (C)" position="top">
           <Button
-            variant="ghost"
+            quiet
+            tone="accent"
             size="md"
             iconOnly
             icon={<CommentsBlank size={16} />}
             aria-label="Annotate"
             active={editorMode === "comment"}
-            onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
+            onClick={() => { onSetEditorMode("comment"); }}
           />
         </Tooltip>
 
@@ -101,7 +98,8 @@ export function ModeToolbar({
         {/* Search button */}
         <Tooltip content="Search (F)" position="top">
           <Button
-            variant="ghost"
+            quiet
+            tone="accent"
             size="md"
             iconOnly
             icon={<Search size={16} />}
@@ -117,7 +115,8 @@ export function ModeToolbar({
         {/* Icon finder button */}
         <Tooltip content="Icons (I)" position="top">
           <Button
-            variant="ghost"
+            quiet
+            tone="accent"
             size="md"
             iconOnly
             icon={<Grid3X3 size={16} />}

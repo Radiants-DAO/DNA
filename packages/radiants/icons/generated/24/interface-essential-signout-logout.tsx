@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const InterfaceEssentialSignoutLogout = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M18.001 7.498V10.497H13.998V12.499H18.001V15.498H18.999V14.5H20.003V13.503H21.001V12.499H21.998V10.497H21.001V9.5H20.003V8.502H18.999V7.498H18.001ZM16 15.498H15.002V19.501H16V15.498ZM16 2.498H15.002V7.498H16V2.498ZM10.999 21.503V20.499H15.002V19.501H10.999V6.501H10.002V21.503H10.999ZM10.002 21.502H7.003V22.5H10.002V21.502ZM8.998 12.499H8V14.5H8.998V12.499ZM10.002 5.503H8V6.501H10.002V5.503Z" /><path d="M7.003 20.499H5.001V21.503H7.003V20.499ZM8 4.499H5.999V5.503H8V4.499ZM5.001 19.501H3V20.499H5.001V19.501ZM5.999 3.501H4.004V4.499H5.999V3.501Z" /><path d="M2.99951 1.5V2.4975H2.00201V19.5009H2.99951V3.50156H4.00358V2.4975H15.0023V1.5H2.99951Z" /></g></svg>;
+InterfaceEssentialSignoutLogout.displayName = 'InterfaceEssentialSignoutLogout';
+
+export default InterfaceEssentialSignoutLogout;

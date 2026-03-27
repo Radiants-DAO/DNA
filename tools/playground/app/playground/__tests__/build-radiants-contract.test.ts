@@ -41,6 +41,7 @@ describe("buildRadiantsContracts", () => {
 
     expect(existsSync(join(outDir, "eslint-contract.json"))).toBe(true);
     expect(existsSync(join(outDir, "ai-contract.json"))).toBe(true);
+    expect(existsSync(join(outDir, "contract.freshness.json"))).toBe(true);
 
     const eslintContract = JSON.parse(readFileSync(join(outDir, "eslint-contract.json"), "utf8"));
     expect(eslintContract.themeVariants).toContain("default");
@@ -49,6 +50,17 @@ describe("buildRadiantsContracts", () => {
     const aiContract = JSON.parse(readFileSync(join(outDir, "ai-contract.json"), "utf8"));
     expect(aiContract.system.name).toBe("RDNA Radiants");
     expect(aiContract.components.length).toBeGreaterThan(0);
+
+    const freshness = JSON.parse(readFileSync(join(outDir, "contract.freshness.json"), "utf8"));
+    expect(freshness).toEqual(
+      expect.objectContaining({
+        sourceHash: expect.any(String),
+        inputs: expect.arrayContaining([
+          "packages/radiants/contract/system.ts",
+          "packages/radiants/meta/index.ts",
+        ]),
+      }),
+    );
   });
 
   it("builds componentMap and component sections from meta-derived input", async () => {
@@ -68,6 +80,10 @@ describe("buildRadiantsContracts", () => {
           pixelCorners: true,
           shadowSystem: "pixel",
           styleOwnership: [{ attribute: "data-variant", themeOwned: ["default", "raised"] }],
+          density: {
+            attribute: "data-density",
+            modes: ["comfortable", "compact"],
+          },
           a11y: { contrastRequirement: "AA" },
         },
       ],
@@ -75,6 +91,10 @@ describe("buildRadiantsContracts", () => {
 
     expect(eslintContract.componentMap.hr.component).toBe("Separator");
     expect(eslintContract.components.Card.pixelCorners).toBe(true);
+    expect(eslintContract.components.Card.density).toEqual({
+      attribute: "data-density",
+      modes: ["comfortable", "compact"],
+    });
     expect(eslintContract.components.Separator.a11y?.role).toBe("separator");
     expect(aiContract.components).toEqual(
       expect.arrayContaining([
@@ -155,6 +175,7 @@ describe("buildRadiantsContracts", () => {
         }),
       ]),
     );
+    expect(eslintContract.components.Card.density).toBeUndefined();
     expect(aiContract.components).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -165,6 +186,39 @@ describe("buildRadiantsContracts", () => {
         expect.objectContaining({
           name: "Toggle",
           a11y: expect.objectContaining({ role: "button" }),
+        }),
+      ]),
+    );
+  });
+
+  it("projects density rules into generated contract artifacts", async () => {
+    const { eslintContract, aiContract } = await buildRadiantsContractsFromComponents(
+      radiantsSystemContract,
+      [
+        {
+          name: "Panel",
+          sourcePath: "packages/radiants/components/core/Panel/Panel.tsx",
+          density: {
+            attribute: "data-density",
+            modes: ["comfortable", "compact"],
+            default: "comfortable",
+          },
+        },
+      ],
+    );
+
+    expect(eslintContract.components.Panel.density).toEqual({
+      attribute: "data-density",
+      modes: ["comfortable", "compact"],
+      default: "comfortable",
+    });
+    expect(aiContract.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "Panel",
+          density: expect.objectContaining({
+            attribute: "data-density",
+          }),
         }),
       ]),
     );
@@ -193,6 +247,39 @@ describe("buildRadiantsContracts", () => {
         reason: "pixel corners own the border layer",
       },
     ]);
+  });
+
+  it("projects composition rules into generated contract artifacts", async () => {
+    const { eslintContract, aiContract } = await buildRadiantsContractsFromComponents(
+      radiantsSystemContract,
+      [
+        {
+          name: "AppShell",
+          sourcePath: "packages/radiants/components/core/AppShell/AppShell.tsx",
+          composition: {
+            required: ["header", "content"],
+            optional: ["footer"],
+            order: ["header", "content", "footer"],
+          },
+        },
+      ],
+    );
+
+    expect(eslintContract.components.AppShell.composition).toEqual({
+      required: ["header", "content"],
+      optional: ["footer"],
+      order: ["header", "content", "footer"],
+    });
+    expect(aiContract.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "AppShell",
+          composition: expect.objectContaining({
+            required: ["header", "content"],
+          }),
+        }),
+      ]),
+    );
   });
 
   it("no longer relies on hand-authored componentMap entries in system.ts", async () => {

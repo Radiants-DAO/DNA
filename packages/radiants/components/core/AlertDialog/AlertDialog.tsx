@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -25,15 +26,11 @@ interface AlertDialogContextValue {
 // Context
 // ============================================================================
 
-const AlertDialogContext = createContext<AlertDialogContextValue | null>(null);
-
-function useAlertDialogContext(): AlertDialogContextValue {
-  const context = use(AlertDialogContext);
-  if (!context) {
-    throw new Error('AlertDialog components must be used within AlertDialog.Provider');
-  }
-  return context;
-}
+const {
+  Context: AlertDialogContext,
+} = createCompoundContext<AlertDialogContextValue>('AlertDialog', {
+  errorMessage: 'AlertDialog components must be used within AlertDialog.Provider',
+});
 
 // ============================================================================
 // Provider — wraps Base UI AlertDialog.Root with controlled state

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -36,15 +37,12 @@ interface DrawerContextValue {
 // Context
 // ============================================================================
 
-const DrawerContext = createContext<DrawerContextValue | null>(null);
-
-function useDrawerContext(): DrawerContextValue {
-  const context = use(DrawerContext);
-  if (!context) {
-    throw new Error('Drawer components must be used within Drawer.Provider');
-  }
-  return context;
-}
+const {
+  Context: DrawerContext,
+  useCompoundContext: useDrawerContext,
+} = createCompoundContext<DrawerContextValue>('Drawer', {
+  errorMessage: 'Drawer components must be used within Drawer.Provider',
+});
 
 // ============================================================================
 // Provider — wraps Base UI Drawer.Root with controlled state

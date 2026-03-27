@@ -72,3 +72,7 @@ jobs:
         run: pnpm lint:design-system
       - name: Run registry drift guard
         run: pnpm registry:check:full
+      - name: Run dead-code guard
+        run: pnpm deadcode:check
+      - name: Run test suite
+        run: pnpm test:ci

@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const BeautyCosmaticLipStick = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M19.997 17.5H13.999V16.502H13.001V22.5H21.001V16.502H19.997V17.5ZM18.999 4.499H16.998V5.503H18.999V4.499ZM18.002 8.502H16.998V10.504H18.002V8.502ZM16.998 5.503H16V6.501H16.998V5.503Z" /><path d="M19.9962 16.5019V5.50317H18.9987V12.5054H14.9955V7.50474H13.998V16.5019H19.9962ZM14.9955 13.5029H18.9987V15.5044H14.9955V13.5029Z" /><path d="M16 6.501H14.996V7.505H16V6.501ZM3.997 1.5V2.504H3V22.5H10.999V2.504H10.002V1.5H3.997ZM10.002 17.499H3.997V16.502H10.002V17.499ZM10.002 15.504H3.997V13.503H10.002V15.504ZM10.002 7.505H8.998V4.499H6.996V3.502H8.998V4.499H10.002V7.505Z" /></g></svg>;
+BeautyCosmaticLipStick.displayName = 'BeautyCosmaticLipStick';
+
+export default BeautyCosmaticLipStick;

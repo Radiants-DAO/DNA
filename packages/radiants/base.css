@@ -11,6 +11,20 @@
   --dot-pattern: url('./assets/scrollbar-background.svg');
   --dot-pattern-filter: none;
   --scrollbar-track-bg: url('./assets/scrollbar-background.svg');
+  --touch-target-default: var(--touch-target-comfortable);
+  --density-scale: var(--density-comfortable);
+}
+
+/* Density tiers are attribute-driven so any subtree can opt into a different
+   interaction rhythm without changing component APIs. */
+[data-density="compact"] {
+  --touch-target-default: var(--touch-target-min);
+  --density-scale: var(--density-compact);
+}
+
+[data-density="comfortable"] {
+  --touch-target-default: var(--touch-target-comfortable);
+  --density-scale: var(--density-comfortable);
 }
 
 /* ============================================================================

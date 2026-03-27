@@ -9,6 +9,10 @@
     "build": "node scripts/with-registry-guard.mjs pre-build turbo build",
     "build:raw": "turbo build",
     "lint": "turbo lint",
+    "test": "pnpm test:ci",
+    "test:ci": "turbo test:ci && pnpm test:scripts",
+    "test:full": "turbo test && pnpm test:scripts",
+    "deadcode:check": "knip --production --exclude exports,types,nsExports,nsTypes,enumMembers,namespaceMembers,duplicates",
     "audit:style-authority": "node scripts/audit-style-authority.mjs",
     "report:rdna-exceptions": "node scripts/report-new-rdna-exceptions.mjs",
     "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}' && pnpm lint:token-colors",
@@ -20,10 +24,14 @@
     "registry:test:playground": "pnpm --filter @rdna/playground exec vitest run app/playground/__tests__/registry-freshness.test.ts app/playground/__tests__/registry.test.ts app/playground/__tests__/props-panel.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts --cache=false",
     "registry:check:fast": "pnpm lint:design-system:staged && pnpm registry:check:freshness",
     "registry:check:full": "pnpm registry:check:freshness && pnpm registry:test:radiants && pnpm registry:test:playground",
-    "test:scripts": "node --test scripts/__tests__/*.test.mjs"
+    "test:scripts": "node --test scripts/__tests__/*.test.mjs",
+    "test:create": "pnpm --filter @rdna/create test",
+    "create:smoke": "pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts"
   },
   "devDependencies": {
     "eslint": "^9",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "knip": "^6.0.6",
     "turbo": "^2.0.0",
     "typescript-eslint": "^8.56.1"
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as coreComponents from '../components/core';
 import {
   Alert,
@@ -24,7 +24,6 @@ import {
   Meter,
   NavigationMenu,
   NumberField,
-  Pattern,
   Popover, PopoverTrigger, PopoverContent,
   PreviewCard, PreviewCardTrigger, PreviewCardContent,
   Radio, RadioGroup,
@@ -87,9 +86,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   // ── Custom Demo components ────────────────────────────────────────────
 
   Alert: {
-    component: Alert as any,
+    component: Alert,
     Demo: ({ variant = 'default', ...rest }: Record<string, unknown>) => (
-      <Alert.Root variant={variant as string} {...rest}>
+      <Alert.Root variant={variant as any} {...rest}>
         <Alert.Icon />
         <Alert.Content>
           <Alert.Title>Heads up</Alert.Title>
@@ -101,7 +100,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   AlertDialog: {
-    component: AlertDialog as any,
+    component: AlertDialog,
     Demo: () => {
       const { state, actions } = AlertDialog.useAlertDialogState();
       return (
@@ -127,9 +126,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Avatar: {
-    component: Avatar as any,
+    component: Avatar,
     Demo: ({ size = 'md', shape, ...rest }: Record<string, unknown>) => (
-      <Avatar fallback="JD" size={size as string} shape={shape as string} {...rest} />
+      <Avatar fallback="JD" size={size as any} shape={shape as any} {...rest} />
     ),
   },
 
@@ -149,9 +148,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Card: {
-    component: Card as any,
+    component: Card,
     Demo: ({ variant = 'default', className = '', ...rest }: Record<string, unknown>) => (
-      <Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()} {...rest}>
+      <Card variant={variant as any} className={`w-full max-w-[20rem] ${className as any}`.trim()} {...rest}>
         <CardHeader>Card Title</CardHeader>
         <CardBody>
           <p className="text-sm text-sub">Card content goes here.</p>
@@ -164,7 +163,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Collapsible: {
-    component: Collapsible as any,
+    component: Collapsible,
     Demo: ({ disabled, ...rest }: Record<string, unknown>) => {
       const [open, setOpen] = useState(false);
       return (
@@ -181,7 +180,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Combobox: {
-    component: Combobox as any,
+    component: Combobox,
     Demo: ({ disabled, ...rest }: Record<string, unknown>) => {
       const frameworks = ['React', 'Vue', 'Svelte', 'Angular', 'Solid'];
       const [value, setValue] = useState<string | null>(null);
@@ -214,7 +213,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   ContextMenu: {
-    component: ContextMenu as any,
+    component: ContextMenu,
     Demo: () => (
       <ContextMenu className="flex items-center justify-center rounded-md border border-dashed border-line p-8">
         <span className="text-sm text-mute">Right-click this area</span>
@@ -233,15 +232,15 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
     Demo: ({ variant = 'default', label = 'Auction ends in', ...rest }: Record<string, unknown>) => (
       <CountdownTimer
         endTime={Date.now() + 3 * 60 * 60 * 1000 + 42 * 60 * 1000}
-        label={label as string}
-        variant={variant as string}
+        label={label as any}
+        variant={variant as any}
         {...rest}
       />
     ),
   },
 
   Dialog: {
-    component: Dialog as any,
+    component: Dialog,
     Demo: () => {
       const { state, actions } = Dialog.useDialogState();
       return (
@@ -270,11 +269,11 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Drawer: {
-    component: Drawer as any,
+    component: Drawer,
     Demo: ({ direction = 'bottom', defaultOpen }: Record<string, unknown>) => {
       const { state, actions } = Drawer.useDrawerState({ defaultOpen: defaultOpen as boolean | undefined });
       return (
-        <Drawer.Provider state={state} actions={actions} direction={direction as string}>
+        <Drawer.Provider state={state} actions={actions} direction={direction as any}>
           <Drawer.Trigger asChild>
             <Button mode="pattern" size="sm">Open Drawer</Button>
           </Drawer.Trigger>
@@ -298,13 +297,13 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   DropdownMenu: {
-    component: DropdownMenu as any,
+    component: DropdownMenu,
     Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
       <DropdownMenu {...rest}>
         <DropdownMenuTrigger asChild>
           <Button mode="pattern" size="sm">Actions</Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent {...(position ? { side: position as string } : {})}>
+        <DropdownMenuContent {...(position ? { side: position as any } : {})}>
           <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
           <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
@@ -316,12 +315,12 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Input: {
-    component: Input as any,
+    component: Input,
     Demo: ({ size, disabled, placeholder = 'Enter your name', error, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[20rem]">
         <Input.Root {...(error !== undefined ? { invalid: error as boolean } : {})}>
           <Input.Label>Label</Input.Label>
-          <Input placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
+          <Input placeholder={placeholder as string} {...(size ? { size: size as any } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
           <Input.Description>Helper text goes here.</Input.Description>
         </Input.Root>
       </div>
@@ -329,7 +328,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   InputSet: {
-    component: InputSet as any,
+    component: InputSet,
     Demo: ({ disabled, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[24rem]">
         <InputSet.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
@@ -353,10 +352,10 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
     component: Icon,
     Demo: ({ name = 'search', size = 16, iconSet, className, ...rest }: Record<string, unknown>) => (
       <Icon
-        name={name as string}
+        name={name as any}
         size={size as number}
         {...(iconSet !== undefined ? { iconSet: iconSet as 16 | 24 } : {})}
-        {...(className ? { className: className as string } : {})}
+        {...(className ? { className: className as any } : {})}
         {...rest}
       />
     ),
@@ -364,7 +363,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
 
   Menubar: {
-    component: Menubar as any,
+    component: Menubar,
     Demo: () => (
       <Menubar.Root>
         <Menubar.Menu>
@@ -393,7 +392,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Meter: {
-    component: Meter as any,
+    component: Meter,
     Demo: ({ value = 85, low = 25, high = 75, optimum = 50, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[20rem] flex flex-col gap-1">
         <span className="text-xs text-sub font-mono">Usage ({String(value)}%)</span>
@@ -403,9 +402,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   NavigationMenu: {
-    component: NavigationMenu as any,
+    component: NavigationMenu,
     Demo: ({ orientation, ...rest }: Record<string, unknown>) => (
-      <NavigationMenu.Root {...(orientation ? { orientation: orientation as string } : {})} {...rest}>
+      <NavigationMenu.Root {...(orientation ? { orientation: orientation as any } : {})} {...rest}>
         <NavigationMenu.List>
           <NavigationMenu.Item>
             <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>
@@ -438,7 +437,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   NumberField: {
-    component: NumberField as any,
+    component: NumberField,
     Demo: ({ min = 0, max = 99, step = 1, disabled, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState<number | null>(5);
       return (
@@ -464,9 +463,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Popover: {
-    component: Popover as any,
+    component: Popover,
     Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
-      <Popover position={position as string} {...rest}>
+      <Popover position={position as any} {...rest}>
         <PopoverTrigger asChild>
           <Button mode="pattern" size="sm">Show Info</Button>
         </PopoverTrigger>
@@ -478,7 +477,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   PreviewCard: {
-    component: PreviewCard as any,
+    component: PreviewCard,
     Demo: () => (
       <PreviewCard>
         <PreviewCardTrigger>
@@ -521,10 +520,10 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
     },
   },
 
-  RadioGroup: { component: RadioGroup as any },
+  RadioGroup: { component: RadioGroup },
 
   ScrollArea: {
-    component: ScrollArea as any,
+    component: ScrollArea,
     Demo: () => (
       <ScrollArea.Root className="h-48 w-full max-w-[20rem] border border-line rounded-xs">
         <div className="p-4 space-y-4">
@@ -539,13 +538,13 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Select: {
-    component: Select as any,
+    component: Select,
     Demo: ({ size = 'md', disabled, placeholder = 'Pick a color', error, fullWidth, value }: Record<string, unknown>) => {
       const { state, actions } = Select.useSelectState({ value: typeof value === 'string' ? value : undefined });
       return (
         <div className="w-full max-w-[16rem]">
           <Select.Provider state={state} actions={actions}>
-            <Select.Trigger placeholder={placeholder as string} size={size as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...(fullWidth !== undefined ? { fullWidth: fullWidth as boolean } : {})} />
+            <Select.Trigger placeholder={placeholder as string} size={size as any} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...(fullWidth !== undefined ? { fullWidth: fullWidth as boolean } : {})} />
             <Select.Content>
               <Select.Option value="red">Sun Red</Select.Option>
               <Select.Option value="yellow">Sun Yellow</Select.Option>
@@ -560,14 +559,14 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   Spinner: {
     component: Spinner,
     Demo: ({ size = 24, variant, completed, ...rest }: Record<string, unknown>) => (
-      <Spinner size={size as number} variant={variant as string} completed={completed as boolean} {...rest} />
+      <Spinner size={size as number} variant={variant as any} completed={completed as boolean} {...rest} />
     ),
   },
 
   Sheet: {
-    component: Sheet as any,
+    component: Sheet,
     Demo: ({ side = 'right', ...rest }: Record<string, unknown>) => (
-      <Sheet side={side as string} {...rest}>
+      <Sheet side={side as any} {...rest}>
         <SheetTrigger asChild>
           <Button mode="pattern" size="sm">Open Sheet</Button>
         </SheetTrigger>
@@ -593,7 +592,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
     component: Slider,
     Demo: ({ size, disabled, min = 0, max = 100, step, label, showValue, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState(50);
-      return <Slider value={value} onChange={setValue} min={min as number} max={max as number} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(step !== undefined ? { step: step as number } : {})} {...(label ? { label: label as string } : {})} {...(showValue !== undefined ? { showValue: showValue as boolean } : {})} {...rest} />;
+      return <Slider value={value} onChange={setValue} min={min as number} max={max as number} {...(size ? { size: size as any } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(step !== undefined ? { step: step as number } : {})} {...(label ? { label: label as string } : {})} {...(showValue !== undefined ? { showValue: showValue as boolean } : {})} {...rest} />;
     },
   },
 
@@ -601,14 +600,14 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
     component: Switch,
     Demo: ({ size, disabled, label = 'Dark mode', labelPosition, ...rest }: Record<string, unknown>) => {
       const [checked, setChecked] = useState(false);
-      return <Switch checked={checked} onChange={setChecked} label={label as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(labelPosition ? { labelPosition: labelPosition as string } : {})} {...rest} />;
+      return <Switch checked={checked} onChange={setChecked} label={label as string} {...(size ? { size: size as any } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(labelPosition ? { labelPosition: labelPosition as any } : {})} {...rest} />;
     },
   },
 
   Tabs: {
-    component: Tabs as any,
+    component: Tabs,
     Demo: ({ mode = 'pill', layout = 'default', ...rest }: Record<string, unknown>) => {
-      const tabs = Tabs.useTabsState({ defaultValue: 'design', mode: mode as string, layout: layout as string });
+      const tabs = Tabs.useTabsState({ defaultValue: 'design', mode: mode as any, layout: layout as any });
       return (
         <div className="w-full max-w-[24rem]">
           <Tabs.Provider {...tabs} {...rest}>
@@ -674,11 +673,11 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   ToggleGroup: {
-    component: ToggleGroup as any,
+    component: ToggleGroup,
     Demo: ({ variant, disabled, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState<string[]>(['center']);
       return (
-        <ToggleGroup value={value} onValueChange={setValue} {...(variant ? { variant: variant as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
+        <ToggleGroup value={value} onValueChange={setValue} {...(variant ? { variant: variant as any } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
           <ToggleGroup.Item value="left">Left</ToggleGroup.Item>
           <ToggleGroup.Item value="center">Center</ToggleGroup.Item>
           <ToggleGroup.Item value="right">Right</ToggleGroup.Item>
@@ -688,9 +687,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   },
 
   Toolbar: {
-    component: Toolbar as any,
+    component: Toolbar,
     Demo: ({ orientation, ...rest }: Record<string, unknown>) => (
-      <Toolbar.Root {...(orientation ? { orientation: orientation as string } : {})} {...rest}>
+      <Toolbar.Root {...(orientation ? { orientation: orientation as any } : {})} {...rest}>
         <Toolbar.Group>
           <Toolbar.Button>Cut</Toolbar.Button>
           <Toolbar.Button>Copy</Toolbar.Button>
@@ -708,7 +707,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   Tooltip: {
     component: Tooltip,
     Demo: ({ content = 'Tooltip text', position, ...rest }: Record<string, unknown>) => (
-      <Tooltip content={content as string} {...(position ? { position: position as string } : {})} {...rest}>
+      <Tooltip content={content as string} {...(position ? { position: position as any } : {})} {...rest}>
         <Button mode="pattern" size="sm">Hover me</Button>
       </Tooltip>
     ),

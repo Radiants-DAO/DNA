@@ -1,7 +1,10 @@
 {
   "name": "@rdna/radiants",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Radiants theme package for DNA - retro pixel aesthetic",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./index.css",
   "exports": {
     ".": "./index.css",
@@ -15,6 +18,10 @@
     "./icons": {
       "types": "./icons/index.ts",
       "import": "./icons/index.ts"
+    },
+    "./icons/runtime": {
+      "types": "./icons/runtime.ts",
+      "import": "./icons/runtime.ts"
     },
     "./schemas": {
       "types": "./schemas/index.ts",
@@ -85,28 +92,33 @@
   ],
   "license": "GPL-3.0",
   "scripts": {
-    "generate:icons": "node scripts/generate-icons.mjs",
+    "generate:icons": "node --experimental-strip-types scripts/generate-icons.ts",
     "generate:schemas": "node --experimental-strip-types ../preview/src/generate-schemas.ts ./components/core ./meta/index.ts ./schemas/index.ts",
     "generate:figma-contracts": "node --experimental-strip-types scripts/generate-figma-contracts.ts",
     "generate:pixel-corners": "node scripts/generate-pixel-corners.mjs",
+    "test": "vitest run",
+    "test:ci": "vitest run",
     "test:components": "vitest run",
     "test:components:watch": "vitest"
   },
   "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
+    "@rdna/preview": "workspace:*",
     "culori": "^4.0.2",
     "eslint": "^9",
     "jsdom": "^28.1.0",
     "next": "16.1.6",
+    "svgo": "^4.0.1",
     "vitest": "^2.1.9"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
-    "@rdna/preview": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "dialkit": "^1.1.0",
     "motion": "^12.38.0"

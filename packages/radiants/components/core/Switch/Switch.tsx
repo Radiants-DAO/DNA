@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useId } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { useId } from 'react';
+import { cva } from 'class-variance-authority';
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
 
 // ============================================================================
@@ -41,8 +41,8 @@ export const switchTrackVariants = cva(
         lg: 'w-10 h-5',
       },
       checked: {
-        true: 'bg-accent',
-        false: 'bg-ink',
+        true: '',
+        false: '',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',
@@ -134,6 +134,7 @@ export function Switch({
         className={trackClasses}
         data-slot="switch-track"
         data-variant="switch"
+        data-checked={checked ? '' : undefined}
         data-size={size}
       >
         <BaseSwitch.Thumb className={thumbClasses} data-slot="switch-thumb" />

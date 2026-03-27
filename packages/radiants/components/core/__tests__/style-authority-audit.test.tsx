@@ -16,7 +16,7 @@ describe('style authority audit', () => {
     const findings = findMixedStyleAuthorities(
       `
       export const selectTriggerVariants = cva(
-        "border border-line bg-page text-main",
+        "border border-edge-primary bg-surface-primary text-content-primary",
       );
 
       export function Trigger() {

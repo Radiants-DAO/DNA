@@ -1,4 +1,5 @@
 import tseslint from 'typescript-eslint';
+import unusedImports from 'eslint-plugin-unused-imports';
 import rdna from './packages/radiants/eslint/index.mjs';
 
 // The design-system scan is intentionally RDNA-focused. Some app files still carry
@@ -29,14 +30,23 @@ const compatibilityPlugins = {
   },
 };
 
+const unusedImportsPlugin = {
+  'unused-imports': unusedImports,
+};
+
 export default [
+  {
+    ignores: [
+      '**/scripts/**',
+      '**/.next/**',
+      '**/.turbo/**',
+      '**/generated/**',
+    ],
+  },
   {
     linterOptions: {
       reportUnusedDisableDirectives: 'off',
     },
-    ignores: [
-      '**/scripts/**',
-    ],
   },
   // TypeScript + JSX parsing for all in-scope files
   {
@@ -56,12 +66,23 @@ export default [
     ],
     plugins: {
       ...compatibilityPlugins,
+      ...unusedImportsPlugin,
       rdna,
     },
     rules: {
       ...rdna.configs.recommended.rules,
       'rdna/require-exception-metadata': 'error',
       'rdna/no-broad-rdna-disables': 'error',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   // RadOS window content — ban viewport breakpoints (use container queries)
@@ -83,6 +104,7 @@ export default [
     ],
     plugins: {
       ...compatibilityPlugins,
+      ...unusedImportsPlugin,
       rdna,
     },
     rules: {
@@ -90,6 +112,38 @@ export default [
       'rdna/require-exception-metadata': 'error',
       'rdna/no-broad-rdna-disables': 'error',
       'rdna/no-mixed-style-authority': 'error',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+  // Shared preview package — keep its source aligned with dead-code linting
+  {
+    files: [
+      'packages/preview/src/**/*.{ts,tsx}',
+    ],
+    plugins: {
+      ...compatibilityPlugins,
+      ...unusedImportsPlugin,
+    },
+    rules: {
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ];

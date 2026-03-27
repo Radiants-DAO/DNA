@@ -1,0 +1,1046 @@
+{
+  "primitive": {
+    "color": {
+      "$description": "Primitive RDNA Radiants color tokens generated from packages/radiants/tokens.css.",
+      "color": {
+        "cream": {
+          "$type": "color",
+          "$value": "oklch(0.9780 0.0295 94.34)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#fef8e2"
+            }
+          }
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "oklch(0.1641 0.0044 84.59)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#0f0e0c"
+            }
+          }
+        },
+        "pure-black": {
+          "$type": "color",
+          "$value": "oklch(0.0000 0.0000 0)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#000000"
+            }
+          }
+        },
+        "sun-yellow": {
+          "$type": "color",
+          "$value": "oklch(0.9126 0.1170 93.68)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#fce184"
+            }
+          }
+        },
+        "sky-blue": {
+          "$type": "color",
+          "$value": "oklch(0.7701 0.0527 236.81)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#95bad2"
+            }
+          }
+        },
+        "sunset-fuzz": {
+          "$type": "color",
+          "$value": "oklch(0.8546 0.1039 68.93)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#fcc383"
+            }
+          }
+        },
+        "sun-red": {
+          "$type": "color",
+          "$value": "oklch(0.7429 0.1568 21.43)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#ff7f7f"
+            }
+          }
+        },
+        "mint": {
+          "$type": "color",
+          "$value": "oklch(0.9312 0.0702 142.51)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#cef5ca"
+            }
+          }
+        },
+        "pure-white": {
+          "$type": "color",
+          "$value": "oklch(1.0000 0.0000 0)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#ffffff"
+            }
+          }
+        },
+        "success-mint": {
+          "$type": "color",
+          "$value": "{color.mint}",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#cef5ca"
+            }
+          }
+        },
+        "warning-yellow": {
+          "$type": "color",
+          "$value": "{color.sun-yellow}",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#fce184"
+            }
+          }
+        },
+        "error-red": {
+          "$type": "color",
+          "$value": "{color.sun-red}",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#ff7f7f"
+            }
+          }
+        },
+        "focus-state": {
+          "$type": "color",
+          "$value": "{color.sky-blue}",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#95bad2"
+            }
+          }
+        }
+      }
+    },
+    "space": {
+      "$description": "Primitive RDNA Radiants spacing tokens generated from packages/radiants/tokens.css.",
+      "space": {}
+    },
+    "shape": {
+      "$description": "Primitive RDNA Radiants shape and layout tokens generated from packages/radiants/tokens.css.",
+      "radius": {
+        "none": {
+          "$type": "borderRadius",
+          "$value": "0"
+        },
+        "xs": {
+          "$type": "borderRadius",
+          "$value": "0.125rem"
+        },
+        "sm": {
+          "$type": "borderRadius",
+          "$value": "0.25rem"
+        },
+        "md": {
+          "$type": "borderRadius",
+          "$value": "0.5rem"
+        },
+        "lg": {
+          "$type": "borderRadius",
+          "$value": "1rem"
+        },
+        "full": {
+          "$type": "borderRadius",
+          "$value": "9999px"
+        }
+      },
+      "shadow": {
+        "btn": {
+          "$type": "shadow",
+          "$value": "0 1px 0 0 var(--color-ink)"
+        },
+        "btn-hover": {
+          "$type": "shadow",
+          "$value": "0 3px 0 0 var(--color-ink)"
+        },
+        "card": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-ink)"
+        },
+        "card-lg": {
+          "$type": "shadow",
+          "$value": "4px 4px 0 0 var(--color-ink)"
+        },
+        "inner": {
+          "$type": "shadow",
+          "$value": "inset 0 0 0 1px var(--color-ink)"
+        },
+        "glow-sm": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-ink)"
+        },
+        "glow-md": {
+          "$type": "shadow",
+          "$value": "3px 3px 0 0 var(--color-ink)"
+        },
+        "glow-lg": {
+          "$type": "shadow",
+          "$value": "4px 4px 0 0 var(--color-ink)"
+        },
+        "glow-xl": {
+          "$type": "shadow",
+          "$value": "5px 5px 0 0 var(--color-ink)"
+        },
+        "glow-success": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-mint)"
+        },
+        "glow-error": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-sun-red)"
+        },
+        "glow-info": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-sky-blue)"
+        },
+        "inset": {
+          "$type": "shadow",
+          "$value": "inset 0 0 0 1px var(--color-ink)"
+        },
+        "surface": {
+          "$type": "shadow",
+          "$value": "0 1px 0 0 var(--color-ink)"
+        },
+        "resting": {
+          "$type": "shadow",
+          "$value": "0 2px 0 0 var(--color-ink)"
+        },
+        "lifted": {
+          "$type": "shadow",
+          "$value": "0 4px 0 0 var(--color-ink)"
+        },
+        "raised": {
+          "$type": "shadow",
+          "$value": "2px 2px 0 0 var(--color-ink)"
+        },
+        "floating": {
+          "$type": "shadow",
+          "$value": "4px 4px 0 0 var(--color-ink)"
+        },
+        "focused": {
+          "$type": "shadow",
+          "$value": "0 0 0 2px oklch(0.9126 0.1170 93.68 / 0.35), 0 0 8px 3px oklch(0.9126 0.1170 93.68 / 0.18)"
+        }
+      },
+      "focusRing": {
+        "width": {
+          "$type": "dimension",
+          "$value": "2px"
+        },
+        "offset": {
+          "$type": "dimension",
+          "$value": "2px"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{color.sun-yellow}"
+        }
+      },
+      "touchTarget": {
+        "min": {
+          "$type": "dimension",
+          "$value": "44px"
+        },
+        "comfortable": {
+          "$type": "dimension",
+          "$value": "48px"
+        },
+        "default": {
+          "$type": "dimension",
+          "$value": "{touchTarget.comfortable}"
+        }
+      },
+      "breakpoint": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "360px"
+        }
+      },
+      "zIndex": {
+        "base": {
+          "$type": "number",
+          "$value": "0"
+        },
+        "desktop": {
+          "$type": "number",
+          "$value": "10"
+        },
+        "windows": {
+          "$type": "number",
+          "$value": "100"
+        },
+        "chrome": {
+          "$type": "number",
+          "$value": "200"
+        },
+        "menus": {
+          "$type": "number",
+          "$value": "300"
+        },
+        "toasts": {
+          "$type": "number",
+          "$value": "400"
+        },
+        "modals": {
+          "$type": "number",
+          "$value": "500"
+        },
+        "system": {
+          "$type": "number",
+          "$value": "900"
+        }
+      }
+    },
+    "motion": {
+      "$description": "Primitive RDNA Radiants motion tokens generated from packages/radiants/tokens.css.",
+      "duration": {
+        "instant": {
+          "$type": "duration",
+          "$value": "0ms"
+        },
+        "fast": {
+          "$type": "duration",
+          "$value": "100ms"
+        },
+        "base": {
+          "$type": "duration",
+          "$value": "150ms"
+        },
+        "moderate": {
+          "$type": "duration",
+          "$value": "200ms"
+        },
+        "slow": {
+          "$type": "duration",
+          "$value": "300ms"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "cubicBezier",
+          "$value": "cubic-bezier(0, 0, 0.2, 1)"
+        },
+        "out": {
+          "$type": "cubicBezier",
+          "$value": "cubic-bezier(0, 0, 0.2, 1)"
+        },
+        "in": {
+          "$type": "cubicBezier",
+          "$value": "cubic-bezier(0.4, 0, 1, 1)"
+        },
+        "spring": {
+          "$type": "cubicBezier",
+          "$value": "cubic-bezier(0.22, 1, 0.36, 1)"
+        }
+      },
+      "scalar": {
+        "normal": {
+          "$type": "number",
+          "$value": "1"
+        }
+      }
+    },
+    "typography": {
+      "$description": "Primitive RDNA Radiants typography tokens generated from packages/radiants/tokens.css.",
+      "fontSize": {
+        "xs": {
+          "$type": "fontSize",
+          "$value": "0.625rem"
+        },
+        "sm": {
+          "$type": "fontSize",
+          "$value": "0.75rem"
+        },
+        "base": {
+          "$type": "fontSize",
+          "$value": "1rem"
+        },
+        "lg": {
+          "$type": "fontSize",
+          "$value": "1.25rem"
+        },
+        "xl": {
+          "$type": "fontSize",
+          "$value": "1.5rem"
+        },
+        "2xl": {
+          "$type": "fontSize",
+          "$value": "1.75rem"
+        },
+        "3xl": {
+          "$type": "fontSize",
+          "$value": "2rem"
+        }
+      }
+    }
+  },
+  "semantic": {
+    "$description": "Semantic RDNA Radiants color tokens generated from tokens.css with light values and dark-mode overrides from dark.css.",
+    "surface": {
+      "page": {
+        "$type": "color",
+        "$value": "{color.cream}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.cream}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-page",
+            "srgb": {
+              "light": "#fef8e2",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      },
+      "card": {
+        "$type": "color",
+        "$value": "{color.pure-white}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.pure-white}",
+            "dark": "{color.pure-black}"
+          },
+          "rdna": {
+            "source": "--color-card",
+            "srgb": {
+              "light": "#ffffff",
+              "dark": "#000000"
+            }
+          }
+        }
+      },
+      "tinted": {
+        "$type": "color",
+        "$value": "{color.sunset-fuzz}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sunset-fuzz}",
+            "dark": "oklch(0.3129 0.0389 73.57)"
+          },
+          "rdna": {
+            "source": "--color-tinted",
+            "srgb": {
+              "light": "#fcc383",
+              "dark": "#3d2e1a"
+            }
+          }
+        }
+      },
+      "inv": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-inv",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      },
+      "depth": {
+        "$type": "color",
+        "$value": "{color.cream}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.cream}",
+            "dark": "oklch(0.22 0.0100 84.59)"
+          },
+          "rdna": {
+            "source": "--color-depth",
+            "srgb": {
+              "light": "#fef8e2",
+              "dark": "#1d1a15"
+            }
+          }
+        }
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.08)"
+          },
+          "rdna": {
+            "source": "--color-hover",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "active": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.12)"
+          },
+          "rdna": {
+            "source": "--color-active",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "window-chrome-from": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "{color.sun-yellow}"
+          },
+          "rdna": {
+            "source": "--color-window-chrome-from",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "window-chrome-to": {
+        "$type": "color",
+        "$value": "{color.cream}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.cream}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-window-chrome-to",
+            "srgb": {
+              "light": "#fef8e2",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      }
+    },
+    "content": {
+      "main": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.cream}"
+          },
+          "rdna": {
+            "source": "--color-main",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "head": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.pure-white}"
+          },
+          "rdna": {
+            "source": "--color-head",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#ffffff"
+            }
+          }
+        }
+      },
+      "sub": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.85)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.85)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.85)"
+          },
+          "rdna": {
+            "source": "--color-sub",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "mute": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.6)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+          },
+          "rdna": {
+            "source": "--color-mute",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "flip": {
+        "$type": "color",
+        "$value": "{color.cream}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.cream}",
+            "dark": "{color.cream}"
+          },
+          "rdna": {
+            "source": "--color-flip",
+            "srgb": {
+              "light": "#fef8e2",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "link": {
+        "$type": "color",
+        "$value": "{color.sky-blue}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sky-blue}",
+            "dark": "{color.sky-blue}"
+          },
+          "rdna": {
+            "source": "--color-content-link",
+            "srgb": {
+              "light": "#95bad2",
+              "dark": "#95bad2"
+            }
+          }
+        }
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.cream}"
+          },
+          "rdna": {
+            "source": "--color-content-primary",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "heading": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.pure-white}"
+          },
+          "rdna": {
+            "source": "--color-content-heading",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#ffffff"
+            }
+          }
+        }
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.85)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.85)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.85)"
+          },
+          "rdna": {
+            "source": "--color-content-secondary",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "{color.cream}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.cream}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-content-inverted",
+            "srgb": {
+              "light": "#fef8e2",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.6)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+          },
+          "rdna": {
+            "source": "--color-content-muted",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      }
+    },
+    "edge": {
+      "line": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+          },
+          "rdna": {
+            "source": "--color-line",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "rule": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+          },
+          "rdna": {
+            "source": "--color-rule",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "line-hover": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.3)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.3)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.35)"
+          },
+          "rdna": {
+            "source": "--color-line-hover",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "{color.sun-yellow}"
+          },
+          "rdna": {
+            "source": "--color-edge-focus",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+          },
+          "rdna": {
+            "source": "--color-edge-primary",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+          },
+          "rdna": {
+            "source": "--color-edge-muted",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "oklch(0.1641 0.0044 84.59 / 0.3)",
+        "$extensions": {
+          "modes": {
+            "light": "oklch(0.1641 0.0044 84.59 / 0.3)",
+            "dark": "oklch(0.9780 0.0295 94.34 / 0.35)"
+          },
+          "rdna": {
+            "source": "--color-edge-hover",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#fef8e2"
+            }
+          }
+        }
+      }
+    },
+    "action": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "{color.sun-yellow}"
+          },
+          "rdna": {
+            "source": "--color-action-primary",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-action-secondary",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      },
+      "destructive": {
+        "$type": "color",
+        "$value": "{color.sun-red}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-red}",
+            "dark": "{color.sun-red}"
+          },
+          "rdna": {
+            "source": "--color-action-destructive",
+            "srgb": {
+              "light": "#ff7f7f",
+              "dark": "#ff7f7f"
+            }
+          }
+        }
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "{color.sun-yellow}"
+          },
+          "rdna": {
+            "source": "--color-accent",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "accent-inv": {
+        "$type": "color",
+        "$value": "{color.ink}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.ink}",
+            "dark": "{color.ink}"
+          },
+          "rdna": {
+            "source": "--color-accent-inv",
+            "srgb": {
+              "light": "#0f0e0c",
+              "dark": "#0f0e0c"
+            }
+          }
+        }
+      },
+      "accent-soft": {
+        "$type": "color",
+        "$value": "{color.sunset-fuzz}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sunset-fuzz}",
+            "dark": "{color.sunset-fuzz}"
+          },
+          "rdna": {
+            "source": "--color-accent-soft",
+            "srgb": {
+              "light": "#fcc383",
+              "dark": "#fcc383"
+            }
+          }
+        }
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{color.sun-red}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-red}",
+            "dark": "{color.sun-red}"
+          },
+          "rdna": {
+            "source": "--color-danger",
+            "srgb": {
+              "light": "#ff7f7f",
+              "dark": "#ff7f7f"
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "{color.mint}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.mint}",
+            "dark": "{color.mint}"
+          },
+          "rdna": {
+            "source": "--color-success",
+            "srgb": {
+              "light": "#cef5ca",
+              "dark": "#cef5ca"
+            }
+          }
+        }
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{color.sun-yellow}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-yellow}",
+            "dark": "{color.sun-yellow}"
+          },
+          "rdna": {
+            "source": "--color-warning",
+            "srgb": {
+              "light": "#fce184",
+              "dark": "#fce184"
+            }
+          }
+        }
+      },
+      "error": {
+        "$type": "color",
+        "$value": "{color.sun-red}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sun-red}",
+            "dark": "{color.sun-red}"
+          },
+          "rdna": {
+            "source": "--color-status-error",
+            "srgb": {
+              "light": "#ff7f7f",
+              "dark": "#ff7f7f"
+            }
+          }
+        }
+      },
+      "info": {
+        "$type": "color",
+        "$value": "{color.sky-blue}",
+        "$extensions": {
+          "modes": {
+            "light": "{color.sky-blue}",
+            "dark": "{color.sky-blue}"
+          },
+          "rdna": {
+            "source": "--color-status-info",
+            "srgb": {
+              "light": "#95bad2",
+              "dark": "#95bad2"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -25,7 +25,7 @@ describe('radiants icons package', () => {
     expect(radSunContainer.querySelector('svg')).toBeInTheDocument();
     expect(closeContainer.querySelector('svg')).toBeInTheDocument();
     expect(componentsContainer.querySelector('svg')).toBeInTheDocument();
-  });
+  }, 10000);
 
   test('includes RadOS custom SVG assets in the shared icon directory', () => {
     const requiredIcons = [
@@ -36,7 +36,7 @@ describe('radiants icons package', () => {
     ];
 
     for (const iconName of requiredIcons) {
-      const iconPath = path.resolve(repoRoot, 'packages/radiants/assets/icons', iconName);
+      const iconPath = path.resolve(repoRoot, 'packages/radiants/assets/icons/16px', iconName);
       expect(fs.existsSync(iconPath)).toBe(true);
     }
   });

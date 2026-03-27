@@ -158,11 +158,10 @@ describe("sidebar grouping structure", () => {
   function buildPackageGroups() {
     return registry.reduce<Record<string, Record<string, RegistryEntry[]>>>(
       (acc, entry) => {
-        const pkg = entry.packageName;
-        if (!acc[pkg]) acc[pkg] = {};
+        if (!acc[entry.packageName]) acc[entry.packageName] = {};
         const g = entry.group;
-        if (!acc[pkg][g]) acc[pkg][g] = [];
-        acc[pkg][g].push(entry);
+        if (!acc[entry.packageName][g]) acc[entry.packageName][g] = [];
+        acc[entry.packageName][g].push(entry);
         return acc;
       },
       {},
@@ -177,7 +176,7 @@ describe("sidebar grouping structure", () => {
 
   it("each package has at least one category group", () => {
     const groups = buildPackageGroups();
-    for (const [pkg, categories] of Object.entries(groups)) {
+    for (const [, categories] of Object.entries(groups)) {
       expect(Object.keys(categories).length).toBeGreaterThan(0);
     }
   });

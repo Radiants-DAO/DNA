@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -25,15 +26,11 @@ interface DialogContextValue {
 // Context
 // ============================================================================
 
-const DialogContext = createContext<DialogContextValue | null>(null);
-
-function useDialogContext(): DialogContextValue {
-  const context = use(DialogContext);
-  if (!context) {
-    throw new Error('Dialog components must be used within Dialog.Provider');
-  }
-  return context;
-}
+const {
+  Context: DialogContext,
+} = createCompoundContext<DialogContextValue>('Dialog', {
+  errorMessage: 'Dialog components must be used within Dialog.Provider',
+});
 
 // ============================================================================
 // Provider — wraps Base UI Dialog.Root with controlled state

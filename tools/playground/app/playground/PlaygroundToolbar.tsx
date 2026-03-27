@@ -64,7 +64,9 @@ export function PlaygroundToolbar({
         {packages.map((pkg) => (
           <Button
             key={pkg}
-            variant={pkg === selectedPackage ? "secondary" : "ghost"}
+            quiet
+            tone="accent"
+            active={pkg === selectedPackage}
             size="sm"
             onClick={() => onSelectPackage(pkg)}
           >
@@ -97,7 +99,9 @@ export function PlaygroundToolbar({
         {STATES.map((state) => (
           <Button
             key={state}
-            variant={forcedState === state ? "secondary" : "ghost"}
+            quiet
+            tone="accent"
+            active={forcedState === state}
             size="sm"
             onClick={() => onSetForcedState(state)}
           >

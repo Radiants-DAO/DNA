@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const ComputersDevicesElectronicsFlashDrive1 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M8.50205 1.5V6.50062H7.50455V7.50469H6.50049V20.505H7.50455V8.50219H16.5017V20.505H17.4992V7.50469H16.5017V6.50062H15.5042V1.5H8.50205ZM14.5002 6.50062H9.49955V2.50406H14.5002V6.50062Z" /><path d="M16.502 20.505H15.504V21.502H16.502V20.505ZM15.504 21.502H8.502V22.5H15.504V21.502ZM14.5 17.499H13.502V18.503H14.5V17.499ZM14.5 15.504H13.502V16.502H14.5V15.504ZM13.503 3.501H12.499V5.503H13.503V3.501ZM13.503 18.503H10.503V19.501H13.503V18.503ZM11.501 3.501H10.503V5.503H11.501V3.501ZM10.504 17.499H9.5V18.503H10.504V17.499ZM10.504 15.504H9.5V16.502H10.504V15.504ZM8.502 20.505H7.504V21.502H8.502V20.505Z" /></g></svg>;
+ComputersDevicesElectronicsFlashDrive1.displayName = 'ComputersDevicesElectronicsFlashDrive1';
+
+export default ComputersDevicesElectronicsFlashDrive1;

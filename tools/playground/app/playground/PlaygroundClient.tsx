@@ -3,7 +3,7 @@
 import { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
-import { ModeToolbar, type EditorMode, type FeedbackType } from "./ModeToolbar";
+import { ModeToolbar, type EditorMode } from "./ModeToolbar";
 import { EditorModeContext } from "./editor-mode-context";
 import { ColorModeContext } from "./color-mode-context";
 import { CaptureService } from "./components/CaptureService";
@@ -14,7 +14,6 @@ export function PlaygroundClient() {
   const canvasRef = useRef<PlaygroundCanvasHandle>(null);
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
   const [editorMode, setEditorMode] = useState<EditorMode>("component-id");
-  const [activeFeedbackType, setActiveFeedbackType] = useState<FeedbackType | null>(null);
 
   const selectedPackage = useMemo(
     () => [...new Set(registry.map((e) => e.packageName))][0] ?? "@rdna/radiants",
@@ -50,7 +49,6 @@ export function PlaygroundClient() {
 
       if (e.key === "c" || e.key === "C") {
         setEditorMode("comment");
-        setActiveFeedbackType("comment");
       }
       if (e.key === "Escape") {
         if (editorMode === "comment") {
@@ -72,8 +70,6 @@ export function PlaygroundClient() {
             <ModeToolbar
               editorMode={editorMode}
               onSetEditorMode={setEditorMode}
-              activeFeedbackType={activeFeedbackType}
-              onSetActiveFeedbackType={setActiveFeedbackType}
               colorMode={colorMode}
               onToggleColorMode={toggleColorMode}
               selectedPackage={selectedPackage}

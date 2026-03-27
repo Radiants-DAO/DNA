@@ -1,10 +1,11 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
 import { Button } from '../Button/Button';
 import { cva } from 'class-variance-authority';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -79,15 +80,12 @@ interface TabsInternalContext {
   setActiveTab: (value: string) => void;
 }
 
-const TabsContext = createContext<TabsInternalContext | null>(null);
-
-function useTabsContext(): TabsInternalContext {
-  const context = use(TabsContext);
-  if (!context) {
-    throw new Error('Tab components must be used within a Tabs.Provider');
-  }
-  return context;
-}
+const {
+  Context: TabsContext,
+  useCompoundContext: useTabsContext,
+} = createCompoundContext<TabsInternalContext>('Tabs', {
+  errorMessage: 'Tab components must be used within a Tabs.Provider',
+});
 
 function useTabsMeta(): TabsMeta {
   return useTabsContext().meta;

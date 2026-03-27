@@ -23,6 +23,7 @@ export const InputMeta: ComponentMeta = {
   shadowSystem: "pixel",
   wraps: "@base-ui/react/toggle",
   styleOwnership: [{ attribute: "data-variant", themeOwned: ["default"] }],
+  density: { attribute: "data-density", modes: ["comfortable", "compact"], default: "comfortable" },
   a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
   structuralRules: [{ ruleId: "rdna/no-pixel-border", reason: "pixel corners own the border layer" }],
 };`
@@ -102,6 +103,7 @@ describe("generate-schemas", () => {
     expect(schema.shadowSystem).toBeUndefined();
     expect(schema.wraps).toBeUndefined();
     expect(schema.styleOwnership).toBeUndefined();
+    expect(schema.density).toBeUndefined();
     expect(schema.a11y).toBeUndefined();
     expect(schema.structuralRules).toBeUndefined();
   });

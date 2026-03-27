@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const InterfaceEssentialNavigationMenu2 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.001 4H20.997V20H22.001V4ZM20.997 20H20V20.997H20.997V20ZM20.997 2.996H20V4H20.997V2.996ZM20 20.997H4V22.001H20V20.997ZM20 10.996H17.998V12.997H20V10.996ZM17.001 10.996H14.999V12.997H17.001V10.996ZM14.002 10.996H12V12.997H14.002V10.996ZM4.998 14.999H6.002V15.997H9.001V14.999H9.998V13.995H11.003V12.998H9.001V12H11.003V10.996H9.998V9.998H9.001V9.001H6.002V9.998H4.998V10.996H4V13.995H4.998V14.999ZM6.999 10.996H8.003V12H6.999V10.996ZM20 1.999H4V2.996H20V1.999ZM4 20H3.003V20.997H4V20ZM4 2.996H3.003V4H4V2.996ZM3.003 4H1.999V20H3.003V4Z" /></g></svg>;
+InterfaceEssentialNavigationMenu2.displayName = 'InterfaceEssentialNavigationMenu2';
+
+export default InterfaceEssentialNavigationMenu2;

@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { Wrench, Pencil, Question, Sparkles, Moon } from "@rdna/radiants/icons/generated";
-import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
+import { ComposerShell, ComposerPill } from "./ComposerShell";
 
 interface AnnotationComposerProps {
   componentId: string;
@@ -14,8 +14,6 @@ interface AnnotationComposerProps {
   anchorBottom?: number;
   /** Which variant sub-card was clicked */
   variant?: string;
-  /** Current forced interaction state */
-  forcedState?: string;
   onSubmit: () => void;
   onCancel: () => void;
   /** Available interaction states from the component */
@@ -45,13 +43,6 @@ const PRIORITY_DOT_COLORS: Record<string, string> = {
   P4: "bg-mute",
 };
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  P1: "bg-danger/20 text-danger",
-  P2: "bg-accent-soft/20 text-accent-soft",
-  P3: "bg-warning/20 text-warning",
-  P4: "bg-success/20 text-success",
-};
-
 export function AnnotationComposer({
   componentId,
   x,
@@ -60,7 +51,6 @@ export function AnnotationComposer({
   anchorTop,
   anchorBottom,
   variant,
-  forcedState,
   onSubmit,
   onCancel,
   availableStates,

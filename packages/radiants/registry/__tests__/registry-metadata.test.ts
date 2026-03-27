@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistryMetadata } from '../build-registry-metadata';
 import { pickContractFields } from '../contract-fields';
+import { componentMetaIndex } from '../../meta';
 
 describe('buildRegistryMetadata', () => {
   it('returns only server-safe metadata', () => {
@@ -25,7 +26,12 @@ describe('buildRegistryMetadata', () => {
 
   it('returns all non-excluded components', () => {
     const entries = buildRegistryMetadata();
-    expect(entries.length).toBeGreaterThanOrEqual(39);
+    const expectedCount = Object.values(componentMetaIndex).filter(
+      (entry) => !entry.meta.registry?.exclude,
+    ).length;
+
+    expect(expectedCount).toBeGreaterThanOrEqual(40);
+    expect(entries).toHaveLength(expectedCount);
   });
 
   it('surfaces canonical props, slots, and display labels', () => {
@@ -125,12 +131,30 @@ describe('buildRegistryMetadata', () => {
       wraps: "@base-ui/react/toggle",
       a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
       styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+      density: {
+        attribute: "data-density",
+        modes: ["comfortable", "compact"],
+      },
+      composition: {
+        required: ["trigger"],
+        optional: ["content"],
+        order: ["trigger", "content"],
+      },
     });
 
     expect(fields).toEqual({
       wraps: "@base-ui/react/toggle",
       a11y: { role: "button", requiredAttributes: ["aria-pressed"] },
       styleOwnership: [{ attribute: "data-state", themeOwned: ["selected"] }],
+      density: {
+        attribute: "data-density",
+        modes: ["comfortable", "compact"],
+      },
+      composition: {
+        required: ["trigger"],
+        optional: ["content"],
+        order: ["trigger", "content"],
+      },
     });
   });
 
@@ -160,5 +184,6 @@ describe('buildRegistryMetadata', () => {
         }),
       ]),
     );
+    expect(card?.density).toBeUndefined();
   });
 });

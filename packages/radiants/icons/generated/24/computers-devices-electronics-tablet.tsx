@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const ComputersDevicesElectronicsTablet = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M4.49555 1.5V2.50406H3.49805V21.5025H4.49555V22.5H19.4974V21.5025H20.5015V2.50406H19.4974V1.5H4.49555ZM12.4952 21.5025H11.4977V20.505H12.4952V21.5025ZM18.4999 19.5009H5.50289V3.50156H18.5032L18.4999 19.5009Z" /><path d="M11.4977 9.49979H12.4952V11.5014H17.4958V6.50073H12.4952V8.5023H11.4977V6.50073H6.49707V11.5014H11.4977V9.49979ZM13.4993 7.50479H16.4983V10.5039H13.4993V7.50479ZM10.5002 10.5039H7.50113V7.50479H10.5002V10.5039Z" /><path d="M15.501 8.502H14.497V9.5H15.501V8.502ZM14.497 12.499H13.5V13.503H14.497V12.499ZM13.499 13.503H11.498V14.5H13.499V13.503ZM9.496 8.502H8.499V9.5H9.496V8.502Z" /></g></svg>;
+ComputersDevicesElectronicsTablet.displayName = 'ComputersDevicesElectronicsTablet';
+
+export default ComputersDevicesElectronicsTablet;

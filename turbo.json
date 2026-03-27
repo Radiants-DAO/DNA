@@ -11,6 +11,14 @@
     },
     "lint": {
       "dependsOn": ["^lint"]
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
+    },
+    "test:ci": {
+      "dependsOn": ["^test:ci"],
+      "outputs": []
     }
   }
 }

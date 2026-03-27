@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Meter as BaseMeter } from '@base-ui/react/meter';
 import { cva } from 'class-variance-authority';
 

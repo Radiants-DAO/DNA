@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const InterfaceEssentialNoteMusic = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M19.9964 6.0019H17.9949V6.9994H19.9964V14.9991H17.9949V16.0032H16.9974V17.9982H17.9949V19.0022H19.9964V17.9982H21.0005V1.99878H17.9949V3.00284H19.9964V6.0019Z" /><path d="M17.995 7H14.996V8.004H17.995V7ZM17.995 3.003H14.996V4H17.995V3.003ZM14.996 8.003H11.997V9.001H14.996V8.003ZM14.996 4H11.997V5.004H14.996V4ZM11.997 9.001H8.998V9.998H11.997V9.001ZM11.997 5.004H8.998V6.002H11.997V5.004Z" /><path d="M3.99707 22.0013H5.99864V21.0038H6.99614V11.0026H8.9977V9.99852H6.99614V6.99945H8.9977V6.00195H5.99864V17.9982H3.99707V19.0023H2.99957V21.0038H3.99707V22.0013Z" /></g></svg>;
+InterfaceEssentialNoteMusic.displayName = 'InterfaceEssentialNoteMusic';
+
+export default InterfaceEssentialNoteMusic;

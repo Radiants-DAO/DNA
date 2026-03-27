@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Separator as BaseSeparator } from '@base-ui/react/separator';
 import { cva } from 'class-variance-authority';
 
