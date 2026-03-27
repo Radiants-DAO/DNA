@@ -77,11 +77,20 @@ useControlSurface(name, config) → typed values
 - Should multiple apps be able to have surfaces open simultaneously, or one-at-a-time?
 - How does this interact with mobile (MobileAppModal)? Probably a bottom sheet.
 
+## Next Steps
+
+1. **Prototype externally** — iterate in a sandbox repo that consumes `@rdna/radiants` as a package. Lower token costs, faster experimentation.
+2. **Validate against existing surfaces** — test viability as replacement for:
+   - Props panels in UI Toolkit (playground)
+   - Rad Studio controls
+   - Flow interface controls (potential first consumer/first pass)
+3. **Bring into monorepo** once the pattern is proven — likely as `packages/radiants/components/core/ControlSurface/`
+
 ## Worktree Context
 
 - Path: `/Users/rivermassey/Desktop/dev/DNA`
 - Branch: `feat/pattern-playground` (current work)
-- Implementation branch: TBD (likely `feat/control-surface`)
+- Implementation branch: TBD — external sandbox repo first, then `feat/control-surface`
 
 ## Research Notes
 
