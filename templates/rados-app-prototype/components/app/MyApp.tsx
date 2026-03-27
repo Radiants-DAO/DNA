@@ -23,7 +23,14 @@ export function MyApp({ windowId }: AppProps) {
           className="max-w-full transition-[width,height] duration-200 ease-out"
           style={{ width: preset.width, height: preset.height }}
         >
-          <AppWindow title="__APP_PASCAL_NAME__">
+          <AppWindow
+            title="__APP_PASCAL_NAME__"
+            titleBarActions={
+              <span className="rounded-full border border-line px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted">
+                shell
+              </span>
+            }
+          >
             <WindowContent mode="single-column">
               <div className="space-y-4 rounded-[22px] border border-line bg-panel/70 p-6">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accent">
