@@ -3,6 +3,7 @@ export interface TemplateContext {
   appPascalName: string;
   appCamelName: string;
   packageName: string;
+  radiantsDependency: string;
 }
 
 export function renderTemplateString(
@@ -13,7 +14,8 @@ export function renderTemplateString(
     .replaceAll('__APP_NAME__', context.appName)
     .replaceAll('__APP_PASCAL_NAME__', context.appPascalName)
     .replaceAll('__APP_CAMEL_NAME__', context.appCamelName)
-    .replaceAll('__PACKAGE_NAME__', context.packageName);
+    .replaceAll('__PACKAGE_NAME__', context.packageName)
+    .replaceAll('__RADIANTS_DEP__', context.radiantsDependency);
 }
 
 export function resolveRadiantsDependency(

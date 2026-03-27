@@ -7,9 +7,22 @@ describe('template rendering', () => {
       appName: 'my-app',
       appPascalName: 'MyApp',
       appCamelName: 'myApp',
-      packageName: 'my-app'
+      packageName: 'my-app',
+      radiantsDependency: '^0.1.0'
     });
     expect(rendered).toBe('Hello MyApp');
+  });
+
+  it('replaces the radiants dependency token', () => {
+    const rendered = renderTemplateString('"@rdna/radiants": "__RADIANTS_DEP__"', {
+      appName: 'my-app',
+      appPascalName: 'MyApp',
+      appCamelName: 'myApp',
+      packageName: 'my-app',
+      radiantsDependency: 'file:/abs/radiants'
+    });
+
+    expect(rendered).toBe('"@rdna/radiants": "file:/abs/radiants"');
   });
 
   it('supports workspace radiants mode during local smoke tests', () => {
