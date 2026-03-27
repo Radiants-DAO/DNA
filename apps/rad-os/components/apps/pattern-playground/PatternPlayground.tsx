@@ -149,53 +149,49 @@ export function PatternPlayground() {
     setState((prev) => ({ ...prev, ...partial }));
   }, []);
 
+  const panelHeader = (
+    <>
+      {/* Presets */}
+      <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
+        <span className="font-heading text-xs text-mute uppercase tracking-wide block">
+          Presets
+        </span>
+        <div className="flex flex-wrap gap-1">
+          {PRESETS.map((preset, i) => (
+            <Button
+              key={preset.name}
+              size="sm"
+              compact
+              quiet={activePreset !== i}
+              onClick={() => handlePreset(i)}
+              title={preset.description}
+            >
+              {preset.name}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Pattern grid */}
+      <div className="px-3 py-2 border-b border-rule">
+        <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
+          Pattern
+        </span>
+        <PatternGridPicker
+          selected={state.pat}
+          onSelect={handlePatternSelect}
+          color={state.color}
+        />
+      </div>
+    </>
+  );
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 min-h-0 flex">
-        {/* ── Left sidebar: pattern picker + DialKit controls ── */}
-        <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
-          {/* Presets */}
-          <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
-            <span className="font-heading text-xs text-mute uppercase tracking-wide block">
-              Presets
-            </span>
-            <div className="flex flex-wrap gap-1">
-              {PRESETS.map((preset, i) => (
-                <Button
-                  key={preset.name}
-                  size="sm"
-                  compact
-                  quiet={activePreset !== i}
-                  onClick={() => handlePreset(i)}
-                  title={preset.description}
-                >
-                  {preset.name}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Pattern grid */}
-          <div className="px-3 py-2 border-b border-rule overflow-y-auto max-h-56">
-            <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
-              Pattern
-            </span>
-            <PatternGridPicker
-              selected={state.pat}
-              onSelect={handlePatternSelect}
-              color={state.color}
-            />
-          </div>
-
-          {/* DialKit inline panel */}
-          <div
-            key={dialKey}
-            className="flex-1 min-h-0 overflow-y-auto [&_.dialkit-panel]:!bg-transparent [&_.dialkit-panel]:!border-0 [&_.dialkit-panel]:!shadow-none"
-          >
-            <DialPanel />
-            <PlaygroundControls initial={state} onSync={handleSync} />
-          </div>
-        </div>
+        <DialPanel key={dialKey} header={panelHeader}>
+          <PlaygroundControls initial={state} onSync={handleSync} />
+        </DialPanel>
 
         {/* ── Right: preview area ── */}
         <div className="flex-1 min-w-0 flex flex-col">
