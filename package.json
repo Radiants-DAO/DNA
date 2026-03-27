@@ -21,7 +21,8 @@
     "registry:check:fast": "pnpm lint:design-system:staged && pnpm registry:check:freshness",
     "registry:check:full": "pnpm registry:check:freshness && pnpm registry:test:radiants && pnpm registry:test:playground",
     "test:scripts": "node --test scripts/__tests__/*.test.mjs",
-    "test:create": "pnpm --filter @rdna/create test"
+    "test:create": "pnpm --filter @rdna/create test",
+    "create:smoke": "pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts"
   },
   "devDependencies": {
     "eslint": "^9",
