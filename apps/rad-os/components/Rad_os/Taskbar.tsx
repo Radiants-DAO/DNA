@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { usePreferencesStore } from '@/store';
 import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent, Toolbar, Switch } from '@rdna/radiants/components/core';
-import { Icon } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons/runtime';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
@@ -67,11 +67,11 @@ function DarkModeToggle() {
 // Taskbar — unified dock with Start button + utility icons
 // ============================================================================
 
-export function Taskbar({ className = '' }: { className?: string }) {
+export function Taskbar({ className: _className = '' }: { className?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${_className}`}>
       <Toolbar.Root>
         {/* Start button */}
         <Button
@@ -119,4 +119,3 @@ export function Taskbar({ className = '' }: { className?: string }) {
     </div>
   );
 }
-

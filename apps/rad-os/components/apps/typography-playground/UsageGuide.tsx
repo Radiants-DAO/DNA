@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import {
   type TypographyRule,
   USAGE_SECTIONS,
@@ -23,6 +21,7 @@ function RuleCard({ rule }: { rule: TypographyRule }) {
   const isDo = rule.type === 'do';
 
   return (
+    // eslint-disable-next-line rdna/no-pixel-border -- reason:rule-card-border-stays-stateful owner:design-system expires:2026-12-31 issue:DNA-001
     <div
       className={`flex flex-col border pixel-rounded-sm overflow-hidden ${
         isDo
@@ -134,7 +133,7 @@ function UsageSection({
 
       {/* Rule pairs */}
       <div className="space-y-3">
-        {pairs.map((pair, idx) => {
+        {pairs.map((pair) => {
           if (pair.dont && pair.do) {
             return (
               <RulePair

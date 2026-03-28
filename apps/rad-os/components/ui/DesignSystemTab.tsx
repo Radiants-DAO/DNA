@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ComponentType } from 'react';
 import {
   registry,
   CATEGORIES,
@@ -18,7 +18,7 @@ import { Button, Input } from '@rdna/radiants/components/core';
 // ============================================================================
 
 function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
-  const Component = entry.component;
+  const Component = entry.component as ComponentType<Record<string, unknown>> | undefined;
   const { props, remountKey, setPropValue, resetProps } = useShowcaseProps(entry);
   const [forcedState, setForcedState] = useState<'default' | ForcedState>('default');
   const availableStates = ['default', ...getPreviewStateNames(entry.states)] as const;
@@ -62,6 +62,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
       {entry.states && entry.states.length > 0 && (
         <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
           {availableStates.map((s) => (
+            // eslint-disable-next-line rdna/prefer-rdna-components -- reason:forced-state-chip-requires-inline-button owner:design-system expires:2026-12-31 issue:DNA-001
             <button
               key={s}
               type="button"

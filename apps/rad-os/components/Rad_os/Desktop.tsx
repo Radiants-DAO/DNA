@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useTypewriter } from '@/hooks/useTypewriter';
@@ -10,7 +10,7 @@ import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
 import { Button, Spinner } from '@rdna/radiants/components/core';
-import { WordmarkLogo } from '@rdna/radiants/icons';
+import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 import { WebGLSun } from '@/components/background';
 
 // Loading fallback for lazy-loaded apps
@@ -104,7 +104,7 @@ const TAGLINES = [
   'all assets open-sourced under the Rad public license',
 ];
 
-export function Desktop({ className = '' }: DesktopProps) {
+export function Desktop({ className: _className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
   const desktopApps = getDesktopLaunchers();
   const taglines = useMemo(() => TAGLINES, []);
@@ -134,7 +134,9 @@ export function Desktop({ className = '' }: DesktopProps) {
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
         <div>
+          {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
+          {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
           <div className="text-sm font-mono font-bold uppercase max-w-[40ch] ml-2">
             {displayed}

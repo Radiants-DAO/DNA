@@ -19,4 +19,10 @@ describe('app catalog selectors', () => {
     expect(brand?.windowTitle).toBe('Brand Assets');
     expect(brand?.helpConfig).toBeDefined();
   });
+
+  it('drops the launch-ready Links stub from the catalog', () => {
+    expect(getApp('links')).toBeUndefined();
+    expect(getDesktopLaunchers().map((app) => app.id)).not.toContain('links');
+    expect(getStartMenuSections().apps.map((app) => app.id)).not.toContain('links');
+  });
 });

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Icon } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons/runtime';
 import { Separator, Tooltip, Button } from '@rdna/radiants/components/core';
 
 // ============================================================================
@@ -139,7 +139,7 @@ export function WindowTitleBar({
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+    } catch {
       // Failed to copy link
     }
   };

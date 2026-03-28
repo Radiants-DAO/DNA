@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Pattern } from '@rdna/radiants/components/core';
 import {
   patternRegistry,
@@ -52,6 +52,7 @@ function PatternCard({
   }, [entry.name, color, scale, bg]);
 
   return (
+    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:pattern-card-uses-full-tile-click-target owner:design-system expires:2026-12-31 issue:DNA-001
     <button
       type="button"
       onClick={handleCopy}

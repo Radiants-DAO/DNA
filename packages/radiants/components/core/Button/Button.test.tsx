@@ -35,4 +35,22 @@ describe('Button', () => {
     expect(btn).not.toBeDisabled();
     expect(btn).toHaveAttribute('aria-disabled', 'true');
   });
+
+  test('forwards anchor props when rendered as a link', () => {
+    render(
+      <Button
+        href="https://example.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open docs"
+      >
+        Docs
+      </Button>,
+    );
+
+    const link = screen.getByRole('link', { name: 'Open docs' });
+    expect(link).toHaveAttribute('href', 'https://example.com');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 });

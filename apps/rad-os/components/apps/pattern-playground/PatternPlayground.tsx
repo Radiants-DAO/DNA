@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { DialPanel, useDialKit, Button } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';

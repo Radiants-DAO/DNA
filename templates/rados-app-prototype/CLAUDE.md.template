@@ -1,0 +1,6 @@
+# __APP_PASCAL_NAME__ Notes
+
+- Start from `components/app/MyApp.tsx` for feature work.
+- RDNA components, runtime icons, and pattern registry are already wired into the scaffold.
+- Keep `lib/controlSurface.ts` as the integration seam until the real control-surface package exists.
+- Treat this app as a standalone prototype, not an in-monorepo RadOS feature branch.

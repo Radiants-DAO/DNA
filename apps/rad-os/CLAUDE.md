@@ -29,7 +29,6 @@ lib/
 public/
   assets/                   # Logos, images, fonts
   media/                    # Audio (music/) and video (video/)
-scripts/                    # create-app scaffolding
 ```
 
 ## Key Patterns
@@ -39,6 +38,7 @@ scripts/                    # create-app scaffolding
 - **Ambient capability**: Apps can declare `wallpaper`, `widget`, `controller` components for background/widget modes.
 - **UI components**: Import from `@rdna/radiants/components/core`. Design tokens in `design.md` (symlink to `packages/radiants/DESIGN.md`).
 - **State**: Zustand slice pattern. All state in one store. Persist middleware for preferences + favorites.
+- **Standalone prototypes**: Use the `@rdna/create` workspace package from the monorepo root instead of an app-local scaffolder.
 
 ## References
 

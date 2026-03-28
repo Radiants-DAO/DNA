@@ -1,6 +1,5 @@
-import React, { lazy } from 'react';
-import type { ComponentType, ReactNode } from 'react';
-import { RadMarkIcon, Icon } from '@rdna/radiants/icons';
+import { lazy, type ComponentType, type ReactNode } from 'react';
+import { RadMarkIcon, Icon } from '@rdna/radiants/icons/runtime';
 import type { WindowSize, WindowSizeTier } from '@/lib/windowSizing';
 import { RadRadioAmbientWallpaper, RadRadioAmbientWidget, RadRadioAmbientController } from '@/components/apps/rad-radio/ambient';
 
@@ -8,7 +7,6 @@ import { RadRadioAmbientWallpaper, RadRadioAmbientWidget, RadRadioAmbientControl
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
-const LinksApp = lazy(() => import('@/components/apps/LinksApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 // ============================================================================
@@ -98,16 +96,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
       widget: RadRadioAmbientWidget,
       controller: RadRadioAmbientController,
     },
-  },
-  {
-    id: 'links',
-    windowTitle: 'Links',
-    windowIcon: <Icon name="globe" size={20} />,
-    component: LinksApp,
-    defaultSize: 'md',
-    resizable: true,
-    desktopVisible: true,
-    startMenuSection: 'apps',
   },
   {
     id: 'about',

@@ -12,7 +12,6 @@ export type { Radiant, StudioSubmission } from './slices/mockDataSlice';
 
 // Combined store type
 type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & RadRadioSlice;
-type PersistedRadOS = Pick<RadOSState, 'volume' | 'reduceMotion' | 'darkMode' | 'radioFavorites'>;
 
 // Main store with all slices
 export const useRadOSStore = create<RadOSState>()(

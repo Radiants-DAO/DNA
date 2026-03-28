@@ -39,19 +39,27 @@ interface ButtonOwnProps {
   compact?: boolean;
   /** Icon — RDNA icon name (string) or custom ReactNode */
   icon?: string | React.ReactNode;
-  /** URL for navigation — renders as anchor element */
-  href?: string;
-  /** Target for link navigation */
-  target?: string;
   /** Additional className applied to the face element */
   className?: string;
+  /** Applies disabled styling and disables button-mode interaction */
+  disabled?: boolean;
   /** Keep button focusable while disabled — use for loading states */
   focusableWhenDisabled?: boolean;
   children?: React.ReactNode;
 }
 
-type ButtonProps = ButtonOwnProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps>;
+type ButtonButtonProps = ButtonOwnProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps | 'href' | 'target'> & {
+    href?: undefined;
+    target?: never;
+  };
+
+type ButtonAnchorProps = ButtonOwnProps &
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof ButtonOwnProps> & {
+    href: string;
+  };
+
+type ButtonProps = ButtonButtonProps | ButtonAnchorProps;
 
 // ============================================================================
 // CVA Variants
@@ -159,13 +167,11 @@ export function Button({
   flush = false,
   quiet = false,
   icon,
-  href,
-  target,
   children,
   className = '',
-  disabled,
+  disabled = false,
   focusableWhenDisabled,
-  ...props
+  ...elementProps
 }: ButtonProps) {
   const dataState = active ? 'selected' : 'default';
 
@@ -221,11 +227,14 @@ export function Button({
     </span>
   );
 
-  if (href) {
+  if ('href' in elementProps && typeof elementProps.href === 'string') {
+    const { href, target, ...anchorProps } = elementProps;
+
     return (
       <a
         href={href}
         target={target}
+        {...anchorProps}
         className={rootClasses}
         data-rdna="button"
         data-slot="button-root"
@@ -252,7 +261,7 @@ export function Button({
       {...(quiet ? { 'data-quiet': '' } : {})}
       disabled={isDisabled}
       focusableWhenDisabled={focusableWhenDisabled}
-      {...props}
+      {...elementProps}
     >
       {face}
     </BaseButton>
@@ -270,10 +279,11 @@ interface IconButtonOwnProps extends Omit<ButtonOwnProps, 'children' | 'icon' | 
   'aria-label': string;
 }
 
-type IconButtonProps = IconButtonOwnProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof IconButtonOwnProps> & {
-    focusableWhenDisabled?: boolean;
-  };
+type IconButtonProps = Omit<
+  ButtonButtonProps,
+  'children' | 'icon' | 'iconOnly' | 'textOnly' | 'fullWidth' | 'href' | 'target'
+> &
+  IconButtonOwnProps;
 
 /**
  * A square button that shows only an icon.

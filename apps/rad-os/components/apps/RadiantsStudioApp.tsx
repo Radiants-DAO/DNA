@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Switch } from '@rdna/radiants/components/core';
-import { Icon } from '@rdna/radiants/icons';
-import { WindowTabs } from '@/components/Rad_os';
+import { Button, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Icon } from '@rdna/radiants/icons/runtime';
 import {
   mockSubmissions,
   formatCreatedAt,
@@ -17,6 +16,7 @@ import { type AppProps } from '@/lib/apps';
 
 const CANVAS_SIZE = 32;
 const PIXEL_SIZE = 10; // Each pixel rendered at 10x10 for visibility
+const STUDIO_TAB_BAR_OFFSET = 56;
 const COLORS = {
   cream: '#FEF8E2',
   yellow: '#FCE184',
@@ -489,24 +489,35 @@ function Leaderboard() {
 // Main Component
 // ============================================================================
 
-export function RadiantsStudioApp({ windowId }: AppProps) {
+export function RadiantsStudioApp({ windowId: _windowId }: AppProps) {
+  const tabs = useTabsState({ defaultValue: 'creation', mode: 'pill', layout: 'bottom-tabs' });
+
+  const renderPanel = (value: string, children: React.ReactNode) => (
+    <Tabs.Content value={value} className="mx-2">
+      <div
+        className="overflow-auto bg-card border border-line rounded"
+        style={{ maxHeight: `calc(var(--app-content-max-height) - ${STUDIO_TAB_BAR_OFFSET}px)` }}
+      >
+        {children}
+      </div>
+    </Tabs.Content>
+  );
+
   return (
-    <WindowTabs defaultValue="creation" className="bg-page pixel-rounded-sm">
-      <WindowTabs.Content value="creation">
-        <PixelArtCreation />
-      </WindowTabs.Content>
-      <WindowTabs.Content value="voting">
-        <VotingSystem />
-      </WindowTabs.Content>
-      <WindowTabs.Content value="leaderboard">
-        <Leaderboard />
-      </WindowTabs.Content>
-      <WindowTabs.List>
-        <WindowTabs.Trigger value="creation">Creation</WindowTabs.Trigger>
-        <WindowTabs.Trigger value="voting">Voting</WindowTabs.Trigger>
-        <WindowTabs.Trigger value="leaderboard">Leaderboard</WindowTabs.Trigger>
-      </WindowTabs.List>
-    </WindowTabs>
+    <div className="h-full flex flex-col bg-page pixel-rounded-sm">
+      <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
+        <Tabs.Frame className="h-full flex flex-col">
+          {renderPanel('creation', <PixelArtCreation />)}
+          {renderPanel('voting', <VotingSystem />)}
+          {renderPanel('leaderboard', <Leaderboard />)}
+          <Tabs.List className="mt-auto">
+            <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
+            <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
+            <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.Frame>
+      </Tabs.Provider>
+    </div>
   );
 }
 

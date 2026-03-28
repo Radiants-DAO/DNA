@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import {
+  AppWindow,
   Button,
   Select,
   Dialog,
@@ -26,6 +27,7 @@ import {
 test('core exports render', () => {
   render(<Button>Test</Button>);
   expect(screen.getByRole('button', { name: 'Test' })).toBeInTheDocument();
+  expect(AppWindow).toBeTruthy();
   expect(Select).toBeTruthy();
   expect(Dialog).toBeTruthy();
 });

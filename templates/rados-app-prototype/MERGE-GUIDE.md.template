@@ -1,0 +1,5 @@
+# Merge Guide For __APP_PASCAL_NAME__
+
+1. Keep shell primitives small and reusable.
+2. Prefer extending `components/app/MyApp.tsx` before changing the window frame.
+3. Replace the control-surface stub only when the dedicated package is ready.

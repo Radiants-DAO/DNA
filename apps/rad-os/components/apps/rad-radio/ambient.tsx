@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/components/apps/RadRadioApp';
 import { useRadRadioStore } from '@/store';
 
@@ -16,7 +14,7 @@ export function RadRadioAmbientWallpaper() {
   );
 }
 
-export function RadRadioAmbientWidget({ appId, onExit }: { appId: string; onExit: () => void }) {
+export function RadRadioAmbientWidget({ appId: _appId, onExit }: { appId: string; onExit: () => void }) {
   return <RadRadioWidget onExitWidget={onExit} />;
 }
 

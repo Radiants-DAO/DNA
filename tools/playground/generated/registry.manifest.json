@@ -151,6 +151,66 @@
         "tokenBindings": null
       },
       {
+        "name": "AppWindow",
+        "description": "Desktop-style application window with draggable chrome, optional resize handles, and mobile/fullscreen presentations.",
+        "sourcePath": "packages/radiants/components/core/AppWindow/AppWindow.tsx",
+        "schemaPath": "packages/radiants/components/core/AppWindow/AppWindow.schema.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "description-only",
+        "tags": [
+          "window",
+          "desktop",
+          "shell"
+        ],
+        "props": {
+          "id": {
+            "type": "string",
+            "description": "Stable window identifier used for aria and share-link behavior."
+          },
+          "title": {
+            "type": "string",
+            "description": "Window title shown in the title bar."
+          },
+          "open": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the window is currently rendered."
+          },
+          "resizable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enables resize handles in desktop window presentation."
+          },
+          "presentation": {
+            "type": "enum",
+            "values": [
+              "window",
+              "fullscreen",
+              "mobile"
+            ],
+            "default": "window",
+            "description": "Selects windowed, fullscreen, or mobile shell presentation."
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Window content, usually an AppWindowBody or custom app layout."
+          }
+        },
+        "subcomponents": [
+          "AppWindow",
+          "AppWindowBody"
+        ],
+        "examples": [
+          {
+            "name": "Desktop window shell",
+            "code": "<AppWindow id=\"about\" title=\"About\">\n  <AppWindowBody>Content</AppWindowBody>\n</AppWindow>"
+          }
+        ],
+        "tokenBindings": null
+      },
+      {
         "name": "Avatar",
         "description": "User profile image with automatic fallback to initials when the image is unavailable or not provided.",
         "sourcePath": "packages/radiants/components/core/Avatar/Avatar.tsx",

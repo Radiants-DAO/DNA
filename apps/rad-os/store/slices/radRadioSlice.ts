@@ -29,7 +29,6 @@ export interface RadRadioSlice {
 
 export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSlice> = (
   set,
-  get
 ) => ({
   radioCurrentVideoIndex: 0,
   radioCurrentTrackIndex: 0,

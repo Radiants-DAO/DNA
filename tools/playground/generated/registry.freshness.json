@@ -1,5 +1,5 @@
 {
-  "sourceHash": "9dd2bf346c4bd4b438818396264946e191cbedeff384a7b0107a8c516ab05f58",
+  "sourceHash": "02d7e1d5343fdc0174e2546467c718ed79be56424f37894bff23e5233d6c6e73",
   "inputs": [
     "packages/create/package.json",
     "packages/preview/package.json",
@@ -7,6 +7,8 @@
     "packages/radiants/components/core/Alert/Alert.schema.json",
     "packages/radiants/components/core/AlertDialog/AlertDialog.meta.ts",
     "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
+    "packages/radiants/components/core/AppWindow/AppWindow.meta.ts",
+    "packages/radiants/components/core/AppWindow/AppWindow.schema.json",
     "packages/radiants/components/core/Avatar/Avatar.meta.ts",
     "packages/radiants/components/core/Avatar/Avatar.schema.json",
     "packages/radiants/components/core/Badge/Badge.meta.ts",
