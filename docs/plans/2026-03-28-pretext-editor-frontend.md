@@ -11,25 +11,34 @@
 **Tech Stack:** React 19, TypeScript, Tailwind v4, Vitest, `@rdna/controls` (host package), `@rdna/radiants` (peer dep for UI primitives)
 
 **Depends on:**
-- Backend plan (`docs/plans/2026-03-28-pretext-editor-backend.md`) Tasks 1–9 completed (types, geometry, `usePretextSurface`, descriptor, measure)
-- `@rdna/controls` P0 controls existing: Select, TextInput, Toggle, Folder (from `docs/plans/2026-03-27-rdna-controls-library.md`)
-- If `@rdna/controls` P0 isn't built yet, this plan uses native HTML controls as placeholders and swaps them later.
+
+* Backend plan (`docs/plans/2026-03-28-pretext-editor-backend.md`) Tasks 1–9 completed (types, geometry, `usePretextSurface`, descriptor, measure)
+
+* `@rdna/controls` P0 controls existing: Select, TextInput, Toggle, Folder (from `docs/plans/2026-03-27-rdna-controls-library.md`)
+
+* If `@rdna/controls` P0 isn't built yet, this plan uses native HTML controls as placeholders and swaps them later.
 
 **Key reference files:**
-- `packages/controls/src/pretext/` — backend API (types, usePretextSurface, geometry, descriptor, measure)
-- `apps/rad-os/components/apps/GoodNewsApp.tsx` — first consumer (current implementation)
-- `@chenglou/pretext/demos/editorial-engine.ts` — reference patterns (syncPool, fitHeadline)
 
----
+* `packages/controls/src/pretext/` — backend API (types, usePretextSurface, geometry, descriptor, measure)
+
+* `apps/rad-os/components/apps/GoodNewsApp.tsx` — first consumer (current implementation)
+
+* `@chenglou/pretext/demos/editorial-engine.ts` — reference patterns (syncPool, fitHeadline)
+
+***
 
 ### Task 1: DOM Overlay Component — Hover Highlight
 
 The overlay system highlights registered elements on hover. Shared across all `@rdna/controls` control types, but built here first for pretext.
 
 **Files:**
-- Create: `packages/controls/src/overlay/DomOverlay.tsx`
-- Create: `packages/controls/src/overlay/index.ts`
-- Test: `packages/controls/test/overlay/DomOverlay.test.tsx`
+
+* Create: `packages/controls/src/overlay/DomOverlay.tsx`
+
+* Create: `packages/controls/src/overlay/index.ts`
+
+* Test: `packages/controls/test/overlay/DomOverlay.test.tsx`
 
 **Step 1: Write the failing test**
 
@@ -261,15 +270,17 @@ git add packages/controls/src/overlay/ packages/controls/test/overlay/
 git commit -m "feat(controls): add shared DOM overlay component"
 ```
 
----
+***
 
 ### Task 2: Inspector Panel Shell — PretextInspector
 
 The main inspector panel component. Shows settings for the currently selected element.
 
 **Files:**
-- Create: `packages/controls/src/pretext/PretextInspector.tsx`
-- Test: `packages/controls/test/pretext/PretextInspector.test.tsx`
+
+* Create: `packages/controls/src/pretext/PretextInspector.tsx`
+
+* Test: `packages/controls/test/pretext/PretextInspector.test.tsx`
 
 **Step 1: Write the failing test**
 
@@ -687,14 +698,15 @@ git add packages/controls/src/pretext/PretextInspector.tsx packages/controls/tes
 git commit -m "feat(pretext): add PretextInspector panel component"
 ```
 
----
+***
 
 ### Task 3: GoodNewsApp Integration — Wire Up `usePretextSurface`
 
 This is the first consumer integration. We wire the existing GoodNewsApp to use `usePretextSurface` and render the `PretextInspector`.
 
 **Files:**
-- Modify: `apps/rad-os/components/apps/GoodNewsApp.tsx`
+
+* Modify: `apps/rad-os/components/apps/GoodNewsApp.tsx`
 
 **Step 1: Add imports**
 
@@ -767,10 +779,14 @@ pnpm dev
 ```
 
 Open `localhost:3000`, launch GoodNewsApp. Verify:
-- Inspector panel appears in the top-right corner
-- Element list shows "logo (polygon)", "dropcap (dropcap)", "body (text)"
-- Clicking an element shows its settings
-- Changing a value logs to console
+
+* Inspector panel appears in the top-right corner
+
+* Element list shows "logo (polygon)", "dropcap (dropcap)", "body (text)"
+
+* Clicking an element shows its settings
+
+* Changing a value logs to console
 
 **Step 5: Commit**
 
@@ -779,14 +795,15 @@ git add apps/rad-os/components/apps/GoodNewsApp.tsx
 git commit -m "feat(rad-os): integrate PretextInspector into GoodNewsApp"
 ```
 
----
+***
 
 ### Task 4: Wire Inspector Changes Back to Layout
 
 Currently the `onLayoutChange` callback just logs. This task wires inspector changes (wrap side, offsets, circle params) back into the actual `computeLayout` function so text reflows live.
 
 **Files:**
-- Modify: `apps/rad-os/components/apps/GoodNewsApp.tsx`
+
+* Modify: `apps/rad-os/components/apps/GoodNewsApp.tsx`
 
 **Step 1: Replace hardcoded obstacle parameters with surface state**
 
@@ -807,7 +824,7 @@ useEffect(() => {
 }, [containerWidth, obs, hull, surface.obstacles]);
 ```
 
-**Step 2: Parameterize `computeLayout` to accept offsets**
+**Step 2: Parameterize&#x20;**`computeLayout`**&#x20;to accept offsets**
 
 Update the `computeLayout` function signature to accept obstacle offsets as a parameter instead of using the hardcoded `OBS_H_PAD` / `OBS_V_PAD` constants.
 
@@ -822,7 +839,7 @@ git add apps/rad-os/components/apps/GoodNewsApp.tsx
 git commit -m "feat(rad-os): wire inspector changes to live pretext reflow"
 ```
 
----
+***
 
 ### Task 5: JSON Export Button
 
@@ -859,7 +876,7 @@ git add packages/controls/src/pretext/PretextInspector.tsx
 git commit -m "feat(pretext): add copy confirmation to inspector"
 ```
 
----
+***
 
 ### Task 6: Final Frontend Smoke Test
 
@@ -903,24 +920,26 @@ git add packages/controls/test/pretext/frontend-smoke.test.ts
 git commit -m "test(pretext): add frontend barrel smoke test"
 ```
 
----
+***
 
 ## Summary
 
 After all 6 tasks, the frontend provides:
 
-| Component | What |
-|---|---|
-| `DomOverlay` | Shared hover-highlight + click-select overlay (reusable across all `@rdna/controls`) |
-| `PretextInspector` | InDesign-style Text Wrap panel: wrap side, offsets, contour type, circle/dropcap/pullquote fields, element list, copy button |
-| GoodNewsApp integration | First consumer: `usePretextSurface` registration, inspector panel, live reflow on setting changes |
+| Component               | What                                                                                                                         |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `DomOverlay`            | Shared hover-highlight + click-select overlay (reusable across all `@rdna/controls`)                                         |
+| `PretextInspector`      | InDesign-style Text Wrap panel: wrap side, offsets, contour type, circle/dropcap/pullquote fields, element list, copy button |
+| GoodNewsApp integration | First consumer: `usePretextSurface` registration, inspector panel, live reflow on setting changes                            |
 
 ## Future Tasks (not in this plan)
 
-| Phase | What |
-|---|---|
-| P2 | Undo/redo via Zustand temporal middleware on surface state |
-| P2 | Replace native HTML controls with `@rdna/controls` primitives (Select, TextInput, etc.) when available |
-| P2 | Pretext-aware Claude skill that reads the JSON descriptor and writes/edits `computeLayout()` |
-| P3 | Column edge dragging (direct manipulation of column widths in the layout) |
-| P3 | Dock/detach integration with AppWindow chrome (CD-player pattern from controls brainstorm) |
+| Phase | What                                                                                                   |
+| ----- | ------------------------------------------------------------------------------------------------------ |
+| P2    | Undo/redo via Zustand temporal middleware on surface state                                             |
+| P2    | Replace native HTML controls with `@rdna/controls` primitives (Select, TextInput, etc.) when available |
+| P2    | Pretext-aware Claude skill that reads the JSON descriptor and writes/edits `computeLayout()`           |
+| P3    | Column edge dragging (direct manipulation of column widths in the layout)                              |
+| P3    | Dock/detach integration with AppWindow chrome (CD-player pattern from controls brainstorm)             |
+
+⠀

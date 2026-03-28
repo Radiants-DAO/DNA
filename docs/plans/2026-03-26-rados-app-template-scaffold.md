@@ -8,18 +8,25 @@
 
 **Tech Stack:** pnpm workspaces, Node + TypeScript ESM, Next.js 16, React 19, Tailwind v4, Vitest, `node --experimental-strip-types`
 
----
+***
 
 ### Task 1: Create The `@rdna/create` Package Shell
 
 **Files:**
-- Create: `packages/create/package.json`
-- Create: `packages/create/tsconfig.json`
-- Create: `packages/create/src/names.ts`
-- Create: `packages/create/src/index.ts`
-- Create: `packages/create/src/cli.ts`
-- Create: `packages/create/src/__tests__/names.test.ts`
-- Modify: `package.json`
+
+* Create: `packages/create/package.json`
+
+* Create: `packages/create/tsconfig.json`
+
+* Create: `packages/create/src/names.ts`
+
+* Create: `packages/create/src/index.ts`
+
+* Create: `packages/create/src/cli.ts`
+
+* Create: `packages/create/src/__tests__/names.test.ts`
+
+* Modify: `package.json`
 
 **Step 1: Write the failing test**
 
@@ -164,9 +171,12 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "feat(create): 
 ### Task 2: Implement Token Rendering And Radiants Dependency Resolution
 
 **Files:**
-- Create: `packages/create/src/template.ts`
-- Create: `packages/create/src/__tests__/template.test.ts`
-- Modify: `packages/create/src/index.ts`
+
+* Create: `packages/create/src/template.ts`
+
+* Create: `packages/create/src/__tests__/template.test.ts`
+
+* Modify: `packages/create/src/index.ts`
 
 **Step 1: Write the failing test**
 
@@ -264,23 +274,40 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "feat(create): 
 ### Task 3: Create The Checked-In Prototype Template Tree
 
 **Files:**
-- Create: `templates/rados-app-prototype/package.json.template`
-- Create: `templates/rados-app-prototype/next.config.ts`
-- Create: `templates/rados-app-prototype/postcss.config.mjs`
-- Create: `templates/rados-app-prototype/tsconfig.json`
-- Create: `templates/rados-app-prototype/app/layout.tsx`
-- Create: `templates/rados-app-prototype/app/globals.css`
-- Create: `templates/rados-app-prototype/app/page.tsx`
-- Create: `templates/rados-app-prototype/components/AppWindow.tsx`
-- Create: `templates/rados-app-prototype/components/WindowContent.tsx`
-- Create: `templates/rados-app-prototype/components/Taskbar.tsx`
-- Create: `templates/rados-app-prototype/components/app/MyApp.tsx`
-- Create: `templates/rados-app-prototype/lib/types.ts`
-- Create: `templates/rados-app-prototype/lib/controlSurface.ts`
-- Create: `templates/rados-app-prototype/README.md.template`
-- Create: `templates/rados-app-prototype/CLAUDE.md.template`
-- Create: `templates/rados-app-prototype/MERGE-GUIDE.md.template`
-- Create: `packages/create/src/__tests__/template-files.test.ts`
+
+* Create: `templates/rados-app-prototype/package.json.template`
+
+* Create: `templates/rados-app-prototype/next.config.ts`
+
+* Create: `templates/rados-app-prototype/postcss.config.mjs`
+
+* Create: `templates/rados-app-prototype/tsconfig.json`
+
+* Create: `templates/rados-app-prototype/app/layout.tsx`
+
+* Create: `templates/rados-app-prototype/app/globals.css`
+
+* Create: `templates/rados-app-prototype/app/page.tsx`
+
+* Create: `templates/rados-app-prototype/components/AppWindow.tsx`
+
+* Create: `templates/rados-app-prototype/components/WindowContent.tsx`
+
+* Create: `templates/rados-app-prototype/components/Taskbar.tsx`
+
+* Create: `templates/rados-app-prototype/components/app/MyApp.tsx`
+
+* Create: `templates/rados-app-prototype/lib/types.ts`
+
+* Create: `templates/rados-app-prototype/lib/controlSurface.ts`
+
+* Create: `templates/rados-app-prototype/README.md.template`
+
+* Create: `templates/rados-app-prototype/CLAUDE.md.template`
+
+* Create: `templates/rados-app-prototype/MERGE-GUIDE.md.template`
+
+* Create: `packages/create/src/__tests__/template-files.test.ts`
 
 **Step 1: Write the failing test**
 
@@ -417,12 +444,18 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "feat(create): 
 ### Task 4: Bake In The Control-Surface Seam Without Implementing It
 
 **Files:**
-- Modify: `templates/rados-app-prototype/components/AppWindow.tsx`
-- Modify: `templates/rados-app-prototype/components/WindowContent.tsx`
-- Modify: `templates/rados-app-prototype/components/app/MyApp.tsx`
-- Modify: `templates/rados-app-prototype/lib/types.ts`
-- Modify: `templates/rados-app-prototype/lib/controlSurface.ts`
-- Create: `packages/create/src/__tests__/template-contract.test.ts`
+
+* Modify: `templates/rados-app-prototype/components/AppWindow.tsx`
+
+* Modify: `templates/rados-app-prototype/components/WindowContent.tsx`
+
+* Modify: `templates/rados-app-prototype/components/app/MyApp.tsx`
+
+* Modify: `templates/rados-app-prototype/lib/types.ts`
+
+* Modify: `templates/rados-app-prototype/lib/controlSurface.ts`
+
+* Create: `packages/create/src/__tests__/template-contract.test.ts`
 
 **Step 1: Write the failing test**
 
@@ -522,11 +555,16 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "feat(create): 
 ### Task 5: Wire The CLI Copy Logic And Local Smoke-Test Mode
 
 **Files:**
-- Create: `packages/create/src/scaffold.ts`
-- Create: `packages/create/src/__tests__/scaffold.test.ts`
-- Modify: `packages/create/src/cli.ts`
-- Modify: `packages/create/src/index.ts`
-- Modify: `package.json`
+
+* Create: `packages/create/src/scaffold.ts`
+
+* Create: `packages/create/src/__tests__/scaffold.test.ts`
+
+* Modify: `packages/create/src/cli.ts`
+
+* Modify: `packages/create/src/index.ts`
+
+* Modify: `package.json`
 
 **Step 1: Write the failing integration test**
 
@@ -641,12 +679,18 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "feat(create): 
 ### Task 6: Remove The Legacy RadOS Scaffolder And Update Guidance
 
 **Files:**
-- Delete: `apps/rad-os/scripts/create-app.ts`
-- Modify: `apps/rad-os/package.json`
-- Modify: `apps/rad-os/CLAUDE.md`
-- Modify: `apps/rad-os/README.md`
-- Modify: `apps/rad-os/SPEC.md`
-- Create: `packages/create/src/__tests__/legacy-cleanup.test.ts`
+
+* Delete: `apps/rad-os/scripts/create-app.ts`
+
+* Modify: `apps/rad-os/package.json`
+
+* Modify: `apps/rad-os/CLAUDE.md`
+
+* Modify: `apps/rad-os/README.md`
+
+* Modify: `apps/rad-os/SPEC.md`
+
+* Create: `packages/create/src/__tests__/legacy-cleanup.test.ts`
 
 **Step 1: Write the failing repo-contract test**
 
@@ -690,9 +734,12 @@ Update `apps/rad-os/package.json` by removing:
 Update `apps/rad-os/CLAUDE.md`, `apps/rad-os/README.md`, and `apps/rad-os/SPEC.md` so they point developers at `@rdna/create` instead of the removed script.
 
 Keep the doc changes narrow:
-- replace command examples
-- replace “create-app scaffolding” wording
-- do not rewrite unrelated architecture sections
+
+* replace command examples
+
+* replace “create-app scaffolding” wording
+
+* do not rewrite unrelated architecture sections
 
 **Step 4: Run test and grep verification**
 
@@ -704,8 +751,10 @@ rg -n "scripts/create-app.ts|create-app\"" /Users/rivermassey/Desktop/dev/DNA-ap
 ```
 
 Expected:
-- Vitest PASS
-- `rg` only returns historical docs that you intentionally keep
+
+* Vitest PASS
+
+* `rg` only returns historical docs that you intentionally keep
 
 **Step 5: Commit**
 
@@ -718,7 +767,8 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "refactor(creat
 ### Task 7: Simulate The Scaffold End-To-End Before Calling It Done
 
 **Files:**
-- No code changes expected unless verification fails
+
+* No code changes expected unless verification fails
 
 **Step 1: Run the create package test suite**
 
@@ -730,7 +780,7 @@ pnpm --dir /Users/rivermassey/Desktop/dev/DNA-app-template --filter @rdna/create
 
 Expected: PASS.
 
-**Step 2: Generate a smoke-test app into `/tmp`**
+**Step 2: Generate a smoke-test app into&#x20;**`/tmp`
 
 Run:
 
@@ -765,10 +815,14 @@ pnpm dev
 ```
 
 Expected manual checks:
-- the prototype AppWindow renders
-- the Taskbar renders and resizes the prototype shell
-- `WindowContent` modes are present in code and usable
-- there is a `lib/controlSurface.ts` stub, but no detached control-surface implementation yet
+
+* the prototype AppWindow renders
+
+* the Taskbar renders and resizes the prototype shell
+
+* `WindowContent` modes are present in code and usable
+
+* there is a `lib/controlSurface.ts` stub, but no detached control-surface implementation yet
 
 **Step 5: Commit any verification fixes**
 
@@ -779,7 +833,12 @@ git -C /Users/rivermassey/Desktop/dev/DNA-app-template commit -m "test(create): 
 
 ## Notes For The Follow-Up Control-Surface Prototype
 
-- The first isolated prototype should be generated from `@rdna/create`, not built inside `apps/rad-os`.
-- Keep `@rdna/radiants` as the primitive dependency only.
-- The first prototype app should consume `lib/controlSurface.ts` as the seam and replace that stub with the real control-surface package later.
-- Detached companion windows are explicitly out of scope for this scaffold phase.
+* The first isolated prototype should be generated from `@rdna/create`, not built inside `apps/rad-os`.
+
+* Keep `@rdna/radiants` as the primitive dependency only.
+
+* The first prototype app should consume `lib/controlSurface.ts` as the seam and replace that stub with the real control-surface package later.
+
+* Detached companion windows are explicitly out of scope for this scaffold phase.
+
+⠀
