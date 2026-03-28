@@ -226,16 +226,19 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
   layHeading('RadOS Coming Soon', "'Joystix Monospace'",         27,  1.2, 0.065, false, true);
   layGap();
   layText(P2);
-  layGap();
+  layGap(2);
   layRule();
+  layGap();
   layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 32, 1.2, 0.08, true, true);
-  layRule();
   layGap();
+  layRule();
+  layGap(2);
   layText(P3);
-  layGap();
+  layGap(2);
   layRule();
-  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.12, true, false);
   layGap();
+  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.12, true, false);
+  layGap(2);
   layText(P4);
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : BODY_LH)), 0);
