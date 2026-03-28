@@ -17,7 +17,7 @@
   --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
   --color-sun-red: oklch(0.7429 0.1568 21.43);          /* was #FF7F7F */
   --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
-  --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
+  --color-pure-white: oklch(0.9909 0.0123 91.51);       /* was #FFFCF3 */
 
   /* System Colors */
   --color-success-mint: var(--color-mint);

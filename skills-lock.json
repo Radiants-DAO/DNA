@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "skills": {
+    "typography": {
+      "source": "petekp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "38193dd291004503b2d0c865574f0a75891920b240fb8014fca6f54ad8cd3d9d"
+    },
+    "typography-audit": {
+      "source": "mblode/agent-skills",
+      "sourceType": "github",
+      "computedHash": "adf3f2d66f13c564e7e81d817f8a7664c3791120be624e9f535eee860aacde66"
+    },
+    "typography-scale": {
+      "source": "owl-listener/designer-skills",
+      "sourceType": "github",
+      "computedHash": "2ab442a62f1ecc618ab4458a29372c88c5ec3f904209b358003772d96a99a9f9"
+    },
+    "web-typography": {
+      "source": "wondelai/skills",
+      "sourceType": "github",
+      "computedHash": "154c59a8ef89a5f47127eec776cf46a7d00e6ae331bc2ac407b395b819589017"
+    }
+  }
+}

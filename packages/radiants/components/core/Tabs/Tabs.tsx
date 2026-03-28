@@ -283,7 +283,19 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
   if (layout === 'accordion') {
     const isActive = activeTab === value;
     return (
-      <div data-slot="tab-trigger" data-mode="accordion" data-state={isActive ? 'selected' : 'default'}>
+      <div
+        data-slot="tab-trigger"
+        data-mode="accordion"
+        data-state={isActive ? 'selected' : 'default'}
+        className={isActive
+          ? 'bg-card border-r border-r-card relative z-10'
+          : ''
+        }
+        style={isActive
+          ? { transform: 'translateY(-1px)', filter: 'drop-shadow(0 1px 0 var(--color-ink))' }
+          : { transform: 'translateY(1px)', filter: 'drop-shadow(0 -1px 0 var(--color-ink))' }
+        }
+      >
         <div className="flex items-center">
           <Button
             mode={compact ? 'pattern' : 'flat'}
@@ -315,7 +327,7 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
             <BaseCollapsible.Panel
               className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
             >
-              <div className="p-2 space-y-2 bg-page">
+              <div className="p-2 space-y-2 bg-card">
                 {settings}
               </div>
             </BaseCollapsible.Panel>

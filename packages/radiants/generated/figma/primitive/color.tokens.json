@@ -75,10 +75,10 @@
     },
     "pure-white": {
       "$type": "color",
-      "$value": "oklch(1.0000 0.0000 0)",
+      "$value": "oklch(0.9909 0.0123 91.51)",
       "$extensions": {
         "rdna": {
-          "srgb": "#ffffff"
+          "srgb": "#fffcf3"
         }
       }
     },

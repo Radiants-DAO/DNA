@@ -125,7 +125,7 @@ function getMaxContentHeight(viewportBottomInset: number): number {
 function AppWindowTitleBar({
   id,
   title,
-  icon,
+  icon: _icon,
   showCopyButton = true,
   showCloseButton = true,
   showFullscreenButton = true,
@@ -169,25 +169,25 @@ function AppWindowTitleBar({
 
   return (
     <div
-      className="flex items-center gap-3 pl-4 pr-1 py-1 h-fit cursor-move select-none"
+      className="flex items-center gap-3 pl-2 pr-1 py-1.5 h-fit cursor-move select-none"
       data-drag-handle={presentation === 'window' ? '' : undefined}
       style={presentation === 'window' ? { touchAction: 'none' } : undefined}
     >
-      <div className="flex items-center gap-2">
-        {icon ? <span className="text-head">{icon}</span> : null}
-        <span
-          id={`window-title-${id}`}
-          className="font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap"
-        >
-          {title}
-        </span>
-      </div>
+      <span
+        id={`window-title-${id}`}
+        className="absolute left-1/2 -translate-x-1/2 font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap pointer-events-none bg-page px-2 py-0.5"
+      >
+        {title}
+      </span>
+
+      {/* Portal slot for app-injected title bar content */}
+      <div id={`window-titlebar-slot-${id}`} className="contents" />
 
       <div className="flex-1">
         <Separator />
       </div>
 
-      <div className="flex items-center gap-0 text-head">
+      <div className="flex items-center gap-1 text-head pr-1.5">
         {showActionButton && actionButton ? (
           actionButton.href ? (
             <Button
@@ -218,8 +218,7 @@ function AppWindowTitleBar({
         {showWidgetButton && onWidget ? (
           <Tooltip content={widgetActive ? 'Exit widget mode' : 'Widget mode'}>
             <Button
-              quiet
-              size="md"
+              size="sm"
               iconOnly
               icon="picture-in-picture"
               onClick={onWidget}
@@ -231,10 +230,9 @@ function AppWindowTitleBar({
         {showCopyButton ? (
           <Tooltip content="Copy link">
             <Button
-              quiet
               tone="success"
               size="sm"
-              rounded="md"
+              rounded="sm"
               iconOnly
               icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
               onClick={handleCopyLink}
@@ -246,10 +244,9 @@ function AppWindowTitleBar({
         {showFullscreenButton && onFullscreen ? (
           <Tooltip content={presentation === 'fullscreen' ? 'Exit fullscreen' : 'Enter fullscreen'}>
             <Button
-              quiet
               tone="accent"
               size="sm"
-              rounded="md"
+              rounded="sm"
               iconOnly
               icon={presentation === 'fullscreen' ? 'collapse' : 'expand'}
               onClick={onFullscreen}
@@ -261,10 +258,9 @@ function AppWindowTitleBar({
         {showCloseButton && onClose ? (
           <Tooltip content="Close">
             <Button
-              quiet
               tone="danger"
               size="sm"
-              rounded="md"
+              rounded="sm"
               iconOnly
               icon="close"
               onClick={onClose}
@@ -666,7 +662,7 @@ export function AppWindow({
         role="dialog"
         aria-labelledby={`window-title-${id}`}
         className={`
-          absolute pointer-events-auto pixel-corners flex flex-col p-0
+          absolute pointer-events-auto pixel-rounded-md flex flex-col p-0
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}
         `.trim()}
         style={{

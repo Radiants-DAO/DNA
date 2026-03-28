@@ -45,7 +45,7 @@ export function DesktopIcon({
     <Tooltip content={label} position="top">
       <Button
         quiet
-        size="md"
+        size="lg"
         iconOnly
         icon={icon}
         active={isActive}

@@ -20,7 +20,7 @@ export const radiantsSystemContract = {
       "#fcc383": "sunset-fuzz",
       "#ff6b63": "sun-red",
       "#cef5ca": "mint",
-      "#ffffff": "pure-white",
+      "#fffcf3": "pure-white",
       "#22c55e": "success-mint",
     },
     hexToSemantic: {
@@ -29,7 +29,7 @@ export const radiantsSystemContract = {
       "#95bad2": { text: "link" },
       "#ff6b63": { bg: "danger", text: "danger" },
       "#cef5ca": { bg: "success", text: "success" },
-      "#ffffff": { bg: "card" },
+      "#fffcf3": { bg: "card" },
       "#22c55e": { text: "success" },
     },
     oklchToSemantic: {
@@ -40,7 +40,7 @@ export const radiantsSystemContract = {
       "oklch(0.8546 0.1039 68.93)": { bg: "action-accent" },
       "oklch(0.7102 0.1823 25.87)": { bg: "action-destructive", text: "status-error" },
       "oklch(0.9312 0.0702 142.51)": { bg: "status-success", text: "status-success" },
-      "oklch(1.0000 0.0000 0)": { bg: "card" },
+      "oklch(0.9909 0.0123 91.51)": { bg: "card" },
       "oklch(0.7227 0.1920 149.58)": { text: "status-success" },
     },
     removedAliases: [

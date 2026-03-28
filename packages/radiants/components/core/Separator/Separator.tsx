@@ -30,7 +30,7 @@ const separatorVariants = cva('shrink-0', {
       vertical: 'h-full',
     },
     variant: {
-      solid: 'bg-line',
+      solid: 'bg-rule',
       dashed: 'border-rule border-dashed',
       decorated: '',
     },

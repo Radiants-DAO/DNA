@@ -16,7 +16,7 @@ Raw color values. **Never use directly in component code** — these exist only 
 | Cream | `#FEF8E2` | `oklch(0.9780 0.0295 94.34)` | `--color-cream` | `cream` | Canvas — surfaces, backgrounds, warm foundation of all layouts. |
 | Ink | `#0F0E0C` | `oklch(0.1641 0.0044 84.59)` | `--color-ink` | `ink` | Anchor — typography, borders, depth. Grounds the visual hierarchy. |
 | Pure Black | `#000000` | `oklch(0.0000 0.0000 0)` | `--color-pure-black` | `pure-black` | Absolute black (reserved) — deepest Moon Mode surfaces only. |
-| Pure White | `#FFFFFF` | `oklch(1.0000 0.0000 0)` | `--color-pure-white` | `pure-white` | Absolute white (reserved) — hard contrast points only. |
+| Pure White | `#FFFCF3` | `oklch(0.9909 0.0123 91.51)` | `--color-pure-white` | `pure-white` | Warm white (reserved) — hard contrast points only. |
 
 ### Extended Palette
 
@@ -40,7 +40,7 @@ All component code MUST use these — they flip automatically between modes.
 | page | `--color-page` | `bg-page` | Cream `#FEF8E2` | Ink `#0F0E0C` | Main page background |
 | inv | `--color-inv` | `bg-inv` | Ink `#0F0E0C` | Ink `#0F0E0C` | Inverted sections (stays ink in dark) |
 | tinted | `--color-tinted` | `bg-tinted` | Sunset Fuzz `#FCC383` | `oklch(0.3129 0.0389 73.57)` / `#3D2E1A` | Accent containers |
-| card | `--color-card` | `bg-card` | Pure White `#FFFFFF` | Pure Black `#000000` | Cards, raised panels |
+| card | `--color-card` | `bg-card` | Pure White `#FFFCF3` | Pure Black `#000000` | Cards, raised panels |
 | depth | `--color-depth` | `bg-depth` | Cream `#FEF8E2` | `oklch(0.22 0.01 84.59)` | Subtle backgrounds, sidebar |
 | hover | `--color-hover` | `bg-hover` | Sun Yellow | Sun Yellow at 8% | Hover overlay |
 | active | `--color-active` | `bg-active` | Sun Yellow | Sun Yellow at 12% | Pressed overlay |
@@ -50,7 +50,7 @@ All component code MUST use these — they flip automatically between modes.
 | Token | CSS Var | Tailwind | Light Value | Dark Value | Usage |
 |-------|---------|----------|-------------|------------|-------|
 | main | `--color-main` | `text-main` | Ink `#0F0E0C` | Cream `#FEF8E2` | Body text |
-| head | `--color-head` | `text-head` | Ink `#0F0E0C` | Pure White `#FFFFFF` | Headings |
+| head | `--color-head` | `text-head` | Ink `#0F0E0C` | Pure White `#FFFCF3` | Headings |
 | sub | `--color-sub` | `text-sub` | Ink at 85% | Cream at 85% | Supporting text |
 | mute | `--color-mute` | `text-mute` | Ink at 60% | Cream at 60% | Captions, hints |
 | flip | `--color-flip` | `text-flip` | Cream `#FEF8E2` | Cream `#FEF8E2` | Text on dark/inv bg (stays cream) |

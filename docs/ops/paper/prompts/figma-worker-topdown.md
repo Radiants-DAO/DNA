@@ -76,7 +76,7 @@ When Figma returns token references, resolve to these hex values:
 | `--color-page` | `#FEF8E2` | `#0F0E0C` |
 | `--color-inv` | `#0F0E0C` | `#0F0E0C` |
 | `--color-main` | `#0F0E0C` | `#FEF8E2` |
-| `--color-head` | `#0F0E0C` | `#FFFFFF` |
+| `--color-head` | `#0F0E0C` | `#FFFCF3` |
 | `--color-flip` | `#FEF8E2` | `#FEF8E2` |
 | `--color-mute` | `rgba(15,14,12,0.6)` | `rgba(254,248,226,0.6)` |
 | `--color-line` | `#0F0E0C` | `rgba(254,248,226,0.2)` |
@@ -86,7 +86,7 @@ When Figma returns token references, resolve to these hex values:
 | `--color-sunset-fuzz` | `#FCC383` | `#FCC383` |
 | `--color-sun-red` | `#FF7F7F` | `#FF7F7F` |
 | `--color-mint` | `#CEF5CA` | `#CEF5CA` |
-| `--color-card` | `#FFFFFF` | `#000000` |
+| `--color-card` | `#FFFCF3` | `#000000` |
 | `--color-depth` | `#FEF8E2` | `oklch(0.22 0.01 84.59)` |
 
 ## Font Resolution

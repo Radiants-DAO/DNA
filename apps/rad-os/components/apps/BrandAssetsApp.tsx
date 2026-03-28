@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Button, Switch, Tooltip, ToggleGroup, Input, Tabs } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
@@ -124,7 +125,7 @@ const SEMANTIC_CATEGORIES: SemanticCategory[] = [
       { name: 'primary',  cssVar: '--color-page',  tailwind: 'page',  lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Main page background' },
       { name: 'secondary', cssVar: '--color-inv', tailwind: 'inv', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Inverted sections' },
       { name: 'tertiary', cssVar: '--color-tinted', tailwind: 'tinted', lightHex: '#FCC383', darkHex: '#3D2E1A', note: 'Accent containers' },
-      { name: 'elevated', cssVar: '--color-card', tailwind: 'card', lightHex: '#FFFFFF', darkHex: 'rgba(252,225,132,0.05)', note: 'Cards, raised panels' },
+      { name: 'elevated', cssVar: '--color-card', tailwind: 'card', lightHex: '#FFFCF3', darkHex: 'rgba(252,225,132,0.05)', note: 'Cards, raised panels' },
       { name: 'muted',    cssVar: '--color-depth',    tailwind: 'depth',    lightHex: '#FEF8E2', darkHex: 'rgba(252,225,132,0.08)', note: 'Subtle backgrounds' },
     ],
   },
@@ -133,7 +134,7 @@ const SEMANTIC_CATEGORIES: SemanticCategory[] = [
     description: 'Text and foreground colors',
     tokens: [
       { name: 'primary',  cssVar: '--color-main',  tailwind: 'main',  lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Body text' },
-      { name: 'heading',  cssVar: '--color-head',  tailwind: 'head',  lightHex: '#0F0E0C', darkHex: '#FFFFFF', note: 'Headings' },
+      { name: 'heading',  cssVar: '--color-head',  tailwind: 'head',  lightHex: '#0F0E0C', darkHex: '#FFFCF3', note: 'Headings' },
       { name: 'secondary', cssVar: '--color-sub', tailwind: 'sub', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Supporting text' },
       { name: 'inverted', cssVar: '--color-flip', tailwind: 'flip', lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Text on dark bg' },
       { name: 'muted',    cssVar: '--color-mute',    tailwind: 'mute',    lightHex: 'rgba(15,14,12,0.6)', darkHex: 'rgba(254,248,226,0.6)', note: 'Captions, hints' },
@@ -479,7 +480,7 @@ const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
 // Main Component
 // ============================================================================
 
-export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
+export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
@@ -487,123 +488,75 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('broadsheet');
 
   const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', mode: 'pill' });
+  const activeTab = tabs.state.activeTab;
+  const setActiveTab = tabs.actions.setActiveTab;
+
+  // Portal target for title bar nav
+  const [titleBarSlot, setTitleBarSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = document.getElementById(`window-titlebar-slot-${windowId}`);
+    setTitleBarSlot(el);
+  }, [windowId]);
+
+  const TAB_NAV = [
+    { value: 'logos', label: 'Logos', icon: <RadMarkIcon size={16} /> },
+    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" size={16} /> },
+    { value: 'fonts', label: 'Type', icon: <FontAaIcon size={16} /> },
+    { value: 'components', label: 'UI', icon: <Icon name="outline-box" size={16} /> },
+    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" size={16} /> },
+    { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" size={16} /> },
+  ] as const;
 
   return (
     <Tabs.Provider {...tabs}>
     {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */}
-    <div className="h-full flex gap-1.5 px-1.5 pb-1.5 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
-      {/* ── Left column: accordion nav ──────────────────────── */}
-      <div className="flex flex-col shrink-0 w-44">
-        <div className="relative z-10 -mr-2">
-          <Tabs.List className="bg-page pixel-rounded-l-sm space-y-0.5">
-            <Tabs.Trigger value="logos" compact icon={<RadMarkIcon size={14} />}
-              settings={
-                <div className="flex items-center gap-2">
-                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>
-                    PNG
-                  </span>
-                  <Switch
-                    checked={logoFormat === 'svg'}
-                    onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')}
-                    size="sm"
-                  />
-                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>
-                    SVG
-                  </span>
-                </div>
-              }
-            >
-              01 Logos / Marks
-            </Tabs.Trigger>
-            <Tabs.Trigger value="colors" compact icon={<ColorSwatchTabIcon size={14} />}>
-              02 Color Palette
-            </Tabs.Trigger>
-            <Tabs.Trigger value="fonts" compact icon={<FontAaIcon size={14} />}
-              settings={
-                <div className="space-y-2">
-                  <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
-                  {typoSubTab === 'manual' && (
-                    <div className="space-y-1.5">
-                      <span className="font-heading text-xs text-mute uppercase block">Layout</span>
-                      <ToggleGroup
-                        value={[layoutVariant]}
-                        onValueChange={(vals) => {
-                          if (vals.length) setLayoutVariant(vals[0] as LayoutVariant);
-                        }}
-                        size="sm"
-                      >
-                        <ToggleGroup.Item value="broadsheet">Broadsheet</ToggleGroup.Item>
-                        <ToggleGroup.Item value="magazine">Magazine</ToggleGroup.Item>
-                        <ToggleGroup.Item value="specimen">Specimen</ToggleGroup.Item>
-                      </ToggleGroup>
-                    </div>
+    <div className="h-full flex flex-col bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
+
+      {/* ── Capsule tab nav — portaled into the window title bar ── */}
+      {titleBarSlot && createPortal(
+        <div className="flex items-center gap-1">
+          {TAB_NAV.map((tab) => {
+            const isActive = activeTab === tab.value;
+            return (
+              <Tooltip key={tab.value} content={tab.label}>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(tab.value)}
+                  className={`flex items-center justify-center cursor-pointer select-none pixel-rounded-sm transition-all duration-300 ease-out focus-visible:outline-none ${
+                    isActive ? 'gap-1 h-6 px-1 bg-card' : 'size-6'
+                  }`}
+                >
+                  <span className="shrink-0 flex items-center justify-center size-4">{tab.icon}</span>
+                  {isActive && (
+                    <span className="font-mono text-xs uppercase tracking-tight leading-none whitespace-nowrap">
+                      {tab.label}
+                    </span>
                   )}
-                </div>
-              }
-            >
-              03 Typography
-            </Tabs.Trigger>
-            <Tabs.Trigger value="components" compact icon={<Icon name="outline-box" size={14} />}
-              settings={
-                <div className="space-y-2">
-                  <Input
-                    value={componentSearch}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
-                    placeholder="Search..."
-                    fullWidth
-                  />
-                  <div className="space-y-1.5">
-                    <span className="font-heading text-xs text-mute uppercase block">Filter</span>
-                    <div className="flex flex-wrap gap-1">
-                      <Button
-                        quiet={componentCategory !== 'all'}
-                        size="sm"
-                        compact
-                        onClick={() => setComponentCategory('all')}
-                      >
-                        All ({registry.length})
-                      </Button>
-                      {CATEGORIES.map((cat) => {
-                        const count = registry.filter((e) => e.category === cat).length;
-                        if (count === 0) return null;
-                        return (
-                          <Button
-                            key={cat}
-                            quiet={componentCategory !== cat}
-                            size="sm"
-                            compact
-                            onClick={() => setComponentCategory(cat)}
-                          >
-                            {CATEGORY_LABELS[cat]} ({count})
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              }
-            >
-              04 UI Toolkit
-            </Tabs.Trigger>
-            <Tabs.Trigger value="patterns" compact icon={<Icon name="grid-3x3" size={14} />}>
-              05 Pixels//Patterns
-            </Tabs.Trigger>
-            <Tabs.Trigger value="ai-gen" compact icon={<Icon name="usericon" size={14} />}>
-              06 AI Toolkit
-            </Tabs.Trigger>
-          </Tabs.List>
-        </div>
-      </div>
+                </button>
+              </Tooltip>
+            );
+          })}
+        </div>,
+        titleBarSlot
+      )}
 
       {/* ── Content island ───────────────────────────────────── */}
-      <div className="flex-1 min-w-0 h-full">
-      <div className="pixel-rounded-sm-notl bg-page h-full">
-        <div className="h-full overflow-y-auto overflow-x-hidden @container">
+      <div className="flex-1 min-h-0 px-1.5 pb-1.5">
+        <div className="pixel-rounded-sm bg-card h-full">
+          <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}
         {tabs.state.activeTab === 'logos' && (
-          <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
-            {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
+          <div className="p-5 h-full flex flex-col gap-3">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="font-heading text-xs text-mute uppercase">Format</span>
+              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>PNG</span>
+              <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
+              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>SVG</span>
+            </div>
+            <div className="flex-1 grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 auto-rows-fr">
+              {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
+            </div>
           </div>
         )}
 
@@ -660,16 +613,78 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
 
         {/* Fonts */}
         {tabs.state.activeTab === 'fonts' && (
-          <TypographyPlayground activeSubTab={typoSubTab} layoutVariant={layoutVariant} />
+          <div className="h-full flex">
+            {/* Left panel — type controls */}
+            <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
+              <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
+                <span className="font-heading text-xs text-mute uppercase tracking-wide block">View</span>
+                <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
+              </div>
+              {typoSubTab === 'manual' && (
+                <div className="px-3 py-2">
+                  <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">Layout</span>
+                  <ToggleGroup
+                    value={[layoutVariant]}
+                    onValueChange={(vals) => { if (vals.length) setLayoutVariant(vals[0] as LayoutVariant); }}
+                    size="sm"
+                  >
+                    <ToggleGroup.Item value="broadsheet">Broadsheet</ToggleGroup.Item>
+                    <ToggleGroup.Item value="magazine">Magazine</ToggleGroup.Item>
+                    <ToggleGroup.Item value="specimen">Specimen</ToggleGroup.Item>
+                  </ToggleGroup>
+                </div>
+              )}
+            </div>
+
+            {/* Right — typography content */}
+            <div className="flex-1 min-w-0 overflow-auto">
+              <TypographyPlayground activeSubTab={typoSubTab} layoutVariant={layoutVariant} />
+            </div>
+          </div>
         )}
 
         {/* Components */}
         {tabs.state.activeTab === 'components' && (
-          <DesignSystemTab
-            searchQuery={componentSearch}
-            activeCategory={componentCategory}
-            hideControls
-          />
+          <div className="h-full flex">
+            {/* Left panel — search + filters */}
+            <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
+              <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
+                <span className="font-heading text-xs text-mute uppercase tracking-wide block">Search</span>
+                <Input
+                  value={componentSearch}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
+                  placeholder="Search..."
+                  fullWidth
+                />
+              </div>
+              <div className="px-3 py-2">
+                <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">Filter</span>
+                <div className="flex flex-wrap gap-1">
+                  <Button quiet={componentCategory !== 'all'} size="sm" compact onClick={() => setComponentCategory('all')}>
+                    All ({registry.length})
+                  </Button>
+                  {CATEGORIES.map((cat) => {
+                    const count = registry.filter((e) => e.category === cat).length;
+                    if (count === 0) return null;
+                    return (
+                      <Button key={cat} quiet={componentCategory !== cat} size="sm" compact onClick={() => setComponentCategory(cat)}>
+                        {CATEGORY_LABELS[cat]} ({count})
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Right — component list */}
+            <div className="flex-1 min-w-0 overflow-auto">
+              <DesignSystemTab
+                searchQuery={componentSearch}
+                activeCategory={componentCategory}
+                hideControls
+              />
+            </div>
+          </div>
         )}
 
         {/* AI Gen */}
@@ -691,8 +706,8 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
         {tabs.state.activeTab === 'patterns' && (
           <PatternPlayground />
         )}
+          </div>
         </div>
-      </div>
       </div>
     </div>
     </Tabs.Provider>

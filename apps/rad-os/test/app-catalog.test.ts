@@ -10,13 +10,13 @@ describe('app catalog selectors', () => {
 
   it('allows launcher copy to differ from window copy explicitly', () => {
     const brand = getApp('brand');
-    expect(brand?.windowTitle).toBe('Brand Assets');
+    expect(brand?.windowTitle).toBe('Design Codex');
     expect(brand?.launcherTitle).toBe('Brand & Press');
   });
 
   it('derives app window chrome from the catalog boundary', () => {
     const brand = getWindowChrome('brand');
-    expect(brand?.windowTitle).toBe('Brand Assets');
+    expect(brand?.windowTitle).toBe('Design Codex');
     expect(brand?.helpConfig).toBeDefined();
   });
 

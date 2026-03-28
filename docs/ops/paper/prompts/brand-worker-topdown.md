@@ -104,7 +104,7 @@ You are building a brand manual in Paper from the Radiants design system codebas
 
 * Mint: `#CEF5CA`
 
-* Pure White: `#FFFFFF`
+* Pure White: `#FFFCF3`
 
 * Pure Black: `#000000`
 

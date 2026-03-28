@@ -49,7 +49,7 @@ You are building a brand manual in Paper from the Radiants design system codebas
 ## Colors (resolved hex)
 - Sun Yellow: `#FCE184` | Cream: `#FEF8E2` | Ink: `#0F0E0C`
 - Sky Blue: `#95BAD2` | Sunset Fuzz: `#FCC383` | Sun Red: `#FF7F7F` | Mint: `#CEF5CA`
-- Pure White: `#FFFFFF` | Pure Black: `#000000`
+- Pure White: `#FFFCF3` | Pure Black: `#000000`
 
 ## Fonts
 - Headings/UI: `"Joystix"` (400) | Body: `"Mondwest"` (400, 700) | Code: `"Pixel Code"` (400)

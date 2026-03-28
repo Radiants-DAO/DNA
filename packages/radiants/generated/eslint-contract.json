@@ -11,7 +11,7 @@
       "#fcc383": "sunset-fuzz",
       "#ff6b63": "sun-red",
       "#cef5ca": "mint",
-      "#ffffff": "pure-white",
+      "#fffcf3": "pure-white",
       "#22c55e": "success-mint"
     },
     "hexToSemantic": {
@@ -35,7 +35,7 @@
         "bg": "success",
         "text": "success"
       },
-      "#ffffff": {
+      "#fffcf3": {
         "bg": "card"
       },
       "#22c55e": {

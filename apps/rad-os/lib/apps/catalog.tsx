@@ -54,16 +54,16 @@ export interface AppCatalogEntry {
 export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'brand',
-    windowTitle: 'Brand Assets',
+    windowTitle: 'Design Codex',
     launcherTitle: 'Brand & Press',
-    windowIcon: <RadMarkIcon size={20} />,
+    windowIcon: <RadMarkIcon size={24} />,
     component: BrandAssetsApp,
     defaultSize: 'lg',
     resizable: true,
     contentPadding: false,
     helpConfig: {
       showHelpButton: true,
-      helpTitle: 'Brand Assets',
+      helpTitle: 'Design Codex',
     },
     desktopVisible: true,
     startMenuSection: 'apps',
@@ -71,7 +71,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'manifesto',
     windowTitle: 'Manifesto',
-    windowIcon: <Icon name="document" size={20} />,
+    windowIcon: <Icon name="document" size={24} />,
     component: ManifestoApp,
     defaultSize: 'lg',
     resizable: true,
@@ -83,8 +83,8 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     id: 'music',
     windowTitle: 'Rad Radio',
     launcherTitle: 'Music',
-    windowIcon: <Icon name="broadcast-dish" size={20} />,
-    launcherIcon: <Icon name="music-8th-notes" size={20} />,
+    windowIcon: <Icon name="broadcast-dish" size={24} />,
+    launcherIcon: <Icon name="music-8th-notes" size={24} />,
     component: RadRadioApp,
     defaultSize: 'md',
     resizable: false,
@@ -95,7 +95,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'about',
     windowTitle: 'About',
-    windowIcon: <Icon name="question" size={20} />,
+    windowIcon: <Icon name="question" size={24} />,
     component: AboutApp,
     defaultSize: 'md',
     resizable: true,
@@ -105,7 +105,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'studio',
     windowTitle: 'Radiants Studio',
-    windowIcon: <Icon name="code-window" size={20} />,
+    windowIcon: <Icon name="code-window" size={24} />,
     component: RadiantsStudioApp,
     defaultSize: 'lg',
     resizable: true,

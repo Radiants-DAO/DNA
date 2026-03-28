@@ -179,7 +179,7 @@ Raw color values. Never use these directly in component code — they exist only
 | `--color-sunset-fuzz` | `oklch(0.8546 0.1039 68.93)` | Warm accent |
 | `--color-sun-red` | `oklch(0.7429 0.1568 21.43)` | Error / destructive |
 | `--color-mint` | `oklch(0.9312 0.0702 142.51)` | Success |
-| `--color-pure-white` | `oklch(1.0000 0.0000 0)` | Absolute white (reserved) |
+| `--color-pure-white` | `oklch(0.9909 0.0123 91.51)` | Warm white (reserved) |
 
 > **Deprecated:** `--color-warm-cloud` is removed. Use `--color-cream` instead. They were identical (`#FEF8E2`).
 
@@ -193,7 +193,7 @@ Raw color values. Never use these directly in component code — they exist only
 
 - `ink` means the default dark tone (`#0F0E0C`), not absolute black.
 - `pure-black` means absolute black (`#000000`) and SHOULD be used sparingly for deepest Moon Mode surfaces.
-- `pure-white` means absolute white (`#FFFFFF`) and SHOULD be used sparingly for hard contrast points.
+- `pure-white` means warm white (`#FFFCF3`) and SHOULD be used sparingly for hard contrast points.
 - `black` and `white` are ambiguous names and MUST NOT be introduced as new canonical tokens.
 - Generic hue names SHOULD be avoided for new primitives (prefer `mint`, `amber`, `sky`, etc. over broad names like `green`).
 - Raw hue tokens (`mint`, `sun-red`, etc.) are primitives only; component code MUST use semantic tokens (`status-*`, `action-*`, `content-*`, etc.).
