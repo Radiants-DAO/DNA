@@ -44,7 +44,6 @@ function useFlowingText(text: string, font: string, areas: FlowArea[]): string[]
     if (typeof window === 'undefined') return;
 
     document.fonts.ready.then(() => {
-      // Cache the expensive prepare() call — only re-run if text or font change
       const cacheKey = `${text}|${font}`;
       if (!cacheRef.current || cacheRef.current.key !== cacheKey) {
         cacheRef.current = { key: cacheKey, prepared: prepareWithSegments(text, font) };
@@ -54,8 +53,6 @@ function useFlowingText(text: string, font: string, areas: FlowArea[]): string[]
       const results: string[] = [];
       let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
-      // Walk through the article, filling each area until maxLines, then
-      // continue where we left off in the next area. ~0.02ms total.
       for (const area of areas) {
         if (area.width <= 0) { results.push(''); continue; }
         const lines: string[] = [];
@@ -76,14 +73,14 @@ function useFlowingText(text: string, font: string, areas: FlowArea[]): string[]
 }
 
 // ============================================================================
-// Body Text
+// Body Text — 1rem base (scaled ×4/3 from original 0.75rem)
 // ============================================================================
 
 const bodyStyle: React.CSSProperties = {
   fontFamily: "'Mondwest', serif",
-  fontSize: 12,
+  fontSize: '1rem',
   lineHeight: 1.2,
-  letterSpacing: -0.12,
+  letterSpacing: '-0.01em',
 };
 
 function BodyText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -100,9 +97,8 @@ function BodyText({ children, className = '' }: { children: React.ReactNode; cla
 
 export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(790); // sensible default
+  const [containerWidth, setContainerWidth] = useState(790);
 
-  // Track container width for responsive reflow
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -122,51 +118,52 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const centerW = available - leftW - rightW;
 
   // Dynamic flow areas — recalculated on resize, triggers pretext re-layout
+  // pretext needs px, so body = 16px (1rem at standard root)
   const flowAreas = useMemo<FlowArea[]>(() => [
-    { width: Math.max(leftW - 8, 10), maxLines: 30 },    // Left column body
-    { width: Math.max(centerW - 16, 10), maxLines: 8 },   // Center below hero
-    { width: Math.max(rightW - 8, 10), maxLines: 24 },    // Right column
-    { width: Math.max(Math.floor(centerW * 0.45), 10), maxLines: 24 },  // Lower center
-    { width: Math.max(rightW - 8, 10), maxLines: 24 },    // Lower right
+    { width: Math.max(leftW - 8, 10), maxLines: 22 },
+    { width: Math.max(centerW - 16, 10), maxLines: 6 },
+    { width: Math.max(rightW - 8, 10), maxLines: 18 },
+    { width: Math.max(Math.floor(centerW * 0.45), 10), maxLines: 18 },
+    { width: Math.max(rightW - 8, 10), maxLines: 18 },
   ], [leftW, centerW, rightW]);
 
-  const sections = useFlowingText(ARTICLE, '12px Mondwest', flowAreas);
+  const sections = useFlowingText(ARTICLE, '16px Mondwest', flowAreas);
 
   return (
     <div ref={containerRef} className="h-full overflow-y-auto bg-page">
       <div style={{ padding: `0 ${margin}px` }}>
 
         {/* ================================================================
-            MASTHEAD
+            MASTHEAD — 5.33rem max (64→85px)
             ================================================================ */}
         <div className="text-center" style={{ paddingTop: 20 }}>
           <h1
             className="text-head"
             style={{
               fontFamily: "'Waves Blackletter CPC', serif",
-              fontSize: Math.min(containerWidth * 0.08, 64),
-              letterSpacing: -3.84,
+              fontSize: Math.min(containerWidth * 0.107, 85),
+              letterSpacing: '-0.06em',
               lineHeight: 'normal',
             }}
           >
             Good News
           </h1>
 
-          {/* Header teasers */}
+          {/* Header teasers — 1.17rem (14→19px) */}
           <div className="flex justify-between items-start" style={{ marginTop: 4 }}>
-            <div style={{ textAlign: 'left', maxWidth: 140 }}>
-              <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: 14, letterSpacing: -0.8, lineHeight: 'normal' }}>
+            <div style={{ textAlign: 'left', maxWidth: 180 }}>
+              <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
                 Largest Daily Founders Workshop
               </p>
-              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 7, lineHeight: 'normal' }}>
+              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.58rem', lineHeight: 'normal' }}>
                 Solana Mobile X Radiants
               </p>
             </div>
-            <div style={{ textAlign: 'right', maxWidth: 100 }}>
-              <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: 14, letterSpacing: -0.8, lineHeight: 'normal' }}>
+            <div style={{ textAlign: 'right', maxWidth: 130 }}>
+              <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
                 $2,000,000 In Pages Burnt
               </p>
-              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 7, lineHeight: 'normal' }}>
+              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.58rem', lineHeight: 'normal' }}>
                 More on <strong>p6</strong>
               </p>
             </div>
@@ -174,12 +171,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
         </div>
 
         {/* ================================================================
-            RULES + DATE BAR
+            RULES + DATE BAR — 0.83rem (10→13px)
             ================================================================ */}
         <div className="bg-head" style={{ height: 1, marginTop: 6 }} />
         <div
           className="flex justify-between text-head uppercase"
-          style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 10, fontWeight: 700, padding: '4px 0', lineHeight: 'normal' }}
+          style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.83rem', fontWeight: 700, padding: '4px 0', lineHeight: 'normal' }}
         >
           <span>Monday, November 28th, 2026</span>
           <span>$1.50 per issue</span>
@@ -201,21 +198,21 @@ export function GoodNewsApp({ windowId }: AppProps) {
             {/* RAD☀NEWS branding */}
             <div className="flex items-center gap-1" style={{ marginBottom: 8 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tabloid/radsun-black.svg" alt="" style={{ height: 28 }} />
+              <img src="/tabloid/radsun-black.svg" alt="" style={{ height: 37 }} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tabloid/radnews-frame.svg" alt="" style={{ height: 19 }} />
+              <img src="/tabloid/radnews-frame.svg" alt="" style={{ height: 25 }} />
             </div>
 
-            {/* Drop cap intro */}
+            {/* Drop cap intro — 4rem (48→64px) */}
             <BodyText>
               <span
                 className="text-head float-left"
                 style={{
                   fontFamily: "'Waves Blackletter CPC', serif",
-                  fontSize: 48,
+                  fontSize: '4rem',
                   lineHeight: 0.85,
-                  letterSpacing: -2,
-                  marginRight: 4,
+                  letterSpacing: '-0.04em',
+                  marginRight: 5,
                 }}
               >
                 G
@@ -242,12 +239,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
               />
             </div>
 
-            {/* RADOS COMING SOON */}
+            {/* RADOS COMING SOON — max 1.67rem (20→27px) */}
             <p
               className="text-head text-center"
               style={{
                 fontFamily: "'Joystix Monospace', monospace",
-                fontSize: Math.min(centerW * 0.055, 20),
+                fontSize: Math.min(centerW * 0.073, 27),
                 lineHeight: 'normal',
                 margin: '12px 0',
               }}
@@ -261,12 +258,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
             {/* Rule */}
             <div className="bg-head my-3" style={{ height: 1 }} />
 
-            {/* Big headline */}
+            {/* Big headline — max 3rem (36→48px) */}
             <h2
               className="text-head"
               style={{
                 fontFamily: "'Mondwest', serif",
-                fontSize: Math.min(centerW * 0.1, 36),
+                fontSize: Math.min(centerW * 0.133, 48),
                 fontWeight: 700,
                 lineHeight: 1.1,
               }}
@@ -280,12 +277,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
           {/* --- RIGHT COLUMN --- */}
           <div style={{ paddingLeft: 8 }}>
-            {/* Feature headline */}
+            {/* Feature headline — max 2rem (24→32px) */}
             <p
               className="text-head text-center"
               style={{
                 fontFamily: "'PixelCode', monospace",
-                fontSize: Math.min(rightW * 0.14, 24),
+                fontSize: Math.min(rightW * 0.187, 32),
                 fontWeight: 700,
                 lineHeight: 'normal',
                 marginBottom: 12,
@@ -324,9 +321,9 @@ export function GoodNewsApp({ windowId }: AppProps) {
               className="absolute bottom-0 left-0 right-0 text-head"
               // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
               style={{
-                padding: 12,
+                padding: 16,
                 fontFamily: "'Mondwest', serif",
-                fontSize: 11,
+                fontSize: '0.92rem',
                 lineHeight: 1.3,
                 background: 'rgba(255, 252, 243, 0.92)',
               }}
