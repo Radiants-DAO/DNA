@@ -1,11 +1,11 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   prepareWithSegments,
-  layoutNextLine,
-  type LayoutCursor,
+  layoutWithLines,
+  type LayoutLine,
   type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 
@@ -23,25 +23,19 @@ const INTRO = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ul
 const CAPTION = 'It all seemed so misguided, our fortunes tied to fleeting pixels and the whims of a market unable to see beyond the surface. To most, we were chasing shadows, lost in a world they deemed absurd. Yet, perhaps we were merely misdirected, perhaps it was just a preamble.';
 
 // ============================================================================
-// Pretext Flow Hook
+// Pretext Line Hook
 //
-// prepare() is expensive (canvas measurement) — cached in a ref.
-// layoutNextLine() is pure arithmetic (~0.0002ms/line) — re-runs on every
-// resize via the `areas` dependency. This is pretext's core value: instant
-// re-layout without touching the DOM.
+// prepare() runs once per text+font (canvas measurement, cached in ref).
+// layoutWithLines() is pure arithmetic — re-runs on every width change.
+// Returns every line of the text, each with .text and .width.
 // ============================================================================
 
-interface FlowArea {
-  width: number;
-  maxLines: number;
-}
-
-function useFlowingText(text: string, font: string, areas: FlowArea[]): string[] {
-  const [texts, setTexts] = useState<string[]>(() => areas.map(() => ''));
+function usePretextLines(text: string, font: string, width: number): LayoutLine[] {
+  const [lines, setLines] = useState<LayoutLine[]>([]);
   const cacheRef = useRef<{ key: string; prepared: PreparedTextWithSegments } | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || width <= 0) return;
 
     document.fonts.ready.then(() => {
       const cacheKey = `${text}|${font}`;
@@ -49,46 +43,13 @@ function useFlowingText(text: string, font: string, areas: FlowArea[]): string[]
         cacheRef.current = { key: cacheKey, prepared: prepareWithSegments(text, font) };
       }
 
-      const { prepared } = cacheRef.current;
-      const results: string[] = [];
-      let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
-
-      for (const area of areas) {
-        if (area.width <= 0) { results.push(''); continue; }
-        const lines: string[] = [];
-        for (let i = 0; i < area.maxLines; i++) {
-          const line = layoutNextLine(prepared, cursor, area.width);
-          if (!line) break;
-          lines.push(line.text);
-          cursor = line.end;
-        }
-        results.push(lines.join(' '));
-      }
-
-      setTexts(results);
+      const lineHeight = 19.2; // 1rem × 1.2
+      const result = layoutWithLines(cacheRef.current.prepared, width, lineHeight);
+      setLines(result.lines);
     });
-  }, [text, font, areas]);
+  }, [text, font, width]);
 
-  return texts;
-}
-
-// ============================================================================
-// Body Text — 1rem base (scaled ×4/3 from original 0.75rem)
-// ============================================================================
-
-const bodyStyle: React.CSSProperties = {
-  fontFamily: "'Mondwest', serif",
-  fontSize: '1rem',
-  lineHeight: 1.2,
-  letterSpacing: '-0.01em',
-};
-
-function BodyText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`text-head text-justify ${className}`} style={bodyStyle}>
-      {children}
-    </div>
-  );
+  return lines;
 }
 
 // ============================================================================
@@ -109,32 +70,30 @@ export function GoodNewsApp({ windowId }: AppProps) {
     return () => ro.disconnect();
   }, []);
 
-  // Derive column widths from container
   const margin = 16;
-  const ruleW = 1;
-  const available = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
-  const leftW = Math.floor(available * 0.24);
-  const rightW = Math.floor(available * 0.24);
-  const centerW = available - leftW - rightW;
+  const columnGap = 16;
+  const contentWidth = containerWidth - margin * 2;
+  const columnWidth = Math.floor((contentWidth - columnGap * 2) / 3);
 
-  // Dynamic flow areas — recalculated on resize, triggers pretext re-layout
-  // pretext needs px, so body = 16px (1rem at standard root)
-  const flowAreas = useMemo<FlowArea[]>(() => [
-    { width: Math.max(leftW - 8, 10), maxLines: 22 },
-    { width: Math.max(centerW - 16, 10), maxLines: 6 },
-    { width: Math.max(rightW - 8, 10), maxLines: 18 },
-    { width: Math.max(Math.floor(centerW * 0.45), 10), maxLines: 18 },
-    { width: Math.max(rightW - 8, 10), maxLines: 18 },
-  ], [leftW, centerW, rightW]);
+  // Pretext measures at columnWidth - 1 for subpixel safety
+  const lines = usePretextLines(ARTICLE, '16px Mondwest', columnWidth - 1);
 
-  const sections = useFlowingText(ARTICLE, '16px Mondwest', flowAreas);
+  // Adaptive insert points — where to place inline elements
+  const n = lines.length;
+  const heroAt = Math.floor(n * 0.12);
+  const headlineAt = Math.floor(n * 0.55);
+
+  const renderLines = (from: number, to: number) =>
+    lines.slice(from, to).map((line, i) => (
+      <span key={`${from}-${i}`} style={{ display: 'block' }}>{line.text}</span>
+    ));
 
   return (
     <div ref={containerRef} className="h-full overflow-y-auto bg-page">
       <div style={{ padding: `0 ${margin}px` }}>
 
         {/* ================================================================
-            MASTHEAD — 5.33rem max (64→85px)
+            CHROME — masthead, teasers, date bar (outside column flow)
             ================================================================ */}
         <div className="text-center" style={{ paddingTop: 20 }}>
           <h1
@@ -142,6 +101,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
             style={{
               fontFamily: "'Waves Blackletter CPC', serif",
               fontSize: Math.min(containerWidth * 0.107, 85),
+              fontWeight: 400,
               letterSpacing: '-0.06em',
               lineHeight: 'normal',
             }}
@@ -149,7 +109,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
             Good News
           </h1>
 
-          {/* Header teasers — 1.17rem (14→19px) */}
           <div className="flex justify-between items-start" style={{ marginTop: 4 }}>
             <div style={{ textAlign: 'left', maxWidth: 180 }}>
               <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
@@ -170,9 +129,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
           </div>
         </div>
 
-        {/* ================================================================
-            RULES + DATE BAR — 0.83rem (10→13px)
-            ================================================================ */}
         <div className="bg-head" style={{ height: 1, marginTop: 6 }} />
         <div
           className="flex justify-between text-head uppercase"
@@ -184,86 +140,108 @@ export function GoodNewsApp({ windowId }: AppProps) {
         <div className="bg-head" style={{ height: 1 }} />
 
         {/* ================================================================
-            THREE-COLUMN GRID — widths drive pretext reflow
+            ARTICLE — single multi-column container.
+            Pretext owns line breaks, CSS columns own distribution.
+            Images use column-span: all or float to interrupt the flow.
             ================================================================ */}
-        <div
+        <article
+          className="text-head text-justify"
           style={{
-            display: 'grid',
-            gridTemplateColumns: `${leftW}px ${ruleW}px ${centerW}px ${ruleW}px ${rightW}px`,
+            columnCount: 3,
+            columnGap,
+            columnRule: '1px solid var(--color-head)',
+            fontFamily: "'Mondwest', serif",
+            fontSize: '1rem',
+            lineHeight: 1.2,
+            letterSpacing: '-0.01em',
             marginTop: 8,
+            paddingBottom: 16,
           }}
         >
-          {/* --- LEFT COLUMN --- */}
-          <div style={{ paddingRight: 8 }}>
-            {/* RAD☀NEWS branding */}
-            <div className="flex items-center gap-1" style={{ marginBottom: 8 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tabloid/radsun-black.svg" alt="" style={{ height: 37 }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tabloid/radnews-frame.svg" alt="" style={{ height: 25 }} />
-            </div>
-
-            {/* Drop cap intro — 4rem (48→64px) */}
-            <BodyText>
-              <span
-                className="text-head float-left"
-                style={{
-                  fontFamily: "'Waves Blackletter CPC', serif",
-                  fontSize: '4rem',
-                  lineHeight: 0.85,
-                  letterSpacing: '-0.04em',
-                  marginRight: 5,
-                }}
-              >
-                G
-              </span>
-              {INTRO}
-            </BodyText>
-
-            {/* Flowing article — section 0 */}
-            <BodyText className="mt-3">{sections[0]}</BodyText>
+          {/* --- Logos (inline, avoid column break) --- */}
+          <div style={{ breakInside: 'avoid', marginBottom: 16 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tabloid/radsun-black.svg" alt="" style={{ width: 128, height: 37 }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tabloid/radnews-frame.svg" alt="" style={{ width: 108, height: 25, marginLeft: 4 }} />
           </div>
 
-          {/* Vertical rule */}
-          <div className="bg-head" />
-
-          {/* --- CENTER COLUMN --- */}
-          <div style={{ padding: '0 8px' }}>
-            {/* Hero image */}
-            <div className="border border-line overflow-hidden" style={{ aspectRatio: '357 / 258' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/tabloid/hero-image.png"
-                alt="Calling the Radiants"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-
-            {/* RADOS COMING SOON — max 1.67rem (20→27px) */}
-            <p
-              className="text-head text-center"
+          {/* --- Drop cap + intro (CSS float, no pretext needed) --- */}
+          <div style={{ breakInside: 'avoid', marginBottom: 16 }}>
+            <span
+              className="text-head float-left"
               style={{
-                fontFamily: "'Joystix Monospace', monospace",
-                fontSize: Math.min(centerW * 0.073, 27),
-                lineHeight: 'normal',
-                margin: '12px 0',
+                fontFamily: "'Waves Blackletter CPC', serif",
+                fontSize: '4rem',
+                lineHeight: 0.85,
+                letterSpacing: '-0.04em',
+                marginRight: 5,
               }}
             >
-              RadOS Coming Soon
-            </p>
+              G
+            </span>
+            {INTRO}
+          </div>
 
-            {/* Flowing article — section 1 */}
-            <BodyText>{sections[1]}</BodyText>
+          {/* --- Pretext lines: intro → hero --- */}
+          {renderLines(0, heroAt)}
 
-            {/* Rule */}
-            <div className="bg-head my-3" style={{ height: 1 }} />
+          {/* --- Hero image + headline banner (spans all columns) --- */}
+          <figure
+            style={{
+              columnSpan: 'all',
+              margin: '16px 0',
+              display: 'flex',
+              gap: 24,
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ flex: '1 1 55%' }}>
+              <div className="border border-line overflow-hidden" style={{ aspectRatio: '357 / 258' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/tabloid/hero-image.png"
+                  alt="Calling the Radiants"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+              <p
+                className="text-center"
+                style={{
+                  fontFamily: "'Joystix Monospace', monospace",
+                  fontSize: '1.67rem',
+                  lineHeight: 'normal',
+                  marginTop: 12,
+                }}
+              >
+                RadOS Coming Soon
+              </p>
+            </div>
+            <div style={{ flex: '1 1 35%' }}>
+              <p
+                className="text-center"
+                style={{
+                  fontFamily: "'PixelCode', monospace",
+                  fontSize: '2rem',
+                  fontWeight: 700,
+                  lineHeight: 'normal',
+                }}
+              >
+                RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM
+              </p>
+            </div>
+          </figure>
 
-            {/* Big headline — max 3rem (36→48px) */}
+          {/* --- Pretext lines: hero → headline --- */}
+          {renderLines(heroAt, headlineAt)}
+
+          {/* --- Main headline (spans all columns) --- */}
+          <div style={{ columnSpan: 'all', margin: '16px 0' }}>
+            <div className="bg-head" style={{ height: 1, marginBottom: 12 }} />
             <h2
-              className="text-head"
               style={{
                 fontFamily: "'Mondwest', serif",
-                fontSize: Math.min(centerW * 0.133, 48),
+                fontSize: '3rem',
                 fontWeight: 700,
                 lineHeight: 1.1,
               }}
@@ -272,75 +250,36 @@ export function GoodNewsApp({ windowId }: AppProps) {
             </h2>
           </div>
 
-          {/* Vertical rule */}
-          <div className="bg-head" />
-
-          {/* --- RIGHT COLUMN --- */}
-          <div style={{ paddingLeft: 8 }}>
-            {/* Feature headline — max 2rem (24→32px) */}
-            <p
-              className="text-head text-center"
-              style={{
-                fontFamily: "'PixelCode', monospace",
-                fontSize: Math.min(rightW * 0.187, 32),
-                fontWeight: 700,
-                lineHeight: 'normal',
-                marginBottom: 12,
-              }}
-            >
-              RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM
-            </p>
-
-            <div className="bg-head" style={{ height: 1, marginBottom: 12 }} />
-
-            {/* Flowing article — section 2 */}
-            <BodyText>{sections[2]}</BodyText>
-          </div>
-        </div>
-
-        {/* ================================================================
-            LOWER SECTION
-            ================================================================ */}
-        <div
-          className="mt-4 mb-4"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '47% 1fr 1fr',
-            gap: 16,
-          }}
-        >
-          {/* Screenshot with caption */}
-          <div className="relative border border-line overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/tabloid/screenshot.png"
-              alt="RadOS Screenshot"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-            <div
-              className="absolute bottom-0 left-0 right-0 text-head"
-              // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
-              style={{
-                padding: 16,
-                fontFamily: "'Mondwest', serif",
-                fontSize: '0.92rem',
-                lineHeight: 1.3,
-                background: 'rgba(255, 252, 243, 0.92)',
-              }}
-            >
-              <p className="italic">{CAPTION}</p>
-              <p className="text-accent font-bold" style={{ marginTop: 4 }}>
-                In the twilight of confusion new ideas emerge.
-              </p>
+          {/* --- Screenshot (floats left, text wraps around) --- */}
+          <div style={{ float: 'left', width: '55%', marginRight: 16, marginBottom: 8, breakInside: 'avoid' }}>
+            <div className="relative border border-line overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/tabloid/screenshot.png"
+                alt="RadOS Screenshot"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              <div
+                className="absolute bottom-0 left-0 right-0 text-head"
+                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
+                style={{
+                  padding: 16,
+                  fontSize: '0.92rem',
+                  lineHeight: 1.3,
+                  background: 'rgba(255, 252, 243, 0.92)',
+                }}
+              >
+                <p className="italic">{CAPTION}</p>
+                <p className="text-accent font-bold" style={{ marginTop: 4 }}>
+                  In the twilight of confusion new ideas emerge.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Flowing article — section 3 */}
-          <BodyText>{sections[3]}</BodyText>
-
-          {/* Flowing article — section 4 */}
-          <BodyText>{sections[4]}</BodyText>
-        </div>
+          {/* --- Pretext lines: headline → end (wraps around screenshot) --- */}
+          {renderLines(headlineAt, n)}
+        </article>
       </div>
     </div>
   );
