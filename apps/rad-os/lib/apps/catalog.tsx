@@ -9,6 +9,7 @@ const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
+const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 // ============================================================================
 // Types
 // ============================================================================
@@ -99,6 +100,17 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     component: AboutApp,
     defaultSize: 'md',
     resizable: true,
+    desktopVisible: true,
+    startMenuSection: 'apps',
+  },
+  {
+    id: 'good-news',
+    windowTitle: 'Good News',
+    windowIcon: <Icon name="newspaper" size={24} />,
+    component: GoodNewsApp,
+    defaultSize: { width: 830, height: 700 },
+    resizable: true,
+    contentPadding: false,
     desktopVisible: true,
     startMenuSection: 'apps',
   },

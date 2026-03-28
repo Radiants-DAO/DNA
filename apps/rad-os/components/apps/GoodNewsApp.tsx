@@ -1,11 +1,12 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   prepareWithSegments,
   layoutNextLine,
   type LayoutCursor,
+  type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 
 // ============================================================================
@@ -22,7 +23,12 @@ const INTRO = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ul
 const CAPTION = 'It all seemed so misguided, our fortunes tied to fleeting pixels and the whims of a market unable to see beyond the surface. To most, we were chasing shadows, lost in a world they deemed absurd. Yet, perhaps we were merely misdirected, perhaps it was just a preamble.';
 
 // ============================================================================
-// Pretext Column Flow
+// Pretext Flow Hook
+//
+// prepare() is expensive (canvas measurement) — cached in a ref.
+// layoutNextLine() is pure arithmetic (~0.0002ms/line) — re-runs on every
+// resize via the `areas` dependency. This is pretext's core value: instant
+// re-layout without touching the DOM.
 // ============================================================================
 
 interface FlowArea {
@@ -30,45 +36,39 @@ interface FlowArea {
   maxLines: number;
 }
 
-// Text areas the article flows through, in reading order
-const FLOW_AREAS: FlowArea[] = [
-  { width: 180, maxLines: 30 },  // Left column body
-  { width: 357, maxLines: 8 },   // Center below hero
-  { width: 180, maxLines: 45 },  // Right column body
-  { width: 170, maxLines: 24 },  // Lower center (beside screenshot)
-  { width: 180, maxLines: 24 },  // Lower right
-];
-
 function useFlowingText(text: string, font: string, areas: FlowArea[]): string[] {
   const [texts, setTexts] = useState<string[]>(() => areas.map(() => ''));
+  const cacheRef = useRef<{ key: string; prepared: PreparedTextWithSegments } | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     document.fonts.ready.then(() => {
-      try {
-        const prepared = prepareWithSegments(text, font);
-        const results: string[] = [];
-        let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
-
-        for (const area of areas) {
-          const lineTexts: string[] = [];
-          for (let i = 0; i < area.maxLines; i++) {
-            const line = layoutNextLine(prepared, cursor, area.width);
-            if (!line) break;
-            lineTexts.push(line.text);
-            cursor = line.end;
-          }
-          results.push(lineTexts.join(' '));
-        }
-
-        setTexts(results);
-      } catch {
-        // Font not ready or measurement failed — fall back to raw text chunks
-        const words = text.split(' ');
-        const chunkSize = Math.ceil(words.length / areas.length);
-        setTexts(areas.map((_, i) => words.slice(i * chunkSize, (i + 1) * chunkSize).join(' ')));
+      // Cache the expensive prepare() call — only re-run if text or font change
+      const cacheKey = `${text}|${font}`;
+      if (!cacheRef.current || cacheRef.current.key !== cacheKey) {
+        cacheRef.current = { key: cacheKey, prepared: prepareWithSegments(text, font) };
       }
+
+      const { prepared } = cacheRef.current;
+      const results: string[] = [];
+      let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
+
+      // Walk through the article, filling each area until maxLines, then
+      // continue where we left off in the next area. ~0.02ms total.
+      for (const area of areas) {
+        if (area.width <= 0) { results.push(''); continue; }
+        const lines: string[] = [];
+        for (let i = 0; i < area.maxLines; i++) {
+          const line = layoutNextLine(prepared, cursor, area.width);
+          if (!line) break;
+          lines.push(line.text);
+          cursor = line.end;
+        }
+        results.push(lines.join(' '));
+      }
+
+      setTexts(results);
     });
   }, [text, font, areas]);
 
@@ -76,261 +76,275 @@ function useFlowingText(text: string, font: string, areas: FlowArea[]): string[]
 }
 
 // ============================================================================
-// Shared Styles
+// Body Text
 // ============================================================================
 
 const bodyStyle: React.CSSProperties = {
-  fontFamily: "'Mondwest', sans-serif",
+  fontFamily: "'Mondwest', serif",
   fontSize: 12,
   lineHeight: 1.2,
   letterSpacing: -0.12,
 };
 
-const pixeloidStyle: React.CSSProperties = {
-  fontFamily: "'Pixeloid Sans', sans-serif",
-  lineHeight: 'normal',
-};
+function BodyText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`text-head text-justify ${className}`} style={bodyStyle}>
+      {children}
+    </div>
+  );
+}
 
 // ============================================================================
 // Component
 // ============================================================================
 
 export function GoodNewsApp({ windowId }: AppProps) {
-  const sections = useFlowingText(ARTICLE, '12px Mondwest', FLOW_AREAS);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(790); // sensible default
+
+  // Track container width for responsive reflow
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      setContainerWidth(entries[0]?.contentRect.width ?? 790);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Derive column widths from container
+  const margin = 16;
+  const ruleW = 1;
+  const available = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
+  const leftW = Math.floor(available * 0.24);
+  const rightW = Math.floor(available * 0.24);
+  const centerW = available - leftW - rightW;
+
+  // Dynamic flow areas — recalculated on resize, triggers pretext re-layout
+  const flowAreas = useMemo<FlowArea[]>(() => [
+    { width: Math.max(leftW - 8, 10), maxLines: 30 },    // Left column body
+    { width: Math.max(centerW - 16, 10), maxLines: 8 },   // Center below hero
+    { width: Math.max(rightW - 8, 10), maxLines: 24 },    // Right column
+    { width: Math.max(Math.floor(centerW * 0.45), 10), maxLines: 24 },  // Lower center
+    { width: Math.max(rightW - 8, 10), maxLines: 24 },    // Lower right
+  ], [leftW, centerW, rightW]);
+
+  const sections = useFlowingText(ARTICLE, '12px Mondwest', flowAreas);
 
   return (
-    // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:newspaper-print-aesthetic owner:design-system expires:2027-01-01 issue:DNA-newspaper
-    <div className="h-full overflow-y-auto" style={{ background: '#fffcf3' }}>
-      <article
-        className="relative border border-line mx-auto"
-        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:newspaper-print-aesthetic owner:design-system expires:2027-01-01 issue:DNA-newspaper
-        style={{ width: 790, height: 1060, margin: '16px auto', background: '#fffcf3' }}
-      >
+    <div ref={containerRef} className="h-full overflow-y-auto bg-page">
+      <div style={{ padding: `0 ${margin}px` }}>
+
         {/* ================================================================
             MASTHEAD
             ================================================================ */}
-        <p
-          className="absolute text-head text-center whitespace-nowrap"
-          style={{
-            fontFamily: "'Waves Blackletter CPC', serif",
-            fontSize: 64,
-            letterSpacing: -3.84,
-            lineHeight: 'normal',
-            left: '50%',
-            top: 32,
-            transform: 'translateX(-50%)',
-          }}
-        >
-          Good News
-        </p>
+        <div className="text-center" style={{ paddingTop: 20 }}>
+          <h1
+            className="text-head"
+            style={{
+              fontFamily: "'Waves Blackletter CPC', serif",
+              fontSize: Math.min(containerWidth * 0.08, 64),
+              letterSpacing: -3.84,
+              lineHeight: 'normal',
+            }}
+          >
+            Good News
+          </h1>
 
-        {/* ================================================================
-            HEADER TEASERS
-            ================================================================ */}
-        <div className="absolute text-head" style={{ left: 19, top: 39, width: 129 }}>
-          <p className="font-bold" style={{ fontFamily: "'Mondwest', sans-serif", fontSize: 16, letterSpacing: -0.8, lineHeight: 'normal' }}>
-            Largest Daily Founders Workshop
-          </p>
-          <p className="uppercase" style={{ ...pixeloidStyle, fontSize: 7 }}>
-            Solana Mobile X Radiants
-          </p>
-        </div>
-
-        <div className="absolute text-head text-right" style={{ right: 19, top: 39, width: 91 }}>
-          <p style={{ fontFamily: "'Mondwest', sans-serif", fontSize: 16, letterSpacing: -0.8, lineHeight: 'normal' }}>
-            $2,000,000 In Pages Burnt
-          </p>
-          <p className="uppercase" style={{ ...pixeloidStyle, fontSize: 7 }}>
-            <span style={{ fontWeight: 400 }}>More on</span>
-            <span style={{ fontWeight: 700 }}> p6</span>
-          </p>
+          {/* Header teasers */}
+          <div className="flex justify-between items-start" style={{ marginTop: 4 }}>
+            <div style={{ textAlign: 'left', maxWidth: 140 }}>
+              <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: 14, letterSpacing: -0.8, lineHeight: 'normal' }}>
+                Largest Daily Founders Workshop
+              </p>
+              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 7, lineHeight: 'normal' }}>
+                Solana Mobile X Radiants
+              </p>
+            </div>
+            <div style={{ textAlign: 'right', maxWidth: 100 }}>
+              <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: 14, letterSpacing: -0.8, lineHeight: 'normal' }}>
+                $2,000,000 In Pages Burnt
+              </p>
+              <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 7, lineHeight: 'normal' }}>
+                More on <strong>p6</strong>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* ================================================================
-            HORIZONTAL RULES + DATE BAR
+            RULES + DATE BAR
             ================================================================ */}
-        <div className="absolute bg-head" style={{ left: 19, top: 116, width: 751, height: 1 }} />
-        <div className="absolute bg-head" style={{ left: 19, top: 138, width: 751, height: 1 }} />
-
-        <p
-          className="absolute text-head uppercase"
-          style={{ ...pixeloidStyle, fontSize: 10, fontWeight: 700, left: 19, top: 121 }}
-        >
-          Monday, November 28th, 2026
-        </p>
-        <p
-          className="absolute text-head text-right uppercase"
-          style={{ ...pixeloidStyle, fontSize: 10, fontWeight: 700, right: 19, top: 121 }}
-        >
-          $1.50 per issue
-        </p>
-
-        {/* ================================================================
-            VERTICAL RULES
-            ================================================================ */}
-        <div className="absolute bg-head" style={{ left: 207, top: 147, width: 1, height: 520 }} />
-        <div className="absolute bg-head" style={{ left: 581, top: 147, width: 1, height: 879 }} />
-
-        {/* ================================================================
-            LEFT COLUMN
-            ================================================================ */}
-
-        {/* RAD☀NEWS branding */}
-        <div className="absolute flex items-center" style={{ left: 20, top: 158 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tabloid/radsun-black.png" alt="RadSun" style={{ height: 28 }} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tabloid/radnews-frame.png" alt="RadNews" style={{ height: 19, marginLeft: 4 }} />
-        </div>
-
-        {/* Drop cap */}
-        <p
-          className="absolute text-head text-center"
-          style={{
-            fontFamily: "'Waves Blackletter CPC', serif",
-            fontSize: 56,
-            lineHeight: 'normal',
-            letterSpacing: -2.8,
-            left: 19,
-            top: 207,
-            width: 43,
-          }}
-        >
-          G
-        </p>
-
-        {/* Intro text beside drop cap */}
-        <p className="absolute text-head text-justify" style={{ ...bodyStyle, left: 71, top: 205, width: 128 }}>
-          {INTRO}
-        </p>
-
-        {/* Left body — pretext section 0 */}
-        <div className="absolute text-head text-justify" style={{ ...bodyStyle, left: 19, top: 279, width: 180 }}>
-          {sections[0]}
-        </div>
-
-        {/* ================================================================
-            CENTER COLUMN
-            ================================================================ */}
-
-        {/* Hero image */}
+        <div className="bg-head" style={{ height: 1, marginTop: 6 }} />
         <div
-          className="absolute border border-line overflow-hidden"
-          style={{ left: 216, top: 147, width: 357, height: 258 }}
+          className="flex justify-between text-head uppercase"
+          style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: 10, fontWeight: 700, padding: '4px 0', lineHeight: 'normal' }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/tabloid/hero-image.png"
-            alt="Calling the Radiants"
-            style={{ width: '134.69%', height: '104.75%', position: 'absolute', left: '-17.34%', top: '-3.14%', objectFit: 'cover' }}
-          />
+          <span>Monday, November 28th, 2026</span>
+          <span>$1.50 per issue</span>
         </div>
-
-        {/* RADOS COMING SOON */}
-        <p
-          className="absolute text-head text-center"
-          style={{
-            fontFamily: "'Joystix Monospace', monospace",
-            fontSize: 20,
-            lineHeight: 'normal',
-            left: 216,
-            top: 425,
-            width: 357,
-          }}
-        >
-          RadOS Coming Soon
-        </p>
-
-        {/* Center body — pretext section 1 */}
-        <p className="absolute text-head text-justify" style={{ ...bodyStyle, left: 216, top: 455, width: 357 }}>
-          {sections[1]}
-        </p>
-
-        {/* Center horizontal rule */}
-        <div className="absolute bg-head" style={{ left: 216, top: 558, width: 357, height: 1 }} />
-
-        {/* Big headline */}
-        <p
-          className="absolute text-head"
-          style={{
-            fontFamily: "'Mondwest', sans-serif",
-            fontSize: 36,
-            fontWeight: 700,
-            lineHeight: '33px',
-            left: 220,
-            top: 578,
-            width: 357,
-          }}
-        >
-          The Battlefield Widens for RadOS Agent Seats
-        </p>
+        <div className="bg-head" style={{ height: 1 }} />
 
         {/* ================================================================
-            RIGHT COLUMN
+            THREE-COLUMN GRID — widths drive pretext reflow
             ================================================================ */}
-
-        {/* Feature headline */}
-        <p
-          className="absolute text-head text-center"
+        <div
           style={{
-            fontFamily: "'PixelCode', monospace",
-            fontSize: 24,
-            fontWeight: 700,
-            lineHeight: 'normal',
-            left: 590,
-            top: 155,
-            width: 180,
+            display: 'grid',
+            gridTemplateColumns: `${leftW}px ${ruleW}px ${centerW}px ${ruleW}px ${rightW}px`,
+            marginTop: 8,
           }}
         >
-          RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM
-        </p>
+          {/* --- LEFT COLUMN --- */}
+          <div style={{ paddingRight: 8 }}>
+            {/* RAD☀NEWS branding */}
+            <div className="flex items-center gap-1" style={{ marginBottom: 8 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/tabloid/radsun-black.svg" alt="" style={{ height: 28 }} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/tabloid/radnews-frame.svg" alt="" style={{ height: 19 }} />
+            </div>
 
-        {/* Right column rule */}
-        <div className="absolute bg-head" style={{ left: 590, top: 279, width: 180, height: 1 }} />
+            {/* Drop cap intro */}
+            <BodyText>
+              <span
+                className="text-head float-left"
+                style={{
+                  fontFamily: "'Waves Blackletter CPC', serif",
+                  fontSize: 48,
+                  lineHeight: 0.85,
+                  letterSpacing: -2,
+                  marginRight: 4,
+                }}
+              >
+                G
+              </span>
+              {INTRO}
+            </BodyText>
 
-        {/* Right body — pretext section 2 */}
-        <div className="absolute text-head text-justify" style={{ ...bodyStyle, left: 590, top: 296, width: 180 }}>
-          {sections[2]}
+            {/* Flowing article — section 0 */}
+            <BodyText className="mt-3">{sections[0]}</BodyText>
+          </div>
+
+          {/* Vertical rule */}
+          <div className="bg-head" />
+
+          {/* --- CENTER COLUMN --- */}
+          <div style={{ padding: '0 8px' }}>
+            {/* Hero image */}
+            <div className="border border-line overflow-hidden" style={{ aspectRatio: '357 / 258' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/tabloid/hero-image.png"
+                alt="Calling the Radiants"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+
+            {/* RADOS COMING SOON */}
+            <p
+              className="text-head text-center"
+              style={{
+                fontFamily: "'Joystix Monospace', monospace",
+                fontSize: Math.min(centerW * 0.055, 20),
+                lineHeight: 'normal',
+                margin: '12px 0',
+              }}
+            >
+              RadOS Coming Soon
+            </p>
+
+            {/* Flowing article — section 1 */}
+            <BodyText>{sections[1]}</BodyText>
+
+            {/* Rule */}
+            <div className="bg-head my-3" style={{ height: 1 }} />
+
+            {/* Big headline */}
+            <h2
+              className="text-head"
+              style={{
+                fontFamily: "'Mondwest', serif",
+                fontSize: Math.min(centerW * 0.1, 36),
+                fontWeight: 700,
+                lineHeight: 1.1,
+              }}
+            >
+              The Battlefield Widens for RadOS Agent Seats
+            </h2>
+          </div>
+
+          {/* Vertical rule */}
+          <div className="bg-head" />
+
+          {/* --- RIGHT COLUMN --- */}
+          <div style={{ paddingLeft: 8 }}>
+            {/* Feature headline */}
+            <p
+              className="text-head text-center"
+              style={{
+                fontFamily: "'PixelCode', monospace",
+                fontSize: Math.min(rightW * 0.14, 24),
+                fontWeight: 700,
+                lineHeight: 'normal',
+                marginBottom: 12,
+              }}
+            >
+              RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM
+            </p>
+
+            <div className="bg-head" style={{ height: 1, marginBottom: 12 }} />
+
+            {/* Flowing article — section 2 */}
+            <BodyText>{sections[2]}</BodyText>
+          </div>
         </div>
 
         {/* ================================================================
             LOWER SECTION
             ================================================================ */}
-
-        {/* Screenshot image */}
         <div
-          className="absolute border border-line overflow-hidden"
-          style={{ left: 17, top: 654, width: 373, height: 372 }}
+          className="mt-4 mb-4"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '47% 1fr 1fr',
+            gap: 16,
+          }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/tabloid/screenshot.png"
-            alt="RadOS Screenshot"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-          {/* Caption overlay */}
-          <div
-            className="absolute text-head"
-            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:newspaper-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
-            style={{ bottom: 0, left: 0, right: 0, padding: 12, fontFamily: "'Mondwest', sans-serif", fontSize: 11, lineHeight: 1.3, background: 'rgba(255, 252, 243, 0.92)' }}
-          >
-            <p className="italic">{CAPTION}</p>
-            <p className="text-accent font-bold" style={{ marginTop: 4 }}>
-              In the twilight of confusion new ideas emerge.
-            </p>
+          {/* Screenshot with caption */}
+          <div className="relative border border-line overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/tabloid/screenshot.png"
+              alt="RadOS Screenshot"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div
+              className="absolute bottom-0 left-0 right-0 text-head"
+              // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
+              style={{
+                padding: 12,
+                fontFamily: "'Mondwest', serif",
+                fontSize: 11,
+                lineHeight: 1.3,
+                background: 'rgba(255, 252, 243, 0.92)',
+              }}
+            >
+              <p className="italic">{CAPTION}</p>
+              <p className="text-accent font-bold" style={{ marginTop: 4 }}>
+                In the twilight of confusion new ideas emerge.
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Lower center body — pretext section 3 */}
-        <div className="absolute text-head text-justify" style={{ ...bodyStyle, left: 398, top: 659, width: 170 }}>
-          {sections[3]}
-        </div>
+          {/* Flowing article — section 3 */}
+          <BodyText>{sections[3]}</BodyText>
 
-        {/* Lower right body — pretext section 4 */}
-        <div className="absolute text-head text-justify" style={{ ...bodyStyle, left: 590, top: 660, width: 180 }}>
-          {sections[4]}
+          {/* Flowing article — section 4 */}
+          <BodyText>{sections[4]}</BodyText>
         </div>
-      </article>
+      </div>
     </div>
   );
 }

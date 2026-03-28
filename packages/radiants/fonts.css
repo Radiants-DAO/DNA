@@ -150,12 +150,12 @@
 
 @theme {
   /* Semantic font roles */
-  --font-sans: 'Mondwest', system-ui, sans-serif;
+  --font-sans: 'Mondwest', system-ui, serif;
   --font-heading: 'Joystix Monospace', monospace;
   --font-mono: 'PixelCode', monospace;
 
   /* Named brand aliases */
-  --font-mondwest: 'Mondwest', system-ui, sans-serif;
+  --font-mondwest: 'Mondwest', system-ui, serif;
   --font-joystix: 'Joystix Monospace', monospace;
   --font-pixel-code: 'PixelCode', monospace;
   --font-blackletter: 'Waves Blackletter CPC', serif;
