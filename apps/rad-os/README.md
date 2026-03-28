@@ -1,116 +1,171 @@
 # RadOS
-A desktop-like web experience with retro OS aesthetics — draggable windows, a taskbar, and desktop icons, built for the Radiants community.
 
-## What is RadOS?
-RadOS reimagines the web as a nostalgic operating system. Instead of scrolling through pages, users interact with apps in windows — dragging them around, minimizing to a taskbar, and discovering tools through a Start Menu. It's part brand hub, part creative studio, part community interface.
+RadOS is the desktop-style web app inside the DNA monorepo. It renders the Radiants brand and community surface as a windowed shell on desktop and a fullscreen app shell on mobile, built on Next.js, Zustand, and the shared `@rdna/radiants` design system.
 
-## Built With
+## Current Surface
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js 16 (App Router) + React 19 |
-| Styling | Tailwind CSS v4 with custom retro theme |
-| State | Zustand for unified state management |
-| Design System | RDNA — our pixel-perfect component library |
+Desktop launchers are defined in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx). The current desktop-visible apps are:
 
-## Quick Start
+- `brand` -> Brand Assets
+- `manifesto` -> Manifesto
+- `music` -> Rad Radio
+- `about` -> About
+- `studio` -> Radiants Studio
+
+Internal product/design tooling also lives in this app, especially under `components/apps/pattern-playground` and `components/apps/typography-playground`, but not every internal surface is exposed as a desktop launcher.
+
+`Rad Radio` is currently the only app with ambient capabilities. It can provide:
+
+- wallpaper/background treatment
+- a floating widget surface
+- a persistent controller
+
+## Running RadOS
+
+From the repo root:
+
 ```bash
-npm install
-npm run dev      # → localhost:3000
+pnpm install
+pnpm --filter rad-os dev
+pnpm --filter rad-os test
+pnpm --filter rad-os build
 ```
 
-Other commands:
+If you `cd apps/rad-os`, the equivalent local commands are:
+
 ```bash
-npm run build    # Production build
-npm run lint     # ESLint
+pnpm dev
+pnpm test
+pnpm build
 ```
 
-## Architecture
-RadOS follows a window-centric architecture where each app renders inside a managed window with its own state, size constraints, and behavior.
-```
-┌─────────────────────────────────────────────────────────────┐
-│                          RadOS                              │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │  Brand  │  │Manifesto│  │ Auction │  │  Radio  │  Apps  │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
-├───────┴────────────┴────────────┴────────────┴──────────────┤
-│                      Window System                          │
-│              (drag, resize, focus, minimize)                │
-├─────────────────────────────────────────────────────────────┤
-│                    Zustand Store                            │
-│              (windows, apps, mock data)                     │
-├─────────────────────────────────────────────────────────────┤
-│                        RDNA                                  │
-│                (UI component library)                       │
-└─────────────────────────────────────────────────────────────┘
+`build` runs the registry freshness guard before `next build`, so generated Radiants and playground artifacts must already be current.
+
+## Runtime Architecture
+
+Top-level runtime flow:
+
+```txt
+app/page.tsx
+  > RadOSDesktop
+    > useHashRouting()
+    > ToastProvider
+    > InvertModeProvider
+    > Desktop
 ```
 
-### Key Directories
+Desktop runtime shape:
 
-| Directory | Purpose |
-|-----------|---------|
-| `app/` | Next.js App Router pages |
-| `components/ui/` | RDNA design system primitives |
-| `components/Rad_os/` | Window system (AppWindow, Taskbar) |
-| `components/apps/` | Individual application components |
-| `store/` | Zustand stores with slice pattern |
-| `lib/` | Constants, utilities, mock data |
-| `.vault/` | Obsidian knowledge base (documentation) |
+```txt
+Desktop
+  > background layer
+  > watermark/typewriter copy
+  > desktop launchers
+  > Taskbar
+  > desktop windows or mobile modals
+  > ambient widget
+  > ambient controller
+```
 
-## State Management
-All state lives in Zustand — no React Context. This includes window positions, app state, mock data, and user preferences. See ADR-001: Zustand Unified State for rationale.
+### Window Shell
 
-## App Ecosystem
-RadOS ships with 10 apps organized by complexity. See Apps Index for full documentation.
+The shared window chrome now lives in `@rdna/radiants/components/core/AppWindow`. RadOS consumes it through thin wrappers in `components/Rad_os/`.
 
-### Core Apps
+Primary wrappers:
 
-| App | Description |
-|-----|-------------|
-| Brand Assets | Logo downloads, color palette, fonts, AI generation codes |
-| Manifesto | Radiants philosophy with section navigation |
-| About | Credits, contributors, licenses |
-| Links | Curated external resources |
-| Settings | Volume control, reduce motion toggle |
+- [AppWindow.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/AppWindow.tsx) for desktop windowed/fullscreen presentation
+- [MobileAppModal.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/MobileAppModal.tsx) for mobile fullscreen presentation
+- [WindowContent.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/WindowContent.tsx) as the RadOS alias for `AppWindowBody`
 
-### Complex Apps
+Public `AppWindow` API includes:
 
-| App | Description |
-|-----|-------------|
-| Calendar | Community events and milestones |
-| Rad Radio | Music player with dithered video visualizer |
+- shell state/layout: `open`, `position`, `defaultPosition`, `size`, `defaultSize`, `resizable`, `presentation`
+- chrome toggles: `showCopyButton`, `showCloseButton`, `showFullscreenButton`, `showWidgetButton`, `showActionButton`
+- callbacks: `onClose`, `onFullscreen`, `onWidget`, `onFocus`, `onPositionChange`, `onSizeChange`
 
-### Web3-Ready Apps (Mock Data)
+Desktop `AppWindow` shape:
 
-| App | Description |
-|-----|-------------|
-| Auctions | NFT auction interface with vault system |
-| Murder Tree | NFT provenance visualization (burn history) |
-| Radiants Studio | Pixel art maker, dither tool, commission marketplace |
+```txt
+AppWindow
+  > Draggable
+    > div[role="dialog"][data-app-window]
+      > TitleBar
+      > content
+      > resize handles
+```
 
-## Building Apps
-Apps are React components that receive a `windowId` prop:
+Typical content shape:
+
+```txt
+AppWindow
+  > AppWindowBody
+    > ScrollArea.Root or plain div
+      > padded children
+```
+
+On desktop, launcher clicks open/focus windows. On mobile, the same app surfaces render through `MobileAppModal`.
+
+### State Model
+
+RadOS uses one Zustand store composed from four slices in [store/index.ts](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/store/index.ts):
+
+- `windows` -> open/close/focus/fullscreen/widget state, window position/size, active tabs
+- `preferences` -> volume, reduce motion, dark mode, invert mode
+- `mockData` -> Radiants and studio submission data used by app surfaces
+- `radRadio` -> channel, playback, seek state, favorites
+
+Persisted state is intentionally limited. Preferences and radio favorites persist; window positions/open windows do not.
+
+### App Catalog
+
+The catalog in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx) is the source of truth for:
+
+- lazy app component registration
+- launcher visibility
+- start menu grouping
+- window chrome defaults
+- ambient capability wiring
+
+`Desktop`, `StartMenu`, the window shell, and ambient surfaces all resolve behavior from this catalog instead of duplicating per-app configuration.
+
+## Design System Boundaries
+
+Shared design-system primitives come from `@rdna/radiants`, not from this app:
+
+```tsx
+import { Button, Tabs, ToastProvider } from '@rdna/radiants/components/core';
+import { Icon, RadMarkIcon } from '@rdna/radiants/icons/runtime';
+```
+
+Use these boundaries:
+
+- `@rdna/radiants/components/core` for reusable primitives
+- `@rdna/radiants/icons/runtime` for shared runtime icons
+- `components/Rad_os/` for RadOS shell composition
+- `components/ui/` for app-local composition helpers, not core primitives
+
+## Adding Apps
+
+App components receive a `windowId` prop:
+
 ```tsx
 interface AppProps {
   windowId: string;
 }
-
-function MyApp({ windowId }: AppProps) {
-  return (
-    <div className="p-4">
-      {/* Use RDNA components */}
-      <Button>Click me</Button>
-    </div>
-  );
-}
 ```
 
-Register in `lib/apps/catalog.tsx` by adding a lazy import and an entry to `APP_CATALOG`:
-```ts
+Typical workflow:
+
+1. Add the app component under `apps/rad-os/components/apps/`.
+2. Register it in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx).
+3. Set launcher visibility with `desktopVisible` and `startMenuSection`.
+4. Set chrome behavior with `defaultSize`, `resizable`, `contentPadding`, and optional `ambient`.
+
+Catalog example:
+
+```tsx
 const MyApp = lazy(() => import('@/components/apps/MyApp'));
 
-// In APP_CATALOG array:
 {
   id: 'myapp',
   windowTitle: 'My App',
@@ -120,86 +175,42 @@ const MyApp = lazy(() => import('@/components/apps/MyApp'));
   resizable: true,
   desktopVisible: true,
   startMenuSection: 'apps',
-},
+}
 ```
 
-See the Creating Apps Guide for detailed walkthrough, or review the App Pattern architecture doc.
-
-For standalone prototype scaffolds, use the `@rdna/create` workspace package from the monorepo root instead of the removed app-local script:
+For standalone prototype apps, scaffold from the workspace create package:
 
 ```bash
 pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts my-app --out-dir /tmp/my-app
 ```
 
-## Design System
-RadOS uses RDNA, a custom component library with pixel-art aesthetics. See `design.md` for the full token reference.
+That scaffold is backed by:
 
-### Colors
+- [packages/create](/Users/rivermassey/Desktop/dev/DNA/packages/create)
+- [templates/rados-app-prototype](/Users/rivermassey/Desktop/dev/DNA/templates/rados-app-prototype)
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-cream` | `#FEF8E2` | Primary background |
-| `--color-sun-yellow` | `#FCE184` | Accent, active states |
-| `--color-ink` | `#0F0E0C` | Text, borders |
-| `--color-sky-blue` | `#95BAD2` | Secondary accent |
-| `--color-sun-red` | `#FF6B63` | Error, warnings |
-| `--color-mint` | `#CEF5CA` | Success |
+## Key Paths
 
-### Typography
-- **Joystix** — Pixel font for headings and buttons
-- **Mondwest** — Body text and descriptions
-- **PixelCode** — Code blocks and monospace
+| Path | Purpose |
+|------|---------|
+| `apps/rad-os/app/` | Next.js entrypoints and asset routes |
+| `apps/rad-os/components/Rad_os/` | Desktop shell, taskbar, start menu, window wrappers |
+| `apps/rad-os/components/apps/` | Application surfaces rendered inside the shell |
+| `apps/rad-os/components/ui/` | App-local composition components |
+| `apps/rad-os/hooks/` | Window manager, hash routing, responsive helpers |
+| `apps/rad-os/lib/apps/` | App catalog and chrome/ambient selectors |
+| `apps/rad-os/store/slices/` | Zustand slices |
+| `apps/rad-os/test/` | Vitest coverage for app behavior |
+| `packages/radiants/` | Shared design system used by RadOS |
+| `packages/create/` | Standalone app scaffolder |
+| `templates/rados-app-prototype/` | Scaffold template source |
 
-### Components
-Import from `@/components/ui`:
-```tsx
-import { Button, Card, Tabs, Input, Dialog, Badge } from '@/components/ui';
-```
+## Related Docs
 
-**Full component API:** See `design.md` | **Individual components:** Button, Card, Tabs
+Start here for deeper context:
 
-## Documentation
-This project uses an Obsidian knowledge vault (`.vault/`) as the source of truth for documentation.
+- [SPEC.md](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/SPEC.md)
+- [packages/radiants/README.md](/Users/rivermassey/Desktop/dev/DNA/packages/radiants/README.md)
+- [docs/production-readiness-checklist.md](/Users/rivermassey/Desktop/dev/DNA/docs/production-readiness-checklist.md)
 
-### Viewing Docs
-- **In Obsidian (recommended):** Open `.vault/` as a vault
-- **As files:** Browse markdown files starting at `.vault/index.md`
-
-### Key Documents
-
-| Topic | Document |
-|-------|----------|
-| Architecture overview | Architecture MOC |
-| Window system | Window System |
-| State management | State Management |
-| Design tokens | `design.md` |
-| Component API | `design.md` |
-| App development | Creating Apps |
-| Mock data patterns | Mock Data Patterns |
-| Technical spec | SPEC.md |
-
-### For AI Agents
-Claude Code and other AI assistants can use the `.claude/skills/` directory for quick context:
-
-| Skill | Use Case |
-|-------|----------|
-| `rados` | Architecture, window system, app patterns |
-| `rdna` | Design system reference (see `design.md`) |
-| `rados-app-scaffold` | Scaffolding new applications |
-
-For deeper context, read the vault at `.vault/`. Agent-specific documentation:
-
-- **RadOS Builder Agent** — End-to-end app building
-- **RDNA Reviewer** — Code quality checks
-- **Visual Implementer** — Browser-based implementation
-- **Doc Writer** — Documentation generation
-
-## Project Links
-- **Design Reference:** radiant-nexus.webflow.io
-- **Technical Spec:** SPEC.md
-- **Knowledge Vault:** .vault/
-- **Decisions:** Architecture Decision Records
-- **Migration Notes:** Devlink Migration | Retro OS Patterns
-
-## License
-[Add license information]
+Older references to `.vault` or app-local `components/ui` primitives are obsolete. The current source of truth is the code in this app plus the shared `packages/radiants` and `packages/create` packages.
