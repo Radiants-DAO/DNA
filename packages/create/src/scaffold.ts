@@ -2,20 +2,18 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalizeScaffoldName, toCamelCase, toPascalCase } from './names.ts';
-import { renderTemplateString, resolveRadiantsDependency } from './template.ts';
+import { renderTemplateString } from './template.ts';
 
 export interface ScaffoldOptions {
   appName: string;
   outDir: string;
-  radiantsSource: 'workspace' | 'published';
-  radiantsPath?: string;
 }
 
 const workspaceTemplateRoot = fileURLToPath(
   new URL('../../../templates/rados-app-prototype/', import.meta.url)
 );
 const packagedTemplateRoot = fileURLToPath(
-  new URL('./templates/rados-app-prototype/', import.meta.url)
+  new URL('../templates/rados-app-prototype/', import.meta.url)
 );
 
 function resolveTemplateRoot(): string {
@@ -38,7 +36,6 @@ function renderTemplateTree(
     appPascalName: string;
     appCamelName: string;
     packageName: string;
-    radiantsDependency: string;
   }
 ): void {
   mkdirSync(outDir, { recursive: true });
@@ -68,16 +65,11 @@ export async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
   const appName = normalizeScaffoldName(options.appName);
   const outDir = resolve(options.outDir);
   const templateRoot = resolveTemplateRoot();
-  const radiantsDependency = resolveRadiantsDependency(
-    options.radiantsSource,
-    options.radiantsPath
-  );
 
   renderTemplateTree(templateRoot, outDir, {
     appName,
     appPascalName: toPascalCase(appName),
     appCamelName: toCamelCase(appName),
-    packageName: appName,
-    radiantsDependency
+    packageName: appName
   });
 }

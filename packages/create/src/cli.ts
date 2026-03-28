@@ -6,22 +6,16 @@ import { scaffoldProject } from './scaffold.ts';
 interface CliOptions {
   appName: string;
   outDir: string;
-  radiantsSource: 'workspace' | 'published';
-  radiantsPath?: string;
 }
 
 function parseArgs(argv: string[]): CliOptions {
   const [appName, ...rest] = argv;
 
   if (!appName) {
-    throw new Error(
-      'Usage: rdna-create <app-name> --out-dir <dir> --radiants-source <workspace|published> [--radiants-path <dir>]'
-    );
+    throw new Error('Usage: rdna-create <app-name> [--out-dir <dir>]');
   }
 
   let outDir = resolve(process.cwd(), appName);
-  let radiantsSource: 'workspace' | 'published' = 'published';
-  let radiantsPath: string | undefined;
 
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
@@ -37,34 +31,12 @@ function parseArgs(argv: string[]): CliOptions {
       continue;
     }
 
-    if (arg === '--radiants-source') {
-      if (value !== 'workspace' && value !== 'published') {
-        throw new Error('--radiants-source must be "workspace" or "published"');
-      }
-
-      radiantsSource = value;
-      index += 1;
-      continue;
-    }
-
-    if (arg === '--radiants-path') {
-      if (!value) {
-        throw new Error('--radiants-path requires a value');
-      }
-
-      radiantsPath = resolve(process.cwd(), value);
-      index += 1;
-      continue;
-    }
-
     throw new Error(`Unknown argument: ${arg}`);
   }
 
   return {
     appName,
-    outDir,
-    radiantsSource,
-    radiantsPath
+    outDir
   };
 }
 

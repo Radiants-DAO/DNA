@@ -8,7 +8,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@rdna/radiants": "__RADIANTS_DEP__",
     "next": "16.1.6",
     "react": "19.2.1",
     "react-dom": "19.2.1"

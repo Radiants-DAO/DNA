@@ -128,7 +128,7 @@ See the Creating Apps Guide for detailed walkthrough, or review the App Pattern 
 For standalone prototype scaffolds, use the `@rdna/create` workspace package from the monorepo root instead of the removed app-local script:
 
 ```bash
-pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts my-app --out-dir /tmp/my-app --radiants-source workspace --radiants-path "$(pwd)/packages/radiants"
+pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts my-app --out-dir /tmp/my-app
 ```
 
 ## Design System
