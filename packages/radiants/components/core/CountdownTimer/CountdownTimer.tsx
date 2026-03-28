@@ -188,7 +188,6 @@ export function CountdownTimer({
   label,
   onComplete,
   endedMessage = 'Ended',
-  upcomingMessage = 'Starting soon',
   showDays = true,
   className = '',
 }: CountdownTimerProps) {

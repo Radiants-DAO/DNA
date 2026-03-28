@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const ShoppingShippingCrack1 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M17.5 3.498H16.502V9.503H17.5V3.498ZM16.502 9.503H15.504V11.498H16.502V9.503Z" /><path d="M15.505 11.498H14.501V12.502H15.505V11.498ZM9.5 12.502V13.5H11.501V17.503H8.502V18.5H7.505V20.502H8.502V21.499H15.505V20.502H16.502V18.5H15.505V17.503H12.499V13.5H14.501V12.502H9.5ZM12.499 7.501H11.502V8.499H12.499V7.501ZM11.501 5.5H10.504V6.504H12.499V7.501H13.503V5.5H12.499V4.502H11.501V5.5ZM11.501 8.499H10.504V9.503H11.501V8.499ZM9.5 11.498H8.502V12.502H9.5V11.498Z" /><path d="M12.499 3.498V4.502H13.503V3.498H16.502V2.501H7.505V3.498H12.499ZM8.502 9.503H7.505V11.498H8.502V9.503ZM7.505 3.498H6.501V9.503H7.505V3.498Z" /></g></svg>;
+ShoppingShippingCrack1.displayName = 'ShoppingShippingCrack1';
+
+export default ShoppingShippingCrack1;

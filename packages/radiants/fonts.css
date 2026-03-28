@@ -6,25 +6,10 @@
    @font-face Declarations
    ----------------------------------------------------------------------------- */
 
-/* Mondwest - Body font (must be downloaded separately)
-   Get it at: https://pangrampangram.com/products/bitmap-mondwest
+/* Mondwest - Body font
+   Consumers may define their own local/project @font-face for Mondwest.
+   The RDNA package does not ship those files due licensing.
    ----------------------------------------------------------------------------- */
-
-@font-face {
-  font-family: 'Mondwest';
-  src: url('./fonts/Mondwest.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Mondwest';
-  src: url('./fonts/Mondwest-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
 /* Joystix - Heading font
    ----------------------------------------------------------------------------- */

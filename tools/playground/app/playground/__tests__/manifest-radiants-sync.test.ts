@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { buildRegistryMetadata } from "@rdna/radiants/registry";
 import { getManifestEntry } from "../../../generated/registry";
-import { pickContractFields } from "../../../../../packages/radiants/registry/contract-fields.ts";
+import {
+  pickContractFields,
+  type ContractFieldSource,
+} from "../../../../../packages/radiants/registry/contract-fields.ts";
 import { buildManifestContractFields } from "../../../scripts/generate-registry.ts";
 
 describe("radiants manifest sync", () => {
@@ -21,6 +24,40 @@ describe("radiants manifest sync", () => {
 
   it("keeps manifest contract projection sparse when fields are absent", () => {
     expect(buildManifestContractFields({ name: "Plain", description: "Plain", props: {} })).toEqual({});
+  });
+
+  it("includes composition rules in sparse manifest contract projection", () => {
+    const fixture = {
+      name: "AppShell",
+      description: "App shell",
+      props: {},
+      composition: {
+        required: ["header", "content"],
+        optional: ["footer"],
+        order: ["header", "content", "footer"],
+      },
+    };
+
+    expect(buildManifestContractFields(fixture)).toEqual(
+      pickContractFields(fixture),
+    );
+  });
+
+  it("includes density tiers in sparse manifest contract projection", () => {
+    const fixture: ContractFieldSource = {
+      name: "Panel",
+      description: "Panel",
+      props: {},
+      density: {
+        attribute: "data-density",
+        modes: ["comfortable", "compact"],
+        default: "comfortable",
+      },
+    };
+
+    expect(buildManifestContractFields(fixture)).toEqual(
+      pickContractFields(fixture),
+    );
   });
 
   it("serializes pilot contract fields for real components", () => {

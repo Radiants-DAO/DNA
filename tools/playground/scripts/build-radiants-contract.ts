@@ -9,18 +9,26 @@
  * wired into generate-registry.ts.
  */
 
-import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { radiantsSystemContract } from "../../../packages/radiants/contract/system.ts";
 import { loadRadiantsComponentContracts } from "./load-radiants-component-contracts.ts";
+import {
+  CONTRACT_FRESHNESS_BASENAME,
+  computeGeneratedArtifactFreshness,
+} from "./generated-artifact-hashes.mjs";
 import type {
   A11yContract,
+  DensityContract,
+  CompositionRules,
   StructuralRule,
   StyleOwnership,
 } from "../../../packages/preview/src/index.ts";
 import type { RadiantsContractComponent } from "./load-radiants-component-contracts.ts";
 
 type SystemContract = typeof radiantsSystemContract;
+type LegacyComponentMap = Record<string, EslintComponentMapEntry>;
+type LegacyElementReplacements = Record<string, string>;
 
 interface EslintComponentMapEntry {
   component: string;
@@ -34,6 +42,8 @@ interface EslintComponentEntry {
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
   structuralRules?: StructuralRule[];
+  density?: DensityContract;
+  composition?: CompositionRules;
   wraps?: string;
   a11y?: A11yContract;
 }
@@ -42,15 +52,66 @@ interface AiComponentEntry {
   name: string;
   import?: string;
   replaces?: string[];
+  composition?: CompositionRules;
+  density?: DensityContract;
   wraps?: string;
   a11y?: A11yContract;
+}
+
+interface EslintContract {
+  $schema: string;
+  contractVersion: string;
+  tokenMap: SystemContract["tokenMap"];
+  componentMap: LegacyComponentMap;
+  components: Record<string, EslintComponentEntry>;
+  pixelCorners: SystemContract["pixelCorners"];
+  themeVariants: string[];
+  motion: SystemContract["motion"];
+  shadows: SystemContract["shadows"];
+  typography: SystemContract["typography"];
+  textLikeInputTypes: SystemContract["textLikeInputTypes"];
+}
+
+interface AiContract {
+  $schema: string;
+  contractVersion: string;
+  system: {
+    name: string;
+    description: string;
+    colorModes: string[];
+    importBase: string;
+  };
+  rules: Array<Record<string, unknown>>;
+  tokens: {
+    colors: {
+      semantic: Record<string, unknown>;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  components: AiComponentEntry[];
+  elementReplacements: LegacyElementReplacements;
+}
+
+interface RadiantsContracts {
+  eslintContract: EslintContract;
+  aiContract: AiContract;
 }
 
 function dedupe(values: Iterable<string>) {
   return [...new Set(values)];
 }
 
-function buildLegacyAiComponentEntries(componentMap: SystemContract["componentMap"]) {
+function writeJsonIfChanged(filePath: string, value: unknown) {
+  const next = `${JSON.stringify(value, null, 2)}\n`;
+  if (existsSync(filePath) && readFileSync(filePath, "utf8") === next) {
+    return false;
+  }
+  writeFileSync(filePath, next);
+  return true;
+}
+
+function buildLegacyAiComponentEntries(componentMap: LegacyComponentMap) {
   const grouped = new Map<string, { component: string; import: string; replaces: string[] }>();
 
   for (const [element, mapping] of Object.entries(componentMap)) {
@@ -124,6 +185,8 @@ function deriveComponentContractSections(components: RadiantsContractComponent[]
     if (component.shadowSystem) eslintEntry.shadowSystem = component.shadowSystem;
     if (component.styleOwnership?.length) eslintEntry.styleOwnership = component.styleOwnership;
     if (component.structuralRules?.length) eslintEntry.structuralRules = component.structuralRules;
+    if (component.density) eslintEntry.density = component.density;
+    if (component.composition) eslintEntry.composition = component.composition;
     if (component.wraps) eslintEntry.wraps = component.wraps;
     if (component.a11y) eslintEntry.a11y = component.a11y;
 
@@ -164,6 +227,16 @@ function deriveComponentContractSections(components: RadiantsContractComponent[]
       hasAiFields = true;
     }
 
+    if (component.composition) {
+      aiEntry.composition = component.composition;
+      hasAiFields = true;
+    }
+
+    if (component.density) {
+      aiEntry.density = component.density;
+      hasAiFields = true;
+    }
+
     if (component.a11y) {
       aiEntry.a11y = component.a11y;
       hasAiFields = true;
@@ -195,10 +268,10 @@ function deriveComponentContractSections(components: RadiantsContractComponent[]
 
 function buildEslintContract(
   system: SystemContract,
-  componentMap: Record<string, EslintComponentMapEntry>,
+  componentMap: LegacyComponentMap,
   componentEntries: Record<string, EslintComponentEntry>,
   themeVariants: string[],
-) {
+): EslintContract {
   return {
     $schema: "./eslint-contract.schema.json",
     contractVersion: system.contractVersion,
@@ -263,8 +336,8 @@ function categorizeColorSuffixes(suffixes: readonly string[]): Record<string, Se
 function buildAiContract(
   system: SystemContract,
   components: AiComponentEntry[],
-  elementReplacements: Record<string, string>,
-) {
+  elementReplacements: LegacyElementReplacements,
+): AiContract {
   return {
     $schema: "./ai-contract.schema.json",
     contractVersion: system.contractVersion,
@@ -358,7 +431,7 @@ function buildAiContract(
 export async function buildRadiantsContractsFromComponents(
   system: SystemContract,
   components: RadiantsContractComponent[],
-) {
+): Promise<RadiantsContracts> {
   const derived = deriveComponentContractSections(components);
   const themeVariants = dedupe([...system.themeVariants, ...derived.themeVariants]).sort();
 
@@ -380,22 +453,23 @@ interface BuildRadiantsContractsOptions {
 
 export async function buildRadiantsContracts(
   options: BuildRadiantsContractsOptions = {},
-) {
+): Promise<RadiantsContracts> {
   const system = options.system ?? radiantsSystemContract;
   const loadComponents = options.loadComponents ?? loadRadiantsComponentContracts;
   const components = await loadComponents();
 
   const derived = await buildRadiantsContractsFromComponents(system, components);
-  const legacyAiComponents = buildLegacyAiComponentEntries(system.componentMap);
+  const legacyComponentMap = system.componentMap as LegacyComponentMap;
+  const legacyAiComponents = buildLegacyAiComponentEntries(legacyComponentMap);
   const legacyElementReplacements = Object.fromEntries(
-    Object.entries(system.componentMap).map(([element, { component }]) => [element, component]),
-  );
+    Object.entries(legacyComponentMap).map(([element, { component }]) => [element, component]),
+  ) as LegacyElementReplacements;
 
   return {
     eslintContract: {
       ...derived.eslintContract,
       componentMap: {
-        ...system.componentMap,
+        ...legacyComponentMap,
         ...derived.eslintContract.componentMap,
       },
     },
@@ -410,9 +484,13 @@ export async function buildRadiantsContracts(
   };
 }
 
-export async function writeRadiantsContractArtifacts(outputDir: string) {
+export async function writeRadiantsContractArtifacts(
+  outputDir: string,
+  freshness = computeGeneratedArtifactFreshness().radiantsContracts,
+) {
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
   const { eslintContract, aiContract } = await buildRadiantsContracts();
-  writeFileSync(resolve(outputDir, "eslint-contract.json"), JSON.stringify(eslintContract, null, 2) + "\n");
-  writeFileSync(resolve(outputDir, "ai-contract.json"), JSON.stringify(aiContract, null, 2) + "\n");
+  writeJsonIfChanged(resolve(outputDir, "eslint-contract.json"), eslintContract);
+  writeJsonIfChanged(resolve(outputDir, "ai-contract.json"), aiContract);
+  writeJsonIfChanged(resolve(outputDir, CONTRACT_FRESHNESS_BASENAME), freshness);
 }

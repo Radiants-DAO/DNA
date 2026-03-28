@@ -16,6 +16,7 @@
     "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/radiants generate:figma-contracts && node --experimental-strip-types scripts/generate-registry.ts",
     "violations:generate": "node scripts/generate-violations-manifest.mjs",
     "test": "vitest run",
+    "test:ci": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },

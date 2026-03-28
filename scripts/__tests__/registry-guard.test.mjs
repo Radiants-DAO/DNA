@@ -74,7 +74,7 @@ test("pre-commit runs the fast registry checks only when relevant files are stag
 test("dev, build, push, and ci each map to the intended registry plan", () => {
   assert.deepEqual(getRegistryPlan("pre-dev"), {
     run: true,
-    command: ["pnpm", "registry:check:freshness"],
+    command: ["pnpm", "--filter", "@rdna/playground", "registry:generate"],
     reason: "dev_start",
   });
 

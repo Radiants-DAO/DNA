@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 
@@ -68,7 +66,7 @@ Welcome to Radiants.`,
 // Component
 // ============================================================================
 
-export function ManifestoApp({ windowId }: AppProps) {
+export function ManifestoApp({ windowId: _windowId }: AppProps) {
   const tabs = useTabsState({ defaultValue: 'introduction', layout: 'sidebar' });
 
   return (

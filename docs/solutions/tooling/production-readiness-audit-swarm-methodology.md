@@ -91,7 +91,7 @@ After all agents complete:
 
 ## Related
 
-* `research/production-readiness-audit-swarm.md` — full findings from this run
+* `archive/research/production-readiness-audit-swarm.md` — full findings from this run
 
 * `docs/production-readiness-checklist.md` — source of truth
 

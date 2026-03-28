@@ -1,10 +1,10 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { lookupComponent } from "./manifest.mjs";
+import { lookupComponent as readRegistryComponent } from "./manifest.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const MONO_ROOT = resolve(__dirname, "../../..");
+const MONO_ROOT = resolve(__dirname, "../../../..");
 
 function tryRead(relPath) {
   try {
@@ -118,6 +118,10 @@ Do not include filenames, explanations, or any text outside the code blocks.
 Each code block must contain exactly one complete, self-contained .tsx component file
 with 'use client' directive and the same named export as the source.
 `;
+}
+
+export function lookupComponent(componentId) {
+  return readRegistryComponent(componentId);
 }
 
 export function extractCodeBlocks(stdout) {

@@ -3,6 +3,7 @@
 
 import { AlertMeta } from "../components/core/Alert/Alert.meta.ts";
 import { AlertDialogMeta } from "../components/core/AlertDialog/AlertDialog.meta.ts";
+import { AppWindowMeta } from "../components/core/AppWindow/AppWindow.meta.ts";
 import { AvatarMeta } from "../components/core/Avatar/Avatar.meta.ts";
 import { BadgeMeta } from "../components/core/Badge/Badge.meta.ts";
 import { BreadcrumbsMeta } from "../components/core/Breadcrumbs/Breadcrumbs.meta.ts";
@@ -52,6 +53,11 @@ export const componentMetaIndex = {
     meta: AlertDialogMeta,
     sourcePath: "packages/radiants/components/core/AlertDialog/AlertDialog.tsx",
     schemaPath: "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
+  },
+  AppWindow: {
+    meta: AppWindowMeta,
+    sourcePath: "packages/radiants/components/core/AppWindow/AppWindow.tsx",
+    schemaPath: "packages/radiants/components/core/AppWindow/AppWindow.schema.json",
   },
   Avatar: {
     meta: AvatarMeta,

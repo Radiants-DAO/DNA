@@ -18,4 +18,16 @@ describe('template control-surface seam', () => {
     expect(seam).toContain('AppControlSurfaceConfig');
     expect(seam).toContain("enabled: false");
   });
+
+  it('boots the prototype from rdna package imports instead of local theme copies', () => {
+    const globals = readFileSync(resolve(root, 'app/globals.css'), 'utf8');
+    const app = readFileSync(resolve(root, 'components/app/MyApp.tsx'), 'utf8');
+
+    expect(globals).toContain("@import '@rdna/radiants';");
+    expect(globals).toContain("@import '@rdna/radiants/dark';");
+    expect(globals).toContain('@source "../node_modules/@rdna/radiants";');
+    expect(app).toContain("from '@rdna/radiants/components/core'");
+    expect(app).toContain("from '@rdna/radiants/icons/runtime'");
+    expect(app).toContain("from '@rdna/radiants/patterns'");
+  });
 });

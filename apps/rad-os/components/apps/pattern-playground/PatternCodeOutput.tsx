@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, ToggleGroup } from '@rdna/radiants/components/core';
 import type { PatternPlaygroundState, CodeFormat } from './types';
 import { generateCode } from './code-gen';

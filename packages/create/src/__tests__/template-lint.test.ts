@@ -8,12 +8,14 @@ const root = fileURLToPath(
 );
 
 describe('template lint contract', () => {
-  it('includes a flat eslint config for the documented lint command', () => {
+  it('includes scaffold-time eslint wiring for the documented lint command', () => {
     const pkg = JSON.parse(
       readFileSync(resolve(root, 'package.json.template'), 'utf8')
     );
 
     expect(pkg.scripts.lint).toBe('eslint .');
+    expect(pkg.devDependencies.eslint).toBe('^9');
+    expect(pkg.devDependencies['eslint-config-next']).toBe('16.0.10');
     expect(existsSync(resolve(root, 'eslint.config.mjs'))).toBe(true);
   });
 });

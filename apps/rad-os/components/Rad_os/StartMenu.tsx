@@ -8,7 +8,7 @@ import { Button, Separator } from '@rdna/radiants/components/core';
 import {
   WordmarkLogo,
   Icon,
-} from '@rdna/radiants/icons';
+} from '@rdna/radiants/icons/runtime';
 
 // ============================================================================
 // Types
@@ -243,17 +243,18 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               Connect
             </span>
           </div>
-          {SOCIAL_LINKS.map((link) => (
-            <Button
-              key={link.id}
-              type="button"
-              quiet
-              size="sm"
-              onClick={() => window.open(link.href, '_blank')}
-              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
-            >
-              <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
-                {link.icon}
+              {SOCIAL_LINKS.map((link) => (
+                <Button
+                  key={link.id}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  quiet
+                  size="sm"
+                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
+                >
+                  <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
+                    {link.icon}
               </span>
               <span className="flex-1 font-joystix text-sm text-main uppercase">
                 {link.label}

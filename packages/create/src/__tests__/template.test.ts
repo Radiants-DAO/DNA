@@ -7,7 +7,8 @@ describe('template rendering', () => {
       appName: 'my-app',
       appPascalName: 'MyApp',
       appCamelName: 'myApp',
-      packageName: 'my-app'
+      packageName: 'my-app',
+      radiantsVersion: '0.1.0'
     });
     expect(rendered).toBe('Hello MyApp');
   });
@@ -17,9 +18,22 @@ describe('template rendering', () => {
       appName: 'my-app',
       appPascalName: 'MyApp',
       appCamelName: 'myApp',
-      packageName: 'my-app'
+      packageName: 'my-app',
+      radiantsVersion: '0.1.0'
     });
 
     expect(rendered).toBe('"name": "my-app"');
+  });
+
+  it('replaces rdna package version tokens used in the scaffold manifest', () => {
+    const rendered = renderTemplateString('"@rdna/radiants": "^__RDNA_RADIANTS_VERSION__"', {
+      appName: 'my-app',
+      appPascalName: 'MyApp',
+      appCamelName: 'myApp',
+      packageName: 'my-app',
+      radiantsVersion: '0.1.0'
+    });
+
+    expect(rendered).toBe('"@rdna/radiants": "^0.1.0"');
   });
 });

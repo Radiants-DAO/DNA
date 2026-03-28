@@ -43,6 +43,20 @@ export interface StructuralRule {
   mechanism?: string;
 }
 
+export type DensityMode = "comfortable" | "compact";
+
+export interface DensityContract {
+  attribute: "data-density";
+  modes: DensityMode[];
+  default?: DensityMode;
+}
+
+export interface CompositionRules {
+  required?: string[];
+  optional?: string[];
+  order?: string[];
+}
+
 export interface A11yContract {
   role?: string;
   requiredAttributes?: string[];
@@ -116,6 +130,8 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
   structuralRules?: StructuralRule[];
+  density?: DensityContract;
+  composition?: CompositionRules;
   wraps?: string;
   a11y?: A11yContract;
   examples?: Array<{ name: string; code: string }>;

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -19,15 +20,12 @@ interface SheetContextValue {
 // Context
 // ============================================================================
 
-const SheetContext = createContext<SheetContextValue | null>(null);
-
-function useSheetContext() {
-  const context = use(SheetContext);
-  if (!context) {
-    throw new Error('Sheet components must be used within a Sheet');
-  }
-  return context;
-}
+const {
+  Context: SheetContext,
+  useCompoundContext: useSheetContext,
+} = createCompoundContext<SheetContextValue>('Sheet', {
+  errorMessage: 'Sheet components must be used within a Sheet',
+});
 
 // ============================================================================
 // Sheet Root

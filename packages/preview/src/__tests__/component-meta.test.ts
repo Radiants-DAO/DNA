@@ -77,4 +77,38 @@ describe("defineComponentMeta", () => {
 
     expect(meta.structuralRules?.[0]?.ruleId).toBe("rdna/no-pixel-border");
   });
+
+  it("supports composition rules for slot contracts", () => {
+    const meta = defineComponentMeta<Record<string, unknown>>()({
+      name: "AppShell",
+      description: "App shell",
+      props: {},
+      composition: {
+        required: ["header", "content"],
+        optional: ["footer"],
+        order: ["header", "content", "footer"],
+      },
+    });
+
+    expect(meta.composition?.required).toEqual(["header", "content"]);
+    expect(meta.composition?.optional).toEqual(["footer"]);
+    expect(meta.composition?.order).toEqual(["header", "content", "footer"]);
+  });
+
+  it("supports density tiers for data-density contracts", () => {
+    const meta = defineComponentMeta<Record<string, unknown>>()({
+      name: "Panel",
+      description: "Panel",
+      props: {},
+      density: {
+        attribute: "data-density",
+        modes: ["comfortable", "compact"],
+        default: "comfortable",
+      },
+    });
+
+    expect(meta.density?.attribute).toBe("data-density");
+    expect(meta.density?.modes).toEqual(["comfortable", "compact"]);
+    expect(meta.density?.default).toBe("comfortable");
+  });
 });

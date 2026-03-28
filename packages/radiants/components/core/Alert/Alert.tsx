@@ -1,9 +1,10 @@
 'use client';
 
-import React, { createContext, use } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
+import { cva } from 'class-variance-authority';
 import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '../../../icons/generated';
 import { Button } from '../Button/Button';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -32,7 +33,10 @@ interface AlertCloseProps {
 // Context + Default Icons
 // ============================================================================
 
-const AlertVariantContext = createContext<AlertVariant>('default');
+const {
+  Context: AlertVariantContext,
+  useCompoundContext: useAlertVariantContext,
+} = createCompoundContext<AlertVariant>('Alert');
 
 const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; className?: string }> | null> = {
   default: CommentsBlank,
@@ -69,7 +73,7 @@ export const alertVariants = cva(
 // ============================================================================
 
 function Icon({ children, className = '' }: AlertChildProps): React.ReactElement {
-  const variant = use(AlertVariantContext);
+  const variant = useAlertVariantContext();
   const DefaultIcon = VARIANT_ICONS[variant];
   return (
     <div className={`flex-shrink-0 ${className}`}>
@@ -103,7 +107,7 @@ const VARIANT_TO_TONE: Record<AlertVariant, 'accent' | 'danger' | 'success' | 'n
 };
 
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {
-  const variant = use(AlertVariantContext);
+  const variant = useAlertVariantContext();
   const tone = VARIANT_TO_TONE[variant];
   return (
     <Button

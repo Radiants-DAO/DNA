@@ -47,7 +47,7 @@ export function getRegistryPlan(mode, changedPaths = []) {
     case "pre-dev":
       return {
         run: true,
-        command: ["pnpm", "registry:check:freshness"],
+        command: ["pnpm", "--filter", "@rdna/playground", "registry:generate"],
         reason: "dev_start",
       };
     case "pre-build":

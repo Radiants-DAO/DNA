@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const Equalizer = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2.5 5.5H3.5V6.5H2.5V5.5ZM2.5 7.5H3.5V12.5H2.5V7.5ZM4.5 3.5H5.5V4.5H4.5V3.5ZM4.5 5.5H5.5V12.5H4.5V5.5ZM6.5 7.5H7.5V8.5H6.5V7.5ZM6.5 9.5H7.5V12.5H6.5V9.5ZM8.5 9.5H9.5V12.5H8.5V9.5ZM10.5 5.5H11.5V6.5H10.5V5.5ZM10.5 7.5H11.5V12.5H10.5V7.5ZM12.5 3.5H13.5V4.5H12.5V3.5ZM12.5 5.5H13.5V12.5H12.5V5.5Z" /></svg>;
+Equalizer.displayName = 'Equalizer';
+
+export default Equalizer;

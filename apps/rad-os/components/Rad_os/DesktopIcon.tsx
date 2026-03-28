@@ -39,10 +39,6 @@ export function DesktopIcon({
 }: DesktopIconProps) {
   const { openWindow, isWindowOpen } = useWindowManager();
 
-  const handleClick = () => {
-    openWindow(appId);
-  };
-
   const isActive = isWindowOpen(appId);
 
   return (
@@ -50,11 +46,11 @@ export function DesktopIcon({
       <Button
         quiet
         size="md"
-        iconOnly={true}
+        iconOnly
         icon={icon}
         active={isActive}
         aria-label={label}
-        onClick={handleClick}
+        onClick={() => openWindow(appId)}
         className={className}
       />
     </Tooltip>

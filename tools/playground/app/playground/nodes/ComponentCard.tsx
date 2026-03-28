@@ -576,7 +576,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const [exitingPins, setExitingPins] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
 
-  const { editorMode, setEditorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const isCommentMode = editorMode === "comment";
   const isToolActive = isCommentMode;
 
@@ -694,13 +694,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
     setSelectedPin({ annotation, element });
     setAnnotationComposer(null);
-    setShowList(false);
   };
 
   const handleComposerDone = () => {
     setAnnotationComposer(null);
     setSelectedPin(null);
-    setShowList(false);
   };
 
   const handlePinResolved = (annotationId: string) => {
@@ -879,7 +877,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     anchorTop={annotationComposer.top}
                     anchorBottom={annotationComposer.bottom}
                     variant="default"
-                    forcedState={forcedState}
                     availableStates={availableStates}
                     currentColorMode={currentColorMode}
                     currentForcedState={forcedState}
@@ -958,15 +955,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                         componentId={entry.id}
                         x={annotationComposer.x}
                         y={annotationComposer.y}
-                        anchorLeft={annotationComposer.left}
-                        anchorTop={annotationComposer.top}
-                        anchorBottom={annotationComposer.bottom}
-                        variant={v.label}
-                        forcedState={forcedState}
-                        availableStates={availableStates}
-                        currentColorMode={currentColorMode}
-                        currentForcedState={forcedState}
-                        captureTarget={annotationComposer.captureTarget}
+                    anchorLeft={annotationComposer.left}
+                    anchorTop={annotationComposer.top}
+                    anchorBottom={annotationComposer.bottom}
+                    variant={v.label}
+                    availableStates={availableStates}
+                    currentColorMode={currentColorMode}
+                    currentForcedState={forcedState}
+                    captureTarget={annotationComposer.captureTarget}
                         onSubmit={handleComposerDone}
                         onCancel={() => { setAnnotationComposer(null); }}
                       />

@@ -237,6 +237,17 @@
 
   --touch-target-min: 44px;   /* WCAG AA minimum */
   --touch-target-comfortable: 48px;
+  --touch-target-default: var(--touch-target-comfortable);
+
+  /* ============================================
+     DENSITY
+     Attribute-driven spacing/touch affordances
+     ============================================ */
+
+  --density-compact: 0.5;
+  --density-default: 1;
+  --density-comfortable: 1.5;
+  --density-scale: var(--density-comfortable);
 
   /* ============================================
      Z-INDEX SCALE

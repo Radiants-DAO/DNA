@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Tooltip, Button } from '@rdna/radiants/components/core';
 import { type FontEntry, FONTS, TYPE_SCALE, ELEMENT_STYLES } from './typography-data';
 
@@ -15,7 +15,7 @@ function CopyableValue({ value }: { value: string }) {
   };
   return (
     <Tooltip content={copied ? 'Copied!' : 'Click to copy'}>
-      {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-type-playground */}
+      {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-001 */}
       <button
         className="font-mono text-xs text-main hover:text-accent cursor-pointer text-left"
         onClick={handleCopy}
@@ -31,7 +31,7 @@ function CopyableRow({ label, value, displayValue }: {
 }) {
   const [copied, setCopied] = useState(false);
   return (
-    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:copy-row-interactive owner:design-system expires:2026-12-31 issue:DNA-type-playground
+    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:copy-row-interactive owner:design-system expires:2026-12-31 issue:DNA-001
     <button
       type="button"
       onClick={async () => {
@@ -136,7 +136,7 @@ function FontCard({ font, index }: { font: FontEntry; index: number }) {
             size="sm"
             icon={font.linkOut ? 'globe' : 'download'}
             href={font.downloadUrl}
-            target="_blank"
+            {...(font.linkOut ? { target: '_blank' } : {})}
           >
             {font.linkOut
               ? `View at ${font.source}`
@@ -195,7 +195,7 @@ export function TypeManual() {
               <span className="font-mono text-xs text-flip/60 shrink-0">Size / Weight / Leading</span>
             </div>
             <div className="divide-y divide-rule">
-              {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
+              {ELEMENT_STYLES.map(({ el, fontClass, size, weight, leading }) => (
                 <div key={el} className="flex items-center gap-3 px-4 py-2.5">
                   <code className="text-xs font-mono text-main w-14 shrink-0">
                     &lt;{el}&gt;
@@ -231,7 +231,7 @@ export function TypeManual() {
               <span className="font-mono text-xs text-mute">tokens.css</span>
             </div>
             <div className="space-y-0">
-              {TYPE_SCALE.map(({ token, label, rem, px }) => (
+              {TYPE_SCALE.map(({ token, label, px }) => (
                 <div
                   key={token}
                   className="flex items-baseline gap-2 py-1 border-b border-rule last:border-0"

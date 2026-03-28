@@ -3,6 +3,7 @@
 
 import AlertSchema from "../components/core/Alert/Alert.schema.json";
 import AlertDialogSchema from "../components/core/AlertDialog/AlertDialog.schema.json";
+import AppWindowSchema from "../components/core/AppWindow/AppWindow.schema.json";
 import AvatarSchema from "../components/core/Avatar/Avatar.schema.json";
 import BadgeSchema from "../components/core/Badge/Badge.schema.json";
 import BreadcrumbsSchema from "../components/core/Breadcrumbs/Breadcrumbs.schema.json";
@@ -45,6 +46,7 @@ import TooltipSchema from "../components/core/Tooltip/Tooltip.schema.json";
 export const componentData = {
   Alert: { schema: AlertSchema },
   AlertDialog: { schema: AlertDialogSchema },
+  AppWindow: { schema: AppWindowSchema },
   Avatar: { schema: AvatarSchema },
   Badge: { schema: BadgeSchema },
   Breadcrumbs: { schema: BreadcrumbsSchema },

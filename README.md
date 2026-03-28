@@ -56,11 +56,11 @@ dna/
 │
 ├── docs/
 │   ├── theme-spec.md              # Full specification (v1.0.0)
-│   ├── archive/                   # Historical migration guides
+│   ├── plans/                     # Current implementation plans
+│   ├── research/                  # Current research + reusable prompt docs
 │   └── solutions/                 # Integration patterns + tooling guides
 │
-├── prompts/
-│   └── dna-conversion/            # AI prompts for theme migration
+├── archive/                       # Implemented / historical docs, plans, prompts
 │
 ├── ideas/                         # Future explorations
 └── CLAUDE.md                      # AI assistant instructions
@@ -181,13 +181,13 @@ The DNA spec supports class, data-attribute, or media-query activation. The refe
 
 ## Converting Existing Projects
 
-Use the DNA conversion prompts in `prompts/dna-conversion/`:
+The historical DNA conversion prompt set now lives in `archive/prompts/dna-conversion/` and is kept as an unmaintained reference:
 
 1. **Phase 0: Assessment** — Scan codebase for tokens and components
 2. **Sprint Generator** — Create task breakdown
 3. **Templates** — Token foundation, component schemas, refactoring, dark mode
 
-See `docs/archive/dna-conversion.md` for the archived guide.
+See `archive/conversion/dna-conversion.md` for the archived guide.
 
 ## Integration
 
@@ -238,7 +238,7 @@ In this repo, the local Figma skills already expect that layout:
 ## Documentation
 
 - **[Theme Specification](docs/theme-spec.md)** — Complete v1.0.0 spec
-- **[Archived Conversion Guide](docs/archive/dna-conversion.md)** — Historical migration reference
+- **[Archived Conversion Guide](archive/conversion/dna-conversion.md)** — Historical migration reference
 - **[CLAUDE.md](CLAUDE.md)** — AI assistant instructions
 
 ## License

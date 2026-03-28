@@ -13,5 +13,6 @@ describe('template files', () => {
     expect(existsSync(resolve(root, 'components/AppWindow.tsx'))).toBe(true);
     expect(existsSync(resolve(root, 'components/WindowContent.tsx'))).toBe(true);
     expect(existsSync(resolve(root, 'lib/controlSurface.ts'))).toBe(true);
+    expect(existsSync(resolve(root, 'eslint.config.mjs'))).toBe(true);
   });
 });

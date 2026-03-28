@@ -184,7 +184,7 @@ Work signals bracket every agent modification so the playground UI reflects real
 
 ### Fix Log
 
-`packages/radiants/ops/fix-log.md` is an append-only record of every design system fix made through the playground.
+`docs/ops/playground-fix-log.md` is an append-only record of every design system fix made through the playground.
 
 - Agents append via `cat >> ... <<'EOF'` — never read the file
 - Entry format:
@@ -239,6 +239,17 @@ node bin/rdna-playground.mjs resolve <id> "<summary>"
 node bin/rdna-playground.mjs dismiss <id> "<reason>"
 ```
 
+### Visual QA
+
+```bash
+node bin/rdna-playground.mjs list-states <component> [--json]            # Show test matrix (props × color modes × states)
+node bin/rdna-playground.mjs set-props <component> key=value [...] [--color-mode light|dark] [--state hover]  # Build preview URL
+node bin/rdna-playground.mjs screenshot <component> [--out path] [--props key=val...] [--color-mode light|dark] [--state hover]
+node bin/rdna-playground.mjs sweep <component> [--out-dir path] [--max N] [--props key=val...]  # Capture all states as PNGs
+```
+
+`list-states` generates a test matrix from the registry manifest. When Phase 2 contract fields (`styleOwnership`, `pixelCorners`, `shadowSystem`, `a11y`) are present, the matrix is enriched with data-attribute variants and QA flags. `screenshot` and `sweep` require the playground dev server to be running — they use an iframe-based capture pipeline via `html-to-image`.
+
 ### Agent fix
 
 ```bash
@@ -272,14 +283,20 @@ bin/
 ├── rdna-playground.mjs          # CLI entry point
 ├── lib/
 │   ├── api.mjs                  # Shared HTTP client (get/post/del)
-│   └── prompt.mjs               # Prompt builders (creativity ladder, fix)
+│   ├── manifest.mjs             # Registry manifest reader (readFullComponent, lookupComponent)
+│   ├── prompt.mjs               # Prompt builders (creativity ladder, fix)
+│   └── prop-matrix.mjs          # Contract-aware test matrix generator
 └── commands/
     ├── work-signal.mjs          # work-start, work-end
     ├── status.mjs               # status
     ├── variations.mjs           # list, write, trash, adopt
     ├── create-variants.mjs      # Creativity ladder variant generation
     ├── agent-fix.mjs            # Fix command (annotation → agent → adopt)
-    └── annotate.mjs             # annotate, annotations, resolve, dismiss
+    ├── annotate.mjs             # annotate, annotations, resolve, dismiss
+    ├── list-states.mjs          # Test matrix from manifest + contract fields
+    ├── set-props.mjs            # Build headless preview URL
+    ├── screenshot.mjs           # Capture single component state as PNG
+    └── sweep.mjs                # Capture all matrix states as PNG directory
 app/
 ├── globals.css                  # Imports @rdna/radiants theme
 ├── layout.tsx                   # Root layout (font-sans, light mode)

@@ -1,3 +1,4 @@
+import { Badge, Button } from '@rdna/radiants/components/core';
 import type { WindowSizePreset } from '../lib/types';
 
 interface TaskbarProps {
@@ -16,32 +17,35 @@ export function Taskbar({
   onSelectPreset
 }: TaskbarProps) {
   return (
-    <footer className="sticky bottom-0 z-10 border-t border-line bg-panel/90 backdrop-blur">
+    <footer className="sticky bottom-0 z-10 border-t border-line bg-card/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mute">
           Window {windowId}
         </div>
         <div className="flex flex-wrap gap-2">
           {presets.map((preset) => {
             const isActive = preset.label === activePreset;
             return (
-              <button
+              <Button
                 key={preset.label}
-                type="button"
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
-                  isActive
-                    ? 'border-accent bg-accent text-slate-950'
-                    : 'border-line text-main hover:border-main/60'
-                }`}
+                mode={isActive ? 'solid' : 'flat'}
+                tone={isActive ? 'accent' : 'neutral'}
+                size="sm"
+                compact
                 onClick={() => onSelectPreset(preset)}
               >
                 {preset.label}
-              </button>
+              </Button>
             );
           })}
         </div>
-        <div className="ml-auto text-[11px] uppercase tracking-[0.22em] text-muted">
-          Control surface: {controlSurfaceEnabled ? 'stub enabled' : 'stub disabled'}
+        <div className="ml-auto flex items-center gap-2">
+          <Badge
+            size="sm"
+            variant={controlSurfaceEnabled ? 'success' : 'default'}
+          >
+            {controlSurfaceEnabled ? 'control live' : 'control stub'}
+          </Badge>
         </div>
       </div>
     </footer>

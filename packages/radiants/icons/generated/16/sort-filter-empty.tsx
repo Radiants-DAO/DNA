@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const SortFilterEmpty = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 2.5H4V3.5H5V4.5H3V5.5H2V2.5ZM3 5.5H4V6.5H3V5.5ZM4 1.5H12V2.5H4V1.5ZM4 6.5H5V7.5H4V6.5ZM5 4.5H11V5.5H5V4.5ZM5 7.5H6V8.5H5V7.5ZM6 8.5H7V9.5H6V8.5ZM7 9.5H8V12.5H9V13.5H8V14.5H7V9.5ZM9 11.5H10V12.5H9V11.5ZM10 7.5H11V11.5H10V7.5ZM11 3.5H12V2.5H14V5.5H13V4.5H11V3.5ZM11 6.5H12V7.5H11V6.5ZM12 5.5H13V6.5H12V5.5Z" /></svg>;
+SortFilterEmpty.displayName = 'SortFilterEmpty';
+
+export default SortFilterEmpty;

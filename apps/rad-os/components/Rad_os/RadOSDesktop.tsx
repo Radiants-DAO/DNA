@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { Desktop } from './Desktop';
 import { InvertModeProvider } from './InvertModeProvider';
 import { ToastProvider } from '@rdna/radiants/components/core';

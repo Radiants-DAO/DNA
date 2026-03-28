@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const InterfaceEssentialSettingSlide = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M18.5 7.498V5.503H21.499V4.499H18.5V2.498H17.503V7.498H18.5ZM18.5 21.503V19.501H21.499V18.497H18.5V16.502H17.503V21.503H18.5ZM21.499 11.501H7.501V9.5H6.504V8.502H5.5V9.5H4.502V11.501H2.501V12.499H4.502V14.5H5.5V15.498H6.504V14.5H7.501V12.499H21.499V11.501ZM17.503 21.502H16.499V22.5H17.503V21.502ZM17.503 15.498H16.499V16.502H17.503V15.498ZM17.503 7.498H16.499V8.502H17.503V7.498ZM17.503 1.5H16.499V2.498H17.503V1.5ZM16.499 16.502H15.501V18.497H2.501V19.501H15.501V21.503H16.499V16.502ZM15.501 4.499H2.501V5.503H15.501V7.498H16.499V2.498H15.501V4.499Z" /></g></svg>;
+InterfaceEssentialSettingSlide.displayName = 'InterfaceEssentialSettingSlide';
+
+export default InterfaceEssentialSettingSlide;

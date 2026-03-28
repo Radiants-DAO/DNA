@@ -15,6 +15,12 @@ const workspaceTemplateRoot = fileURLToPath(
 const packagedTemplateRoot = fileURLToPath(
   new URL('../templates/rados-app-prototype/', import.meta.url)
 );
+const workspaceRadiantsPackageJson = fileURLToPath(
+  new URL('../../radiants/package.json', import.meta.url)
+);
+const localCreatePackageJson = fileURLToPath(
+  new URL('../package.json', import.meta.url)
+);
 
 function resolveTemplateRoot(): string {
   const templateRoots = [workspaceTemplateRoot, packagedTemplateRoot];
@@ -36,6 +42,7 @@ function renderTemplateTree(
     appPascalName: string;
     appCamelName: string;
     packageName: string;
+    radiantsVersion: string;
   }
 ): void {
   mkdirSync(outDir, { recursive: true });
@@ -61,15 +68,46 @@ function renderTemplateTree(
   }
 }
 
+function readPackageVersion(packageJsonPath: string): string | null {
+  if (!existsSync(packageJsonPath)) {
+    return null;
+  }
+
+  const pkg = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
+    version?: string;
+  };
+
+  return typeof pkg.version === 'string' && pkg.version.trim().length > 0
+    ? pkg.version
+    : null;
+}
+
+function resolveRadiantsVersion(): string {
+  return (
+    readPackageVersion(workspaceRadiantsPackageJson) ??
+    readPackageVersion(localCreatePackageJson) ??
+    '0.1.0'
+  );
+}
+
 export async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
   const appName = normalizeScaffoldName(options.appName);
   const outDir = resolve(options.outDir);
   const templateRoot = resolveTemplateRoot();
 
+  if (!appName) {
+    throw new Error('app name must include at least one letter or number');
+  }
+
+  if (existsSync(outDir) && readdirSync(outDir).length > 0) {
+    throw new Error('output directory must be empty');
+  }
+
   renderTemplateTree(templateRoot, outDir, {
     appName,
     appPascalName: toPascalCase(appName),
     appCamelName: toCamelCase(appName),
-    packageName: appName
+    packageName: appName,
+    radiantsVersion: resolveRadiantsVersion()
   });
 }

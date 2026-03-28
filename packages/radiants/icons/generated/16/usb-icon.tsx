@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const UsbIcon = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M4.5 6.5H5.5V8.5H4.5V6.5ZM5.5 8.5H6.5V9.5H5.5V8.5ZM6.5 2.5H7.5V1.5H8.5V2.5H9.5V3.5H8.5V7.5H9.5V8.5H8.5V12.5H7.5V10.5H6.5V9.5H7.5V3.5H6.5V2.5ZM6.5 12.5H7.5V13.5H6.5V12.5ZM7.5 13.5H8.5V14.5H7.5V13.5ZM8.5 12.5H9.5V13.5H8.5V12.5ZM9.5 6.5H10.5V7.5H9.5V6.5ZM10.5 4.5H11.5V6.5H10.5V4.5Z" /></svg>;
+UsbIcon.displayName = 'UsbIcon';
+
+export default UsbIcon;

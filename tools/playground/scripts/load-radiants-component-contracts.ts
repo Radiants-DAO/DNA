@@ -3,6 +3,8 @@ import { pickContractFields } from "../../../packages/radiants/registry/contract
 import type {
   A11yContract,
   ComponentMeta,
+  DensityContract,
+  CompositionRules,
   ElementReplacement,
   StructuralRule,
   StyleOwnership,
@@ -16,6 +18,8 @@ export interface RadiantsContractComponent {
   shadowSystem?: "standard" | "pixel";
   styleOwnership?: StyleOwnership[];
   structuralRules?: StructuralRule[];
+  density?: DensityContract;
+  composition?: CompositionRules;
   wraps?: string;
   a11y?: A11yContract;
 }

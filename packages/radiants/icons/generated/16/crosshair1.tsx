@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const Crosshair1 = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M1 7H4V9H1V7ZM2 4H3V6H2V4ZM2 10H3V12H2V10ZM3 3H4V4H3V3ZM3 12H4V13H3V12ZM4 2H6V3H4V2ZM4 13H6V14H4V13ZM7 1H9V4H7V1ZM7 7H9V9H7V7ZM7 12H9V15H7V12ZM10 2H12V3H10V2ZM10 13H12V14H10V13ZM12 3H13V4H12V3ZM12 7H15V9H12V7ZM12 12H13V13H12V12ZM13 4H14V6H13V4ZM13 10H14V12H13V10Z" /></svg>;
+Crosshair1.displayName = 'Crosshair1';
+
+export default Crosshair1;

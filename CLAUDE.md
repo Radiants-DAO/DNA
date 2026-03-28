@@ -271,6 +271,6 @@ When summarizing or compacting this conversation, always preserve:
 - The current leading architecture
 - The scorecard criteria
 - Unresolved open questions
-- Artifact file paths under `research/design-guard/`
+- Artifact file paths under `docs/research/design-guard/`
 - Rejected architectures and why they were rejected
 - Migration constraints from the current repo

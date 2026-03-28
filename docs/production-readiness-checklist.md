@@ -4,18 +4,20 @@ type: "note"
 # Production Readiness Checklist
 
 Generated 2026-03-22 from 7-agent codebase audit + 40-question interview.\
-Updated 2026-03-22 by 6-agent audit swarm (findings: `research/production-readiness-audit-swarm.md`).\
-Full audit data: `docs/reports/2026-03-22-production-readiness-audit.md`
+Updated 2026-03-22 by 6-agent audit swarm (findings: `archive/research/production-readiness-audit-swarm.md`).\
+Full audit data: `archive/reports/2026-03-22-production-readiness-audit.md`.\
+Updated 2026-03-26 by Codex from Reforge comparator pass: [CODEX-COMPARISON-REPORT.md](/Users/rivermassey/Desktop/dev/reforge/export/dna/2026-03-26/CODEX-COMPARISON-REPORT.md). Archive refs below resolve under [reforge_archive/2026-03-26-dna-run/reforge-workspace](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace).
+Updated 2026-03-27 by Codex for backend/tooling completions and merge-pass verification.
 
 **Context**: Solo dev (+ Claude Code + Codex) preparing for handoff to 4 devs. Top priority is visual quality — UI bugs are the #1 embarrassment risk. Mobile is a launch blocker. Skills refactor is a prerequisite for motion work.
 
 **Derived planning views**:
 
-* Execution track: `docs/production-readiness-execution-track.md`
+* Execution track: `archive/production-readiness/production-readiness-execution-track.md`
 
-* Research track: `docs/production-readiness-research-track.md`
+* Research track: `archive/production-readiness/production-readiness-research-track.md`
 
-* Mixed track: `docs/production-readiness-mixed-track.md`
+* Mixed track: `archive/production-readiness/production-readiness-mixed-track.md`
 
 Source of truth remains this checklist.
 
@@ -75,6 +77,11 @@ Quick wins that prevent broken builds and confusing code for incoming devs.
 * [x] Add `data-start-button` attribute to Start button in Taskbar ✅ `3770421c`
 * [x] Fix StartMenu social links: add `noopener,noreferrer` ✅ `d0481094`
 
+### T0 Reforge Critical Fixes (2026-03-26)
+
+* [x] Replace the 24px icon monolith with per-file generation ✅ SVGR/SVGO pipeline, compile-time aliases/importers, runtime entrypoint split, and stale artifact pruning landed in `packages/radiants/icons/*` + `packages/radiants/scripts/generate-icons.ts`
+* [ ] Rework global `:focus-visible` so Windows High Contrast Mode gets a real outline; keep glow only as a progressive enhancement. Reforge: [CODEX comparison report](/Users/rivermassey/Desktop/dev/reforge/export/dna/2026-03-26/CODEX-COMPARISON-REPORT.md), [token-system accessibility spike](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/spikes/token-system/src/accessibility.ts). DNA target: [packages/radiants/base.css](../packages/radiants/base.css)
+
 ***
 
 ## T1 — Component Visual Quality
@@ -85,7 +92,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 * [x] Flat mode: add pressed + hover states ✅ merged from `qc-visual-t1`
 * [ ] Disabled: reconcile `disabled` prop vs disabled state (prop has correct styles, state does not)
-* [x] Focus state: replace outline with drop shadow or similar accessible alternative ✅ merged from `qc-visual-t1`
+* [x] Focus state: button-specific visual polish ✅ merged from `qc-visual-t1` (global forced-colors-safe focus ring still open in T0 Reforge follow-up)
 * [x] Active prop: fix strange linear gradient on border ✅ merged from `qc-visual-t1`
 * [ ] Pattern mode: rest state should show pattern (currently acts like quiet). Fix invisible text/icons in rest + superstate
 * [ ] Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
@@ -251,13 +258,13 @@ Launch blocker. Ground-up rework, not incremental patches.
 * [ ] Add more local tracks (user has files)
 * [ ] Implement physical-looking transport buttons (tape deck / CD player aesthetic)
 * [ ] Fix widget mode readability (black text on black background)
-* [ ] Fix `document.querySelector('audio')` seek hack (use ref or store)
-* [ ] Remove share button or wire it up
+* [x] Fix `document.querySelector('audio')` seek hack (use ref or store)
+* [x] Remove share button or wire it up
 
 ### Brand Assets — Fix Broken Features
 
-* [ ] Fix download paths (PNG subdir doesn't exist, filename mismatch for mark variants)
-* [ ] Fix font download URLs (both point to wrong Bonkathon Dropbox ZIP)
+* [x] Fix download paths (PNG subdir doesn't exist, filename mismatch for mark variants)
+* [x] Fix font download URLs (both point to wrong Bonkathon Dropbox ZIP)
 * [ ] `[explore]` Hardcoded semantic hex values — auto-derive from tokens?
 * [ ] `[explore]` AI Toolkit tab scope (2 sref codes — final or placeholder?)
 
@@ -265,41 +272,71 @@ Launch blocker. Ground-up rework, not incremental patches.
 
 * [ ] AboutApp: fill in real team names, contributors, acknowledgments
 * [ ] ManifestoApp: fill in actual manifesto content
-* [ ] LinksApp: implement or remove from catalog (currently 17-line stub)
+* [x] LinksApp: implement or remove from catalog (removed from catalog/runtime)
 
 ***
 
 ## T4 — Tooling & Infrastructure
 
+Reforge items here are reference inputs, not copy-paste implementations. Integrate them into DNA's existing pnpm, `.githooks/`, manual-QC, and `rdna-design-guard.yml` patterns.
+
+### Reforge Follow-up (2026-03-26)
+
+* [x] Add Knip-based dead-code detection to the existing CI and hook architecture, not a separate lefthook/npm workflow. Include `eslint-plugin-unused-imports` and enable `noUnusedLocals` / `noUnusedParameters` where the package tsconfigs can tolerate it. ✅ `pnpm deadcode:check` wired into `.githooks/pre-commit` + `rdna-design-guard.yml`; `eslint-plugin-unused-imports` configured in `eslint.rdna.config.mjs`; strict unused checks enabled in `apps/rad-os/tsconfig.json` and `tools/playground/tsconfig.json`. Reforge: [dead-code-sweep comparator](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/comparator/dead-code-sweep.md), [knip-config.ts](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/spikes/dead-code-sweep/src/knip-config.ts), [eslint-config.ts](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/spikes/dead-code-sweep/src/eslint-config.ts). DNA targets: [package.json](../package.json), [.github/workflows/rdna-design-guard.yml](../.github/workflows/rdna-design-guard.yml), [.githooks/pre-commit](../.githooks/pre-commit), [eslint.rdna.config.mjs](../eslint.rdna.config.mjs), [apps/rad-os/tsconfig.json](../apps/rad-os/tsconfig.json), [tools/playground/tsconfig.json](../tools/playground/tsconfig.json)
+* [ ] Pilot Playwright visual regression on T1 components and keep manual `/qc-visual` as the second layer. Add Argos CI as the default regression surface once the baseline is stable. Reforge: [production-readiness-qc comparator](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/comparator/production-readiness-qc.md), [visual-test-runner.ts](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace/spikes/production-readiness-qc/src/visual-test-runner.ts). DNA targets: [.github/workflows/rdna-design-guard.yml](../.github/workflows/rdna-design-guard.yml), [docs/ops/qc-visual-t1-checklist.md](./ops/qc-visual-t1-checklist.md), [tools/playground/package.json](../tools/playground/package.json)
+* [ ] Replace the manual QC markdown with generated checklists once the visual regression suite is trustworthy; keep human review as the final layer.
+* [ ] Bridge automated QC findings into Playground annotations so visual regressions land in the same adoption/review workflow.
+
+### Token / Contract Follow-up
+
+* [x] Add DTCG token export as a build artifact for Figma / Style Dictionary interop
+* [x] Add token validation pipeline checks for missing semantic pairs, bad token shapes, and contrast failures
+* [x] Add gamut boundary validation for OKLCH tokens (`C <= 0.32`)
+* [x] Verify or add sRGB fallbacks for OKLCH tokens in the build pipeline
+* [x] Generate TypeScript token interfaces from the token source of truth
+* [x] Add density tiers (`data-density`, comfortable / compact) without breaking existing component contracts ✅ Contract types, registry metadata, generated artifacts, and base/token CSS now support `comfortable` / `compact`
+* [x] Extend `defineComponentMeta()` with composition rules (`required`, `optional`, `order`)
+* [x] Adopt `createCompoundContext()` for new compound components and retrofit inconsistent compounds over time ✅ Shared helper landed and current inconsistent compounds were migrated (Alert, AlertDialog, Dialog, Drawer, Sheet, Tabs, Toast)
+
 ### ESLint
 
 * [ ] Auto-generate `token-map.mjs` from `tokens.css` + component data (prevents drift)
-* [ ] Add test files for `no-clipped-shadow` and `no-pixel-border` rules
-* [ ] Expand `prefer-rdna-components` element list (covers 11 elements: button, input, select, textarea, dialog, details, summary, label, meter, progress, hr)
+* [x] Add test files for `no-clipped-shadow` and `no-pixel-border` rules
+* [x] Expand `prefer-rdna-components` element list (covers 11 elements: button, input, select, textarea, dialog, details, summary, label, meter, progress, hr)
+* [x] Add hash-based contract freshness checks so generated contracts cannot silently drift from source
+* [ ] Add `@eslint/css` coverage for token, pattern, and other authored CSS files
 * [ ] `[explore]` CI automated test runs — worth adding?
 
 ### CI
 
-* [ ] Add component tests to CI workflow (`.github/workflows/rdna-design-guard.yml` only runs lint, not tests)
-* [ ] Add `test` task to `turbo.json`
+* [x] Add component tests to CI workflow (`.github/workflows/rdna-design-guard.yml` now runs `pnpm test:ci`, including the full current Radiants + Playground suites)
+* [x] Add `test` task to `turbo.json` ✅ plus `test:ci` for the current stable monorepo surface
 
 ### Component Testing
 
 * [ ] Component tests come AFTER T1 refactoring is complete
 * [ ] 18 components have zero individual test coverage — prioritize refactored components
 * [ ] All 38+ components missing `.dna.json` (zero exist) — generate after refactoring stabilizes
+* [ ] Add axe-core accessibility coverage for core RDNA components alongside visual regression
+
+### Playground / State Inspection
+
+* [ ] Add state-matrix rendering (variants × states × themes) to Playground for systematic component review
+* [ ] Add CDP pseudo-state forcing to the screenshot / Playwright tooling for hover, focus, and active capture
+* [ ] Add dagre auto-layout to PlaygroundCanvas for generated comparison and state views
 
 ### Registry
 
-* [ ] Update registry test threshold (`>= 22` but actual count is 42 — would miss deletion of 20 components)
-* [ ] Update `packages/radiants/README.md` component list (missing 18, lists nonexistent "Divider" and deleted HelpPanel)
+* [x] Update registry test threshold (`>= 22` but actual count is 42 — would miss deletion of 20 components)
+* [x] Update `packages/radiants/README.md` component list (missing 18, lists nonexistent "Divider" and deleted HelpPanel)
+* [x] Add registry drift guard / MD5 caching so registry outputs can be checked for staleness and rebuilt incrementally
 
 ### Token Drift
 
 * [ ] Sync `sun-red` oklch value across `tokens.css`, `token-map.mjs`, and `DESIGN.md` (currently divergent)
 * [ ] Update stale hex values in `token-map.mjs` (pre-oklch migration artifacts)
 * [ ] Migrate 4 remaining `rgba()` values in `tokens.css` to oklch
-* [ ] Add tests for `no-clipped-shadow` and `no-pixel-border` ESLint rules (complex ancestor-walking, untested)
+* [x] Add tests for `no-clipped-shadow` and `no-pixel-border` ESLint rules (complex ancestor-walking, untested)
 
 ***
 
@@ -329,14 +366,14 @@ Sequenced: skills audit first, motion refactor second. Skills provide the rules 
 
 ## T6 — Documentation & Cleanup
 
-* [ ] `packages/radiants/README.md`: add 18 missing components, remove HelpPanel
+* [x] `packages/radiants/README.md`: add 18 missing components, remove HelpPanel
 * [x] `references/design-playground/UPSTREAM.md`: `apps/playground/`~~ → ~~`tools/playground/` ✅ Fixed
 * [x] `apps/rad-os/CLAUDE.md`~~: full rewrite~~ ✅ Fixed
 * [x] ~~Root ~~`CLAUDE.md`~~: fix app/component counts~~ ✅ Fixed
 * [x] ~~Memory file: fix worktrees, remove dead Flow block, fix broken link~~ ✅ Fixed
-* [ ] Docs audit: review 6 brainstorms + 11 plans before deleting (may have useful content)
+* [x] Docs audit: reviewed brainstorms/plans and redistributed current vs archive vs ideas ✅
 * [ ] Session files (2,631 / 10MB): mine for potential RDNA skills, then purge
-* [ ] `[explore]` `prompts/dna-conversion/`: add "unmaintained" banner or archive
+* [x] `archive/prompts/dna-conversion/`: archived as unmaintained reference ✅
 
 ***
 
@@ -349,6 +386,15 @@ Sequenced: skills audit first, motion refactor second. Skills provide the rules 
 * [ ] CI test pipeline
 * [ ] `data-start-button` click guard (user is OK with current close-on-outside behavior)
 * [ ] WebGL fallback for browsers without WebGL support
+
+### Optional Bonuses
+
+* [ ] Replace one-off duration overrides with a shared motion duration scalar (`calc(Xms * var(--duration-scalar))`)
+* [ ] Add Syncpack to dependency hygiene / monorepo consistency checks
+* [ ] Verify Rad-OS singleton and SSR safety assumptions
+* [ ] Add Figma Code Connect `.figma.tsx` mappings for component linking
+* [ ] Explore fluid `clamp()` typography where fixed Tailwind sizes are too rigid
+* [ ] Explore Capsize metrics for tighter vertical rhythm in the pixel/retro type system
 
 ***
 

@@ -9,10 +9,11 @@ import {
   WordmarkLogo,
   RadSunLogo,
   FontAaIcon,
-} from '@rdna/radiants/icons';
+} from '@rdna/radiants/icons/runtime';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 import { PatternPlayground } from '@/components/apps/pattern-playground';
 import { TypographyPlayground, SubTabNav, type SubTab, type LayoutVariant } from '@/components/apps/typography-playground';
+import { getBrandLogoDownloadHref } from '@/lib/asset-downloads';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { ComponentCategory } from '@rdna/radiants/registry';
 
@@ -206,13 +207,6 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
     }
   };
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = `/assets/logos/${format.toUpperCase()}/${logo.id}.${format}`;
-    link.download = `${logo.id}.${format}`;
-    link.click();
-  };
-
   const renderLogo = () => {
     if (logo.variant === 'wordmark') return <WordmarkLogo className="w-[80%] h-auto" color={logo.logoColor} />;
     if (logo.variant === 'radsun')   return <RadSunLogo className="w-[40%] h-auto" color={logo.logoColor} />;
@@ -244,7 +238,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
             <Button
               iconOnly
               icon="download"
-              onClick={handleDownload}
+              href={getBrandLogoDownloadHref(logo.id, format)}
             />
           </Tooltip>
         </div>
@@ -471,8 +465,11 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
 const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
   <div className="flex gap-0.5">
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
     <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
     <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
     <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-sm" />
   </div>
 );
@@ -482,7 +479,7 @@ const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
 // Main Component
 // ============================================================================
 
-export function BrandAssetsApp({ windowId }: AppProps) {
+export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
@@ -497,7 +494,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
     <div className="h-full flex gap-1.5 px-1.5 pb-1.5 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
       {/* ── Left column: accordion nav ──────────────────────── */}
       <div className="flex flex-col shrink-0 w-44">
-        <div className="relative z-10 -mr-[8px]">
+        <div className="relative z-10 -mr-2">
           <Tabs.List className="bg-page pixel-rounded-l-sm space-y-0.5">
             <Tabs.Trigger value="logos" compact icon={<RadMarkIcon size={14} />}
               settings={

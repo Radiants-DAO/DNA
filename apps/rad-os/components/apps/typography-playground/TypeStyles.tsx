@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Tooltip } from '@rdna/radiants/components/core';
 
 // ============================================================================
@@ -334,7 +334,7 @@ function CodeBlock({ filename, source, description }: CodeBlockProps) {
   };
 
   return (
-    <div className="pixel-rounded-sm overflow-hidden">
+    <div className="pixel-rounded-sm">
       {/* Header */}
       <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -342,7 +342,7 @@ function CodeBlock({ filename, source, description }: CodeBlockProps) {
           <span className="font-mono text-xs text-flip/40">{description}</span>
         </div>
         <Tooltip content={copied ? 'Copied!' : 'Copy source'}>
-          {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-type-playground */}
+          {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-001 */}
           <button
             type="button"
             onClick={handleCopy}

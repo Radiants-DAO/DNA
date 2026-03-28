@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { FONTS, type FontEntry } from '../typography-data';
 import { DESIGN_STATEMENT, FONT_RATIONALE, type FontRationale } from '../type-manual-copy';
 

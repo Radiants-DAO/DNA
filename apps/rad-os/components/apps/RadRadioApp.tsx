@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   Slider,
 } from '@rdna/radiants/components/core';
-import { WordmarkLogo, Icon } from '@rdna/radiants/icons';
+import { WordmarkLogo, Icon } from '@rdna/radiants/icons/runtime';
 
 // ============================================================================
 // Video Data
@@ -44,8 +44,6 @@ const NextIcon = () => <Icon name="skip-forward" size={14} />;
 const SmallPrevIcon = () => <Icon name="skip-back" size={8} />;
 const SmallNextIcon = () => <Icon name="skip-forward" size={8} />;
 
-// Other icons
-const ShareIcon = () => <Icon name="share" size={14} />;
 const HeartIcon = ({ filled }: { filled: boolean }) => (
   <Icon name="heart" size={14} className={filled ? 'fill-current' : ''} />
 );
@@ -66,7 +64,7 @@ interface VideoPlayerProps {
   wallpaperMode?: boolean;
 }
 
-export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlaying, wallpaperMode }: VideoPlayerProps) {
+export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlaying: _isAudioPlaying, wallpaperMode }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onNextVideoRef = useRef(onNextVideo);
@@ -470,7 +468,7 @@ export function RadRadioController() {
     currentTrackIndex,
     currentChannel,
     isPlaying,
-    setPlaying,
+    setPlaying: _setPlaying,
     setCurrentTime,
     nextTrack,
     pendingSeek,
@@ -679,7 +677,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
 // Main Component
 // ============================================================================
 
-export function RadRadioApp({ windowId }: AppProps) {
+export function RadRadioApp({ windowId: _windowId }: AppProps) {
   const { volume, setVolume } = usePreferencesStore();
   const {
     currentVideoIndex,
@@ -736,14 +734,6 @@ export function RadRadioApp({ windowId }: AppProps) {
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <Button
-              quiet
-              size="sm"
-              className="p-1.5 text-mute hover:text-main transition-colors"
-              aria-label="Share"
-            >
-              <ShareIcon />
-            </Button>
             <Button
               quiet
               size="sm"

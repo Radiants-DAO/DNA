@@ -49,6 +49,7 @@ async function processDir(
       shadowSystem: _shadowSystem,
       styleOwnership: _styleOwnership,
       structuralRules: _structuralRules,
+      density: _density,
       wraps: _wraps,
       a11y: _a11y,
       ...schema

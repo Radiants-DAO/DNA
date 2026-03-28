@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const Telephone = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M1.5 5.5H2.5V3.5H4.5V2.5H11.5V3.5H13.5V5.5H14.5V7.5H10.5V5.5H11.5V4.5H4.5V5.5H5.5V7.5H1.5V5.5ZM2.5 10.5H3.5V9.5H4.5V8.5H5.5V7.5H6.5V6.5H9.5V7.5H10.5V8.5H11.5V9.5H12.5V10.5H13.5V12.5H12.5V13.5H3.5V12.5H2.5V10.5ZM5.5 8.5V9.5H6.5V8.5H5.5ZM10.5 8.5H9.5V9.5H10.5V8.5ZM5.5 10.5V11.5H6.5V10.5H5.5ZM7.5 7.5V8.5H8.5V7.5H7.5ZM7.5 9.5V10.5H8.5V9.5H7.5ZM7.5 11.5V12.5H8.5V11.5H7.5ZM9.5 10.5V11.5H10.5V10.5H9.5Z" /></svg>;
+Telephone.displayName = 'Telephone';
+
+export default Telephone;

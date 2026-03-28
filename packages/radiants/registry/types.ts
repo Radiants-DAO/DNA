@@ -1,6 +1,8 @@
 export type {
   A11yContract,
   ComponentCategory,
+  DensityContract,
+  CompositionRules,
   ElementReplacement,
   ForcedState,
   PreviewState,
@@ -14,8 +16,9 @@ import type { ComponentType } from 'react';
 import type {
   A11yContract,
   ComponentCategory,
+  DensityContract,
+  CompositionRules,
   ElementReplacement,
-  ForcedState,
   PreviewState,
   PropDef,
   SlotDef,
@@ -121,6 +124,10 @@ export interface RegistryMetadataEntry {
   styleOwnership?: StyleOwnership[];
   /** Structural lint rules owned by the component contract */
   structuralRules?: StructuralRule[];
+  /** Density tiers supported by the component */
+  density?: DensityContract;
+  /** Slot/subcomponent composition requirements */
+  composition?: CompositionRules;
   /** Upstream primitive the component wraps */
   wraps?: string;
   /** Accessibility contract metadata */
@@ -130,7 +137,7 @@ export interface RegistryMetadataEntry {
 /** React runtime wiring — added on top of metadata at the client layer. */
 export interface RuntimeAttachment {
   /** The primary component export */
-  component?: ComponentType<any>;
+  component?: unknown;
   /** React component for compound/controlled demos */
   Demo?: ComponentType;
 }

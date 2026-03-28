@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { Button, Slider } from '@rdna/radiants/components/core';
 import { type FontEntry, type TemplateId, TEMPLATES } from './typography-data';
 

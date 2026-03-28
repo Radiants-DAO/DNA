@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Pattern } from '@rdna/radiants/components/core';
 import {
-  patternRegistry,
   PATTERN_GROUPS,
   getPatternsByGroup,
 } from '@rdna/radiants/patterns';

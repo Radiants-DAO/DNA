@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { FONTS, TYPE_SCALE, ELEMENT_STYLES } from '../typography-data';
 import { FONT_RATIONALE } from '../type-manual-copy';
 

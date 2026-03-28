@@ -2,7 +2,7 @@
 
 import { useState, useCallback, type ReactNode } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -16,11 +16,6 @@ interface SelectState {
 interface SelectActions {
   setOpen: (v: boolean) => void;
   setValue: (v: string) => void;
-}
-
-interface SelectContext {
-  state: SelectState;
-  actions: SelectActions;
 }
 
 interface ProviderProps {

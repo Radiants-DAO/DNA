@@ -98,8 +98,8 @@ export const radiantsSystemContract: DesignSystemContract = {
 
 ## Related
 
-- Full research: `research/design-guard/` (scorecard, evidence-log, candidate-architectures, recommendation, loop-log)
-- Contract synthesis: `docs/research/design-contract-synthesis.md` (full TypeScript interfaces)
-- Guard rails analysis: `docs/research/guard-rails-scout-report.md`
-- Token pipeline analysis: `docs/research/token-primitives-scout-report.md`
+- Full research: `archive/research/design-guard/` (scorecard, evidence-log, candidate-architectures, recommendation, loop-log)
+- Contract synthesis: `archive/research/design-contract-synthesis.md` (full TypeScript interfaces)
+- Guard rails analysis: `archive/research/guard-rails-scout-report.md`
+- Token pipeline analysis: `archive/research/token-primitives-scout-report.md`
 - Rejected architectures: B (CSS-Derived), C (Schema Registry — over-engineered), D (Overlay — incomplete)

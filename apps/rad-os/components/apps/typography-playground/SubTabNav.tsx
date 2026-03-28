@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { Button } from '@rdna/radiants/components/core';
 import { type SubTab } from './TypographyPlayground';
 

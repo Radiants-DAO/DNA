@@ -50,13 +50,14 @@ function App() {
 
 ### Available Components
 
-- **Layout**: Card
-- **Actions**: Button, ContextMenu, DropdownMenu
-- **Forms**: Input, InputSet, TextArea, Select, Checkbox, Radio, Switch, Slider
-- **Feedback**: Alert, Badge, Spinner, Toast, Tooltip
-- **Overlays**: Dialog, Popover, Sheet
-- **Navigation**: Tabs, Breadcrumbs
-- **Specialty**: CountdownTimer
+- **Actions**: Button, ContextMenu, DropdownMenu, Toggle, ToggleGroup, Toolbar
+- **Layout**: Card, Collapsible, Pattern, ScrollArea, Separator
+- **Forms**: Checkbox, Combobox, Input, InputSet, NumberField, Radio, Select, Slider, Switch, TextArea
+- **Feedback**: Alert, Badge, Meter, Spinner, Toast, Tooltip
+- **Navigation**: Breadcrumbs, Menubar, NavigationMenu, Tabs
+- **Overlays**: AlertDialog, Dialog, Drawer, Popover, PreviewCard, Sheet
+- **Data Display**: Avatar, CountdownTimer
+- **Media**: Icon
 
 ### Hooks
 

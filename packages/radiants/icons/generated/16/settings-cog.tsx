@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const SettingsCog = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 7H4V5H3V3H5V4H7V2H9V4H11V3H13V5H12V7H14V9H12V11H13V13H11V12H9V14H7V12H5V13H3V11H4V9H2V7ZM6 7V9H7V10H9V9H10V7H9V6H7V7H6Z" /></svg>;
+SettingsCog.displayName = 'SettingsCog';
+
+export default SettingsCog;

@@ -1,0 +1,5 @@
+import type { IconProps } from '../../types';
+export const Twitter = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" fillRule="evenodd" d="M10 3H9V4H8V5V6H7H6H5V5H4V4H3V3H2V4V5V6H3V7H2V8H3H4V9H3V10H4H5V11H4V12H3V11H2V12H3V13H4H5H6H7H8V12H9H10V11H11V10H12V9V8H13V7V6V5H14V4V3H13V4H12V3H11H10Z" clipRule="evenodd" /></svg>;
+Twitter.displayName = 'Twitter';
+
+export default Twitter;

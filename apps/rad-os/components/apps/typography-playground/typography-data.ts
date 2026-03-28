@@ -1,3 +1,5 @@
+import { getFontDownloadHref } from '@/lib/asset-downloads';
+
 export type FontKey = 'joystix' | 'mondwest' | 'pixelcode';
 
 export interface FontEntry {
@@ -32,8 +34,7 @@ export const FONTS: FontEntry[] = [
     weights: [{ value: 400, label: 'Regular' }],
     hasItalic: false,
     source: 'Open Source',
-    downloadUrl:
-      'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
+    downloadUrl: getFontDownloadHref('Joystix.woff2'),
     linkOut: false,
   },
   {
@@ -53,8 +54,8 @@ export const FONTS: FontEntry[] = [
     ],
     hasItalic: false,
     source: 'Pangram Pangram',
-    downloadUrl: 'https://pangrampangram.com/products/mondwest',
-    linkOut: true,
+    downloadUrl: getFontDownloadHref('Mondwest.woff2'),
+    linkOut: false,
   },
   {
     name: 'PixelCode',
@@ -75,7 +76,7 @@ export const FONTS: FontEntry[] = [
     ],
     hasItalic: true,
     source: 'Open Source',
-    downloadUrl: 'https://qwerasd205.github.io/PixelCode/',
+    downloadUrl: getFontDownloadHref('PixelCode.woff2'),
     linkOut: false,
   },
 ];

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { resolve } from 'node:path';
+import { normalizeScaffoldName } from './names.ts';
 import { scaffoldProject } from './scaffold.ts';
 
 interface CliOptions {
@@ -9,13 +10,18 @@ interface CliOptions {
 }
 
 function parseArgs(argv: string[]): CliOptions {
-  const [appName, ...rest] = argv;
+  const optionStart = argv.findIndex((arg) => arg.startsWith('--'));
+  const nameParts =
+    optionStart === -1 ? argv : argv.slice(0, optionStart);
+  const rest = optionStart === -1 ? [] : argv.slice(optionStart);
+  const appName = nameParts.join(' ').trim();
 
   if (!appName) {
     throw new Error('Usage: rdna-create <app-name> [--out-dir <dir>]');
   }
 
-  let outDir = resolve(process.cwd(), appName);
+  const normalizedAppName = normalizeScaffoldName(appName);
+  let outDir = resolve(process.cwd(), normalizedAppName || appName);
 
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];

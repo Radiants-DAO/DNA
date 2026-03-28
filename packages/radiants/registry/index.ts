@@ -8,7 +8,19 @@ export {
 } from './preview-states';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
 export { useShowcaseProps } from './useShowcaseProps';
-export type { PropDef, SlotDef, ComponentCategory, ForcedState, PreviewState } from './types';
+export type {
+  A11yContract,
+  ComponentCategory,
+  DensityContract,
+  CompositionRules,
+  ElementReplacement,
+  ForcedState,
+  PreviewState,
+  PropDef,
+  SlotDef,
+  StructuralRule,
+  StyleOwnership,
+} from './types';
 export type {
   RegistryEntry,
   RegistryMetadataEntry,

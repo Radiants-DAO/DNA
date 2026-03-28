@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import { Button, Card, Separator } from '@rdna/radiants/components/core';
 import { WindowContent } from '@/components/Rad_os';
 import { type AppProps } from '@/lib/apps';
@@ -35,7 +33,7 @@ const OPEN_SOURCE = [
 // Component
 // ============================================================================
 
-export function AboutApp({ windowId }: AppProps) {
+export function AboutApp({ windowId: _windowId }: AppProps) {
   return (
     <WindowContent>
       <div className="max-w-[42rem] mx-auto space-y-8">
@@ -124,6 +122,7 @@ export function AboutApp({ windowId }: AppProps) {
                   <Button
                     href={lib.url}
                     target="_blank"
+                    rel="noopener noreferrer"
                     mode="text"
                     size="sm"
                   >

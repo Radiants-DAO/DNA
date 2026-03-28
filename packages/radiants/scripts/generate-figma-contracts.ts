@@ -3,6 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { converter, formatHex } from "culori";
 import { componentMetaIndex } from "../meta/index.ts";
 import { radiantsSystemContract } from "../contract/system.ts";
 import type { ComponentMeta } from "../../preview/src/index.ts";
@@ -12,6 +13,7 @@ type JsonObject = Record<string, unknown>;
 interface FigmaArtifacts {
   tokenFiles: Record<string, JsonObject>;
   contractFiles: Record<string, JsonObject>;
+  textFiles: Record<string, string>;
   configExample: string;
 }
 
@@ -40,6 +42,7 @@ const DEFAULT_CONFIG_TOKENS_DIR = "packages/radiants/generated/figma";
 const DEFAULT_CONFIG_CONTRACTS_DIR = "packages/radiants/generated/figma/contracts";
 
 const SEMANTIC_COLOR_SUFFIXES = new Set(radiantsSystemContract.tokenMap.semanticColorSuffixes);
+const toRgb = converter("rgb");
 
 function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, " ").trim();
@@ -225,6 +228,43 @@ function toTokenReference(value: string) {
   return normalized;
 }
 
+function resolveTokenValue(
+  value: string,
+  tokens: Record<string, string>,
+  seen = new Set<string>(),
+): string | null {
+  const normalized = normalizeWhitespace(value);
+  const varReference = normalized.match(/^var\((--[a-z0-9-]+)\)$/i)?.[1];
+
+  if (!varReference) {
+    return normalized;
+  }
+
+  if (seen.has(varReference)) {
+    return null;
+  }
+
+  const next = tokens[varReference];
+  if (!next) {
+    return null;
+  }
+
+  seen.add(varReference);
+  return resolveTokenValue(next, tokens, seen);
+}
+
+function toSrgbHex(value: string | null) {
+  if (!value) return null;
+
+  const rgb = toRgb(value);
+  return rgb ? formatHex(rgb) : null;
+}
+
+function buildSrgbExtension(value: string | null) {
+  const srgb = toSrgbHex(value);
+  return srgb ? { $extensions: { rdna: { srgb } } } : {};
+}
+
 function buildToken(value: string, type: string, extra: JsonObject = {}) {
   return {
     $type: type,
@@ -296,13 +336,87 @@ function parseDarkOverrides() {
   }, {});
 }
 
+function extractOklchChroma(value: string | null) {
+  if (!value) return null;
+  const match = normalizeWhitespace(value).match(/^oklch\(\s*([^)]+?)\s*\)$/i);
+  if (!match) return null;
+
+  const [body] = match[1].split("/");
+  const parts = body.trim().split(/\s+/);
+  if (parts.length < 3) return null;
+
+  const chroma = Number(parts[1]);
+  return Number.isFinite(chroma) ? chroma : null;
+}
+
+function buildValidationReport(
+  themeTokens: Record<string, string>,
+  darkOverrides: Record<string, string>,
+) {
+  const tokenLookup = { ...themeTokens, ...darkOverrides };
+  const colorEntries = Object.entries(themeTokens).filter(([name]) => name.startsWith("--color-"));
+
+  const missingSemanticTokens = radiantsSystemContract.tokenMap.semanticColorSuffixes.filter(
+    (suffix) => !themeTokens[`--color-${suffix}`],
+  );
+
+  const invalidColorTokens = colorEntries.flatMap(([name, value]) => {
+    const normalized = normalizeWhitespace(value);
+    if (/^var\(--[a-z0-9-]+\)$/i.test(normalized) || /^oklch\(/i.test(normalized)) {
+      return [];
+    }
+
+    return [{ token: name, value: normalized }];
+  });
+
+  const gamutBoundaryViolations = Object.entries(tokenLookup).flatMap(([name, value]) => {
+    const resolved = resolveTokenValue(value, tokenLookup);
+    const chroma = extractOklchChroma(resolved);
+    if (chroma === null || chroma <= 0.32) {
+      return [];
+    }
+
+    return [{ token: name, chroma, value: resolved }];
+  });
+
+  const unresolvedSrgbFallbacks = colorEntries.flatMap(([name, value]) => {
+    const resolved = resolveTokenValue(value, tokenLookup);
+    return toSrgbHex(resolved) ? [] : [{ token: name, value: resolved ?? value }];
+  });
+
+  const issues =
+    missingSemanticTokens.length +
+    invalidColorTokens.length +
+    gamutBoundaryViolations.length +
+    unresolvedSrgbFallbacks.length;
+
+  return {
+    summary: {
+      semanticTokens: radiantsSystemContract.tokenMap.semanticColorSuffixes.length,
+      primitiveColorTokens: colorEntries.length,
+      issues,
+    },
+    issues: {
+      missingSemanticTokens,
+      invalidColorTokens,
+      gamutBoundaryViolations,
+      unresolvedSrgbFallbacks,
+    },
+  };
+}
+
 function buildPrimitiveColorTokens(themeTokens: Record<string, string>) {
   const color: Record<string, JsonObject> = {};
+  const tokenLookup = { ...themeTokens };
 
   for (const [name, value] of Object.entries(themeTokens)) {
     const suffix = stripCssPrefix(name, "--color-");
     if (!suffix || SEMANTIC_COLOR_SUFFIXES.has(suffix)) continue;
-    color[suffix] = buildToken(value, "color");
+    color[suffix] = buildToken(
+      value,
+      "color",
+      buildSrgbExtension(resolveTokenValue(value, tokenLookup)),
+    );
   }
 
   return {
@@ -450,6 +564,11 @@ function buildSemanticTokens(
     const light = toTokenReference(value);
     const dark = toTokenReference(darkOverrides[name] ?? value);
     const groupBucket = semantic[group] as Record<string, JsonObject>;
+    const lightResolved = resolveTokenValue(value, themeTokens);
+    const darkResolved = resolveTokenValue(darkOverrides[name] ?? value, {
+      ...themeTokens,
+      ...darkOverrides,
+    });
 
     groupBucket[key] = {
       $type: "color",
@@ -461,6 +580,10 @@ function buildSemanticTokens(
         },
         rdna: {
           source: name,
+          srgb: {
+            light: toSrgbHex(lightResolved),
+            dark: toSrgbHex(darkResolved),
+          },
         },
       },
     };
@@ -477,6 +600,46 @@ function buildSemanticTokens(
       "Semantic RDNA Radiants color tokens generated from tokens.css with light values and dark-mode overrides from dark.css.",
     ...semantic,
   };
+}
+
+function buildDtcgBundle(tokenFiles: Record<string, JsonObject>) {
+  return {
+    primitive: {
+      color: tokenFiles["primitive/color.tokens.json"],
+      space: tokenFiles["primitive/space.tokens.json"],
+      shape: tokenFiles["primitive/shape.tokens.json"],
+      motion: tokenFiles["primitive/motion.tokens.json"],
+      typography: tokenFiles["primitive/typography.tokens.json"],
+    },
+    semantic: tokenFiles["semantic/semantic.tokens.json"],
+  };
+}
+
+function buildTokenTypesFile(
+  themeTokens: Record<string, string>,
+  semanticTokens: JsonObject,
+) {
+  const primitiveColorNames = Object.keys(themeTokens)
+    .map((name) => stripCssPrefix(name, "--color-"))
+    .filter((name): name is string => Boolean(name) && !SEMANTIC_COLOR_SUFFIXES.has(name))
+    .sort()
+    .map((name) => `'color.${name}'`);
+
+  const semanticColorNames = Object.entries(semanticTokens)
+    .flatMap(([group, entries]) =>
+      Object.keys((entries as Record<string, JsonObject>) ?? {}).map((key) => `'${group}.${key}'`),
+    )
+    .sort();
+
+  return [
+    "// AUTO-GENERATED — DO NOT EDIT",
+    "// Generated by scripts/generate-figma-contracts.ts",
+    "",
+    `export type PrimitiveColorTokenName = ${primitiveColorNames.join(" | ")};`,
+    `export type SemanticColorTokenName = ${semanticColorNames.join(" | ")};`,
+    "export type RadiantsTokenName = PrimitiveColorTokenName | SemanticColorTokenName;",
+    "",
+  ].join("\n");
 }
 
 function normalizeSlots(raw: unknown) {
@@ -585,6 +748,7 @@ function buildComponentContractFiles() {
       shadowSystem: meta.shadowSystem ?? null,
       styleOwnership: meta.styleOwnership ?? [],
       structuralRules: meta.structuralRules ?? [],
+      ...(meta.density ? { density: meta.density } : {}),
       wraps: meta.wraps ?? null,
       a11y: meta.a11y ?? null,
     };
@@ -615,16 +779,27 @@ export function buildFigmaArtifacts(
   const configTokensDir = options.configTokensDir ?? DEFAULT_CONFIG_TOKENS_DIR;
   const configContractsDir = options.configContractsDir ?? DEFAULT_CONFIG_CONTRACTS_DIR;
 
+  const tokenFiles: Record<string, JsonObject> = {
+    "primitive/color.tokens.json": buildPrimitiveColorTokens(themeTokens),
+    "primitive/space.tokens.json": buildSpaceTokens(themeTokens),
+    "primitive/shape.tokens.json": buildShapeTokens(themeTokens),
+    "primitive/motion.tokens.json": buildMotionTokens(themeTokens),
+    "primitive/typography.tokens.json": buildTypographyTokens(themeTokens),
+    "semantic/semantic.tokens.json": buildSemanticTokens(themeTokens, darkOverrides),
+  };
+
+  tokenFiles["rdna.tokens.json"] = buildDtcgBundle(tokenFiles);
+  tokenFiles["validation-report.json"] = buildValidationReport(themeTokens, darkOverrides);
+
   return {
-    tokenFiles: {
-      "primitive/color.tokens.json": buildPrimitiveColorTokens(themeTokens),
-      "primitive/space.tokens.json": buildSpaceTokens(themeTokens),
-      "primitive/shape.tokens.json": buildShapeTokens(themeTokens),
-      "primitive/motion.tokens.json": buildMotionTokens(themeTokens),
-      "primitive/typography.tokens.json": buildTypographyTokens(themeTokens),
-      "semantic/semantic.tokens.json": buildSemanticTokens(themeTokens, darkOverrides),
-    },
+    tokenFiles,
     contractFiles: buildComponentContractFiles(),
+    textFiles: {
+      "tokens.d.ts": buildTokenTypesFile(
+        themeTokens,
+        tokenFiles["semantic/semantic.tokens.json"],
+      ),
+    },
     configExample: buildComponentContractsExample(configTokensDir, configContractsDir),
   };
 }
@@ -651,6 +826,15 @@ export function writeFigmaArtifacts(options: WriteFigmaArtifactsOptions = {}) {
 
   for (const [relativeFilePath, fileContents] of Object.entries(artifacts.tokenFiles)) {
     writeJsonFile(resolve(outputDir, relativeFilePath), fileContents);
+  }
+
+  for (const [relativeFilePath, fileContents] of Object.entries(artifacts.textFiles)) {
+    const fullPath = resolve(outputDir, relativeFilePath);
+    const directory = dirname(fullPath);
+    if (!existsSync(directory)) {
+      mkdirSync(directory, { recursive: true });
+    }
+    writeFileSync(fullPath, fileContents.endsWith("\n") ? fileContents : `${fileContents}\n`);
   }
 
   const contractsDir = resolve(outputDir, "contracts");

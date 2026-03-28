@@ -1,9 +1,10 @@
 'use client';
 
-import React, { createContext, use, useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Toast as BaseToast } from '@base-ui/react/toast';
 import { Alert } from '../Alert/Alert';
 import { Close as CloseIcon } from '../../../icons/generated';
+import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
 // Types
@@ -38,14 +39,15 @@ interface ToastContextValue {
 // Context — preserves existing useToast() contract
 // ============================================================================
 
-const ToastContext = createContext<ToastContextValue | null>(null);
+const {
+  Context: ToastContext,
+  useCompoundContext: useToastContext,
+} = createCompoundContext<ToastContextValue>('Toast', {
+  errorMessage: 'useToast must be used within a ToastProvider',
+});
 
 export function useToast() {
-  const context = use(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
+  return useToastContext();
 }
 
 // ============================================================================
