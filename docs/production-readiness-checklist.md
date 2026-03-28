@@ -6,7 +6,7 @@ type: "note"
 Generated 2026-03-22 from 7-agent codebase audit + 40-question interview.\
 Updated 2026-03-22 by 6-agent audit swarm (findings: `archive/research/production-readiness-audit-swarm.md`).\
 Full audit data: `archive/reports/2026-03-22-production-readiness-audit.md`.\
-Updated 2026-03-26 by Codex from Reforge comparator pass: [CODEX-COMPARISON-REPORT.md](/Users/rivermassey/Desktop/dev/reforge/export/dna/2026-03-26/CODEX-COMPARISON-REPORT.md). Archive refs below resolve under [reforge_archive/2026-03-26-dna-run/reforge-workspace](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace).
+Updated 2026-03-26 by Codex from Reforge comparator pass: [CODEX-COMPARISON-REPORT.md](/Users/rivermassey/Desktop/dev/reforge/export/dna/2026-03-26/CODEX-COMPARISON-REPORT.md). Archive refs below resolve under [reforge_archive/2026-03-26-dna-run/reforge-workspace](/Users/rivermassey/Desktop/dev/reforge_archive/2026-03-26-dna-run/reforge-workspace).\
 Updated 2026-03-27 by Codex for backend/tooling completions and merge-pass verification.
 
 **Context**: Solo dev (+ Claude Code + Codex) preparing for handoff to 4 devs. Top priority is visual quality — UI bugs are the #1 embarrassment risk. Mobile is a launch blocker. Skills refactor is a prerequisite for motion work.
