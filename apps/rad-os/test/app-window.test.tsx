@@ -10,11 +10,6 @@ class ResizeObserverMock {
   disconnect() {}
 }
 
-vi.mock('@/components/apps/rad-radio/ambient', () => ({
-  RadRadioAmbientWallpaper: () => null,
-  RadRadioAmbientWidget: () => null,
-  RadRadioAmbientController: () => null,
-}));
 
 describe('RadOS AppWindow', () => {
   beforeEach(() => {

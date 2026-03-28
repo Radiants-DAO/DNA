@@ -8,6 +8,18 @@
 
 A standalone control component library (`@rdna/controls`) that ships reusable UI controls — sliders, toggles, selects, color pickers, spacing editors, knobs, folders — as thin wrappers around RDNA primitives. The library is framework-agnostic in spirit but React-first in practice. First consumer is RadOS (dockable/detachable control panels inside app windows). Long-term, the library supports DOM editors, video editors, and any tool surface that needs parameter controls.
 
+## Visual Metaphor
+
+The RadOS control surface follows a **CD player** metaphor:
+
+- **Window** = the player (housing, playback, display)
+- **Control Surface** = the CD drive (docked bay where controls live)
+- **Control config** (knobs/sliders/panel contents) = the CD (swappable media — different apps load different "discs")
+- **Eject** = detach the control surface into a floating companion window (the disc pops out and hovers independently)
+- **Re-dock** = slide the disc back into the drive
+
+This gives users a physical intuition: the controls are *media* you slot into a *drive*, not permanent fixtures of the window. Different apps ship different discs. Ejecting lets you arrange your workspace freely.
+
 ## Why This Approach
 
 Three existing kits prove the patterns but none fit RDNA's needs:

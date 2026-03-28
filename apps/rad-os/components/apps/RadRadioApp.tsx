@@ -533,7 +533,7 @@ export function RadRadioController() {
     };
   }, [channelTracks.length, nextTrack, setCurrentTime]);
 
-  // Apply pending seek from store (triggered by RadRadioApp / RadRadioWidget)
+  // Apply pending seek from store
   useEffect(() => {
     if (pendingSeek !== null && audioRef.current) {
       audioRef.current.currentTime = pendingSeek;
@@ -551,129 +551,6 @@ export function RadRadioController() {
 }
 
 // ============================================================================
-// RadRadioWidget — compact floating panel for widget mode
-// ============================================================================
-
-interface RadRadioWidgetProps {
-  onExitWidget: () => void;
-}
-
-export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
-  const { volume, setVolume } = usePreferencesStore();
-  const {
-    currentTrackIndex,
-    currentChannel,
-    isPlaying,
-    currentTime,
-    favorites,
-    togglePlay,
-    prevTrack,
-    nextTrack,
-    setChannel,
-    seekTo,
-    toggleFavorite,
-    prevVideo,
-    nextVideo,
-  } = useRadRadioStore();
-
-  const channelTracks = getTracksByChannel(currentChannel);
-  const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
-  const isFavorite = favorites.includes(currentTrack.id);
-
-  const handleSeek = useCallback((time: number) => {
-    seekTo(time);
-  }, [seekTo]);
-
-  const handleChannelChange = useCallback((value: string) => {
-    setChannel(value as Track['channel']);
-  }, [setChannel]);
-
-  return (
-    <div className="w-[320px] bg-inv pixel-rounded-sm pixel-shadow-floating text-accent">
-      {/* Header with track info + close */}
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-line/30">
-        <Icon name="broadcast-dish" size={12} className="shrink-0 text-accent" />
-        <div className="flex-1 min-w-0">
-          <p className="truncate">
-            {currentTrack.artist} - {currentTrack.title}
-          </p>
-        </div>
-        <div className="flex items-center gap-0 shrink-0">
-          <Button
-            quiet
-            size="sm"
-            onClick={() => toggleFavorite(currentTrack.id)}
-            className={`p-1 transition-colors ${isFavorite ? 'text-danger' : 'text-mute hover:text-accent'}`}
-            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-          >
-            <HeartIcon filled={isFavorite} />
-          </Button>
-          <Button
-            quiet
-            size="sm"
-            onClick={onExitWidget}
-            className="p-1 text-mute hover:text-accent transition-colors"
-            aria-label="Exit widget mode"
-          >
-            <Icon name="close" size={14} />
-          </Button>
-        </div>
-      </div>
-
-      {/* Transport + progress */}
-      <div className="px-3 py-1.5 flex items-center gap-2">
-        <TransportControls
-          isPlaying={isPlaying}
-          onPlayPause={togglePlay}
-          onPrev={() => prevTrack(channelTracks.length)}
-          onNext={() => nextTrack(channelTracks.length)}
-          compact
-        />
-        <div className="flex-1 min-w-0">
-          <ProgressBar
-            currentTime={currentTime}
-            duration={currentTrack.duration}
-            onSeek={handleSeek}
-          />
-        </div>
-      </div>
-
-      {/* Channel + Volume + Video nav */}
-      <div className="px-3 pb-1.5 flex items-center gap-2">
-        <div className="flex-1 min-w-0">
-          <ChannelSelector value={currentChannel} onChange={handleChannelChange} compact />
-        </div>
-        <div className="w-28">
-          <VolumeControl volume={volume} onChange={setVolume} compact />
-        </div>
-      </div>
-
-      {/* Video navigation */}
-      <div className="px-3 pb-1.5 flex items-center gap-1.5">
-        <Button
-          quiet
-          size="sm"
-          onClick={() => prevVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
-          aria-label="Previous video"
-        >
-          <SmallPrevIcon /> Vid
-        </Button>
-        <Button
-          quiet
-          size="sm"
-          onClick={() => nextVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
-          aria-label="Next video"
-        >
-          Vid <SmallNextIcon />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -686,6 +563,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
     isPlaying,
     currentTime,
     favorites,
+    minified,
     nextVideo,
     prevVideo,
     nextTrack,
@@ -694,6 +572,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
     togglePlay,
     seekTo,
     toggleFavorite,
+    toggleMinified,
   } = useRadRadioStore();
 
   // Get tracks for current channel
@@ -714,13 +593,18 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      {/* Video Player (independent from audio) */}
-      <VideoPlayer
-        currentVideoIndex={currentVideoIndex}
-        onPrevVideo={() => prevVideo(videos.length)}
-        onNextVideo={() => nextVideo(videos.length)}
-        isAudioPlaying={isPlaying}
-      />
+      {/* Headless audio controller */}
+      <RadRadioController />
+
+      {/* Video Player — hidden when minified */}
+      {!minified && (
+        <VideoPlayer
+          currentVideoIndex={currentVideoIndex}
+          onPrevVideo={() => prevVideo(videos.length)}
+          onNextVideo={() => nextVideo(videos.length)}
+          isAudioPlaying={isPlaying}
+        />
+      )}
 
       {/* Track Info */}
       <div className="px-3 py-2 border-b border-rule">
@@ -734,6 +618,15 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            <Button
+              quiet
+              size="sm"
+              onClick={toggleMinified}
+              className="p-1.5 text-mute hover:text-main transition-colors"
+              aria-label={minified ? 'Show video' : 'Hide video'}
+            >
+              <Icon name={minified ? 'chevron-down' : 'chevron-up'} size={14} />
+            </Button>
             <Button
               quiet
               size="sm"

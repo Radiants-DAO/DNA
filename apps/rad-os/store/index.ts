@@ -131,5 +131,7 @@ export const useRadRadioStore = () =>
       seekTo: state.radioSeekTo,
       clearPendingSeek: state.radioClearPendingSeek,
       toggleFavorite: state.radioToggleFavorite,
+      minified: state.radioMinified,
+      toggleMinified: state.radioToggleMinified,
     }))
   );

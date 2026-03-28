@@ -1,7 +1,7 @@
 import { lazy, type ComponentType, type ReactNode } from 'react';
 import { RadMarkIcon, Icon } from '@rdna/radiants/icons/runtime';
 import type { WindowSize, WindowSizeTier } from '@/lib/windowSizing';
-import { RadRadioAmbientWallpaper, RadRadioAmbientWidget, RadRadioAmbientController } from '@/components/apps/rad-radio/ambient';
+
 
 // Lazy load all apps for better initial load performance
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
@@ -87,15 +87,10 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     launcherIcon: <Icon name="music-8th-notes" size={20} />,
     component: RadRadioApp,
     defaultSize: 'md',
-    resizable: true,
+    resizable: false,
     contentPadding: false,
     desktopVisible: true,
     startMenuSection: 'apps',
-    ambient: {
-      wallpaper: RadRadioAmbientWallpaper,
-      widget: RadRadioAmbientWidget,
-      controller: RadRadioAmbientController,
-    },
   },
   {
     id: 'about',

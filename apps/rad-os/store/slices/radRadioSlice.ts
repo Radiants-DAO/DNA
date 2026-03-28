@@ -25,6 +25,8 @@ export interface RadRadioSlice {
   radioSeekTo: (time: number) => void;
   radioClearPendingSeek: () => void;
   radioToggleFavorite: (trackId: string) => void;
+  radioMinified: boolean;
+  radioToggleMinified: () => void;
 }
 
 export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSlice> = (
@@ -124,5 +126,10 @@ export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSl
       }
       return { radioFavorites: [...favSet] };
     });
+  },
+
+  radioMinified: false,
+  radioToggleMinified: () => {
+    set((state) => ({ radioMinified: !state.radioMinified }));
   },
 });
