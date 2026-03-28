@@ -6,7 +6,9 @@ import {
   prepareWithSegments,
   layout,
   layoutNextLine,
+  clearCache,
   type LayoutCursor,
+  type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 import {
   getWrapHull,
@@ -44,7 +46,7 @@ type El =
   | { kind: 'hero'; x: number; y: number; w: number; h: number }
   | { kind: 'rule'; x: number; y: number; w: number };
 
-interface LayoutResult { els: El[]; height: number }
+interface SpreadResult { els: El[]; height: number }
 
 // ============================================================================
 // Obstacle avoidance — polygon hull wrapping (matches dynamic-layout demo)
@@ -77,13 +79,79 @@ function getLineSlots(
 }
 
 // ============================================================================
-// Layout engine
+// Prepare cache — matches the @chenglou/pretext dynamic-layout demo pattern.
+// `prepareWithSegments` is the expensive step (canvas measurement); layout
+// functions are pure arithmetic on the cached widths.  We key by font+text
+// and only re-prepare when either actually changes.
 // ============================================================================
 
 const BODY_FONT = "16px Mondwest";
 const BODY_LH = 19.2;
 
-function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: Point[] | null): LayoutResult {
+/** Fonts used by headings — kept in sync with the document flow below. */
+const HEADING_SPECS = [
+  { text: 'RadOS Coming Soon', family: "'Joystix Monospace'", maxSize: 27, scale: 0.065, bold: false },
+  { text: 'RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', family: "PixelCode", maxSize: 32, scale: 0.08, bold: true },
+  { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", maxSize: 48, scale: 0.12, bold: true },
+] as const;
+
+const DROP_CAP_FONT = "64px 'Waves Blackletter CPC'";
+
+interface PreparedTexts {
+  body: PreparedTextWithSegments[];
+  headings: Map<string, PreparedTextWithSegments>;
+  dropCap: PreparedTextWithSegments;
+}
+
+function getPrepared(
+  cache: Map<string, PreparedTextWithSegments>,
+  text: string,
+  font: string,
+): PreparedTextWithSegments {
+  const key = `${font}::${text}`;
+  const cached = cache.get(key);
+  if (cached !== undefined) return cached;
+  const prepared = prepareWithSegments(text, font);
+  cache.set(key, prepared);
+  return prepared;
+}
+
+function buildPreparedTexts(
+  cache: Map<string, PreparedTextWithSegments>,
+  colWidths: number[],
+): PreparedTexts {
+  const bodyTexts = [P1, P2, P3, P4];
+  const body = bodyTexts.map(t => getPrepared(cache, t, BODY_FONT));
+
+  // Headings can land in any column, and font size depends on column width.
+  // Pre-prepare for every unique column width so the cache is warm regardless
+  // of which column a heading flows into.
+  const headings = new Map<string, PreparedTextWithSegments>();
+  const uniqueWidths = [...new Set(colWidths)];
+  for (const spec of HEADING_SPECS) {
+    for (const w of uniqueWidths) {
+      const fontSize = Math.round(Math.min(w * spec.scale, spec.maxSize));
+      const fontStr = `${spec.bold ? 'bold ' : ''}${fontSize}px ${spec.family}`;
+      // Key includes font string so different column widths produce distinct entries
+      headings.set(`${spec.text}::${fontStr}`, getPrepared(cache, spec.text, fontStr));
+    }
+  }
+
+  const dropCap = getPrepared(cache, 'G', DROP_CAP_FONT);
+
+  return { body, headings, dropCap };
+}
+
+// ============================================================================
+// Layout engine
+// ============================================================================
+
+function computeLayout(
+  containerWidth: number,
+  obstacle: ObsRect | null,
+  hull: Point[] | null,
+  prepared: PreparedTexts,
+): SpreadResult {
   // Transform normalized hull (0-1) to obstacle's actual pixel position
   const transformedHull = hull && obstacle
     ? transformWrapPoints(hull, { x: obstacle.x, y: obstacle.y, width: obstacle.w, height: obstacle.h }, 0)
@@ -101,10 +169,10 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
     { x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
   ];
 
-  // Pre-pass: balanced column heights
+  // Pre-pass: balanced column heights (reuses pre-prepared body texts)
   let totalBodyLines = 0;
-  for (const text of [P1, P2, P3, P4]) {
-    totalBodyLines += layout(prepareWithSegments(text, BODY_FONT), cols[0].width, BODY_LH).lineCount;
+  for (const p of prepared.body) {
+    totalBodyLines += layout(p, cols[0].width, BODY_LH).lineCount;
   }
   const maxColH = Math.ceil((totalBodyLines * BODY_LH + 500) / 3) + 80;
 
@@ -117,8 +185,9 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
   function nextCol(): boolean { ci++; y = 0; return ci < cols.length; }
 
   // --- Body text with obstacle avoidance ---
-  function layText(text: string, dropCapW = 0, dropCapH = 0) {
-    const prepared = prepareWithSegments(text, BODY_FONT);
+  let bodyIdx = 0;
+  function layText(dropCapW = 0, dropCapH = 0) {
+    const prep = prepared.body[bodyIdx++]!;
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
     while (ci < cols.length) {
@@ -135,7 +204,7 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
       lineX = slot.x;
       lineW = slot.w;
 
-      const line = layoutNextLine(prepared, cursor, lineW);
+      const line = layoutNextLine(prep, cursor, lineW);
       if (!line) return;
 
       els.push({ kind: 'line', x: lineX, y, text: line.text });
@@ -151,7 +220,7 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
     const fontSize = Math.round(Math.min(col().width * scale, maxSize));
     const lh = Math.round(fontSize * lhRatio);
     const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
-    const prepared = prepareWithSegments(text, fontStr);
+    const prep = prepared.headings.get(`${text}::${fontStr}`)!;
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
     while (ci < cols.length) {
@@ -161,7 +230,7 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
       const slot = getLineSlots(col().x, col().width, y, lh, transformedHull);
       if (!slot) { y += lh; continue; }
 
-      const line = layoutNextLine(prepared, cursor, slot.w);
+      const line = layoutNextLine(prep, cursor, slot.w);
       if (!line) break;
 
       els.push({
@@ -213,19 +282,18 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
   // Document flow
   // ==========================================================================
 
-  const dcPrep = prepareWithSegments('G', "64px 'Waves Blackletter CPC'");
-  const dcLine = layoutNextLine(dcPrep, { segmentIndex: 0, graphemeIndex: 0 }, 200);
+  const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
   const dcW = (dcLine?.width ?? 50) + 8;
   els.push({ kind: 'dropcap', x: col().x, y });
 
-  layText(P1, dcW, 56);
+  layText(dcW, 56);   // P1
   layGap(2);
   layHero();
   //                                                           max  lhR  scale  bold  center
   // scale = maxSize / ~400px (target col width where max is reached)
   layHeading('RadOS Coming Soon', "'Joystix Monospace'",         27,  1.2, 0.065, false, true);
   layGap();
-  layText(P2);
+  layText();           // P2
   layGap(2);
   layRule();
   layGap();
@@ -233,13 +301,13 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: P
   layGap();
   layRule();
   layGap(2);
-  layText(P3);
+  layText();           // P3
   layGap(2);
   layRule();
   layGap();
   layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.12, true, false);
   layGap(2);
-  layText(P4);
+  layText();           // P4
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : BODY_LH)), 0);
   return { els, height: maxY + 32 };
@@ -254,13 +322,18 @@ const CHROME_Y = 52; // px offset for logos above the document flow
 export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(790);
-  const [result, setResult] = useState<LayoutResult | null>(null);
+  const [result, setResult] = useState<SpreadResult | null>(null);
 
   // Logo obstacle — draggable & resizable, polygon hull for shape wrapping
   const [obs, setObs] = useState<ObsRect>({ x: 16, y: 600, w: 200, h: 200 });
   const [hull, setHull] = useState<Point[] | null>(null);
   const dragRef = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
   const resizeRef = useRef<{ sx: number; sy: number; ow: number; oh: number } | null>(null);
+
+  // Prepare cache — survives across renders so drag/resize frames only
+  // re-run the cheap layout arithmetic, not the expensive canvas measurement.
+  // Keyed by `font::text`, matching the @chenglou/pretext demo pattern.
+  const prepareCacheRef = useRef(new Map<string, PreparedTextWithSegments>());
 
   // Load SVG polygon hull once — traces the alpha contour for shape wrapping
   useEffect(() => {
@@ -279,8 +352,27 @@ export function GoodNewsApp({ windowId }: AppProps) {
   // --- Run layout on resize or obstacle move ---
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    document.fonts.ready.then(() => setResult(computeLayout(containerWidth, obs, hull)));
+    document.fonts.ready.then(() => {
+      // Derive column widths (must match computeLayout geometry)
+      const m = 16, rW = 1;
+      const av = Math.max(containerWidth - m * 2 - rW * 2, 100);
+      const lW = Math.floor(av * 0.24);
+      const rightW = Math.floor(av * 0.24);
+      const cW = av - lW - rightW;
+      const colWidths = [lW - 8, cW - 16, rightW - 8];
+
+      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths);
+      setResult(computeLayout(containerWidth, obs, hull, prepared));
+    });
   }, [containerWidth, obs, hull]);
+
+  // Cleanup: free pretext internal measurement caches on unmount
+  useEffect(() => {
+    return () => {
+      prepareCacheRef.current.clear();
+      clearCache();
+    };
+  }, []);
 
   // --- Drag handlers ---
   function onDragDown(e: React.PointerEvent) {
