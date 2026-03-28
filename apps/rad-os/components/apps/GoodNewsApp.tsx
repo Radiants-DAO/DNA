@@ -1,55 +1,185 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   prepareWithSegments,
-  layoutWithLines,
-  type LayoutLine,
+  layout,
+  layoutNextLine,
+  type LayoutCursor,
   type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 
 // ============================================================================
-// Article Content
+// Document content — in reading order, split at inline insertion points
 // ============================================================================
 
-const LONG = 'Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci.';
-const SHORT = 'In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique.';
+const P1 = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque';
 
-const ARTICLE = [LONG, SHORT, LONG, SHORT, LONG, SHORT, LONG, SHORT, LONG, SHORT, 'urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia.'].join(' ');
+const P2 = 'pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique.';
 
-const INTRO = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go.';
+const P3 = 'Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim';
+
+const P4 = 'nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel';
 
 const CAPTION = 'It all seemed so misguided, our fortunes tied to fleeting pixels and the whims of a market unable to see beyond the surface. To most, we were chasing shadows, lost in a world they deemed absurd. Yet, perhaps we were merely misdirected, perhaps it was just a preamble.';
 
 // ============================================================================
-// Pretext Line Hook
-//
-// prepare() runs once per text+font (canvas measurement, cached in ref).
-// layoutWithLines() is pure arithmetic — re-runs on every width change.
-// Returns every line of the text, each with .text and .width.
+// Layout types
 // ============================================================================
 
-function usePretextLines(text: string, font: string, width: number): LayoutLine[] {
-  const [lines, setLines] = useState<LayoutLine[]>([]);
-  const cacheRef = useRef<{ key: string; prepared: PreparedTextWithSegments } | null>(null);
+interface Column { x: number; width: number }
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || width <= 0) return;
+type El =
+  | { kind: 'line'; x: number; y: number; text: string }
+  | { kind: 'dropcap'; x: number; y: number }
+  | { kind: 'heading'; x: number; y: number; w: number; h: number; text: string; font: string; fontSize: number; lh: number; center?: boolean }
+  | { kind: 'hero'; x: number; y: number; w: number; h: number }
+  | { kind: 'rule'; x: number; y: number; w: number };
 
-    document.fonts.ready.then(() => {
-      const cacheKey = `${text}|${font}`;
-      if (!cacheRef.current || cacheRef.current.key !== cacheKey) {
-        cacheRef.current = { key: cacheKey, prepared: prepareWithSegments(text, font) };
-      }
+interface LayoutResult { els: El[]; height: number }
 
-      const lineHeight = 19.2; // 1rem × 1.2
-      const result = layoutWithLines(cacheRef.current.prepared, width, lineHeight);
-      setLines(result.lines);
-    });
-  }, [text, font, width]);
+// ============================================================================
+// Layout engine — runs in ~0.1ms, pure pretext arithmetic
+// ============================================================================
 
-  return lines;
+const BODY_FONT = "16px Mondwest";
+const BODY_LH = 19.2; // 16px × 1.2
+const MAX_COL_H = 900;
+
+function computeLayout(containerWidth: number): LayoutResult {
+  const margin = 16;
+  const ruleW = 1;
+  const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
+  const lW = Math.floor(avail * 0.24);
+  const rW = Math.floor(avail * 0.24);
+  const cW = avail - lW - rW;
+
+  const cols: Column[] = [
+    { x: margin, width: lW - 8 },
+    { x: margin + lW + ruleW + 8, width: cW - 16 },
+    { x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
+  ];
+
+  // Rule x positions (for vertical column dividers)
+  const ruleX1 = margin + lW;
+  const ruleX2 = margin + lW + ruleW + cW;
+
+  const els: El[] = [];
+  let ci = 0; // current column index
+  let y = 0;  // current y within column
+
+  function col() { return cols[ci]!; }
+  function fits(h: number) { return y + h <= MAX_COL_H; }
+  function nextCol(): boolean {
+    ci++;
+    y = 0;
+    return ci < cols.length;
+  }
+
+  // --- Lay out body text, returns when segment is exhausted or columns full ---
+  function layText(text: string, dropCapW = 0, dropCapH = 0) {
+    const prepared = prepareWithSegments(text, BODY_FONT);
+    let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
+
+    while (ci < cols.length) {
+      if (!fits(BODY_LH)) { if (!nextCol()) return; continue; }
+
+      // Obstacle avoidance: narrower width beside the drop cap
+      const inDropCap = ci === 0 && y < dropCapH && dropCapW > 0;
+      const lineW = inDropCap ? col().width - dropCapW : col().width;
+      const lineX = inDropCap ? col().x + dropCapW : col().x;
+
+      const line = layoutNextLine(prepared, cursor, lineW);
+      if (!line) return;
+
+      els.push({ kind: 'line', x: lineX, y, text: line.text });
+      cursor = line.end;
+      y += BODY_LH;
+    }
+  }
+
+  // --- Lay out a heading block (CSS renders it, pretext measures height) ---
+  function layHeading(text: string, fontStr: string, fontSize: number, lh: number, center = false) {
+    if (ci >= cols.length) return;
+    const prepared = prepareWithSegments(text, fontStr);
+    const { height } = layout(prepared, col().width, lh);
+    const gap = 16;
+
+    if (!fits(height + gap)) { if (!nextCol()) return; }
+
+    els.push({ kind: 'heading', x: col().x, y, w: col().width, h: height, text, font: fontStr, fontSize, lh, center });
+    y += height + gap;
+  }
+
+  // --- Lay out the hero image ---
+  function layHero() {
+    if (ci >= cols.length) return;
+    const w = col().width;
+    const imgH = w / (357 / 258);
+    const captionH = 48;
+    const totalH = imgH + captionH;
+
+    if (!fits(totalH)) { if (!nextCol()) return; }
+
+    els.push({ kind: 'hero', x: col().x, y, w, h: imgH });
+    y += totalH;
+  }
+
+  // --- Horizontal rule ---
+  function layRule() {
+    if (ci >= cols.length) return;
+    els.push({ kind: 'rule', x: col().x, y, w: col().width });
+    y += 16;
+  }
+
+  // ==========================================================================
+  // Execute the document in reading order
+  // ==========================================================================
+
+  // Drop cap — measure "G" width with pretext
+  const dropCapPrepared = prepareWithSegments('G', "64px 'Waves Blackletter CPC'");
+  const dropCapLine = layoutNextLine(dropCapPrepared, { segmentIndex: 0, graphemeIndex: 0 }, 200);
+  const dropCapW = (dropCapLine?.width ?? 50) + 8;
+  const dropCapH = 56;
+  els.push({ kind: 'dropcap', x: col().x, y });
+
+  // Paragraph 1 — flows around the drop cap
+  layText(P1, dropCapW, dropCapH);
+
+  // Hero image + "RadOS Coming Soon"
+  layHero();
+  layHeading('RadOS Coming Soon', "20px 'Joystix Monospace'", 20, 24, true);
+
+  // Paragraph 2
+  layText(P2);
+
+  // "RISE IN FRUSTRATION" heading
+  layRule();
+  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "bold 32px PixelCode", 32, 38, true);
+  layRule();
+
+  // Paragraph 3
+  layText(P3);
+
+  // "The Battlefield Widens" heading
+  layRule();
+  layHeading('The Battlefield Widens for RadOS Agent Seats', "bold 48px Mondwest", 48, 53);
+
+  // Paragraph 4
+  layText(P4);
+
+  // Compute total height + vertical rules
+  const maxY = els.reduce((m, el) => {
+    const bottom = el.y + ('h' in el ? el.h : BODY_LH);
+    return Math.max(m, bottom);
+  }, 0);
+
+  // Add vertical column rules
+  els.push({ kind: 'rule', x: ruleX1, y: 0, w: 1 });
+  // Override: vertical rules are rendered specially (full height)
+
+  return { els, height: maxY + 32 };
 }
 
 // ============================================================================
@@ -59,6 +189,7 @@ function usePretextLines(text: string, font: string, width: number): LayoutLine[
 export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(790);
+  const [result, setResult] = useState<LayoutResult | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -70,31 +201,31 @@ export function GoodNewsApp({ windowId }: AppProps) {
     return () => ro.disconnect();
   }, []);
 
+  // Run layout on resize — pretext prepare() is cached internally
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    document.fonts.ready.then(() => {
+      setResult(computeLayout(containerWidth));
+    });
+  }, [containerWidth]);
+
+  // Column geometry (for rules)
   const margin = 16;
-  const columnGap = 16;
-  const contentWidth = containerWidth - margin * 2;
-  const columnWidth = Math.floor((contentWidth - columnGap * 2) / 3);
-
-  // Pretext measures at columnWidth - 1 for subpixel safety
-  const lines = usePretextLines(ARTICLE, '16px Mondwest', columnWidth - 1);
-
-  // Adaptive insert points — where to place inline elements
-  const n = lines.length;
-  const heroAt = Math.floor(n * 0.12);
-  const headlineAt = Math.floor(n * 0.55);
-
-  const renderLines = (from: number, to: number) =>
-    lines.slice(from, to).map((line, i) => (
-      <span key={`${from}-${i}`} style={{ display: 'block' }}>{line.text}</span>
-    ));
+  const ruleW = 1;
+  const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
+  const lW = Math.floor(avail * 0.24);
+  const rW = Math.floor(avail * 0.24);
+  const cW = avail - lW - rW;
+  const rule1X = margin + lW;
+  const rule2X = margin + lW + ruleW + cW;
 
   return (
     <div ref={containerRef} className="h-full overflow-y-auto bg-page">
       <div style={{ padding: `0 ${margin}px` }}>
 
-        {/* ================================================================
-            CHROME — masthead, teasers, date bar (outside column flow)
-            ================================================================ */}
+        {/* ============================================================
+            MASTHEAD (static chrome — outside the document flow)
+            ============================================================ */}
         <div className="text-center" style={{ paddingTop: 20 }}>
           <h1
             className="text-head"
@@ -108,7 +239,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
           >
             Good News
           </h1>
-
           <div className="flex justify-between items-start" style={{ marginTop: 4 }}>
             <div style={{ textAlign: 'left', maxWidth: 180 }}>
               <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
@@ -138,149 +268,146 @@ export function GoodNewsApp({ windowId }: AppProps) {
           <span>$1.50 per issue</span>
         </div>
         <div className="bg-head" style={{ height: 1 }} />
+      </div>
 
-        {/* ================================================================
-            ARTICLE — single multi-column container.
-            Pretext owns line breaks, CSS columns own distribution.
-            Images use column-span: all or float to interrupt the flow.
-            ================================================================ */}
-        <article
-          className="text-head text-justify"
-          style={{
-            columnCount: 3,
-            columnGap,
-            columnRule: '1px solid var(--color-head)',
-            fontFamily: "'Mondwest', serif",
-            fontSize: '1rem',
-            lineHeight: 1.2,
-            letterSpacing: '-0.01em',
-            marginTop: 8,
-            paddingBottom: 16,
-          }}
-        >
-          {/* --- Logos (inline, avoid column break) --- */}
-          <div style={{ breakInside: 'avoid', marginBottom: 16 }}>
+      {/* ================================================================
+          DOCUMENT FLOW — every line is an absolutely positioned div
+          ================================================================ */}
+      {result && (
+        <div className="relative" style={{ height: result.height, marginTop: 8 }}>
+          {/* Vertical column rules */}
+          <div className="absolute bg-head" style={{ left: rule1X, top: 0, width: 1, height: result.height }} />
+          <div className="absolute bg-head" style={{ left: rule2X, top: 0, width: 1, height: result.height }} />
+
+          {/* RAD☀NEWS logos (static chrome) */}
+          <div className="absolute flex items-center gap-1" style={{ left: margin, top: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/tabloid/radsun-black.svg" alt="" style={{ width: 128, height: 37 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tabloid/radnews-frame.svg" alt="" style={{ width: 108, height: 25, marginLeft: 4 }} />
+            <img src="/tabloid/radnews-frame.svg" alt="" style={{ width: 108, height: 25 }} />
           </div>
 
-          {/* --- Drop cap + intro (CSS float, no pretext needed) --- */}
-          <div style={{ breakInside: 'avoid', marginBottom: 16 }}>
-            <span
-              className="text-head float-left"
-              style={{
-                fontFamily: "'Waves Blackletter CPC', serif",
-                fontSize: '4rem',
-                lineHeight: 0.85,
-                letterSpacing: '-0.04em',
-                marginRight: 5,
-              }}
-            >
-              G
-            </span>
-            {INTRO}
-          </div>
+          {/* Rendered elements from pretext layout */}
+          {result.els.map((el, i) => {
+            switch (el.kind) {
+              case 'line':
+                return (
+                  <div
+                    key={i}
+                    className="absolute text-head"
+                    style={{
+                      left: el.x,
+                      top: el.y + 52, // offset below logos
+                      whiteSpace: 'pre',
+                      font: "1rem/1.2 'Mondwest', serif",
+                    }}
+                  >
+                    {el.text}
+                  </div>
+                );
 
-          {/* --- Pretext lines: intro → hero --- */}
-          {renderLines(0, heroAt)}
+              case 'dropcap':
+                return (
+                  <div
+                    key={i}
+                    className="absolute text-head"
+                    style={{
+                      left: el.x,
+                      top: el.y + 52,
+                      fontFamily: "'Waves Blackletter CPC', serif",
+                      fontSize: '4rem',
+                      fontWeight: 400,
+                      lineHeight: 0.85,
+                      letterSpacing: '-0.04em',
+                    }}
+                  >
+                    G
+                  </div>
+                );
 
-          {/* --- Hero image + headline banner (spans all columns) --- */}
-          <figure
-            style={{
-              columnSpan: 'all',
-              margin: '16px 0',
-              display: 'flex',
-              gap: 24,
-              alignItems: 'center',
-            }}
+              case 'heading':
+                return (
+                  <div
+                    key={i}
+                    className="absolute text-head"
+                    style={{
+                      left: el.x,
+                      top: el.y + 52,
+                      width: el.w,
+                      fontFamily: el.font.includes('PixelCode') ? "'PixelCode', monospace"
+                        : el.font.includes('Joystix') ? "'Joystix Monospace', monospace"
+                        : "'Mondwest', serif",
+                      fontSize: el.fontSize,
+                      fontWeight: el.font.includes('bold') ? 700 : 400,
+                      lineHeight: `${el.lh}px`,
+                      textAlign: el.center ? 'center' : undefined,
+                    }}
+                  >
+                    {el.text}
+                  </div>
+                );
+
+              case 'hero':
+                return (
+                  <div
+                    key={i}
+                    className="absolute border border-line overflow-hidden"
+                    style={{ left: el.x, top: el.y + 52, width: el.w, height: el.h }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/tabloid/hero-image.png"
+                      alt="Calling the Radiants"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                );
+
+              case 'rule':
+                // Only render horizontal rules (vertical rules are separate)
+                return el.w > 1 ? (
+                  <div
+                    key={i}
+                    className="absolute bg-head"
+                    style={{ left: el.x, top: el.y + 52, width: el.w, height: 1 }}
+                  />
+                ) : null;
+
+              default:
+                return null;
+            }
+          })}
+
+          {/* Screenshot — absolutely positioned (future: draggable/resizable) */}
+          <div
+            className="absolute border border-line overflow-hidden"
+            style={{ left: margin, bottom: 0, width: '47%', aspectRatio: '1 / 1' }}
           >
-            <div style={{ flex: '1 1 55%' }}>
-              <div className="border border-line overflow-hidden" style={{ aspectRatio: '357 / 258' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/tabloid/hero-image.png"
-                  alt="Calling the Radiants"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-              <p
-                className="text-center"
-                style={{
-                  fontFamily: "'Joystix Monospace', monospace",
-                  fontSize: '1.67rem',
-                  lineHeight: 'normal',
-                  marginTop: 12,
-                }}
-              >
-                RadOS Coming Soon
-              </p>
-            </div>
-            <div style={{ flex: '1 1 35%' }}>
-              <p
-                className="text-center"
-                style={{
-                  fontFamily: "'PixelCode', monospace",
-                  fontSize: '2rem',
-                  fontWeight: 700,
-                  lineHeight: 'normal',
-                }}
-              >
-                RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM
-              </p>
-            </div>
-          </figure>
-
-          {/* --- Pretext lines: hero → headline --- */}
-          {renderLines(heroAt, headlineAt)}
-
-          {/* --- Main headline (spans all columns) --- */}
-          <div style={{ columnSpan: 'all', margin: '16px 0' }}>
-            <div className="bg-head" style={{ height: 1, marginBottom: 12 }} />
-            <h2
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/tabloid/screenshot.png"
+              alt="RadOS Screenshot"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div
+              className="absolute bottom-0 left-0 right-0 text-head"
+              // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
               style={{
+                padding: 16,
                 fontFamily: "'Mondwest', serif",
-                fontSize: '3rem',
-                fontWeight: 700,
-                lineHeight: 1.1,
+                fontSize: '0.92rem',
+                lineHeight: 1.3,
+                background: 'rgba(255, 252, 243, 0.92)',
               }}
             >
-              The Battlefield Widens for RadOS Agent Seats
-            </h2>
-          </div>
-
-          {/* --- Screenshot (floats left, text wraps around) --- */}
-          <div style={{ float: 'left', width: '55%', marginRight: 16, marginBottom: 8, breakInside: 'avoid' }}>
-            <div className="relative border border-line overflow-hidden" style={{ aspectRatio: '1 / 1' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/tabloid/screenshot.png"
-                alt="RadOS Screenshot"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <div
-                className="absolute bottom-0 left-0 right-0 text-head"
-                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
-                style={{
-                  padding: 16,
-                  fontSize: '0.92rem',
-                  lineHeight: 1.3,
-                  background: 'rgba(255, 252, 243, 0.92)',
-                }}
-              >
-                <p className="italic">{CAPTION}</p>
-                <p className="text-accent font-bold" style={{ marginTop: 4 }}>
-                  In the twilight of confusion new ideas emerge.
-                </p>
-              </div>
+              <p className="italic">{CAPTION}</p>
+              <p className="text-accent font-bold" style={{ marginTop: 4 }}>
+                In the twilight of confusion new ideas emerge.
+              </p>
             </div>
           </div>
-
-          {/* --- Pretext lines: headline → end (wraps around screenshot) --- */}
-          {renderLines(headlineAt, n)}
-        </article>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
