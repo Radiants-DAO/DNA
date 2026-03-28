@@ -8,6 +8,14 @@ import {
   layoutNextLine,
   type LayoutCursor,
 } from '@chenglou/pretext';
+import {
+  getWrapHull,
+  transformWrapPoints,
+  getPolygonIntervalForBand,
+  carveTextLineSlots,
+  type Point,
+  type Interval,
+} from '@chenglou/pretext/demos/wrap-geometry';
 
 // ============================================================================
 // Document content — in reading order, split at inline insertion points
@@ -21,7 +29,6 @@ const P3 = 'Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu cong
 
 const P4 = 'nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel';
 
-const CAPTION = 'It all seemed so misguided, our fortunes tied to fleeting pixels and the whims of a market unable to see beyond the surface. To most, we were chasing shadows, lost in a world they deemed absurd. Yet, perhaps we were merely misdirected, perhaps it was just a preamble.';
 
 // ============================================================================
 // Layout types
@@ -33,50 +40,40 @@ interface ObsRect { x: number; y: number; w: number; h: number }
 type El =
   | { kind: 'line'; x: number; y: number; text: string }
   | { kind: 'dropcap'; x: number; y: number }
-  | { kind: 'heading'; x: number; y: number; w: number; h: number; text: string; font: string; fontSize: number; lh: number; center?: boolean }
+  | { kind: 'heading-line'; x: number; y: number; w: number; text: string; family: string; fontSize: number; bold: boolean; lh: number; center: boolean }
   | { kind: 'hero'; x: number; y: number; w: number; h: number }
   | { kind: 'rule'; x: number; y: number; w: number };
 
 interface LayoutResult { els: El[]; height: number }
 
 // ============================================================================
-// Obstacle avoidance — text lines carve around a draggable image
+// Obstacle avoidance — polygon hull wrapping (matches dynamic-layout demo)
 // ============================================================================
 
-const OBS_GAP = 12; // px gap between obstacle and text
+const OBS_H_PAD = 6;  // horizontal padding around the polygon
+const OBS_V_PAD = 2;  // vertical padding
 
-function getLineSlot(
-  colX: number, colW: number, lineY: number, obs: ObsRect | null,
+function getLineSlots(
+  colX: number, colW: number, lineY: number, lineH: number, transformedHull: Point[] | null,
 ): { x: number; w: number } | null {
-  if (!obs) return { x: colX, w: colW };
+  const base: Interval = { left: colX, right: colX + colW };
 
-  // No vertical overlap → full width
-  if (lineY + 19.2 <= obs.y || lineY >= obs.y + obs.h) {
-    return { x: colX, w: colW };
+  if (!transformedHull) return { x: base.left, w: base.right - base.left };
+
+  const blocked: Interval[] = [];
+  const interval = getPolygonIntervalForBand(transformedHull, lineY, lineY + lineH, OBS_H_PAD, OBS_V_PAD);
+  if (interval) blocked.push(interval);
+
+  const slots = carveTextLineSlots(base, blocked);
+  if (slots.length === 0) return null;
+
+  // Pick the widest slot
+  let best = slots[0]!;
+  for (let i = 1; i < slots.length; i++) {
+    if (slots[i]!.right - slots[i]!.left > best.right - best.left) best = slots[i]!;
   }
 
-  const colR = colX + colW;
-  const obsR = obs.x + obs.w;
-
-  // No horizontal overlap → full width
-  if (obs.x >= colR || obsR <= colX) {
-    return { x: colX, w: colW };
-  }
-
-  // Compute available space on each side of the obstacle
-  const leftSpace = Math.max(obs.x - colX - OBS_GAP, 0);
-  const rightSpace = Math.max(colR - obsR - OBS_GAP, 0);
-
-  // Use the wider side (if wide enough for text)
-  if (leftSpace >= rightSpace && leftSpace > 40) {
-    return { x: colX, w: leftSpace };
-  }
-  if (rightSpace > 40) {
-    return { x: obsR + OBS_GAP, w: rightSpace };
-  }
-
-  // Both sides too narrow — skip this line position
-  return null;
+  return { x: best.left, w: best.right - best.left };
 }
 
 // ============================================================================
@@ -86,7 +83,11 @@ function getLineSlot(
 const BODY_FONT = "16px Mondwest";
 const BODY_LH = 19.2;
 
-function computeLayout(containerWidth: number, obstacle: ObsRect | null): LayoutResult {
+function computeLayout(containerWidth: number, obstacle: ObsRect | null, hull: Point[] | null): LayoutResult {
+  // Transform normalized hull (0-1) to obstacle's actual pixel position
+  const transformedHull = hull && obstacle
+    ? transformWrapPoints(hull, { x: obstacle.x, y: obstacle.y, width: obstacle.w, height: obstacle.h }, 0)
+    : null;
   const margin = 16;
   const ruleW = 1;
   const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
@@ -128,13 +129,9 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null): Layout
       let lineW = inDropCap ? col().width - dropCapW : col().width;
       let lineX = inDropCap ? col().x + dropCapW : col().x;
 
-      // Draggable screenshot obstacle
-      const slot = getLineSlot(lineX, lineW, y, obstacle);
-      if (!slot) {
-        // Line blocked by obstacle — skip this y position
-        y += BODY_LH;
-        continue;
-      }
+      // Polygon obstacle avoidance (draggable logo)
+      const slot = getLineSlots(lineX, lineW, y, BODY_LH, transformedHull);
+      if (!slot) { y += BODY_LH; continue; }
       lineX = slot.x;
       lineW = slot.w;
 
@@ -147,28 +144,62 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null): Layout
     }
   }
 
-  // --- Heading ---
+  // --- Heading — each line laid out individually with layoutNextLine,
+  //     matching the dynamic-layout demo pattern ---
   function layHeading(text: string, family: string, maxSize: number, lhRatio: number, scale: number, bold = false, center = false) {
     if (ci >= cols.length) return;
     const fontSize = Math.round(Math.min(col().width * scale, maxSize));
     const lh = Math.round(fontSize * lhRatio);
     const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
-    const { height } = layout(prepareWithSegments(text, fontStr), col().width, lh);
-    const gap = 16;
-    if (!fits(height + gap)) { if (!nextCol()) return; }
-    els.push({ kind: 'heading', x: col().x, y, w: col().width, h: height, text, font: fontStr, fontSize, lh, center });
-    y += height + gap;
+    const prepared = prepareWithSegments(text, fontStr);
+    let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
+
+    while (ci < cols.length) {
+      if (!fits(lh)) { if (!nextCol()) return; continue; }
+
+      // Headings also respect the polygon obstacle
+      const slot = getLineSlots(col().x, col().width, y, lh, transformedHull);
+      if (!slot) { y += lh; continue; }
+
+      const line = layoutNextLine(prepared, cursor, slot.w);
+      if (!line) break;
+
+      els.push({
+        kind: 'heading-line',
+        x: slot.x,
+        y,
+        w: slot.w,
+        text: line.text,
+        family,
+        fontSize,
+        bold,
+        lh,
+        center,
+      });
+      cursor = line.end;
+      y += lh;
+    }
+    y += 16; // gap after heading
   }
 
-  // --- Hero image ---
+  // --- Hero image — if current column is too narrow, advance to a wider one ---
   function layHero() {
     if (ci >= cols.length) return;
+    // Skip narrow columns for the hero — it needs breathing room
+    while (ci < cols.length && col().width < 200) {
+      if (!nextCol()) return;
+    }
     const w = col().width;
     const imgH = w / (357 / 258);
-    const totalH = imgH + 48;
+    const totalH = imgH + 16;
     if (!fits(totalH)) { if (!nextCol()) return; }
     els.push({ kind: 'hero', x: col().x, y, w, h: imgH });
     y += totalH;
+  }
+
+  // --- Paragraph gap ---
+  function layGap(lines = 1.5) {
+    y += BODY_LH * lines;
   }
 
   // --- Horizontal rule ---
@@ -188,15 +219,23 @@ function computeLayout(containerWidth: number, obstacle: ObsRect | null): Layout
   els.push({ kind: 'dropcap', x: col().x, y });
 
   layText(P1, dcW, 56);
+  layGap(2);
   layHero();
-  layHeading('RadOS Coming Soon', "'Joystix Monospace'", 27, 1.2, 0.073, false, true);
+  //                                                           max  lhR  scale  bold  center
+  // scale = maxSize / ~400px (target col width where max is reached)
+  layHeading('RadOS Coming Soon', "'Joystix Monospace'",         27,  1.2, 0.065, false, true);
+  layGap();
   layText(P2);
+  layGap();
   layRule();
-  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 32, 1.2, 0.18, true, true);
+  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 32, 1.2, 0.08, true, true);
   layRule();
+  layGap();
   layText(P3);
+  layGap();
   layRule();
-  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.13, true, false);
+  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.12, true, false);
+  layGap();
   layText(P4);
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : BODY_LH)), 0);
@@ -214,10 +253,16 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const [containerWidth, setContainerWidth] = useState(790);
   const [result, setResult] = useState<LayoutResult | null>(null);
 
-  // Screenshot obstacle — draggable & resizable
-  const [obs, setObs] = useState<ObsRect>({ x: 16, y: 600, w: 340, h: 340 });
+  // Logo obstacle — draggable & resizable, polygon hull for shape wrapping
+  const [obs, setObs] = useState<ObsRect>({ x: 16, y: 600, w: 200, h: 200 });
+  const [hull, setHull] = useState<Point[] | null>(null);
   const dragRef = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
   const resizeRef = useRef<{ sx: number; sy: number; ow: number; oh: number } | null>(null);
+
+  // Load SVG polygon hull once — traces the alpha contour for shape wrapping
+  useEffect(() => {
+    getWrapHull('/assets/icons/radiants-logo.svg', { smoothRadius: 6, mode: 'mean' }).then(setHull);
+  }, []);
 
   // --- ResizeObserver ---
   useEffect(() => {
@@ -231,8 +276,8 @@ export function GoodNewsApp({ windowId }: AppProps) {
   // --- Run layout on resize or obstacle move ---
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    document.fonts.ready.then(() => setResult(computeLayout(containerWidth, obs)));
-  }, [containerWidth, obs]);
+    document.fonts.ready.then(() => setResult(computeLayout(containerWidth, obs, hull)));
+  }, [containerWidth, obs, hull]);
 
   // --- Drag handlers ---
   function onDragDown(e: React.PointerEvent) {
@@ -357,7 +402,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                     G
                   </div>
                 );
-              case 'heading':
+              case 'heading-line':
                 return (
                   <div
                     key={i}
@@ -365,10 +410,11 @@ export function GoodNewsApp({ windowId }: AppProps) {
                     style={{
                       left: el.x,
                       top: el.y + CHROME_Y,
-                      width: el.w,
-                      fontFamily: el.font.includes('PixelCode') ? "'PixelCode', monospace" : el.font.includes('Joystix') ? "'Joystix Monospace', monospace" : "'Mondwest', serif",
+                      width: el.center ? el.w : undefined,
+                      whiteSpace: 'pre',
+                      fontFamily: el.family.includes('PixelCode') ? "'PixelCode', monospace" : el.family.includes('Joystix') ? "'Joystix Monospace', monospace" : "'Mondwest', serif",
                       fontSize: el.fontSize,
-                      fontWeight: el.font.includes('bold') ? 700 : 400,
+                      fontWeight: el.bold ? 700 : 400,
                       lineHeight: `${el.lh}px`,
                       textAlign: el.center ? 'center' : undefined,
                     }}
@@ -394,33 +440,33 @@ export function GoodNewsApp({ windowId }: AppProps) {
               SCREENSHOT — draggable & resizable obstacle
               Text reflows around it in real time via pretext.
               ============================================================ */}
-          <div
-            className="absolute border border-line overflow-hidden select-none"
+          {/* Draggable logo — inline SVG, text wraps around its polygon hull */}
+          <svg
+            className="absolute text-head select-none"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 65 65"
+            fill="none"
             style={{ left: obs.x, top: obs.y + CHROME_Y, width: obs.w, height: obs.h, cursor: 'grab', zIndex: 10 }}
             onPointerDown={onDragDown}
             onPointerMove={onDragMove}
             onPointerUp={onDragUp}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tabloid/screenshot.png" alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
-            <div
-              className="absolute bottom-0 left-0 right-0 text-head"
-              // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
-              style={{ padding: 16, fontFamily: "'Mondwest', serif", fontSize: '0.92rem', lineHeight: 1.3, background: 'rgba(255, 252, 243, 0.92)', pointerEvents: 'none' }}
-            >
-              <p className="italic">{CAPTION}</p>
-              <p className="text-accent font-bold" style={{ marginTop: 4 }}>In the twilight of confusion new ideas emerge.</p>
-            </div>
-
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M29.6393 4.93988V0H34.5791V4.93988H39.519V9.87976H24.6994V4.93988H29.6393ZM59.2789 29.6392H64.2188V34.5791H59.2789V39.5189H54.339V24.6993H59.2789V29.6392ZM0 34.5797H4.93988V39.5196H9.87976V24.7H4.93988V29.6399H0V34.5797ZM14.8198 14.8189V19.7587H9.87988V9.87899H19.7596V14.8189H14.8198ZM44.4591 14.8189H49.399V19.7587H54.3389V9.87899H44.4591V14.8189ZM49.399 49.3981L49.399 44.4582H54.3389V54.338H44.4591V49.3981H49.399ZM19.7596 49.3981H14.8198V44.4582H9.87988V54.338H19.7596V49.3981ZM34.5797 59.279V64.2188H29.6398L29.6398 59.279H24.6999V54.3391H39.5195V59.279H34.5797ZM24.6991 14.8204H39.5187V19.7603H44.4586V24.7002H49.3985V39.5198H44.4586V44.4597H39.5187V49.3996H24.6991V44.4597H19.7592V39.5198H14.8193V24.7002H19.7592V19.7603H24.6991V14.8204Z"
+              fill="currentColor"
+            />
             {/* Resize handle */}
-            <div
-              className="absolute bottom-0 right-0 bg-head/20 hover:bg-head/40"
-              style={{ width: 16, height: 16, cursor: 'se-resize' }}
+            <rect
+              x="57" y="57" width="8" height="8"
+              fill="currentColor" opacity="0.2"
+              style={{ cursor: 'se-resize' }}
               onPointerDown={onResizeDown}
               onPointerMove={onResizeMove}
               onPointerUp={onResizeUp}
             />
-          </div>
+          </svg>
         </div>
       )}
     </div>
