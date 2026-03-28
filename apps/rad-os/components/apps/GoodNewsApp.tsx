@@ -1,13 +1,12 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   prepareWithSegments,
   layout,
   layoutNextLine,
   type LayoutCursor,
-  type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 
 // ============================================================================
@@ -29,6 +28,7 @@ const CAPTION = 'It all seemed so misguided, our fortunes tied to fleeting pixel
 // ============================================================================
 
 interface Column { x: number; width: number }
+interface ObsRect { x: number; y: number; w: number; h: number }
 
 type El =
   | { kind: 'line'; x: number; y: number; text: string }
@@ -40,14 +40,53 @@ type El =
 interface LayoutResult { els: El[]; height: number }
 
 // ============================================================================
-// Layout engine — runs in ~0.1ms, pure pretext arithmetic
+// Obstacle avoidance — text lines carve around a draggable image
+// ============================================================================
+
+const OBS_GAP = 12; // px gap between obstacle and text
+
+function getLineSlot(
+  colX: number, colW: number, lineY: number, obs: ObsRect | null,
+): { x: number; w: number } | null {
+  if (!obs) return { x: colX, w: colW };
+
+  // No vertical overlap → full width
+  if (lineY + 19.2 <= obs.y || lineY >= obs.y + obs.h) {
+    return { x: colX, w: colW };
+  }
+
+  const colR = colX + colW;
+  const obsR = obs.x + obs.w;
+
+  // No horizontal overlap → full width
+  if (obs.x >= colR || obsR <= colX) {
+    return { x: colX, w: colW };
+  }
+
+  // Compute available space on each side of the obstacle
+  const leftSpace = Math.max(obs.x - colX - OBS_GAP, 0);
+  const rightSpace = Math.max(colR - obsR - OBS_GAP, 0);
+
+  // Use the wider side (if wide enough for text)
+  if (leftSpace >= rightSpace && leftSpace > 40) {
+    return { x: colX, w: leftSpace };
+  }
+  if (rightSpace > 40) {
+    return { x: obsR + OBS_GAP, w: rightSpace };
+  }
+
+  // Both sides too narrow — skip this line position
+  return null;
+}
+
+// ============================================================================
+// Layout engine
 // ============================================================================
 
 const BODY_FONT = "16px Mondwest";
-const BODY_LH = 19.2; // 16px × 1.2
-const MAX_COL_H = 900;
+const BODY_LH = 19.2;
 
-function computeLayout(containerWidth: number): LayoutResult {
+function computeLayout(containerWidth: number, obstacle: ObsRect | null): LayoutResult {
   const margin = 16;
   const ruleW = 1;
   const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
@@ -61,23 +100,22 @@ function computeLayout(containerWidth: number): LayoutResult {
     { x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
   ];
 
-  // Rule x positions (for vertical column dividers)
-  const ruleX1 = margin + lW;
-  const ruleX2 = margin + lW + ruleW + cW;
+  // Pre-pass: balanced column heights
+  let totalBodyLines = 0;
+  for (const text of [P1, P2, P3, P4]) {
+    totalBodyLines += layout(prepareWithSegments(text, BODY_FONT), cols[0].width, BODY_LH).lineCount;
+  }
+  const maxColH = Math.ceil((totalBodyLines * BODY_LH + 500) / 3) + 80;
 
   const els: El[] = [];
-  let ci = 0; // current column index
-  let y = 0;  // current y within column
+  let ci = 0;
+  let y = 0;
 
   function col() { return cols[ci]!; }
-  function fits(h: number) { return y + h <= MAX_COL_H; }
-  function nextCol(): boolean {
-    ci++;
-    y = 0;
-    return ci < cols.length;
-  }
+  function fits(h: number) { return y + h <= maxColH; }
+  function nextCol(): boolean { ci++; y = 0; return ci < cols.length; }
 
-  // --- Lay out body text, returns when segment is exhausted or columns full ---
+  // --- Body text with obstacle avoidance ---
   function layText(text: string, dropCapW = 0, dropCapH = 0) {
     const prepared = prepareWithSegments(text, BODY_FONT);
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
@@ -85,10 +123,20 @@ function computeLayout(containerWidth: number): LayoutResult {
     while (ci < cols.length) {
       if (!fits(BODY_LH)) { if (!nextCol()) return; continue; }
 
-      // Obstacle avoidance: narrower width beside the drop cap
+      // Drop cap obstacle (first column only)
       const inDropCap = ci === 0 && y < dropCapH && dropCapW > 0;
-      const lineW = inDropCap ? col().width - dropCapW : col().width;
-      const lineX = inDropCap ? col().x + dropCapW : col().x;
+      let lineW = inDropCap ? col().width - dropCapW : col().width;
+      let lineX = inDropCap ? col().x + dropCapW : col().x;
+
+      // Draggable screenshot obstacle
+      const slot = getLineSlot(lineX, lineW, y, obstacle);
+      if (!slot) {
+        // Line blocked by obstacle — skip this y position
+        y += BODY_LH;
+        continue;
+      }
+      lineX = slot.x;
+      lineW = slot.w;
 
       const line = layoutNextLine(prepared, cursor, lineW);
       if (!line) return;
@@ -99,29 +147,26 @@ function computeLayout(containerWidth: number): LayoutResult {
     }
   }
 
-  // --- Lay out a heading block (CSS renders it, pretext measures height) ---
-  function layHeading(text: string, fontStr: string, fontSize: number, lh: number, center = false) {
+  // --- Heading ---
+  function layHeading(text: string, family: string, maxSize: number, lhRatio: number, scale: number, bold = false, center = false) {
     if (ci >= cols.length) return;
-    const prepared = prepareWithSegments(text, fontStr);
-    const { height } = layout(prepared, col().width, lh);
+    const fontSize = Math.round(Math.min(col().width * scale, maxSize));
+    const lh = Math.round(fontSize * lhRatio);
+    const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
+    const { height } = layout(prepareWithSegments(text, fontStr), col().width, lh);
     const gap = 16;
-
     if (!fits(height + gap)) { if (!nextCol()) return; }
-
     els.push({ kind: 'heading', x: col().x, y, w: col().width, h: height, text, font: fontStr, fontSize, lh, center });
     y += height + gap;
   }
 
-  // --- Lay out the hero image ---
+  // --- Hero image ---
   function layHero() {
     if (ci >= cols.length) return;
     const w = col().width;
     const imgH = w / (357 / 258);
-    const captionH = 48;
-    const totalH = imgH + captionH;
-
+    const totalH = imgH + 48;
     if (!fits(totalH)) { if (!nextCol()) return; }
-
     els.push({ kind: 'hero', x: col().x, y, w, h: imgH });
     y += totalH;
   }
@@ -134,51 +179,27 @@ function computeLayout(containerWidth: number): LayoutResult {
   }
 
   // ==========================================================================
-  // Execute the document in reading order
+  // Document flow
   // ==========================================================================
 
-  // Drop cap — measure "G" width with pretext
-  const dropCapPrepared = prepareWithSegments('G', "64px 'Waves Blackletter CPC'");
-  const dropCapLine = layoutNextLine(dropCapPrepared, { segmentIndex: 0, graphemeIndex: 0 }, 200);
-  const dropCapW = (dropCapLine?.width ?? 50) + 8;
-  const dropCapH = 56;
+  const dcPrep = prepareWithSegments('G', "64px 'Waves Blackletter CPC'");
+  const dcLine = layoutNextLine(dcPrep, { segmentIndex: 0, graphemeIndex: 0 }, 200);
+  const dcW = (dcLine?.width ?? 50) + 8;
   els.push({ kind: 'dropcap', x: col().x, y });
 
-  // Paragraph 1 — flows around the drop cap
-  layText(P1, dropCapW, dropCapH);
-
-  // Hero image + "RadOS Coming Soon"
+  layText(P1, dcW, 56);
   layHero();
-  layHeading('RadOS Coming Soon', "20px 'Joystix Monospace'", 20, 24, true);
-
-  // Paragraph 2
+  layHeading('RadOS Coming Soon', "'Joystix Monospace'", 27, 1.2, 0.073, false, true);
   layText(P2);
-
-  // "RISE IN FRUSTRATION" heading
   layRule();
-  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "bold 32px PixelCode", 32, 38, true);
+  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 32, 1.2, 0.18, true, true);
   layRule();
-
-  // Paragraph 3
   layText(P3);
-
-  // "The Battlefield Widens" heading
   layRule();
-  layHeading('The Battlefield Widens for RadOS Agent Seats', "bold 48px Mondwest", 48, 53);
-
-  // Paragraph 4
+  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.13, true, false);
   layText(P4);
 
-  // Compute total height + vertical rules
-  const maxY = els.reduce((m, el) => {
-    const bottom = el.y + ('h' in el ? el.h : BODY_LH);
-    return Math.max(m, bottom);
-  }, 0);
-
-  // Add vertical column rules
-  els.push({ kind: 'rule', x: ruleX1, y: 0, w: 1 });
-  // Override: vertical rules are rendered specially (full height)
-
+  const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : BODY_LH)), 0);
   return { els, height: maxY + 32 };
 }
 
@@ -186,36 +207,70 @@ function computeLayout(containerWidth: number): LayoutResult {
 // Component
 // ============================================================================
 
+const CHROME_Y = 52; // px offset for logos above the document flow
+
 export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(790);
   const [result, setResult] = useState<LayoutResult | null>(null);
 
+  // Screenshot obstacle — draggable & resizable
+  const [obs, setObs] = useState<ObsRect>({ x: 16, y: 600, w: 340, h: 340 });
+  const dragRef = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
+  const resizeRef = useRef<{ sx: number; sy: number; ow: number; oh: number } | null>(null);
+
+  // --- ResizeObserver ---
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const ro = new ResizeObserver((entries) => {
-      setContainerWidth(entries[0]?.contentRect.width ?? 790);
-    });
+    const ro = new ResizeObserver((entries) => setContainerWidth(entries[0]?.contentRect.width ?? 790));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Run layout on resize — pretext prepare() is cached internally
+  // --- Run layout on resize or obstacle move ---
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    document.fonts.ready.then(() => {
-      setResult(computeLayout(containerWidth));
-    });
-  }, [containerWidth]);
+    document.fonts.ready.then(() => setResult(computeLayout(containerWidth, obs)));
+  }, [containerWidth, obs]);
 
-  // Column geometry (for rules)
+  // --- Drag handlers ---
+  function onDragDown(e: React.PointerEvent) {
+    dragRef.current = { sx: e.clientX, sy: e.clientY, ox: obs.x, oy: obs.y };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }
+  function onDragMove(e: React.PointerEvent) {
+    if (!dragRef.current) return;
+    setObs(prev => ({
+      ...prev,
+      x: dragRef.current!.ox + (e.clientX - dragRef.current!.sx),
+      y: dragRef.current!.oy + (e.clientY - dragRef.current!.sy),
+    }));
+  }
+  function onDragUp() { dragRef.current = null; }
+
+  // --- Resize handlers ---
+  function onResizeDown(e: React.PointerEvent) {
+    e.stopPropagation();
+    resizeRef.current = { sx: e.clientX, sy: e.clientY, ow: obs.w, oh: obs.h };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }
+  function onResizeMove(e: React.PointerEvent) {
+    if (!resizeRef.current) return;
+    setObs(prev => ({
+      ...prev,
+      w: Math.max(resizeRef.current!.ow + (e.clientX - resizeRef.current!.sx), 120),
+      h: Math.max(resizeRef.current!.oh + (e.clientY - resizeRef.current!.sy), 120),
+    }));
+  }
+  function onResizeUp() { resizeRef.current = null; }
+
+  // Column geometry (for vertical rules)
   const margin = 16;
   const ruleW = 1;
   const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
   const lW = Math.floor(avail * 0.24);
-  const rW = Math.floor(avail * 0.24);
-  const cW = avail - lW - rW;
+  const cW = avail - lW - Math.floor(avail * 0.24);
   const rule1X = margin + lW;
   const rule2X = margin + lW + ruleW + cW;
 
@@ -224,7 +279,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
       <div style={{ padding: `0 ${margin}px` }}>
 
         {/* ============================================================
-            MASTHEAD (static chrome — outside the document flow)
+            MASTHEAD
             ============================================================ */}
         <div className="text-center" style={{ paddingTop: 20 }}>
           <h1
@@ -271,15 +326,15 @@ export function GoodNewsApp({ windowId }: AppProps) {
       </div>
 
       {/* ================================================================
-          DOCUMENT FLOW — every line is an absolutely positioned div
+          DOCUMENT FLOW
           ================================================================ */}
       {result && (
-        <div className="relative" style={{ height: result.height, marginTop: 8 }}>
+        <div className="relative" style={{ height: result.height + 32, marginTop: 8 }}>
           {/* Vertical column rules */}
           <div className="absolute bg-head" style={{ left: rule1X, top: 0, width: 1, height: result.height }} />
           <div className="absolute bg-head" style={{ left: rule2X, top: 0, width: 1, height: result.height }} />
 
-          {/* RAD☀NEWS logos (static chrome) */}
+          {/* RAD☀NEWS logos */}
           <div className="absolute flex items-center gap-1" style={{ left: margin, top: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/tabloid/radsun-black.svg" alt="" style={{ width: 128, height: 37 }} />
@@ -287,44 +342,21 @@ export function GoodNewsApp({ windowId }: AppProps) {
             <img src="/tabloid/radnews-frame.svg" alt="" style={{ width: 108, height: 25 }} />
           </div>
 
-          {/* Rendered elements from pretext layout */}
+          {/* Pretext-rendered elements */}
           {result.els.map((el, i) => {
             switch (el.kind) {
               case 'line':
                 return (
-                  <div
-                    key={i}
-                    className="absolute text-head"
-                    style={{
-                      left: el.x,
-                      top: el.y + 52, // offset below logos
-                      whiteSpace: 'pre',
-                      font: "1rem/1.2 'Mondwest', serif",
-                    }}
-                  >
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, whiteSpace: 'pre', font: "1rem/1.2 'Mondwest', serif" }}>
                     {el.text}
                   </div>
                 );
-
               case 'dropcap':
                 return (
-                  <div
-                    key={i}
-                    className="absolute text-head"
-                    style={{
-                      left: el.x,
-                      top: el.y + 52,
-                      fontFamily: "'Waves Blackletter CPC', serif",
-                      fontSize: '4rem',
-                      fontWeight: 400,
-                      lineHeight: 0.85,
-                      letterSpacing: '-0.04em',
-                    }}
-                  >
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "'Waves Blackletter CPC', serif", fontSize: '4rem', fontWeight: 400, lineHeight: 0.85, letterSpacing: '-0.04em' }}>
                     G
                   </div>
                 );
-
               case 'heading':
                 return (
                   <div
@@ -332,11 +364,9 @@ export function GoodNewsApp({ windowId }: AppProps) {
                     className="absolute text-head"
                     style={{
                       left: el.x,
-                      top: el.y + 52,
+                      top: el.y + CHROME_Y,
                       width: el.w,
-                      fontFamily: el.font.includes('PixelCode') ? "'PixelCode', monospace"
-                        : el.font.includes('Joystix') ? "'Joystix Monospace', monospace"
-                        : "'Mondwest', serif",
+                      fontFamily: el.font.includes('PixelCode') ? "'PixelCode', monospace" : el.font.includes('Joystix') ? "'Joystix Monospace', monospace" : "'Mondwest', serif",
                       fontSize: el.fontSize,
                       fontWeight: el.font.includes('bold') ? 700 : 400,
                       lineHeight: `${el.lh}px`,
@@ -346,65 +376,50 @@ export function GoodNewsApp({ windowId }: AppProps) {
                     {el.text}
                   </div>
                 );
-
               case 'hero':
                 return (
-                  <div
-                    key={i}
-                    className="absolute border border-line overflow-hidden"
-                    style={{ left: el.x, top: el.y + 52, width: el.w, height: el.h }}
-                  >
+                  <div key={i} className="absolute border border-line overflow-hidden" style={{ left: el.x, top: el.y + CHROME_Y, width: el.w, height: el.h }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/tabloid/hero-image.png"
-                      alt="Calling the Radiants"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
+                    <img src="/tabloid/hero-image.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 );
-
               case 'rule':
-                // Only render horizontal rules (vertical rules are separate)
-                return el.w > 1 ? (
-                  <div
-                    key={i}
-                    className="absolute bg-head"
-                    style={{ left: el.x, top: el.y + 52, width: el.w, height: 1 }}
-                  />
-                ) : null;
-
+                return el.w > 1 ? <div key={i} className="absolute bg-head" style={{ left: el.x, top: el.y + CHROME_Y, width: el.w, height: 1 }} /> : null;
               default:
                 return null;
             }
           })}
 
-          {/* Screenshot — absolutely positioned (future: draggable/resizable) */}
+          {/* ============================================================
+              SCREENSHOT — draggable & resizable obstacle
+              Text reflows around it in real time via pretext.
+              ============================================================ */}
           <div
-            className="absolute border border-line overflow-hidden"
-            style={{ left: margin, bottom: 0, width: '47%', aspectRatio: '1 / 1' }}
+            className="absolute border border-line overflow-hidden select-none"
+            style={{ left: obs.x, top: obs.y + CHROME_Y, width: obs.w, height: obs.h, cursor: 'grab', zIndex: 10 }}
+            onPointerDown={onDragDown}
+            onPointerMove={onDragMove}
+            onPointerUp={onDragUp}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/tabloid/screenshot.png"
-              alt="RadOS Screenshot"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
+            <img src="/tabloid/screenshot.png" alt="" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
             <div
               className="absolute bottom-0 left-0 right-0 text-head"
               // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semi-transparent-caption-overlay owner:design-system expires:2027-01-01 issue:DNA-newspaper
-              style={{
-                padding: 16,
-                fontFamily: "'Mondwest', serif",
-                fontSize: '0.92rem',
-                lineHeight: 1.3,
-                background: 'rgba(255, 252, 243, 0.92)',
-              }}
+              style={{ padding: 16, fontFamily: "'Mondwest', serif", fontSize: '0.92rem', lineHeight: 1.3, background: 'rgba(255, 252, 243, 0.92)', pointerEvents: 'none' }}
             >
               <p className="italic">{CAPTION}</p>
-              <p className="text-accent font-bold" style={{ marginTop: 4 }}>
-                In the twilight of confusion new ideas emerge.
-              </p>
+              <p className="text-accent font-bold" style={{ marginTop: 4 }}>In the twilight of confusion new ideas emerge.</p>
             </div>
+
+            {/* Resize handle */}
+            <div
+              className="absolute bottom-0 right-0 bg-head/20 hover:bg-head/40"
+              style={{ width: 16, height: 16, cursor: 'se-resize' }}
+              onPointerDown={onResizeDown}
+              onPointerMove={onResizeMove}
+              onPointerUp={onResizeUp}
+            />
           </div>
         </div>
       )}

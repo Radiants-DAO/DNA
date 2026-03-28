@@ -108,7 +108,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     windowTitle: 'Good News',
     windowIcon: <Icon name="newspaper" size={24} />,
     component: GoodNewsApp,
-    defaultSize: { width: 830, height: 700 },
+    defaultSize: 'lg',
     resizable: true,
     contentPadding: false,
     desktopVisible: true,
