@@ -6,9 +6,9 @@
 
 **Worktree:** `/Users/rivermassey/Desktop/dev/DNA` → branch `feat/pretext-editor` (create at execution time)
 
-**Architecture:** A subpath export (`packages/controls/src/pretext/`) within the `@rdna/controls` package. Provides a `usePretextSurface` React hook that consumers call to register columns, obstacles, and text blocks. The backend owns all geometry math (circle intervals, polygon scanlines, rect intersections, multi-obstacle carving) and the layout descriptor JSON schema. It **never** calls `prepare()` / `prepareWithSegments()` — the host owns preparation. The backend only calls `layoutNextLine` and `walkLineRanges` (sub-0.1ms hot path).
+**Architecture:** A subpath export (`packages/controls/src/pretext/`) within the `@rdna/controls` package. It provides a `usePretextSurface` React hook that registers columns, obstacles, and runtime text handles prepared by the host. The backend owns the geometry math (circle, rect, and polygon scanlines), wrap-slot selection, host-sync API, and layout descriptor schema; exported descriptors strip runtime-only fields like `prepared` and DOM refs. It **never** calls `prepare()` / `prepareWithSegments()` — the host owns preparation. The backend only calls `layoutNextLine` and `walkLineRanges` on already-prepared text.
 
-**Tech Stack:** React 19, TypeScript, Vitest, `@chenglou/pretext` (peer dep), `@rdna/controls` (host package)
+**Tech Stack:** React 19, TypeScript, Vitest, `@chenglou/pretext` (optional peer dep + local devDependency for package tests), `@rdna/controls` (host package)
 
 **Depends on:** `packages/controls/` package shell existing (Task 2 from `docs/plans/2026-03-27-rdna-controls-library.md`). If that hasn't been executed yet, run those first two tasks before starting here.
 
@@ -66,7 +66,7 @@ Add to the `"exports"` field:
 Add to `"peerDependencies"`:
 
 ```json
-"@chenglou/pretext": ">=0.0.2"
+"@chenglou/pretext": "^0.0.2"
 ```
 
 Mark `@chenglou/pretext` as an **optional** peer dep so consumers who don't use the pretext inspector aren't forced to install it:
@@ -77,6 +77,14 @@ Mark `@chenglou/pretext` as an **optional** peer dep so consumers who don't use 
 }
 ```
 
+Also add `@chenglou/pretext` to `"devDependencies"` of `packages/controls/package.json` so the package's own source and tests can resolve it locally:
+
+```bash
+pnpm --filter @rdna/controls add -D @chenglou/pretext@^0.0.2
+```
+
+This repo currently installs `@chenglou/pretext` in app/package consumers, not at the workspace root, so the extra local devDependency is required for `packages/controls` test/build ergonomics.
+
 **Step 2: Create the directory**
 
 ```bash
@@ -86,7 +94,7 @@ mkdir -p packages/controls/src/pretext
 **Step 3: Commit**
 
 ```bash
-git add packages/controls/package.json packages/controls/src/pretext
+git add packages/controls/package.json packages/controls/src/pretext pnpm-lock.yaml
 git commit -m "feat(controls): add pretext subpath export"
 ```
 
@@ -106,6 +114,7 @@ This is the core data model. Everything else builds on these types.
 Create `packages/controls/test/pretext/types.test.ts`:
 
 ```ts
+import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import { describe, expect, it } from 'vitest';
 import type {
   WrapSide,
@@ -119,11 +128,15 @@ import type {
   PullquoteObstacleDef,
   ObstacleDef,
   TextBlockDef,
+  TextBlockRegistration,
+  HostSurfaceRegistration,
   PretextSurfaceConfig,
   LayoutDescriptor,
 } from '../../src/pretext/types';
 
 describe('pretext types', () => {
+  const prepared = {} as PreparedTextWithSegments;
+
   it('WrapSide has expected values', () => {
     const sides: WrapSide[] = ['leftSide', 'rightSide', 'both', 'largestArea'];
     expect(sides).toHaveLength(4);
@@ -206,6 +219,34 @@ describe('pretext types', () => {
     expect(block.whiteSpace).toBe('pre-wrap');
   });
 
+  it('TextBlockRegistration carries prepared text at runtime', () => {
+    const block: TextBlockRegistration = {
+      id: 'body',
+      font: '16px Mondwest',
+      lineHeight: 19.2,
+      prepared,
+    };
+    expect(block.prepared).toBe(prepared);
+  });
+
+  it('HostSurfaceRegistration requires prepared text handles', () => {
+    const config: HostSurfaceRegistration = {
+      columns: [],
+      obstacles: [],
+      textBlocks: [{ id: 'body', font: '16px serif', lineHeight: 24, prepared }],
+    };
+    expect(config.textBlocks[0]!.prepared).toBe(prepared);
+  });
+
+  it('PretextSurfaceConfig extends HostSurfaceRegistration', () => {
+    const config: PretextSurfaceConfig = {
+      columns: [],
+      obstacles: [],
+      textBlocks: [{ id: 'body', font: '16px serif', lineHeight: 24, prepared }],
+    };
+    expect(config.textBlocks).toHaveLength(1);
+  });
+
   it('LayoutDescriptor has version field', () => {
     const desc: LayoutDescriptor = {
       version: 1,
@@ -214,6 +255,7 @@ describe('pretext types', () => {
       textBlocks: [{ id: 'body', font: '16px serif', lineHeight: 24 }],
     };
     expect(desc.version).toBe(1);
+    expect('prepared' in desc.textBlocks[0]!).toBe(false);
   });
 });
 ```
@@ -234,6 +276,7 @@ Expected: FAIL — module `../../src/pretext/types` not found.
 Create `packages/controls/src/pretext/types.ts`:
 
 ```ts
+import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { RefObject } from 'react';
 
 // ============================================================================
@@ -332,14 +375,22 @@ export type TextBlockDef = {
   whiteSpace?: 'normal' | 'pre-wrap';
 };
 
+/** Runtime registration entry. Host passes a prepared handle; descriptor strips it. */
+export type TextBlockRegistration = TextBlockDef & {
+  prepared: PreparedTextWithSegments;
+};
+
 // ============================================================================
 // Surface config (input to usePretextSurface)
 // ============================================================================
 
-export type PretextSurfaceConfig = {
+export type HostSurfaceRegistration = {
   columns: ColumnDef[];
   obstacles: ObstacleDef[];
-  textBlocks: TextBlockDef[];
+  textBlocks: TextBlockRegistration[];
+};
+
+export type PretextSurfaceConfig = HostSurfaceRegistration & {
   onLayoutChange?: (descriptor: LayoutDescriptor) => void;
 };
 
@@ -378,6 +429,8 @@ export type {
   PullquoteObstacleDef,
   ObstacleDef,
   TextBlockDef,
+  TextBlockRegistration,
+  HostSurfaceRegistration,
   PretextSurfaceConfig,
   LayoutDescriptor,
 } from './types';
@@ -389,7 +442,7 @@ export type {
 pnpm --filter @rdna/controls exec vitest run test/pretext/types.test.ts
 ```
 
-Expected: all 9 tests PASS.
+Expected: all 12 tests PASS.
 
 **Step 6: Commit**
 
