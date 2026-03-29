@@ -103,9 +103,9 @@ const HEADING_SPECS = [
   { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", tier: '3xl' as FluidTierName, bold: true },
 ] as const;
 
-const DROP_CAP_SIZE = 56; // px — must match render
-const DROP_CAP_LH = 1.29; // line-height multiplier — must match render
-const DROP_CAP_FONT = `${DROP_CAP_SIZE}px 'Waves Blackletter CPC'`;
+const DROP_CAP_SIZE = 80; // px — matches line-height for this font
+const DROP_CAP_LH_PX = 80; // line-height in px — must match render
+const DROP_CAP_FONT = `${DROP_CAP_LH_PX}px 'Waves Blackletter CPC'`;
 
 const PAT_TOKENS = [
   '--pat-checkerboard', '--pat-checkerboard-alt', '--pat-pinstripe-v', '--pat-pinstripe-v-wide',
@@ -121,8 +121,40 @@ const PAT_TOKENS = [
   '--pat-fill-97',
 ];
 
-function DropCapBox({ x, y, topOffset }: { x: number; y: number; topOffset: number }) {
-  const [patIdx, setPatIdx] = useState(6); // start on diagonal
+// 1x base values — multiply by scale (1–4)
+const DC_BASE = {
+  fontSize: 20,
+  lineHeight: 20,
+  borderWidth: 1,
+  patternScale: 8,
+};
+
+interface DropCapProps {
+  x: number;
+  y: number;
+  topOffset: number;
+  letter?: string;
+  glyphWidth: number; // pretext-measured, already at render scale
+  scale?: 1 | 2 | 3 | 4;
+  onScaleChange?: (scale: 1 | 2 | 3 | 4) => void;
+  cycleSpeed?: number;
+}
+
+function DropCapBox({
+  x, y, topOffset,
+  letter = 'F',
+  glyphWidth,
+  scale = 4,
+  onScaleChange,
+  cycleSpeed = 75,
+}: DropCapProps) {
+  const s = scale;
+  const fontSize = DC_BASE.fontSize * s;
+  const lh = `${DC_BASE.lineHeight * s}px`;
+  const borderWidth = DC_BASE.borderWidth * s;
+  const maskSz = `${DC_BASE.patternScale * s}px`;
+
+  const [patIdx, setPatIdx] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startCycle = useCallback(() => {
@@ -130,28 +162,32 @@ function DropCapBox({ x, y, topOffset }: { x: number; y: number; topOffset: numb
     intervalRef.current = setInterval(() => {
       setPatIdx(idx % PAT_TOKENS.length);
       idx++;
-    }, 150);
-  }, []);
+    }, cycleSpeed);
+  }, [cycleSpeed]);
 
   const stopCycle = useCallback(() => {
     if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    setPatIdx(6); // reset to diagonal
+    setPatIdx(null);
   }, []);
 
   useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
 
+  const textStyle = { fontFamily: "var(--font-blackletter)", fontSize, fontWeight: 400, lineHeight: 'normal', letterSpacing: '0' } as const;
+
   return (
     <div
       className="absolute text-head"
-      style={{ left: x, top: y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em', padding: '12px 6px 0', border: '1px solid var(--color-line)' }}
+      style={{ left: x, top: y + topOffset, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', width: Math.ceil(glyphWidth / s) * s + s * 4 + borderWidth * 2, padding: `${s * 2}px ${s * 2}px 0`, border: `${borderWidth}px solid var(--color-line)`, overflow: 'hidden' }}
+      onClick={() => onScaleChange?.((scale % 4 + 1) as 1 | 2 | 3 | 4)}
       onMouseEnter={startCycle}
       onMouseLeave={stopCycle}
     >
       <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-accent)' }} />
-      <div className="rdna-pat" style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-ink)', maskSize: '24px 24px', WebkitMaskSize: '24px 24px', ['--_pat' as string]: `var(${PAT_TOKENS[patIdx]})` }} />
-      <span style={{ position: 'relative' }}>G</span>
-      <span style={{ position: 'absolute', top: '12px', left: '6px', fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em' }}>G</span>
-      <span style={{ position: 'absolute', top: '12px', left: '6px', fontFamily: "var(--font-blackletter-shadow)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em', color: 'var(--color-accent)' }}>G</span>
+      {patIdx !== null && <div className="rdna-pat" style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-ink)', maskSize: maskSz, WebkitMaskSize: maskSz, ['--_pat' as string]: `var(${PAT_TOKENS[patIdx]})` }} />}
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: s * -2 }}>
+        <span style={{ position: 'relative', ...textStyle, fontFamily: "var(--font-blackletter-shadow)", color: 'var(--color-accent)' }}>{letter}</span>
+        <span style={{ position: 'absolute', ...textStyle }}>{letter}</span>
+      </div>
     </div>
   );
 }
@@ -202,6 +238,7 @@ function buildPreparedTexts(
   colWidths: number[],
   bodyFont: string,
   containerWidth: number,
+  dcScale: number,
 ): PreparedTexts {
   const bodyTexts = [P1, P2, P3, P4];
   const body = bodyTexts.map(t => getPrepared(cache, t, bodyFont));
@@ -230,7 +267,9 @@ function buildPreparedTexts(
     masthead.set(`${item.text}::${font}`, getPrepared(cache, item.text, font));
   }
 
-  const dropCap = getPrepared(cache, 'G', DROP_CAP_FONT);
+  const dcFontSize = DC_BASE.fontSize * dcScale;
+  const dcFont = `${dcFontSize}px 'Waves Blackletter CPC'`;
+  const dropCap = getPrepared(cache, 'F', dcFont);
 
   return { body, headings, masthead, dropCap };
 }
@@ -302,6 +341,7 @@ function computeLayout(
   obstacle: ObsRect | null,
   hull: Point[] | null,
   prepared: PreparedTexts,
+  dcScale: number,
   baseFontSize: number,
   bodyLh: number,
 ): SpreadResult {
@@ -598,8 +638,11 @@ function computeLayout(
   // ==========================================================================
 
   const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
-  const dcW = (dcLine?.width ?? 50) + 20;
-  const dcH = Math.ceil(DROP_CAP_SIZE * DROP_CAP_LH);
+  const dcGlyphW = Math.ceil((dcLine?.width ?? 50) / dcScale) * dcScale; // snap up to grid
+  const dcBorder = DC_BASE.borderWidth * dcScale;
+  const dcPad = dcScale * 2; // px padding (scales with size)
+  const dcW = dcGlyphW + dcPad * 2 + dcBorder * 2 + dcScale * 4; // glyph + padding + border + gap
+  const dcH = DC_BASE.fontSize * dcScale + dcPad * 2 + dcBorder * 2 + dcScale * 4; // top padding + extra bottom gap + chrome buffer
   els.push({ kind: 'dropcap', x: col().x, y });
 
   layText(dcW, dcH);   // P1
@@ -616,7 +659,7 @@ function computeLayout(
   layText();           // P4
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : bodyLh)), 0);
-  return { els, height: maxY + 32, baseFontSize, bodyLh, mastheadHeight };
+  return { els, height: maxY + 32, baseFontSize, bodyLh, mastheadHeight, dcGlyphW };
 }
 
 // ============================================================================
@@ -627,6 +670,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(790);
   const [result, setResult] = useState<SpreadResult | null>(null);
+  const [dcScale, setDcScale] = useState<1 | 2 | 3 | 4>(4);
 
   // Obstacle slot (null = no obstacle, kept for future inline image support)
   const obs = null;
@@ -657,10 +701,10 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
       const cols = buildColumns(containerWidth, getColCount(containerWidth));
       const colWidths = cols.map(c => c.width);
-      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont, containerWidth);
-      setResult(computeLayout(containerWidth, obs, hull, prepared, baseFontSize, bodyLh));
+      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont, containerWidth, dcScale);
+      setResult(computeLayout(containerWidth, obs, hull, prepared, dcScale, baseFontSize, bodyLh));
     });
-  }, [containerWidth, obs, hull]);
+  }, [containerWidth, obs, hull, dcScale]);
 
   // Cleanup: free pretext internal measurement caches on unmount
   useEffect(() => {
@@ -726,7 +770,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                   </div>
                 );
               case 'dropcap':
-                return <DropCapBox key={i} x={el.x} y={el.y} topOffset={topOffset} />;
+                return <DropCapBox key={i} x={el.x} y={el.y} topOffset={topOffset} letter="F" glyphWidth={result.dcGlyphW} scale={dcScale} onScaleChange={setDcScale} />;
               case 'heading-line':
                 return (
                   <div

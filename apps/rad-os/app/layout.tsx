@@ -37,7 +37,7 @@ export default function RootLayout({
             <link rel="preload" href="/fonts/Mondwest-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         */}
       </head>
-      <body className="antialiased">
+      <body>
         {children}
       </body>
     </html>
