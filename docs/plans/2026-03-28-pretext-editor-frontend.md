@@ -726,40 +726,50 @@ import { DomOverlay } from '@rdna/controls/overlay';
 
 **Step 2: Register the surface inside GoodNewsApp**
 
-After the existing state declarations (`obs`, `hull`, etc.), add the surface registration:
+After the existing state declarations (`obs`, `hull`, `prepared`, etc.), add the surface registration. The backend plan now treats host geometry and prepared text handles as runtime registrations, so call `syncFromHost()` when those host-owned values change:
 
 ```tsx
 const surface = usePretextSurface({
-  columns: [
-    { id: 'left', x: margin, width: lW - 8 },
-    { id: 'center', x: margin + lW + ruleW + 8, width: cW - 16 },
-    { id: 'right', x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
-  ],
-  obstacles: [
-    {
-      id: 'logo',
-      contour: 'polygon' as const,
-      hull: hull ?? [],
-      bounds: { x: obs.x, y: obs.y, width: obs.w, height: obs.h },
-      wrap: 'both' as const,
-      offsets: { top: OBS_V_PAD, right: OBS_H_PAD, bottom: OBS_V_PAD, left: OBS_H_PAD },
-    },
-    {
-      id: 'dropcap',
-      type: 'dropcap' as const,
-      character: 'G',
-      font: DROP_CAP_FONT,
-      lineCount: 3,
-    },
-  ],
-  textBlocks: [
-    { id: 'body', font: BODY_FONT, lineHeight: BODY_LH },
-  ],
+  columns: [],
+  obstacles: [],
+  textBlocks: [],
   onLayoutChange: (descriptor) => {
-    // For now, log to console. The copy button in the inspector handles export.
     console.log('[pretext-inspector] layout changed', descriptor);
   },
 });
+
+useEffect(() => {
+  surface.syncFromHost({
+    columns: [
+      { id: 'left', x: margin, width: lW - 8 },
+      { id: 'center', x: margin + lW + ruleW + 8, width: cW - 16 },
+      { id: 'right', x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
+    ],
+    obstacles: [
+      {
+        id: 'logo',
+        contour: 'polygon' as const,
+        hull: hull ?? [],
+        bounds: { x: obs.x, y: obs.y, width: obs.w, height: obs.h },
+        wrap: 'both' as const,
+        offsets: { top: OBS_V_PAD, right: OBS_H_PAD, bottom: OBS_V_PAD, left: OBS_H_PAD },
+      },
+      {
+        id: 'dropcap',
+        type: 'dropcap' as const,
+        character: 'G',
+        font: DROP_CAP_FONT,
+        lineCount: 3,
+      },
+    ],
+    textBlocks: prepared.body.map((preparedText, index) => ({
+      id: `body-${index}`,
+      font: BODY_FONT,
+      lineHeight: BODY_LH,
+      prepared: preparedText,
+    })),
+  });
+}, [surface, margin, lW, ruleW, cW, rW, obs.x, obs.y, obs.w, obs.h, hull, prepared.body]);
 ```
 
 **Step 3: Render the inspector panel**
@@ -784,7 +794,7 @@ Open `localhost:3000`, launch GoodNewsApp. Verify:
 
 * Inspector panel appears in the top-right corner
 
-* Element list shows "logo (polygon)", "dropcap (dropcap)", "body (text)"
+* Element list shows "logo (polygon)", "dropcap (dropcap)", and one or more registered `body-*` text blocks
 
 * Clicking an element shows its settings
 

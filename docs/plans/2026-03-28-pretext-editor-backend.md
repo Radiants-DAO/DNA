@@ -442,7 +442,7 @@ export type {
 pnpm --filter @rdna/controls exec vitest run test/pretext/types.test.ts
 ```
 
-Expected: all 12 tests PASS.
+Expected: all 13 tests PASS.
 
 **Step 6: Commit**
 
