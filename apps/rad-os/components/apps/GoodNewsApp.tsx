@@ -477,7 +477,8 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const ruleXs = getRuleXPositions(containerWidth, colCount);
 
   return (
-    <div ref={containerRef} className="h-full overflow-y-auto bg-page">
+    <div className="h-full overflow-y-auto bg-card px-1.5 pb-1.5">
+      <div ref={containerRef} className="border border-line pixel-shadow-floating bg-page">
       <div style={{ padding: `0 ${COL_MARGIN}px` }}>
 
         {/* ============================================================
@@ -637,6 +638,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
           </svg>
         </div>
       )}
+      </div>
     </div>
   );
 }
