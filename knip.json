@@ -36,6 +36,7 @@
         "scripts/generate-icons.mjs",
         "scripts/generate-icons.ts",
         "scripts/generate-pixel-corners.mjs",
+        "scripts/generate-typography-tokens.ts",
         "scripts/pixel-corners-lib.mjs",
         "scripts/pixel-corners.config.mjs"
       ]
