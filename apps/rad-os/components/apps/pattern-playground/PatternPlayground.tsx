@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { DialPanel, useDialKit, Button } from '@rdna/radiants/components/core';
+import { DialPanel, useDialKit } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';
-import { PRESETS, DEFAULT_STATE } from './presets';
+import { DEFAULT_STATE } from './presets';
 import { PatternGridPicker } from './PatternGridPicker';
 import { PatternPreview } from './PatternPreview';
 import { PatternCodeOutput } from './PatternCodeOutput';
@@ -132,17 +132,9 @@ function PlaygroundControls({
 
 export function PatternPlayground() {
   const [state, setState] = useState<PatternPlaygroundState>(DEFAULT_STATE);
-  const [activePreset, setActivePreset] = useState(0);
-  const [dialKey, setDialKey] = useState(0);
 
   const handlePatternSelect = useCallback((name: string) => {
     setState((prev) => ({ ...prev, pat: name }));
-  }, []);
-
-  const handlePreset = useCallback((index: number) => {
-    setActivePreset(index);
-    setState(PRESETS[index].state);
-    setDialKey((k) => k + 1);
   }, []);
 
   const handleSync = useCallback((partial: Partial<PatternPlaygroundState>) => {
@@ -150,46 +142,22 @@ export function PatternPlayground() {
   }, []);
 
   const panelHeader = (
-    <>
-      {/* Presets */}
-      <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
-        <span className="font-heading text-xs text-mute uppercase tracking-wide block">
-          Presets
-        </span>
-        <div className="flex flex-wrap gap-1">
-          {PRESETS.map((preset, i) => (
-            <Button
-              key={preset.name}
-              size="sm"
-              compact
-              quiet={activePreset !== i}
-              onClick={() => handlePreset(i)}
-              title={preset.description}
-            >
-              {preset.name}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Pattern grid */}
-      <div className="px-3 py-2 border-b border-rule">
-        <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
-          Pattern
-        </span>
-        <PatternGridPicker
-          selected={state.pat}
-          onSelect={handlePatternSelect}
-          color={state.color}
-        />
-      </div>
-    </>
+    <div className="px-3 py-2 border-b border-rule">
+      <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
+        Pattern
+      </span>
+      <PatternGridPicker
+        selected={state.pat}
+        onSelect={handlePatternSelect}
+        color={state.color}
+      />
+    </div>
   );
 
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 min-h-0 flex">
-        <DialPanel key={dialKey} header={panelHeader}>
+        <DialPanel header={panelHeader}>
           <PlaygroundControls initial={state} onSync={handleSync} />
         </DialPanel>
 

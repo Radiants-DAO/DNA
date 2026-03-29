@@ -17,7 +17,7 @@ import {
   type Point,
   type Interval,
 } from '@chenglou/pretext/demos/wrap-geometry';
-import { resolveFluid, spacing, type FluidTierName } from '@rdna/radiants/patterns/pretext-type-scale';
+import { resolveFluid, resolveFluidRaw, spacing, type FluidTierName } from '@rdna/radiants/patterns/pretext-type-scale';
 
 // ============================================================================
 // Document content — in reading order, split at inline insertion points
@@ -44,9 +44,10 @@ type El =
   | { kind: 'dropcap'; x: number; y: number }
   | { kind: 'heading-line'; x: number; y: number; w: number; text: string; family: string; fontSize: number; bold: boolean; lh: number; center: boolean }
   | { kind: 'hero'; x: number; y: number; w: number; h: number }
-  | { kind: 'rule'; x: number; y: number; w: number };
+  | { kind: 'rule'; x: number; y: number; w: number; section: 'masthead' | 'editorial' }
+  | { kind: 'masthead-text'; x: number; y: number; w: number; text: string; family: string; fontSize: number; bold: boolean; lh: number; align: 'left' | 'center' | 'right'; uppercase: boolean; letterSpacing: string }
 
-interface SpreadResult { els: El[]; height: number; baseFontSize: number; bodyLh: number }
+interface SpreadResult { els: El[]; height: number; baseFontSize: number; bodyLh: number; mastheadHeight: number }
 
 // ============================================================================
 // Obstacle avoidance — polygon hull wrapping (matches dynamic-layout demo)
@@ -103,12 +104,34 @@ const HEADING_SPECS = [
 ] as const;
 
 const DROP_CAP_SIZE = 64; // px — must match render
-const DROP_CAP_LH = 0.85; // line-height multiplier — must match render
+const DROP_CAP_LH = 1.3125; // line-height multiplier — must match render
 const DROP_CAP_FONT = `${DROP_CAP_SIZE}px 'Waves Blackletter CPC'`;
+
+// Masthead text — all laid out by pretext, not CSS
+const MASTHEAD = {
+  title: 'Good News',
+  titleFamily: "'Waves Blackletter CPC'",
+  // Display size — larger than 4xl, resolved via resolveFluidRaw
+  // At 500px → 52px, at 790px → 72px, at 1000px → 86px (capped 90)
+  titleSize: { min: 40, base: 16, coeff: 7, max: 90 },
+  left: [
+    { text: 'Largest Daily Founders Workshop', family: 'Mondwest', bold: true, tier: 'xl' as FluidTierName, uppercase: false },
+    { text: 'Solana Mobile X Radiants', family: "'Pixeloid Sans'", bold: false, tier: 'sm' as FluidTierName, uppercase: true },
+  ],
+  right: [
+    { text: '$2,000,000 In Pages Burnt', family: 'Mondwest', bold: false, tier: 'xl' as FluidTierName, uppercase: false },
+    { text: 'More on p6', family: "'Pixeloid Sans'", bold: false, tier: 'sm' as FluidTierName, uppercase: true },
+  ],
+  dateline: [
+    { text: 'Monday, November 28th, 2026', family: "'Pixeloid Sans'", bold: true, tier: 'sm' as FluidTierName, uppercase: true },
+    { text: '$1.50 per issue', family: "'Pixeloid Sans'", bold: true, tier: 'sm' as FluidTierName, uppercase: true },
+  ],
+} as const;
 
 interface PreparedTexts {
   body: PreparedTextWithSegments[];
   headings: Map<string, PreparedTextWithSegments>;
+  masthead: Map<string, PreparedTextWithSegments>;
   dropCap: PreparedTextWithSegments;
 }
 
@@ -129,6 +152,7 @@ function buildPreparedTexts(
   cache: Map<string, PreparedTextWithSegments>,
   colWidths: number[],
   bodyFont: string,
+  containerWidth: number,
 ): PreparedTexts {
   const bodyTexts = [P1, P2, P3, P4];
   const body = bodyTexts.map(t => getPrepared(cache, t, bodyFont));
@@ -146,9 +170,20 @@ function buildPreparedTexts(
     }
   }
 
+  // Masthead texts — prepared at container width (they span the full width)
+  const masthead = new Map<string, PreparedTextWithSegments>();
+  const mhTitleSize = resolveFluidRaw(MASTHEAD.titleSize, containerWidth);
+  const mhTitleFont = `${mhTitleSize}px ${MASTHEAD.titleFamily}`;
+  masthead.set('title', getPrepared(cache, MASTHEAD.title, mhTitleFont));
+  for (const item of [...MASTHEAD.left, ...MASTHEAD.right, ...MASTHEAD.dateline]) {
+    const sz = resolveFluid(item.tier, containerWidth);
+    const font = `${item.bold ? 'bold ' : ''}${sz}px ${item.family}`;
+    masthead.set(`${item.text}::${font}`, getPrepared(cache, item.text, font));
+  }
+
   const dropCap = getPrepared(cache, 'G', DROP_CAP_FONT);
 
-  return { body, headings, dropCap };
+  return { body, headings, masthead, dropCap };
 }
 
 // ============================================================================
@@ -238,7 +273,7 @@ function computeLayout(
 
   const els: El[] = [];
   let ci = 0;
-  let y = 0;
+  let y = bodyLh; // 1× bodyLh above masthead
 
   function col() { return cols[ci]!; }
   function fits(h: number) { return y + h <= maxColH; }
@@ -280,6 +315,7 @@ function computeLayout(
   //     matching the dynamic-layout demo pattern ---
   function layHeading(text: string, family: string, tier: FluidTierName, lhRatio: number, bold = false, center = false) {
     if (ci >= cols.length) return;
+    y += bodyLh * spacing.headingBefore;
     const fontSize = resolveFluid(tier, col().width);
     const lh = Math.round(fontSize * lhRatio);
     const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
@@ -314,37 +350,144 @@ function computeLayout(
     y += bodyLh * spacing.headingAfter;
   }
 
-  // --- Hero image — if current column is too narrow, advance to a wider one ---
-  function layHero() {
-    if (ci >= cols.length) return;
-    // Skip narrow columns for the hero — it needs breathing room
-    while (ci < cols.length && col().width < 200) {
-      if (!nextCol()) return;
-    }
-    const w = col().width;
-    const imgH = w / (357 / 258);
-    const totalH = imgH + 16;
-    if (!fits(totalH)) { if (!nextCol()) return; }
-    els.push({ kind: 'hero', x: col().x, y, w, h: imgH });
-    y += totalH;
-  }
-
   // --- Spacing — all derived from bodyLh × named roles ---
   function laySpace(role: keyof typeof spacing) {
     y += bodyLh * spacing[role];
   }
 
-  // --- Horizontal rule ---
+  // --- Horizontal rule (owns its own spacing, don't add extra around it) ---
   function layRule() {
     if (ci >= cols.length) return;
-    laySpace('rule');
-    els.push({ kind: 'rule', x: col().x, y, w: col().width });
-    y += 1; // rule height
-    laySpace('rule');
+    y += bodyLh * spacing.rule;
+    els.push({ kind: 'rule', x: col().x, y, w: col().width, section: 'editorial' });
+    y += 1;
+    y += bodyLh * spacing.rule;
   }
 
   // ==========================================================================
-  // Document flow
+  // Masthead — pretext-measured, absolutely positioned
+  // ==========================================================================
+
+  function layMastheadText(
+    text: string, family: string, tier: FluidTierName, bold: boolean,
+    x: number, w: number, align: 'left' | 'center' | 'right',
+    uppercase = false, letterSpacingEm = '0em',
+  ) {
+    const fontSize = resolveFluid(tier, containerWidth);
+    const lh = Math.round(fontSize * 1.15);
+    const font = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
+    const key = text === MASTHEAD.title ? 'title' : `${text}::${font}`;
+    const prep = prepared.masthead.get(key);
+    if (!prep) return lh;
+    let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
+    const startY = y;
+    while (true) {
+      const line = layoutNextLine(prep, cursor, w);
+      if (!line) break;
+      els.push({
+        kind: 'masthead-text',
+        x, y, w, text: line.text,
+        family, fontSize, bold, lh, align, uppercase,
+        letterSpacing: letterSpacingEm,
+      });
+      cursor = line.end;
+      y += lh;
+    }
+    return y - startY;
+  }
+
+  // Title helper — uses custom display size, not a standard tier
+  function layMastheadTitle(x: number, w: number) {
+    const fontSize = resolveFluidRaw(MASTHEAD.titleSize, containerWidth);
+    const lh = Math.round(fontSize * 1.05);
+    const font = `${fontSize}px ${MASTHEAD.titleFamily}`;
+    const prep = prepared.masthead.get('title');
+    if (!prep) return;
+    let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
+    while (true) {
+      const line = layoutNextLine(prep, cursor, w);
+      if (!line) break;
+      els.push({
+        kind: 'masthead-text',
+        x, y, w, text: line.text,
+        family: MASTHEAD.titleFamily,
+        fontSize, bold: false, lh, align: 'center',
+        uppercase: false, letterSpacing: '-0.06em',
+      });
+      cursor = line.end;
+      y += lh;
+    }
+  }
+
+  // Title: "Good News" centered across full content width
+  const contentW = containerWidth - COL_MARGIN * 2;
+  const savedY = y;
+
+  // Side columns for left/right info (use editorial column widths if 3-col, else stack)
+  if (colCount >= 3) {
+    const sideW = cols[0].width;
+    const centerX = cols[1].x;
+    const centerW = cols[1].width;
+    const rightX = cols[2].x;
+    const rightW = cols[2].width;
+
+    // Left column
+    const leftStartY = y;
+    for (const item of MASTHEAD.left) {
+      layMastheadText(item.text, item.family, item.tier, item.bold, COL_MARGIN, sideW, 'left', item.uppercase ?? false, '-0.03em');
+    }
+    const leftH = y - leftStartY;
+
+    // Title spans full content width, centered
+    y = savedY;
+    layMastheadTitle(COL_MARGIN, contentW);
+    const centerH = y - savedY;
+
+    // Right column
+    y = savedY;
+    for (const item of MASTHEAD.right) {
+      layMastheadText(item.text, item.family, item.tier, item.bold, rightX, rightW, 'right', item.uppercase ?? false, '-0.03em');
+    }
+    const rightH = y - savedY;
+
+    y = savedY + Math.max(leftH, centerH, rightH);
+  } else {
+    // Narrow: title spans full width, side text below
+    layMastheadTitle(COL_MARGIN, contentW);
+  }
+
+  // Dateline bar
+  const datelineSize = resolveFluid('sm', containerWidth);
+  const datelineLh = Math.round(datelineSize * 1.2);
+  y += 4;
+  els.push({
+    kind: 'masthead-text',
+    x: COL_MARGIN, y, w: contentW,
+    text: MASTHEAD.dateline[0].text,
+    family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+    lh: datelineLh, align: 'left', uppercase: true, letterSpacing: '0.05em',
+  });
+  els.push({
+    kind: 'masthead-text',
+    x: COL_MARGIN, y, w: contentW,
+    text: MASTHEAD.dateline[1].text,
+    family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+    lh: datelineLh, align: 'right', uppercase: true, letterSpacing: '0.05em',
+  });
+  y += datelineLh + 4;
+
+  // Rule under dateline
+  els.push({ kind: 'rule', x: COL_MARGIN, y, w: contentW, section: 'masthead' });
+  y += 1;
+  y += bodyLh;
+
+  const mastheadHeight = y;
+
+  // Reset y for column layout — columns start after masthead
+  y = 0;
+
+  // ==========================================================================
+  // Document flow (editorial content in columns, below masthead)
   // ==========================================================================
 
   const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
@@ -353,31 +496,23 @@ function computeLayout(
   els.push({ kind: 'dropcap', x: col().x, y });
 
   layText(dcW, dcH);   // P1
-  laySpace('section');
-  layHero();
-  laySpace('headingBefore');
   layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
   layText();           // P2
   layRule();
-  laySpace('headingBefore');
   layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 'xl', 1.2, true, true);
   layRule();
-  laySpace('paragraph');
   layText();           // P3
   layRule();
-  laySpace('headingBefore');
   layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", '3xl', 1.1, true, false);
   layText();           // P4
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : bodyLh)), 0);
-  return { els, height: maxY + 32, baseFontSize, bodyLh };
+  return { els, height: maxY + 32, baseFontSize, bodyLh, mastheadHeight };
 }
 
 // ============================================================================
 // Component
 // ============================================================================
-
-const CHROME_Y = 52; // px offset for logos above the document flow
 
 export function GoodNewsApp({ windowId }: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -413,7 +548,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
       const cols = buildColumns(containerWidth, getColCount(containerWidth));
       const colWidths = cols.map(c => c.width);
-      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont);
+      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont, containerWidth);
       setResult(computeLayout(containerWidth, obs, hull, prepared, baseFontSize, bodyLh));
     });
   }, [containerWidth, obs, hull]);
@@ -435,85 +570,55 @@ export function GoodNewsApp({ windowId }: AppProps) {
       <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }} />
       <div className="absolute top-1 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }} />
       <div ref={containerRef} className="bg-card h-full overflow-y-auto border-t border-ink">
-      <div style={{ padding: `0 ${COL_MARGIN}px` }}>
-
-        {/* ============================================================
-            MASTHEAD — left info | GOOD NEWS centered | right info
-            ============================================================ */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 3fr 1fr',
-          columnGap: 12,
-          paddingTop: 16,
-          alignItems: 'center',
-        }}>
-          {/* Left info */}
-          <div style={{ textAlign: 'left' }}>
-            <p className="text-head font-sans font-bold text-lg leading-tight" style={{ letterSpacing: '-0.03em' }}>
-              Largest Daily Founders Workshop
-            </p>
-            <p className="text-head font-caption text-sm uppercase leading-tight" style={{ letterSpacing: '0.05em' }}>
-              Solana Mobile X Radiants
-            </p>
-          </div>
-
-          {/* GOOD NEWS — center column */}
-          <h1
-            className="text-head font-display text-center leading-none"
-            style={{ fontSize: 'var(--font-size-5xl)', letterSpacing: '-0.06em' }}
-          >
-            Good News
-          </h1>
-
-          {/* Right info */}
-          <div style={{ textAlign: 'right' }}>
-            <p className="text-head font-sans text-lg leading-tight" style={{ letterSpacing: '-0.03em' }}>
-              $2,000,000 In Pages Burnt
-            </p>
-            <p className="text-head font-caption text-sm uppercase leading-tight" style={{ letterSpacing: '0.05em' }}>
-              More on <span className="font-bold">p6</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-head mt-1.5" style={{ height: 1 }} />
-        <div className="flex justify-between text-head font-caption text-sm font-bold uppercase leading-tight py-1" style={{ letterSpacing: '0.05em' }}>
-          <span>Monday, November 28th, 2026</span>
-          <span>$1.50 per issue</span>
-        </div>
-        <div className="bg-head" style={{ height: 1 }} />
-      </div>
 
       {/* ================================================================
-          DOCUMENT FLOW
+          ALL CONTENT — masthead + editorial, fully pretext-rendered
           ================================================================ */}
       {result && (
-        <div className="relative" style={{ height: result.height + 32, marginTop: 8 }}>
-          {/* Vertical column rules */}
+        <div className="relative" style={{ height: result.mastheadHeight + result.height + 32 }}>
+          {/* Vertical column rules (editorial area only) */}
           {ruleXs.map((rx, i) => (
-            <div key={`rule-${i}`} className="absolute bg-head" style={{ left: rx, top: 0, width: 1, height: result.height }} />
+            <div key={`rule-${i}`} className="absolute bg-head" style={{ left: rx, top: result.mastheadHeight, width: 1, height: result.height }} />
           ))}
-
-          {/* RAD☀NEWS logos */}
-          <div className="absolute flex items-center gap-1" style={{ left: COL_MARGIN, top: 0 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tabloid/radsun-black.svg" alt="" style={{ width: 128, height: 37 }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tabloid/radnews-frame.svg" alt="" style={{ width: 108, height: 25 }} />
-          </div>
 
           {/* Pretext-rendered elements */}
           {result.els.map((el, i) => {
+            // All elements use mastheadHeight as baseline; masthead elements offset by top padding only
+            const isMasthead = el.kind === 'masthead-text' || (el.kind === 'rule' && el.section === 'masthead');
+            const topOffset = isMasthead ? 0 : result.mastheadHeight;
+
             switch (el.kind) {
+              case 'masthead-text':
+                return (
+                  <div
+                    key={i}
+                    className="absolute text-head"
+                    style={{
+                      left: el.x,
+                      top: el.y + topOffset,
+                      width: el.w,
+                      whiteSpace: 'pre',
+                      fontFamily: el.family,
+                      fontSize: el.fontSize,
+                      fontWeight: el.bold ? 700 : 400,
+                      lineHeight: `${el.lh}px`,
+                      textAlign: el.align,
+                      textTransform: el.uppercase ? 'uppercase' : undefined,
+                      letterSpacing: el.letterSpacing,
+                    }}
+                  >
+                    {el.text}
+                  </div>
+                );
               case 'line':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, whiteSpace: 'pre', font: `${result.baseFontSize}px/${result.bodyLh}px 'Mondwest', serif` }}>
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + topOffset, whiteSpace: 'pre', font: `${result.baseFontSize}px/${result.bodyLh}px 'Mondwest', serif` }}>
                     {el.text}
                   </div>
                 );
               case 'dropcap':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
                     G
                   </div>
                 );
@@ -524,7 +629,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                     className="absolute text-head"
                     style={{
                       left: el.x,
-                      top: el.y + CHROME_Y,
+                      top: el.y + topOffset,
                       width: el.center ? el.w : undefined,
                       whiteSpace: 'pre',
                       fontFamily: el.family.includes('PixelCode') ? "var(--font-pixel-code)" : el.family.includes('Joystix') ? "var(--font-heading)" : "var(--font-sans)",
@@ -539,13 +644,13 @@ export function GoodNewsApp({ windowId }: AppProps) {
                 );
               case 'hero':
                 return (
-                  <div key={i} className="absolute border border-line overflow-hidden" style={{ left: el.x, top: el.y + CHROME_Y, width: el.w, height: el.h }}>
+                  <div key={i} className="absolute border border-line overflow-hidden" style={{ left: el.x, top: el.y + topOffset, width: el.w, height: el.h }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/tabloid/hero-image.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 );
               case 'rule':
-                return el.w > 1 ? <div key={i} className="absolute bg-head" style={{ left: el.x, top: el.y + CHROME_Y, width: el.w, height: 1 }} /> : null;
+                return el.w > 1 ? <div key={i} className="absolute bg-head" style={{ left: el.x, top: el.y + topOffset, width: el.w, height: 1 }} /> : null;
               default:
                 return null;
             }

@@ -74,8 +74,8 @@ export function DialPanel({
 }: DialPanelProps) {
   return (
     <div className={`${width} shrink-0 border-r border-rule flex flex-col overflow-hidden ${className}`}>
-      {header}
       <div className="flex-1 min-h-0 overflow-y-auto [&_.dialkit-panel]:!bg-transparent [&_.dialkit-panel]:!border-0 [&_.dialkit-panel]:!shadow-none">
+        {header}
         <DialRoot
           mode={mode}
           {...(position ? { position } : {})}
