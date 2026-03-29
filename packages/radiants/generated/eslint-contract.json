@@ -337,30 +337,22 @@
       "leading-heading",
       "leading-snug",
       "leading-normal",
-<<<<<<< HEAD
-      "leading-relaxed"
+      "leading-relaxed",
+      "leading-none"
     ],
     "validTracking": [
       "tracking-tight",
       "tracking-normal",
       "tracking-wide"
-=======
-      "leading-relaxed",
-      "leading-none"
->>>>>>> worktree-agent-ae6bb245
     ],
     "validFontFamilies": [
       "font-sans",
       "font-heading",
       "font-mono",
       "font-display",
-<<<<<<< HEAD
       "font-caption",
       "font-mondwest",
       "font-joystix"
-=======
-      "font-caption"
->>>>>>> worktree-agent-ae6bb245
     ]
   },
   "textLikeInputTypes": [
