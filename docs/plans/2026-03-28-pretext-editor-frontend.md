@@ -299,6 +299,8 @@ const mockSurface: PretextSurface = {
   ],
   textBlocks: [{ id: 'body', font: '16px serif', lineHeight: 24 }],
   selectedId: 'hero',
+  syncFromHost: () => {},
+  getPreparedText: () => null,
   select: () => {},
   deselect: () => {},
   updateObstacle: () => {},

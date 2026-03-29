@@ -2,14 +2,12 @@
 
 import { Suspense, useMemo } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { useTypewriter } from '@/hooks/useTypewriter';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
-import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
-import { Button, Spinner } from '@rdna/radiants/components/core';
+import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 import { WebGLSun } from '@/components/background';
 
@@ -32,46 +30,6 @@ function AppLoadingFallback() {
 interface DesktopProps {
   /** Additional className */
   className?: string;
-}
-
-// ============================================================================
-// Mobile Icon Component (simplified for mobile)
-// ============================================================================
-
-function MobileIcon({ app, onClick }: { app: { id: string; label: string; icon: React.ReactNode }; onClick: () => void }) {
-  return (
-    <Button
-      type="button"
-      quiet
-      size="sm"
-      onClick={onClick}
-      className="
-        flex flex-col items-center gap-1
-        p-2 pixel-rounded-xl
-        hover:bg-hover active:bg-active
-        cursor-pointer
-        select-none
-        w-20
-        min-h-[44px]
-      "
-    >
-      {/* Icon in black container */}
-      <div className="w-10 h-10 flex items-center justify-center bg-inv pixel-rounded-sm text-accent">
-        {app.icon}
-      </div>
-
-      {/* Label */}
-      <span className="
-        font-joystix text-sm text-main text-center
-        leading-tight
-        max-w-full
-        break-words
-        uppercase
-      ">
-        {app.label}
-      </span>
-    </Button>
-  );
 }
 
 // ============================================================================
@@ -116,8 +74,6 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
   const AmbientWidget = ambient?.ambient.widget;
   const AmbientController = ambient?.ambient.controller;
 
-  const isMobile = useIsMobile();
-
   return (
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - Ambient wallpaper in widget mode, WebGL sun otherwise */}
@@ -146,107 +102,56 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
       </div>
 
       {/* App Icons — top center */}
-      <div
-        className={`
-          absolute z-10 p-4
-          ${isMobile
-            ? 'top-0 left-0 right-0 flex flex-row flex-wrap gap-2 justify-center pt-4'
-            : 'top-0 left-0 right-0 flex flex-row items-center justify-center gap-2 pt-4'
-          }
-        `}
-      >
-        {isMobile ? (
-          desktopApps.map((app) => (
-            <MobileIcon
-              key={app.id}
-              app={app}
-              onClick={() => openWindow(app.id)}
-            />
-          ))
-        ) : (
-          desktopApps.map((app) => (
-            <DesktopIcon
-              key={app.id}
-              appId={app.id}
-              label={app.label}
-              icon={app.icon}
-            />
-          ))
-        )}
+      <div className="absolute z-10 top-0 left-0 right-0 flex flex-row items-center justify-center gap-2 p-4 pt-4">
+        {desktopApps.map((app) => (
+          <DesktopIcon
+            key={app.id}
+            appId={app.id}
+            label={app.label}
+            icon={app.icon}
+          />
+        ))}
       </div>
 
       {/* Bottom bar — Start + Utility icons */}
-      {!isMobile && (
-        <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center pb-4">
-          <Taskbar />
-        </div>
-      )}
+      <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center pb-4">
+        <Taskbar />
+      </div>
 
       {/* Windows Container - sits above icons but below taskbar */}
-      <div
-        className="absolute inset-0 z-[100] pointer-events-none"
-      >
-        {/* Desktop: Render AppWindows - sorted by z-index so higher z-index renders later (on top) */}
-        {!isMobile && [...windows]
+      <div className="absolute inset-0 z-[100] pointer-events-none">
+        {[...windows]
           .filter((w) => w.isOpen)
           .sort((a, b) => (a.zIndex || 100) - (b.zIndex || 100))
           .map((windowState) => {
-          const config = getWindowChrome(windowState.id);
-          if (!config) return null;
+            const config = getWindowChrome(windowState.id);
+            if (!config) return null;
 
-          const appEntry = getApp(windowState.id);
-          const AppComponent = appEntry?.component;
+            const appEntry = getApp(windowState.id);
+            const AppComponent = appEntry?.component;
 
-          return (
-            <AppWindow
-              key={windowState.id}
-              id={windowState.id}
-              title={config.windowTitle}
-              icon={config.windowIcon}
-              resizable={config.resizable}
-              defaultSize={config.defaultSize}
-              contentPadding={config.contentPadding}
-              showWidgetButton={Boolean(config.ambient)}
-              onWidget={config.ambient ? () => toggleWidget(windowState.id) : undefined}
-            >
-              {AppComponent ? (
-                <Suspense fallback={<AppLoadingFallback />}>
-                  <AppComponent windowId={windowState.id} />
-                </Suspense>
-              ) : (
-                <PlaceholderAppContent appId={windowState.id} />
-              )}
-            </AppWindow>
-          );
-        })}
-
-        {/* Mobile: Render MobileAppModals - sorted by z-index so higher z-index renders later (on top) */}
-        {isMobile && [...windows]
-          .filter((w) => w.isOpen)
-          .sort((a, b) => (a.zIndex || 100) - (b.zIndex || 100))
-          .map((windowState) => {
-          const config = getWindowChrome(windowState.id);
-          if (!config) return null;
-
-          const appEntry = getApp(windowState.id);
-          const AppComponent = appEntry?.component;
-
-          return (
-            <MobileAppModal
-              key={windowState.id}
-              id={windowState.id}
-              title={config.windowTitle}
-            >
-              {AppComponent ? (
-                <Suspense fallback={<AppLoadingFallback />}>
-                  <AppComponent windowId={windowState.id} />
-                </Suspense>
-              ) : (
-                <PlaceholderAppContent appId={windowState.id} />
-              )}
-            </MobileAppModal>
-          );
-        })}
+            return (
+              <AppWindow
+                key={windowState.id}
+                id={windowState.id}
+                title={config.windowTitle}
+                icon={config.windowIcon}
+                resizable={config.resizable}
+                defaultSize={config.defaultSize}
+                contentPadding={config.contentPadding}
+                showWidgetButton={Boolean(config.ambient)}
+                onWidget={config.ambient ? () => toggleWidget(windowState.id) : undefined}
+              >
+                {AppComponent ? (
+                  <Suspense fallback={<AppLoadingFallback />}>
+                    <AppComponent windowId={windowState.id} />
+                  </Suspense>
+                ) : (
+                  <PlaceholderAppContent appId={windowState.id} />
+                )}
+              </AppWindow>
+            );
+          })}
       </div>
 
       {/* Floating widget panel (above everything when in widget mode) */}
