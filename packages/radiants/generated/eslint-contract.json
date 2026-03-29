@@ -11,7 +11,7 @@
       "#fcc383": "sunset-fuzz",
       "#ff6b63": "sun-red",
       "#cef5ca": "mint",
-      "#fffcf3": "pure-white",
+      "#ffffff": "pure-white",
       "#22c55e": "success-mint"
     },
     "hexToSemantic": {
@@ -35,7 +35,7 @@
         "bg": "success",
         "text": "success"
       },
-      "#fffcf3": {
+      "#ffffff": {
         "bg": "card"
       },
       "#22c55e": {
@@ -71,7 +71,7 @@
         "bg": "status-success",
         "text": "status-success"
       },
-      "oklch(0.9909 0.0123 91.51)": {
+      "oklch(1.0000 0.0000 0)": {
         "bg": "card"
       },
       "oklch(0.7227 0.1920 149.58)": {
@@ -324,35 +324,20 @@
       "text-2xl",
       "text-3xl",
       "text-4xl",
-      "text-5xl"
+      "text-5xl",
+      "text-fluid-sm",
+      "text-fluid-base",
+      "text-fluid-lg",
+      "text-fluid-xl",
+      "text-fluid-2xl",
+      "text-fluid-3xl",
+      "text-fluid-4xl"
     ],
     "validWeights": [
       "font-normal",
       "font-medium",
       "font-semibold",
       "font-bold"
-    ],
-    "validLeading": [
-      "leading-tight",
-      "leading-heading",
-      "leading-snug",
-      "leading-normal",
-      "leading-relaxed",
-      "leading-none"
-    ],
-    "validTracking": [
-      "tracking-tight",
-      "tracking-normal",
-      "tracking-wide"
-    ],
-    "validFontFamilies": [
-      "font-sans",
-      "font-heading",
-      "font-mono",
-      "font-display",
-      "font-caption",
-      "font-mondwest",
-      "font-joystix"
     ]
   },
   "textLikeInputTypes": [

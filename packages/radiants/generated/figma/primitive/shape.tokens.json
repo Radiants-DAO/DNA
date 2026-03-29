@@ -126,10 +126,6 @@
     "comfortable": {
       "$type": "dimension",
       "$value": "48px"
-    },
-    "default": {
-      "$type": "dimension",
-      "$value": "{touchTarget.comfortable}"
     }
   },
   "breakpoint": {

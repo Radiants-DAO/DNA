@@ -18,7 +18,7 @@
   --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
   --color-sun-red: oklch(0.7429 0.1568 21.43);          /* was #FF7F7F */
   --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
-  --color-pure-white: oklch(0.9909 0.0123 91.51);       /* was #FFFCF3 */
+  --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
 
   /* System Colors */
   --color-success-mint: var(--color-mint);
@@ -182,38 +182,21 @@
 
   /* ============================================
      TYPOGRAPHY SCALE
-     Font sizes for the pixel-art aesthetic
+     Perfect fourth (1.333) from 16px base.
+     xs/sm are fixed for UI legibility.
+     base -> 5xl follow the ratio.
      ============================================ */
 
-  --font-size-xs: 0.625rem;    /* 10px - small labels */
-  --font-size-sm: 0.75rem;     /* 12px - buttons, small UI */
-  --font-size-base: 1rem;      /* 16px - body text (at max root) */
-  --font-size-lg: 1.25rem;     /* 20px - large body */
-  --font-size-xl: 1.5rem;      /* 24px - headings */
-  --font-size-2xl: 1.75rem;    /* 28px - headings */
-  --font-size-3xl: 2rem;       /* 32px - display */
-  --font-size-4xl: 2.5rem;     /* 40px - h1 display */
-  --font-size-5xl: 3.25rem;    /* 52px - editorial display */
-  --font-size-display: 4rem;   /* 64px - masthead/hero */
-
-  /* ============================================
-     LINE-HEIGHT SCALE
-     Unitless multipliers for vertical rhythm
-     ============================================ */
-
-  --leading-tight: 1.15;       /* display headings */
-  --leading-heading: 1.25;     /* standard headings */
-  --leading-snug: 1.375;       /* compact body */
-  --leading-normal: 1.5;       /* standard body */
-  --leading-relaxed: 1.625;    /* long-form, lists */
-
-  /* ============================================
-     LETTER-SPACING SCALE
-     ============================================ */
-
-  --tracking-tight: -0.025em;  /* large display only */
-  --tracking-normal: 0;         /* body text default */
-  --tracking-wide: 0.05em;      /* uppercase labels */
+  --font-size-xs: 0.625rem;     /*  10px - fixed: small labels */
+  --font-size-sm: 0.75rem;      /*  12px - fixed: buttons, small UI */
+  --font-size-base: 1rem;       /*  16px - base */
+  --font-size-lg: 1.333rem;     /* ~21px - base x 1.333 */
+  --font-size-xl: 1.777rem;     /* ~28px - base x 1.333^2 */
+  --font-size-2xl: 2.369rem;    /* ~38px - base x 1.333^3 */
+  --font-size-3xl: 3.157rem;    /* ~50px - base x 1.333^4 */
+  --font-size-4xl: 4.209rem;    /* ~67px - base x 1.333^5 */
+  --font-size-5xl: 5.61rem;     /* ~90px - base x 1.333^6 */
+  --font-size-display: 5.61rem; /* alias: same as 5xl, named for hero/display use */
 
 /* ============================================
      MOTION - Duration
@@ -260,17 +243,6 @@
 
   --touch-target-min: 44px;   /* WCAG AA minimum */
   --touch-target-comfortable: 48px;
-  --touch-target-default: var(--touch-target-comfortable);
-
-  /* ============================================
-     DENSITY
-     Attribute-driven spacing/touch affordances
-     ============================================ */
-
-  --density-compact: 0.5;
-  --density-default: 1;
-  --density-comfortable: 1.5;
-  --density-scale: var(--density-comfortable);
 
   /* ============================================
      Z-INDEX SCALE
@@ -288,6 +260,37 @@
   --z-index-toasts: 400;       /* Toast notifications */
   --z-index-modals: 500;       /* MobileAppModal, Dialog portals */
   --z-index-system: 900;       /* Invert overlay, system effects */
+}
+
+/* =============================================================================
+   FLUID TYPOGRAPHY
+   Container-query-based fluid scaling.
+   Uses cqi (container query inline) units so text scales with
+   AppWindow width, not viewport.
+
+   Formula: clamp(min, preferred, max)
+   Preferred uses cqi to create smooth scaling.
+   Min/max lock to slightly below/above the static scale values.
+
+   Outside a container context cqi resolves to 0, so the clamp()
+   min value takes over — safe for Taskbar, StartMenu, etc.
+
+   Placed in @layer base (not @theme) because cqi is a runtime-
+   relative unit that Tailwind v4 cannot resolve at build time.
+   Use via: text-[length:var(--font-size-fluid-base)] syntax,
+   or apply directly in CSS: font-size: var(--font-size-fluid-lg).
+   ============================================================================= */
+
+@layer base {
+  :root {
+    --font-size-fluid-sm: clamp(0.75rem, 0.7rem + 0.25cqi, 0.875rem);
+    --font-size-fluid-base: clamp(0.875rem, 0.8rem + 0.5cqi, 1.125rem);
+    --font-size-fluid-lg: clamp(1rem, 0.9rem + 0.75cqi, 1.5rem);
+    --font-size-fluid-xl: clamp(1.25rem, 1rem + 1.25cqi, 2rem);
+    --font-size-fluid-2xl: clamp(1.5rem, 1.2rem + 1.75cqi, 2.5rem);
+    --font-size-fluid-3xl: clamp(1.75rem, 1.4rem + 2.5cqi, 3.5rem);
+    --font-size-fluid-4xl: clamp(2rem, 1.5rem + 3.5cqi, 4.5rem);
+  }
 }
 
 /* =============================================================================
