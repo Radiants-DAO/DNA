@@ -15,13 +15,22 @@ export interface WindowState {
   activeTab?: string;
 }
 
+export interface ZoomAnimation {
+  appId: string;
+  from: { x: number; y: number; width: number; height: number };
+  to: { x: number; y: number; width: number; height: number };
+}
+
 export interface WindowsSlice {
   // State
   windows: WindowState[];
   nextZIndex: number;
+  zoomAnimation: ZoomAnimation | null;
 
   // Actions
   openWindow: (id: string) => void;
+  openWindowWithZoom: (id: string, sourceRect: { x: number; y: number; width: number; height: number }) => void;
+  clearZoomAnimation: () => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
@@ -84,6 +93,58 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
 ) => ({
   windows: [],
   nextZIndex: 1,
+  zoomAnimation: null,
+
+  openWindowWithZoom: (id, sourceRect) => {
+    const { windows, zoomAnimation } = get();
+
+    // If another zoom is in progress, complete it immediately
+    if (zoomAnimation) {
+      get().openWindow(zoomAnimation.appId);
+    }
+
+    const existingWindow = windows.find((w) => w.id === id);
+
+    // If already open, just focus — no animation
+    if (existingWindow?.isOpen) {
+      get().focusWindow(id);
+      return;
+    }
+
+    // Compute target size from catalog defaults
+    const defaults = getWindowChrome(id);
+    const cssSize = defaults?.defaultSize ? resolveWindowSize(defaults.defaultSize) : undefined;
+    const pxEstimate = cssSize
+      ? { width: remToPx(cssSize.width), height: remToPx(cssSize.height) }
+      : { width: 600, height: 400 };
+
+    // Compute target position
+    let targetPosition: { x: number; y: number };
+    if (existingWindow && !existingWindow.isOpen) {
+      // Re-opening: use stored position
+      targetPosition = existingWindow.position;
+    } else {
+      const openCount = windows.filter((w) => w.isOpen).length;
+      targetPosition = calculateCenteredPosition(openCount, pxEstimate);
+    }
+
+    const targetSize = existingWindow?.size ?? pxEstimate;
+
+    set({
+      zoomAnimation: {
+        appId: id,
+        from: sourceRect,
+        to: {
+          x: targetPosition.x,
+          y: targetPosition.y,
+          width: targetSize.width,
+          height: targetSize.height,
+        },
+      },
+    });
+  },
+
+  clearZoomAnimation: () => set({ zoomAnimation: null }),
 
   openWindow: (id) => {
     const { windows, nextZIndex } = get();

@@ -98,7 +98,7 @@ const BODY_LH_RATIO = 1.375; // matches typography.css leading-snug (was 1.2)
 
 /** Fonts used by headings — kept in sync with the document flow below. */
 const HEADING_SPECS = [
-  { text: 'RadOS Coming Soon', family: "'Joystix Monospace'", tier: 'lg' as FluidTierName, bold: false },
+  { text: 'RadOS Coming Soon', family: "'Joystix Monospace'", tier: 'xl' as FluidTierName, bold: false },
   { text: 'RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', family: "PixelCode", tier: 'xl' as FluidTierName, bold: true },
   { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", tier: '3xl' as FluidTierName, bold: true },
 ] as const;
@@ -273,7 +273,7 @@ function computeLayout(
 
   const els: El[] = [];
   let ci = 0;
-  let y = bodyLh + 16; // 1× bodyLh + 1rem above masthead
+  let y = bodyLh * 3; // 3× bodyLh above masthead
 
   function col() { return cols[ci]!; }
   function fits(h: number) { return y + h <= maxColH; }
@@ -473,25 +473,66 @@ function computeLayout(
     layMastheadTitle(COL_MARGIN, contentW);
   }
 
-  // Dateline bar
+  // Rule above dateline
+  y += bodyLh * 0.75;
+  els.push({ kind: 'rule', x: COL_MARGIN, y, w: contentW, section: 'masthead' });
+  y += 1;
+  y += 4;
+
+  // Dateline bar — measure both items, stack vertically if they'd overlap
   const datelineSize = resolveFluid('sm', containerWidth);
   const datelineLh = Math.round(datelineSize * 1.2);
-  y += 4;
-  els.push({
-    kind: 'masthead-text',
-    x: COL_MARGIN, y, w: contentW,
-    text: MASTHEAD.dateline[0].text,
-    family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
-    lh: datelineLh, align: 'left', uppercase: true, letterSpacing: '0.05em',
-  });
-  els.push({
-    kind: 'masthead-text',
-    x: COL_MARGIN, y, w: contentW,
-    text: MASTHEAD.dateline[1].text,
-    family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
-    lh: datelineLh, align: 'right', uppercase: true, letterSpacing: '0.05em',
-  });
-  y += datelineLh + 4;
+  const datelineFont = `bold ${datelineSize}px 'Pixeloid Sans'`;
+
+  const dlLeftText = MASTHEAD.dateline[0].text;
+  const dlRightText = MASTHEAD.dateline[1].text;
+  const dlLeftPrep = prepared.masthead.get(`${dlLeftText}::${datelineFont}`);
+  const dlRightPrep = prepared.masthead.get(`${dlRightText}::${datelineFont}`);
+  const dlLeftLine = dlLeftPrep ? layoutNextLine(dlLeftPrep, { segmentIndex: 0, graphemeIndex: 0 }, contentW) : null;
+  const dlRightLine = dlRightPrep ? layoutNextLine(dlRightPrep, { segmentIndex: 0, graphemeIndex: 0 }, contentW) : null;
+
+  // Account for CSS letter-spacing (0.05em) which pretext doesn't measure
+  const lsEm = 0.05;
+  const dlLeftW = (dlLeftLine?.width ?? 0) + dlLeftText.length * datelineSize * lsEm;
+  const dlRightW = (dlRightLine?.width ?? 0) + dlRightText.length * datelineSize * lsEm;
+  const datelineGap = datelineSize * 2;
+
+  if (dlLeftW + dlRightW + datelineGap <= contentW) {
+    // Side-by-side: left-align date, right-align price
+    els.push({
+      kind: 'masthead-text',
+      x: COL_MARGIN, y, w: contentW,
+      text: dlLeftText,
+      family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+      lh: datelineLh, align: 'left', uppercase: true, letterSpacing: '0.05em',
+    });
+    els.push({
+      kind: 'masthead-text',
+      x: COL_MARGIN, y, w: contentW,
+      text: dlRightText,
+      family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+      lh: datelineLh, align: 'right', uppercase: true, letterSpacing: '0.05em',
+    });
+    y += datelineLh + 4;
+  } else {
+    // Stacked: both centered on separate lines
+    els.push({
+      kind: 'masthead-text',
+      x: COL_MARGIN, y, w: contentW,
+      text: dlLeftText,
+      family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+      lh: datelineLh, align: 'center', uppercase: true, letterSpacing: '0.05em',
+    });
+    y += datelineLh;
+    els.push({
+      kind: 'masthead-text',
+      x: COL_MARGIN, y, w: contentW,
+      text: dlRightText,
+      family: "'Pixeloid Sans'", fontSize: datelineSize, bold: true,
+      lh: datelineLh, align: 'center', uppercase: true, letterSpacing: '0.05em',
+    });
+    y += datelineLh + 4;
+  }
 
   // Rule under dateline
   els.push({ kind: 'rule', x: COL_MARGIN, y, w: contentW, section: 'masthead' });
@@ -515,7 +556,7 @@ function computeLayout(
   layText(dcW, dcH);   // P1
   laySpace('section');
   layHero();
-  layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
+  layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'xl', 1.2, false, true);
   layText();           // P2
   layRule();
   layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 'xl', 1.2, true, true);
@@ -637,7 +678,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                 );
               case 'dropcap':
                 return (
-                  <div key={i} className="absolute bg-accent text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em', padding: '2px 6px' }}>
+                  <div key={i} className="absolute bg-accent text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em', padding: '2px 6px 0' }}>
                     G
                   </div>
                 );

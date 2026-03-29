@@ -101,7 +101,7 @@ export const spacing = {
   /** Between paragraphs in the same section */
   paragraph: 0.75,
   /** Before a heading (establishes new section) */
-  headingBefore: 1.5,
+  headingBefore: 0.75,
   /** After a heading (ties heading to its content) */
   headingAfter: 0.5,
   /** Around horizontal rules */
