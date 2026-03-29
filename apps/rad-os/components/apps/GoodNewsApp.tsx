@@ -143,6 +143,64 @@ function buildPreparedTexts(
 }
 
 // ============================================================================
+// Responsive column geometry
+// ============================================================================
+
+const COL_MARGIN = 16;
+const COL_RULE_W = 1;
+const COL_GAP = 8; // gap on each side of a column rule
+
+// Tailwind v4 breakpoints applied to container width (not viewport)
+function getColCount(containerWidth: number): number {
+  if (containerWidth >= 768) return 3;  // md
+  if (containerWidth >= 640) return 2;  // sm
+  return 1;
+}
+
+function buildColumns(containerWidth: number, colCount: number): Column[] {
+  const ruleCount = colCount - 1;
+  const avail = Math.max(containerWidth - COL_MARGIN * 2 - COL_RULE_W * ruleCount, 100);
+
+  if (colCount === 1) {
+    return [{ x: COL_MARGIN, width: avail }];
+  }
+
+  if (colCount === 2) {
+    const colW = Math.floor((avail - COL_GAP * 2) / 2);
+    return [
+      { x: COL_MARGIN, width: colW },
+      { x: COL_MARGIN + colW + COL_GAP + COL_RULE_W + COL_GAP, width: colW },
+    ];
+  }
+
+  // 3 columns: 24% / 52% / 24%
+  const lW = Math.floor(avail * 0.24);
+  const rW = Math.floor(avail * 0.24);
+  const cW = avail - lW - rW;
+  return [
+    { x: COL_MARGIN, width: lW - COL_GAP },
+    { x: COL_MARGIN + lW + COL_RULE_W + COL_GAP, width: cW - COL_GAP * 2 },
+    { x: COL_MARGIN + lW + COL_RULE_W + cW + COL_RULE_W + COL_GAP, width: rW - COL_GAP },
+  ];
+}
+
+/** X positions of vertical column rules (between columns). */
+function getRuleXPositions(containerWidth: number, colCount: number): number[] {
+  if (colCount <= 1) return [];
+  const avail = Math.max(containerWidth - COL_MARGIN * 2 - COL_RULE_W * (colCount - 1), 100);
+
+  if (colCount === 2) {
+    const colW = Math.floor((avail - COL_GAP * 2) / 2);
+    return [COL_MARGIN + colW + COL_GAP];
+  }
+
+  // 3 columns
+  const lW = Math.floor(avail * 0.24);
+  const cW = avail - lW - Math.floor(avail * 0.24);
+  return [COL_MARGIN + lW, COL_MARGIN + lW + COL_RULE_W + cW];
+}
+
+// ============================================================================
 // Layout engine
 // ============================================================================
 
@@ -156,25 +214,16 @@ function computeLayout(
   const transformedHull = hull && obstacle
     ? transformWrapPoints(hull, { x: obstacle.x, y: obstacle.y, width: obstacle.w, height: obstacle.h }, 0)
     : null;
-  const margin = 16;
-  const ruleW = 1;
-  const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
-  const lW = Math.floor(avail * 0.24);
-  const rW = Math.floor(avail * 0.24);
-  const cW = avail - lW - rW;
 
-  const cols: Column[] = [
-    { x: margin, width: lW - 8 },
-    { x: margin + lW + ruleW + 8, width: cW - 16 },
-    { x: margin + lW + ruleW + cW + ruleW + 8, width: rW - 8 },
-  ];
+  const colCount = getColCount(containerWidth);
+  const cols = buildColumns(containerWidth, colCount);
 
   // Pre-pass: balanced column heights (reuses pre-prepared body texts)
   let totalBodyLines = 0;
   for (const p of prepared.body) {
     totalBodyLines += layout(p, cols[0].width, BODY_LH).lineCount;
   }
-  const maxColH = Math.ceil((totalBodyLines * BODY_LH + 500) / 3) + 80;
+  const maxColH = Math.ceil((totalBodyLines * BODY_LH + 500) / colCount) + 80;
 
   const els: El[] = [];
   let ci = 0;
@@ -353,14 +402,8 @@ export function GoodNewsApp({ windowId }: AppProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     document.fonts.ready.then(() => {
-      // Derive column widths (must match computeLayout geometry)
-      const m = 16, rW = 1;
-      const av = Math.max(containerWidth - m * 2 - rW * 2, 100);
-      const lW = Math.floor(av * 0.24);
-      const rightW = Math.floor(av * 0.24);
-      const cW = av - lW - rightW;
-      const colWidths = [lW - 8, cW - 16, rightW - 8];
-
+      const cols = buildColumns(containerWidth, getColCount(containerWidth));
+      const colWidths = cols.map(c => c.width);
       const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths);
       setResult(computeLayout(containerWidth, obs, hull, prepared));
     });
@@ -406,17 +449,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
   function onResizeUp() { resizeRef.current = null; }
 
   // Column geometry (for vertical rules)
-  const margin = 16;
-  const ruleW = 1;
-  const avail = Math.max(containerWidth - margin * 2 - ruleW * 2, 100);
-  const lW = Math.floor(avail * 0.24);
-  const cW = avail - lW - Math.floor(avail * 0.24);
-  const rule1X = margin + lW;
-  const rule2X = margin + lW + ruleW + cW;
+  const colCount = getColCount(containerWidth);
+  const ruleXs = getRuleXPositions(containerWidth, colCount);
 
   return (
     <div ref={containerRef} className="h-full overflow-y-auto bg-page">
-      <div style={{ padding: `0 ${margin}px` }}>
+      <div style={{ padding: `0 ${COL_MARGIN}px` }}>
 
         {/* ============================================================
             MASTHEAD
@@ -471,11 +509,12 @@ export function GoodNewsApp({ windowId }: AppProps) {
       {result && (
         <div className="relative" style={{ height: result.height + 32, marginTop: 8 }}>
           {/* Vertical column rules */}
-          <div className="absolute bg-head" style={{ left: rule1X, top: 0, width: 1, height: result.height }} />
-          <div className="absolute bg-head" style={{ left: rule2X, top: 0, width: 1, height: result.height }} />
+          {ruleXs.map((rx, i) => (
+            <div key={`rule-${i}`} className="absolute bg-head" style={{ left: rx, top: 0, width: 1, height: result.height }} />
+          ))}
 
           {/* RAD☀NEWS logos */}
-          <div className="absolute flex items-center gap-1" style={{ left: margin, top: 0 }}>
+          <div className="absolute flex items-center gap-1" style={{ left: COL_MARGIN, top: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/tabloid/radsun-black.svg" alt="" style={{ width: 128, height: 37 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
