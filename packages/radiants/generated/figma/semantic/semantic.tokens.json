@@ -187,10 +187,10 @@
     },
     "link": {
       "$type": "color",
-      "$value": "{color.sky-blue}",
+      "$value": "{color.sky-blue-dark}",
       "$extensions": {
         "modes": {
-          "light": "{color.sky-blue}",
+          "light": "{color.sky-blue-dark}",
           "dark": "{color.sky-blue}"
         },
         "rdna": {

@@ -897,7 +897,7 @@ body {
   --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
   --color-flip: var(--color-cream);
   --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
-  --color-link: var(--color-sky-blue);
+  --color-link: var(--color-sky-blue-dark);
 
   --color-line: var(--color-ink);
   --color-rule: oklch(0.1641 0.0044 84.59 / 0.2);
