@@ -106,71 +106,6 @@ const HEADING_SPECS = [
 const DROP_CAP_SIZE = 64; // px — must match render
 const DROP_CAP_LH = 1.3125; // line-height multiplier — must match render
 const DROP_CAP_FONT = `${DROP_CAP_SIZE}px 'Waves Blackletter CPC'`;
-const DROP_CAP_PAD = 6; // px padding around glyph contour
-
-/**
- * Trace the alpha contour of a glyph rendered on an offscreen canvas.
- * Returns a polygon (Point[]) suitable for getPolygonIntervalForBand.
- * The polygon is in layout-coordinate space (positioned at dropCapX, dropCapY).
- */
-function traceGlyphContour(
-  text: string, font: string, size: number,
-  dropCapX: number, dropCapY: number,
-): Point[] {
-  if (typeof document === 'undefined') return [];
-  const scale = 2; // 2x for sub-pixel precision
-  const canvas = document.createElement('canvas');
-  canvas.width = size * scale;
-  canvas.height = size * scale;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return [];
-
-  ctx.font = font.replace(`${size}px`, `${size * scale}px`);
-  ctx.textBaseline = 'top';
-  ctx.fillStyle = '#000';
-  ctx.fillText(text, 0, 0);
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const { data, width } = imageData;
-  const threshold = 20;
-
-  // Extract left and right contour edges per row
-  const leftEdges: Point[] = [];
-  const rightEdges: Point[] = [];
-
-  for (let row = 0; row < canvas.height; row++) {
-    let leftmost = -1;
-    let rightmost = -1;
-    for (let col = 0; col < width; col++) {
-      const alpha = data[(row * width + col) * 4 + 3]!;
-      if (alpha > threshold) {
-        if (leftmost === -1) leftmost = col;
-        rightmost = col;
-      }
-    }
-    if (leftmost !== -1) {
-      // Scale back to layout coordinates and offset to drop cap position
-      const lx = dropCapX + leftmost / scale;
-      const rx = dropCapX + (rightmost + 1) / scale;
-      const py = dropCapY + row / scale;
-      leftEdges.push({ x: lx, y: py });
-      rightEdges.push({ x: rx, y: py });
-    }
-  }
-
-  // Build closed polygon: left edges top-to-bottom, then right edges bottom-to-top
-  // Sample every Nth row to keep the polygon manageable
-  const step = Math.max(1, Math.floor(leftEdges.length / 32));
-  const polygon: Point[] = [];
-  for (let i = 0; i < leftEdges.length; i += step) {
-    polygon.push(leftEdges[i]!);
-  }
-  for (let i = rightEdges.length - 1; i >= 0; i -= step) {
-    polygon.push(rightEdges[i]!);
-  }
-
-  return polygon;
-}
 
 // Masthead text — all laid out by pretext, not CSS
 const MASTHEAD = {
@@ -346,23 +281,17 @@ function computeLayout(
 
   // --- Body text with obstacle avoidance ---
   let bodyIdx = 0;
-  function layText(dropCapHull: Point[] | null = null) {
+  function layText(dropCapW = 0, dropCapH = 0) {
     const prep = prepared.body[bodyIdx++]!;
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
     while (ci < cols.length) {
       if (!fits(bodyLh)) { if (!nextCol()) return; continue; }
 
-      let lineX = col().x;
-      let lineW = col().width;
+      const inDropCap = ci === 0 && y < dropCapH && dropCapW > 0;
+      let lineW = inDropCap ? col().width - dropCapW : col().width;
+      let lineX = inDropCap ? col().x + dropCapW : col().x;
 
-      // Drop cap glyph contour obstacle (first column only)
-      if (ci === 0 && dropCapHull) {
-        const dcSlot = getLineSlots(lineX, lineW, y, bodyLh, dropCapHull);
-        if (dcSlot) { lineX = dcSlot.x; lineW = dcSlot.w; }
-      }
-
-      // Additional polygon obstacle avoidance
       const slot = getLineSlots(lineX, lineW, y, bodyLh, transformedHull);
       if (!slot) { y += bodyLh; continue; }
       lineX = slot.x;
@@ -578,11 +507,12 @@ function computeLayout(
   // Document flow (editorial content in columns, below masthead)
   // ==========================================================================
 
-  // Drop cap — trace glyph contour for text wrapping
+  const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
+  const dcW = (dcLine?.width ?? 50) + 8;
+  const dcH = Math.ceil(DROP_CAP_SIZE * DROP_CAP_LH);
   els.push({ kind: 'dropcap', x: col().x, y });
-  const dcHull = traceGlyphContour('G', DROP_CAP_FONT, DROP_CAP_SIZE, col().x, y);
 
-  layText(dcHull.length > 0 ? dcHull : null);   // P1
+  layText(dcW, dcH);   // P1
   laySpace('section');
   layHero();
   layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
@@ -707,7 +637,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                 );
               case 'dropcap':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
+                  <div key={i} className="absolute bg-accent text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em', padding: '2px 6px' }}>
                     G
                   </div>
                 );

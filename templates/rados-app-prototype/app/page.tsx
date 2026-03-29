@@ -1,5 +1,12 @@
-import { MyApp } from '../components/app/MyApp';
+'use client';
+
+import { Desktop } from '../components/Desktop';
+import { ToastProvider } from '@rdna/radiants/components/core';
 
 export default function Page() {
-  return <MyApp windowId="primary-window" />;
+  return (
+    <ToastProvider>
+      <Desktop />
+    </ToastProvider>
+  );
 }
