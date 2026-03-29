@@ -471,7 +471,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
         }}>
           {/* Left info */}
           <div style={{ textAlign: 'left' }}>
-            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '0.44rem', letterSpacing: '-0.02em', lineHeight: 'normal' }}>
               Largest Daily Founders Workshop
             </p>
             <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
@@ -497,7 +497,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
           {/* Right info */}
           <div style={{ textAlign: 'right' }}>
-            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '0.44rem', letterSpacing: '-0.02em', lineHeight: 'normal' }}>
               $2,000,000 In Pages Burnt
             </p>
             <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
