@@ -1,5 +1,5 @@
 # Merge Guide For __APP_PASCAL_NAME__
 
-1. Keep shell primitives small and reusable.
-2. Prefer extending `components/app/MyApp.tsx` before changing the window frame.
-3. Replace the control-surface stub only when the dedicated package is ready.
+1. Add your app component to `lib/catalog.tsx` with a unique ID.
+2. The shell (Desktop, AppWindow, Taskbar, Store) mirrors RadOS — minimize divergence.
+3. When merging back to the main RadOS monorepo, port your catalog entry and app component.
