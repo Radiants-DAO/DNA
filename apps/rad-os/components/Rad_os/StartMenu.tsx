@@ -42,7 +42,7 @@ const SOCIAL_LINKS: SocialLink[] = [
 // Shared MenuItem
 // ============================================================================
 
-function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void }) {
+function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: (e: React.MouseEvent) => void }) {
   return (
     <Button
       key={item.id}
@@ -72,7 +72,7 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void
  * - Mobile: Full-screen overlay
  */
 export function StartMenu({ isOpen, onClose }: StartMenuProps) {
-  const { openWindow } = useWindowManager();
+  const { openWindowWithZoom } = useWindowManager();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const sections = getStartMenuSections();
@@ -105,8 +105,9 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
     };
   }, [isOpen, onClose]);
 
-  const handleAppClick = (appId: string) => {
-    openWindow(appId);
+  const handleAppClick = (appId: string, e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    openWindowWithZoom(appId, { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
     onClose();
   };
 
@@ -145,7 +146,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             </span>
           </div>
           {sections.apps.map((item) => (
-            <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
+            <MenuItem key={item.id} item={item} onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)} />
           ))}
         </div>
 
@@ -159,7 +160,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             </span>
           </div>
           {sections.web3.map((item) => (
-            <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
+            <MenuItem key={item.id} item={item} onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)} />
           ))}
         </div>
 

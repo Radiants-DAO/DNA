@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRadOSStore } from '@/store';
 
 function lerp(a: number, b: number, t: number): number {
@@ -22,13 +22,11 @@ export function ZoomRects() {
   const openWindow = useRadOSStore((s) => s.openWindow);
   const reduceMotion = useRadOSStore((s) => s.reduceMotion);
   const [activeStep, setActiveStep] = useState(-1);
-  const animIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!zoomAnimation) return;
 
     const { appId } = zoomAnimation;
-    animIdRef.current = appId;
 
     // Skip animation if reduce motion is on
     if (reduceMotion) {
@@ -39,13 +37,14 @@ export function ZoomRects() {
 
     setActiveStep(0);
     let step = 0;
+    let completionTimeout: ReturnType<typeof setTimeout>;
 
     const interval = setInterval(() => {
       step++;
       if (step >= STEP_COUNT) {
         clearInterval(interval);
         // Brief pause so the final rect is visible, then open
-        setTimeout(() => {
+        completionTimeout = setTimeout(() => {
           openWindow(appId);
           clearZoomAnimation();
           setActiveStep(-1);
@@ -57,11 +56,8 @@ export function ZoomRects() {
 
     return () => {
       clearInterval(interval);
-      // If interrupted (rapid clicks), still open the queued window
-      if (animIdRef.current === appId) {
-        openWindow(appId);
-        clearZoomAnimation();
-      }
+      clearTimeout(completionTimeout);
+      // openWindowWithZoom already opens any interrupted window
       setActiveStep(-1);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- trigger only on new animation

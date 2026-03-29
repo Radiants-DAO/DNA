@@ -30,6 +30,8 @@
   --font-joystix: 'Joystix Monospace', monospace;
   --font-pixel-code: 'PixelCode', monospace;
   --font-blackletter: 'Waves Blackletter CPC', serif;
+  --font-blackletter-shadow: 'Waves Blackletter CPC Shadow', serif;
+  --font-blackletter-inline: 'Waves Blackletter CPC Inline', serif;
   --font-pixeloid: 'Pixeloid Sans', sans-serif;
   --font-waves-tiny: 'Waves Tiny CPC', serif;
 }

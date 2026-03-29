@@ -37,7 +37,7 @@ export function DesktopIcon({
   icon,
   className = '',
 }: DesktopIconProps) {
-  const { openWindow, isWindowOpen } = useWindowManager();
+  const { openWindowWithZoom, isWindowOpen } = useWindowManager();
 
   const isActive = isWindowOpen(appId);
 
@@ -50,7 +50,10 @@ export function DesktopIcon({
         icon={icon}
         active={isActive}
         aria-label={label}
-        onClick={() => openWindow(appId)}
+        onClick={(e: React.MouseEvent) => {
+          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+          openWindowWithZoom(appId, { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
+        }}
         className={className}
       />
     </Tooltip>

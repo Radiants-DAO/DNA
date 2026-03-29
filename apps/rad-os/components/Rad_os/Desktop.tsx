@@ -7,6 +7,7 @@ import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } fro
 import { AppWindow } from './AppWindow';
 import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
+import { ZoomRects } from './ZoomRects';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 import { WebGLSun } from '@/components/background';
@@ -63,7 +64,7 @@ const TAGLINES = [
 ];
 
 export function Desktop({ className: _className = '' }: DesktopProps) {
-  const { openWindow, toggleWidget, windows } = useWindowManager();
+  const { toggleWidget, windows } = useWindowManager();
   const desktopApps = getDesktopLaunchers();
   const taglines = useMemo(() => TAGLINES, []);
   const { displayed, cursorVisible } = useTypewriter(taglines);
@@ -163,6 +164,9 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
 
       {/* Persistent ambient controller (mounted when ambient app is active) */}
       {AmbientController && <AmbientController />}
+
+      {/* System 7 zoom rectangles animation */}
+      <ZoomRects />
 
     </div>
   );

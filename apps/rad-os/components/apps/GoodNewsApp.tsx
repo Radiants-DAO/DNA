@@ -1,7 +1,7 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   prepareWithSegments,
   layout,
@@ -103,9 +103,58 @@ const HEADING_SPECS = [
   { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", tier: '3xl' as FluidTierName, bold: true },
 ] as const;
 
-const DROP_CAP_SIZE = 64; // px — must match render
-const DROP_CAP_LH = 1.3125; // line-height multiplier — must match render
+const DROP_CAP_SIZE = 56; // px — must match render
+const DROP_CAP_LH = 1.29; // line-height multiplier — must match render
 const DROP_CAP_FONT = `${DROP_CAP_SIZE}px 'Waves Blackletter CPC'`;
+
+const PAT_TOKENS = [
+  '--pat-checkerboard', '--pat-checkerboard-alt', '--pat-pinstripe-v', '--pat-pinstripe-v-wide',
+  '--pat-pinstripe-h', '--pat-pinstripe-h-wide', '--pat-diagonal', '--pat-diagonal-dots',
+  '--pat-diagonal-right', '--pat-grid', '--pat-brick', '--pat-shelf', '--pat-columns',
+  '--pat-stagger', '--pat-diamond', '--pat-confetti', '--pat-weave', '--pat-brick-diagonal',
+  '--pat-brick-diagonal-alt', '--pat-caret', '--pat-trellis', '--pat-arch', '--pat-cross',
+  '--pat-sawtooth', '--pat-chevron', '--pat-basket', '--pat-tweed', '--pat-dust', '--pat-mist',
+  '--pat-scatter', '--pat-scatter-alt', '--pat-scatter-pair', '--pat-rain', '--pat-rain-cluster',
+  '--pat-spray', '--pat-spray-grid', '--pat-spray-mixed', '--pat-fill-75', '--pat-fill-75-rows',
+  '--pat-fill-75-sweep', '--pat-fill-75-offset', '--pat-fill-75-inv', '--pat-fill-75-bars',
+  '--pat-fill-81', '--pat-fill-88', '--pat-fill-88-alt', '--pat-fill-94', '--pat-fill-94-alt',
+  '--pat-fill-97',
+];
+
+function DropCapBox({ x, y, topOffset }: { x: number; y: number; topOffset: number }) {
+  const [patIdx, setPatIdx] = useState(6); // start on diagonal
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startCycle = useCallback(() => {
+    let idx = 0;
+    intervalRef.current = setInterval(() => {
+      setPatIdx(idx % PAT_TOKENS.length);
+      idx++;
+    }, 150);
+  }, []);
+
+  const stopCycle = useCallback(() => {
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+    setPatIdx(6); // reset to diagonal
+  }, []);
+
+  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
+
+  return (
+    <div
+      className="absolute text-head"
+      style={{ left: x, top: y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em', padding: '12px 6px 0', border: '1px solid var(--color-line)' }}
+      onMouseEnter={startCycle}
+      onMouseLeave={stopCycle}
+    >
+      <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-accent)' }} />
+      <div className="rdna-pat" style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-ink)', maskSize: '24px 24px', WebkitMaskSize: '24px 24px', ['--_pat' as string]: `var(${PAT_TOKENS[patIdx]})` }} />
+      <span style={{ position: 'relative' }}>G</span>
+      <span style={{ position: 'absolute', top: '12px', left: '6px', fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em' }}>G</span>
+      <span style={{ position: 'absolute', top: '12px', left: '6px', fontFamily: "var(--font-blackletter-shadow)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '0.02em', color: 'var(--color-accent)' }}>G</span>
+    </div>
+  );
+}
 
 // Masthead text — all laid out by pretext, not CSS
 const MASTHEAD = {
@@ -549,7 +598,7 @@ function computeLayout(
   // ==========================================================================
 
   const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
-  const dcW = (dcLine?.width ?? 50) + 8;
+  const dcW = (dcLine?.width ?? 50) + 20;
   const dcH = Math.ceil(DROP_CAP_SIZE * DROP_CAP_LH);
   els.push({ kind: 'dropcap', x: col().x, y });
 
@@ -677,11 +726,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                   </div>
                 );
               case 'dropcap':
-                return (
-                  <div key={i} className="absolute bg-accent text-head" style={{ left: el.x, top: el.y + topOffset, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em', padding: '2px 6px 0' }}>
-                    G
-                  </div>
-                );
+                return <DropCapBox key={i} x={el.x} y={el.y} topOffset={topOffset} />;
               case 'heading-line':
                 return (
                   <div

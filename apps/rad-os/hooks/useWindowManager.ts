@@ -13,6 +13,7 @@ export interface UseWindowManagerReturn {
 
   // Actions
   openWindow: (appId: string) => void;
+  openWindowWithZoom: (appId: string, sourceRect: { x: number; y: number; width: number; height: number }) => void;
   closeWindow: (appId: string) => void;
   focusWindow: (appId: string) => void;
   toggleFullscreen: (appId: string) => void;
@@ -61,6 +62,7 @@ export function useWindowManager(): UseWindowManagerReturn {
   // Select state and actions from Zustand store
   const windows = useRadOSStore((state) => state.windows);
   const storeOpenWindow = useRadOSStore((state) => state.openWindow);
+  const storeOpenWindowWithZoom = useRadOSStore((state) => state.openWindowWithZoom);
   const storeCloseWindow = useRadOSStore((state) => state.closeWindow);
   const storeFocusWindow = useRadOSStore((state) => state.focusWindow);
   const storeToggleFullscreen = useRadOSStore((state) => state.toggleFullscreen);
@@ -81,6 +83,13 @@ export function useWindowManager(): UseWindowManagerReturn {
       storeOpenWindow(appId);
     },
     [storeOpenWindow]
+  );
+
+  const openWindowWithZoom = useCallback(
+    (appId: string, sourceRect: { x: number; y: number; width: number; height: number }) => {
+      storeOpenWindowWithZoom(appId, sourceRect);
+    },
+    [storeOpenWindowWithZoom]
   );
 
   const closeWindow = useCallback(
@@ -195,6 +204,7 @@ export function useWindowManager(): UseWindowManagerReturn {
     windows,
     openWindows,
     openWindow,
+    openWindowWithZoom,
     closeWindow,
     focusWindow,
     toggleFullscreen,
