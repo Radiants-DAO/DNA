@@ -46,7 +46,7 @@ type El =
   | { kind: 'hero'; x: number; y: number; w: number; h: number }
   | { kind: 'rule'; x: number; y: number; w: number };
 
-interface SpreadResult { els: El[]; height: number }
+interface SpreadResult { els: El[]; height: number; baseFontSize: number; bodyLh: number }
 
 // ============================================================================
 // Obstacle avoidance — polygon hull wrapping (matches dynamic-layout demo)
@@ -85,8 +85,15 @@ function getLineSlots(
 // and only re-prepare when either actually changes.
 // ============================================================================
 
-const BODY_FONT = "16px Mondwest";
-const BODY_LH = 19.2;
+// Body font: corresponds to --font-sans token (Mondwest)
+// Pretext requires literal font names — canvas measureText can't resolve CSS vars.
+// We derive px from the computed root font size at runtime to respect user preferences.
+function getBodyFontSize(): number {
+  if (typeof window === 'undefined') return 16;
+  return parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+
+const BODY_LH_RATIO = 1.375; // matches typography.css leading-snug (was 1.2)
 
 /** Fonts used by headings — kept in sync with the document flow below. */
 const HEADING_SPECS = [
@@ -121,9 +128,11 @@ function getPrepared(
 function buildPreparedTexts(
   cache: Map<string, PreparedTextWithSegments>,
   colWidths: number[],
+  bodyFont: string,
+  baseFontSize: number,
 ): PreparedTexts {
   const bodyTexts = [P1, P2, P3, P4];
-  const body = bodyTexts.map(t => getPrepared(cache, t, BODY_FONT));
+  const body = bodyTexts.map(t => getPrepared(cache, t, bodyFont));
 
   // Headings can land in any column, and font size depends on column width.
   // Pre-prepare for every unique column width so the cache is warm regardless
@@ -132,7 +141,8 @@ function buildPreparedTexts(
   const uniqueWidths = [...new Set(colWidths)];
   for (const spec of HEADING_SPECS) {
     for (const w of uniqueWidths) {
-      const fontSize = Math.round(Math.min(w * spec.scale, spec.maxSize));
+      // Clamp: headings never smaller than body text size
+      const fontSize = Math.round(Math.max(Math.min(w * spec.scale, spec.maxSize), baseFontSize));
       const fontStr = `${spec.bold ? 'bold ' : ''}${fontSize}px ${spec.family}`;
       // Key includes font string so different column widths produce distinct entries
       headings.set(`${spec.text}::${fontStr}`, getPrepared(cache, spec.text, fontStr));
@@ -211,6 +221,8 @@ function computeLayout(
   obstacle: ObsRect | null,
   hull: Point[] | null,
   prepared: PreparedTexts,
+  baseFontSize: number,
+  bodyLh: number,
 ): SpreadResult {
   // Transform normalized hull (0-1) to obstacle's actual pixel position
   const transformedHull = hull && obstacle
@@ -223,9 +235,9 @@ function computeLayout(
   // Pre-pass: balanced column heights (reuses pre-prepared body texts)
   let totalBodyLines = 0;
   for (const p of prepared.body) {
-    totalBodyLines += layout(p, cols[0].width, BODY_LH).lineCount;
+    totalBodyLines += layout(p, cols[0].width, bodyLh).lineCount;
   }
-  const maxColH = Math.ceil((totalBodyLines * BODY_LH + 500) / colCount) + 80;
+  const maxColH = Math.ceil((totalBodyLines * bodyLh + 500) / colCount) + 80;
 
   const els: El[] = [];
   let ci = 0;
@@ -241,8 +253,11 @@ function computeLayout(
     const prep = prepared.body[bodyIdx++]!;
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
+    // Note: Narrow columns (~173px) produce ~11 chars/line at body size.
+    // This is intentional newspaper-density editorial layout.
+    // Pretext handles line-breaking; CSS hyphens are not applicable.
     while (ci < cols.length) {
-      if (!fits(BODY_LH)) { if (!nextCol()) return; continue; }
+      if (!fits(bodyLh)) { if (!nextCol()) return; continue; }
 
       // Drop cap obstacle (first column only)
       const inDropCap = ci === 0 && y < dropCapH && dropCapW > 0;
@@ -250,8 +265,8 @@ function computeLayout(
       let lineX = inDropCap ? col().x + dropCapW : col().x;
 
       // Polygon obstacle avoidance (draggable logo)
-      const slot = getLineSlots(lineX, lineW, y, BODY_LH, transformedHull);
-      if (!slot) { y += BODY_LH; continue; }
+      const slot = getLineSlots(lineX, lineW, y, bodyLh, transformedHull);
+      if (!slot) { y += bodyLh; continue; }
       lineX = slot.x;
       lineW = slot.w;
 
@@ -260,7 +275,7 @@ function computeLayout(
 
       els.push({ kind: 'line', x: lineX, y, text: line.text });
       cursor = line.end;
-      y += BODY_LH;
+      y += bodyLh;
     }
   }
 
@@ -268,7 +283,8 @@ function computeLayout(
   //     matching the dynamic-layout demo pattern ---
   function layHeading(text: string, family: string, maxSize: number, lhRatio: number, scale: number, bold = false, center = false) {
     if (ci >= cols.length) return;
-    const fontSize = Math.round(Math.min(col().width * scale, maxSize));
+    // Clamp: headings never smaller than body text size
+    const fontSize = Math.round(Math.max(Math.min(col().width * scale, maxSize), baseFontSize));
     const lh = Math.round(fontSize * lhRatio);
     const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
     const prep = prepared.headings.get(`${text}::${fontStr}`)!;
@@ -319,7 +335,7 @@ function computeLayout(
 
   // --- Paragraph gap ---
   function layGap(lines = 1.5) {
-    y += BODY_LH * lines;
+    y += bodyLh * lines;
   }
 
   // --- Horizontal rule ---
@@ -361,8 +377,8 @@ function computeLayout(
   layGap(2);
   layText();           // P4
 
-  const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : BODY_LH)), 0);
-  return { els, height: maxY + 32 };
+  const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : bodyLh)), 0);
+  return { els, height: maxY + 32, baseFontSize, bodyLh };
 }
 
 // ============================================================================
@@ -405,10 +421,15 @@ export function GoodNewsApp({ windowId }: AppProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     document.fonts.ready.then(() => {
+      const baseFontSize = getBodyFontSize();
+      // Body font: corresponds to --font-sans token (Mondwest)
+      const bodyFont = `${baseFontSize}px Mondwest`;
+      const bodyLh = baseFontSize * BODY_LH_RATIO;
+
       const cols = buildColumns(containerWidth, getColCount(containerWidth));
       const colWidths = cols.map(c => c.width);
-      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths);
-      setResult(computeLayout(containerWidth, obs, hull, prepared));
+      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont, baseFontSize);
+      setResult(computeLayout(containerWidth, obs, hull, prepared, baseFontSize, bodyLh));
     });
   }, [containerWidth, obs, hull]);
 
@@ -471,10 +492,10 @@ export function GoodNewsApp({ windowId }: AppProps) {
         }}>
           {/* Left info */}
           <div style={{ textAlign: 'left' }}>
-            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head font-bold" style={{ fontFamily: "var(--font-sans)", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
               Largest Daily Founders Workshop
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
+            <p className="text-head uppercase" style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: 'normal' }}>
               Solana Mobile X Radiants
             </p>
           </div>
@@ -484,7 +505,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
             className="text-head"
             style={{
               textAlign: 'center',
-              fontFamily: "'Waves Blackletter CPC', serif",
+              fontFamily: "var(--font-blackletter)",
               fontSize: 64,
               fontWeight: 400,
               letterSpacing: '-0.06em',
@@ -497,10 +518,10 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
           {/* Right info */}
           <div style={{ textAlign: 'right' }}>
-            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head" style={{ fontFamily: "var(--font-sans)", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
               $2,000,000 In Pages Burnt
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
+            <p className="text-head uppercase" style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: 'normal' }}>
               More on <strong>p6</strong>
             </p>
           </div>
@@ -509,7 +530,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
         <div className="bg-head" style={{ height: 1, marginTop: 6 }} />
         <div
           className="flex justify-between text-head uppercase"
-          style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.83rem', fontWeight: 700, padding: '4px 0', lineHeight: 'normal' }}
+          style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.83rem', fontWeight: 700, padding: '4px 0', lineHeight: 'normal', letterSpacing: '0.05em' }}
         >
           <span>Monday, November 28th, 2026</span>
           <span>$1.50 per issue</span>
@@ -540,13 +561,13 @@ export function GoodNewsApp({ windowId }: AppProps) {
             switch (el.kind) {
               case 'line':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, whiteSpace: 'pre', font: "1rem/1.2 'Mondwest', serif" }}>
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, whiteSpace: 'pre', font: `${result.baseFontSize}px/${result.bodyLh}px 'Mondwest', serif` }}>
                     {el.text}
                   </div>
                 );
               case 'dropcap':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "'Waves Blackletter CPC', serif", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "var(--font-blackletter)", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
                     G
                   </div>
                 );
@@ -560,7 +581,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                       top: el.y + CHROME_Y,
                       width: el.center ? el.w : undefined,
                       whiteSpace: 'pre',
-                      fontFamily: el.family.includes('PixelCode') ? "'PixelCode', monospace" : el.family.includes('Joystix') ? "'Joystix Monospace', monospace" : "'Mondwest', serif",
+                      fontFamily: el.family.includes('PixelCode') ? "var(--font-pixel-code)" : el.family.includes('Joystix') ? "var(--font-heading)" : "var(--font-sans)",
                       fontSize: el.fontSize,
                       fontWeight: el.bold ? 700 : 400,
                       lineHeight: `${el.lh}px`,
