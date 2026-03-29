@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { useHashRouting } from '../hooks/useHashRouting';
+import { useThemeSync } from '../hooks/useThemeSync';
 import { getApp, getDesktopLaunchers, getWindowChrome } from '../lib/catalog';
 import { AppWindow } from './AppWindow';
 import { DesktopIcon } from './DesktopIcon';
@@ -39,6 +40,7 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 
 export function Desktop() {
   useHashRouting();
+  useThemeSync();
 
   const { windows } = useWindowManager();
   const desktopApps = getDesktopLaunchers();
