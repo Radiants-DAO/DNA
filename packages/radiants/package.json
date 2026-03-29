@@ -95,6 +95,7 @@
     "generate:schemas": "node --experimental-strip-types ../preview/src/generate-schemas.ts ./components/core ./meta/index.ts ./schemas/index.ts",
     "generate:figma-contracts": "node --experimental-strip-types scripts/generate-figma-contracts.ts",
     "generate:pixel-corners": "node scripts/generate-pixel-corners.mjs",
+    "generate:tokens": "node --experimental-strip-types scripts/generate-typography-tokens.ts",
     "test": "vitest run",
     "test:ci": "vitest run",
     "test:components": "vitest run",

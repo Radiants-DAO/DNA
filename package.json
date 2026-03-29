@@ -18,6 +18,7 @@
     "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}' && pnpm lint:token-colors",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs",
     "lint:token-colors": "node scripts/lint-token-colors.mjs",
+    "tokens:generate": "pnpm --filter @rdna/radiants generate:tokens",
     "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/radiants generate:figma-contracts && pnpm --filter @rdna/playground registry:generate",
     "registry:check:freshness": "pnpm --filter @rdna/playground check:registry-freshness",
     "registry:test:radiants": "pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry.test.ts registry/__tests__/registry-metadata.test.ts registry/__tests__/PropControls.test.tsx registry/__tests__/runtime-coverage.test.ts registry/__tests__/runtime-attachments-props.test.ts --cache=false",
