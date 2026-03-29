@@ -18,6 +18,7 @@ import {
   type Point,
   type Interval,
 } from '@chenglou/pretext/demos/wrap-geometry';
+import { resolveFluid, type FluidTierName } from '@rdna/radiants/patterns/pretext-type-scale';
 
 // ============================================================================
 // Document content — in reading order, split at inline insertion points
@@ -97,9 +98,9 @@ const BODY_LH_RATIO = 1.375; // matches typography.css leading-snug (was 1.2)
 
 /** Fonts used by headings — kept in sync with the document flow below. */
 const HEADING_SPECS = [
-  { text: 'RadOS Coming Soon', family: "'Joystix Monospace'", maxSize: 27, scale: 0.065, bold: false },
-  { text: 'RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', family: "PixelCode", maxSize: 32, scale: 0.08, bold: true },
-  { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", maxSize: 48, scale: 0.12, bold: true },
+  { text: 'RadOS Coming Soon', family: "'Joystix Monospace'", tier: 'lg' as FluidTierName, bold: false },
+  { text: 'RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', family: "PixelCode", tier: 'xl' as FluidTierName, bold: true },
+  { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", tier: '3xl' as FluidTierName, bold: true },
 ] as const;
 
 const DROP_CAP_SIZE = 64; // px — must match render
@@ -129,7 +130,6 @@ function buildPreparedTexts(
   cache: Map<string, PreparedTextWithSegments>,
   colWidths: number[],
   bodyFont: string,
-  baseFontSize: number,
 ): PreparedTexts {
   const bodyTexts = [P1, P2, P3, P4];
   const body = bodyTexts.map(t => getPrepared(cache, t, bodyFont));
@@ -141,10 +141,8 @@ function buildPreparedTexts(
   const uniqueWidths = [...new Set(colWidths)];
   for (const spec of HEADING_SPECS) {
     for (const w of uniqueWidths) {
-      // Clamp: headings never smaller than body text size
-      const fontSize = Math.round(Math.max(Math.min(w * spec.scale, spec.maxSize), baseFontSize));
+      const fontSize = resolveFluid(spec.tier, w);
       const fontStr = `${spec.bold ? 'bold ' : ''}${fontSize}px ${spec.family}`;
-      // Key includes font string so different column widths produce distinct entries
       headings.set(`${spec.text}::${fontStr}`, getPrepared(cache, spec.text, fontStr));
     }
   }
@@ -281,10 +279,9 @@ function computeLayout(
 
   // --- Heading — each line laid out individually with layoutNextLine,
   //     matching the dynamic-layout demo pattern ---
-  function layHeading(text: string, family: string, maxSize: number, lhRatio: number, scale: number, bold = false, center = false) {
+  function layHeading(text: string, family: string, tier: FluidTierName, lhRatio: number, bold = false, center = false) {
     if (ci >= cols.length) return;
-    // Clamp: headings never smaller than body text size
-    const fontSize = Math.round(Math.max(Math.min(col().width * scale, maxSize), baseFontSize));
+    const fontSize = resolveFluid(tier, col().width);
     const lh = Math.round(fontSize * lhRatio);
     const fontStr = `${bold ? 'bold ' : ''}${fontSize}px ${family}`;
     const prep = prepared.headings.get(`${text}::${fontStr}`)!;
@@ -357,15 +354,13 @@ function computeLayout(
   layText(dcW, dcH);   // P1
   layGap(2);
   layHero();
-  //                                                           max  lhR  scale  bold  center
-  // scale = maxSize / ~400px (target col width where max is reached)
-  layHeading('RadOS Coming Soon', "'Joystix Monospace'",         27,  1.2, 0.065, false, true);
+  layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
   layGap();
   layText();           // P2
   layGap(2);
   layRule();
   layGap();
-  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 32, 1.2, 0.08, true, true);
+  layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 'xl', 1.2, true, true);
   layGap();
   layRule();
   layGap(2);
@@ -373,7 +368,7 @@ function computeLayout(
   layGap(2);
   layRule();
   layGap();
-  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", 48, 1.1, 0.12, true, false);
+  layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", '3xl', 1.1, true, false);
   layGap(2);
   layText();           // P4
 
@@ -428,7 +423,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
       const cols = buildColumns(containerWidth, getColCount(containerWidth));
       const colWidths = cols.map(c => c.width);
-      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont, baseFontSize);
+      const prepared = buildPreparedTexts(prepareCacheRef.current, colWidths, bodyFont);
       setResult(computeLayout(containerWidth, obs, hull, prepared, baseFontSize, bodyLh));
     });
   }, [containerWidth, obs, hull]);

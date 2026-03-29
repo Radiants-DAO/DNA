@@ -1,5 +1,5 @@
 'use client';
-import { FONTS, TYPE_SCALE, ELEMENT_STYLES } from '../typography-data';
+import { CORE_FONTS, EDITORIAL_FONTS, TYPE_SCALE, ELEMENT_STYLES, type FontEntry } from '../typography-data';
 import { FONT_RATIONALE } from '../type-manual-copy';
 
 // ---------------------------------------------------------------------------
@@ -45,8 +45,7 @@ function SectionHeader({
 // Font Specimen Block
 // ---------------------------------------------------------------------------
 
-function FontSpecimen({ fontIndex }: { fontIndex: number }) {
-  const font = FONTS[fontIndex];
+function FontSpecimen({ font, index }: { font: FontEntry; index: number }) {
   const rationale = FONT_RATIONALE.find((r) => r.shortName === font.shortName);
 
   return (
@@ -56,7 +55,7 @@ function FontSpecimen({ fontIndex }: { fontIndex: number }) {
         <div>
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-xs text-mute">
-              {String(fontIndex + 1).padStart(2, '0')}
+              {String(index + 1).padStart(2, '0')}
             </span>
             <h3 className="font-heading text-sm text-main uppercase tracking-tight">
               {font.name}
@@ -322,7 +321,7 @@ export function SpecimenLayout() {
           </div>
           <div className="text-right shrink-0">
             <span className="font-mono text-xs text-mute block">
-              3 fonts / 7 weights / 7 scale steps
+              6 fonts / 11 weights / 7 scale steps
             </span>
             <span className="font-mono text-xs text-mute block">
               Radiants Design System v1
@@ -332,16 +331,16 @@ export function SpecimenLayout() {
       </div>
 
       <div className="p-5 space-y-0">
-        {/* Section 01: Font Inventory */}
+        {/* Section 01: Core Fonts */}
         <section>
           <SectionHeader
             number="01"
-            title="Font Inventory"
-            subtitle="Each font, its character set, available weights, and size waterfall"
+            title="Core Fonts"
+            subtitle="UI foundation — loaded immediately, used across all surfaces"
           />
           <div className="space-y-0">
-            {FONTS.map((_, i) => (
-              <FontSpecimen key={FONTS[i].cssVar} fontIndex={i} />
+            {CORE_FONTS.map((font, i) => (
+              <FontSpecimen key={font.cssVar} font={font} index={i} />
             ))}
           </div>
         </section>
@@ -349,10 +348,27 @@ export function SpecimenLayout() {
         {/* Divider */}
         <div className="border-t border-line my-8" />
 
-        {/* Section 02: Element Mapping */}
+        {/* Section 02: Editorial Fonts */}
         <section>
           <SectionHeader
             number="02"
+            title="Editorial Fonts"
+            subtitle="Display and content fonts — lazy-loaded when editorial layouts open"
+          />
+          <div className="space-y-0">
+            {EDITORIAL_FONTS.map((font, i) => (
+              <FontSpecimen key={font.cssVar} font={font} index={CORE_FONTS.length + i} />
+            ))}
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-line my-8" />
+
+        {/* Section 03: Element Mapping */}
+        <section>
+          <SectionHeader
+            number="03"
             title="Element Mapping"
             subtitle="HTML element to font, size, weight, and leading assignments"
           />
@@ -362,10 +378,10 @@ export function SpecimenLayout() {
         {/* Divider */}
         <div className="border-t border-line my-8" />
 
-        {/* Section 03: Type Scale */}
+        {/* Section 04: Type Scale */}
         <section>
           <SectionHeader
-            number="03"
+            number="04"
             title="Type Scale"
             subtitle="All 7 scale steps with token name, rem value, and pixel equivalent"
           />

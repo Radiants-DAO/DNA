@@ -48,6 +48,39 @@ export const FONT_RATIONALE: FontRationale[] = [
       'Without PixelCode, the pixel vocabulary is incomplete.',
     voiceLabel: 'The Precision',
   },
+  {
+    name: 'Waves Blackletter CPC',
+    shortName: 'Blackletter',
+    role: 'Display & Editorial',
+    personality: 'Ceremony, weight, editorial gravitas, tradition meeting digital',
+    rationale:
+      'Drop caps and mastheads need a face that commands the page. ' +
+      'Blackletter signals tradition and craft — the letterpress origin of design itself. ' +
+      'Used sparingly, it anchors editorial layouts with visual authority.',
+    voiceLabel: 'The Ceremony',
+  },
+  {
+    name: 'Waves Tiny CPC',
+    shortName: 'Tiny',
+    role: 'Decorative Caption',
+    personality: 'Texture, detail, the smallest readable mark',
+    rationale:
+      'When text becomes ornament — colophons, watermarks, decorative asides. ' +
+      'Tiny occupies the space below caption, where legibility yields to visual rhythm. ' +
+      'The pixel grid at its most minimal.',
+    voiceLabel: 'The Whisper',
+  },
+  {
+    name: 'Pixeloid Sans',
+    shortName: 'Pixeloid',
+    role: 'Caption & Byline',
+    personality: 'Quiet utility, informational, the supporting cast',
+    rationale:
+      'Bylines, datelines, attribution — text that identifies without competing. ' +
+      'Cleaner than PixelCode, lighter than Joystix. ' +
+      'The neutral pixel voice for metadata and secondary information.',
+    voiceLabel: 'The Attribution',
+  },
 ];
 
 // ============================================================================

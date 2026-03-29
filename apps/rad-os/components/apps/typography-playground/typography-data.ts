@@ -1,6 +1,8 @@
 import { getFontDownloadHref } from '@/lib/asset-downloads';
 
-export type FontKey = 'joystix' | 'mondwest' | 'pixelcode';
+export type FontKey = 'joystix' | 'mondwest' | 'pixelcode' | 'blackletter' | 'tinycpc' | 'pixeloid';
+
+export type FontCategory = 'core' | 'editorial';
 
 export interface FontEntry {
   name: string;
@@ -17,9 +19,11 @@ export interface FontEntry {
   source: string;
   downloadUrl: string;
   linkOut: boolean;
+  category: FontCategory;
 }
 
 export const FONTS: FontEntry[] = [
+  // ── Core fonts (loaded immediately) ──
   {
     name: 'Joystix Monospace',
     shortName: 'Joystix',
@@ -36,6 +40,7 @@ export const FONTS: FontEntry[] = [
     source: 'Open Source',
     downloadUrl: getFontDownloadHref('Joystix.woff2'),
     linkOut: false,
+    category: 'core',
   },
   {
     name: 'Mondwest',
@@ -56,6 +61,7 @@ export const FONTS: FontEntry[] = [
     source: 'Pangram Pangram',
     downloadUrl: getFontDownloadHref('Mondwest.woff2'),
     linkOut: false,
+    category: 'core',
   },
   {
     name: 'PixelCode',
@@ -78,6 +84,65 @@ export const FONTS: FontEntry[] = [
     source: 'Open Source',
     downloadUrl: getFontDownloadHref('PixelCode.woff2'),
     linkOut: false,
+    category: 'core',
+  },
+  // ── Editorial fonts (lazy-loaded on app-window open) ──
+  {
+    name: 'Waves Blackletter CPC',
+    shortName: 'Blackletter',
+    role: 'Display & Editorial',
+    usage: 'drop caps, mastheads, display headlines, decorative initials',
+    description:
+      'A blackletter display face for editorial gravitas. Use for drop caps, mastheads, and moments that demand ceremony.',
+    className: 'font-blackletter',
+    cssVar: '--font-display',
+    fontFamily: "'Waves Blackletter CPC', serif",
+    tailwindClass: 'font-display',
+    weights: [{ value: 400, label: 'Regular' }],
+    hasItalic: false,
+    source: 'CPC',
+    downloadUrl: getFontDownloadHref('WavesBlackletterCPC-Base.woff2'),
+    linkOut: false,
+    category: 'editorial',
+  },
+  {
+    name: 'Waves Tiny CPC',
+    shortName: 'Tiny',
+    role: 'Decorative Caption',
+    usage: 'decorative captions, micro-labels, ornamental pixel text',
+    description:
+      'An ultra-small pixel caption face. For decorative detail work where text becomes texture — colophons, watermarks, ornamental labels.',
+    className: 'font-tiny',
+    cssVar: '--font-tiny',
+    fontFamily: "'Waves Tiny CPC', serif",
+    tailwindClass: 'font-tiny',
+    weights: [{ value: 400, label: 'Regular' }],
+    hasItalic: false,
+    source: 'CPC',
+    downloadUrl: getFontDownloadHref('WavesTinyCPC-Extended.woff2'),
+    linkOut: false,
+    category: 'editorial',
+  },
+  {
+    name: 'Pixeloid Sans',
+    shortName: 'Pixeloid',
+    role: 'Caption & Byline',
+    usage: 'bylines, datelines, attribution, secondary labels',
+    description:
+      'A clean pixel sans-serif for informational text. The quiet voice — bylines, datelines, metadata. Readable at small sizes without the weight of PixelCode.',
+    className: 'font-pixeloid',
+    cssVar: '--font-caption',
+    fontFamily: "'Pixeloid Sans', sans-serif",
+    tailwindClass: 'font-caption',
+    weights: [
+      { value: 400, label: 'Regular' },
+      { value: 700, label: 'Bold' },
+    ],
+    hasItalic: false,
+    source: 'Open Source',
+    downloadUrl: getFontDownloadHref('PixeloidSans.woff2'),
+    linkOut: false,
+    category: 'editorial',
   },
 ];
 
@@ -86,7 +151,14 @@ export const FONT_MAP: Record<FontKey, FontEntry> = {
   joystix: FONTS[0],
   mondwest: FONTS[1],
   pixelcode: FONTS[2],
+  blackletter: FONTS[3],
+  tinycpc: FONTS[4],
+  pixeloid: FONTS[5],
 };
+
+/** Fonts grouped by category */
+export const CORE_FONTS = FONTS.filter(f => f.category === 'core');
+export const EDITORIAL_FONTS = FONTS.filter(f => f.category === 'editorial');
 
 export const TYPE_SCALE = [
   { token: '--font-size-5xl', label: '5XL', rem: '5.61rem', px: 90 },
