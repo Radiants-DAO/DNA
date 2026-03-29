@@ -28,6 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="light">
+      <head>
+        {/* TODO: Add font preload hints once fonts are served from public/.
+            Currently fonts are resolved via CSS @import from @rdna/radiants,
+            so <link rel="preload"> cannot target them by URL.
+            When migrated to public/fonts/:
+            <link rel="preload" href="/fonts/Mondwest.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+            <link rel="preload" href="/fonts/Mondwest-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        */}
+      </head>
       <body className="antialiased">
         {children}
       </body>

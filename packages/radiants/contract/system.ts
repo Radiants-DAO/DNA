@@ -139,6 +139,14 @@ export const radiantsSystemContract = {
     validWeights: [
       "font-normal", "font-medium", "font-semibold", "font-bold",
     ],
+    validLeading: [
+      "leading-tight", "leading-heading", "leading-snug",
+      "leading-normal", "leading-relaxed", "leading-none",
+    ],
+    validFontFamilies: [
+      "font-sans", "font-heading", "font-mono",
+      "font-display", "font-caption",
+    ],
   },
 
   textLikeInputTypes: ["text", "email", "password", "search", "url", "tel", "number"],

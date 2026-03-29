@@ -16,7 +16,7 @@ export const EMPTY_CONTRACT = Object.freeze({
   themeVariants: [],
   motion: { maxDurationMs: 0, allowedEasings: [], durationTokens: [], easingTokens: [] },
   shadows: { validStandard: [], validPixel: [], validGlow: [] },
-  typography: { validSizes: [], validWeights: [] },
+  typography: { validSizes: [], validWeights: [], validLeading: [], validFontFamilies: [] },
   textLikeInputTypes: [],
 });
 
