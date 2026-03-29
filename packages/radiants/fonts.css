@@ -154,6 +154,10 @@
   --font-heading: 'Joystix Monospace', monospace;
   --font-mono: 'PixelCode', monospace;
 
+  /* Semantic font roles — extended */
+  --font-display: 'Waves Blackletter CPC', serif;
+  --font-caption: 'Pixeloid Sans', sans-serif;
+
   /* Named brand aliases */
   --font-mondwest: 'Mondwest', system-ui, serif;
   --font-joystix: 'Joystix Monospace', monospace;

@@ -6,32 +6,49 @@
 
 @layer base {
   /* ============================================
+     BODY
+     Global font synthesis guard + smoothing
+     ============================================ */
+
+  body {
+    @apply font-sans;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-kerning: normal;
+  }
+
+  /* ============================================
      HEADINGS
-     All headings use font-heading (Joystix)
+     H1-H2: Mondwest Bold (display tier)
+     H3-H6: Joystix (pixel heading tier)
      ============================================ */
 
   h1 {
-    @apply text-4xl font-heading font-bold leading-none tracking-tight text-main;
+    @apply text-4xl font-sans font-bold leading-tight tracking-tight text-main;
+    text-wrap: balance;
   }
 
   h2 {
-    @apply text-3xl font-heading font-normal leading-none tracking-tight text-main;
+    @apply text-3xl font-sans font-bold leading-tight tracking-tight text-main;
+    text-wrap: balance;
   }
 
   h3 {
-    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-main;
+    @apply text-2xl font-heading font-normal leading-tight text-main;
+    text-wrap: balance;
   }
 
   h4 {
-    @apply text-xl font-heading font-medium leading-none tracking-tight text-main;
+    @apply text-xl font-heading font-normal leading-tight text-main;
   }
 
   h5 {
-    @apply text-lg font-heading font-medium leading-none tracking-tight text-main;
+    @apply text-lg font-heading font-normal leading-tight text-main;
   }
 
   h6 {
-    @apply text-base font-heading font-medium leading-none tracking-tight text-main;
+    @apply text-base font-heading font-normal leading-tight text-main;
   }
 
   /* ============================================
@@ -40,7 +57,8 @@
      ============================================ */
 
   p {
-    @apply text-base font-sans font-normal leading-snug tracking-tight text-main;
+    @apply text-base font-sans font-normal leading-snug text-main mb-4;
+    text-wrap: pretty;
   }
 
   /* ============================================
@@ -57,11 +75,11 @@
      ============================================ */
 
   ul {
-    @apply text-base font-heading font-normal leading-relaxed text-main pl-6;
+    @apply text-base font-sans font-normal leading-relaxed text-main pl-6;
   }
 
   ol {
-    @apply text-base font-heading font-normal leading-relaxed text-main pl-6;
+    @apply text-base font-sans font-normal leading-relaxed text-main pl-6;
   }
 
   li {
@@ -77,11 +95,11 @@
   }
 
   strong {
-    @apply text-base font-heading font-bold leading-normal text-main;
+    @apply font-sans font-bold text-main;
   }
 
   em {
-    @apply text-base font-heading font-normal leading-normal text-main italic;
+    @apply font-sans font-normal text-main italic;
   }
 
   /* ============================================
@@ -90,11 +108,11 @@
      ============================================ */
 
   code {
-    @apply text-xs font-mono font-normal leading-normal text-main bg-depth px-1 py-0.5 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-main bg-depth px-1 py-0.5 rounded-sm;
   }
 
   .dark code {
-    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-page px-2 py-1 rounded-sm border border-line;
+    @apply text-sm font-mono font-normal leading-normal text-action-primary bg-page px-2 py-1 rounded-sm border border-line;
   }
 
   pre {
@@ -110,19 +128,19 @@
      ============================================ */
 
   mark {
-    @apply text-base font-heading font-normal leading-normal text-main bg-action-primary;
+    @apply text-base font-sans font-normal leading-normal text-main bg-action-primary;
   }
 
   blockquote {
-    @apply text-base font-heading font-normal leading-relaxed text-main border-l-4 border-line pl-4 italic;
+    @apply text-base font-sans font-normal leading-relaxed text-main border-l-4 border-line pl-4 italic;
   }
 
   cite {
-    @apply text-sm font-heading font-normal leading-normal text-main italic;
+    @apply text-sm font-sans font-normal leading-normal text-main italic;
   }
 
   q {
-    @apply text-base font-heading font-normal leading-normal text-main italic;
+    @apply text-base font-sans font-normal leading-normal text-main italic;
   }
 
   /* ============================================
@@ -130,11 +148,11 @@
      ============================================ */
 
   abbr {
-    @apply text-base font-heading font-normal leading-normal text-main underline decoration-dotted;
+    @apply text-base font-sans font-normal leading-normal text-main underline decoration-dotted;
   }
 
   dfn {
-    @apply text-base font-heading font-normal leading-normal text-main italic;
+    @apply text-base font-sans font-normal leading-normal text-main italic;
   }
 
   /* ============================================
@@ -154,11 +172,11 @@
      ============================================ */
 
   del {
-    @apply text-base font-heading font-normal leading-normal text-main line-through;
+    @apply text-base font-sans font-normal leading-normal text-main line-through;
   }
 
   ins {
-    @apply text-base font-heading font-normal leading-normal text-main underline;
+    @apply text-base font-sans font-normal leading-normal text-main underline;
   }
 
   /* ============================================
