@@ -14,8 +14,51 @@ import {
   type ControlSurfaceScenario,
   type SurfaceFixture,
 } from './fixtures';
+import * as Mocks from './mocks';
+import * as Shells from './shells';
 
 type CompareSide = 'legacy' | 'rdna';
+type SurfaceComponent = React.ComponentType;
+
+const MOCK_MAP: Record<ControlSurfaceScenario, Record<string, SurfaceComponent>> = {
+  controls: {
+    'color-picker': Mocks.ColorPickerMock,
+    'shadow-editor': Mocks.ShadowEditorMock,
+    'box-spacing': Mocks.BoxSpacingMock,
+    'border-radius': Mocks.BorderRadiusMock,
+  },
+  annotations: {
+    'composer-shell': Mocks.ComposerShellMock,
+    'annotation-composer': Mocks.AnnotationComposerMock,
+    'annotation-detail': Mocks.AnnotationDetailMock,
+    'annotation-pin': Mocks.AnnotationPinMock,
+  },
+  overlays: {
+    'hover-overlay': Mocks.HoverOverlayMock,
+    'inspect-toolbar': Mocks.InspectToolbarMock,
+    'comment-popover': Mocks.CommentPopoverMock,
+  },
+};
+
+const SHELL_MAP: Record<ControlSurfaceScenario, Record<string, SurfaceComponent>> = {
+  controls: {
+    'color-picker': Shells.ColorPickerShell,
+    'shadow-editor': Shells.ShadowEditorShell,
+    'box-spacing': Shells.BoxSpacingShell,
+    'border-radius': Shells.BorderRadiusShell,
+  },
+  annotations: {
+    'composer-shell': Shells.ComposerShellRdna,
+    'annotation-composer': Shells.AnnotationComposerRdna,
+    'annotation-detail': Shells.AnnotationDetailRdna,
+    'annotation-pin': Shells.AnnotationPinRdna,
+  },
+  overlays: {
+    'hover-overlay': Shells.HoverOverlayRdna,
+    'inspect-toolbar': Shells.InspectToolbarRdna,
+    'comment-popover': Shells.CommentPopoverRdna,
+  },
+};
 
 function PaneHeader({
   title,
