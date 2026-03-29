@@ -15,23 +15,25 @@ describe('scaffoldProject', () => {
 
     await scaffoldProject({
       appName: 'motion-lab',
-      outDir
+      outDir,
     });
 
     expect(existsSync(resolve(outDir, 'components/AppWindow.tsx'))).toBe(true);
-    expect(existsSync(resolve(outDir, 'lib/controlSurface.ts'))).toBe(true);
+    expect(existsSync(resolve(outDir, 'store/index.ts'))).toBe(true);
+    expect(existsSync(resolve(outDir, 'lib/catalog.tsx'))).toBe(true);
     expect(existsSync(resolve(outDir, 'tsconfig.tsbuildinfo'))).toBe(false);
 
     const pkg = JSON.parse(readFileSync(resolve(outDir, 'package.json'), 'utf8'));
     expect(pkg.name).toBe('motion-lab');
     expect(pkg.dependencies['@rdna/radiants']).toBe(`^${radiantsPackageJson.version}`);
+    expect(pkg.dependencies.zustand).toBeDefined();
     expect(pkg.scripts.lint).toBe('eslint .');
     expect(pkg.devDependencies.eslint).toBe('^9');
     expect(pkg.devDependencies['eslint-config-next']).toBe('16.0.10');
 
     const dependencySpecs = Object.values<string>({
       ...pkg.dependencies,
-      ...pkg.devDependencies
+      ...pkg.devDependencies,
     });
 
     expect(dependencySpecs.some((value) => value.startsWith('file:'))).toBe(false);
@@ -44,8 +46,8 @@ describe('scaffoldProject', () => {
     await expect(
       scaffoldProject({
         appName: '!!!',
-        outDir
-      })
+        outDir,
+      }),
     ).rejects.toThrow('app name must include at least one letter or number');
   });
 
@@ -57,8 +59,8 @@ describe('scaffoldProject', () => {
     await expect(
       scaffoldProject({
         appName: 'motion-lab',
-        outDir
-      })
+        outDir,
+      }),
     ).rejects.toThrow('output directory must be empty');
   });
 });
