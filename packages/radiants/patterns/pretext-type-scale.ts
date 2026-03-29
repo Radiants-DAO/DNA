@@ -82,3 +82,34 @@ export function resolveFluidRaw(tier: FluidTier, containerWidth: number): number
   const { min, base, coeff, max } = tier;
   return Math.min(max, Math.max(min, base + coeff * containerWidth / 100));
 }
+
+// ---------------------------------------------------------------------------
+// Spacing scale — all values are multipliers of bodyLh
+// ---------------------------------------------------------------------------
+
+/**
+ * Named spacing roles for editorial layouts.
+ *
+ * Every spacing value is a multiplier of `bodyLh` (body line-height) so
+ * spacing scales proportionally with type size. No magic pixel values.
+ *
+ * Usage:
+ *   const gap = bodyLh * spacing.paragraph;
+ *   const sectionBreak = bodyLh * spacing.section;
+ */
+export const spacing = {
+  /** Between paragraphs in the same section */
+  paragraph: 0.75,
+  /** Before a heading (establishes new section) */
+  headingBefore: 1.5,
+  /** After a heading (ties heading to its content) */
+  headingAfter: 0.5,
+  /** Around horizontal rules */
+  rule: 0.5,
+  /** Between major sections (rule + gap) */
+  section: 2,
+  /** Column gutter (between column rules) */
+  column: 0.5,
+} as const;
+
+export type SpacingRole = keyof typeof spacing;

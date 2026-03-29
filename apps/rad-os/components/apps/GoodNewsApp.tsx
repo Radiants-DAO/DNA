@@ -11,14 +11,13 @@ import {
   type PreparedTextWithSegments,
 } from '@chenglou/pretext';
 import {
-  getWrapHull,
   transformWrapPoints,
   getPolygonIntervalForBand,
   carveTextLineSlots,
   type Point,
   type Interval,
 } from '@chenglou/pretext/demos/wrap-geometry';
-import { resolveFluid, type FluidTierName } from '@rdna/radiants/patterns/pretext-type-scale';
+import { resolveFluid, spacing, type FluidTierName } from '@rdna/radiants/patterns/pretext-type-scale';
 
 // ============================================================================
 // Document content — in reading order, split at inline insertion points
@@ -312,7 +311,7 @@ function computeLayout(
       cursor = line.end;
       y += lh;
     }
-    y += 16; // gap after heading
+    y += bodyLh * spacing.headingAfter;
   }
 
   // --- Hero image — if current column is too narrow, advance to a wider one ---
@@ -330,16 +329,18 @@ function computeLayout(
     y += totalH;
   }
 
-  // --- Paragraph gap ---
-  function layGap(lines = 1.5) {
-    y += bodyLh * lines;
+  // --- Spacing — all derived from bodyLh × named roles ---
+  function laySpace(role: keyof typeof spacing) {
+    y += bodyLh * spacing[role];
   }
 
   // --- Horizontal rule ---
   function layRule() {
     if (ci >= cols.length) return;
+    laySpace('rule');
     els.push({ kind: 'rule', x: col().x, y, w: col().width });
-    y += 16;
+    y += 1; // rule height
+    laySpace('rule');
   }
 
   // ==========================================================================
@@ -352,24 +353,20 @@ function computeLayout(
   els.push({ kind: 'dropcap', x: col().x, y });
 
   layText(dcW, dcH);   // P1
-  layGap(2);
+  laySpace('section');
   layHero();
+  laySpace('headingBefore');
   layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
-  layGap();
   layText();           // P2
-  layGap(2);
   layRule();
-  layGap();
+  laySpace('headingBefore');
   layHeading('RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM', "PixelCode", 'xl', 1.2, true, true);
-  layGap();
   layRule();
-  layGap(2);
+  laySpace('paragraph');
   layText();           // P3
-  layGap(2);
   layRule();
-  layGap();
+  laySpace('headingBefore');
   layHeading('The Battlefield Widens for RadOS Agent Seats', "Mondwest", '3xl', 1.1, true, false);
-  layGap(2);
   layText();           // P4
 
   const maxY = els.reduce((m, el) => Math.max(m, el.y + ('h' in el ? el.h : bodyLh)), 0);
@@ -387,21 +384,14 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const [containerWidth, setContainerWidth] = useState(790);
   const [result, setResult] = useState<SpreadResult | null>(null);
 
-  // Logo obstacle — draggable & resizable, polygon hull for shape wrapping
-  const [obs, setObs] = useState<ObsRect>({ x: 16, y: 600, w: 200, h: 200 });
-  const [hull, setHull] = useState<Point[] | null>(null);
-  const dragRef = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
-  const resizeRef = useRef<{ sx: number; sy: number; ow: number; oh: number } | null>(null);
+  // Obstacle slot (null = no obstacle, kept for future inline image support)
+  const obs = null;
+  const hull = null;
 
   // Prepare cache — survives across renders so drag/resize frames only
   // re-run the cheap layout arithmetic, not the expensive canvas measurement.
   // Keyed by `font::text`, matching the @chenglou/pretext demo pattern.
   const prepareCacheRef = useRef(new Map<string, PreparedTextWithSegments>());
-
-  // Load SVG polygon hull once — traces the alpha contour for shape wrapping
-  useEffect(() => {
-    getWrapHull('/assets/icons/radiants-logo.svg', { smoothRadius: 6, mode: 'mean' }).then(setHull);
-  }, []);
 
   // --- ResizeObserver ---
   useEffect(() => {
@@ -436,37 +426,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
     };
   }, []);
 
-  // --- Drag handlers ---
-  function onDragDown(e: React.PointerEvent) {
-    dragRef.current = { sx: e.clientX, sy: e.clientY, ox: obs.x, oy: obs.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }
-  function onDragMove(e: React.PointerEvent) {
-    if (!dragRef.current) return;
-    setObs(prev => ({
-      ...prev,
-      x: dragRef.current!.ox + (e.clientX - dragRef.current!.sx),
-      y: dragRef.current!.oy + (e.clientY - dragRef.current!.sy),
-    }));
-  }
-  function onDragUp() { dragRef.current = null; }
-
-  // --- Resize handlers ---
-  function onResizeDown(e: React.PointerEvent) {
-    e.stopPropagation();
-    resizeRef.current = { sx: e.clientX, sy: e.clientY, ow: obs.w, oh: obs.h };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }
-  function onResizeMove(e: React.PointerEvent) {
-    if (!resizeRef.current) return;
-    setObs(prev => ({
-      ...prev,
-      w: Math.max(resizeRef.current!.ow + (e.clientX - resizeRef.current!.sx), 120),
-      h: Math.max(resizeRef.current!.oh + (e.clientY - resizeRef.current!.sy), 120),
-    }));
-  }
-  function onResizeUp() { resizeRef.current = null; }
-
   // Column geometry (for vertical rules)
   const colCount = getColCount(containerWidth);
   const ruleXs = getRuleXPositions(containerWidth, colCount);
@@ -484,51 +443,41 @@ export function GoodNewsApp({ windowId }: AppProps) {
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 3fr 1fr',
-          columnGap: 16,
-          paddingTop: 20,
+          columnGap: 12,
+          paddingTop: 16,
           alignItems: 'center',
         }}>
           {/* Left info */}
           <div style={{ textAlign: 'left' }}>
-            <p className="text-head font-bold" style={{ fontFamily: "var(--font-sans)", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head font-sans font-bold text-lg leading-tight" style={{ letterSpacing: '-0.03em' }}>
               Largest Daily Founders Workshop
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: 'normal' }}>
+            <p className="text-head font-caption text-sm uppercase leading-tight" style={{ letterSpacing: '0.05em' }}>
               Solana Mobile X Radiants
             </p>
           </div>
 
           {/* GOOD NEWS — center column */}
           <h1
-            className="text-head"
-            style={{
-              textAlign: 'center',
-              fontFamily: "var(--font-blackletter)",
-              fontSize: 64,
-              fontWeight: 400,
-              letterSpacing: '-0.06em',
-              lineHeight: 'normal',
-            }}
+            className="text-head font-display text-center leading-none"
+            style={{ fontSize: 'var(--font-size-5xl)', letterSpacing: '-0.06em' }}
           >
             Good News
           </h1>
 
           {/* Right info */}
           <div style={{ textAlign: 'right' }}>
-            <p className="text-head" style={{ fontFamily: "var(--font-sans)", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+            <p className="text-head font-sans text-lg leading-tight" style={{ letterSpacing: '-0.03em' }}>
               $2,000,000 In Pages Burnt
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: 'normal' }}>
-              More on <span style={{ fontWeight: 700 }}>p6</span>
+            <p className="text-head font-caption text-sm uppercase leading-tight" style={{ letterSpacing: '0.05em' }}>
+              More on <span className="font-bold">p6</span>
             </p>
           </div>
         </div>
 
-        <div className="bg-head" style={{ height: 1, marginTop: 6 }} />
-        <div
-          className="flex justify-between text-head uppercase"
-          style={{ fontFamily: "var(--font-pixeloid)", fontSize: '0.83rem', fontWeight: 700, padding: '4px 0', lineHeight: 'normal', letterSpacing: '0.05em' }}
-        >
+        <div className="bg-head mt-1.5" style={{ height: 1 }} />
+        <div className="flex justify-between text-head font-caption text-sm font-bold uppercase leading-tight py-1" style={{ letterSpacing: '0.05em' }}>
           <span>Monday, November 28th, 2026</span>
           <span>$1.50 per issue</span>
         </div>
@@ -602,37 +551,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
             }
           })}
 
-          {/* ============================================================
-              SCREENSHOT — draggable & resizable obstacle
-              Text reflows around it in real time via pretext.
-              ============================================================ */}
-          {/* Draggable logo — inline SVG, text wraps around its polygon hull */}
-          <svg
-            className="absolute text-head select-none"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 65 65"
-            fill="none"
-            style={{ left: obs.x, top: obs.y + CHROME_Y, width: obs.w, height: obs.h, cursor: 'grab', zIndex: 10 }}
-            onPointerDown={onDragDown}
-            onPointerMove={onDragMove}
-            onPointerUp={onDragUp}
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M29.6393 4.93988V0H34.5791V4.93988H39.519V9.87976H24.6994V4.93988H29.6393ZM59.2789 29.6392H64.2188V34.5791H59.2789V39.5189H54.339V24.6993H59.2789V29.6392ZM0 34.5797H4.93988V39.5196H9.87976V24.7H4.93988V29.6399H0V34.5797ZM14.8198 14.8189V19.7587H9.87988V9.87899H19.7596V14.8189H14.8198ZM44.4591 14.8189H49.399V19.7587H54.3389V9.87899H44.4591V14.8189ZM49.399 49.3981L49.399 44.4582H54.3389V54.338H44.4591V49.3981H49.399ZM19.7596 49.3981H14.8198V44.4582H9.87988V54.338H19.7596V49.3981ZM34.5797 59.279V64.2188H29.6398L29.6398 59.279H24.6999V54.3391H39.5195V59.279H34.5797ZM24.6991 14.8204H39.5187V19.7603H44.4586V24.7002H49.3985V39.5198H44.4586V44.4597H39.5187V49.3996H24.6991V44.4597H19.7592V39.5198H14.8193V24.7002H19.7592V19.7603H24.6991V14.8204Z"
-              fill="currentColor"
-            />
-            {/* Resize handle */}
-            <rect
-              x="57" y="57" width="8" height="8"
-              fill="currentColor" opacity="0.2"
-              style={{ cursor: 'se-resize' }}
-              onPointerDown={onResizeDown}
-              onPointerMove={onResizeMove}
-              onPointerUp={onResizeUp}
-            />
-          </svg>
         </div>
       )}
       </div>

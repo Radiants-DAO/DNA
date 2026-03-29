@@ -1,48 +1,61 @@
 ## Session Status — 2026-03-29 (continued)
 
-**Plan:** Pretext type scale + editorial typography
+**Plan:** Pretext type scale + editorial typography + spacing system
 **Branch:** main
 
 ### Completed
-- [x] 4-auditor typography audit + phases 1–7 (prior session)
 - [x] Pretext type scale module (`packages/radiants/patterns/pretext-type-scale.ts`)
-- [x] GoodNews headings rewired to fluid type tiers (fixes funky Battlefield heading)
-- [x] Editorial fonts added to typography-data.ts (Blackletter, Tiny CPC, Pixeloid Sans)
-- [x] Font rationale entries for all 6 fonts in type-manual-copy.ts
+- [x] GoodNews headings rewired to fluid type tiers
+- [x] Editorial fonts added to typography-data.ts (6 fonts, core/editorial categories)
+- [x] First Things First editorial specimen (all 6 fonts showcased)
 - [x] `--font-tiny` / `--font-waves-tiny` tokens added to fonts.css
-- [x] SpecimenLayout split into Core Fonts (01) + Editorial Fonts (02) sections
-- [x] "Editorial" sub-tab added to typography playground
-- [x] First Things First manifesto rendered with Radiants aesthetics (all 6 fonts showcased)
-- [x] RDNA lint clean, type-check clean
+- [x] **Spacing scale** defined in pretext-type-scale.ts (named roles, all × bodyLh)
+- [x] GoodNews spacing rewritten: `layGap(n)` → `laySpace(role)`, all derived from bodyLh
+- [x] Draggable SVG obstacle deleted (drag/resize handlers, hull loading, SVG render)
+- [x] Masthead fixed: h1 `leading-none`, Mondwest bumped to `text-lg`, Pixeloid → `font-caption`, `font-display` h1
+- [x] Masthead inline styles cleaned up → Tailwind classes where possible
 
 ### In Progress
 - [ ] Nothing active
 
-### Remaining
+### Remaining (from feedback)
+- [ ] Drop cap Y position ("too high") — needs baseline alignment investigation
+- [ ] Hero image inline/rich-text treatment — reference pretext rich text demo
+- [ ] Body text fluid scaling (currently fixed baseFontSize from root)
 - [ ] Layout recipe abstraction — extract GoodNews into a named template
-- [ ] Additional content layouts — broadsheet, magazine, single-column longform
 - [ ] ManifestoApp editorial treatment (First Things First style)
 
-### Next Action
-> Visual QA: open BrandAssetsApp → Type tab → verify Editorial sub-tab renders the manifesto with all 6 fonts. Check GoodNews heading resize behavior.
+### Feedback Addressed
+| # | Issue | Status |
+|---|-------|--------|
+| 1 | Drop cap too high | remaining |
+| 2 | Hero image inline/rich-text | remaining (architectural) |
+| 3 | Mondwest too small in masthead | fixed (text-lg) |
+| 4 | h1 line spacing too big | fixed (leading-none) |
+| 5 | "$2M" sizing off | fixed (text-lg) |
+| 6 | Container uses pretext? | masthead is DOM (documented) |
+| 7 | Delete SVG graphic | done |
+| 8 | Doesn't resize well | partially addressed (fluid headings, masthead classes) |
+| 9 | Spacing too large | fixed (spacing scale) |
 
 ### What to Test
-- [ ] BrandAssetsApp → Type → Editorial tab: manifesto renders with drop cap, all 6 fonts visible
-- [ ] BrandAssetsApp → Type → Type Manual: 6 font cards (3 core + 3 editorial)
-- [ ] GoodNews: resize window — "Battlefield Widens" heading should scale smoothly without funky jumps
-- [ ] Dark mode: editorial fonts render correctly in both modes
+- [ ] GoodNews: spacing between elements should be tighter and proportional
+- [ ] GoodNews: masthead h1 line-height tight, Mondwest text larger
+- [ ] GoodNews: no draggable SVG obstacle
+- [ ] GoodNews: resize window — headings scale smoothly
+- [ ] BrandAssetsApp → Type → Editorial tab: manifesto renders
 - [ ] Run `pnpm lint:design-system` — no new errors
 
-### Files Changed This Session
-- `packages/radiants/patterns/pretext-type-scale.ts` (new)
-- `packages/radiants/fonts.css` (added --font-tiny, --font-waves-tiny)
-- `apps/rad-os/components/apps/GoodNewsApp.tsx` (fluid tier headings)
-- `apps/rad-os/components/apps/typography-playground/typography-data.ts` (6 fonts, categories)
-- `apps/rad-os/components/apps/typography-playground/type-manual-copy.ts` (editorial rationale)
-- `apps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx` (editorial tab)
-- `apps/rad-os/components/apps/typography-playground/SubTabNav.tsx` (editorial tab)
-- `apps/rad-os/components/apps/typography-playground/layouts/EditorialLayout.tsx` (new)
-- `apps/rad-os/components/apps/typography-playground/layouts/SpecimenLayout.tsx` (core/editorial split)
+### Spacing Scale (new)
+All values are multipliers of `bodyLh`:
+| Role | Multiplier | Purpose |
+|------|-----------|---------|
+| paragraph | 0.75 | Between paragraphs |
+| headingBefore | 1.5 | Before a heading |
+| headingAfter | 0.5 | After a heading (ties to content) |
+| rule | 0.5 | Around horizontal rules |
+| section | 2 | Between major sections |
+| column | 0.5 | Column gutter |
 
 ### Team Status
 No active agents
