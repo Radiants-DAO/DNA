@@ -113,3 +113,144 @@ export const spacing = {
 } as const;
 
 export type SpacingRole = keyof typeof spacing;
+
+// ---------------------------------------------------------------------------
+// Root scale — reference constant (NOT used by generator)
+// ---------------------------------------------------------------------------
+
+/**
+ * Viewport-based root font-size clamp parameters.
+ *
+ * Documents the base.css rule: html { font-size: clamp(14px, 12px + 0.25vw, 18px) }
+ *
+ * The root clamp stays in base.css because it affects every rem value
+ * system-wide — a global layout decision, not a typography concern.
+ * This constant is here for reference by pretext consumers who need
+ * to know the viewport scaling bounds.
+ */
+export const rootScale = {
+  min: 14,
+  base: 12,
+  coeff: 0.25,
+  max: 18,
+  unit: 'vw',
+} as const;
+
+// ---------------------------------------------------------------------------
+// Static scale — generates @theme { --font-size-*: Nrem } tokens
+// ---------------------------------------------------------------------------
+
+/**
+ * Perfect fourth (1.333) from 16px base.
+ * xs/sm are fixed for UI legibility (not ratio-derived).
+ *
+ * IMPORTANT: These are exact pre-computed values, not re-derived from
+ * the ratio. The generator emits them literally. Do not replace with
+ * Math.pow(1.333, n) — that produces different rounding (e.g. 1.333³
+ * = 2.370..., not 2.369).
+ *
+ * Used by Tailwind utilities (text-sm, text-base, etc.) for UI chrome.
+ * Pretext content apps use fluidType + resolveFluid() instead.
+ */
+export const staticScale = {
+  xs:      0.625,   //  10px — fixed: small labels
+  sm:      0.75,    //  12px — fixed: buttons, small UI
+  base:    1,       //  16px — base
+  lg:      1.333,   // ~21px — base × 1.333
+  xl:      1.777,   // ~28px — base × 1.333²
+  '2xl':   2.369,   // ~38px — base × 1.333³
+  '3xl':   3.157,   // ~50px — base × 1.333⁴
+  '4xl':   4.209,   // ~67px — base × 1.333⁵
+  '5xl':   5.61,    // ~90px — base × 1.333⁶
+  display: 5.61,    // alias: same as 5xl, named for hero/display use
+} as const satisfies Record<string, number>;
+
+export type StaticScaleTier = keyof typeof staticScale;
+
+// ---------------------------------------------------------------------------
+// Line-height roles (unitless multipliers)
+// ---------------------------------------------------------------------------
+
+/**
+ * Named line-height roles.
+ *
+ * Provenance: extracted from typography.css @apply rules which use
+ * Tailwind's named leading-* utilities. These are existing design
+ * decisions, not new ones.
+ *
+ *   none    = leading-none    (headings)
+ *   snug    = leading-snug    (body text / Mondwest)
+ *   normal  = leading-normal  (links, inline elements)
+ *   relaxed = leading-relaxed (lists, blockquotes, pre)
+ *
+ * In pretext content layouts, use these as multipliers of the resolved
+ * font size to compute line height in px.
+ */
+export const lineHeight = {
+  none:    1,
+  snug:    1.375,
+  normal:  1.5,
+  relaxed: 1.625,
+} as const satisfies Record<string, number>;
+
+export type LineHeightRole = keyof typeof lineHeight;
+
+// ---------------------------------------------------------------------------
+// Letter-spacing roles (em values)
+// ---------------------------------------------------------------------------
+
+/**
+ * Named tracking roles. Matches Tailwind tracking-* defaults.
+ *
+ * Provenance: extracted from typography.css @apply rules.
+ *   tight  = tracking-tight  (most UI text)
+ *   wide   = tracking-wide   (labels, captions)
+ */
+export const tracking = {
+  tight:  -0.025,
+  normal:  0,
+  wide:    0.025,
+} as const satisfies Record<string, number>;
+
+export type TrackingRole = keyof typeof tracking;
+
+// ---------------------------------------------------------------------------
+// CSS fluid scale — generates @layer base { :root { --font-size-fluid-* } }
+// ---------------------------------------------------------------------------
+
+/**
+ * CSS container-query-based fluid tiers. Each tier generates:
+ *   clamp(minRem, baseRem + cqiCoeff × 1cqi, maxRem)
+ *
+ * These values exactly match the current hand-authored tokens.css fluid
+ * block. They use cqi (container query inline) units — text scales with
+ * AppWindow width, not viewport.
+ *
+ * NOTE: cqiCoeff values are ~100x larger than fluidType.coeff because
+ * cqi is a CSS length unit (1cqi = 1% of container inline size) while
+ * fluidType.coeff is tuned for gentle canvas scaling in pretext columns.
+ * At container width 600px:
+ *   CSS sm:  0.7rem + 0.25 × 6px = 12.7px
+ *   JS  sm:  11.2 + 0.04 × 6    = 11.44px
+ *
+ * After Phase 2 (all apps migrated to pretext), these CSS fluid tokens
+ * can be removed — content apps will use resolveFluid() directly.
+ */
+export interface CssFluidTier {
+  minRem: number;
+  baseRem: number;
+  cqiCoeff: number;
+  maxRem: number;
+}
+
+export const cssFluidScale = {
+  sm:    { minRem: 0.75,  baseRem: 0.7,  cqiCoeff: 0.25, maxRem: 0.875 },
+  base:  { minRem: 0.875, baseRem: 0.8,  cqiCoeff: 0.5,  maxRem: 1.125 },
+  lg:    { minRem: 1,     baseRem: 0.9,  cqiCoeff: 0.75, maxRem: 1.5   },
+  xl:    { minRem: 1.25,  baseRem: 1,    cqiCoeff: 1.25, maxRem: 2     },
+  '2xl': { minRem: 1.5,   baseRem: 1.2,  cqiCoeff: 1.75, maxRem: 2.5   },
+  '3xl': { minRem: 1.75,  baseRem: 1.4,  cqiCoeff: 2.5,  maxRem: 3.5   },
+  '4xl': { minRem: 2,     baseRem: 1.5,  cqiCoeff: 3.5,  maxRem: 4.5   },
+} as const satisfies Record<string, CssFluidTier>;
+
+export type CssFluidTierName = keyof typeof cssFluidScale;

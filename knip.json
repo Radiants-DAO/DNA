@@ -25,9 +25,13 @@
       ]
     },
     "packages/radiants": {
+      "ignoreDependencies": [
+        "@chenglou/pretext"
+      ],
       "ignoreFiles": [
         "contract/system.ts",
         "eslint/lib/no-legacy-color-format.mjs",
+        "patterns/pretext-type-scale.ts",
         "scripts/generate-figma-contracts.ts",
         "scripts/generate-icons.mjs",
         "scripts/generate-icons.ts",
