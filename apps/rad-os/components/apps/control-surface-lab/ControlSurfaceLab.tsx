@@ -26,6 +26,8 @@ const MOCK_MAP: Record<ControlSurfaceScenario, Record<string, SurfaceComponent>>
     'shadow-editor': Mocks.ShadowEditorMock,
     'box-spacing': Mocks.BoxSpacingMock,
     'border-radius': Mocks.BorderRadiusMock,
+    'dialkit-full-panel': Mocks.DialKitFullPanelMock,
+    'interface-kit-full-panel': Mocks.InterfaceKitFullPanelMock,
   },
   annotations: {
     'composer-shell': Mocks.ComposerShellMock,
@@ -46,6 +48,8 @@ const SHELL_MAP: Record<ControlSurfaceScenario, Record<string, SurfaceComponent>
     'shadow-editor': Shells.ShadowEditorShell,
     'box-spacing': Shells.BoxSpacingShell,
     'border-radius': Shells.BorderRadiusShell,
+    'dialkit-full-panel': Shells.DialKitFullPanelShell,
+    'interface-kit-full-panel': Shells.InterfaceKitFullPanelShell,
   },
   annotations: {
     'composer-shell': Shells.ComposerShellRdna,

@@ -77,9 +77,17 @@ export function BoxSpacingShell() {
             <div className="flex items-center">
               {sideInput(padding.left, setPadding, 'left')}
 
-              {/* Content zone */}
-              <div className="flex-1 bg-accent/10 pixel-rounded-sm py-3 mx-1 flex items-center justify-center">
-                <span className="font-mono text-xs text-accent">240 &times; 120</span>
+              {/* Content zone — editable w × h */}
+              <div className="flex-1 bg-accent/10 pixel-rounded-sm py-2.5 mx-1 flex items-center justify-center gap-1">
+                <input
+                  className="w-7 bg-transparent font-mono text-xs text-accent text-center outline-none focus:text-main transition-colors"
+                  defaultValue="240"
+                />
+                <span className="font-mono text-xs text-accent">&times;</span>
+                <input
+                  className="w-7 bg-transparent font-mono text-xs text-accent text-center outline-none focus:text-main transition-colors"
+                  defaultValue="120"
+                />
               </div>
 
               {sideInput(padding.right, setPadding, 'right')}

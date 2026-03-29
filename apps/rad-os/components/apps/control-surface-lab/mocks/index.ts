@@ -9,3 +9,5 @@ export { AnnotationPinMock } from './AnnotationPinMock';
 export { HoverOverlayMock } from './HoverOverlayMock';
 export { InspectToolbarMock } from './InspectToolbarMock';
 export { CommentPopoverMock } from './CommentPopoverMock';
+export { DialKitFullPanelMock } from './DialKitFullPanelMock';
+export { InterfaceKitFullPanelMock } from './InterfaceKitFullPanelMock';

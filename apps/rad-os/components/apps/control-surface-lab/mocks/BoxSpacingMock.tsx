@@ -56,18 +56,26 @@ export function BoxSpacingMock() {
             <span className="absolute bottom-1 left-1/2 -translate-x-1/2 font-mono text-[10px]" style={{ color: '#2e7d32' }}>{padding.bottom}</span>
             <span className="absolute left-1 top-1/2 -translate-y-1/2 font-mono text-[10px]" style={{ color: '#2e7d32' }}>{padding.left}</span>
 
-            {/* Content zone */}
+            {/* Content zone — editable w × h */}
             <div
-              className="flex items-center justify-center px-4 py-2"
+              className="flex items-center justify-center gap-1 px-3 py-2"
               style={{
                 background: '#e3f2fd',
                 border: '1px solid #42a5f5',
                 minWidth: '80px',
               }}
             >
-              <span className="font-mono text-[10px] whitespace-nowrap" style={{ color: '#1565c0' }}>
-                240 × 120
-              </span>
+              <input
+                className="w-8 bg-transparent text-center font-mono text-[10px] outline-none"
+                style={{ color: '#1565c0' }}
+                defaultValue="240"
+              />
+              <span className="font-mono text-[10px]" style={{ color: '#1565c0' }}>×</span>
+              <input
+                className="w-8 bg-transparent text-center font-mono text-[10px] outline-none"
+                style={{ color: '#1565c0' }}
+                defaultValue="120"
+              />
             </div>
           </div>
         </div>

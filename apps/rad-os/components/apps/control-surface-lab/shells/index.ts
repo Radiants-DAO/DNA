@@ -9,3 +9,5 @@ export { AnnotationPinRdna } from './AnnotationPinRdna';
 export { HoverOverlayRdna } from './HoverOverlayRdna';
 export { InspectToolbarRdna } from './InspectToolbarRdna';
 export { CommentPopoverRdna } from './CommentPopoverRdna';
+export { DialKitFullPanelShell } from './DialKitFullPanelShell';
+export { InterfaceKitFullPanelShell } from './InterfaceKitFullPanelShell';

@@ -80,6 +80,28 @@ export const CONTROL_SURFACE_FIXTURES: Record<ControlSurfaceScenario, SurfaceFix
       rdnaPath:
         'packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.tsx',
     },
+    {
+      id: 'dialkit-full-panel',
+      title: 'DialKit Full Panel',
+      summary: 'Complete DialKit parameter panel — every control type: slider, toggle, color, text, select, spring, action, folder.',
+      legacyLabel: 'DialKit panel',
+      legacyPath:
+        'node_modules/dialkit — useDialKit + DialRoot',
+      rdnaLabel: 'RDNA target',
+      rdnaPath:
+        'packages/controls/src/panel/ControlPanel.tsx',
+    },
+    {
+      id: 'interface-kit-full-panel',
+      title: 'Interface Kit Full Panel',
+      summary: 'Complete Interface Kit design panel — Style, Typography, and Layout tabs with all controls.',
+      legacyLabel: 'Interface Kit panel',
+      legacyPath:
+        'node_modules/interface-kit — InterfaceKit component',
+      rdnaLabel: 'RDNA target',
+      rdnaPath:
+        'packages/controls/src/panel/ControlPanel.tsx',
+    },
   ],
   annotations: [
     {
