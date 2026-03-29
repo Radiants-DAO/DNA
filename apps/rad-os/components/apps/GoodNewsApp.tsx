@@ -460,55 +460,48 @@ export function GoodNewsApp({ windowId }: AppProps) {
       <div style={{ padding: `0 ${COL_MARGIN}px` }}>
 
         {/* ============================================================
-            MASTHEAD — 3-col grid (drops to 2-col below 768px container)
-            GOOD NEWS spans first 2 cols on both sizes.
+            MASTHEAD — left info | GOOD NEWS centered | right info
             ============================================================ */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: containerWidth >= 768 ? '1fr 1fr 1fr' : '1fr 1fr',
-          gridTemplateRows: 'auto auto',
+          gridTemplateColumns: '1fr auto 1fr',
           columnGap: 16,
           paddingTop: 20,
-          alignItems: 'end',
+          alignItems: 'center',
         }}>
-          {/* GOOD NEWS — row 1, spans cols 1–2 */}
+          {/* Left info */}
+          <div style={{ textAlign: 'left' }}>
+            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
+              Largest Daily Founders Workshop
+            </p>
+            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
+              Solana Mobile X Radiants
+            </p>
+          </div>
+
+          {/* GOOD NEWS — center column */}
           <h1
             className="text-head"
             style={{
-              gridColumn: '1 / span 2',
-              gridRow: 1,
               textAlign: 'center',
               fontFamily: "'Waves Blackletter CPC', serif",
-              fontSize: Math.min(containerWidth * 0.107, 85),
+              fontSize: 64,
               fontWeight: 400,
               letterSpacing: '-0.06em',
               lineHeight: 'normal',
+              whiteSpace: 'nowrap',
             }}
           >
             Good News
           </h1>
 
-          {/* Right items — col 3 row 1 (3-col) or col 2 row 2 (2-col) */}
-          <div style={{
-            gridColumn: containerWidth >= 768 ? 3 : 2,
-            gridRow: containerWidth >= 768 ? 1 : 2,
-            textAlign: 'right',
-          }}>
-            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
+          {/* Right info */}
+          <div style={{ textAlign: 'right' }}>
+            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
               $2,000,000 In Pages Burnt
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.58rem', lineHeight: 'normal' }}>
+            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
               More on <strong>p6</strong>
-            </p>
-          </div>
-
-          {/* Left items — col 1, row 2 always */}
-          <div style={{ gridColumn: 1, gridRow: 2, textAlign: 'left' }}>
-            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.17rem', letterSpacing: '-0.06em', lineHeight: 'normal' }}>
-              Largest Daily Founders Workshop
-            </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.58rem', lineHeight: 'normal' }}>
-              Solana Mobile X Radiants
             </p>
           </div>
         </div>
