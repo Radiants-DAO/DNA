@@ -464,6 +464,18 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // Tab Definitions
 // ============================================================================
 
+const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
+  <div className="flex gap-0.5">
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-sm" />
+  </div>
+);
+
+
 // ============================================================================
 // Main Component
 // ============================================================================
