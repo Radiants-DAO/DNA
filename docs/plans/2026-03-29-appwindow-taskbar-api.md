@@ -524,15 +524,22 @@ Same pattern — pass `navContent={nav}` to AppWindowTitleBar (line 685), add to
 
 ### Step 8: Wire into mobile presentation mode (lines 629-661)
 
-Mobile has no titlebar component, so Nav doesn't apply. But Toolbar should work:
+Mobile has a simplified header (not AppWindowTitleBar). Nav renders below the header as a horizontal bar. Future work: at mobile container-query breakpoints, tabs may collapse into a `<select>` — but for v1 they render as a standard horizontal tab list.
 
 ```tsx
 <header {/* ...existing... */}>
   {/* ...existing title + close button... */}
 </header>
+{nav && (
+  <div className="shrink-0 px-3 py-2 border-b border-ink">
+    {nav}
+  </div>
+)}
 {toolbar && <div ref={toolbarRef}>{toolbar}</div>}
 <main className="flex-1 overflow-auto @container">{content}</main>
 ```
+
+> **Future consideration:** Mobile nav should collapse into a select/dropdown at narrow container widths. This is a follow-up — for now, the capsule tabs render horizontally and scroll if needed.
 
 ### Step 9: Run tests
 
@@ -812,7 +819,7 @@ After all tasks complete:
 - [ ] Toolbar-only works (no Nav required)
 - [ ] Bare children backward compat (no compound wrappers = works as before)
 - [ ] Height accounting subtracts toolbar height from `--app-content-max-height`
-- [ ] All 3 presentation modes work (window, fullscreen, mobile)
+- [ ] All 3 presentation modes work (window, fullscreen, mobile — mobile renders Nav below header)
 - [ ] BrandAssetsApp migrated — no more `createPortal` / `window-titlebar-slot`
 - [ ] All existing tests pass
 - [ ] Build passes
