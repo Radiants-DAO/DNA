@@ -1,24 +1,86 @@
-import type { AppWindowProps } from '../lib/types';
+'use client';
+
+import React, { useCallback } from 'react';
+import { AppWindow as CoreAppWindow } from '@rdna/radiants/components/core';
+import { useWindowManager } from '../hooks/useWindowManager';
+import { resolveWindowSize } from '../lib/windowSizing';
+import type { WindowSizeTier, WindowSize } from '../lib/windowSizing';
+
+interface AppWindowProps {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+  defaultPosition?: { x: number; y: number };
+  defaultSize?: WindowSizeTier | WindowSize;
+  resizable?: boolean;
+  className?: string;
+  icon?: React.ReactNode;
+  contentPadding?: boolean;
+}
 
 export function AppWindow({
+  id,
   title,
   children,
-  titleBarActions
+  defaultPosition = { x: 100, y: 50 },
+  defaultSize,
+  resizable = true,
+  className = '',
+  icon,
+  contentPadding = true,
 }: AppWindowProps) {
+  const {
+    getWindowState,
+    closeWindow,
+    toggleFullscreen,
+    focusWindow,
+    updateWindowPosition,
+    updateWindowSize,
+    openWindows,
+  } = useWindowManager();
+
+  const windowState = getWindowState(id);
+  const resolvedSize = defaultSize ? resolveWindowSize(defaultSize) : undefined;
+  const topZIndex = openWindows.reduce((max, w) => Math.max(max, w.zIndex), 0);
+  const cascadeIndex = openWindows.filter((w) => w.id !== id).length;
+
+  const handleClose = useCallback(() => closeWindow(id), [closeWindow, id]);
+  const handleFocus = useCallback(() => focusWindow(id), [focusWindow, id]);
+  const handleFullscreen = useCallback(() => toggleFullscreen(id), [toggleFullscreen, id]);
+  const handlePositionChange = useCallback(
+    (position: { x: number; y: number }) => updateWindowPosition(id, position),
+    [id, updateWindowPosition],
+  );
+  const handleSizeChange = useCallback(
+    (size: { width: number; height: number }) => updateWindowSize(id, size),
+    [id, updateWindowSize],
+  );
+
   return (
-    <section className="flex h-full flex-col overflow-hidden pixel-rounded-lg border border-line bg-card shadow-[var(--shadow-floating)]">
-      <header className="flex items-center gap-3 border-b border-line bg-depth/90 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-danger" />
-          <span className="h-3 w-3 rounded-full bg-warning" />
-          <span className="h-3 w-3 rounded-full bg-success" />
-        </div>
-        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-mute">
-          {title}
-        </span>
-        <div className="ml-auto flex items-center gap-2">{titleBarActions}</div>
-      </header>
-      <div className="min-h-0 flex-1 overflow-auto">{children}</div>
-    </section>
+    <CoreAppWindow
+      id={id}
+      title={title}
+      open={windowState?.isOpen ?? false}
+      presentation={windowState?.isFullscreen ? 'fullscreen' : 'window'}
+      position={windowState?.position}
+      defaultPosition={defaultPosition}
+      size={windowState?.size ?? resolvedSize}
+      defaultSize={resolvedSize}
+      resizable={resizable}
+      className={className}
+      icon={icon}
+      contentPadding={contentPadding}
+      focused={(windowState?.zIndex ?? 0) === topZIndex}
+      zIndex={windowState?.zIndex}
+      autoCenter={!windowState?.size && !resolvedSize}
+      cascadeIndex={cascadeIndex}
+      onClose={handleClose}
+      onFocus={handleFocus}
+      onFullscreen={handleFullscreen}
+      onPositionChange={handlePositionChange}
+      onSizeChange={handleSizeChange}
+    >
+      {children}
+    </CoreAppWindow>
   );
 }
