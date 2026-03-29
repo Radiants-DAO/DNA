@@ -1,53 +1,82 @@
-import { Badge, Button } from '@rdna/radiants/components/core';
-import type { WindowSizePreset } from '../lib/types';
+'use client';
 
-interface TaskbarProps {
-  windowId: string;
-  presets: WindowSizePreset[];
-  activePreset: string;
-  controlSurfaceEnabled: boolean;
-  onSelectPreset: (preset: WindowSizePreset) => void;
+import { useState } from 'react';
+import { usePreferencesStore } from '../store';
+import {
+  Button,
+  Tooltip,
+  Slider,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Toolbar,
+  Switch,
+} from '@rdna/radiants/components/core';
+import { Icon } from '@rdna/radiants/icons/runtime';
+import { StartMenu } from './StartMenu';
+
+function VolumeControl() {
+  const { volume, setVolume } = usePreferencesStore();
+  const isMuted = volume === 0;
+
+  return (
+    <Popover position="top">
+      <PopoverTrigger asChild>
+        <Button
+          mode="text"
+          size="md"
+          iconOnly
+          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} size={20} />}
+          aria-label={`Volume: ${volume}%`}
+        />
+      </PopoverTrigger>
+      <PopoverContent className="!p-1.5 flex flex-col items-center gap-1">
+        <div className="h-24">
+          <Slider
+            value={volume}
+            onChange={setVolume}
+            min={0}
+            max={100}
+            step={1}
+            size="md"
+            orientation="vertical"
+          />
+        </div>
+        <span className="font-mono text-xs text-mute tabular-nums leading-none">{volume}</span>
+      </PopoverContent>
+    </Popover>
+  );
 }
 
-export function Taskbar({
-  windowId,
-  presets,
-  activePreset,
-  controlSurfaceEnabled,
-  onSelectPreset
-}: TaskbarProps) {
+function DarkModeToggle() {
+  const { darkMode, toggleDarkMode } = usePreferencesStore();
+
   return (
-    <footer className="sticky bottom-0 z-10 border-t border-line bg-card/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mute">
-          Window {windowId}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {presets.map((preset) => {
-            const isActive = preset.label === activePreset;
-            return (
-              <Button
-                key={preset.label}
-                mode={isActive ? 'solid' : 'flat'}
-                tone={isActive ? 'accent' : 'neutral'}
-                size="sm"
-                compact
-                onClick={() => onSelectPreset(preset)}
-              >
-                {preset.label}
-              </Button>
-            );
-          })}
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <Badge
-            size="sm"
-            variant={controlSurfaceEnabled ? 'success' : 'default'}
-          >
-            {controlSurfaceEnabled ? 'control live' : 'control stub'}
-          </Badge>
-        </div>
-      </div>
-    </footer>
+    <Tooltip content={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} position="top">
+      <span aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+        <Switch checked={darkMode} onChange={() => toggleDarkMode()} size="lg" />
+      </span>
+    </Tooltip>
+  );
+}
+
+export function Taskbar({ className: _className = '' }: { className?: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={`relative ${_className}`}>
+      <Toolbar.Root>
+        <Button size="md" icon="menu" data-start-button onClick={() => setIsOpen(!isOpen)}>
+          Start
+        </Button>
+
+        <Toolbar.Separator />
+
+        <VolumeControl />
+        <DarkModeToggle />
+      </Toolbar.Root>
+
+      <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </div>
   );
 }
