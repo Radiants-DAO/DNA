@@ -21,6 +21,10 @@
       "$type": "color",
       "$value": "oklch(0.7701 0.0527 236.81)"
     },
+    "sky-blue-dark": {
+      "$type": "color",
+      "$value": "oklch(0.47 0.08 237)"
+    },
     "sunset-fuzz": {
       "$type": "color",
       "$value": "oklch(0.8546 0.1039 68.93)"
