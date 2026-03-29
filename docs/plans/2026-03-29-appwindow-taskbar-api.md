@@ -155,6 +155,8 @@ export interface AppWindowNavProps {
 export interface AppWindowNavItemProps {
   value: string;
   icon?: React.ReactNode;
+  /** Accessible label — required when children is not a plain string (e.g., icon-only tabs). */
+  label?: string;
   children: React.ReactNode;
 }
 
@@ -251,13 +253,14 @@ function AppWindowNav({ value, onChange, layout = 'capsule', children }: AppWind
     <div role="tablist" className="flex items-end gap-0.5 -mb-2">
       {items.map((item) => {
         const isActive = value === item.value;
+        const accessibleName = item.label ?? (typeof item.children === 'string' ? item.children : undefined);
         return (
           <button
             key={item.value}
             role="tab"
             type="button"
             aria-selected={isActive}
-            aria-label={typeof item.children === 'string' ? item.children : undefined}
+            aria-label={accessibleName}
             onClick={() => onChange(item.value)}
             className={`relative flex items-center justify-center cursor-pointer select-none pixel-rounded-t-sm h-8 px-2 transition-all duration-300 ease-out focus-visible:outline-none ${
               isActive
@@ -426,29 +429,38 @@ Replace with:
 Inside the `AppWindow` function body (after the existing state/ref declarations, around line 415-420), add:
 
 ```typescript
-const toolbarRef = useRef<HTMLDivElement>(null);
-const [toolbarHeight, setToolbarHeight] = useState(0);
 const { nav, toolbar, content } = extractAppWindowChildren(children);
 ```
 
-### Step 4: Add toolbar height measurement
+The `toolbarRef` callback and `toolbarHeight` state are added in Step 4 below.
 
-After the toolbarRef/toolbarHeight declarations:
+### Step 4: Add toolbar height measurement via ref callback
+
+Use a ref callback instead of useEffect + boolean dep. The callback fires when the toolbar mounts/unmounts, and attaches a ResizeObserver to track dynamic height:
 
 ```typescript
-useEffect(() => {
-  if (!toolbarRef.current) {
+const [toolbarHeight, setToolbarHeight] = useState(0);
+const toolbarObserverRef = useRef<ResizeObserver | null>(null);
+
+const toolbarRef = useCallback((node: HTMLDivElement | null) => {
+  // Clean up previous observer
+  if (toolbarObserverRef.current) {
+    toolbarObserverRef.current.disconnect();
+    toolbarObserverRef.current = null;
+  }
+  if (!node) {
     setToolbarHeight(0);
     return;
   }
-  const el = toolbarRef.current;
   const observer = new ResizeObserver(([entry]) => {
-    setToolbarHeight(entry.contentRect.height + /* border */ 1);
+    setToolbarHeight(entry.contentRect.height + /* border-b */ 1);
   });
-  observer.observe(el);
-  return () => observer.disconnect();
-}, [toolbar !== null]);
+  observer.observe(node);
+  toolbarObserverRef.current = observer;
+}, []);
 ```
+
+This avoids the `[toolbar !== null]` boolean coercion dep — the ref callback fires exactly when the DOM node appears/disappears.
 
 ### Step 5: Update maxContentHeight calculation
 
@@ -560,42 +572,16 @@ git commit -m "feat(AppWindow): wire compound children into all presentation mod
 **Files:**
 - Modify: `packages/radiants/components/core/AppWindow/AppWindow.tsx`
 
-### Step 1: Replace the default export
+### Step 1: Convert to compound export pattern
 
-Find the current export at the bottom of the file (line 830):
-```typescript
-export default AppWindow;
-```
+Two changes, done together to avoid a duplicate-export state:
 
-Replace with the Object.assign pattern that attaches compound sub-components:
+**1. Remove `export` from the function declaration** (line 376). Change `export function AppWindow(` to `function AppWindow(`. Also remove `export` from `AppWindowBody` (line 323), `AppWindowSplitView` (line 344), and `AppWindowPane` (line 355).
 
-```typescript
-const AppWindowCompound = Object.assign(AppWindow, {
-  Nav: Object.assign(AppWindowNav, { Item: AppWindowNavItem }),
-  Toolbar: AppWindowToolbar,
-  Content: AppWindowContent,
-  // Preserve existing sub-components on the namespace
-  Body: AppWindowBody,
-  SplitView: AppWindowSplitView,
-  Pane: AppWindowPane,
-});
-
-export default AppWindowCompound;
-```
-
-### Step 2: Update the named export
-
-The named `export function AppWindow` (line 376) stays as-is for backward compat. Apps that do `import { AppWindow } from '...'` get the base function. Apps that do `import AppWindow from '...'` get the compound version with `.Nav`, `.Toolbar`, `.Content`.
-
-However, since the test file imports `{ AppWindow }` (named), we need compound access to work from named imports too. Replace the named export approach:
-
-Keep the function as `function AppWindow(...)` (remove the `export` keyword from the function declaration on line 376). Then at the bottom:
+**2. Replace the default export** (line 830) with this block at the bottom of the file:
 
 ```typescript
-// Named exports for individual sub-components (backward compat)
-export { AppWindowBody, AppWindowSplitView, AppWindowPane };
-
-// Compound export with sub-components attached
+// Compound export — attaches sub-components as static properties
 const AppWindowCompound = Object.assign(AppWindow, {
   Nav: Object.assign(AppWindowNav, { Item: AppWindowNavItem }),
   Toolbar: AppWindowToolbar,
@@ -605,18 +591,21 @@ const AppWindowCompound = Object.assign(AppWindow, {
   Pane: AppWindowPane,
 });
 
-export { AppWindowCompound as AppWindow };
+// Named exports: compound AppWindow + individual sub-components for backward compat
+export { AppWindowCompound as AppWindow, AppWindowBody, AppWindowSplitView, AppWindowPane };
 export default AppWindowCompound;
 ```
 
-### Step 3: Update test imports
+**Why this works:** Both `import { AppWindow }` and `import AppWindow` resolve to the same compound object. Existing imports like `import { AppWindowBody }` still work via the named re-exports. No consumer changes needed.
 
-The test file (line 3) currently imports:
+### Step 2: Verify test imports
+
+The test file (line 3) imports:
 ```typescript
 import { AppWindow, AppWindowBody, AppWindowPane, AppWindowSplitView } from './AppWindow';
 ```
 
-This still works because we re-export `AppWindowBody`, `AppWindowSplitView`, `AppWindowPane` as named exports, and `AppWindow` is the compound export. No test changes needed.
+All four still resolve — `AppWindow` is the compound, the others are named re-exports. No test changes needed.
 
 ### Step 4: Run tests
 
