@@ -514,7 +514,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
       {/* ── Capsule tab nav — portaled into the window title bar ── */}
       {titleBarSlot && createPortal(
-        <div className="flex items-center gap-1">
+        <div className="flex items-end gap-0.5 -mb-2">
           {TAB_NAV.map((tab) => {
             const isActive = activeTab === tab.value;
             return (
@@ -522,9 +522,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 <button
                   type="button"
                   onClick={() => setActiveTab(tab.value)}
-                  className={`flex items-center justify-center cursor-pointer select-none pixel-rounded-sm transition-all duration-300 ease-out focus-visible:outline-none ${
-                    isActive ? 'gap-1 h-6 px-1 bg-card' : 'size-6'
+                  className={`flex items-center justify-center cursor-pointer select-none h-8 px-3 transition-all duration-300 ease-out focus-visible:outline-none ${
+                    isActive ? 'gap-1.5 bg-card z-10' : 'bg-cream'
                   }`}
+                  style={{ clipPath: 'polygon(6px 0, calc(100% - 6px) 0, 100% 100%, 0 100%)' }}
                 >
                   <span className="shrink-0 flex items-center justify-center size-4">{tab.icon}</span>
                   {isActive && (
