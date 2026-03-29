@@ -95,11 +95,11 @@
   }
 
   strong {
-    @apply text-base font-sans font-bold leading-normal text-main;
+    @apply font-sans font-bold text-main;
   }
 
   em {
-    @apply text-base font-sans font-normal leading-normal text-main italic;
+    @apply font-sans font-normal text-main italic;
   }
 
   /* ============================================
