@@ -488,12 +488,12 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   }, [windowId]);
 
   const TAB_NAV = [
-    { value: 'logos', label: 'Logos', icon: <RadMarkIcon size={16} /> },
-    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" size={16} /> },
-    { value: 'fonts', label: 'Type', icon: <FontAaIcon size={16} /> },
-    { value: 'components', label: 'UI', icon: <Icon name="outline-box" size={16} /> },
-    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" size={16} /> },
-    { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" size={16} /> },
+    { value: 'logos', label: 'Logos', icon: <RadMarkIcon /> },
+    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" /> },
+    { value: 'fonts', label: 'Type', icon: <FontAaIcon /> },
+    { value: 'components', label: 'UI', icon: <Icon name="outline-box" /> },
+    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" /> },
+    { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
   ] as const;
 
   return (

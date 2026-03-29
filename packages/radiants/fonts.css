@@ -16,7 +16,7 @@
 
 @theme {
   /* Semantic font roles */
-  --font-sans: 'Mondwest', system-ui, serif;
+  --font-sans: 'Mondwest', Georgia, 'Times New Roman', serif;
   --font-heading: 'Joystix Monospace', monospace;
   --font-mono: 'PixelCode', monospace;
 
@@ -25,7 +25,7 @@
   --font-caption: 'Pixeloid Sans', sans-serif;
 
   /* Named brand aliases */
-  --font-mondwest: 'Mondwest', system-ui, serif;
+  --font-mondwest: 'Mondwest', Georgia, 'Times New Roman', serif;
   --font-joystix: 'Joystix Monospace', monospace;
   --font-pixel-code: 'PixelCode', monospace;
   --font-blackletter: 'Waves Blackletter CPC', serif;

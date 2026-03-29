@@ -38,7 +38,7 @@
   --color-content-secondary: oklch(0.9780 0.0295 94.34 / 0.85);          /* was rgba(254, 248, 226, 0.85) */
   --color-content-inverted: var(--color-ink);
   --color-content-muted: oklch(0.9780 0.0295 94.34 / 0.6);              /* was rgba(254, 248, 226, 0.6) — cream at 60% */
-  --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
+  --color-content-link: var(--color-sky-blue);       /* Links: lighter sky-blue has good contrast on dark bg */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
@@ -93,6 +93,16 @@
   --color-danger: var(--color-sun-red);
   --color-success: var(--color-mint);
   --color-warning: var(--color-sun-yellow);
+
+  /* ============================================
+     DARK MODE — Typography Adjustments
+     Text appears heavier on dark backgrounds.
+     Antialiased rendering + lighter code weight.
+     ============================================ */
+
+  code, pre {
+    font-weight: 300;  /* PixelCode Light — compensates for perceived weight gain on dark bg */
+  }
 
   /* ============================================
      TEXT GLOW - Warm phosphor halo on all text

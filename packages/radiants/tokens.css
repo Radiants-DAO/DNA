@@ -14,6 +14,7 @@
   --color-pure-black: oklch(0.0000 0.0000 0);           /* was #000000 */
   --color-sun-yellow: oklch(0.9126 0.1170 93.68);       /* was #FCE184 */
   --color-sky-blue: oklch(0.7701 0.0527 236.81);        /* was #95BAD2 */
+  --color-sky-blue-dark: oklch(0.47 0.08 237);           /* WCAG AA compliant on cream bg (~6:1 contrast) */
   --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
   --color-sun-red: oklch(0.7429 0.1568 21.43);          /* was #FF7F7F */
   --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
@@ -46,7 +47,7 @@
   --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
   --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
   --color-flip: var(--color-cream);
-  --color-link: var(--color-sky-blue);
+  --color-link: var(--color-sky-blue-dark);
 
   /* Borders */
   --color-line: var(--color-ink);
@@ -64,7 +65,7 @@
   --color-content-secondary: oklch(0.1641 0.0044 84.59 / 0.85);  /* was rgba(15, 14, 12, 0.85) */
   --color-content-inverted: var(--color-cream);
   --color-content-muted: oklch(0.1641 0.0044 84.59 / 0.6);    /* was rgba(15, 14, 12, 0.6) */
-  --color-content-link: var(--color-sky-blue);
+  --color-content-link: var(--color-sky-blue-dark);
 
   /* ============================================
      SEMANTIC TOKENS - Edge

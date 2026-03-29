@@ -46,7 +46,7 @@ export const FONTS: FontEntry[] = [
       "Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.",
     className: 'font-mondwest',
     cssVar: '--font-sans',
-    fontFamily: "'Mondwest', system-ui, sans-serif",
+    fontFamily: "'Mondwest', Georgia, 'Times New Roman', serif",
     tailwindClass: 'font-sans',
     weights: [
       { value: 400, label: 'Regular' },

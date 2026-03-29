@@ -8,8 +8,14 @@ import type { IconProps as SvgIconProps, IconSet } from './types';
 interface IconProps {
   /** Icon name (filename without .svg extension) */
   name: string;
-  /** Render size in pixels (applies to both width and height) */
+  /**
+   * Render size in pixels (applies to both width and height).
+   * Prefer using the `large` prop instead. When both are provided, `size` takes precedence.
+   * @deprecated Use `large` prop for 24px icons. Omit for default 16px.
+   */
   size?: number;
+  /** When true, renders at 24px (1.5rem) using the 24px icon set. Default: 16px (1rem). */
+  large?: boolean;
   /**
    * Which icon set to load from (16px pixel-art or 24px detailed).
    * Defaults based on size: ≤20 → 16, >20 → 24.
@@ -86,12 +92,14 @@ function renderPlaceholder(size: number, className: string, ariaLabel?: string) 
  */
 function IconComponent({
   name,
-  size = 16,
+  size: sizeProp,
+  large = false,
   iconSet,
   className = '',
   'aria-label': ariaLabel,
   basePath = DEFAULT_ICON_BASE_PATH,
 }: IconProps) {
+  const size = sizeProp ?? (large ? 24 : 16);
   const [LoadedIcon, setLoadedIcon] = useState<LoadedIcon | null>(null);
   const [fetchedSvg, setFetchedSvg] = useState<string | null>(null);
 

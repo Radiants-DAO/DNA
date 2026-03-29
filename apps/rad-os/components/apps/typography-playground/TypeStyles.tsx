@@ -25,12 +25,12 @@ const FONTS_CSS = `/* Font Family Theme Variables
 
 @theme {
   /* Semantic font roles */
-  --font-sans: 'Mondwest', system-ui, sans-serif;
+  --font-sans: 'Mondwest', Georgia, 'Times New Roman', serif;
   --font-heading: 'Joystix Monospace', monospace;
   --font-mono: 'PixelCode', monospace;
 
   /* Named brand aliases (font-mondwest, font-joystix) */
-  --font-mondwest: 'Mondwest', system-ui, sans-serif;
+  --font-mondwest: 'Mondwest', Georgia, 'Times New Roman', serif;
   --font-joystix: 'Joystix Monospace', monospace;
 }`;
 

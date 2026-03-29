@@ -12,7 +12,8 @@ export { ICON_SIZE, type IconSize } from './types';
 // Brand Icons
 // ============================================================================
 
-export function RadMarkIcon({ className = '', size = 65 }: IconProps) {
+export function RadMarkIcon({ className = '', size: sizeProp, large = false }: IconProps) {
+  const size = sizeProp ?? (large ? 24 : 16);
   return (
     <svg
       width={size}
@@ -35,8 +36,8 @@ export function RadMarkIcon({ className = '', size = 65 }: IconProps) {
 // Special non-SVG icons
 // ============================================================================
 
-export function FontAaIcon({ className = '', size = 16 }: IconProps) {
-  const numSize = typeof size === 'string' ? parseFloat(size) || 16 : Number(size);
+export function FontAaIcon({ className = '', size: sizeProp, large = false }: IconProps) {
+  const numSize = sizeProp ? (typeof sizeProp === 'string' ? parseFloat(sizeProp) || 16 : Number(sizeProp)) : (large ? 24 : 16);
   return (
     <span
       className={`font-mondwest font-bold ${className}`}

@@ -11,8 +11,14 @@ import type { SVGProps } from 'react';
 export type IconSet = 16 | 24;
 
 export interface IconProps extends SVGProps<SVGSVGElement> {
-  /** Render size in pixels (applies to both width and height) */
+  /**
+   * Render size in pixels (applies to both width and height).
+   * Prefer using `large` prop instead. When both are provided, `size` takes precedence.
+   * @deprecated Use `large` prop for 24px icons. Omit for default 16px.
+   */
   size?: number | string;
+  /** When true, renders at 24px. Default: 16px. */
+  large?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
