@@ -199,7 +199,7 @@ function SurfaceCard({
         </Badge>
       </div>
 
-      <SurfacePreview scenario={scenario} side={side} />
+      <SurfaceRendered scenario={scenario} surface={surface} side={side} />
 
       <div className="rounded border border-rule bg-page px-2 py-2">
         <div className="mb-1 font-mono text-[10px] uppercase tracking-tight text-mute">
