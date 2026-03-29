@@ -464,6 +464,17 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // Tab Definitions
 // ============================================================================
 
+const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
+  <div className="flex gap-0.5">
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-sm" />
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dynamic-swatch-preview owner:design expires:2027-01-01 issue:DNA-001 */}
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-sm" />
+  </div>
+);
+
 
 // ============================================================================
 // Main Component
@@ -488,12 +499,12 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   }, [windowId]);
 
   const TAB_NAV = [
-    { value: 'logos', label: 'Logos', icon: <RadMarkIcon /> },
-    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" /> },
-    { value: 'fonts', label: 'Type', icon: <FontAaIcon /> },
-    { value: 'components', label: 'UI', icon: <Icon name="outline-box" /> },
-    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" /> },
-    { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
+    { value: 'logos', label: 'Logos', icon: <RadMarkIcon size={16} /> },
+    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" size={16} /> },
+    { value: 'fonts', label: 'Type', icon: <FontAaIcon size={16} /> },
+    { value: 'components', label: 'UI', icon: <Icon name="outline-box" size={16} /> },
+    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" size={16} /> },
+    { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" size={16} /> },
   ] as const;
 
   return (
