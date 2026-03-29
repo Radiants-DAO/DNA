@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RDNA Typography Specimen - Good News Editorial Layout</title>
+
+  <!--
+    Static HTML recreation of GoodNewsApp.tsx — the editorial layout demo
+    that uses @chenglou/pretext for canvas-based text measurement and
+    polygon obstacle avoidance.
+
+    This specimen recreates the RENDERED OUTPUT as static CSS so typography
+    auditors can evaluate the typographic decisions without needing the
+    pretext engine.
+
+    KEY TYPOGRAPHY DECISIONS IN THIS LAYOUT:
+    =========================================
+
+    MASTHEAD:
+      Title "Good News":  Waves Blackletter CPC, ~85px max (containerWidth * 0.107),
+                           weight 400, letter-spacing -0.06em, line-height: normal
+      Subtitle:            Mondwest, 1.17rem (18.72px), letter-spacing -0.06em
+      Byline:              Pixeloid Sans, 0.58rem (9.28px), uppercase
+      Date bar:            Pixeloid Sans, 0.83rem (13.28px), bold 700, uppercase
+
+    BODY TEXT (pretext-rendered):
+      Font:                "16px Mondwest" (hardcoded px, not token)
+      Line-height:         19.2px (hardcoded, = 16 * 1.2)
+      Render method:       Absolutely positioned <div> per line, white-space: pre
+
+    HEADINGS (pretext-rendered, 3 different fonts):
+      Heading 1:           Joystix Monospace, max 27px, scale 0.065 * colWidth
+      Heading 2:           PixelCode bold, max 32px, scale 0.08 * colWidth
+      Heading 3:           Mondwest bold, max 48px, scale 0.12 * colWidth
+      All:                 line-height ratio 1.1-1.2
+
+    DROP CAP:
+      Font:                Waves Blackletter CPC, 64px
+      Line-height:         0.85 multiplier
+      Letter-spacing:      -0.04em
+
+    COLUMN LAYOUT:
+      3-column at >= 768px (24% / 52% / 24%)
+      2-column at >= 640px (equal halves)
+      1-column below 640px
+      Column margin: 16px, gap: 8px per side, rule width: 1px
+
+    FONTS USED (6 total — only 3 are in the token system):
+      IN TOKEN SYSTEM:
+        Mondwest (font-sans)
+        Joystix Monospace (font-heading)
+        PixelCode (font-mono)
+      NOT IN TOKEN SYSTEM:
+        Waves Blackletter CPC (display/decorative — ad-hoc)
+        Pixeloid Sans (caption/metadata — ad-hoc)
+        Waves Tiny CPC (declared in fonts.css but not used here)
+
+    ISSUES FOR AUDITORS TO NOTE:
+      1. Body line-height is 1.2 (19.2/16), NOT the 1.375 from typography.css
+      2. All font sizes are hardcoded px, not rem — doesn't respect user font size preferences
+      3. Heading sizes are container-relative (colWidth * scale) — not token-based
+      4. 6 fonts on one page — loading performance concern
+      5. Masthead title size is viewport-derived (containerWidth * 0.107)
+      6. Byline at 0.58rem = 9.28px — below WCAG minimum (12px/9pt)
+      7. Drop cap at 64px uses a separate font family from body — no token connection
+      8. No max-width/measure control on columns — text reflows based on container
+  -->
+
+  <style>
+    @font-face {
+      font-family: 'Mondwest';
+      src: url('../../packages/radiants/fonts/Mondwest.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Mondwest';
+      src: url('../../packages/radiants/fonts/Mondwest-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Waves Blackletter CPC';
+      src: url('../../packages/radiants/fonts/WavesBlackletterCPC-Base.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Joystix Monospace';
+      src: url('../../packages/radiants/fonts/Joystix.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PixelCode';
+      src: url('../../packages/radiants/fonts/PixelCode.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PixelCode';
+      src: url('../../packages/radiants/fonts/PixelCode-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Pixeloid Sans';
+      src: url('../../packages/radiants/fonts/PixeloidSans.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Pixeloid Sans';
+      src: url('../../packages/radiants/fonts/PixeloidSans-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    /* =================================================================
+       RESET + PAGE
+       ================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      background: oklch(0.9780 0.0295 94.34); /* cream */
+      color: oklch(0.1641 0.0044 84.59);      /* ink */
+    }
+
+    /* =================================================================
+       NEWSPAPER CONTAINER
+       Simulates the GoodNewsApp at 790px container width (3-column)
+       ================================================================= */
+    .newspaper {
+      width: 790px;
+      max-width: 100vw;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    /* =================================================================
+       MASTHEAD
+       ================================================================= */
+    .masthead {
+      padding: 20px 16px 0;
+    }
+
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      column-gap: 16px;
+      align-items: end;
+    }
+
+    .masthead-title {
+      grid-column: 1 / span 2;
+      grid-row: 1;
+      text-align: center;
+      font-family: 'Waves Blackletter CPC', serif;
+      /* At 790px: Math.min(790 * 0.107, 85) = 84.53px */
+      font-size: 84.53px;
+      font-weight: 400;
+      letter-spacing: -0.06em;
+      line-height: normal;
+    }
+
+    .masthead-right {
+      grid-column: 3;
+      grid-row: 1;
+      text-align: right;
+    }
+
+    .masthead-left {
+      grid-column: 1;
+      grid-row: 2;
+      text-align: left;
+    }
+
+    .masthead-subtitle {
+      font-family: 'Mondwest', serif;
+      font-size: 1.17rem;        /* 18.72px */
+      letter-spacing: -0.06em;
+      line-height: normal;
+    }
+
+    .masthead-byline {
+      font-family: 'Pixeloid Sans', sans-serif;
+      font-size: 0.58rem;        /* 9.28px — BELOW WCAG MINIMUM */
+      line-height: normal;
+      text-transform: uppercase;
+    }
+
+    .masthead-rule {
+      height: 1px;
+      background: oklch(0.1641 0.0044 84.59);
+      margin-top: 6px;
+    }
+
+    .masthead-datebar {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Pixeloid Sans', sans-serif;
+      font-size: 0.83rem;        /* 13.28px */
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 0;
+      line-height: normal;
+    }
+
+    .masthead-rule-bottom {
+      height: 1px;
+      background: oklch(0.1641 0.0044 84.59);
+    }
+
+    /* =================================================================
+       COLUMN LAYOUT (3-column at 790px)
+       Total avail = 790 - 32 (margins) - 2 (rules) = 756px
+       Left: 24% = 181px - 8px gap = 173px
+       Center: 52% = 393px - 16px gap = 377px
+       Right: 24% = 181px - 8px gap = 173px
+       ================================================================= */
+    .columns {
+      display: grid;
+      grid-template-columns: 173px 377px 173px;
+      column-gap: 0;
+      padding: 8px 16px 32px;
+      position: relative;
+    }
+
+    .column {
+      padding: 0 8px;
+      position: relative;
+    }
+
+    /* Column rules (vertical dividers) */
+    .column:not(:first-child)::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: oklch(0.1641 0.0044 84.59);
+    }
+
+    /* =================================================================
+       BODY TEXT — as rendered by pretext
+       16px Mondwest, line-height 19.2px (1.2 ratio)
+       letter-spacing: not set (pretext uses canvas default)
+       ================================================================= */
+    .body-text {
+      font-family: 'Mondwest', serif;
+      font-size: 16px;            /* hardcoded px, not rem */
+      font-weight: 400;
+      line-height: 19.2px;        /* 1.2 ratio — tighter than typography.css (1.375) */
+      /* No letter-spacing — pretext measures with canvas defaults */
+    }
+
+    .body-text p {
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      margin-bottom: 19.2px;      /* one line-height gap between paragraphs */
+    }
+
+    /* =================================================================
+       DROP CAP
+       64px Waves Blackletter CPC, line-height 0.85
+       ================================================================= */
+    .drop-cap {
+      float: left;
+      font-family: 'Waves Blackletter CPC', serif;
+      font-size: 64px;           /* hardcoded px */
+      font-weight: 400;
+      line-height: 0.85;         /* tighter than any token */
+      letter-spacing: -0.04em;
+      margin-right: 8px;
+      /* Drop cap height: ceil(64 * 0.85) = 55px ≈ 2.86 body lines */
+    }
+
+    /* =================================================================
+       EDITORIAL HEADINGS — 3 different treatments
+       Each heading uses a different font family + size scaling
+       ================================================================= */
+
+    /* Heading 1: "RadOS Coming Soon"
+       Joystix Monospace, max 27px, scale 0.065 * colWidth
+       At 173px col: min(173 * 0.065, 27) = 11px
+       At 377px col: min(377 * 0.065, 27) = 25px
+       line-height ratio: 1.2 */
+    .editorial-heading-1 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 25px;           /* center column calc */
+      font-weight: 400;
+      line-height: 1.2;
+      text-align: center;
+      margin: 19.2px 0;          /* body line-height gap */
+    }
+
+    /* Heading 2: "RISE IN FRUSTRATION..."
+       PixelCode bold, max 32px, scale 0.08 * colWidth
+       At 173px col: min(173 * 0.08, 32) = 14px
+       At 377px col: min(377 * 0.08, 32) = 30px
+       line-height ratio: 1.2 */
+    .editorial-heading-2 {
+      font-family: 'PixelCode', monospace;
+      font-size: 30px;           /* center column calc */
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      text-transform: uppercase;
+      margin: 19.2px 0;
+    }
+
+    /* Heading 3: "The Battlefield Widens..."
+       Mondwest bold, max 48px, scale 0.12 * colWidth
+       At 173px col: min(173 * 0.12, 48) = 21px
+       At 377px col: min(377 * 0.12, 48) = 45px
+       line-height ratio: 1.1 */
+    .editorial-heading-3 {
+      font-family: 'Mondwest', serif;
+      font-size: 45px;           /* center column calc */
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: left;
+      margin: 19.2px 0;
+    }
+
+    /* =================================================================
+       HORIZONTAL RULES (between editorial sections)
+       ================================================================= */
+    .editorial-rule {
+      height: 1px;
+      background: oklch(0.1641 0.0044 84.59);
+      margin: 16px 0;
+    }
+
+    /* =================================================================
+       HERO IMAGE PLACEHOLDER
+       Aspect ratio derived from 357/258 ≈ 1.384
+       ================================================================= */
+    .hero-placeholder {
+      width: 100%;
+      aspect-ratio: 357 / 258;
+      background: oklch(0.1641 0.0044 84.59 / 0.05);
+      border: 1px solid oklch(0.1641 0.0044 84.59);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    .hero-placeholder span {
+      font-family: 'PixelCode', monospace;
+      font-size: 10px;
+      color: oklch(0.1641 0.0044 84.59 / 0.3);
+    }
+
+    /* =================================================================
+       ANNOTATION MARKERS (for auditor reference)
+       ================================================================= */
+    .audit-note {
+      font-family: 'PixelCode', monospace;
+      font-size: 9px;
+      color: oklch(0.7429 0.1568 21.43); /* sun-red */
+      background: oklch(0.7429 0.1568 21.43 / 0.08);
+      padding: 2px 6px;
+      border-radius: 2px;
+      display: inline-block;
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="newspaper">
+
+    <!-- ============================================================
+         MASTHEAD
+         6 font-size declarations, 3 font families, 2 are ad-hoc
+         ============================================================ -->
+    <div class="masthead">
+      <div class="masthead-grid">
+
+        <!-- Title: Waves Blackletter CPC at 84.53px -->
+        <h1 class="masthead-title">Good News</h1>
+
+        <!-- Right col: subtitle + byline -->
+        <div class="masthead-right">
+          <p class="masthead-subtitle">$2,000,000 In Pages Burnt</p>
+          <p class="masthead-byline">More on <strong style="font-weight: 700;">p6</strong></p>
+        </div>
+
+        <!-- Left col: subtitle + byline -->
+        <div class="masthead-left">
+          <p class="masthead-subtitle" style="font-weight: 700;">Largest Daily Founders Workshop</p>
+          <p class="masthead-byline">Solana Mobile X Radiants</p>
+        </div>
+
+      </div>
+
+      <div class="masthead-rule"></div>
+      <div class="masthead-datebar">
+        <span>Monday, November 28th, 2026</span>
+        <span>$1.50 per issue</span>
+      </div>
+      <div class="masthead-rule-bottom"></div>
+    </div>
+
+    <!-- ============================================================
+         3-COLUMN EDITORIAL BODY
+         ============================================================ -->
+    <div class="columns">
+
+      <!-- COLUMN 1 (narrow left, 173px) -->
+      <div class="column body-text">
+        <div class="audit-note">COL 1: 173px = ~10.8 chars/line at 16px Mondwest</div>
+
+        <!-- Drop cap -->
+        <p><span class="drop-cap">G</span>orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi.</p>
+
+        <p>Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum.</p>
+
+        <!-- Hero image -->
+        <div class="hero-placeholder">
+          <span>[hero-image.png 357x258]</span>
+        </div>
+
+        <!-- Heading 1: Joystix at 11px (173 * 0.065) -->
+        <h2 class="editorial-heading-1" style="font-size: 11px; line-height: calc(11px * 1.2);">RadOS Coming Soon</h2>
+        <div class="audit-note">Heading at 11px in narrow column — below body text size</div>
+      </div>
+
+      <!-- COLUMN 2 (wide center, 377px) -->
+      <div class="column body-text">
+        <div class="audit-note">COL 2: 377px = ~23.5 chars/line at 16px Mondwest</div>
+
+        <p>Pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia.</p>
+
+        <div class="editorial-rule"></div>
+
+        <!-- Heading 2: PixelCode bold at 30px (377 * 0.08) -->
+        <h2 class="editorial-heading-2" style="font-size: 30px; line-height: calc(30px * 1.2);">RISE IN FRUSTRATION ACROSS THE SOLANA ECOSYSTEM</h2>
+
+        <div class="editorial-rule"></div>
+
+        <p>Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi.</p>
+
+        <div class="editorial-rule"></div>
+
+        <!-- Heading 3: Mondwest bold at 45px (377 * 0.12) -->
+        <h2 class="editorial-heading-3" style="font-size: 45px; line-height: calc(45px * 1.1);">The Battlefield Widens for RadOS Agent Seats</h2>
+      </div>
+
+      <!-- COLUMN 3 (narrow right, 173px) -->
+      <div class="column body-text">
+        <div class="audit-note">COL 3: 173px = ~10.8 chars/line at 16px Mondwest</div>
+
+        <p>Nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique.</p>
+
+        <p>Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi.</p>
+
+        <p>Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       TYPOGRAPHY SUMMARY TABLE (for auditor reference)
+       ============================================================ -->
+  <div style="max-width: 790px; margin: 3rem auto; padding: 0 16px;">
+    <table style="width: 100%; border-collapse: collapse; font-family: 'PixelCode', monospace; font-size: 11px;">
+      <thead>
+        <tr style="border-bottom: 2px solid oklch(0.1641 0.0044 84.59);">
+          <th style="text-align: left; padding: 4px 8px;">Element</th>
+          <th style="text-align: left; padding: 4px 8px;">Font</th>
+          <th style="text-align: right; padding: 4px 8px;">Size</th>
+          <th style="text-align: right; padding: 4px 8px;">Weight</th>
+          <th style="text-align: right; padding: 4px 8px;">Line-height</th>
+          <th style="text-align: left; padding: 4px 8px;">Token?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Masthead title</td>
+          <td style="padding: 4px 8px;">Waves Blackletter CPC</td>
+          <td style="text-align: right; padding: 4px 8px;">84.53px</td>
+          <td style="text-align: right; padding: 4px 8px;">400</td>
+          <td style="text-align: right; padding: 4px 8px;">normal</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Subtitle</td>
+          <td style="padding: 4px 8px;">Mondwest</td>
+          <td style="text-align: right; padding: 4px 8px;">18.72px</td>
+          <td style="text-align: right; padding: 4px 8px;">400/700</td>
+          <td style="text-align: right; padding: 4px 8px;">normal</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (1.17rem)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Byline</td>
+          <td style="padding: 4px 8px;">Pixeloid Sans</td>
+          <td style="text-align: right; padding: 4px 8px;">9.28px</td>
+          <td style="text-align: right; padding: 4px 8px;">400</td>
+          <td style="text-align: right; padding: 4px 8px;">normal</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (0.58rem)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Date bar</td>
+          <td style="padding: 4px 8px;">Pixeloid Sans</td>
+          <td style="text-align: right; padding: 4px 8px;">13.28px</td>
+          <td style="text-align: right; padding: 4px 8px;">700</td>
+          <td style="text-align: right; padding: 4px 8px;">normal</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (0.83rem)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Body text</td>
+          <td style="padding: 4px 8px;">Mondwest</td>
+          <td style="text-align: right; padding: 4px 8px;">16px</td>
+          <td style="text-align: right; padding: 4px 8px;">400</td>
+          <td style="text-align: right; padding: 4px 8px;">19.2px (1.2)</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">PARTIAL (size yes, lh no)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Drop cap</td>
+          <td style="padding: 4px 8px;">Waves Blackletter CPC</td>
+          <td style="text-align: right; padding: 4px 8px;">64px</td>
+          <td style="text-align: right; padding: 4px 8px;">400</td>
+          <td style="text-align: right; padding: 4px 8px;">0.85</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Editorial H1</td>
+          <td style="padding: 4px 8px;">Joystix Monospace</td>
+          <td style="text-align: right; padding: 4px 8px;">11-27px</td>
+          <td style="text-align: right; padding: 4px 8px;">400</td>
+          <td style="text-align: right; padding: 4px 8px;">1.2</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (container-relative)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.15);">
+          <td style="padding: 4px 8px;">Editorial H2</td>
+          <td style="padding: 4px 8px;">PixelCode</td>
+          <td style="text-align: right; padding: 4px 8px;">14-32px</td>
+          <td style="text-align: right; padding: 4px 8px;">700</td>
+          <td style="text-align: right; padding: 4px 8px;">1.2</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (container-relative)</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px;">Editorial H3</td>
+          <td style="padding: 4px 8px;">Mondwest</td>
+          <td style="text-align: right; padding: 4px 8px;">21-48px</td>
+          <td style="text-align: right; padding: 4px 8px;">700</td>
+          <td style="text-align: right; padding: 4px 8px;">1.1</td>
+          <td style="padding: 4px 8px; color: oklch(0.7429 0.1568 21.43);">NO (container-relative)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
