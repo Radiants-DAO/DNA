@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'Waves Blackletter CPC';
-  src: url('./fonts/WavesBlackletterCPC.woff2') format('woff2');
+  src: url('./fonts/WavesBlackletterCPC-Base.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: optional;
@@ -19,7 +19,7 @@
 
 @font-face {
   font-family: 'Waves Tiny CPC';
-  src: url('./fonts/WavesTinyCPC.woff2') format('woff2');
+  src: url('./fonts/WavesTinyCPC-Extended.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: optional;
