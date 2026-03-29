@@ -380,6 +380,18 @@
         "3xl": {
           "$type": "fontSize",
           "$value": "2rem"
+        },
+        "4xl": {
+          "$type": "fontSize",
+          "$value": "2.5rem"
+        },
+        "5xl": {
+          "$type": "fontSize",
+          "$value": "3.25rem"
+        },
+        "display": {
+          "$type": "fontSize",
+          "$value": "4rem"
         }
       }
     }
