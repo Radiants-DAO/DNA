@@ -11,23 +11,28 @@
      ============================================ */
 
   h1 {
-    @apply text-4xl font-heading font-bold leading-none tracking-tight text-main;
+    @apply font-heading font-bold leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-4xl);
   }
 
   h2 {
-    @apply text-3xl font-heading font-normal leading-none tracking-tight text-main;
+    @apply font-heading font-normal leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-3xl);
   }
 
   h3 {
-    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-main;
+    @apply font-heading font-semibold leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-2xl);
   }
 
   h4 {
-    @apply text-xl font-heading font-medium leading-none tracking-tight text-main;
+    @apply font-heading font-medium leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-xl);
   }
 
   h5 {
-    @apply text-lg font-heading font-medium leading-none tracking-tight text-main;
+    @apply font-heading font-medium leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-lg);
   }
 
   h6 {

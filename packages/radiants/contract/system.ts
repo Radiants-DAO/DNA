@@ -134,7 +134,9 @@ export const radiantsSystemContract = {
   typography: {
     validSizes: [
       "text-xs", "text-sm", "text-base", "text-lg",
-      "text-xl", "text-2xl", "text-3xl",
+      "text-xl", "text-2xl", "text-3xl", "text-4xl", "text-5xl",
+      "text-fluid-sm", "text-fluid-base", "text-fluid-lg",
+      "text-fluid-xl", "text-fluid-2xl", "text-fluid-3xl", "text-fluid-4xl",
     ],
     validWeights: [
       "font-normal", "font-medium", "font-semibold", "font-bold",

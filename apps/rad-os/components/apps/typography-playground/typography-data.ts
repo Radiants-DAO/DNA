@@ -88,13 +88,15 @@ export const FONT_MAP: Record<FontKey, FontEntry> = {
 };
 
 export const TYPE_SCALE = [
-  { token: '--font-size-3xl', label: '3XL', rem: '2rem', px: 32 },
-  { token: '--font-size-2xl', label: '2XL', rem: '1.75rem', px: 28 },
-  { token: '--font-size-xl', label: 'XL', rem: '1.5rem', px: 24 },
-  { token: '--font-size-lg', label: 'LG', rem: '1.25rem', px: 20 },
+  { token: '--font-size-5xl', label: '5XL', rem: '5.61rem', px: 90 },
+  { token: '--font-size-4xl', label: '4XL', rem: '4.209rem', px: 67 },
+  { token: '--font-size-3xl', label: '3XL', rem: '3.157rem', px: 50 },
+  { token: '--font-size-2xl', label: '2XL', rem: '2.369rem', px: 38 },
+  { token: '--font-size-xl', label: 'XL', rem: '1.777rem', px: 28 },
+  { token: '--font-size-lg', label: 'LG', rem: '1.333rem', px: 21 },
   { token: '--font-size-base', label: 'Base', rem: '1rem', px: 16 },
   { token: '--font-size-sm', label: 'SM', rem: '0.75rem', px: 12 },
-  { token: '--font-size-xs', label: 'XS', rem: '0.5rem', px: 8 },
+  { token: '--font-size-xs', label: 'XS', rem: '0.625rem', px: 10 },
 ] as const;
 
 export const ELEMENT_STYLES = [

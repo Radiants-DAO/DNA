@@ -9,16 +9,34 @@ import { Tooltip } from '@rdna/radiants/components/core';
 
 const TOKENS_CSS = `/* ============================================
    TYPOGRAPHY SCALE
-   Font sizes for the pixel-art aesthetic
+   Perfect fourth (1.333) from 16px base.
+   xs/sm are fixed for UI legibility.
+   base -> 5xl follow the ratio.
    ============================================ */
 
---font-size-xs: 0.625rem;    /* 10px - small labels */
---font-size-sm: 0.75rem;     /* 12px - buttons, small UI */
---font-size-base: 1rem;      /* 16px - body text (at max root) */
---font-size-lg: 1.25rem;     /* 20px - large body */
---font-size-xl: 1.5rem;      /* 24px - headings */
---font-size-2xl: 1.75rem;    /* 28px - headings */
---font-size-3xl: 2rem;       /* 32px - display */`;
+--font-size-xs: 0.625rem;     /*  10px - fixed: small labels */
+--font-size-sm: 0.75rem;      /*  12px - fixed: buttons, small UI */
+--font-size-base: 1rem;       /*  16px - base */
+--font-size-lg: 1.333rem;     /* ~21px - base x 1.333 */
+--font-size-xl: 1.777rem;     /* ~28px - base x 1.333^2 */
+--font-size-2xl: 2.369rem;    /* ~38px - base x 1.333^3 */
+--font-size-3xl: 3.157rem;    /* ~50px - base x 1.333^4 */
+--font-size-4xl: 4.209rem;    /* ~67px - base x 1.333^5 */
+--font-size-5xl: 5.61rem;     /* ~90px - base x 1.333^6 */
+--font-size-display: 5.61rem; /* alias: same as 5xl */
+
+/* ============================================
+   FLUID TYPOGRAPHY (container-query based)
+   Uses cqi units — scales with AppWindow width.
+   ============================================ */
+
+--font-size-fluid-sm: clamp(0.75rem, 0.7rem + 0.25cqi, 0.875rem);
+--font-size-fluid-base: clamp(0.875rem, 0.8rem + 0.5cqi, 1.125rem);
+--font-size-fluid-lg: clamp(1rem, 0.9rem + 0.75cqi, 1.5rem);
+--font-size-fluid-xl: clamp(1.25rem, 1rem + 1.25cqi, 2rem);
+--font-size-fluid-2xl: clamp(1.5rem, 1.2rem + 1.75cqi, 2.5rem);
+--font-size-fluid-3xl: clamp(1.75rem, 1.4rem + 2.5cqi, 3.5rem);
+--font-size-fluid-4xl: clamp(2rem, 1.5rem + 3.5cqi, 4.5rem);`;
 
 const FONTS_CSS = `/* Font Family Theme Variables
    ------------------------------------------- */
@@ -38,26 +56,32 @@ const TYPOGRAPHY_CSS = `@layer base {
   /* ============================================
      HEADINGS
      All headings use font-heading (Joystix)
+     h1-h5 use fluid tokens (scale with container width)
      ============================================ */
 
   h1 {
-    @apply text-4xl font-heading font-bold leading-none tracking-tight text-main;
+    @apply font-heading font-bold leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-4xl);
   }
 
   h2 {
-    @apply text-3xl font-heading font-normal leading-none tracking-tight text-main;
+    @apply font-heading font-normal leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-3xl);
   }
 
   h3 {
-    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-main;
+    @apply font-heading font-semibold leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-2xl);
   }
 
   h4 {
-    @apply text-xl font-heading font-medium leading-none tracking-tight text-main;
+    @apply font-heading font-medium leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-xl);
   }
 
   h5 {
-    @apply text-lg font-heading font-medium leading-none tracking-tight text-main;
+    @apply font-heading font-medium leading-none tracking-tight text-main;
+    font-size: var(--font-size-fluid-lg);
   }
 
   h6 {
