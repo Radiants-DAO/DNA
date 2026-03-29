@@ -114,10 +114,8 @@ export function EditorialLayout() {
 
         {/* ── Title — Blackletter (The Ceremony) ── */}
         <header className="border-b-2 border-main pb-4">
-          <h1
-            className="text-main leading-tight"
-            style={{ fontFamily: "'Waves Blackletter CPC', serif", fontSize: '2.5rem' }}
-          >
+          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:editorial-specimen-display-size owner:design-system expires:2026-12-31 issue:DNA-001 */}
+          <h1 className="font-display text-main leading-tight" style={{ fontSize: 'var(--font-size-4xl)' }}>
             First Things First
           </h1>
           <p className="font-heading text-sm text-sub uppercase tracking-tight mt-2">
@@ -128,16 +126,10 @@ export function EditorialLayout() {
 
         {/* ── Dateline — Pixeloid (The Attribution) ── */}
         <div className="flex items-center justify-between border-b border-line pb-2">
-          <span
-            className="text-xs text-mute uppercase tracking-wide"
-            style={{ fontFamily: "'Pixeloid Sans', sans-serif" }}
-          >
+          <span className="font-caption text-xs text-mute uppercase tracking-wide">
             Published 1964 — London, England
           </span>
-          <span
-            className="text-xs text-mute"
-            style={{ fontFamily: "'Pixeloid Sans', sans-serif" }}
-          >
+          <span className="font-caption text-xs text-mute">
             Ken Garland et al.
           </span>
         </div>
@@ -146,12 +138,9 @@ export function EditorialLayout() {
         {/* ── Drop cap + body — Blackletter cap, Mondwest body ── */}
         <div className="relative">
           <span
-            className="float-left mr-2 text-main leading-none"
-            style={{
-              fontFamily: "'Waves Blackletter CPC', serif",
-              fontSize: '4rem',
-              lineHeight: 0.85,
-            }}
+            className="float-left mr-2 font-display text-main leading-none"
+            // eslint-disable-next-line rdna/no-hardcoded-typography,rdna/no-raw-line-height -- reason:drop-cap-requires-precise-sizing owner:design-system expires:2026-12-31 issue:DNA-001
+            style={{ fontSize: '4rem', lineHeight: 0.85 }}
           >
             W
           </span>
@@ -176,10 +165,7 @@ export function EditorialLayout() {
 
         {/* ── Emphasized passage — PixelCode (The Precision) ── */}
         <blockquote className="border-l-2 border-accent pl-4 py-2">
-          <p
-            className="font-mono text-sm text-main leading-relaxed"
-            style={{ fontWeight: 700 }}
-          >
+          <p className="font-mono text-sm text-main leading-relaxed font-bold">
             {MANIFESTO_EMPHASIS}
           </p>
           <FontRole font="PixelCode Bold" role="The Precision — the call to action, typewriter urgency" />
@@ -208,19 +194,12 @@ export function EditorialLayout() {
 
         {/* ── Signatories — Pixeloid (The Attribution) ── */}
         <div className="border-t-2 border-main pt-4">
-          <span
-            className="text-xs text-mute uppercase tracking-wide block mb-3"
-            style={{ fontFamily: "'Pixeloid Sans', sans-serif" }}
-          >
+          <span className="font-caption text-xs text-mute uppercase tracking-wide block mb-3">
             Signed:
           </span>
           <div className="flex flex-wrap gap-x-3 gap-y-1">
             {SIGNATORIES.map((name) => (
-              <span
-                key={name}
-                className="text-xs text-sub"
-                style={{ fontFamily: "'Pixeloid Sans', sans-serif" }}
-              >
+              <span key={name} className="font-caption text-xs text-sub">
                 {name}
               </span>
             ))}
@@ -230,16 +209,12 @@ export function EditorialLayout() {
 
         {/* ── Colophon — Waves Tiny CPC (The Whisper) ── */}
         <div className="border-t border-line pt-4 pb-2 text-center">
-          <p
-            className="text-mute leading-relaxed tracking-wide"
-            style={{ fontFamily: "'Waves Tiny CPC', serif", fontSize: '0.625rem' }}
-          >
+          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:colophon-micro-text-below-scale owner:design-system expires:2026-12-31 issue:DNA-001 */}
+          <p className="font-tiny text-xs text-mute leading-relaxed tracking-wide">
             Set in Radiants — Waves Blackletter CPC · Joystix Monospace · Mondwest · PixelCode · Pixeloid Sans · Waves Tiny CPC
           </p>
-          <p
-            className="text-mute/40 mt-1 tracking-wider"
-            style={{ fontFamily: "'Waves Tiny CPC', serif", fontSize: '0.5rem' }}
-          >
+          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:colophon-micro-text-below-scale owner:design-system expires:2026-12-31 issue:DNA-001 */}
+          <p className="font-tiny text-xs text-mute/40 mt-1 tracking-wider">
             RDNA Design System · Six voices, one vocabulary
           </p>
           <FontRole font="Waves Tiny CPC" role="The Whisper — colophon, text as texture" />

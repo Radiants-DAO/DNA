@@ -1,36 +1,48 @@
-## Session Status — 2026-03-29 03:15
+## Session Status — 2026-03-29 (continued)
 
-**Plan:** No formal plan file — typography audit remediation (ad-hoc from 4-auditor findings)
+**Plan:** Pretext type scale + editorial typography
 **Branch:** main
 
 ### Completed
-- [x] 4-auditor typography audit: scale, principles, web, structured 89-rule (specimens in tests/typography-audit/)
-- [x] Phase 1: typography.css rebuilt — h1/h2→Mondwest, no synthetic weights, leading-tight, tracking fix, strong/em in font-sans, code→text-sm, paragraph margin, font-synthesis:none, text-wrap (commit: 32cf94a4, d7c163ae)
-- [x] Phase 2: token scale expanded — 4xl/5xl/display sizes, line-height tokens, letter-spacing tokens, font-display/font-caption roles (commit: 32cf94a4)
-- [x] Phase 3: GoodNews editorial — rem-derived sizing, body lh 1.375, heading clamps, byline WCAG, masthead font vars (commit: e1ce6e4b)
-- [x] Phase 4: font lazy-loading split, 12 unused PixelCode files removed (377KB), rdna/no-raw-line-height + rdna/no-raw-font-family rules (commit: dcaf6aa5)
-- [x] Dark mode: PixelCode Light for dark code, Mondwest fallback→Georgia, link color WCAG AA ~6:1 (commit: c9cdf41f)
-- [x] Fluid type: perfect-fourth scale (1.333), clamp()+cqi tokens, @container on CoreAppWindow (commit: 0e4c915e)
-- [x] Hotfix: restore AppWindow wrapper + BrandAssetsApp tabs after agent misfire (commit: a32e0fc7, c5462848)
+- [x] 4-auditor typography audit + phases 1–7 (prior session)
+- [x] Pretext type scale module (`packages/radiants/patterns/pretext-type-scale.ts`)
+- [x] GoodNews headings rewired to fluid type tiers (fixes funky Battlefield heading)
+- [x] Editorial fonts added to typography-data.ts (Blackletter, Tiny CPC, Pixeloid Sans)
+- [x] Font rationale entries for all 6 fonts in type-manual-copy.ts
+- [x] `--font-tiny` / `--font-waves-tiny` tokens added to fonts.css
+- [x] SpecimenLayout split into Core Fonts (01) + Editorial Fonts (02) sections
+- [x] "Editorial" sub-tab added to typography playground
+- [x] First Things First manifesto rendered with Radiants aesthetics (all 6 fonts showcased)
+- [x] RDNA lint clean, type-check clean
 
 ### In Progress
 - [ ] Nothing active
 
-### Remaining (3 tasks — content layout architecture)
-- [ ] Pretext font config bridge — typed layer deriving pretext px values from RDNA tokens
-- [ ] Layout recipe abstraction — extract GoodNews into a named template (recipe ID for CMS)
+### Remaining
+- [ ] Layout recipe abstraction — extract GoodNews into a named template
 - [ ] Additional content layouts — broadsheet, magazine, single-column longform
+- [ ] ManifestoApp editorial treatment (First Things First style)
 
 ### Next Action
-> Build the pretext font config bridge: a typed TS module that derives pretext's px font strings from the new RDNA token values (font-size, line-height, font-family tokens).
+> Visual QA: open BrandAssetsApp → Type tab → verify Editorial sub-tab renders the manifesto with all 6 fonts. Check GoodNews heading resize behavior.
 
 ### What to Test
-Based on files changed this session:
-- [ ] Open Design Codex (BrandAssetsApp) — tabs must be visible and switchable
-- [ ] Open GoodNews — verify body text, headings, drop cap, masthead render correctly
-- [ ] Resize an AppWindow narrow/wide — fluid headings should scale smoothly
-- [ ] Toggle dark mode — code blocks should use lighter weight, links should be sky-blue
-- [ ] Run `pnpm lint:design-system` — new rules should fire on raw line-height/font-family
+- [ ] BrandAssetsApp → Type → Editorial tab: manifesto renders with drop cap, all 6 fonts visible
+- [ ] BrandAssetsApp → Type → Type Manual: 6 font cards (3 core + 3 editorial)
+- [ ] GoodNews: resize window — "Battlefield Widens" heading should scale smoothly without funky jumps
+- [ ] Dark mode: editorial fonts render correctly in both modes
+- [ ] Run `pnpm lint:design-system` — no new errors
+
+### Files Changed This Session
+- `packages/radiants/patterns/pretext-type-scale.ts` (new)
+- `packages/radiants/fonts.css` (added --font-tiny, --font-waves-tiny)
+- `apps/rad-os/components/apps/GoodNewsApp.tsx` (fluid tier headings)
+- `apps/rad-os/components/apps/typography-playground/typography-data.ts` (6 fonts, categories)
+- `apps/rad-os/components/apps/typography-playground/type-manual-copy.ts` (editorial rationale)
+- `apps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx` (editorial tab)
+- `apps/rad-os/components/apps/typography-playground/SubTabNav.tsx` (editorial tab)
+- `apps/rad-os/components/apps/typography-playground/layouts/EditorialLayout.tsx` (new)
+- `apps/rad-os/components/apps/typography-playground/layouts/SpecimenLayout.tsx` (core/editorial split)
 
 ### Team Status
 No active agents

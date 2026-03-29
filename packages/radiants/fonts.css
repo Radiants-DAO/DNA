@@ -23,6 +23,7 @@
   /* Semantic font roles — extended */
   --font-display: 'Waves Blackletter CPC', serif;
   --font-caption: 'Pixeloid Sans', sans-serif;
+  --font-tiny: 'Waves Tiny CPC', serif;
 
   /* Named brand aliases */
   --font-mondwest: 'Mondwest', Georgia, 'Times New Roman', serif;
@@ -30,4 +31,5 @@
   --font-pixel-code: 'PixelCode', monospace;
   --font-blackletter: 'Waves Blackletter CPC', serif;
   --font-pixeloid: 'Pixeloid Sans', sans-serif;
+  --font-waves-tiny: 'Waves Tiny CPC', serif;
 }
