@@ -11,7 +11,7 @@
       "#fcc383": "sunset-fuzz",
       "#ff6b63": "sun-red",
       "#cef5ca": "mint",
-      "#ffffff": "pure-white",
+      "#fffcf3": "pure-white",
       "#22c55e": "success-mint"
     },
     "hexToSemantic": {
@@ -35,7 +35,7 @@
         "bg": "success",
         "text": "success"
       },
-      "#ffffff": {
+      "#fffcf3": {
         "bg": "card"
       },
       "#22c55e": {
@@ -71,7 +71,7 @@
         "bg": "status-success",
         "text": "status-success"
       },
-      "oklch(1.0000 0.0000 0)": {
+      "oklch(0.9909 0.0123 91.51)": {
         "bg": "card"
       },
       "oklch(0.7227 0.1920 149.58)": {
@@ -338,6 +338,28 @@
       "font-medium",
       "font-semibold",
       "font-bold"
+    ],
+    "validLeading": [
+      "leading-tight",
+      "leading-heading",
+      "leading-snug",
+      "leading-normal",
+      "leading-relaxed",
+      "leading-none"
+    ],
+    "validTracking": [
+      "tracking-tight",
+      "tracking-normal",
+      "tracking-wide"
+    ],
+    "validFontFamilies": [
+      "font-sans",
+      "font-heading",
+      "font-mono",
+      "font-display",
+      "font-caption",
+      "font-mondwest",
+      "font-joystix"
     ]
   },
   "textLikeInputTypes": [

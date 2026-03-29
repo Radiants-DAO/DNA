@@ -3,59 +3,129 @@
   "color": {
     "cream": {
       "$type": "color",
-      "$value": "oklch(0.9780 0.0295 94.34)"
+      "$value": "oklch(0.9780 0.0295 94.34)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#fef8e2"
+        }
+      }
     },
     "ink": {
       "$type": "color",
-      "$value": "oklch(0.1641 0.0044 84.59)"
+      "$value": "oklch(0.1641 0.0044 84.59)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#0f0e0c"
+        }
+      }
     },
     "pure-black": {
       "$type": "color",
-      "$value": "oklch(0.0000 0.0000 0)"
+      "$value": "oklch(0.0000 0.0000 0)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#000000"
+        }
+      }
     },
     "sun-yellow": {
       "$type": "color",
-      "$value": "oklch(0.9126 0.1170 93.68)"
+      "$value": "oklch(0.9126 0.1170 93.68)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#fce184"
+        }
+      }
     },
     "sky-blue": {
       "$type": "color",
-      "$value": "oklch(0.7701 0.0527 236.81)"
+      "$value": "oklch(0.7701 0.0527 236.81)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#95bad2"
+        }
+      }
     },
     "sky-blue-dark": {
       "$type": "color",
-      "$value": "oklch(0.47 0.08 237)"
+      "$value": "oklch(0.47 0.08 237)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#276182"
+        }
+      }
     },
     "sunset-fuzz": {
       "$type": "color",
-      "$value": "oklch(0.8546 0.1039 68.93)"
+      "$value": "oklch(0.8546 0.1039 68.93)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#fcc383"
+        }
+      }
     },
     "sun-red": {
       "$type": "color",
-      "$value": "oklch(0.7429 0.1568 21.43)"
+      "$value": "oklch(0.7429 0.1568 21.43)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#ff7f7f"
+        }
+      }
     },
     "mint": {
       "$type": "color",
-      "$value": "oklch(0.9312 0.0702 142.51)"
+      "$value": "oklch(0.9312 0.0702 142.51)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#cef5ca"
+        }
+      }
     },
     "pure-white": {
       "$type": "color",
-      "$value": "oklch(1.0000 0.0000 0)"
+      "$value": "oklch(1.0000 0.0000 0)",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#ffffff"
+        }
+      }
     },
     "success-mint": {
       "$type": "color",
-      "$value": "{color.mint}"
+      "$value": "{color.mint}",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#cef5ca"
+        }
+      }
     },
     "warning-yellow": {
       "$type": "color",
-      "$value": "{color.sun-yellow}"
+      "$value": "{color.sun-yellow}",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#fce184"
+        }
+      }
     },
     "error-red": {
       "$type": "color",
-      "$value": "{color.sun-red}"
+      "$value": "{color.sun-red}",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#ff7f7f"
+        }
+      }
     },
     "focus-state": {
       "$type": "color",
-      "$value": "{color.sky-blue}"
+      "$value": "{color.sky-blue}",
+      "$extensions": {
+        "rdna": {
+          "srgb": "#95bad2"
+        }
+      }
     }
   }
 }

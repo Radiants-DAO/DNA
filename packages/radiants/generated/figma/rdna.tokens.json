@@ -48,6 +48,15 @@
             }
           }
         },
+        "sky-blue-dark": {
+          "$type": "color",
+          "$value": "oklch(0.47 0.08 237)",
+          "$extensions": {
+            "rdna": {
+              "srgb": "#276182"
+            }
+          }
+        },
         "sunset-fuzz": {
           "$type": "color",
           "$value": "oklch(0.8546 0.1039 68.93)",
@@ -77,10 +86,10 @@
         },
         "pure-white": {
           "$type": "color",
-          "$value": "oklch(0.9909 0.0123 91.51)",
+          "$value": "oklch(1.0000 0.0000 0)",
           "$extensions": {
             "rdna": {
-              "srgb": "#fffcf3"
+              "srgb": "#ffffff"
             }
           }
         },
@@ -254,10 +263,6 @@
         "comfortable": {
           "$type": "dimension",
           "$value": "48px"
-        },
-        "default": {
-          "$type": "dimension",
-          "$value": "{touchTarget.comfortable}"
         }
       },
       "breakpoint": {
@@ -367,31 +372,31 @@
         },
         "lg": {
           "$type": "fontSize",
-          "$value": "1.25rem"
+          "$value": "1.333rem"
         },
         "xl": {
           "$type": "fontSize",
-          "$value": "1.5rem"
+          "$value": "1.777rem"
         },
         "2xl": {
           "$type": "fontSize",
-          "$value": "1.75rem"
+          "$value": "2.369rem"
         },
         "3xl": {
           "$type": "fontSize",
-          "$value": "2rem"
+          "$value": "3.157rem"
         },
         "4xl": {
           "$type": "fontSize",
-          "$value": "2.5rem"
+          "$value": "4.209rem"
         },
         "5xl": {
           "$type": "fontSize",
-          "$value": "3.25rem"
+          "$value": "5.61rem"
         },
         "display": {
           "$type": "fontSize",
-          "$value": "4rem"
+          "$value": "5.61rem"
         }
       }
     }
@@ -427,7 +432,7 @@
           "rdna": {
             "source": "--color-card",
             "srgb": {
-              "light": "#fffcf3",
+              "light": "#ffffff",
               "dark": "#000000"
             }
           }
@@ -583,7 +588,7 @@
             "source": "--color-head",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fffcf3"
+              "dark": "#ffffff"
             }
           }
         }
@@ -641,16 +646,16 @@
       },
       "link": {
         "$type": "color",
-        "$value": "{color.sky-blue}",
+        "$value": "{color.sky-blue-dark}",
         "$extensions": {
           "modes": {
-            "light": "{color.sky-blue}",
+            "light": "{color.sky-blue-dark}",
             "dark": "{color.sky-blue}"
           },
           "rdna": {
             "source": "--color-content-link",
             "srgb": {
-              "light": "#95bad2",
+              "light": "#276182",
               "dark": "#95bad2"
             }
           }
@@ -685,7 +690,7 @@
             "source": "--color-content-heading",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fffcf3"
+              "dark": "#ffffff"
             }
           }
         }
