@@ -1,6 +1,8 @@
 # __APP_PASCAL_NAME__ Notes
 
-- Start from `components/app/MyApp.tsx` for feature work.
-- RDNA components, runtime icons, and pattern registry are already wired into the scaffold.
-- Keep `lib/controlSurface.ts` as the integration seam until the real control-surface package exists.
-- Treat this app as a standalone prototype, not an in-monorepo RadOS feature branch.
+- This is a standalone RadOS desktop shell with one empty app registered.
+- Add apps in `lib/catalog.tsx` — register an id, title, icon, component, and size.
+- Shell components (Desktop, AppWindow, Taskbar, StartMenu) work like the real RadOS.
+- Window state is managed by Zustand in `store/` — windows, preferences, z-index.
+- RDNA components, runtime icons, and tokens are available from `@rdna/radiants`.
+- No WebGL background — just a CSS gradient. Swap in `components/Desktop.tsx` if needed.
