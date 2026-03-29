@@ -477,8 +477,10 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const ruleXs = getRuleXPositions(containerWidth, colCount);
 
   return (
-    <div className="h-full bg-card p-1.5">
-      <div ref={containerRef} className="border border-line pixel-shadow-floating bg-page h-full overflow-y-auto">
+    <div className="h-full relative">
+      <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }} />
+      <div className="absolute top-1 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }} />
+      <div ref={containerRef} className="bg-card h-full overflow-y-auto border-t border-ink">
       <div style={{ padding: `0 ${COL_MARGIN}px` }}>
 
         {/* ============================================================

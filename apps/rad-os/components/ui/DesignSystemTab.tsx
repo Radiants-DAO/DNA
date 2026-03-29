@@ -199,9 +199,13 @@ export function DesignSystemTab({
             <div className="flex items-end justify-between border-b border-rule pb-3 gap-4 mt-8">
               <h2 className="text-main leading-tight">{group.label}</h2>
             </div>
-            {group.entries.map((entry) => (
-              <ComponentShowcaseCard key={entry.name} entry={entry} />
-            ))}
+            <div className="columns-1 @3xl:columns-2 @7xl:columns-3 gap-3">
+              {group.entries.map((entry) => (
+                <div key={entry.name} className="break-inside-avoid mb-3">
+                  <ComponentShowcaseCard entry={entry} />
+                </div>
+              ))}
+            </div>
           </div>
         ))}
         {filtered.length === 0 && (

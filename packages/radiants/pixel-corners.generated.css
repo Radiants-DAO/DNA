@@ -17,6 +17,7 @@
 .pixel-rounded-xl::after,
 .pixel-rounded-xl--wrapper::after,
 .pixel-rounded-t-sm-b-md::after,
+.pixel-rounded-t-sm::after,
 .pixel-rounded-l-sm::after,
 .pixel-rounded-sm-notl::after {
   content: "";
@@ -46,6 +47,7 @@
 .pixel-rounded-xl,
 .pixel-rounded-xl--wrapper,
 .pixel-rounded-t-sm-b-md,
+.pixel-rounded-t-sm,
 .pixel-rounded-l-sm,
 .pixel-rounded-sm-notl {
   position: relative;
@@ -58,6 +60,7 @@
 .pixel-corners,
 .pixel-rounded-xl,
 .pixel-rounded-t-sm-b-md,
+.pixel-rounded-t-sm,
 .pixel-rounded-l-sm,
 .pixel-rounded-sm-notl {
   border: 1px solid transparent;
@@ -85,6 +88,10 @@
 }
 
 .pixel-rounded-t-sm-b-md {
+  border-radius: 0;
+}
+
+.pixel-rounded-t-sm {
   border-radius: 0;
 }
 
@@ -196,6 +203,14 @@
 
 .pixel-rounded-t-sm-b-md::after {
   clip-path: polygon(0px calc(100% - 9px), 1px calc(100% - 9px), 1px calc(100% - 8px), 1px calc(100% - 6px), 2px calc(100% - 6px), 2px calc(100% - 5px), 3px calc(100% - 5px), 3px calc(100% - 4px), 4px calc(100% - 3px), 5px calc(100% - 3px), 5px calc(100% - 2px), 6px calc(100% - 2px), 6px calc(100% - 1px), 8px calc(100% - 1px), 9px calc(100% - 1px), 9px 100%, calc(100% - 9px) 100%, calc(100% - 9px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 6px) calc(100% - 1px), calc(100% - 6px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 3px), calc(100% - 4px) calc(100% - 3px), calc(100% - 3px) calc(100% - 4px), calc(100% - 3px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 6px), calc(100% - 1px) calc(100% - 6px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 9px), 100% calc(100% - 9px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px, 0px 50%, 1px 50%, 1px 5px, 2px 5px, 2px 3px, 3px 3px, 3px 2px, 5px 2px, 5px 1px, calc(100% - 5px) 1px, calc(100% - 5px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 5px, calc(100% - 1px) 5px, calc(100% - 1px) calc(100% - 9px), calc(100% - 2px) calc(100% - 9px), calc(100% - 2px) calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 5px), calc(100% - 4px) calc(100% - 5px), calc(100% - 4px) calc(100% - 4px), calc(100% - 5px) calc(100% - 4px), calc(100% - 5px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) calc(100% - 2px), calc(100% - 9px) calc(100% - 2px), calc(100% - 9px) calc(100% - 1px), 9px calc(100% - 1px), 9px calc(100% - 2px), 8px calc(100% - 2px), 6px calc(100% - 2px), 6px calc(100% - 3px), 5px calc(100% - 3px), 5px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 5px), 3px calc(100% - 5px), 3px calc(100% - 6px), 2px calc(100% - 6px), 2px calc(100% - 8px), 2px calc(100% - 9px), 1px calc(100% - 9px), 1px 50%, 0px 50%);
+}
+
+.pixel-rounded-t-sm {
+  clip-path: polygon(0px 100%, 100% 100%, 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px);
+}
+
+.pixel-rounded-t-sm::after {
+  clip-path: polygon(0px 100%, 100% 100%, 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px, 0px 50%, 1px 50%, 1px 5px, 2px 5px, 2px 3px, 3px 3px, 3px 2px, 5px 2px, 5px 1px, calc(100% - 5px) 1px, calc(100% - 5px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 5px, calc(100% - 1px) 5px, calc(100% - 1px) 100%, 1px 100%, 1px 50%, 0px 50%);
 }
 
 .pixel-rounded-l-sm {

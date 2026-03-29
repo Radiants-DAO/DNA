@@ -739,6 +739,13 @@ export function AppWindow({
         data-resizable={resizable}
         data-focused={focused || undefined}
       >
+        {!focused && (
+          <div
+            className="absolute inset-0 z-20 pointer-events-none"
+            style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
+          />
+        )}
+
         <AppWindowTitleBar
           id={id}
           title={title}
@@ -757,7 +764,7 @@ export function AppWindow({
         />
 
         <div
-          className={`flex-1 min-h-0 @container${contentPadding ? ' pb-2' : ''}`}
+          className={`flex-1 min-h-0${hasExplicitWidth ? ' @container' : ''}${contentPadding ? ' pb-2' : ''}`}
           style={{ '--app-content-max-height': `${maxContentHeight}px` } as React.CSSProperties}
         >
           {children}

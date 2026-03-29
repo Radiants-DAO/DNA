@@ -74,6 +74,13 @@ export const PIXEL_CORNER_CONFIG = {
       borderRadius: '0',
     },
     {
+      name: 't-sm',
+      selectors: ['.pixel-rounded-t-sm'],
+      corners: { tl: 'sm', tr: 'sm', br: 'square', bl: 'square' },
+      edges: { top: true, right: true, bottom: false, left: true },
+      borderRadius: '0',
+    },
+    {
       name: 'l-sm',
       selectors: ['.pixel-rounded-l-sm'],
       corners: { tl: 'sm', tr: 'square', br: 'square', bl: 'sm' },

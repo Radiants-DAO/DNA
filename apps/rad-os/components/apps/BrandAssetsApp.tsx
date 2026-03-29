@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Switch, Tooltip, ToggleGroup, Input, Tabs } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, Input, Tabs } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
   Icon,
@@ -13,7 +13,7 @@ import {
 } from '@rdna/radiants/icons/runtime';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 import { PatternPlayground } from '@/components/apps/pattern-playground';
-import { TypographyPlayground, SubTabNav, type SubTab, type LayoutVariant } from '@/components/apps/typography-playground';
+import { TypographyPlayground, SubTabNav, type SubTab } from '@/components/apps/typography-playground';
 import { getBrandLogoDownloadHref } from '@/lib/asset-downloads';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { ComponentCategory } from '@rdna/radiants/registry';
@@ -251,7 +251,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
-    <div className="pixel-rounded-sm pixel-shadow-raised">
+    <div className="pixel-rounded-sm pixel-shadow-raised h-full flex flex-col">
       {/* Swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -275,8 +275,8 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
       </div>
 
       {/* Data */}
-      <div className="bg-page">
-        <div className="px-4 py-3 border-b border-rule">
+      <div className="bg-page flex-1 flex flex-col">
+        <div className="px-4 py-3 border-b border-rule flex-1">
           <p className="text-sm text-sub leading-snug">{color.description}</p>
         </div>
         <div className="divide-y divide-rule">
@@ -485,7 +485,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
-  const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('broadsheet');
+
 
   const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', mode: 'pill' });
   const activeTab = tabs.state.activeTab;
@@ -500,7 +500,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
   const TAB_NAV = [
     { value: 'logos', label: 'Logos', icon: <RadMarkIcon size={16} /> },
-    { value: 'colors', label: 'Color', icon: <Icon name="content-files-pencil-brush" size={16} /> },
+    { value: 'colors', label: 'Color', icon: <Icon name="pencil" size={16} /> },
     { value: 'fonts', label: 'Type', icon: <FontAaIcon size={16} /> },
     { value: 'components', label: 'UI', icon: <Icon name="outline-box" size={16} /> },
     { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" size={16} /> },
@@ -522,16 +522,18 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 <button
                   type="button"
                   onClick={() => setActiveTab(tab.value)}
-                  className={`flex items-center justify-center cursor-pointer select-none h-8 px-3 transition-all duration-300 ease-out focus-visible:outline-none ${
-                    isActive ? 'gap-1.5 bg-card z-10' : 'bg-cream'
+                  className={`relative flex items-center justify-center cursor-pointer select-none pixel-rounded-t-sm h-8 px-2 transition-all duration-300 ease-out focus-visible:outline-none ${
+                    isActive ? 'gap-1.5 bg-card z-10' : 'bg-sun-yellow hover:bg-cream group translate-y-1 hover:translate-y-0.5'
                   }`}
-                  style={{ clipPath: 'polygon(6px 0, calc(100% - 6px) 0, 100% 100%, 0 100%)' }}
                 >
                   <span className="shrink-0 flex items-center justify-center size-4">{tab.icon}</span>
-                  {isActive && (
-                    <span className="font-mono text-xs uppercase tracking-tight leading-none whitespace-nowrap">
-                      {tab.label}
-                    </span>
+                  <span className={`font-mono text-xs uppercase tracking-tight leading-none whitespace-nowrap overflow-hidden transition-all duration-300 ease-out ${
+                    isActive ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0'
+                  }`}>
+                    {tab.label}
+                  </span>
+                  {!isActive && (
+                    <span className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out" style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }} />
                   )}
                 </button>
               </Tooltip>
@@ -574,7 +576,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
                 <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
               </div>
-              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-3 gap-3">
                 {BRAND_COLORS.map((c, i) => <BrandColorCard key={c.hex} color={c} index={i} />)}
               </div>
             </section>
@@ -588,7 +590,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
                 <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-4 gap-3">
                 {EXTENDED_COLORS.map((c, i) => <ExtendedColorSwatch key={c.hex} color={c} index={i} />)}
               </div>
             </section>
@@ -614,71 +616,47 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Fonts */}
         {tabs.state.activeTab === 'fonts' && (
-          <div className="h-full flex">
-            {/* Left panel — type controls */}
-            <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
-              <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
-                <span className="font-heading text-xs text-mute uppercase tracking-wide block">View</span>
-                <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
-              </div>
-              {typoSubTab === 'manual' && (
-                <div className="px-3 py-2">
-                  <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">Layout</span>
-                  <ToggleGroup
-                    value={[layoutVariant]}
-                    onValueChange={(vals) => { if (vals.length) setLayoutVariant(vals[0] as LayoutVariant); }}
-                    size="sm"
-                  >
-                    <ToggleGroup.Item value="broadsheet">Broadsheet</ToggleGroup.Item>
-                    <ToggleGroup.Item value="magazine">Magazine</ToggleGroup.Item>
-                    <ToggleGroup.Item value="specimen">Specimen</ToggleGroup.Item>
-                  </ToggleGroup>
-                </div>
-              )}
+          <div className="h-full flex flex-col">
+            {/* Top bar — type controls */}
+            <div className="shrink-0 px-3 py-2 border-b border-ink flex items-center gap-3">
+              <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
             </div>
 
-            {/* Right — typography content */}
-            <div className="flex-1 min-w-0 overflow-auto">
-              <TypographyPlayground activeSubTab={typoSubTab} layoutVariant={layoutVariant} />
+            {/* Typography content */}
+            <div className="flex-1 min-h-0 overflow-auto">
+              <TypographyPlayground activeSubTab={typoSubTab} />
             </div>
           </div>
         )}
 
         {/* Components */}
         {tabs.state.activeTab === 'components' && (
-          <div className="h-full flex">
-            {/* Left panel — search + filters */}
-            <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
-              <div className="px-3 pt-3 pb-2 border-b border-rule space-y-2">
-                <span className="font-heading text-xs text-mute uppercase tracking-wide block">Search</span>
-                <Input
-                  value={componentSearch}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
-                  placeholder="Search..."
-                  fullWidth
-                />
-              </div>
-              <div className="px-3 py-2">
-                <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">Filter</span>
-                <div className="flex flex-wrap gap-1">
-                  <Button quiet={componentCategory !== 'all'} size="sm" compact onClick={() => setComponentCategory('all')}>
-                    All ({registry.length})
-                  </Button>
-                  {CATEGORIES.map((cat) => {
-                    const count = registry.filter((e) => e.category === cat).length;
-                    if (count === 0) return null;
-                    return (
-                      <Button key={cat} quiet={componentCategory !== cat} size="sm" compact onClick={() => setComponentCategory(cat)}>
-                        {CATEGORY_LABELS[cat]} ({count})
-                      </Button>
-                    );
-                  })}
-                </div>
+          <div className="h-full flex flex-col">
+            {/* Top bar — search + filters */}
+            <div className="shrink-0 px-3 py-2 border-b border-ink flex items-center gap-3">
+              <Input
+                value={componentSearch}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
+                placeholder="Search..."
+              />
+              <div className="flex flex-wrap gap-1">
+                <Button quiet={componentCategory !== 'all'} size="sm" compact onClick={() => setComponentCategory('all')}>
+                  All ({registry.length})
+                </Button>
+                {CATEGORIES.map((cat) => {
+                  const count = registry.filter((e) => e.category === cat).length;
+                  if (count === 0) return null;
+                  return (
+                    <Button key={cat} quiet={componentCategory !== cat} size="sm" compact onClick={() => setComponentCategory(cat)}>
+                      {CATEGORY_LABELS[cat]} ({count})
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Right — component list */}
-            <div className="flex-1 min-w-0 overflow-auto">
+            {/* Component list */}
+            <div className="flex-1 min-h-0 overflow-auto @container">
               <DesignSystemTab
                 searchQuery={componentSearch}
                 activeCategory={componentCategory}
