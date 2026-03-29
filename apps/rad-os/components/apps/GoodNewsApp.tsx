@@ -95,7 +95,9 @@ const HEADING_SPECS = [
   { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", maxSize: 48, scale: 0.12, bold: true },
 ] as const;
 
-const DROP_CAP_FONT = "64px 'Waves Blackletter CPC'";
+const DROP_CAP_SIZE = 64; // px — must match render
+const DROP_CAP_LH = 0.85; // line-height multiplier — must match render
+const DROP_CAP_FONT = `${DROP_CAP_SIZE}px 'Waves Blackletter CPC'`;
 
 interface PreparedTexts {
   body: PreparedTextWithSegments[];
@@ -333,9 +335,10 @@ function computeLayout(
 
   const dcLine = layoutNextLine(prepared.dropCap, { segmentIndex: 0, graphemeIndex: 0 }, 200);
   const dcW = (dcLine?.width ?? 50) + 8;
+  const dcH = Math.ceil(DROP_CAP_SIZE * DROP_CAP_LH);
   els.push({ kind: 'dropcap', x: col().x, y });
 
-  layText(dcW, 56);   // P1
+  layText(dcW, dcH);   // P1
   layGap(2);
   layHero();
   //                                                           max  lhR  scale  bold  center
@@ -532,7 +535,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
                 );
               case 'dropcap':
                 return (
-                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "'Waves Blackletter CPC', serif", fontSize: '4rem', fontWeight: 400, lineHeight: 0.85, letterSpacing: '-0.04em' }}>
+                  <div key={i} className="absolute text-head" style={{ left: el.x, top: el.y + CHROME_Y, fontFamily: "'Waves Blackletter CPC', serif", fontSize: DROP_CAP_SIZE, fontWeight: 400, lineHeight: DROP_CAP_LH, letterSpacing: '-0.04em' }}>
                     G
                   </div>
                 );
