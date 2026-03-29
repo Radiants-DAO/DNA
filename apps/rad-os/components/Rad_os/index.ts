@@ -1,7 +1,6 @@
 // RadOS Window System Components
 export { AppWindow } from './AppWindow';
 export { WindowTitleBar } from './WindowTitleBar';
-export { MobileAppModal } from './MobileAppModal';
 
 // Layout Primitives
 export { WindowContent } from './WindowContent';

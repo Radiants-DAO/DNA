@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { getStartMenuSections } from '@/lib/apps';
 import { Button, Separator } from '@rdna/radiants/components/core';
 import {
@@ -75,10 +74,8 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void
 export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const { openWindow } = useWindowManager();
   const menuRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
 
   const sections = getStartMenuSections();
-  const allApps = [...sections.apps, ...sections.web3];
 
   // Handle click outside to close
   useEffect(() => {
@@ -115,75 +112,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
 
   if (!isOpen) return null;
 
-  // ── Mobile: Full-screen overlay ─────────────────────────────────────────
-  if (isMobile) {
-    return (
-      <div className="fixed inset-0 z-[300] bg-page animate-in fade-in duration-200">
-        {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-rule">
-          <span className="font-joystix text-lg text-head">Menu</span>
-          <Button
-            type="button"
-            quiet
-            size="sm"
-            onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center hover:bg-hover active:bg-active pixel-rounded-sm"
-          >
-            <Icon name="close" size={14} />
-          </Button>
-        </header>
 
-        {/* Content */}
-        <div className="p-4 overflow-auto" style={{ height: 'calc(100% - 60px)' }}>
-          {/* Apps Section */}
-          <section className="mb-6">
-            <h2 className="mb-3">Apps</h2>
-            <div className="grid grid-cols-3 gap-3">
-              {allApps.map((item) => (
-                <Button
-                  key={item.id}
-                  type="button"
-                  quiet
-                  size="sm"
-                  onClick={() => handleAppClick(item.id)}
-                  className="flex flex-col items-center gap-2 p-3 pixel-rounded-xl hover:bg-hover active:bg-active"
-                >
-                  <div className="w-10 h-10 flex items-center justify-center bg-inv pixel-rounded-sm text-accent">
-                    {item.icon}
-                  </div>
-                  <span className="font-joystix text-sm text-main text-center leading-tight uppercase">
-                    {item.label}
-                  </span>
-                </Button>
-              ))}
-            </div>
-          </section>
-
-          {/* Connect Section */}
-          <section>
-            <h2 className="mb-3">Connect</h2>
-            <div className="space-y-2">
-              {SOCIAL_LINKS.map((link) => (
-                <Button
-                  key={link.id}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  quiet
-                  size="sm"
-                  className="w-full flex items-center gap-3 px-3 py-2"
-                >
-                  <span>{link.label}</span>
-                </Button>
-              ))}
-            </div>
-          </section>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Desktop: Win95-style two-column popup ────────────────────────────────
   return (
     <div
       ref={menuRef}
