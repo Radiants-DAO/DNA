@@ -159,75 +159,26 @@ export function WindowTitleBar({
     <>
       <div
         className={`
-          flex items-center gap-3 pl-4 pr-1 py-1 h-fit
+          flex items-center gap-3 pl-1 pr-4 py-1 h-fit
           cursor-move select-none
           ${className}
         `}
         data-drag-handle
         style={{ touchAction: 'none' }}
       >
-        {/* Title */}
-        {showTitle && (
-          <div className="flex items-center gap-2">
-            {/* Render icon from React component or SVG name */}
-            {icon ? (
-              <span className="text-head">{icon}</span>
-            ) : iconName ? (
-              <Icon name={iconName} size={16} className="text-head" />
-            ) : null}
-            <span
-              id={`window-title-${windowId}`}
-              className="font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap"
-            >
-              {title}
-            </span>
-          </div>
-        )}
-
-        {/* Decorative Line */}
-        <div className="flex-1">
-          <Separator />
-        </div>
-
-        {/* All Buttons */}
-        <div className="flex items-center gap-0 text-head">
-          {/* Action Button */}
-          {showActionButton && actionButton && (
-            <Button
-              mode="pattern"
-              size="sm"
-              onClick={handleActionClick}
-              icon={actionButton.iconName ?? undefined}
-              className="shrink-0"
-            >
-              {actionButton.text}
-            </Button>
-          )}
-
-          {/* Widget Button */}
-          {showWidgetButton && onWidget && (
-            <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
+        {/* All Buttons (left side) */}
+        <div className="flex items-center gap-0 text-head pl-1.5">
+          {/* Close Button */}
+          {showCloseButton && (
+            <Tooltip content="Close">
               <Button
                 quiet
-                size="md"
-                iconOnly={true}
-                icon="picture-in-picture"
-                onClick={onWidget}
-              />
-            </Tooltip>
-          )}
-
-          {/* Copy Link Button */}
-          {showCopyButton && (
-            <Tooltip content="Copy link">
-              <Button
-                quiet
-                tone="success"
+                tone="danger"
                 size="sm"
                 rounded="md"
                 iconOnly={true}
-                icon={copied ? "copied-to-clipboard" : "copy-to-clipboard"}
-                onClick={handleCopyLink}
+                icon="close"
+                onClick={onClose}
               />
             </Tooltip>
           )}
@@ -247,21 +198,70 @@ export function WindowTitleBar({
             </Tooltip>
           )}
 
-          {/* Close Button */}
-          {showCloseButton && (
-            <Tooltip content="Close">
+          {/* Copy Link Button */}
+          {showCopyButton && (
+            <Tooltip content="Copy link">
               <Button
                 quiet
-                tone="danger"
+                tone="success"
                 size="sm"
                 rounded="md"
                 iconOnly={true}
-                icon="close"
-                onClick={onClose}
+                icon={copied ? "copied-to-clipboard" : "copy-to-clipboard"}
+                onClick={handleCopyLink}
               />
             </Tooltip>
           )}
+
+          {/* Widget Button */}
+          {showWidgetButton && onWidget && (
+            <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
+              <Button
+                quiet
+                size="md"
+                iconOnly={true}
+                icon="picture-in-picture"
+                onClick={onWidget}
+              />
+            </Tooltip>
+          )}
+
+          {/* Action Button */}
+          {showActionButton && actionButton && (
+            <Button
+              mode="pattern"
+              size="sm"
+              onClick={handleActionClick}
+              icon={actionButton.iconName ?? undefined}
+              className="shrink-0"
+            >
+              {actionButton.text}
+            </Button>
+          )}
         </div>
+
+        {/* Decorative Line */}
+        <div className="flex-1">
+          <Separator />
+        </div>
+
+        {/* Title (right side) */}
+        {showTitle && (
+          <div className="flex items-center gap-2">
+            {/* Render icon from React component or SVG name */}
+            {icon ? (
+              <span className="text-head">{icon}</span>
+            ) : iconName ? (
+              <Icon name={iconName} size={16} className="text-head" />
+            ) : null}
+            <span
+              id={`window-title-${windowId}`}
+              className="font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap"
+            >
+              {title}
+            </span>
+          </div>
+        )}
       </div>
 
     </>

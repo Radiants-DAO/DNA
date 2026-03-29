@@ -1,6 +1,6 @@
 {
   "name": "@rdna/radiants",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Radiants theme package for DNA - retro pixel aesthetic",
   "publishConfig": {
     "access": "public"
@@ -48,8 +48,7 @@
     "components/",
     "icons/",
     "schemas/",
-    "fonts/Joystix.woff2",
-    "fonts/PixelCode*.woff2",
+    "fonts/",
     "assets/",
     "dna.config.json",
     "LICENSE",

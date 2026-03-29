@@ -216,25 +216,65 @@ function AppWindowTitleBar({
 
   return (
     <div
-      className="flex items-center gap-3 pl-2 pr-1 py-1.5 h-fit cursor-move select-none"
+      className="flex items-center gap-3 pl-1 pr-2 py-1.5 h-fit cursor-move select-none"
       data-drag-handle={presentation === 'window' ? '' : undefined}
       style={presentation === 'window' ? { touchAction: 'none' } : undefined}
     >
-      <span
-        id={`window-title-${id}`}
-        className="absolute left-1/2 -translate-x-1/2 font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap pointer-events-none bg-page px-2 py-0.5"
-      >
-        {title}
-      </span>
+      <div className="flex items-center gap-1 text-head pl-1.5">
+        {showCloseButton && onClose ? (
+          <Tooltip content="Close">
+            <Button
+              tone="danger"
+              size="sm"
+              rounded="sm"
+              iconOnly
+              icon="close"
+              onClick={onClose}
+              aria-label={`Close ${title}`}
+            />
+          </Tooltip>
+        ) : null}
 
-      {/* Portal slot for app-injected title bar content */}
-      <div id={`window-titlebar-slot-${id}`} className="contents" />
+        {showFullscreenButton && onFullscreen ? (
+          <Tooltip content={presentation === 'fullscreen' ? 'Exit fullscreen' : 'Enter fullscreen'}>
+            <Button
+              tone="accent"
+              size="sm"
+              rounded="sm"
+              iconOnly
+              icon={presentation === 'fullscreen' ? 'collapse' : 'expand'}
+              onClick={onFullscreen}
+              aria-label={`${presentation === 'fullscreen' ? 'Exit' : 'Enter'} fullscreen ${title}`}
+            />
+          </Tooltip>
+        ) : null}
 
-      <div className="flex-1">
-        <Separator />
-      </div>
+        {showCopyButton ? (
+          <Tooltip content="Copy link">
+            <Button
+              tone="success"
+              size="sm"
+              rounded="sm"
+              iconOnly
+              icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
+              onClick={handleCopyLink}
+              aria-label={`Copy link to ${title}`}
+            />
+          </Tooltip>
+        ) : null}
 
-      <div className="flex items-center gap-1 text-head pr-1.5">
+        {showWidgetButton && onWidget ? (
+          <Tooltip content={widgetActive ? 'Exit widget mode' : 'Widget mode'}>
+            <Button
+              size="sm"
+              iconOnly
+              icon="picture-in-picture"
+              onClick={onWidget}
+              aria-label={`${widgetActive ? 'Exit' : 'Enter'} widget mode for ${title}`}
+            />
+          </Tooltip>
+        ) : null}
+
         {showActionButton && actionButton ? (
           actionButton.href ? (
             <Button
@@ -261,61 +301,21 @@ function AppWindowTitleBar({
             </Button>
           )
         ) : null}
-
-        {showWidgetButton && onWidget ? (
-          <Tooltip content={widgetActive ? 'Exit widget mode' : 'Widget mode'}>
-            <Button
-              size="sm"
-              iconOnly
-              icon="picture-in-picture"
-              onClick={onWidget}
-              aria-label={`${widgetActive ? 'Exit' : 'Enter'} widget mode for ${title}`}
-            />
-          </Tooltip>
-        ) : null}
-
-        {showCopyButton ? (
-          <Tooltip content="Copy link">
-            <Button
-              tone="success"
-              size="sm"
-              rounded="sm"
-              iconOnly
-              icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
-              onClick={handleCopyLink}
-              aria-label={`Copy link to ${title}`}
-            />
-          </Tooltip>
-        ) : null}
-
-        {showFullscreenButton && onFullscreen ? (
-          <Tooltip content={presentation === 'fullscreen' ? 'Exit fullscreen' : 'Enter fullscreen'}>
-            <Button
-              tone="accent"
-              size="sm"
-              rounded="sm"
-              iconOnly
-              icon={presentation === 'fullscreen' ? 'collapse' : 'expand'}
-              onClick={onFullscreen}
-              aria-label={`${presentation === 'fullscreen' ? 'Exit' : 'Enter'} fullscreen ${title}`}
-            />
-          </Tooltip>
-        ) : null}
-
-        {showCloseButton && onClose ? (
-          <Tooltip content="Close">
-            <Button
-              tone="danger"
-              size="sm"
-              rounded="sm"
-              iconOnly
-              icon="close"
-              onClick={onClose}
-              aria-label={`Close ${title}`}
-            />
-          </Tooltip>
-        ) : null}
       </div>
+
+      <span
+        id={`window-title-${id}`}
+        className="absolute left-1/2 -translate-x-1/2 font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap pointer-events-none bg-page px-2 py-0.5"
+      >
+        {title}
+      </span>
+
+      <div className="flex-1">
+        <Separator />
+      </div>
+
+      {/* Portal slot for app-injected title bar content */}
+      <div id={`window-titlebar-slot-${id}`} className="contents" />
     </div>
   );
 }
