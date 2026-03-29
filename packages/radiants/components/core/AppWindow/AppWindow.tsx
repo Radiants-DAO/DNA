@@ -757,7 +757,7 @@ export function AppWindow({
         />
 
         <div
-          className={`flex-1 min-h-0${hasExplicitWidth ? ' @container' : ''}${contentPadding ? ' pb-2' : ''}`}
+          className={`flex-1 min-h-0 @container${contentPadding ? ' pb-2' : ''}`}
           style={{ '--app-content-max-height': `${maxContentHeight}px` } as React.CSSProperties}
         >
           {children}
