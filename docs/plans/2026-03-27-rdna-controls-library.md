@@ -12,7 +12,7 @@
 
 **Reference devDeps:** `interface-kit`, `dialkit`, `agentation`
 
----
+***
 
 ### Task 1: Create Feature Branch
 
@@ -37,17 +37,23 @@ Expected: new entry at `../DNA-rdna-controls` on `feat/rdna-controls`.
 
 All subsequent tasks run from `/Users/rivermassey/Desktop/dev/DNA-rdna-controls`.
 
----
+***
 
 ### Task 2: Create The `@rdna/controls` Package Shell
 
 **Files:**
-- Create: `packages/controls/package.json`
-- Create: `packages/controls/tsconfig.json`
-- Create: `packages/controls/src/index.ts`
-- Create: `packages/controls/src/types.ts`
-- Create: `packages/controls/test/smoke.test.ts`
-- Modify: `package.json` (root — add test:controls script)
+
+* Create: `packages/controls/package.json`
+
+* Create: `packages/controls/tsconfig.json`
+
+* Create: `packages/controls/src/index.ts`
+
+* Create: `packages/controls/src/types.ts`
+
+* Create: `packages/controls/test/smoke.test.ts`
+
+* Modify: `package.json` (root — add test:controls script)
 
 **Step 1: Write the failing test**
 
@@ -284,14 +290,17 @@ git add packages/controls package.json pnpm-lock.yaml
 git commit -m "feat(controls): add @rdna/controls package shell with types"
 ```
 
----
+***
 
 ### Task 3: Build The Control Store (useSyncExternalStore)
 
 **Files:**
-- Create: `packages/controls/src/store.ts`
-- Create: `packages/controls/test/store.test.ts`
-- Modify: `packages/controls/src/index.ts`
+
+* Create: `packages/controls/src/store.ts`
+
+* Create: `packages/controls/test/store.test.ts`
+
+* Modify: `packages/controls/src/index.ts`
 
 **Step 1: Write the failing test**
 
@@ -543,14 +552,17 @@ git add packages/controls/src/store.ts packages/controls/test/store.test.ts pack
 git commit -m "feat(controls): add ControlStore with flat-path values and subscriptions"
 ```
 
----
+***
 
 ### Task 4: Build `useControlPanel` Hook
 
 **Files:**
-- Create: `packages/controls/src/useControlPanel.ts`
-- Create: `packages/controls/test/useControlPanel.test.ts`
-- Modify: `packages/controls/src/index.ts`
+
+* Create: `packages/controls/src/useControlPanel.ts`
+
+* Create: `packages/controls/test/useControlPanel.test.ts`
+
+* Modify: `packages/controls/src/index.ts`
 
 **Step 1: Write the failing test**
 
@@ -712,13 +724,15 @@ git add packages/controls
 git commit -m "feat(controls): add useControlPanel hook with useSyncExternalStore"
 ```
 
----
+***
 
 ### Task 5: Build P0 Control Components — Slider
 
 **Files:**
-- Create: `packages/controls/src/controls/ControlSlider.tsx`
-- Create: `packages/controls/test/controls/slider.test.tsx`
+
+* Create: `packages/controls/src/controls/ControlSlider.tsx`
+
+* Create: `packages/controls/test/controls/slider.test.tsx`
 
 The first control component. Pattern established here is reused for all subsequent controls.
 
@@ -862,19 +876,27 @@ git add packages/controls/src/controls/ControlSlider.tsx packages/controls/test/
 git commit -m "feat(controls): add ControlSlider wrapping RDNA Slider"
 ```
 
----
+***
 
 ### Task 6: Build P0 Control Components — Toggle, Select, TextInput, Action
 
 **Files:**
-- Create: `packages/controls/src/controls/ControlToggle.tsx`
-- Create: `packages/controls/src/controls/ControlSelect.tsx`
-- Create: `packages/controls/src/controls/ControlTextInput.tsx`
-- Create: `packages/controls/src/controls/ControlAction.tsx`
-- Create: `packages/controls/test/controls/toggle.test.tsx`
-- Create: `packages/controls/test/controls/select.test.tsx`
-- Create: `packages/controls/test/controls/text-input.test.tsx`
-- Create: `packages/controls/test/controls/action.test.tsx`
+
+* Create: `packages/controls/src/controls/ControlToggle.tsx`
+
+* Create: `packages/controls/src/controls/ControlSelect.tsx`
+
+* Create: `packages/controls/src/controls/ControlTextInput.tsx`
+
+* Create: `packages/controls/src/controls/ControlAction.tsx`
+
+* Create: `packages/controls/test/controls/toggle.test.tsx`
+
+* Create: `packages/controls/test/controls/select.test.tsx`
+
+* Create: `packages/controls/test/controls/text-input.test.tsx`
+
+* Create: `packages/controls/test/controls/action.test.tsx`
 
 Each control follows the same pattern as ControlSlider: thin wrapper around RDNA primitive, accepts `path` + `value` + `onChange`.
 
@@ -1144,15 +1166,19 @@ git add packages/controls/src/controls packages/controls/test/controls
 git commit -m "feat(controls): add Toggle, Select, TextInput, Action control components"
 ```
 
----
+***
 
 ### Task 7: Build P0 Control Components — Folder (Collapsible Group)
 
 **Files:**
-- Create: `packages/controls/src/controls/ControlFolder.tsx`
-- Create: `packages/controls/test/controls/folder.test.tsx`
-- Create: `packages/controls/src/controls/index.ts`
-- Modify: `packages/controls/src/index.ts`
+
+* Create: `packages/controls/src/controls/ControlFolder.tsx`
+
+* Create: `packages/controls/test/controls/folder.test.tsx`
+
+* Create: `packages/controls/src/controls/index.ts`
+
+* Modify: `packages/controls/src/index.ts`
 
 **Step 1: Write the failing test**
 
@@ -1268,15 +1294,19 @@ git add packages/controls
 git commit -m "feat(controls): add ControlFolder and barrel exports for all P0 controls"
 ```
 
----
+***
 
 ### Task 8: Build ControlPanel — Config-Driven Renderer
 
 **Files:**
-- Create: `packages/controls/src/panel/ControlPanel.tsx`
-- Create: `packages/controls/src/panel/resolveControl.ts`
-- Create: `packages/controls/test/panel/control-panel.test.tsx`
-- Modify: `packages/controls/src/index.ts`
+
+* Create: `packages/controls/src/panel/ControlPanel.tsx`
+
+* Create: `packages/controls/src/panel/resolveControl.ts`
+
+* Create: `packages/controls/test/panel/control-panel.test.tsx`
+
+* Modify: `packages/controls/src/index.ts`
 
 The ControlPanel takes a `ControlPanelConfig` and renders the appropriate control components automatically — this is the "disc" in the CD player metaphor.
 
@@ -1643,14 +1673,17 @@ git add packages/controls
 git commit -m "feat(controls): add ControlPanel config-driven renderer"
 ```
 
----
+***
 
 ### Task 9: RadOS Integration — Window Store Extensions
 
 **Files:**
-- Modify: `apps/rad-os/store/slices/windowsSlice.ts`
-- Modify: `apps/rad-os/lib/apps/catalog.tsx`
-- Create: `apps/rad-os/test/control-surface-store.test.ts`
+
+* Modify: `apps/rad-os/store/slices/windowsSlice.ts`
+
+* Modify: `apps/rad-os/lib/apps/catalog.tsx`
+
+* Create: `apps/rad-os/test/control-surface-store.test.ts`
 
 Add `parentId` to WindowState and `controlSurface` to AppCatalogEntry.
 
@@ -1765,13 +1798,15 @@ git add apps/rad-os/store/slices/windowsSlice.ts apps/rad-os/lib/apps/catalog.ts
 git commit -m "feat(rad-os): add parentId to WindowState and controlSurface to catalog"
 ```
 
----
+***
 
 ### Task 10: RadOS Integration — Title Bar Eject Button
 
 **Files:**
-- Modify: `apps/rad-os/components/Rad_os/WindowTitleBar.tsx`
-- Modify: `apps/rad-os/components/Rad_os/AppWindow.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/WindowTitleBar.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/AppWindow.tsx`
 
 **Step 1: Write the failing test**
 
@@ -1867,14 +1902,17 @@ git add apps/rad-os/components/Rad_os/WindowTitleBar.tsx apps/rad-os/components/
 git commit -m "feat(rad-os): add control surface toggle/eject button to window title bar"
 ```
 
----
+***
 
 ### Task 11: RadOS Integration — Docked Control Surface Panel
 
 **Files:**
-- Create: `apps/rad-os/components/Rad_os/ControlSurfaceDock.tsx`
-- Modify: `apps/rad-os/components/Rad_os/AppWindow.tsx`
-- Create: `apps/rad-os/test/control-surface-dock.test.tsx`
+
+* Create: `apps/rad-os/components/Rad_os/ControlSurfaceDock.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/AppWindow.tsx`
+
+* Create: `apps/rad-os/test/control-surface-dock.test.tsx`
 
 This renders the docked panel (the "CD drive") inside the AppWindow when the control surface is open.
 
@@ -1998,13 +2036,15 @@ git add apps/rad-os/components/Rad_os/ControlSurfaceDock.tsx apps/rad-os/compone
 git commit -m "feat(rad-os): add ControlSurfaceDock component (docked panel in AppWindow)"
 ```
 
----
+***
 
 ### Task 12: RadOS Integration — Detached Companion Window (Eject)
 
 **Files:**
-- Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
-- Create: `apps/rad-os/components/Rad_os/ControlSurfaceWindow.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
+
+* Create: `apps/rad-os/components/Rad_os/ControlSurfaceWindow.tsx`
 
 When the user ejects the control surface, it becomes a floating companion AppWindow with the same ControlPanel content.
 
@@ -2110,12 +2150,13 @@ git add apps/rad-os/components/Rad_os/ControlSurfaceWindow.tsx apps/rad-os/compo
 git commit -m "feat(rad-os): add ControlSurfaceWindow for ejected/detached panels"
 ```
 
----
+***
 
 ### Task 13: Full Integration Test — Run All Suites
 
 **Files:**
-- No code changes expected unless verification fails.
+
+* No code changes expected unless verification fails.
 
 **Step 1: Run the controls package test suite**
 
@@ -2164,22 +2205,34 @@ git add -A
 git commit -m "test: verify controls + rad-os integration suites"
 ```
 
----
+***
 
 ## Notes For Subsequent Phases
 
 ### P1: interface-kit Visual Controls
-- ColorArea (OKLCH picker using `culori`), BoxSpacing, BorderRadius, Shadow, Typography
-- Source: `node_modules/interface-kit/dist/react.js` — study the control implementations
-- Each becomes a new control in `packages/controls/src/controls/`
-- Register via `ControlStore.registerControlType()` extension point (add when needed)
+
+* ColorArea (OKLCH picker using `culori`), BoxSpacing, BorderRadius, Shadow, Typography
+
+* Source: `node_modules/interface-kit/dist/react.js` — study the control implementations
+
+* Each becomes a new control in `packages/controls/src/controls/`
+
+* Register via `ControlStore.registerControlType()` extension point (add when needed)
 
 ### Pattern Playground Migration
-- Replace `useDialKit` with `useControlPanel` in `PatternPlayground.tsx`
-- Replace `<DialPanel>` with `<ControlPanel>` or `<ControlSurfaceDock>`
-- Map existing config 1:1 — the config shape is intentionally compatible
-- Add `controlSurface` to the Pattern Playground catalog entry
+
+* Replace `useDialKit` with `useControlPanel` in `PatternPlayground.tsx`
+
+* Replace `<DialPanel>` with `<ControlPanel>` or `<ControlSurfaceDock>`
+
+* Map existing config 1:1 — the config shape is intentionally compatible
+
+* Add `controlSurface` to the Pattern Playground catalog entry
 
 ### Styling Evolution
-- After P0 controls work functionally, iterate on styling to be "more modern, minimal, sleek"
-- Use the playground as the visual testbed — screenshot-critique-fix loop via `/qc-visual`
+
+* After P0 controls work functionally, iterate on styling to be "more modern, minimal, sleek"
+
+* Use the playground as the visual testbed — screenshot-critique-fix loop via `/qc-visual`
+
+⠀

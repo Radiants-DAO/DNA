@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RDNA Typography Specimen - Base Layer</title>
+
+  <!--
+    This specimen renders every HTML element styled by @rdna/radiants/typography.css
+    using the exact resolved CSS values from the token system.
+
+    TYPOGRAPHY SCALE (tokens.css):
+      text-xs:   0.625rem  (10px)
+      text-sm:   0.75rem   (12px)
+      text-base: 1rem      (16px)
+      text-lg:   1.25rem   (20px)
+      text-xl:   1.5rem    (24px)
+      text-2xl:  1.75rem   (28px)
+      text-3xl:  2rem      (32px)
+      text-4xl:  NOT IN TOKEN SYSTEM - falls through to Tailwind default 2.25rem (36px)
+
+    FONT FAMILIES:
+      font-sans:    'Mondwest', system-ui, serif        (body text)
+      font-heading: 'Joystix Monospace', monospace      (headings, labels, UI)
+      font-mono:    'PixelCode', monospace               (code)
+
+    ADDITIONAL DISPLAY FONTS (not in token system, used ad-hoc):
+      'Waves Blackletter CPC'  (decorative/display - GoodNews masthead, drop caps)
+      'Waves Tiny CPC'         (small display)
+      'Pixeloid Sans'          (captions/metadata - GoodNews bylines)
+
+    FONT WEIGHTS AVAILABLE:
+      Mondwest:           400, 700
+      Joystix Monospace:  400 only
+      PixelCode:          300, 400, 500, 700 (+ italic variants)
+
+    COLOR TOKENS:
+      text-main: oklch(0.1641 0.0044 84.59)  (ink)
+      text-link: oklch(0.7701 0.0527 236.81)  (sky-blue)
+      text-flip: oklch(0.9780 0.0295 94.34)   (cream)
+      bg-page:   oklch(0.9780 0.0295 94.34)   (cream)
+      bg-depth:  oklch(0.9780 0.0295 94.34)   (cream, same as page in light mode)
+      bg-inv:    oklch(0.1641 0.0044 84.59)   (ink)
+      border-line: oklch(0.1641 0.0044 84.59) (ink)
+  -->
+
+  <!-- Font declarations (paths relative to packages/radiants/fonts/) -->
+  <style>
+    @font-face {
+      font-family: 'Mondwest';
+      src: url('../../packages/radiants/fonts/Mondwest.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Mondwest';
+      src: url('../../packages/radiants/fonts/Mondwest-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Joystix Monospace';
+      src: url('../../packages/radiants/fonts/Joystix.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PixelCode';
+      src: url('../../packages/radiants/fonts/PixelCode.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PixelCode';
+      src: url('../../packages/radiants/fonts/PixelCode-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    /* =================================================================
+       BASE RESET
+       ================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px; /* Root size — all rem values resolve from this */
+    }
+
+    body {
+      background: oklch(0.9780 0.0295 94.34); /* bg-page: cream */
+      color: oklch(0.1641 0.0044 84.59);      /* text-main: ink */
+      max-width: 720px;                         /* ~45em measure for body */
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* =================================================================
+       TYPOGRAPHY.CSS — EXACT RESOLVED VALUES
+       Source: packages/radiants/typography.css @layer base
+       ================================================================= */
+
+    /* --- HEADINGS ---
+       All use font-heading (Joystix Monospace)
+       NOTE: line-height: 1 (leading-none) on ALL headings
+       NOTE: letter-spacing: -0.025em (tracking-tight) on ALL headings
+    */
+
+    h1 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 2.25rem;       /* text-4xl — NOT in token system, Tailwind default (36px) */
+      font-weight: 700;         /* font-bold */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em; /* tracking-tight */
+      color: oklch(0.1641 0.0044 84.59); /* text-main */
+    }
+
+    h2 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 2rem;          /* text-3xl = --font-size-3xl (32px) */
+      font-weight: 400;         /* font-normal */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    h3 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1.75rem;       /* text-2xl = --font-size-2xl (28px) */
+      font-weight: 600;         /* font-semibold */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    h4 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1.5rem;        /* text-xl = --font-size-xl (24px) */
+      font-weight: 500;         /* font-medium */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    h5 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1.25rem;       /* text-lg = --font-size-lg (20px) */
+      font-weight: 500;         /* font-medium */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    h6 {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;          /* text-base = --font-size-base (16px) */
+      font-weight: 500;         /* font-medium */
+      line-height: 1;           /* leading-none */
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    /* --- BODY TEXT ---
+       Uses font-sans (Mondwest)
+    */
+    p {
+      font-family: 'Mondwest', system-ui, serif;
+      font-size: 1rem;          /* text-base (16px) */
+      font-weight: 400;         /* font-normal */
+      line-height: 1.375;       /* leading-snug */
+      letter-spacing: -0.025em; /* tracking-tight */
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    /* --- LINKS --- */
+    a {
+      font-family: 'Mondwest', system-ui, serif;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;         /* leading-normal */
+      color: oklch(0.7701 0.0527 236.81); /* text-link: sky-blue */
+      text-decoration: underline;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* --- LISTS --- */
+    ul, ol {
+      font-family: 'Joystix Monospace', monospace; /* font-heading */
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.625;       /* leading-relaxed */
+      color: oklch(0.1641 0.0044 84.59);
+      padding-left: 1.5rem;     /* pl-6 */
+    }
+
+    li {
+      font-family: 'Mondwest', system-ui, serif; /* font-sans */
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.625;       /* leading-relaxed */
+      color: oklch(0.1641 0.0044 84.59);
+      margin-bottom: 0.5rem;    /* mb-2 */
+    }
+
+    /* --- INLINE TEXT --- */
+    small {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 0.75rem;       /* text-sm (12px) */
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    strong {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: oklch(0.1641 0.0044 84.59);
+    }
+
+    em {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: oklch(0.1641 0.0044 84.59);
+      font-style: italic;
+    }
+
+    /* --- CODE --- */
+    code {
+      font-family: 'PixelCode', monospace;
+      font-size: 0.625rem;      /* text-xs (10px) */
+      font-weight: 400;
+      line-height: 1.5;
+      color: oklch(0.1641 0.0044 84.59);
+      background: oklch(0.9780 0.0295 94.34); /* bg-depth */
+      padding: 0.125rem 0.25rem; /* py-0.5 px-1 */
+      border-radius: 0.25rem;   /* rounded-sm */
+    }
+
+    pre {
+      font-family: 'PixelCode', monospace;
+      font-size: 0.75rem;       /* text-sm (12px) */
+      font-weight: 400;
+      line-height: 1.625;       /* leading-relaxed */
+      color: oklch(0.1641 0.0044 84.59);
+      background: oklch(0.1641 0.0044 84.59 / 0.1); /* bg-inv/10 */
+      padding: 1rem;
+      border-radius: 0.25rem;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    kbd {
+      font-family: 'PixelCode', monospace;
+      font-size: 0.75rem;       /* text-sm (12px) */
+      font-weight: 400;
+      line-height: 1.5;
+      color: oklch(0.9780 0.0295 94.34); /* text-flip: cream */
+      background: oklch(0.1641 0.0044 84.59); /* bg-inv: ink */
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+    }
+
+    /* --- HIGHLIGHTS AND QUOTES --- */
+    mark {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: oklch(0.1641 0.0044 84.59);
+      background: oklch(0.9126 0.1170 93.68); /* bg-action-primary: sun-yellow */
+    }
+
+    blockquote {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.625;       /* leading-relaxed */
+      color: oklch(0.1641 0.0044 84.59);
+      border-left: 4px solid oklch(0.1641 0.0044 84.59); /* border-l-4 border-line */
+      padding-left: 1rem;       /* pl-4 */
+      font-style: italic;
+    }
+
+    cite {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 0.75rem;       /* text-sm */
+      font-weight: 400;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    q {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* --- DEFINITIONS --- */
+    abbr {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      text-decoration: underline dotted;
+    }
+
+    dfn {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* --- SUB/SUP --- */
+    sub, sup {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    /* --- EDITS --- */
+    del {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      text-decoration: line-through;
+    }
+
+    ins {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 1rem;
+      text-decoration: underline;
+    }
+
+    /* --- LABELS AND CAPTIONS --- */
+    caption, figcaption {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 0.75rem;       /* text-sm */
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.025em;
+    }
+
+    label {
+      font-family: 'Joystix Monospace', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;         /* font-medium */
+      line-height: 1;
+      letter-spacing: -0.025em;
+    }
+
+    /* =================================================================
+       SPECIMEN LAYOUT HELPERS (not part of the design system)
+       ================================================================= */
+    .specimen-section {
+      margin-bottom: 3rem;
+    }
+    .specimen-label {
+      font-family: 'PixelCode', monospace;
+      font-size: 0.625rem;
+      color: oklch(0.1641 0.0044 84.59 / 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid oklch(0.1641 0.0044 84.59 / 0.1);
+      padding-bottom: 0.25rem;
+    }
+    .specimen-label::before { content: '// '; }
+    .spacer { height: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADING HIERARCHY
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Heading Scale (all Joystix Monospace, leading-none, tracking-tight)</div>
+    <div class="spacer"></div>
+
+    <h1>h1: Display Heading (2.25rem/36px, bold 700)</h1>
+    <div class="spacer"></div>
+    <h2>h2: Section Heading (2rem/32px, normal 400)</h2>
+    <div class="spacer"></div>
+    <h3>h3: Subsection Heading (1.75rem/28px, semibold 600)</h3>
+    <div class="spacer"></div>
+    <h4>h4: Group Heading (1.5rem/24px, medium 500)</h4>
+    <div class="spacer"></div>
+    <h5>h5: Minor Heading (1.25rem/20px, medium 500)</h5>
+    <div class="spacer"></div>
+    <h6>h6: Micro Heading (1rem/16px, medium 500)</h6>
+  </section>
+
+  <!-- ============================================================
+       HEADING + BODY PAIRING
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Heading + Body Pairing (heading: Joystix / body: Mondwest)</div>
+    <div class="spacer"></div>
+
+    <h2>The Architecture of Portable Design Systems</h2>
+    <div class="spacer"></div>
+    <p>Design tokens provide the foundational vocabulary for a design system. When properly structured, they enable themes to be portable across frameworks, platforms, and rendering contexts. The two-tier model separates brand primitives from semantic mappings, creating a clean interface between identity and implementation.</p>
+    <div class="spacer"></div>
+    <p>This separation matters because it allows the same component to render correctly in a newspaper layout, a desktop application, or a mobile screen without any changes to its structural code. The semantic layer absorbs the visual variation while the component layer stays stable.</p>
+  </section>
+
+  <!-- ============================================================
+       BODY TEXT MEASURE TEST
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Body Text Measure Test (16px Mondwest, line-height 1.375, max-width 720px = 45rem)</div>
+    <div class="spacer"></div>
+
+    <p>The ideal line length for comfortable reading is between 45 and 75 characters per line, with 66 characters being the traditional optimum. This paragraph is set in Mondwest at 16px (1rem) with a line-height of 1.375 (leading-snug) and letter-spacing of -0.025em (tracking-tight). The container is 720px (45rem) wide. Count the characters on this line to evaluate whether the measure falls within the readable range for this font at this size.</p>
+
+    <div class="spacer"></div>
+
+    <p>A second paragraph follows to test paragraph spacing. The base stylesheet provides no margin between paragraphs — spacing must be added explicitly. Note that the body font (Mondwest) is a pixel-style serif, which has different character widths than traditional body typefaces. Its x-height and character width affect the optimal measure calculation differently than, say, Georgia or Source Serif Pro.</p>
+  </section>
+
+  <!-- ============================================================
+       INLINE ELEMENTS
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Inline Elements</div>
+    <div class="spacer"></div>
+
+    <p>Body text with <strong>strong emphasis (Joystix, bold)</strong> and <em>italic emphasis (Joystix, italic)</em> inline. Note that strong and em switch to font-heading (Joystix), creating a mid-sentence font swap between body (Mondwest) and emphasis (Joystix).</p>
+
+    <div class="spacer"></div>
+
+    <p>Here is <small>small text (12px, Joystix)</small> and <mark>highlighted text (sun-yellow background)</mark> within a paragraph. The <abbr title="Design Nexus Architecture">DNA</abbr> spec defines <dfn>semantic tokens</dfn> as purpose-based mappings.</p>
+
+    <div class="spacer"></div>
+
+    <p>Subscript: H<sub>2</sub>O and superscript: E=mc<sup>2</sup>. Both use Joystix at 12px with leading-none.</p>
+
+    <div class="spacer"></div>
+
+    <p>Edits: <del>removed content (line-through)</del> and <ins>inserted content (underline)</ins>.</p>
+  </section>
+
+  <!-- ============================================================
+       LINKS
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Links (Mondwest, sky-blue, underline)</div>
+    <div class="spacer"></div>
+
+    <p>Visit the <a href="#">design system documentation</a> for token reference. Links use the body font (Mondwest) at 16px with sky-blue color and underline. The hover state reduces opacity to 0.8.</p>
+  </section>
+
+  <!-- ============================================================
+       LISTS
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Lists (ul/ol: Joystix heading font / li: Mondwest body font)</div>
+    <div class="spacer"></div>
+
+    <h4>Unordered List</h4>
+    <div class="spacer"></div>
+    <ul>
+      <li>Tier 1 tokens define raw brand palette values like sun-yellow and ink</li>
+      <li>Tier 2 tokens map brand values to semantic roles like page, main, and line</li>
+      <li>Components consume only Tier 2 tokens, never reaching into Tier 1 directly</li>
+    </ul>
+
+    <div class="spacer"></div>
+
+    <h4>Ordered List</h4>
+    <div class="spacer"></div>
+    <ol>
+      <li>Define brand primitives in the <code>@theme</code> block</li>
+      <li>Create semantic mappings that reference brand values</li>
+      <li>Override semantic values in dark mode without touching brand tokens</li>
+    </ol>
+  </section>
+
+  <!-- ============================================================
+       CODE ELEMENTS
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Code Elements (PixelCode mono)</div>
+    <div class="spacer"></div>
+
+    <p>Inline code: <code>--color-page: var(--color-cream)</code> at 10px (0.625rem) with depth background.</p>
+
+    <div class="spacer"></div>
+
+    <pre><code>/* Token chain example — tokens.css */
+@theme {
+  --color-cream: oklch(0.9780 0.0295 94.34);
+  --color-page: var(--color-cream);
+  --color-card: var(--color-pure-white);
+}
+
+/* typography.css — base layer */
+@layer base {
+  h1 { @apply text-4xl font-heading font-bold leading-none; }
+  p  { @apply text-base font-sans leading-snug; }
+}</code></pre>
+
+    <div class="spacer"></div>
+
+    <p>Keyboard shortcuts: Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> to open the command palette.</p>
+  </section>
+
+  <!-- ============================================================
+       BLOCKQUOTES
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Blockquote (Joystix, italic, left border)</div>
+    <div class="spacer"></div>
+
+    <blockquote>
+      <p style="font-family: 'Joystix Monospace', monospace; font-style: italic;">Typography is the craft of endowing human language with a durable visual form, and thus with an independent existence.</p>
+      <cite>Robert Bringhurst, The Elements of Typographic Style</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================================================
+       LABELS AND CAPTIONS
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Labels, Captions, Figcaption (12px Joystix, leading-none)</div>
+    <div class="spacer"></div>
+
+    <label>Form Label (medium 500)</label>
+    <div class="spacer"></div>
+
+    <figure>
+      <div style="width: 100%; height: 120px; background: oklch(0.1641 0.0044 84.59 / 0.05); border: 1px solid oklch(0.1641 0.0044 84.59 / 0.2); display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'PixelCode', monospace; font-size: 0.625rem; color: oklch(0.1641 0.0044 84.59 / 0.3);">[image placeholder]</span>
+      </div>
+      <figcaption>Figure 1: Token chain resolution in Tailwind v4 @theme blocks</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================================================
+       FULL ARTICLE SIMULATION
+       ============================================================ -->
+  <section class="specimen-section">
+    <div class="specimen-label">Full Article — All Levels in Context</div>
+    <div class="spacer"></div>
+
+    <h1>Building Portable Design Systems with DNA</h1>
+    <div class="spacer"></div>
+
+    <p>The Design Nexus Architecture provides a standardized approach to theme packages that work across frameworks. At its core is a two-tier token system that separates brand identity from semantic purpose.</p>
+
+    <div class="spacer"></div>
+
+    <h2>Token Architecture</h2>
+    <div class="spacer"></div>
+
+    <p>Every theme begins with brand primitives: the raw color values, type choices, and spatial constants that define a visual identity. In RDNA, these live as CSS custom properties inside a Tailwind v4 <code>@theme</code> block.</p>
+
+    <div class="spacer"></div>
+
+    <h3>Tier 1: Brand Primitives</h3>
+    <div class="spacer"></div>
+
+    <p>Brand tokens are the immutable palette. They carry names that describe what they are, not what they do: <code>--color-sun-yellow</code>, <code>--color-ink</code>, <code>--color-cream</code>.</p>
+
+    <div class="spacer"></div>
+
+    <h4>Why OKLCH?</h4>
+    <div class="spacer"></div>
+
+    <p>The Radiants theme uses OKLCH color values because they provide perceptual uniformity across hue rotations. A 10% lightness shift in OKLCH looks like a 10% lightness shift to human eyes, which isn't true of HSL or hex values.</p>
+
+    <div class="spacer"></div>
+
+    <h3>Tier 2: Semantic Mappings</h3>
+    <div class="spacer"></div>
+
+    <p>Semantic tokens describe purpose: <code>--color-page</code> for backgrounds, <code>--color-main</code> for primary text, <code>--color-line</code> for borders. Components reference only these semantic names.</p>
+
+    <div class="spacer"></div>
+
+    <blockquote>
+      <p style="font-family: 'Joystix Monospace', monospace; font-style: italic;">The semantic layer is the contract between design and engineering. Change the brand tokens, and the entire system updates. Change a semantic mapping, and a single role shifts.</p>
+    </blockquote>
+
+    <div class="spacer"></div>
+
+    <h2>Typography in the System</h2>
+    <div class="spacer"></div>
+
+    <p>The typography scale defines seven steps from <code>text-xs</code> (10px) to <code>text-3xl</code> (32px). Three font families serve distinct roles:</p>
+
+    <div class="spacer"></div>
+
+    <ul>
+      <li><strong>Mondwest</strong> handles body text, providing readability at paragraph length</li>
+      <li><strong>Joystix Monospace</strong> serves headings and UI labels with a distinct pixel-art character</li>
+      <li><strong>PixelCode</strong> renders code blocks and technical content in a monospaced grid</li>
+    </ul>
+
+    <div class="spacer"></div>
+
+    <h5>Weight Availability</h5>
+    <div class="spacer"></div>
+
+    <p>Note that Joystix Monospace ships only at weight 400. The <code>typography.css</code> base layer applies <code>font-bold</code> (700), <code>font-semibold</code> (600), and <code>font-medium</code> (500) to headings, but the font file cannot render these weights natively. The browser synthesizes bold from the 400 weight, which produces unpredictable results with pixel fonts.</p>
+
+    <div class="spacer"></div>
+
+    <h6>Related: ESLint Enforcement</h6>
+    <div class="spacer"></div>
+
+    <p>The <code>rdna/no-hardcoded-typography</code> rule prevents arbitrary font sizes and weights. Only token-mapped classes are allowed: <code>text-sm</code> through <code>text-3xl</code>.</p>
+  </section>
+
+</body>
+</html>

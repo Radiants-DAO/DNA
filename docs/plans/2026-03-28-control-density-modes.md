@@ -1,26 +1,37 @@
 # Control Density Modes — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Add a `"control"` density mode to existing RDNA components so they can serve as parameter-GUI controls (replacing DialKit), then build the genuinely new compound controls (ColorPicker w/ OKLCH, BoxSpacing, BorderRadius, ShadowEditor) as RDNA core components. Finally, wire up a thin `useControlPanel` orchestration hook and `ControlPanel` component that renders existing RDNA components from a declarative config.
+**Goal:** First land a frontend-first donor import pass for comment/annotation surfaces and compound designer controls, then add a `"control"` density mode to existing RDNA components so they can replace DialKit, and finally harden the imported shells into functional RDNA controls plus `useControlPanel` / `ControlPanel`.
 
 **Worktree:** `/Users/rivermassey/Desktop/dev/DNA` → branch `feat/control-density` (create at execution time)
 
 **Architecture:** No new library. Instead:
 
-1. Extend the existing `data-density` CSS attribute system with a `"control"` tier (between compact and comfortable) that gives components the dense, labeled, mono-value look of a parameter GUI.
+1. Phase 0 ports the strongest presentational donor UIs into RDNA from `/Users/rivermassey/Desktop/dev/DNA/tools/playground` (annotation/comment shells) and `/Users/rivermassey/Desktop/dev/sandbox/flow` (compound designer controls). Do not import `flow-0` shells unless needed as a visual reference.
 
-2. Each form component gets density-aware CSS via `[data-density="control"]` selectors — no prop changes needed. Wrap a subtree in `<div data-density="control">` and all controls inside shrink.
+2. Existing RDNA primitives remain the basis for DialKit parity: `Slider`, `Switch`, `Select`, `Input`, `NumberField`, `Collapsible`, `Button`, and `ToggleGroup`. Use control-density CSS rather than creating new primitive variants.
 
-3. New compound controls (ColorPicker, BoxSpacing, etc.) are new RDNA core components that compose existing primitives.
+3. Imported donor UIs land frontend-first: visual parity, local demo state, and reusable component APIs first. No host overlays, selection engine, comment persistence, or extension plumbing in Phase 0.
 
-4. `useControlPanel` + `ControlPanel` are a thin config-to-component orchestration layer in `packages/radiants/components/core/ControlPanel/`.
+4. Keep from Interface Kit only the product model: `Style` / `Typography` / `Layout` grouping, the element-targeted workflow, and future prompt-export / Tailwind modes. Do not port Interface Kit runtime chrome or injected styles.
+
+5. Extend the existing `data-density` CSS attribute system with a `"control"` tier (between compact and comfortable) that gives components the dense, labeled, mono-value look of a parameter GUI.
+
+6. `useControlPanel` + `ControlPanel` are a thin config-to-component orchestration layer in `packages/radiants/components/core/ControlPanel/`.
 
 **Tech Stack:** React 19, TypeScript, Tailwind v4, `@base-ui/react`, `culori` (already a dep), Vitest, `class-variance-authority`
 
 ***
 
 ## Master Checklist
+
+### Phase 0: Frontend-First Donor Import
+
+* [ ] Task 0A — Import annotation/comment shells from playground into RDNA
+* [ ] Task 0B — Import ColorPicker + ShadowEditor shells from sandbox/flow
+* [ ] Task 0C — Import BoxSpacing + BorderRadius shells from sandbox/flow
+* [ ] Task 0D — Register donor-backed demos in playground and lock replacement targets
 
 ### Phase 1: Density Infrastructure
 
@@ -41,10 +52,10 @@
 
 ### Phase 3: New Compound Controls
 
-* [ ] Task 12 — ColorPicker: OKLCH color picker with hex/oklch input
-* [ ] Task 13 — BoxSpacing: 4-side spacing editor
-* [ ] Task 14 — BorderRadiusEditor: 4-corner radius editor
-* [ ] Task 15 — ShadowEditor: multi-property shadow editor
+* [ ] Task 12 — Harden imported ColorPicker shell into OKLCH picker
+* [ ] Task 13 — Harden imported BoxSpacing shell into 4-side spacing editor
+* [ ] Task 14 — Harden imported BorderRadiusEditor shell into 4-corner radius editor
+* [ ] Task 15 — Harden imported ShadowEditor shell into multi-property shadow editor
 
 ### Phase 4: ControlPanel Orchestration
 
@@ -56,6 +67,204 @@
 
 * [ ] Task 19 — Remove `dialkit` dependency and `DialPanel` wrapper
 * [ ] Task 20 — Update DESIGN.md with control density documentation
+
+***
+
+## Phase 0 Donor Matrix
+
+Use these donor files directly as the Phase 0 source of truth:
+
+* Annotation / comment shells from `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/ComposerShell.tsx`, `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationComposer.tsx`, `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationDetail.tsx`, `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationPin.tsx`, `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationBadge.tsx`, and `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/lib/clampPopoverPosition.ts`. These replace the older flow-0 comment chrome in `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/CommentPopover.tsx`, `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/CommentBadge.tsx`, and `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/CommentMode.tsx`.
+
+* Compound designer controls from `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ColorPicker.tsx`, `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ShadowEditor.tsx`, `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/boxShadowParser.ts`, `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/SpacingSection.tsx`, and `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/BordersSection.tsx`. These replace the simplified style-surface implied by `/Users/rivermassey/Desktop/dev/DNA/node_modules/.pnpm/interface-kit@0.1.3_react-dom@19.2.1_react@19.2.1__react@19.2.1/node_modules/interface-kit/README.md` and supersede the older flow-0 copies in `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/designer/ColorPicker.tsx` and `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/designer/ShadowEditor.tsx`.
+
+* Keep `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/modes/tools/scrubLabel.ts` and `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/modes/tools/unitInput.ts` as later behavior references for Phase 3. Do not import them in Phase 0 unless a shell cannot render without them.
+
+* Keep from Interface Kit only the information architecture and workflow concepts documented in `/Users/rivermassey/Desktop/dev/DNA/node_modules/.pnpm/interface-kit@0.1.3_react-dom@19.2.1_react@19.2.1__react@19.2.1/node_modules/interface-kit/README.md`: `Style`, `Typography`, `Layout`, element-targeted editing, prompt export, and Tailwind mode. Do not copy runtime UI from the package.
+
+Do not import these legacy shells into RDNA:
+
+* `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/FloatingModeBar.tsx`
+* `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/ModeToolbar.tsx`
+* `/Users/rivermassey/Desktop/dev/archive/flow-0/app/components/search/SearchOverlay.tsx`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/overlays/overlayRoot.ts`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/overlays/persistentSelections.ts`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/overlays/spacingHandles.ts`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/modes/tools/layoutTool.ts`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/modes/tools/effectsTool.ts`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/content/modes/tools/inspectPanel.ts`
+
+***
+
+### Task 0A: Import Annotation / Comment Shells from Playground
+
+**Files:**
+
+* Create: `packages/radiants/components/core/AnnotationSurface/ComposerShell.tsx`
+* Create: `packages/radiants/components/core/AnnotationSurface/AnnotationComposer.tsx`
+* Create: `packages/radiants/components/core/AnnotationSurface/AnnotationDetail.tsx`
+* Create: `packages/radiants/components/core/AnnotationSurface/AnnotationPin.tsx`
+* Create: `packages/radiants/components/core/AnnotationSurface/AnnotationBadge.tsx`
+* Create: `packages/radiants/components/core/AnnotationSurface/clampPopoverPosition.ts`
+* Create: `packages/radiants/components/core/AnnotationSurface/index.ts`
+* Create: `packages/radiants/components/core/AnnotationSurface/AnnotationSurface.test.tsx`
+* Modify: `packages/radiants/components/core/index.ts`
+
+**Source donors:**
+
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/ComposerShell.tsx`
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationComposer.tsx`
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationDetail.tsx`
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationPin.tsx`
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/components/AnnotationBadge.tsx`
+* `/Users/rivermassey/Desktop/dev/DNA/tools/playground/app/playground/lib/clampPopoverPosition.ts`
+
+**Step 1: Port the shell markup and styling**
+
+Copy the visual structure into `packages/radiants/components/core/AnnotationSurface/` and replace playground-only hooks, local app types, and registry-only demo state with plain component props.
+
+**Step 2: Normalize the RDNA-facing API**
+
+Expose reusable props for `open`, `anchorRect` or `position`, `intent`, `priority`, `message`, `resolution`, submit/cancel handlers, and footer actions. Keep these presentational only in Phase 0.
+
+**Step 3: Replace ad hoc HTML where practical**
+
+Use existing RDNA `Button`, `Input`, `TextArea`, `Badge`, `Popover`, `PreviewCard`, and icon components where that does not distort the imported visuals.
+
+**Step 4: Add smoke coverage**
+
+Render the new annotation surface components in `packages/radiants/components/core/AnnotationSurface/AnnotationSurface.test.tsx` and verify they mount without playground-only dependencies.
+
+**Step 5: Export and commit**
+
+```bash
+git add packages/radiants/components/core/AnnotationSurface/ packages/radiants/components/core/index.ts
+git commit -m "feat(radiants): import frontend-first annotation surface shells"
+```
+
+***
+
+### Task 0B: Import ColorPicker + ShadowEditor Shells from Sandbox/Flow
+
+**Files:**
+
+* Create: `packages/radiants/components/core/ColorPicker/ColorPicker.tsx`
+* Create: `packages/radiants/components/core/ColorPicker/ColorPicker.meta.ts`
+* Create: `packages/radiants/components/core/ColorPicker/colorpicker-control.css`
+* Create: `packages/radiants/components/core/ShadowEditor/ShadowEditor.tsx`
+* Create: `packages/radiants/components/core/ShadowEditor/ShadowEditor.meta.ts`
+* Create: `packages/radiants/components/core/ShadowEditor/shadoweditor-control.css`
+* Create: `packages/radiants/components/core/ShadowEditor/boxShadowParser.ts`
+* Create: `packages/radiants/components/core/__tests__/designer-control-shells.test.tsx`
+* Modify: `packages/radiants/components/core/index.ts`
+
+**Source donors:**
+
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ColorPicker.tsx`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ShadowEditor.tsx`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/boxShadowParser.ts`
+
+**Step 1: Port the structure, not the platform wiring**
+
+Copy the layout hierarchy, slot structure, and visual affordances into RDNA component folders. Strip extension-only behavior, document APIs, and state coupling that is not required for a standalone shell.
+
+**Step 2: Keep the shells frontend-first**
+
+Preserve the major visual regions, labels, and row layouts, but allow placeholder callbacks or local demo state where deeper behavior will not be implemented until Phase 3.
+
+**Step 3: Match RDNA conventions**
+
+Add `meta.ts` files, RDNA class names or slot markers, and index exports so the imported shells are usable in playgrounds and registry tooling immediately.
+
+**Step 4: Add smoke coverage**
+
+Mount both components in `packages/radiants/components/core/__tests__/designer-control-shells.test.tsx` with minimal props and verify they render without extension imports.
+
+**Step 5: Commit**
+
+```bash
+git add packages/radiants/components/core/ColorPicker/ packages/radiants/components/core/ShadowEditor/ packages/radiants/components/core/__tests__/designer-control-shells.test.tsx packages/radiants/components/core/index.ts
+git commit -m "feat(radiants): import color and shadow control shells"
+```
+
+***
+
+### Task 0C: Import BoxSpacing + BorderRadius Shells from Sandbox/Flow
+
+**Files:**
+
+* Create: `packages/radiants/components/core/BoxSpacing/BoxSpacing.tsx`
+* Create: `packages/radiants/components/core/BoxSpacing/BoxSpacing.meta.ts`
+* Create: `packages/radiants/components/core/BoxSpacing/boxspacing-control.css`
+* Create: `packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.tsx`
+* Create: `packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.meta.ts`
+* Create: `packages/radiants/components/core/BorderRadiusEditor/borderradius-control.css`
+* Modify: `packages/radiants/components/core/index.ts`
+
+**Source donors:**
+
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/SpacingSection.tsx`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/BordersSection.tsx`
+
+**Step 1: Port the visible control groups**
+
+Extract the linked / unlinked spacing and corner-radius shells into dedicated RDNA components. Do not bring over the entire section wrappers, only the reusable control surfaces.
+
+**Step 2: Keep the first pass presentational**
+
+Use simple local state or placeholder values where needed to preserve the imported layout. Deeper parsing, linked-value semantics, and interaction polish are Phase 3 work.
+
+**Step 3: Add RDNA metadata and exports**
+
+Register both components in `packages/radiants/components/core/index.ts` and add `meta.ts` files so they appear in internal tooling immediately.
+
+**Step 4: Commit**
+
+```bash
+git add packages/radiants/components/core/BoxSpacing/ packages/radiants/components/core/BorderRadiusEditor/ packages/radiants/components/core/index.ts
+git commit -m "feat(radiants): import spacing and radius control shells"
+```
+
+***
+
+### Task 0D: Register Donor-Backed Demos and Lock Replacement Targets
+
+**Files:**
+
+* Modify: `tools/playground/app/playground/components/playground-ui-demos.tsx`
+* Modify: `tools/playground/app/playground/app-registry.ts`
+* Reference: `apps/rad-os/components/apps/pattern-playground/PatternPlayground.tsx`
+
+**Step 1: Add demo coverage for imported shells**
+
+Render the new RDNA annotation surface and compound control shells inside `tools/playground/app/playground/components/playground-ui-demos.tsx` so visual review happens in one place.
+
+**Step 2: Register the demos**
+
+Update `tools/playground/app/playground/app-registry.ts` so the imported RDNA shells show up as a dedicated control-surface group.
+
+**Step 3: Lock the replacement targets**
+
+Add comments or plan references where useful to make the intended replacements explicit:
+
+* `packages/radiants/components/core/DialPanel/DialPanel.tsx` is the temporary DialKit shim to be replaced in Phase 4.
+* `apps/rad-os/components/apps/pattern-playground/PatternPlayground.tsx` is the first migration target for `ControlPanel`.
+* Interface Kit concepts are retained, but its runtime chrome is not.
+
+**Step 4: Verify**
+
+```bash
+pnpm dev
+```
+
+Open the playground and confirm the imported shells render without reaching into the extension or old app codepaths.
+
+**Step 5: Commit**
+
+```bash
+git add tools/playground/app/playground/components/playground-ui-demos.tsx tools/playground/app/playground/app-registry.ts
+git commit -m "chore(playground): register control surface donor demos"
+```
 
 ***
 
@@ -707,19 +916,19 @@ git commit -m "feat(togglegroup): add control density mode (segmented)"
 
 ***
 
-### Task 12: ColorPicker — New RDNA Component
+### Task 12: ColorPicker — Harden Imported Shell into OKLCH Picker
 
 **Files:**
 
-* Create: `packages/radiants/components/core/ColorPicker/ColorPicker.tsx`
-
-* Create: `packages/radiants/components/core/ColorPicker/ColorPicker.meta.ts`
-
+* Modify: `packages/radiants/components/core/ColorPicker/ColorPicker.tsx`
+* Modify: `packages/radiants/components/core/ColorPicker/ColorPicker.meta.ts`
 * Create: `packages/radiants/components/core/ColorPicker/color-math.ts`
+* Modify: `packages/radiants/components/core/ColorPicker/colorpicker-control.css`
+* Modify: `packages/radiants/components/core/index.ts` (if exports changed after Phase 0)
 
-* Create: `packages/radiants/components/core/ColorPicker/colorpicker-control.css`
+**Source donor already imported in Phase 0:**
 
-* Modify: `packages/radiants/components/core/index.ts` (add export)
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ColorPicker.tsx`
 
 This is the most complex new control. It provides:
 
@@ -1115,17 +1324,18 @@ git commit -m "feat(radiants): add ColorPicker component with OKLCH support"
 
 ***
 
-### Task 13: BoxSpacing — 4-Side Spacing Editor
+### Task 13: BoxSpacing — Harden Imported Shell into 4-Side Spacing Editor
 
 **Files:**
 
-* Create: `packages/radiants/components/core/BoxSpacing/BoxSpacing.tsx`
+* Modify: `packages/radiants/components/core/BoxSpacing/BoxSpacing.tsx`
+* Modify: `packages/radiants/components/core/BoxSpacing/BoxSpacing.meta.ts`
+* Modify: `packages/radiants/components/core/BoxSpacing/boxspacing-control.css`
+* Modify: `packages/radiants/components/core/index.ts` (if exports changed after Phase 0)
 
-* Create: `packages/radiants/components/core/BoxSpacing/BoxSpacing.meta.ts`
+**Source donor already imported in Phase 0:**
 
-* Create: `packages/radiants/components/core/BoxSpacing/boxspacing-control.css`
-
-* Modify: `packages/radiants/components/core/index.ts` (add export)
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/SpacingSection.tsx`
 
 A visual editor showing a nested box diagram (like browser DevTools box model). Four editable values (top, right, bottom, left) with a toggle for uniform/individual mode. Uses NumberField internally for each side.
 
@@ -1264,15 +1474,18 @@ git commit -m "feat(radiants): add BoxSpacing compound control"
 
 ***
 
-### Task 14: BorderRadiusEditor — 4-Corner Radius Editor
+### Task 14: BorderRadiusEditor — Harden Imported Shell into 4-Corner Radius Editor
 
 **Files:**
 
-* Create: `packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.tsx`
-
-* Create: `packages/radiants/components/core/BorderRadiusEditor/borderradius-control.css`
-
+* Modify: `packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.tsx`
+* Modify: `packages/radiants/components/core/BorderRadiusEditor/BorderRadiusEditor.meta.ts`
+* Modify: `packages/radiants/components/core/BorderRadiusEditor/borderradius-control.css`
 * Modify: `packages/radiants/components/core/index.ts`
+
+**Source donor already imported in Phase 0:**
+
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/sections/BordersSection.tsx`
 
 Similar pattern to BoxSpacing — 4 corner inputs (topLeft, topRight, bottomRight, bottomLeft) with uniform/individual toggle. Shows a visual preview box whose corners update live.
 
@@ -1287,15 +1500,20 @@ git commit -m "feat(radiants): add BorderRadiusEditor compound control"
 
 ***
 
-### Task 15: ShadowEditor — Multi-Property Shadow Editor
+### Task 15: ShadowEditor — Harden Imported Shell into Multi-Property Shadow Editor
 
 **Files:**
 
-* Create: `packages/radiants/components/core/ShadowEditor/ShadowEditor.tsx`
-
-* Create: `packages/radiants/components/core/ShadowEditor/shadoweditor-control.css`
-
+* Modify: `packages/radiants/components/core/ShadowEditor/ShadowEditor.tsx`
+* Modify: `packages/radiants/components/core/ShadowEditor/ShadowEditor.meta.ts`
+* Modify: `packages/radiants/components/core/ShadowEditor/shadoweditor-control.css`
+* Modify: `packages/radiants/components/core/ShadowEditor/boxShadowParser.ts`
 * Modify: `packages/radiants/components/core/index.ts`
+
+**Source donors already imported in Phase 0:**
+
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/ShadowEditor.tsx`
+* `/Users/rivermassey/Desktop/dev/sandbox/flow/packages/extension/src/panel/components/designer/boxShadowParser.ts`
 
 Composes 4 Sliders (X, Y, Blur, Spread), a ColorPicker (shadow color), and a preview box. Value is a `ShadowValue` object.
 
@@ -1328,7 +1546,11 @@ git commit -m "feat(radiants): add ShadowEditor compound control"
 
 * Create: `packages/radiants/components/core/ControlPanel/types.ts`
 
-This is the declarative config → typed reactive values hook (inspired by DialKit's `useDialKit`). It takes a name and a config object, infers types, and returns live values.
+* Reference: `packages/radiants/registry/PropControls.tsx`
+
+* Reference: `packages/radiants/registry/useShowcaseProps.ts`
+
+This is the declarative config → typed reactive values hook (inspired by DialKit's `useDialKit`, but seeded from the existing Radiants registry prop-control infrastructure). It takes a name and a config object, infers types, and returns live values.
 
 **Step 1: Define types**
 
@@ -1456,6 +1678,10 @@ git commit -m "feat(radiants): add useControlPanel hook with typed config"
 * Create: `packages/radiants/components/core/ControlPanel/ControlPanel.meta.ts`
 
 * Modify: `packages/radiants/components/core/index.ts`
+
+* Reference: `packages/radiants/components/core/DialPanel/DialPanel.tsx`
+
+* Reference: `packages/radiants/components/core/AnnotationSurface/`
 
 The `ControlPanel` component takes a config object and renders the appropriate RDNA components. It wraps everything in `<div data-density="control">` so all child controls get the compact treatment automatically.
 
