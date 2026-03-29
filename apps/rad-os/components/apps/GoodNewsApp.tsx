@@ -464,17 +464,17 @@ export function GoodNewsApp({ windowId }: AppProps) {
             ============================================================ */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr auto 1fr',
+          gridTemplateColumns: '1fr 3fr 1fr',
           columnGap: 16,
           paddingTop: 20,
           alignItems: 'center',
         }}>
           {/* Left info */}
           <div style={{ textAlign: 'left' }}>
-            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '0.44rem', letterSpacing: '-0.02em', lineHeight: 'normal' }}>
+            <p className="text-head font-bold" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.5rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
               Largest Daily Founders Workshop
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
+            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.75rem', lineHeight: 'normal' }}>
               Solana Mobile X Radiants
             </p>
           </div>
@@ -489,7 +489,6 @@ export function GoodNewsApp({ windowId }: AppProps) {
               fontWeight: 400,
               letterSpacing: '-0.06em',
               lineHeight: 'normal',
-              whiteSpace: 'nowrap',
             }}
           >
             Good News
@@ -497,11 +496,11 @@ export function GoodNewsApp({ windowId }: AppProps) {
 
           {/* Right info */}
           <div style={{ textAlign: 'right' }}>
-            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '0.44rem', letterSpacing: '-0.02em', lineHeight: 'normal' }}>
+            <p className="text-head" style={{ fontFamily: "'Mondwest', serif", fontSize: '1.5rem', letterSpacing: '-0.05em', lineHeight: 'normal' }}>
               $2,000,000 In Pages Burnt
             </p>
-            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.44rem', lineHeight: 'normal' }}>
-              More on <strong>p6</strong>
+            <p className="text-head uppercase" style={{ fontFamily: "'Pixeloid Sans', sans-serif", fontSize: '0.75rem', lineHeight: 'normal' }}>
+              More on <span style={{ fontWeight: 700 }}>p6</span>
             </p>
           </div>
         </div>

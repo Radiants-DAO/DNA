@@ -1,0 +1,45 @@
+/* =============================================================================
+   fonts-editorial.css - Display/editorial fonts (lazy load on app-window open)
+   Waves Blackletter CPC, Waves Tiny CPC, Pixeloid Sans
+   ============================================================================= */
+
+/* Waves Blackletter CPC - Decorative blackletter
+   ----------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Waves Blackletter CPC';
+  src: url('./fonts/WavesBlackletterCPC.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+
+/* Waves Tiny CPC - Decorative pixel caption
+   ----------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Waves Tiny CPC';
+  src: url('./fonts/WavesTinyCPC.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+
+/* Pixeloid Sans - Informational pixel text (bylines, labels)
+   ----------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('./fonts/PixeloidSans.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('./fonts/PixeloidSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

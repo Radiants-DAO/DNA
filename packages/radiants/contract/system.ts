@@ -141,15 +141,22 @@ export const radiantsSystemContract = {
     ],
     validLeading: [
       "leading-tight", "leading-heading", "leading-snug",
+<<<<<<< HEAD
       "leading-normal", "leading-relaxed",
     ],
     validTracking: [
       "tracking-tight", "tracking-normal", "tracking-wide",
+=======
+      "leading-normal", "leading-relaxed", "leading-none",
+>>>>>>> worktree-agent-ae6bb245
     ],
     validFontFamilies: [
       "font-sans", "font-heading", "font-mono",
       "font-display", "font-caption",
+<<<<<<< HEAD
       "font-mondwest", "font-joystix",
+=======
+>>>>>>> worktree-agent-ae6bb245
     ],
   },
 

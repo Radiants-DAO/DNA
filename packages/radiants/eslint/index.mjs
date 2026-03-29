@@ -21,6 +21,8 @@ import noMixedStyleAuthority from './rules/no-mixed-style-authority.mjs';
 import noBroadRdnaDisables from './rules/no-broad-rdna-disables.mjs';
 import noClippedShadow from './rules/no-clipped-shadow.mjs';
 import noPixelBorder from './rules/no-pixel-border.mjs';
+import noRawLineHeight from './rules/no-raw-line-height.mjs';
+import noRawFontFamily from './rules/no-raw-font-family.mjs';
 
 const plugin = {
   meta: {
@@ -42,6 +44,8 @@ const plugin = {
     'no-broad-rdna-disables': noBroadRdnaDisables,
     'no-clipped-shadow': noClippedShadow,
     'no-pixel-border': noPixelBorder,
+    'no-raw-line-height': noRawLineHeight,
+    'no-raw-font-family': noRawFontFamily,
   },
   configs: {},
 };
@@ -62,6 +66,8 @@ plugin.configs.recommended = {
     'rdna/no-hardcoded-motion': 'warn',
     'rdna/no-clipped-shadow': 'warn',
     'rdna/no-pixel-border': 'warn',
+    'rdna/no-raw-line-height': 'warn',
+    'rdna/no-raw-font-family': 'warn',
   },
 };
 
@@ -78,6 +84,8 @@ plugin.configs.internals = {
     'rdna/no-hardcoded-motion': 'warn',
     'rdna/no-clipped-shadow': 'warn',
     'rdna/no-pixel-border': 'warn',
+    'rdna/no-raw-line-height': 'warn',
+    'rdna/no-raw-font-family': 'warn',
   },
 };
 
@@ -95,6 +103,8 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-hardcoded-motion': 'error',
     'rdna/no-clipped-shadow': 'error',
     'rdna/no-pixel-border': 'error',
+    'rdna/no-raw-line-height': 'error',
+    'rdna/no-raw-font-family': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },
