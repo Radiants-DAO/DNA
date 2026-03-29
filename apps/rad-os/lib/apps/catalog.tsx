@@ -10,6 +10,7 @@ const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
+const ControlSurfaceLabApp = lazy(() => import('@/components/apps/ControlSurfaceLabApp'));
 // ============================================================================
 // Types
 // ============================================================================
@@ -109,6 +110,18 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     windowIcon: <Icon name="newspaper" size={24} />,
     component: GoodNewsApp,
     defaultSize: 'lg',
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    startMenuSection: 'apps',
+  },
+  {
+    id: 'control-lab',
+    windowTitle: 'Control Surface Lab',
+    launcherTitle: 'Control Lab',
+    windowIcon: <Icon name="outline-box" size={24} />,
+    component: ControlSurfaceLabApp,
+    defaultSize: 'xl',
     resizable: true,
     contentPadding: false,
     desktopVisible: true,

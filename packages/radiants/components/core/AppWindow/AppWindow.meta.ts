@@ -17,6 +17,8 @@ export const AppWindowMeta = defineComponentMeta<AppWindowProps>()({
   subcomponents: [
     "AppWindow",
     "AppWindowBody",
+    "AppWindowSplitView",
+    "AppWindowPane",
   ],
   props: {
     id: {
@@ -53,6 +55,10 @@ export const AppWindowMeta = defineComponentMeta<AppWindowProps>()({
     {
       name: "Desktop window shell",
       code: "<AppWindow id=\"about\" title=\"About\">\n  <AppWindowBody>Content</AppWindowBody>\n</AppWindow>",
+    },
+    {
+      name: "Two-pane compare layout",
+      code: "<AppWindow id=\"lab\" title=\"Control Surface Lab\">\n  <AppWindowSplitView>\n    <AppWindowPane>Legacy</AppWindowPane>\n    <AppWindowPane>RDNA</AppWindowPane>\n  </AppWindowSplitView>\n</AppWindow>",
     },
   ],
   registry: {

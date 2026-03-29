@@ -5,6 +5,7 @@ describe('app catalog selectors', () => {
   it('keeps start menu projections derived from catalog data', () => {
     const sections = getStartMenuSections();
     expect(sections.apps.map((app) => app.id)).toContain('brand');
+    expect(sections.apps.map((app) => app.id)).toContain('control-lab');
     expect(sections.web3.map((app) => app.id)).toContain('studio');
   });
 
@@ -18,6 +19,13 @@ describe('app catalog selectors', () => {
     const brand = getWindowChrome('brand');
     expect(brand?.windowTitle).toBe('Design Codex');
     expect(brand?.helpConfig).toBeDefined();
+  });
+
+  it('registers the control surface lab as a desktop-visible internal tool', () => {
+    const controlLab = getApp('control-lab');
+
+    expect(controlLab?.windowTitle).toBe('Control Surface Lab');
+    expect(getDesktopLaunchers().map((app) => app.id)).toContain('control-lab');
   });
 
   it('drops the launch-ready Links stub from the catalog', () => {

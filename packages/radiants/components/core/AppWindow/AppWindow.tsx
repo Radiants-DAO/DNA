@@ -74,6 +74,13 @@ export interface AppWindowBodyProps {
   noScroll?: boolean;
 }
 
+export interface AppWindowSplitViewProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface AppWindowPaneProps extends AppWindowBodyProps {}
+
 const DEFAULT_MIN_SIZE = { width: 300, height: 200 };
 const DEFAULT_BOTTOM_INSET = 48;
 const DEFAULT_VIEWPORT_MARGIN = 8;
@@ -87,6 +94,46 @@ const PADDING_MAP: Record<NonNullable<AppWindowBodyProps['padding']>, string> = 
   md: 'p-4',
   lg: 'p-6',
 };
+
+function renderWindowBodyShell({
+  children,
+  padding = 'lg',
+  bordered = true,
+  bgClassName = 'bg-card',
+  noScroll = false,
+}: AppWindowBodyProps) {
+  const shellClasses = [
+    'h-full',
+    bordered ? 'border border-line rounded' : '',
+    bgClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const paddingClass = PADDING_MAP[padding];
+
+  if (noScroll) {
+    return (
+      <div
+        className={[shellClasses, paddingClass].filter(Boolean).join(' ')}
+        style={{ maxHeight: 'var(--app-content-max-height, none)' }}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <ScrollArea.Root
+      className={shellClasses}
+      style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
+    >
+      <ScrollArea.Viewport>
+        {paddingClass ? <div className={paddingClass}>{children}</div> : children}
+      </ScrollArea.Viewport>
+    </ScrollArea.Root>
+  );
+}
 
 function getMaxWindowSize(viewportBottomInset: number, viewportMargin: number): { width: number; height: number } {
   if (typeof window === 'undefined') {
@@ -281,39 +328,47 @@ export function AppWindowBody({
   bgClassName = 'bg-card',
   noScroll = false,
 }: AppWindowBodyProps) {
-  const shellClasses = [
-    'h-full',
-    bordered ? 'border border-line rounded' : '',
-    bgClassName,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const paddingClass = PADDING_MAP[padding];
-
-  if (noScroll) {
-    return (
-      <div className={`flex-1 min-h-0 mx-2 ${className}`}>
-        <div
-          className={[shellClasses, paddingClass].filter(Boolean).join(' ')}
-          style={{ maxHeight: 'var(--app-content-max-height, none)' }}
-        >
-          {children}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`flex-1 min-h-0 mx-2 ${className}`}>
-      <ScrollArea.Root
-        className={shellClasses}
-        style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
-      >
-        <ScrollArea.Viewport>
-          {paddingClass ? <div className={paddingClass}>{children}</div> : children}
-        </ScrollArea.Viewport>
-      </ScrollArea.Root>
+    <div className={`flex-1 min-h-0 mx-2 ${className}`.trim()}>
+      {renderWindowBodyShell({
+        children,
+        padding,
+        bordered,
+        bgClassName,
+        noScroll,
+      })}
+    </div>
+  );
+}
+
+export function AppWindowSplitView({ children, className = '' }: AppWindowSplitViewProps) {
+  return (
+    <div
+      className={`flex flex-1 min-h-0 gap-1 px-2 pb-2 ${className}`.trim()}
+      data-window-layout="split"
+    >
+      {children}
+    </div>
+  );
+}
+
+export function AppWindowPane({
+  children,
+  className = '',
+  padding = 'lg',
+  bordered = true,
+  bgClassName = 'bg-card',
+  noScroll = false,
+}: AppWindowPaneProps) {
+  return (
+    <div className={`flex-1 min-w-0 min-h-0 ${className}`.trim()}>
+      {renderWindowBodyShell({
+        children,
+        padding,
+        bordered,
+        bgClassName,
+        noScroll,
+      })}
     </div>
   );
 }

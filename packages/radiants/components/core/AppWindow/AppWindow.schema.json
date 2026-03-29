@@ -3,7 +3,9 @@
   "description": "Desktop-style application window with draggable chrome, optional resize handles, and mobile/fullscreen presentations.",
   "subcomponents": [
     "AppWindow",
-    "AppWindowBody"
+    "AppWindowBody",
+    "AppWindowSplitView",
+    "AppWindowPane"
   ],
   "props": {
     "id": {
@@ -44,6 +46,10 @@
     {
       "name": "Desktop window shell",
       "code": "<AppWindow id=\"about\" title=\"About\">\n  <AppWindowBody>Content</AppWindowBody>\n</AppWindow>"
+    },
+    {
+      "name": "Two-pane compare layout",
+      "code": "<AppWindow id=\"lab\" title=\"Control Surface Lab\">\n  <AppWindowSplitView>\n    <AppWindowPane>Legacy</AppWindowPane>\n    <AppWindowPane>RDNA</AppWindowPane>\n  </AppWindowSplitView>\n</AppWindow>"
     }
   ]
 }

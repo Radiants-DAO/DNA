@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AppWindow, AppWindowBody } from './AppWindow';
+import { AppWindow, AppWindowBody, AppWindowPane, AppWindowSplitView } from './AppWindow';
 
 class ResizeObserverMock {
   observe() {}
@@ -28,6 +28,21 @@ describe('AppWindow', () => {
 
     expect(screen.getByRole('dialog', { name: 'About' })).toBeInTheDocument();
     expect(screen.getByText('Body content')).toBeInTheDocument();
+  });
+
+  test('renders split compare panes with shared window layout helper', () => {
+    render(
+      <AppWindow id="lab" title="Control Surface Lab">
+        <AppWindowSplitView>
+          <AppWindowPane padding="sm">Legacy pane</AppWindowPane>
+          <AppWindowPane padding="sm">RDNA pane</AppWindowPane>
+        </AppWindowSplitView>
+      </AppWindow>,
+    );
+
+    expect(screen.getByText('Legacy pane')).toBeInTheDocument();
+    expect(screen.getByText('RDNA pane')).toBeInTheDocument();
+    expect(document.querySelector('[data-window-layout="split"]')).toBeInTheDocument();
   });
 
   test('renders mobile presentation with close action', async () => {
