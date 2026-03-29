@@ -23,7 +23,7 @@ import { resolveFluid, resolveFluidRaw, spacing, type FluidTierName } from '@rdn
 // Document content — in reading order, split at inline insertion points
 // ============================================================================
 
-const P1 = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque';
+const P1 = 'orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque. Orem ipsum dolor sit amet consectetur. Big ipsum feugiat morbi ulputate sed. Rehawww. Yeeeeeeee big dawg here we go. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Posuere leo convallis eu facilisis mattis ut urna egestas. Arcu congue congue sem vulputate orci. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque';
 
 const P2 = 'pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique. Ultricies mauris diam. In tellus eu bibendum ultricies. Cursus mi pellentesque vel ridiculus interdum orci. Nibh non sed et commodo felis urna purus dignissim nisi. Donec tortor in malesuada sed est lacinia. Suspendisse odio ullamcorper sit risus malesuada elementum malesuada pellentesque pharetra. Augue sit nulla feugiat porttitor elementum. Id aliquet maecenas morbi tristique.';
 
@@ -273,7 +273,7 @@ function computeLayout(
 
   const els: El[] = [];
   let ci = 0;
-  let y = bodyLh; // 1× bodyLh above masthead
+  let y = bodyLh + 16; // 1× bodyLh + 1rem above masthead
 
   function col() { return cols[ci]!; }
   function fits(h: number) { return y + h <= maxColH; }
@@ -348,6 +348,28 @@ function computeLayout(
       y += lh;
     }
     y += bodyLh * spacing.headingAfter;
+  }
+
+  // --- Hero image — if current column is too narrow, advance to a wider one ---
+  function layHero() {
+    if (colCount >= 3) {
+      // Jump to center column (index 1), reset Y — regardless of where P1 ended
+      ci = 1;
+      y = 0;
+    } else if (colCount === 2) {
+      // Jump to column 2
+      ci = 1;
+      y = 0;
+    } else {
+      // Single column — flow naturally
+      if (!fits(col().width / (357 / 258))) return;
+    }
+    if (ci >= cols.length) return;
+    const w = col().width;
+    const imgH = w / (357 / 258);
+    const totalH = imgH + bodyLh * spacing.paragraph;
+    els.push({ kind: 'hero', x: col().x, y, w, h: imgH });
+    y += totalH;
   }
 
   // --- Spacing — all derived from bodyLh × named roles ---
@@ -496,6 +518,8 @@ function computeLayout(
   els.push({ kind: 'dropcap', x: col().x, y });
 
   layText(dcW, dcH);   // P1
+  laySpace('section');
+  layHero();
   layHeading('RadOS Coming Soon', "'Joystix Monospace'", 'lg', 1.2, false, true);
   layText();           // P2
   layRule();
