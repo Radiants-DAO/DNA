@@ -5,6 +5,9 @@
 
 @import 'tailwindcss';
 
+/* Generated typography tokens (from pretext-type-scale.ts) */
+@import './generated/typography-tokens.css';
+
 /* Theme tokens - semantic color mappings */
 @import './tokens.css';
 
