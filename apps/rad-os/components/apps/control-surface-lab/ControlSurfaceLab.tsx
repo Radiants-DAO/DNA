@@ -158,6 +158,22 @@ function SurfacePreview({
   return <ControlPreview side={side} />;
 }
 
+/** Renders the real mock or shell component, falling back to generic preview */
+function SurfaceRendered({
+  scenario,
+  surface,
+  side,
+}: {
+  scenario: ControlSurfaceScenario;
+  surface: SurfaceFixture;
+  side: CompareSide;
+}) {
+  const map = side === 'legacy' ? MOCK_MAP : SHELL_MAP;
+  const Component = map[scenario]?.[surface.id];
+  if (Component) return <Component />;
+  return <SurfacePreview scenario={scenario} side={side} />;
+}
+
 function SurfaceCard({
   scenario,
   surface,
