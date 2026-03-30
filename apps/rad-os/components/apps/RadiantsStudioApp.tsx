@@ -1,12 +1,9 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Button, Input, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
-import {
-  mockSubmissions,
-  formatCreatedAt,
-} from '@/lib/mockData/studioSubmissions';
+import { mockSubmissions } from '@/lib/mockData/studioSubmissions';
 import { useMockDataStore } from '@/store';
 import { type AppProps } from '@/lib/apps';
 
@@ -216,19 +213,21 @@ function PixelArtCreation() {
         <div className="bg-card border border-line rounded-sm flex flex-col gap-4 items-center px-2 pt-4 pb-2">
           <h3 className="font-joystix text-base text-main">ADD NFT METADATA</h3>
           <div className="flex flex-col gap-2 w-full">
-            <input
-              type="text"
+            <Input
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full h-10 px-2 bg-card border border-line rounded-sm font-joystix text-sm text-main placeholder:opacity-50"
+              size="md"
+              fullWidth
+              className="font-joystix"
             />
-            <input
-              type="text"
+            <Input
               placeholder="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-10 px-2 bg-card border border-line rounded-sm font-joystix text-sm text-main placeholder:opacity-50"
+              size="md"
+              fullWidth
+              className="font-joystix"
             />
             <Button
               mode="solid"
@@ -298,16 +297,22 @@ function PixelArtCreation() {
             {/* Color Swatches */}
             <div className="flex flex-col gap-1">
               {(Object.keys(COLORS) as ColorKey[]).map((colorKey) => (
-                <button
+                <Button
                   key={colorKey}
+                  quiet
+                  size="sm"
+                  iconOnly
                   onClick={() => setCurrentColor(colorKey)}
+                  active={currentColor === colorKey}
                   className={`
-                    size-8 rounded-sm border border-line
+                    size-8 rounded-sm
                     ${currentColor === colorKey ? 'ring-2 ring-main ring-offset-1' : ''}
                   `}
                   style={{ backgroundColor: COLORS[colorKey] }}
                   aria-label={`Color: ${colorKey}`}
-                />
+                >
+                  <span className="sr-only">{colorKey}</span>
+                </Button>
               ))}
             </div>
           </div>
@@ -538,32 +543,32 @@ function VotingSystem() {
 
       {/* Vote Buttons */}
       <div className="flex items-center gap-2 pb-4">
-        <button
+        <Button
+          quiet
+          size="lg"
           onClick={() => handleVote(false)}
           className={`
             flex flex-col items-center justify-center gap-2
             w-[70px] h-[88px] rounded-sm
-            border border-line
-            transition-colors
-            ${voteAnimation === 'bad' ? 'bg-accent' : 'bg-card hover:bg-hover'}
+            ${voteAnimation === 'bad' ? 'bg-accent' : 'bg-card'}
           `}
         >
           <Icon name="hand-dislike" size={32} />
           <span className="font-joystix text-sm text-main drop-shadow-glow">BAD</span>
-        </button>
-        <button
+        </Button>
+        <Button
+          quiet
+          size="lg"
           onClick={() => handleVote(true)}
           className={`
             flex flex-col items-center justify-center gap-2
             w-[70px] h-[88px] rounded-sm
-            border border-line
-            transition-colors
-            ${voteAnimation === 'rad' ? 'bg-accent' : 'bg-card hover:bg-hover'}
+            ${voteAnimation === 'rad' ? 'bg-accent' : 'bg-card'}
           `}
         >
           <Icon name="hand-love-sign" size={32} />
           <span className="font-joystix text-sm text-main drop-shadow-glow">RAD</span>
-        </button>
+        </Button>
       </div>
     </div>
   );
