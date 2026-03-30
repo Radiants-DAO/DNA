@@ -3,19 +3,13 @@
   "description": "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
   "props": {
     "endTime": {
-      "oneOf": [
-        { "type": "number", "description": "Unix timestamp in milliseconds" },
-        { "type": "string", "format": "date-time", "description": "ISO 8601 date string" }
-      ],
+      "type": "number | string",
       "required": true,
-      "description": "Target end time as Unix ms timestamp or ISO 8601 date string (Date objects accepted at runtime)"
+      "description": "Target end time as Unix ms timestamp (number) or ISO 8601 date string (Date objects accepted at runtime)"
     },
     "startTime": {
-      "oneOf": [
-        { "type": "number", "description": "Unix timestamp in milliseconds" },
-        { "type": "string", "format": "date-time", "description": "ISO 8601 date string" }
-      ],
-      "description": "Optional start time as Unix ms timestamp or ISO 8601 date string (Date objects accepted at runtime)"
+      "type": "number | string",
+      "description": "Optional start time as Unix ms timestamp (number) or ISO 8601 date string (Date objects accepted at runtime)"
     },
     "variant": {
       "type": "enum",

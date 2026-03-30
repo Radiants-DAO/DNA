@@ -1,52 +1,35 @@
-## Session Status — 2026-03-30
+## Session Status — 2026-03-30 02:40
 
-**Plan:** AppWindow Island Layout System
+**Plan:** docs/plans/2026-03-30-appwindow-island-layouts.md
 **Branch:** feat/appwindow-taskbar-api (worktree: DNA-taskbar-api)
-**Plan doc:** docs/plans/2026-03-30-appwindow-island-layouts.md
 
 ### Completed
-- [x] Types: ContentLayout, IslandProps, BannerProps
-- [x] AppWindow.Island — elevated card surface with scroll, padding, width, corners variants
-- [x] AppWindow.Banner — edge-to-edge content zone
-- [x] AppWindow.Content layout modes — single, split, sidebar, bleed + Banner extraction
-- [x] Compound export wired (Island, Banner on AppWindow)
-- [x] All 24 tests pass
-- [x] Migrate BrandAssetsApp → Content + Island (corners="pixel")
-- [x] Migrate AboutApp → Content + Island + contentPadding: false in catalog
-- [x] Migrate ManifestoApp → Content layout="sidebar" + two Islands
-- [x] Migrate RadRadioApp → Content layout="bleed"
-- [x] Migrate RadiantsStudioApp → Content + Island
-- [x] Deprecate Body, SplitView, Pane with @deprecated JSDoc
-- [x] Update AppWindow.meta.ts with new sub-components + examples
-- [x] Visual QA fix: Island defaults to `border border-line rounded` (standard), `corners="pixel"` opt-in
-- [x] Visual QA fix: Manifesto content panel width collapse (`w-full` on Content inside Tabs sidebar)
+[7 earlier tasks completed — core API, migrations, deprecation, meta]
+- [x] Island defaults to standard CSS corners, pixel opt-in (commit: 69460937)
+- [x] Manifesto width fix — w-full inside Tabs sidebar (commit: 08a44b53)
+- [x] BrandAssets DOM match — padding="none", scroll, overflow-x-hidden (commit: b10d0059)
+- [x] GoodNews set to layout="bleed" (commit: b10d0059)
+- [x] Manifesto: remove Tabs sidebar styling, sidebar Island corners="none" (commit: 77aa1f4e)
 
 ### In Progress
-- [ ] Nothing active
+- [ ] ~Codify visual QA lessons into API rules~ — meta needs corners docs, padding default guidance, sidebar nav pattern
 
 ### Remaining
+- [ ] Update Island default padding to match BrandAssets gutter (user confirmed BrandAssets padding = correct default ≈ gap between islands ≈ resize handle size)
+- [ ] Update AppWindow.meta.ts with corners='none', padding guidance, layout selection rules
+- [ ] Update plan doc API reference to match final implementation
 - [ ] RadiantsStudio: empty space below bottom tab bar (layout refinement)
-- [ ] Visual QA: dark mode sweep (not started)
-- [ ] Visual QA: token verification pass (grep for hardcoded colors)
+- [ ] Dark mode visual sweep
 
-### Visual QA Results
-
-| Window | Verdict | Notes |
-|--------|---------|-------|
-| BrandAssetsApp | PASS | pixel corners preserved via `corners="pixel"`, matches main |
-| AboutApp | PASS | standard CSS corners, matches main |
-| ManifestoApp | PASS (fixed) | was showing empty panel — Tabs sidebar `items-start` collapsed width, fixed with `w-full` |
-| RadRadioApp | PASS | bleed layout, no visual change |
-| RadiantsStudioApp | PASS (minor) | content renders, tab bar works; extra empty space below tabs |
-| GoodNewsApp | — | not migrated (pretext editorial) |
+### Next Action
+> Align Island default padding with BrandAssets gutter size, then codify all rules in meta.
 
 ### What to Test
-- [ ] BrandAssetsApp: pixel corners on content island, tabs switch correctly
-- [ ] ManifestoApp: sidebar layout, tab switching, content scrolls
-- [ ] AboutApp: standard corners, content scrolls, cards visible
-- [ ] RadRadioApp: full-bleed, no gutters, video fills
-- [ ] RadiantsStudioApp: canvas renders, bottom tabs work
-- [ ] All windows: dark mode appearance
+- [ ] BrandAssetsApp: pixel corners, content fills card, no extra padding, scroll works
+- [ ] ManifestoApp: no pixel corners on layout wrapper, sidebar nav borderless, tab switching
+- [ ] GoodNewsApp: full bleed, no gutters around editorial content
+- [ ] AboutApp: standard rounded corners with border, content scrolls
+- [ ] RadRadioApp: full bleed media player, no visual change from main
 
 ### Team Status
 No active agents

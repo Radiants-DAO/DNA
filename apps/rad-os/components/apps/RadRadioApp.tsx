@@ -45,7 +45,7 @@ const SmallPrevIcon = () => <Icon name="skip-back" size={8} />;
 const SmallNextIcon = () => <Icon name="skip-forward" size={8} />;
 
 const HeartIcon = ({ filled }: { filled: boolean }) => (
-  <Icon name="heart" size={14} className={filled ? 'fill-current' : ''} />
+  <Icon name="heart" size={14} className={filled ? 'fill-current text-danger' : ''} />
 );
 const VolumeIcon = () => <Icon name="volume-high" size={14} />;
 const ChevronDownIcon = () => <Icon name="chevron-down" size={10} />;
@@ -233,18 +233,20 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         <div className="flex items-center gap-0">
           <Button
             quiet
+            iconOnly
+            rounded="none"
             size="sm"
             onClick={onPrevVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-accent/20 active:bg-accent/30 transition-colors"
             aria-label="Previous video"
           >
             <SmallPrevIcon />
           </Button>
           <Button
-            quiet
+            mode="flat"
+            tone="accent"
+            iconOnly
             size="sm"
             onClick={onNextVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center bg-accent hover:bg-accent/90 active:bg-accent/80 transition-colors text-accent-inv"
             aria-label="Next video"
           >
             <SmallNextIcon />
@@ -326,41 +328,44 @@ interface TransportControlsProps {
 }
 
 function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, compact }: TransportControlsProps) {
-  const btnHeight = compact ? 'h-7' : 'h-9';
-  const playWidth = compact ? 'w-10' : 'w-[52px]';
-  const navWidth = compact ? 'w-7' : 'w-9';
-  const queueWidth = compact ? 'w-10' : 'w-[52px]';
+  const size = compact ? 'md' : 'lg';
 
   return (
     <div className="flex items-center gap-0">
-      {/* Play/Pause button - yellow background */}
+      {/* Play/Pause — accent flat, rounded left */}
       <Button
-        quiet
-        size="sm"
+        mode="flat"
+        tone="accent"
+        iconOnly
+        size={size}
         onClick={onPlayPause}
-        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-accent text-accent-inv border border-line rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
+        className="rounded-l-sm border border-line"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
       </Button>
 
-      {/* Prev button */}
+      {/* Prev */}
       <Button
         quiet
-        size="sm"
+        iconOnly
+        rounded="none"
+        size={size}
         onClick={onPrev}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line hover:bg-depth active:bg-depth transition-colors`}
+        className="border-y border-r border-line"
         aria-label="Previous track"
       >
         <PrevIcon />
       </Button>
 
-      {/* Next button */}
+      {/* Next — rounded right */}
       <Button
         quiet
-        size="sm"
+        iconOnly
+        rounded="none"
+        size={size}
         onClick={onNext}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line rounded-r hover:bg-depth active:bg-depth transition-colors`}
+        className="rounded-r-sm border-y border-r border-line"
         aria-label="Next track"
       >
         <NextIcon />
@@ -368,15 +373,16 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
 
       {!compact && (
         <>
-          {/* Spacer */}
           <div className="w-2" />
 
-          {/* Queue button - pink background */}
+          {/* Queue */}
           <Button
             quiet
-            size="sm"
+            iconOnly
+            rounded="none"
+            size={size}
             onClick={onQueue}
-            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-accent-soft/40 text-main border border-line rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
+            className="rounded-sm border border-line"
             aria-label="Add to queue"
           >
             <Icon name="queue" size={14} />
@@ -406,11 +412,14 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
         <Button
           type="button"
           quiet
-          size="sm"
-          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-page text-main border border-line rounded font-mono text-sm cursor-pointer hover:bg-depth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus flex items-center justify-between gap-2`}
+          compact
+          fullWidth
+          size={compact ? 'md' : 'lg'}
+          rounded="none"
+          icon={<ChevronDownIcon />}
+          className="rounded-sm border border-line"
         >
-          <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
-          <ChevronDownIcon />
+          {currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[200px] bg-page">
@@ -442,7 +451,7 @@ function VolumeControl({ volume, onChange, compact }: VolumeControlProps) {
   return (
     <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-page text-main border border-line rounded`}>
       <VolumeIcon />
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         <Slider
           value={volume}
           onChange={onChange}
@@ -450,7 +459,6 @@ function VolumeControl({ volume, onChange, compact }: VolumeControlProps) {
           max={100}
           step={1}
           size="sm"
-          className="space-y-0"
         />
       </div>
     </div>
@@ -620,20 +628,21 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
           <div className="flex items-center gap-1 shrink-0">
             <Button
               quiet
+              iconOnly
+              rounded="none"
               size="sm"
               onClick={toggleMinified}
-              className="p-1.5 text-mute hover:text-main transition-colors"
               aria-label={minified ? 'Show video' : 'Hide video'}
             >
               <Icon name={minified ? 'chevron-down' : 'chevron-up'} size={14} />
             </Button>
             <Button
               quiet
+              iconOnly
+              rounded="none"
               size="sm"
+              tone={isFavorite ? 'danger' : 'accent'}
               onClick={() => toggleFavorite(currentTrack.id)}
-              className={`p-1.5 transition-colors ${
-                isFavorite ? 'text-danger' : 'text-mute hover:text-main'
-              }`}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
               <HeartIcon filled={isFavorite} />
@@ -669,7 +678,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
               onChange={handleChannelChange}
             />
           </div>
-          <div className="w-32">
+          <div className="w-44">
             <VolumeControl
               volume={volume}
               onChange={setVolume}

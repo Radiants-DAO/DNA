@@ -254,6 +254,22 @@ export function optimalLayout(
   }
   breakIndices.reverse();
 
+  // Fallback: if DP found no valid path (e.g. single word wider than
+  // maxWidth), emit the entire text as one overflow line rather than
+  // returning nothing.
+  if (breakIndices.length === 0 && n > 0) {
+    const segments: JustifiedSegment[] = [];
+    for (let si = 0; si < n; si++) {
+      const text = segs[si]!;
+      if (text === '\u00AD') continue;
+      segments.push({ text, width: widths[si]!, isSpace: text.trim().length === 0 });
+    }
+    while (segments.length > 0 && segments[segments.length - 1]!.isSpace) segments.pop();
+    let lw = 0;
+    for (const seg of segments) lw += seg.width;
+    return [{ segments, lineWidth: lw, maxWidth, isLast: true }];
+  }
+
   // Build lines
   const lines: JustifiedLine[] = [];
   let fromCandidate = 0;

@@ -26,6 +26,9 @@ let _measureCtx: CanvasRenderingContext2D | null = null;
 
 function getMeasureCtx(): CanvasRenderingContext2D {
   if (!_measureCtx) {
+    if (typeof document === 'undefined') {
+      throw new Error('pretext-prepare requires a DOM environment (canvas measurement)');
+    }
     const canvas = document.createElement('canvas');
     _measureCtx = canvas.getContext('2d')!;
   }
