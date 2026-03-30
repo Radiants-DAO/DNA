@@ -303,6 +303,13 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
         const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
         const classes = tabsTriggerVariants({ mode, size, className });
 
+        // Chrome mode: active drops flush, inactive is raised with pattern overlay
+        const chromeClasses = mode === 'chrome'
+          ? isActive
+            ? 'gap-1.5 bg-card z-10'
+            : 'bg-accent hover:bg-cream group translate-y-1 hover:translate-y-0.5'
+          : '';
+
         return (
           <button
             {...props}
@@ -311,7 +318,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             data-mode={mode}
             data-size={size}
             data-state={isActive ? 'selected' : 'default'}
-            className={classes}
+            className={`${classes} ${chromeClasses}`}
           >
             {icon && (
               <span className="shrink-0 flex items-center justify-center">
@@ -322,6 +329,17 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             {/* With icon: text expands on active only. Without icon: text always visible. */}
             {(!icon || isActive) && (
               <span className="whitespace-nowrap">{children}</span>
+            )}
+
+            {/* Chrome inactive: pattern overlay */}
+            {mode === 'chrome' && !isActive && (
+              <span
+                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out"
+                style={{
+                  backgroundImage: 'var(--pat-spray-grid)',
+                  backgroundRepeat: 'repeat',
+                }}
+              />
             )}
           </button>
         );
