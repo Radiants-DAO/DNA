@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { AppWindow, Button, Input, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { AppWindow, Button, Input, Switch, Tabs } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import { mockSubmissions } from '@/lib/mockData/studioSubmissions';
 import { useMockDataStore } from '@/store';
@@ -668,31 +668,24 @@ function Leaderboard() {
 // ============================================================================
 
 export function RadiantsStudioApp({ windowId: _windowId }: AppProps) {
-  const tabs = useTabsState({ defaultValue: 'creation', mode: 'pill', layout: 'default' });
-
   return (
     <AppWindow.Content layout="bleed">
-      <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
-        <Tabs.Frame className="h-full flex flex-col">
-          {/* Top Tab Bar */}
-          <Tabs.List className="px-2 pt-1 shrink-0">
-            <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
-            <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
-            <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
-          </Tabs.List>
-
-          {/* Tab Panels */}
-          <Tabs.Content value="creation" className="flex-1 overflow-auto">
-            <PixelArtCreation />
-          </Tabs.Content>
-          <Tabs.Content value="voting" className="flex-1 overflow-auto">
-            <VotingSystem />
-          </Tabs.Content>
-          <Tabs.Content value="leaderboard" className="flex-1 overflow-auto px-2">
-            <Leaderboard />
-          </Tabs.Content>
-        </Tabs.Frame>
-      </Tabs.Provider>
+      <Tabs defaultValue="creation" position="top">
+        <Tabs.List>
+          <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
+          <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
+          <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="creation" className="flex-1 overflow-auto">
+          <PixelArtCreation />
+        </Tabs.Content>
+        <Tabs.Content value="voting" className="flex-1 overflow-auto">
+          <VotingSystem />
+        </Tabs.Content>
+        <Tabs.Content value="leaderboard" className="flex-1 overflow-auto px-2">
+          <Leaderboard />
+        </Tabs.Content>
+      </Tabs>
     </AppWindow.Content>
   );
 }
