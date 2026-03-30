@@ -194,59 +194,72 @@ export function ManifestoBook() {
     });
   }, []);
 
-  // Recompute obstacles when active triggers or pagination changes
-  useEffect(() => {
-    if (!result || activeTriggers.size === 0) {
-      setImageObstacles([]);
-      return;
-    }
-
-    // Compute column width from page width
-    const totalMargin = PAGE_MARGIN * 2;
-    const colGap = 16;
-    const colRuleW = 1;
-    const numCols = 2;
-    const totalGutter = (numCols - 1) * (colGap * 2 + colRuleW);
-    const colWidth = Math.floor((pageWidth - totalMargin - totalGutter) / numCols);
-
-    const obstacles: ImageObstacle[] = [];
-    for (const trigger of activeTriggers.values()) {
-      // Search all pages for the line containing this trigger
-      for (let pi = 0; pi < result.pages.length; pi++) {
-        const page = result.pages[pi]!;
-        const hasPhrase = page.els.some(
-          (el) => (el.kind === 'line' || el.kind === 'heading-line') && el.text.includes(trigger.phrase),
-        );
-        if (hasPhrase) {
-          obstacles.push(computeObstacleForTrigger(trigger, page, pi, colWidth));
-          break;
-        }
-      }
-    }
-    setImageObstacles(obstacles);
-  }, [activeTriggers, result, pageWidth]);
-
-  // Paginate whenever dimensions or obstacles change
+  // Single effect: paginate first (no obstacles), then compute obstacle
+  // positions from the result, then re-paginate WITH obstacles.
+  // Two-pass approach avoids the circular dependency.
   useEffect(() => {
     if (pageWidth <= 0 || pageHeight <= 0) return;
     let cancelled = false;
 
     document.fonts.ready.then(() => {
       if (cancelled) return;
-      const r = paginateManifesto(
+
+      // Pass 1: paginate without obstacles to find trigger line positions
+      const pass1 = paginateManifesto(
         MANIFESTO_ELEMENTS,
         pageWidth,
         pageHeight,
-        imageObstacles,
+        [], // no obstacles
         cacheRef.current,
       );
-      setResult(r);
+
+      if (activeTriggers.size === 0) {
+        // No active triggers — pass 1 is final
+        setImageObstacles([]);
+        setResult(pass1);
+        return;
+      }
+
+      // Compute column width
+      const totalMargin = PAGE_MARGIN * 2;
+      const colGap = 16;
+      const colRuleW = 1;
+      const numCols = 2;
+      const totalGutter = (numCols - 1) * (colGap * 2 + colRuleW);
+      const colWidth = Math.floor((pageWidth - totalMargin - totalGutter) / numCols);
+
+      // Compute obstacle positions from pass 1 layout
+      const obstacles: ImageObstacle[] = [];
+      for (const trigger of activeTriggers.values()) {
+        for (let pi = 0; pi < pass1.pages.length; pi++) {
+          const page = pass1.pages[pi]!;
+          const hasPhrase = page.els.some(
+            (el) => (el.kind === 'line' || el.kind === 'heading-line') && el.text.includes(trigger.phrase),
+          );
+          if (hasPhrase) {
+            obstacles.push(computeObstacleForTrigger(trigger, page, pi, colWidth));
+            break;
+          }
+        }
+      }
+
+      // Pass 2: re-paginate WITH obstacles so text reflows around images
+      const pass2 = paginateManifesto(
+        MANIFESTO_ELEMENTS,
+        pageWidth,
+        pageHeight,
+        obstacles,
+        cacheRef.current,
+      );
+
+      setImageObstacles(obstacles);
+      setResult(pass2);
     });
 
     return () => {
       cancelled = true;
     };
-  }, [pageWidth, pageHeight, imageObstacles]);
+  }, [pageWidth, pageHeight, activeTriggers]);
 
   // Total page count: cover + forward + content pages
   const totalContentPages = result?.pages.length ?? 0;
