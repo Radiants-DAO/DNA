@@ -11,6 +11,7 @@ import {
 } from '@/lib/mockData/tracks';
 import { type AppProps } from '@/lib/apps';
 import {
+  AppWindow,
   Button,
   DropdownMenu,
   DropdownMenuTrigger,
@@ -600,7 +601,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
   const isFavorite = favorites.includes(currentTrack.id);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <AppWindow.Content layout="bleed">
       {/* Headless audio controller */}
       <RadRadioController />
 
@@ -686,7 +687,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
           </div>
         </div>
       </div>
-    </div>
+    </AppWindow.Content>
   );
 }
 

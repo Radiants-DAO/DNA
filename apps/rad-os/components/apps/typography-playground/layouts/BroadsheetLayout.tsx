@@ -319,7 +319,7 @@ function FontPersonality() {
 
 export function BroadsheetLayout() {
   return (
-    <div className="bg-page text-main overflow-y-auto h-full">
+    <div className="text-main overflow-y-auto h-full">
       <div className="max-w-[52rem] mx-auto px-5 py-4 space-y-4">
         {/* Masthead */}
         <Masthead />

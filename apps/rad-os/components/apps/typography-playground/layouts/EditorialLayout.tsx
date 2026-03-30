@@ -101,7 +101,7 @@ function FontRole({ font, role }: { font: string; role: string }) {
 
 export function EditorialLayout() {
   return (
-    <div className="bg-page text-main min-h-full overflow-y-auto">
+    <div className="text-main min-h-full overflow-y-auto">
       <div className="max-w-[36rem] mx-auto px-6 py-8 space-y-8">
 
         {/* ── Year numeral — Joystix (The Shout) ── */}

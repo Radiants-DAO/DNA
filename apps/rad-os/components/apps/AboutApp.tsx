@@ -1,6 +1,5 @@
 'use client';
-import { Button, Card, Separator } from '@rdna/radiants/components/core';
-import { WindowContent } from '@/components/Rad_os';
+import { AppWindow, Button, Card, Separator } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 
 // ============================================================================
@@ -35,8 +34,9 @@ const OPEN_SOURCE = [
 
 export function AboutApp({ windowId: _windowId }: AppProps) {
   return (
-    <WindowContent>
-      <div className="max-w-[42rem] mx-auto space-y-8">
+    <AppWindow.Content>
+      <AppWindow.Island padding="lg">
+        <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="mb-2">RadOS</h1>
@@ -148,8 +148,9 @@ export function AboutApp({ windowId: _windowId }: AppProps) {
             &copy; {new Date().getFullYear()} Radiants. All rights reserved.
           </p>
         </section>
-      </div>
-    </WindowContent>
+        </div>
+      </AppWindow.Island>
+    </AppWindow.Content>
   );
 }
 

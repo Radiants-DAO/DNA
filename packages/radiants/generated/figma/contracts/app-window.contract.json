@@ -47,11 +47,32 @@
   },
   "slots": {
     "children": {
-      "description": "Window content, usually an AppWindowBody or custom app layout."
+      "description": "Window content. Supports compound children (AppWindow.Nav, AppWindow.Toolbar, AppWindow.Content) or bare children for backward compat."
+    },
+    "AppWindow.Nav": {
+      "description": "Chrome-level tab navigation rendered in the title bar zone. Wraps Nav.Item children. Props: value, onChange, layout (capsule)."
+    },
+    "AppWindow.Toolbar": {
+      "description": "Optional control bar between title bar and content. Accepts arbitrary ReactNode (search, filters, sub-tabs). Works with or without Nav."
+    },
+    "AppWindow.Content": {
+      "description": "Content area wrapper with layout modes. Props: layout ('single' | 'split' | 'sidebar' | 'bleed'). Use with Island children for structured layouts. Layout guidance: 'single' (default) — most apps, one scrollable content card; 'split' — side-by-side comparison or equal-weight dual panels; 'sidebar' — fixed nav + flexible content (docs, settings with sections); 'bleed' — full-window content with no card treatment (media players, editorial/pretext layouts, canvas apps). Note: if Content renders inside a flex parent with items-start (e.g. Tabs with layout='sidebar'), add className='w-full' to ensure it fills available width."
+    },
+    "AppWindow.Island": {
+      "description": "Scrollable content region inside Content. Props: padding ('none' | 'sm' | 'md' | 'lg'), bgClassName, noScroll, corners ('standard' | 'pixel' | 'none'), width, className. Default padding is 'sm' (p-2 = 8px), matching the Content gutter (px-1.5 pb-1.5 = 6px) and inter-island gap (gap-1.5 = 6px). Use 'lg' for long-form text content that needs breathing room. When an Island is used as a sidebar navigation container (tab list, nav menu), use corners='none' — nav containers are layout slots, not visual card surfaces."
+    },
+    "AppWindow.Banner": {
+      "description": "Fixed non-scrolling banner area above Content islands. Useful for status bars, alerts, or sticky headers."
     }
   },
   "subcomponents": [
     "AppWindow",
+    "AppWindow.Nav",
+    "AppWindow.Nav.Item",
+    "AppWindow.Toolbar",
+    "AppWindow.Content",
+    "AppWindow.Island",
+    "AppWindow.Banner",
     "AppWindowBody",
     "AppWindowSplitView",
     "AppWindowPane"
@@ -68,6 +89,15 @@
     {
       "name": "Two-pane compare layout",
       "code": "<AppWindow id=\"lab\" title=\"Control Surface Lab\">\n  <AppWindowSplitView>\n    <AppWindowPane>Legacy</AppWindowPane>\n    <AppWindowPane>RDNA</AppWindowPane>\n  </AppWindowSplitView>\n</AppWindow>"
+    },
+    {
+      "name": "Compound: Nav + Toolbar + Content",
+      "code": "<AppWindow id=\"assets\" title=\"Brand Assets\">\n  <AppWindow.Nav value={tab} onChange={setTab}>\n    <AppWindow.Nav.Item value=\"logos\" icon={<Icon name=\"image\" />}>Logos</AppWindow.Nav.Item>\n    <AppWindow.Nav.Item value=\"color\" icon={<Icon name=\"palette\" />}>Color</AppWindow.Nav.Item>\n  </AppWindow.Nav>\n  <AppWindow.Toolbar>\n    <Input placeholder=\"Search...\" />\n  </AppWindow.Toolbar>\n  <AppWindow.Content>\n    {/* tab content */}\n  </AppWindow.Content>\n</AppWindow>"
+    },
+    {
+      "name": "Content island with sidebar layout",
+      "description": "Two-pane layout with fixed-width sidebar nav (corners='none') and flexible main area.",
+      "code": "<AppWindow id=\"docs\" title=\"Documentation\">\n  <AppWindow.Content layout=\"sidebar\">\n    <AppWindow.Island width=\"w-48\" padding=\"none\" corners=\"none\" noScroll>\n      <nav>Sidebar nav</nav>\n    </AppWindow.Island>\n    <AppWindow.Island padding=\"lg\">\n      <article>Long-form main content</article>\n    </AppWindow.Island>\n  </AppWindow.Content>\n</AppWindow>"
     }
   ],
   "tokens": {},

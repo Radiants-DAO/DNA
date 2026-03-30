@@ -307,7 +307,7 @@ function TypeScaleGrid() {
 
 export function SpecimenLayout() {
   return (
-    <div className="bg-page text-main min-h-full overflow-y-auto">
+    <div className="text-main min-h-full overflow-y-auto">
       {/* Page header */}
       <div className="px-5 pt-5 pb-4 border-b-2 border-main">
         <div className="flex items-end justify-between gap-4">

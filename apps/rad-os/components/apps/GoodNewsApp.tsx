@@ -1,6 +1,7 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
+import { AppWindow } from '@rdna/radiants/components/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   prepareWithSegments,
@@ -719,6 +720,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
   const ruleXs = getRuleXPositions(containerWidth, colCount);
 
   return (
+    <AppWindow.Content layout="bleed">
     <div className="h-full relative">
       <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }} />
       <div className="absolute top-1 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }} />
@@ -809,6 +811,7 @@ export function GoodNewsApp({ windowId }: AppProps) {
       )}
       </div>
     </div>
+    </AppWindow.Content>
   );
 }
 

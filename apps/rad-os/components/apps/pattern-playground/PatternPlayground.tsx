@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { DialPanel, useDialKit } from '@rdna/radiants/components/core';
+import { AppWindow, DialPanel, useDialKit } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';
 import { DEFAULT_STATE } from './presets';
@@ -155,20 +155,22 @@ export function PatternPlayground() {
   );
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-1 min-h-0 flex">
-        <DialPanel header={panelHeader}>
-          <PlaygroundControls initial={state} onSync={handleSync} />
-        </DialPanel>
+    <AppWindow.Content>
+      <div className="h-full flex flex-col">
+        <div className="flex-1 min-h-0 flex">
+          <DialPanel header={panelHeader}>
+            <PlaygroundControls initial={state} onSync={handleSync} />
+          </DialPanel>
 
-        {/* ── Right: preview area ── */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          <PatternPreview state={state} />
+          {/* ── Right: preview area ── */}
+          <div className="flex-1 min-w-0 flex flex-col">
+            <PatternPreview state={state} />
+          </div>
         </div>
-      </div>
 
-      {/* ── Bottom: code output ── */}
-      <PatternCodeOutput state={state} />
-    </div>
+        {/* ── Bottom: code output ── */}
+        <PatternCodeOutput state={state} />
+      </div>
+    </AppWindow.Content>
   );
 }
