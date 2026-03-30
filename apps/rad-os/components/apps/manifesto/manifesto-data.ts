@@ -14,6 +14,7 @@ export type ManifestoElement =
 
 /** Known image dimensions (natural px). Add entries as real images are placed. */
 const IMAGE_DIMENSIONS: Record<string, { w: number; h: number }> = {
+  '/manifesto/hopi-dunes.jpg': { w: 1486, h: 2000 },
   '/manifesto/mustang-1967.jpg': { w: 1600, h: 1200 },
   '/manifesto/mercedes-1980.jpg': { w: 1280, h: 960 },
 };
@@ -106,7 +107,7 @@ I vividly remember spending time down on the Hopi reservation with my best frien
 
 We were supposed to be helping build the house but we mostly spent time in the dunes pretending to be cowboy-wizards with a couple Hopi kids our age.
 
-![Placeholder: Two kids in desert dunes — golden hour, vast open landscape, the scale of childhood adventure against an ancient land](/placeholders/hopi-dunes.jpg)
+![Kids in the dunes](/manifesto/hopi-dunes.jpg)
 
 ⠀
 
