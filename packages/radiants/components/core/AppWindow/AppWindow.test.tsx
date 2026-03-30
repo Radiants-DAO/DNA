@@ -147,4 +147,256 @@ describe('AppWindow', () => {
 
     expect(screen.queryByRole('dialog', { name: 'About' })).not.toBeInTheDocument();
   });
+
+  describe('compound children', () => {
+    test('renders Nav items in the titlebar zone', () => {
+      render(
+        <AppWindow id="test" title="Test">
+          <AppWindow.Nav value="tab1" onChange={() => {}}>
+            <AppWindow.Nav.Item value="tab1">Tab 1</AppWindow.Nav.Item>
+            <AppWindow.Nav.Item value="tab2">Tab 2</AppWindow.Nav.Item>
+          </AppWindow.Nav>
+          <AppWindow.Content>
+            <div>Content here</div>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByRole('dialog', { name: 'Test' })).toBeInTheDocument();
+      expect(screen.getByText('Content here')).toBeInTheDocument();
+      expect(screen.getByRole('tablist')).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'Tab 1' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'Tab 2' })).toBeInTheDocument();
+    });
+
+    test('renders Toolbar between titlebar and content', () => {
+      render(
+        <AppWindow id="test" title="Test">
+          <AppWindow.Toolbar>
+            <input placeholder="Search..." />
+          </AppWindow.Toolbar>
+          <AppWindow.Content>
+            <div>Below toolbar</div>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+      expect(screen.getByText('Below toolbar')).toBeInTheDocument();
+      expect(document.querySelector('[data-window-toolbar]')).toBeInTheDocument();
+    });
+
+    test('bare children still render in content area (backward compat)', () => {
+      render(
+        <AppWindow id="test" title="Test">
+          <AppWindowBody>Legacy content</AppWindowBody>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Legacy content')).toBeInTheDocument();
+    });
+
+    test('Toolbar works without Nav', () => {
+      render(
+        <AppWindow id="test" title="Test">
+          <AppWindow.Toolbar>
+            <input placeholder="Filter..." />
+          </AppWindow.Toolbar>
+          <AppWindow.Content>
+            <div>Filtered results</div>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByPlaceholderText('Filter...')).toBeInTheDocument();
+      expect(screen.getByText('Filtered results')).toBeInTheDocument();
+    });
+  });
+
+  describe('Island', () => {
+    test('renders with standard corners (rounded + border) and bg-card by default', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island>Island content</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Island content')).toBeInTheDocument();
+      const island = screen.getByText('Island content').closest('[class*="rounded"]');
+      expect(island).toBeInTheDocument();
+      expect(island?.className).toContain('bg-card');
+      expect(island?.className).toContain('border');
+      expect(island?.className).not.toContain('pixel-rounded');
+    });
+
+    test('renders with pixel corners when corners="pixel"', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island corners="pixel">Pixel content</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      const island = screen.getByText('Pixel content').closest('[class*="pixel-rounded-sm"]');
+      expect(island).toBeInTheDocument();
+      expect(island?.className).not.toContain('border-line');
+    });
+
+    test('applies padding variants', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island padding="sm">Padded</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Padded')).toBeInTheDocument();
+      expect(container.querySelector('.p-2')).toBeInTheDocument();
+    });
+
+    test('renders with fixed width when width prop is set', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="sidebar">
+            <AppWindow.Island width="w-48">Sidebar</AppWindow.Island>
+            <AppWindow.Island>Main</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      const sidebar = screen.getByText('Sidebar').closest('[class*="rounded"]');
+      expect(sidebar?.className).toContain('shrink-0');
+      expect(sidebar?.className).toContain('w-48');
+    });
+
+    test('renders with custom bgClassName', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island bgClassName="bg-page">Custom bg</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      const island = screen.getByText('Custom bg').closest('[class*="rounded"]');
+      expect(island?.className).toContain('bg-page');
+      expect(island?.className).not.toContain('bg-card');
+    });
+  });
+
+  describe('Banner', () => {
+    test('renders edge-to-edge content above islands', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Banner>Hero image</AppWindow.Banner>
+            <AppWindow.Island>Below banner</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Hero image')).toBeInTheDocument();
+      expect(screen.getByText('Below banner')).toBeInTheDocument();
+      const banner = screen.getByText('Hero image').closest('[class*="shrink-0"]');
+      expect(banner).toBeInTheDocument();
+      expect(banner?.className).not.toContain('pixel-rounded');
+      expect(banner?.className).not.toContain('bg-card');
+    });
+  });
+
+  describe('Content layouts', () => {
+    test('single layout adds gutters around island', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="single">
+            <AppWindow.Island>Single content</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Single content')).toBeInTheDocument();
+      expect(container.querySelector('.px-1\\.5')).toBeInTheDocument();
+      expect(container.querySelector('.pb-1\\.5')).toBeInTheDocument();
+    });
+
+    test('split layout renders two islands side by side', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="split">
+            <AppWindow.Island>Left</AppWindow.Island>
+            <AppWindow.Island>Right</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Left')).toBeInTheDocument();
+      expect(screen.getByText('Right')).toBeInTheDocument();
+      expect(container.querySelector('.gap-1\\.5')).toBeInTheDocument();
+    });
+
+    test('sidebar layout renders fixed-width + flexible islands', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="sidebar">
+            <AppWindow.Island width="w-48">Nav</AppWindow.Island>
+            <AppWindow.Island>Main</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      const nav = screen.getByText('Nav').closest('[class*="rounded"]');
+      const main = screen.getByText('Main').closest('[class*="rounded"]');
+      expect(nav?.className).toContain('shrink-0');
+      expect(nav?.className).toContain('w-48');
+      expect(main?.className).toContain('flex-1');
+    });
+
+    test('bleed layout renders without gutters', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="bleed">
+            <div data-testid="bleed-content">Full bleed</div>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByTestId('bleed-content')).toBeInTheDocument();
+      const contentDiv = screen.getByTestId('bleed-content').parentElement;
+      expect(contentDiv?.className).not.toContain('px-1.5');
+      expect(contentDiv?.className).not.toContain('pb-1.5');
+    });
+
+    test('banner renders above islands in split layout', () => {
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="split">
+            <AppWindow.Banner>Header</AppWindow.Banner>
+            <AppWindow.Island>Left</AppWindow.Island>
+            <AppWindow.Island>Right</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      const header = screen.getByText('Header');
+      const left = screen.getByText('Left');
+      expect(header.compareDocumentPosition(left) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    test('default layout is single', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island>Default</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByText('Default')).toBeInTheDocument();
+      expect(container.querySelector('.px-1\\.5')).toBeInTheDocument();
+    });
+  });
 });

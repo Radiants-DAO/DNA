@@ -81,6 +81,52 @@ export interface AppWindowSplitViewProps {
 
 export interface AppWindowPaneProps extends AppWindowBodyProps {}
 
+// --- Compound Children Types ---
+
+export interface AppWindowNavProps {
+  value: string;
+  onChange: (value: string) => void;
+  layout?: 'capsule';
+  children: React.ReactNode;
+}
+
+export interface AppWindowNavItemProps {
+  value: string;
+  icon?: React.ReactNode;
+  /** Accessible label — required when children is not a plain string (e.g., icon-only tabs). */
+  label?: string;
+  children: React.ReactNode;
+}
+
+export interface AppWindowToolbarProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface AppWindowContentProps {
+  children: React.ReactNode;
+  className?: string;
+  layout?: ContentLayout;
+}
+
+export type ContentLayout = 'single' | 'split' | 'sidebar' | 'bleed';
+
+export interface AppWindowIslandProps {
+  children: React.ReactNode;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  bgClassName?: string;
+  noScroll?: boolean;
+  /** Corner style. 'standard' = CSS rounded + border (default). 'pixel' = pixel-rounded-sm clip-path (no border). 'none' = no corners or border. */
+  corners?: 'standard' | 'pixel' | 'none';
+  width?: string;
+  className?: string;
+}
+
+export interface AppWindowBannerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 const DEFAULT_MIN_SIZE = { width: 300, height: 200 };
 const DEFAULT_BOTTOM_INSET = 48;
 const DEFAULT_VIEWPORT_MARGIN = 8;
@@ -94,6 +140,15 @@ const PADDING_MAP: Record<NonNullable<AppWindowBodyProps['padding']>, string> = 
   md: 'p-4',
   lg: 'p-6',
 };
+
+// --- AppWindow context for compound children (state-registration) ---
+
+interface AppWindowChromeContext {
+  setNav: (content: React.ReactNode) => void;
+  setToolbar: (content: React.ReactNode) => void;
+}
+
+const AppWindowChromeCtx = React.createContext<AppWindowChromeContext | null>(null);
 
 function renderWindowBodyShell({
   children,
@@ -181,6 +236,7 @@ function AppWindowTitleBar({
   actionButton,
   widgetActive = false,
   presentation,
+  navContent,
   onClose,
   onFullscreen,
   onWidget,
@@ -196,6 +252,7 @@ function AppWindowTitleBar({
   actionButton?: AppWindowActionButton;
   widgetActive?: boolean;
   presentation: AppWindowPresentation;
+  navContent?: React.ReactNode;
   onClose?: () => void;
   onFullscreen?: () => void;
   onWidget?: () => void;
@@ -314,13 +371,16 @@ function AppWindowTitleBar({
         <Separator />
       </div>
 
-      {/* Portal slot for app-injected title bar content */}
-      <div id={`window-titlebar-slot-${id}`} className="contents" />
+      {/* Registered nav content, or portal slot for legacy apps */}
+      {navContent || <div id={`window-titlebar-slot-${id}`} className="contents" />}
     </div>
   );
 }
 
-export function AppWindowBody({
+/**
+ * @deprecated Use `<AppWindow.Content><AppWindow.Island>` instead.
+ */
+function AppWindowBody({
   children,
   className = '',
   padding = 'lg',
@@ -341,7 +401,10 @@ export function AppWindowBody({
   );
 }
 
-export function AppWindowSplitView({ children, className = '' }: AppWindowSplitViewProps) {
+/**
+ * @deprecated Use `<AppWindow.Content layout="split">` with two `<AppWindow.Island>` children instead.
+ */
+function AppWindowSplitView({ children, className = '' }: AppWindowSplitViewProps) {
   return (
     <div
       className={`flex flex-1 min-h-0 gap-1 px-2 pb-2 ${className}`.trim()}
@@ -352,7 +415,10 @@ export function AppWindowSplitView({ children, className = '' }: AppWindowSplitV
   );
 }
 
-export function AppWindowPane({
+/**
+ * @deprecated Use `<AppWindow.Island>` inside `<AppWindow.Content layout="split">` instead.
+ */
+function AppWindowPane({
   children,
   className = '',
   padding = 'lg',
@@ -373,7 +439,177 @@ export function AppWindowPane({
   );
 }
 
-export function AppWindow({
+// --- Compound Sub-Components ---
+
+function AppWindowNavItem({ value: _value, icon: _icon, label: _label, children: _children }: AppWindowNavItemProps) {
+  // Data carrier — rendered by AppWindowNav, not standalone
+  return null;
+}
+AppWindowNavItem.displayName = 'AppWindow.Nav.Item';
+
+function AppWindowNav({ value, onChange, layout: _layout = 'capsule', children }: AppWindowNavProps) {
+  const chrome = React.useContext(AppWindowChromeCtx);
+
+  const items: AppWindowNavItemProps[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement(child) && child.type === AppWindowNavItem) {
+      items.push(child.props as AppWindowNavItemProps);
+    }
+  });
+
+  const navContent = (
+    <div role="tablist" className="flex items-end gap-0.5 -mb-2">
+      {items.map((item) => {
+        const isActive = value === item.value;
+        const accessibleName = item.label ?? (typeof item.children === 'string' ? item.children : undefined);
+        return (
+          <button
+            key={item.value}
+            role="tab"
+            type="button"
+            aria-selected={isActive}
+            aria-label={accessibleName}
+            onClick={() => onChange(item.value)}
+            className={`relative flex items-center justify-center cursor-pointer select-none pixel-rounded-t-sm h-8 px-2 transition-all duration-300 ease-out focus-visible:outline-none ${
+              isActive
+                ? 'gap-1.5 bg-card z-10'
+                : 'bg-accent hover:bg-cream group translate-y-1 hover:translate-y-0.5'
+            }`}
+          >
+            {item.icon && (
+              <span className="shrink-0 flex items-center justify-center size-4">
+                {item.icon}
+              </span>
+            )}
+            <span
+              className={`font-mono text-xs uppercase tracking-tight leading-none whitespace-nowrap overflow-hidden transition-all duration-300 ease-out ${
+                isActive ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0'
+              }`}
+            >
+              {item.children}
+            </span>
+            {!isActive && (
+              <span
+                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out"
+                style={{
+                  backgroundImage: 'var(--pat-spray-grid)',
+                  backgroundRepeat: 'repeat',
+                }}
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // Register nav content with AppWindow via context; render nothing here
+  useEffect(() => {
+    chrome?.setNav(navContent);
+    return () => chrome?.setNav(null);
+  });
+
+  // Render inline if no AppWindow context (e.g., tests without AppWindow wrapper)
+  if (!chrome) return navContent;
+  return null;
+}
+AppWindowNav.displayName = 'AppWindow.Nav';
+AppWindowNav.Item = AppWindowNavItem;
+
+function AppWindowToolbar({ children, className = '' }: AppWindowToolbarProps) {
+  const chrome = React.useContext(AppWindowChromeCtx);
+
+  const toolbarContent = (
+    <div
+      className={`shrink-0 px-3 py-2 border-b border-ink bg-card flex items-center gap-3 ${className}`.trim()}
+      data-window-toolbar=""
+    >
+      {children}
+    </div>
+  );
+
+  // Register toolbar content with AppWindow via context; render nothing here
+  useEffect(() => {
+    chrome?.setToolbar(toolbarContent);
+    return () => chrome?.setToolbar(null);
+  });
+
+  // Render inline if no AppWindow context (e.g., tests without AppWindow wrapper)
+  if (!chrome) return toolbarContent;
+  return null;
+}
+AppWindowToolbar.displayName = 'AppWindow.Toolbar';
+
+function AppWindowBanner({ children, className = '' }: AppWindowBannerProps) {
+  return <div className={`shrink-0 ${className}`.trim()}>{children}</div>;
+}
+AppWindowBanner.displayName = 'AppWindow.Banner';
+
+function AppWindowIsland({
+  children,
+  padding = 'lg',
+  bgClassName = 'bg-card',
+  noScroll = false,
+  corners = 'standard',
+  width,
+  className = '',
+}: AppWindowIslandProps) {
+  const sizeClass = width ? `shrink-0 ${width}` : 'flex-1 min-w-0';
+  const paddingClass = PADDING_MAP[padding];
+  const cornerClass = corners === 'pixel' ? 'pixel-rounded-sm' : corners === 'none' ? '' : 'border border-line rounded';
+
+  if (noScroll) {
+    return (
+      <div className={`${sizeClass} min-h-0 ${cornerClass} ${bgClassName} ${className}`.trim()}>
+        <div className={`h-full ${paddingClass}`.trim()}>{children}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${sizeClass} min-h-0 ${cornerClass} ${bgClassName} ${className}`.trim()}>
+      <ScrollArea.Root
+        className="h-full"
+        style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
+      >
+        <ScrollArea.Viewport className="h-full overflow-x-hidden">
+          {paddingClass ? <div className={paddingClass}>{children}</div> : children}
+        </ScrollArea.Viewport>
+      </ScrollArea.Root>
+    </div>
+  );
+}
+AppWindowIsland.displayName = 'AppWindow.Island';
+
+function AppWindowContent({ children, layout = 'single', className = '' }: AppWindowContentProps) {
+  if (layout === 'bleed') {
+    return <div className={`h-full flex flex-col ${className}`.trim()}>{children}</div>;
+  }
+
+  // Separate Banner children from Islands/other content
+  const banners: React.ReactNode[] = [];
+  const rest: React.ReactNode[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement(child) && child.type === AppWindowBanner) {
+      banners.push(child);
+    } else {
+      rest.push(child);
+    }
+  });
+
+  const isRow = layout === 'split' || layout === 'sidebar';
+  const layoutClass = isRow ? 'flex gap-1.5' : 'flex flex-col';
+
+  return (
+    <div className={`h-full flex flex-col px-1.5 pb-1.5 ${className}`.trim()}>
+      {banners}
+      <div className={`flex-1 min-h-0 ${layoutClass}`}>{rest}</div>
+    </div>
+  );
+}
+AppWindowContent.displayName = 'AppWindow.Content';
+
+function AppWindow({
   id,
   title,
   children,
@@ -410,6 +646,35 @@ export function AppWindow({
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const lastCenteredSizeRef = useRef<{ width: number; height: number } | null>(null);
+
+  // --- Context for compound children (state-registration) ---
+  const [navContent, setNavContent] = useState<React.ReactNode>(null);
+  const [toolbarContent, setToolbarContent] = useState<React.ReactNode>(null);
+
+  const chromeCtx = useMemo<AppWindowChromeContext>(
+    () => ({ setNav: setNavContent, setToolbar: setToolbarContent }),
+    [],
+  );
+
+  // --- Toolbar height measurement via ref callback ---
+  const [toolbarHeight, setToolbarHeight] = useState(0);
+  const toolbarObserverRef = useRef<ResizeObserver | null>(null);
+
+  const toolbarRef = useCallback((node: HTMLDivElement | null) => {
+    if (toolbarObserverRef.current) {
+      toolbarObserverRef.current.disconnect();
+      toolbarObserverRef.current = null;
+    }
+    if (!node) {
+      setToolbarHeight(0);
+      return;
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      setToolbarHeight(entry.contentRect.height + /* border-b */ 1);
+    });
+    observer.observe(node);
+    toolbarObserverRef.current = observer;
+  }, []);
   const [internalPosition, setInternalPosition] = useState(defaultPosition);
   const [internalSize, setInternalSize] = useState<AppWindowSize | undefined>(defaultSize);
   const [isResizing, setIsResizing] = useState(false);
@@ -622,8 +887,8 @@ export function AppWindow({
 
   const actualWindowHeight = dimensionToPx(effectiveSize?.height);
   const maxContentHeight = actualWindowHeight
-    ? actualWindowHeight - TITLE_BAR_HEIGHT - CHROME_PADDING
-    : getMaxContentHeight(viewportBottomInset);
+    ? actualWindowHeight - TITLE_BAR_HEIGHT - toolbarHeight - CHROME_PADDING
+    : getMaxContentHeight(viewportBottomInset) - toolbarHeight;
   const hasExplicitWidth = effectiveSize?.width !== undefined;
 
   if (presentation === 'mobile') {
@@ -656,7 +921,12 @@ export function AppWindow({
             </Button>
           ) : null}
         </header>
-        <main className="flex-1 overflow-auto @container">{children}</main>
+        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
+        <main className="flex-1 overflow-auto @container">
+          <AppWindowChromeCtx.Provider value={chromeCtx}>
+            {children}
+          </AppWindowChromeCtx.Provider>
+        </main>
       </div>
     );
   }
@@ -694,11 +964,17 @@ export function AppWindow({
           actionButton={actionButton}
           widgetActive={widgetActive}
           presentation={presentation}
+          navContent={navContent}
           onClose={onClose}
           onFullscreen={onFullscreen}
           onWidget={onWidget}
         />
-        <div className="flex-1 min-h-0 @container">{children}</div>
+        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
+        <div className="flex-1 min-h-0 @container">
+          <AppWindowChromeCtx.Provider value={chromeCtx}>
+            {children}
+          </AppWindowChromeCtx.Provider>
+        </div>
       </div>
     );
   }
@@ -758,16 +1034,21 @@ export function AppWindow({
           actionButton={actionButton}
           widgetActive={widgetActive}
           presentation={presentation}
+          navContent={navContent}
           onClose={onClose}
           onFullscreen={onFullscreen}
           onWidget={onWidget}
         />
 
+        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
+
         <div
           className={`flex-1 min-h-0${hasExplicitWidth ? ' @container' : ''}${contentPadding ? ' pb-2' : ''}`}
           style={{ '--app-content-max-height': `${maxContentHeight}px` } as React.CSSProperties}
         >
-          {children}
+          <AppWindowChromeCtx.Provider value={chromeCtx}>
+            {children}
+          </AppWindowChromeCtx.Provider>
         </div>
 
         {resizable ? (
@@ -827,4 +1108,19 @@ export function AppWindow({
   );
 }
 
-export default AppWindow;
+// Compound export — attaches sub-components as static properties
+const AppWindowCompound = Object.assign(AppWindow, {
+  Nav: Object.assign(AppWindowNav, { Item: AppWindowNavItem }),
+  Toolbar: AppWindowToolbar,
+  Content: AppWindowContent,
+  Island: AppWindowIsland,
+  Banner: AppWindowBanner,
+  // Legacy — deprecated, use Content + Island instead
+  Body: AppWindowBody,
+  SplitView: AppWindowSplitView,
+  Pane: AppWindowPane,
+});
+
+// Named exports: compound AppWindow + individual sub-components for backward compat
+export { AppWindowCompound as AppWindow, AppWindowBody, AppWindowSplitView, AppWindowPane };
+export default AppWindowCompound;
