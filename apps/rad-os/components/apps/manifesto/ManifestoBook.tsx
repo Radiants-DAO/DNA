@@ -3,8 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import { useContainerSize } from '@/hooks/useContainerSize';
-import { MANIFESTO_ELEMENTS, ALL_TRIGGERS } from './manifesto-data';
-import type { ImageTrigger } from './manifesto-data';
+import { MANIFESTO_ELEMENTS, ALL_TRIGGERS, ALL_GLOSSARY } from './manifesto-data';
+import type { ImageTrigger, GlossaryTerm } from './manifesto-data';
 import {
   paginateManifesto,
   type ImageObstacle,
@@ -25,52 +25,100 @@ const PAGE_MARGIN = 32;
 // Trigger-aware line renderer
 // ---------------------------------------------------------------------------
 
-function renderLineWithTriggers(
+// ---------------------------------------------------------------------------
+// Annotation types — unified for matching against line text
+// ---------------------------------------------------------------------------
+
+type Annotation =
+  | { type: 'trigger'; trigger: ImageTrigger; phrase: string }
+  | { type: 'glossary'; term: GlossaryTerm; phrase: string };
+
+function buildAnnotations(triggers: ImageTrigger[], glossary: GlossaryTerm[]): Annotation[] {
+  const anns: Annotation[] = [];
+  for (const t of triggers) anns.push({ type: 'trigger', trigger: t, phrase: t.phrase });
+  for (const g of glossary) anns.push({ type: 'glossary', term: g, phrase: g.term });
+  // Sort longest phrase first to avoid partial matches
+  anns.sort((a, b) => b.phrase.length - a.phrase.length);
+  return anns;
+}
+
+function renderAnnotatedLine(
   lineText: string,
   x: number,
   y: number,
   font: string,
-  triggers: ImageTrigger[],
+  annotations: Annotation[],
   activeTriggers: Map<string, ImageTrigger>,
   onToggle: (trigger: ImageTrigger) => void,
   idx: number,
 ) {
-  // Check if any trigger phrase appears in this line
-  const parts: React.ReactNode[] = [];
-  let remaining = lineText;
-  let hasMatch = false;
-  let partKey = 0;
-
-  for (const trigger of triggers) {
-    const phraseIdx = remaining.indexOf(trigger.phrase);
-    if (phraseIdx !== -1) {
-      hasMatch = true;
-      const before = remaining.slice(0, phraseIdx);
-      const match = remaining.slice(phraseIdx, phraseIdx + trigger.phrase.length);
-      const after = remaining.slice(phraseIdx + trigger.phrase.length);
-
-      if (before) parts.push(<span key={`t-${partKey++}`}>{before}</span>);
-      parts.push(
-        <span
-          key={trigger.id}
-          className={`cursor-pointer ${activeTriggers.has(trigger.id) ? 'bg-accent/50' : 'bg-accent/30'}`}
-          title="tap to show image"
-          onClick={(e) => { e.stopPropagation(); onToggle(trigger); }}
-        >
-          {match}
-        </span>,
-      );
-      remaining = after;
+  // Find all annotation matches with their positions
+  const matches: { start: number; end: number; ann: Annotation }[] = [];
+  for (const ann of annotations) {
+    const pos = lineText.indexOf(ann.phrase);
+    if (pos !== -1) {
+      matches.push({ start: pos, end: pos + ann.phrase.length, ann });
     }
   }
-  if (remaining) parts.push(<span key={`t-${partKey++}`}>{remaining}</span>);
 
-  if (!hasMatch) {
+  if (matches.length === 0) {
     return (
       <div key={idx} className="absolute text-head" style={{ left: x, top: y, whiteSpace: 'pre', font }}>
         {lineText}
       </div>
     );
+  }
+
+  // Sort by position, remove overlaps (first match wins)
+  matches.sort((a, b) => a.start - b.start);
+  const filtered: typeof matches = [];
+  let lastEnd = 0;
+  for (const m of matches) {
+    if (m.start >= lastEnd) {
+      filtered.push(m);
+      lastEnd = m.end;
+    }
+  }
+
+  // Build parts
+  const parts: React.ReactNode[] = [];
+  let cursor = 0;
+  let partKey = 0;
+
+  for (const m of filtered) {
+    if (m.start > cursor) {
+      parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor, m.start)}</span>);
+    }
+    const text = lineText.slice(m.start, m.end);
+
+    if (m.ann.type === 'trigger') {
+      const isActive = activeTriggers.has(m.ann.trigger.id);
+      parts.push(
+        <span
+          key={m.ann.trigger.id}
+          className={`cursor-pointer ${isActive ? 'bg-accent/50' : 'bg-accent/30'}`}
+          title="tap to show image"
+          onClick={(e) => { e.stopPropagation(); onToggle(m.ann.trigger); }}
+        >
+          {text}
+        </span>,
+      );
+    } else {
+      parts.push(
+        <span
+          key={`g-${partKey++}`}
+          className="cursor-help hover:bg-link/20 transition-colors"
+          title={m.ann.term.definition}
+        >
+          {text}
+        </span>,
+      );
+    }
+    cursor = m.end;
+  }
+
+  if (cursor < lineText.length) {
+    parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor)}</span>);
   }
 
   return (
@@ -122,18 +170,20 @@ function computeObstacleForTrigger(
 // Element renderers
 // ---------------------------------------------------------------------------
 
+// Pre-build annotations once (triggers + glossary merged)
+const ANNOTATIONS = buildAnnotations(ALL_TRIGGERS, ALL_GLOSSARY);
+
 function renderElement(
   el: PageEl,
   idx: number,
-  triggers: ImageTrigger[],
   activeTriggers: Map<string, ImageTrigger>,
   onToggle: (trigger: ImageTrigger) => void,
 ) {
   switch (el.kind) {
     case 'line':
-      return renderLineWithTriggers(
+      return renderAnnotatedLine(
         el.text, el.x, el.y, el.font,
-        triggers, activeTriggers, onToggle, idx,
+        ANNOTATIONS, activeTriggers, onToggle, idx,
       );
 
     case 'heading-line':
@@ -336,7 +386,7 @@ export function ManifestoBook() {
             style={{ width: pageWidth, height: pageHeight }}
           >
             {contentPage.els.map((el, i) =>
-              renderElement(el, i, ALL_TRIGGERS, activeTriggers, handleToggleTrigger),
+              renderElement(el, i, activeTriggers, handleToggleTrigger),
             )}
             {/* Render active trigger images/videos */}
             {Array.from(activeTriggers.values()).map((trigger) => {

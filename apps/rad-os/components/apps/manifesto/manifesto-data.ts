@@ -10,10 +10,15 @@ export interface ImageTrigger {
   naturalHeight?: number;
 }
 
+export interface GlossaryTerm {
+  term: string;
+  definition: string;
+}
+
 export type ManifestoElement =
   | { kind: 'heading'; text: string }
   | { kind: 'section-title'; text: string }
-  | { kind: 'paragraph'; text: string; triggers?: ImageTrigger[] }
+  | { kind: 'paragraph'; text: string; triggers?: ImageTrigger[]; glossary?: GlossaryTerm[] }
   | { kind: 'rule' };
 
 // ---------------------------------------------------------------------------
@@ -89,12 +94,25 @@ export function parseContent(md: string): ManifestoElement[] {
         ...(dims ? { naturalWidth: dims.w, naturalHeight: dims.h } : {}),
       });
     }
-    const cleanText = text.replace(triggerRe, '$1');
+    const afterTriggers = text.replace(triggerRe, '$1');
+
+    // Extract glossary terms: [[term||definition]]
+    const glossary: GlossaryTerm[] = [];
+    const glossaryRe = /\[\[([^|]+)\|\|([^\]]+)\]\]/g;
+    let glossaryMatch;
+    while ((glossaryMatch = glossaryRe.exec(afterTriggers)) !== null) {
+      glossary.push({
+        term: glossaryMatch[1].trim(),
+        definition: glossaryMatch[2].trim(),
+      });
+    }
+    const cleanText = afterTriggers.replace(glossaryRe, '$1');
 
     elements.push({
       kind: 'paragraph',
       text: cleanText.replace(/\s+/g, ' ').trim(),
       ...(triggers.length > 0 ? { triggers } : {}),
+      ...(glossary.length > 0 ? { glossary } : {}),
     });
   }
 
@@ -270,7 +288,7 @@ This is a fantasy.
 
 ⠀
 
-Consensus reality: the shared sense of facts, expectations, and concepts about the world. was never natural.\\
+[[Consensus reality||The shared sense of facts, expectations, and concepts about the world.]]: the shared sense of facts, expectations, and concepts about the world. was never natural.\\
 \\
 It was a product of artificial scarcity. Scarce channels, scarce publishers, scarce narratives. When three networks controlled what a nation saw and a handful of papers controlled what it read, convergence on a shared story was just was basic economics. The infrastructure of mass media could hold one picture of the world together because the cost of producing an alternative was prohibitive and next-to-impossible.
 
@@ -414,3 +432,7 @@ export const MANIFESTO_ELEMENTS: ManifestoElement[] = [
 export const ALL_TRIGGERS: ImageTrigger[] = MANIFESTO_ELEMENTS
   .filter((el): el is Extract<ManifestoElement, { kind: 'paragraph' }> => el.kind === 'paragraph')
   .flatMap(el => el.triggers ?? []);
+
+export const ALL_GLOSSARY: GlossaryTerm[] = MANIFESTO_ELEMENTS
+  .filter((el): el is Extract<ManifestoElement, { kind: 'paragraph' }> => el.kind === 'paragraph')
+  .flatMap(el => el.glossary ?? []);
