@@ -12,6 +12,7 @@ import {
   type PaginationResult,
 } from './manifesto-layout';
 import { CoverPage } from './CoverPage';
+import { ForwardPage } from './ForwardPage';
 
 // ---------------------------------------------------------------------------
 // Element renderers
@@ -118,9 +119,10 @@ export function ManifestoBook() {
     };
   }, [pageWidth, pageHeight, imageObstacles]);
 
-  // Total page count: cover + content pages
+  // Total page count: cover + forward + content pages
   const totalContentPages = result?.pages.length ?? 0;
-  const totalPages = 1 + totalContentPages; // page 0 = cover
+  const SPECIAL_PAGES = 2; // 0 = cover, 1 = forward
+  const totalPages = SPECIAL_PAGES + totalContentPages;
 
   // Navigation helpers
   const goNext = useCallback(() => {
@@ -147,14 +149,16 @@ export function ManifestoBook() {
   }, [goNext, goPrev]);
 
   // Current content page (0-indexed into result.pages)
-  const contentPageIndex = currentPage - 1;
+  const contentPageIndex = currentPage - SPECIAL_PAGES;
   const contentPage: Page | undefined = result?.pages[contentPageIndex];
 
   // Page label
   const pageLabel =
     currentPage === 0
       ? 'Cover'
-      : `${currentPage} / ${totalContentPages}`;
+      : currentPage === 1
+        ? 'Forward'
+        : `${currentPage - SPECIAL_PAGES + 1} / ${totalContentPages}`;
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center bg-card">
@@ -165,6 +169,8 @@ export function ManifestoBook() {
       >
         {currentPage === 0 ? (
           <CoverPage pageWidth={pageWidth} pageHeight={pageHeight} />
+        ) : currentPage === 1 ? (
+          <ForwardPage pageWidth={pageWidth} pageHeight={pageHeight} />
         ) : contentPage ? (
           <div
             className="relative bg-card"

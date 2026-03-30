@@ -83,18 +83,16 @@ export function parseContent(md: string): ManifestoElement[] {
 // Content — one constant per section, split at ## headings
 // ---------------------------------------------------------------------------
 
+/** Forward intro — rendered as its own centered page (like the cover). */
+export const FORWARD_INTRO = {
+  heading: 'Forward',
+  lines: [
+    'The world is changing faster than our ability to consciously navigate that change. Most people are being unconsciously shaped by forces they don\'t understand — digital media, cultural fragmentation, the collapse of shared institutions. I\'ve spent my life learning the alternative: how to make conscious choices about how we live, organize, and create meaning together.',
+    'This is the story of how I learned that skill, and what it taught me about building in the space between worlds.',
+  ],
+};
+
 const FORWARD_CONTENT = `\
-## Forward
-
-The world is changing faster than our ability to consciously navigate that change. Most people are being unconsciously shaped by forces they don't understand — digital media, cultural fragmentation, the collapse of shared institutions. I've spent my life learning the alternative: how to make conscious choices about how we live, organize, and create meaning together.
-
-⠀
-
-This is the story of how I learned that skill, and what it taught me about building in the space between worlds.
-
-⠀
-
-***
 
 ⠀
 
