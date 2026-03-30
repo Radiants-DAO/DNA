@@ -1,45 +1,4 @@
 {
   "$description": "Primitive RDNA Radiants typography tokens generated from packages/radiants/tokens.css.",
-  "fontSize": {
-    "xs": {
-      "$type": "fontSize",
-      "$value": "0.625rem"
-    },
-    "sm": {
-      "$type": "fontSize",
-      "$value": "0.75rem"
-    },
-    "base": {
-      "$type": "fontSize",
-      "$value": "1rem"
-    },
-    "lg": {
-      "$type": "fontSize",
-      "$value": "1.333rem"
-    },
-    "xl": {
-      "$type": "fontSize",
-      "$value": "1.777rem"
-    },
-    "2xl": {
-      "$type": "fontSize",
-      "$value": "2.369rem"
-    },
-    "3xl": {
-      "$type": "fontSize",
-      "$value": "3.157rem"
-    },
-    "4xl": {
-      "$type": "fontSize",
-      "$value": "4.209rem"
-    },
-    "5xl": {
-      "$type": "fontSize",
-      "$value": "5.61rem"
-    },
-    "display": {
-      "$type": "fontSize",
-      "$value": "5.61rem"
-    }
-  }
+  "fontSize": {}
 }

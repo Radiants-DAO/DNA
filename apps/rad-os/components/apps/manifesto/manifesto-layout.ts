@@ -35,7 +35,6 @@ import {
 } from '@rdna/radiants/patterns/pretext-prepare';
 import {
   optimalLayout,
-  type JustifiedLine,
   type JustifiedSegment,
 } from '@rdna/radiants/patterns/pretext-justify';
 import type { ManifestoElement } from './manifesto-data';

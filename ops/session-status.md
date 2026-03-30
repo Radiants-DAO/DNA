@@ -1,41 +1,52 @@
 ## Session Status — 2026-03-30
 
-**Plan:** No active implementation plan
-**Branch:** main
+**Plan:** AppWindow Island Layout System
+**Branch:** feat/appwindow-taskbar-api (worktree: DNA-taskbar-api)
+**Plan doc:** docs/plans/2026-03-30-appwindow-island-layouts.md
 
-### Completed (recent)
-- [x] Pretext type scale + editorial typography + spacing system (2026-03-29)
-- [x] GoodNews layout: spacing scale, masthead fixes, SVG obstacle deleted
-- [x] AppWindow Taskbar API plan written (commit: e9d1cea5, 56b8541c)
-- [x] Manifesto questions doc iterations (commit: acf23228, e438351f, 2246b757)
-- [x] Production readiness checklist trimmed (commit: 0d76422c)
+### Completed
+- [x] Types: ContentLayout, IslandProps, BannerProps
+- [x] AppWindow.Island — elevated card surface with scroll, padding, width, corners variants
+- [x] AppWindow.Banner — edge-to-edge content zone
+- [x] AppWindow.Content layout modes — single, split, sidebar, bleed + Banner extraction
+- [x] Compound export wired (Island, Banner on AppWindow)
+- [x] All 24 tests pass
+- [x] Migrate BrandAssetsApp → Content + Island (corners="pixel")
+- [x] Migrate AboutApp → Content + Island + contentPadding: false in catalog
+- [x] Migrate ManifestoApp → Content layout="sidebar" + two Islands
+- [x] Migrate RadRadioApp → Content layout="bleed"
+- [x] Migrate RadiantsStudioApp → Content + Island
+- [x] Deprecate Body, SplitView, Pane with @deprecated JSDoc
+- [x] Update AppWindow.meta.ts with new sub-components + examples
+- [x] Visual QA fix: Island defaults to `border border-line rounded` (standard), `corners="pixel"` opt-in
+- [x] Visual QA fix: Manifesto content panel width collapse (`w-full` on Content inside Tabs sidebar)
 
 ### In Progress
 - [ ] Nothing active
 
-### Remaining (from previous session feedback)
-- [ ] Drop cap Y position ("too high") — needs baseline alignment investigation
-- [ ] Hero image inline/rich-text treatment — reference pretext rich text demo
-- [ ] Body text fluid scaling (currently fixed baseFontSize from root)
-- [ ] Layout recipe abstraction — extract GoodNews into a named template
-- [ ] ManifestoApp editorial treatment (First Things First style)
+### Remaining
+- [ ] RadiantsStudio: empty space below bottom tab bar (layout refinement)
+- [ ] Visual QA: dark mode sweep (not started)
+- [ ] Visual QA: token verification pass (grep for hardcoded colors)
 
-### Uncommitted
-- `docs/production-readiness-checklist.md` — minor edit (1 ins, 5 del)
+### Visual QA Results
 
-### Available Plans (2026-03-28/29)
-- `2026-03-29-appwindow-taskbar-api.md` — Taskbar API for AppWindow
-- `2026-03-29-pretext-standalone-panel.md` — Standalone pretext panel
-- `2026-03-28-pretext-editor-backend.md` / `frontend.md` — Pretext editor
-- `2026-03-28-control-density-modes.md` — Control density modes
-- `2026-03-27-rdna-controls-library.md` — RDNA controls package
-
-### Next Action
-> Pick a plan to execute or start new work — no task is in flight.
+| Window | Verdict | Notes |
+|--------|---------|-------|
+| BrandAssetsApp | PASS | pixel corners preserved via `corners="pixel"`, matches main |
+| AboutApp | PASS | standard CSS corners, matches main |
+| ManifestoApp | PASS (fixed) | was showing empty panel — Tabs sidebar `items-start` collapsed width, fixed with `w-full` |
+| RadRadioApp | PASS | bleed layout, no visual change |
+| RadiantsStudioApp | PASS (minor) | content renders, tab bar works; extra empty space below tabs |
+| GoodNewsApp | — | not migrated (pretext editorial) |
 
 ### What to Test
-- [ ] Previous pretext work: GoodNews spacing, masthead, resize behavior
-- [ ] Run `pnpm lint:design-system` — verify no regressions
+- [ ] BrandAssetsApp: pixel corners on content island, tabs switch correctly
+- [ ] ManifestoApp: sidebar layout, tab switching, content scrolls
+- [ ] AboutApp: standard corners, content scrolls, cards visible
+- [ ] RadRadioApp: full-bleed, no gutters, video fills
+- [ ] RadiantsStudioApp: canvas renders, bottom tabs work
+- [ ] All windows: dark mode appearance
 
 ### Team Status
 No active agents

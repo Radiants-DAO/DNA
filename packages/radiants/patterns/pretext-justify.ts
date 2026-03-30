@@ -62,7 +62,7 @@ export interface QualityMetrics {
 export function greedyJustifiedLayout(
   prepared: PreparedTextWithSegments,
   maxWidth: number,
-  normalSpaceW: number,
+  _normalSpaceW: number,
   hyphenWidth: number,
 ): JustifiedLine[] {
   const segs = prepared.segments;

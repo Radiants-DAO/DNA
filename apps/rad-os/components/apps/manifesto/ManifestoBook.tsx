@@ -51,6 +51,7 @@ function renderAnnotatedLine(
   activeTriggers: Map<string, ImageTrigger>,
   onToggle: (trigger: ImageTrigger) => void,
   idx: number,
+  justified?: { segments: { text: string; width: number; isSpace: boolean }[]; maxWidth: number; isLast: boolean },
 ) {
   // Find all annotation matches with their positions
   const matches: { start: number; end: number; ann: Annotation }[] = [];
@@ -61,7 +62,104 @@ function renderAnnotatedLine(
     }
   }
 
-  if (matches.length === 0) {
+  const hasAnnotations = matches.length > 0;
+
+  // ── Justified line, no annotations: flexbox word segments ──
+  if (justified && !hasAnnotations) {
+    const words = justified.segments.filter(s => !s.isSpace);
+    if (justified.isLast || words.length <= 1) {
+      // Last line or single word: left-aligned
+      return (
+        <div key={idx} className="absolute text-head" style={{ left: x, top: y, font, width: justified.maxWidth }}>
+          {words.map((w, i) => <span key={i}>{w.text}</span>).reduce<React.ReactNode[]>((acc, el, i) => {
+            if (i > 0) acc.push(' ');
+            acc.push(el);
+            return acc;
+          }, [])}
+        </div>
+      );
+    }
+    return (
+      <div
+        key={idx}
+        className="absolute text-head"
+        style={{
+          left: x, top: y, font,
+          width: justified.maxWidth,
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        {words.map((w, i) => <span key={i}>{w.text}</span>)}
+      </div>
+    );
+  }
+
+  // ── Justified line WITH annotations: CSS text-align justify ──
+  if (justified && hasAnnotations) {
+    matches.sort((a, b) => a.start - b.start);
+    const filtered: typeof matches = [];
+    let lastEnd = 0;
+    for (const m of matches) {
+      if (m.start >= lastEnd) {
+        filtered.push(m);
+        lastEnd = m.end;
+      }
+    }
+
+    const parts: React.ReactNode[] = [];
+    let cursor = 0;
+    let partKey = 0;
+
+    for (const m of filtered) {
+      if (m.start > cursor) {
+        parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor, m.start)}</span>);
+      }
+      const text = lineText.slice(m.start, m.end);
+      if (m.ann.type === 'trigger') {
+        const trig = m.ann.trigger;
+        const isActive = activeTriggers.has(trig.id);
+        parts.push(
+          <span
+            key={trig.id}
+            className={`cursor-pointer ${isActive ? 'bg-accent/50' : 'bg-accent/30'}`}
+            title="tap to show image"
+            onClick={(e) => { e.stopPropagation(); onToggle(trig); }}
+          >{text}</span>,
+        );
+      } else {
+        parts.push(
+          <span
+            key={`g-${partKey++}`}
+            className="cursor-help hover:bg-link/20 transition-colors"
+            title={m.ann.term.definition}
+          >{text}</span>,
+        );
+      }
+      cursor = m.end;
+    }
+    if (cursor < lineText.length) {
+      parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor)}</span>);
+    }
+
+    return (
+      <div
+        key={idx}
+        className="absolute text-head"
+        style={{
+          left: x, top: y, font,
+          width: justified.maxWidth,
+          textAlign: justified.isLast ? 'left' : 'justify',
+          textAlignLast: justified.isLast ? undefined : 'justify',
+        }}
+      >
+        {parts}
+      </div>
+    );
+  }
+
+  // ── Non-justified (greedy) with no annotations ──
+  if (!hasAnnotations) {
     return (
       <div key={idx} className="absolute text-head" style={{ left: x, top: y, whiteSpace: 'pre', font }}>
         {lineText}
@@ -69,7 +167,7 @@ function renderAnnotatedLine(
     );
   }
 
-  // Sort by position, remove overlaps (first match wins)
+  // ── Non-justified with annotations ──
   matches.sort((a, b) => a.start - b.start);
   const filtered: typeof matches = [];
   let lastEnd = 0;
@@ -80,7 +178,6 @@ function renderAnnotatedLine(
     }
   }
 
-  // Build parts
   const parts: React.ReactNode[] = [];
   let cursor = 0;
   let partKey = 0;
@@ -90,18 +187,16 @@ function renderAnnotatedLine(
       parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor, m.start)}</span>);
     }
     const text = lineText.slice(m.start, m.end);
-
     if (m.ann.type === 'trigger') {
-      const isActive = activeTriggers.has(m.ann.trigger.id);
+      const trig = m.ann.trigger;
+      const isActive = activeTriggers.has(trig.id);
       parts.push(
         <span
-          key={m.ann.trigger.id}
+          key={trig.id}
           className={`cursor-pointer ${isActive ? 'bg-accent/50' : 'bg-accent/30'}`}
           title="tap to show image"
-          onClick={(e) => { e.stopPropagation(); onToggle(m.ann.trigger); }}
-        >
-          {text}
-        </span>,
+          onClick={(e) => { e.stopPropagation(); onToggle(trig); }}
+        >{text}</span>,
       );
     } else {
       parts.push(
@@ -109,14 +204,11 @@ function renderAnnotatedLine(
           key={`g-${partKey++}`}
           className="cursor-help hover:bg-link/20 transition-colors"
           title={m.ann.term.definition}
-        >
-          {text}
-        </span>,
+        >{text}</span>,
       );
     }
     cursor = m.end;
   }
-
   if (cursor < lineText.length) {
     parts.push(<span key={`p-${partKey++}`}>{lineText.slice(cursor)}</span>);
   }
@@ -184,6 +276,7 @@ function renderElement(
       return renderAnnotatedLine(
         el.text, el.x, el.y, el.font,
         ANNOTATIONS, activeTriggers, onToggle, idx,
+        el.justified,
       );
 
     case 'heading-line':

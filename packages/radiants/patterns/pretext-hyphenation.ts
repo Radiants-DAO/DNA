@@ -191,7 +191,6 @@ const HYPHEN_EXCEPTIONS: Record<string, string[]> = {
   'understand': ['un','der','stand'],
   'underneath': ['un','der','neath'],
   'remember': ['re','mem','ber'],
-  'different': ['dif','fer','ent'],
   'permanent': ['per','ma','nent'],
   'temporary': ['tem','po','rar','y'],
   'necessary': ['nec','es','sar','y'],
