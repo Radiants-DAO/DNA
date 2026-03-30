@@ -44,16 +44,34 @@ function renderElement(el: PageEl, idx: number) {
 
     case 'image': {
       const isPlaceholder = el.src.startsWith('/placeholders/');
+      const isVideo = el.src.endsWith('.mp4');
       const label = el.alt.replace(/^Placeholder:\s*/i, '');
-      return isPlaceholder ? (
-        <div
-          key={idx}
-          className="absolute bg-depth flex items-center justify-center text-mute font-joystix text-xs p-2 text-center leading-relaxed"
-          style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
-        >
-          {label}
-        </div>
-      ) : (
+      if (isPlaceholder) {
+        return (
+          <div
+            key={idx}
+            className="absolute bg-depth flex items-center justify-center text-mute font-joystix text-xs p-2 text-center leading-relaxed"
+            style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
+          >
+            {label}
+          </div>
+        );
+      }
+      if (isVideo) {
+        return (
+          <video
+            key={idx}
+            src={el.src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute object-cover"
+            style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
+          />
+        );
+      }
+      return (
         <img
           key={idx}
           src={el.src}

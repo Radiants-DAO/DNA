@@ -15,7 +15,7 @@ export type ManifestoElement =
 /** Known image dimensions (natural px). Add entries as real images are placed. */
 const IMAGE_DIMENSIONS: Record<string, { w: number; h: number }> = {
   '/manifesto/hopi-dunes.jpg': { w: 1486, h: 2000 },
-  '/manifesto/mustang-1967.jpg': { w: 1600, h: 1200 },
+  '/manifesto/mustang-1967.mp4': { w: 864, h: 432 },
   '/manifesto/mercedes-1980.jpg': { w: 1280, h: 960 },
 };
 
@@ -143,7 +143,7 @@ My mom lost her job at the paper and somewhere else in the world, Satoshi Nakamo
 
 ⠀
 
-![Rock or Restore: 1967 Ford Mustang Fastback](/manifesto/mustang-1967.jpg)
+![1967 Ford Mustang](/manifesto/mustang-1967.mp4)
 
 It was both her mom's and her grandma's first car. I tried to find it a year ago, but to no avail.
 
