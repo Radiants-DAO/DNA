@@ -6,7 +6,7 @@
 
 **Worktree:** `/Users/rivermassey/Desktop/dev/DNA-tabs-refactor` (branch `feat/tabs-refactor`)
 
-**Architecture:** Extract accordion into a standalone component. Flatten the Provider ceremony into a standard compound root. Replace 6 layout + 2 mode if/else chains with orthogonal axes (mode/tone/size/position/indicator) driven by CVA variants and data attributes. Absorb AppWindow.Nav's bespoke chrome tabs as `mode="chrome"`. All visual styling via `data-*` attributes targeted by CSS — same pattern as Button.
+**Architecture:** Delete accordion layout (Collapsible already exists). Flatten the Provider ceremony into a standard compound root. Replace 6 layout + 2 mode if/else chains with orthogonal axes (mode/tone/size/position/indicator) driven by CVA variants and data attributes. Mode has two values: `capsule` (detached — free-floating bar) and `chrome` (attached — tabs merge into content edge). Absorb AppWindow.Nav's bespoke implementation as `mode="chrome"`. All visual styling via `data-*` attributes targeted by CSS — same pattern as Button.
 
 **Tech Stack:** React 19, Base UI `@base-ui/react/tabs`, CVA, Tailwind v4, Vitest + Testing Library
 
@@ -44,15 +44,17 @@ AppWindow.Nav: 70-line bespoke reimplementation of capsule tabs
 
 **After (target):**
 ```
-TabsMode = 'pill' | 'line' | 'capsule' | 'chrome'   (4 visual treatments)
+TabsMode = 'capsule' | 'chrome'                      (2 spatial modes)
+  capsule  = detached — free-floating bar, not connected to content
+  chrome   = attached — tabs merge into content edge, active flows into card
 TabsPosition = 'top' | 'bottom' | 'left'            (3 structural positions)
 TabsTone = 'neutral' | 'accent'                      (2 color axes)
 TabsSize = 'sm' | 'md' | 'lg'                        (3 size presets)
 
-Trigger: single CVA, zero branching
+Trigger: single CVA, zero branching — both modes share icon-always/text-when-active
 List: single CVA, zero branching
 Root owns config directly (no Provider ceremony)
-Accordion: separate Accordion component
+Accordion layout: deleted (Collapsible component already exists)
 AppWindow.Nav: thin wrapper around Tabs mode="chrome"
 ```
 
@@ -63,12 +65,12 @@ AppWindow.Nav: thin wrapper around Tabs mode="chrome"
 | `layout: 'default'` | `position: 'top'` | Default position |
 | `layout: 'bottom-tabs'` | `position: 'bottom'` | Bottom bar |
 | `layout: 'sidebar'` | `position: 'left'` | Vertical nav |
-| `layout: 'capsule'` | `mode: 'capsule'` | Visual treatment, not layout |
+| `layout: 'capsule'` | `mode: 'capsule'` | Detached — free-floating bar |
 | `layout: 'dot'` | `indicator: 'dot'` on any mode | Orthogonal concern |
-| `layout: 'accordion'` | **Extracted** → `Accordion` component | Different primitive |
-| `mode: 'pill'` | `mode: 'pill'` | Unchanged |
-| `mode: 'line'` | `mode: 'line'` | Unchanged |
-| (AppWindow.Nav) | `mode: 'chrome'` | New — title bar tabs |
+| `layout: 'accordion'` | **Deleted** — use `Collapsible` component | Already exists at `components/core/Collapsible/` |
+| `mode: 'pill'` | `mode: 'capsule'` | Collapsed into capsule (detached) |
+| `mode: 'line'` | `mode: 'capsule'` | Collapsed into capsule (detached) |
+| (AppWindow.Nav) | `mode: 'chrome'` | Attached — tabs merge into content edge |
 
 ### Files involved
 
@@ -78,11 +80,6 @@ AppWindow.Nav: thin wrapper around Tabs mode="chrome"
 - `packages/radiants/components/core/Tabs/Tabs.schema.json` — Regenerate after meta
 - `packages/radiants/components/core/Tabs/Tabs.test.tsx` — Rewrite for new API
 
-**Create:**
-- `packages/radiants/components/core/Accordion/Accordion.tsx` — Extracted from Tabs
-- `packages/radiants/components/core/Accordion/Accordion.meta.ts` — Registry entry
-- `packages/radiants/components/core/Accordion/Accordion.test.tsx` — Tests
-
 **Consumers (migrate):**
 - `apps/rad-os/components/apps/RadiantsStudioApp.tsx` — Provider → Root
 - `apps/rad-os/components/Rad_os/WindowTabs.tsx` — Provider → Root (or delete if redundant)
@@ -91,8 +88,6 @@ AppWindow.Nav: thin wrapper around Tabs mode="chrome"
 - `packages/radiants/components/core/__tests__/smoke.test.tsx` — Update export check
 - `packages/radiants/components/core/AppWindow/AppWindow.tsx` — Nav wrapper uses Tabs mode="chrome"
 
-**Barrel exports:**
-- `packages/radiants/components/core/index.ts` — Add Accordion export
 
 ### Critical constraints
 
@@ -104,372 +99,48 @@ AppWindow.Nav: thin wrapper around Tabs mode="chrome"
 
 ---
 
-## Phase 1: Extract Accordion (standalone component)
+## Phase 1: Delete accordion layout from Tabs
 
-### Task 1: Scaffold Accordion component with tests
+### Task 1: Remove accordion layout code
 
-**Files:**
-- Create: `packages/radiants/components/core/Accordion/Accordion.tsx`
-- Create: `packages/radiants/components/core/Accordion/Accordion.test.tsx`
-
-**Step 1: Write the failing test**
-
-Create `packages/radiants/components/core/Accordion/Accordion.test.tsx`:
-
-```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { Accordion } from './Accordion';
-
-function TestAccordion({ defaultValue = '' }: { defaultValue?: string }) {
-  return (
-    <Accordion defaultValue={defaultValue}>
-      <Accordion.Item value="settings">
-        <Accordion.Trigger>Settings</Accordion.Trigger>
-        <Accordion.Content>Settings content</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="advanced">
-        <Accordion.Trigger>Advanced</Accordion.Trigger>
-        <Accordion.Content>Advanced content</Accordion.Content>
-      </Accordion.Item>
-    </Accordion>
-  );
-}
-
-describe('Accordion', () => {
-  it('renders triggers with correct labels', () => {
-    render(<TestAccordion />);
-    expect(screen.getByText('Settings')).toBeInTheDocument();
-    expect(screen.getByText('Advanced')).toBeInTheDocument();
-  });
-
-  it('expands panel when trigger is clicked', async () => {
-    render(<TestAccordion />);
-    const trigger = screen.getByText('Settings');
-    fireEvent.click(trigger);
-    expect(screen.getByText('Settings content')).toBeVisible();
-  });
-
-  it('collapses expanded panel when trigger is clicked again', async () => {
-    render(<TestAccordion defaultValue="settings" />);
-    expect(screen.getByText('Settings content')).toBeVisible();
-    const trigger = screen.getByText('Settings');
-    fireEvent.click(trigger);
-    // Content should be hidden after collapsing
-    expect(screen.queryByText('Settings content')).not.toBeVisible();
-  });
-
-  it('opens defaultValue panel on mount', () => {
-    render(<TestAccordion defaultValue="settings" />);
-    expect(screen.getByText('Settings content')).toBeVisible();
-  });
-
-  it('sets data-state on trigger and content', () => {
-    render(<TestAccordion defaultValue="settings" />);
-    const settingsTrigger = screen.getByText('Settings').closest('[data-slot="accordion-trigger"]');
-    expect(settingsTrigger).toHaveAttribute('data-state', 'open');
-    const advancedTrigger = screen.getByText('Advanced').closest('[data-slot="accordion-trigger"]');
-    expect(advancedTrigger).toHaveAttribute('data-state', 'closed');
-  });
-});
-```
-
-**Step 2: Run test to verify it fails**
-
-Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && pnpm vitest run packages/radiants/components/core/Accordion/Accordion.test.tsx`
-Expected: FAIL — module not found
-
-**Step 3: Write the Accordion implementation**
-
-Create `packages/radiants/components/core/Accordion/Accordion.tsx`:
-
-```tsx
-'use client';
-
-import React, { useState, useCallback, useMemo, createContext, useContext } from 'react';
-import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
-
-// ============================================================================
-// Types
-// ============================================================================
-
-type AccordionMode = 'default' | 'flush';
-
-interface AccordionProps {
-  /** Which item is expanded (controlled) */
-  value?: string;
-  /** Initially expanded item (uncontrolled) */
-  defaultValue?: string;
-  /** Callback when expanded item changes */
-  onValueChange?: (value: string) => void;
-  /** Visual mode */
-  mode?: AccordionMode;
-  children: React.ReactNode;
-  className?: string;
-}
-
-interface AccordionItemProps {
-  value: string;
-  children: React.ReactNode;
-  className?: string;
-}
-
-interface AccordionTriggerProps {
-  children: React.ReactNode;
-  icon?: React.ReactNode;
-  className?: string;
-}
-
-interface AccordionContentProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-// ============================================================================
-// Context
-// ============================================================================
-
-interface AccordionCtx {
-  activeValue: string;
-  toggle: (value: string) => void;
-  mode: AccordionMode;
-}
-
-interface AccordionItemCtx {
-  value: string;
-  isOpen: boolean;
-}
-
-const AccordionContext = createContext<AccordionCtx | null>(null);
-const AccordionItemContext = createContext<AccordionItemCtx | null>(null);
-
-function useAccordion(): AccordionCtx {
-  const ctx = useContext(AccordionContext);
-  if (!ctx) throw new Error('Accordion components must be used within <Accordion>');
-  return ctx;
-}
-
-function useAccordionItem(): AccordionItemCtx {
-  const ctx = useContext(AccordionItemContext);
-  if (!ctx) throw new Error('Accordion.Trigger/Content must be used within <Accordion.Item>');
-  return ctx;
-}
-
-// ============================================================================
-// Sub-components
-// ============================================================================
-
-function AccordionRoot({
-  value,
-  defaultValue = '',
-  onValueChange,
-  mode = 'default',
-  children,
-  className = '',
-}: AccordionProps) {
-  const [internal, setInternal] = useState(defaultValue);
-  const isControlled = value !== undefined;
-  const activeValue = isControlled ? value : internal;
-
-  const toggle = useCallback((v: string) => {
-    const next = activeValue === v ? '' : v;
-    if (!isControlled) setInternal(next);
-    onValueChange?.(next);
-  }, [activeValue, isControlled, onValueChange]);
-
-  const ctx = useMemo(() => ({ activeValue, toggle, mode }), [activeValue, toggle, mode]);
-
-  return (
-    <AccordionContext value={ctx}>
-      <div data-rdna="accordion" data-mode={mode} className={`flex flex-col space-y-0.5 ${className}`}>
-        {children}
-      </div>
-    </AccordionContext>
-  );
-}
-
-function Item({ value, children, className = '' }: AccordionItemProps) {
-  const { activeValue } = useAccordion();
-  const isOpen = activeValue === value;
-  const ctx = useMemo(() => ({ value, isOpen }), [value, isOpen]);
-
-  return (
-    <AccordionItemContext value={ctx}>
-      <div
-        data-slot="accordion-item"
-        data-state={isOpen ? 'open' : 'closed'}
-        className={className}
-      >
-        {children}
-      </div>
-    </AccordionItemContext>
-  );
-}
-
-function Trigger({ children, icon, className = '' }: AccordionTriggerProps) {
-  const { toggle } = useAccordion();
-  const { value, isOpen } = useAccordionItem();
-
-  return (
-    <button
-      type="button"
-      data-slot="accordion-trigger"
-      data-state={isOpen ? 'open' : 'closed'}
-      onClick={() => toggle(value)}
-      className={`flex items-center w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none transition-colors focus-visible:outline-none ${className}`}
-    >
-      {icon && <span className="shrink-0 mr-2">{icon}</span>}
-      <span className="flex-1">{children}</span>
-      <svg
-        width="10"
-        height="6"
-        viewBox="0 0 10 6"
-        fill="none"
-        className={`shrink-0 text-current opacity-40 transition-transform duration-200 ease-out ${isOpen ? 'rotate-180' : ''}`}
-      >
-        <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </button>
-  );
-}
-
-function Content({ children, className = '' }: AccordionContentProps) {
-  const { isOpen } = useAccordionItem();
-
-  return (
-    <BaseCollapsible.Root open={isOpen}>
-      <BaseCollapsible.Panel
-        className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
-      >
-        <div data-slot="accordion-content" className={`p-2 space-y-2 bg-card ${className}`}>
-          {children}
-        </div>
-      </BaseCollapsible.Panel>
-    </BaseCollapsible.Root>
-  );
-}
-
-// ============================================================================
-// Public API
-// ============================================================================
-
-export const Accordion = Object.assign(AccordionRoot, {
-  Item,
-  Trigger,
-  Content,
-});
-
-export default Accordion;
-```
-
-**Step 4: Run tests to verify they pass**
-
-Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && pnpm vitest run packages/radiants/components/core/Accordion/Accordion.test.tsx`
-Expected: PASS (all 5 tests)
-
-**Step 5: Commit**
-
-```bash
-cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor
-git add packages/radiants/components/core/Accordion/
-git commit -m "feat(Accordion): extract standalone accordion from Tabs"
-```
-
----
-
-### Task 2: Add Accordion meta + barrel export
+The accordion layout in Tabs is a foreign body — it imports `Collapsible` and `Button`, has completely different DOM structure, and isn't even tabs. The standalone `Collapsible` component already exists at `packages/radiants/components/core/Collapsible/Collapsible.tsx`.
 
 **Files:**
-- Create: `packages/radiants/components/core/Accordion/Accordion.meta.ts`
-- Modify: `packages/radiants/components/core/index.ts`
+- Modify: `packages/radiants/components/core/Tabs/Tabs.tsx` — remove accordion from `TabsLayout`, delete accordion branches in `Provider`, `List`, and `Trigger`, remove `Collapsible` and `Button` imports
 
-**Step 1: Create meta file**
+**Step 1: Remove accordion code**
 
-Create `packages/radiants/components/core/Accordion/Accordion.meta.ts`:
+In `Tabs.tsx`:
+1. Remove `import { Collapsible as BaseCollapsible }` and `import { Button }`
+2. Remove `'accordion'` from the `TabsLayout` type (line 15)
+3. Remove `settings` and `compact` props from `TriggerProps` (lines 53-56)
+4. In `Provider` (line 160): remove the `meta.layout === 'accordion'` ternary branch
+5. In `List` (lines 247-252): remove the `layout === 'accordion'` block
+6. In `Trigger` (lines 283-338): remove the entire `layout === 'accordion'` block (~55 lines)
 
-```ts
-import { defineComponentMeta } from '../../../meta/defineComponentMeta';
+**Step 2: Verify no consumers use accordion layout**
 
-export const AccordionMeta = defineComponentMeta({
-  name: 'Accordion',
-  description: 'Collapsible content sections — one open at a time. Built on Base UI Collapsible.',
-  props: {
-    value: {
-      type: 'string',
-      description: 'Expanded item value (controlled)',
-    },
-    defaultValue: {
-      type: 'string',
-      default: '""',
-      description: 'Initially expanded item (uncontrolled)',
-    },
-    onValueChange: {
-      type: '(value: string) => void',
-      description: 'Callback when expanded item changes',
-    },
-    mode: {
-      type: 'enum',
-      values: ['default', 'flush'],
-      default: 'default',
-      description: 'Visual mode',
-    },
-  },
-  subcomponents: ['AccordionItem', 'AccordionTrigger', 'AccordionContent'],
-  slots: {
-    children: { description: 'Accordion.Item elements' },
-  },
-  examples: [
-    {
-      title: 'Basic accordion',
-      code: `<Accordion defaultValue="settings">
-  <Accordion.Item value="settings">
-    <Accordion.Trigger>Settings</Accordion.Trigger>
-    <Accordion.Content>Settings panel content</Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="advanced">
-    <Accordion.Trigger>Advanced</Accordion.Trigger>
-    <Accordion.Content>Advanced options</Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
-    },
-  ],
-  registry: {
-    category: 'disclosure',
-    tags: ['collapse', 'expand', 'settings'],
-    renderMode: 'custom',
-    replaces: [],
-  },
-});
-```
+Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && grep -r "layout.*accordion" --include="*.tsx" --include="*.ts" apps/ packages/`
+Expected: Zero matches in production code
 
-**Step 2: Add barrel export**
+**Step 3: Run tests**
 
-Open `packages/radiants/components/core/index.ts` and add the Accordion export alongside the existing ones. Find the alphabetical position (should be first or near first) and add:
-
-```ts
-export { Accordion } from './Accordion/Accordion';
-```
-
-Also check if `useTabsState` is exported separately — it should stay exported for backward compat during migration.
-
-**Step 3: Verify build**
-
-Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && pnpm build --filter=@rdna/radiants`
-Expected: Build succeeds
+Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && pnpm vitest run packages/radiants/components/core/Tabs/Tabs.test.tsx`
+Expected: PASS — no tests cover accordion layout
 
 **Step 4: Commit**
 
 ```bash
 cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor
-git add packages/radiants/components/core/Accordion/Accordion.meta.ts packages/radiants/components/core/index.ts
-git commit -m "feat(Accordion): add meta + barrel export"
+git add packages/radiants/components/core/Tabs/Tabs.tsx
+git commit -m "refactor(Tabs): remove accordion layout — use Collapsible component instead"
 ```
 
 ---
 
 ## Phase 2: Rewrite Tabs with orthogonal axes
 
-### Task 3: Write new Tabs test suite (TDD foundation)
+### Task 2: Write new Tabs test suite (TDD foundation)
 
 **Files:**
 - Rewrite: `packages/radiants/components/core/Tabs/Tabs.test.tsx`
@@ -593,13 +264,13 @@ describe('Tabs', () => {
   // ── Axis props ──────────────────────────────────────────────
 
   it('sets data-mode on root', () => {
-    const { container } = render(<TestTabs mode="line" />);
-    expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'line');
+    const { container } = render(<TestTabs mode="chrome" />);
+    expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'chrome');
   });
 
-  it('defaults mode to pill', () => {
+  it('defaults mode to capsule', () => {
     const { container } = render(<TestTabs />);
-    expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'pill');
+    expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'capsule');
   });
 
   it('sets data-position on root', () => {
@@ -665,7 +336,7 @@ git commit -m "test(Tabs): rewrite test suite for flattened API"
 
 ---
 
-### Task 4: Rewrite Tabs implementation
+### Task 3: Rewrite Tabs implementation
 
 **Files:**
 - Rewrite: `packages/radiants/components/core/Tabs/Tabs.tsx`
@@ -693,7 +364,7 @@ import { createCompoundContext } from '../../shared/createCompoundContext';
 // Types
 // ============================================================================
 
-export type TabsMode = 'pill' | 'line' | 'capsule' | 'chrome';
+export type TabsMode = 'capsule' | 'chrome';
 export type TabsPosition = 'top' | 'bottom' | 'left';
 export type TabsTone = 'neutral' | 'accent';
 export type TabsSize = 'sm' | 'md' | 'lg';
@@ -705,7 +376,7 @@ interface TabsRootProps {
   defaultValue?: string;
   /** Callback when active tab changes */
   onValueChange?: (value: string) => void;
-  /** Visual treatment of triggers */
+  /** Spatial mode — capsule (detached, free-floating) or chrome (attached, merges into content) */
   mode?: TabsMode;
   /** Where the tab list sits relative to content */
   position?: TabsPosition;
@@ -786,13 +457,11 @@ export const tabsListVariants = cva('flex shrink-0', {
       left: 'flex-col gap-0 p-1 h-full border-r border-line bg-card',
     },
     mode: {
-      pill: '',
-      line: '',
       capsule: 'gap-1 py-1 px-1 bg-card pixel-rounded-xs w-fit',
       chrome: 'gap-0.5 items-end -mb-2 bg-transparent border-none p-0',
     },
   },
-  defaultVariants: { position: 'top', mode: 'pill' },
+  defaultVariants: { position: 'top', mode: 'capsule' },
 });
 
 export const tabsTriggerVariants = cva(
@@ -804,8 +473,6 @@ export const tabsTriggerVariants = cva(
   {
     variants: {
       mode: {
-        pill: 'pixel-rounded-xs px-4 py-2 flex-1 justify-center',
-        line: 'rounded-none px-4 py-2 flex-1 justify-center',
         capsule: 'pixel-rounded-xs p-1 justify-center',
         chrome: 'pixel-rounded-t-sm h-8 px-2 justify-center',
       },
@@ -815,7 +482,7 @@ export const tabsTriggerVariants = cva(
         lg: 'text-sm [&_svg]:size-4',
       },
     },
-    defaultVariants: { mode: 'pill', size: 'md' },
+    defaultVariants: { mode: 'capsule', size: 'md' },
   },
 );
 
@@ -868,7 +535,7 @@ function TabsRoot({
   value,
   defaultValue = '',
   onValueChange,
-  mode = 'pill',
+  mode = 'capsule',
   position = 'top',
   tone = 'neutral',
   size = 'md',
@@ -940,7 +607,7 @@ function List({ children, className = '' }: TabsListProps) {
   const { mode, position, indicator } = useTabsContext();
   const listClasses = tabsListVariants({ mode, position, className });
 
-  // For capsule mode, wrap the list in a centering container
+  // Capsule (detached): wrap in a centering container
   if (mode === 'capsule') {
     return (
       <div className="shrink-0 flex items-center justify-center p-2">
@@ -1007,18 +674,9 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
               </span>
             )}
 
-            {/* Capsule: text visible only when active */}
-            {mode === 'capsule' ? (
-              isActive && (
-                <span className="whitespace-nowrap">{children}</span>
-              )
-            ) : (
-              <>
-                {children}
-                {icon && mode === 'pill' && (
-                  <span className="flex-1 h-px bg-line opacity-30" />
-                )}
-              </>
+            {/* Both modes: icon always visible, text expands on active */}
+            {isActive && (
+              <span className="whitespace-nowrap">{children}</span>
             )}
           </button>
         );
@@ -1056,7 +714,7 @@ export function useTabsState({
   defaultValue = '',
   value,
   onValueChange,
-  mode = 'pill',
+  mode = 'capsule',
   layout = 'bottom-tabs',
 }: {
   defaultValue?: string;
@@ -1113,12 +771,13 @@ export default Tabs;
 
 1. **Root owns all config** — `mode`, `position`, `tone`, `size`, `indicator` are props on `<Tabs>`, not Provider ceremony
 2. **Context is internal** — consumers never see it; sub-components read from it
-3. **Capsule is a mode** — the only render difference is text visibility (icon always shown, text only when active). This is a single ternary, not a branch
-4. **Chrome mode has CVA classes** — `pixel-rounded-t-sm h-8 px-2` — the AppWindow integration will add chrome-specific styling via `data-mode="chrome"` CSS
-5. **Position left** gets special List wrapper for sidebar layout with optional DotPill — this is the one structural variant that needs a wrapper div, but the Trigger and Content CVAs handle it uniformly
-6. **`useTabsState` preserved** as deprecated export — maps old `layout` to new `position` for backward compat
-7. **`Frame` removed** — it was dead weight (`<div>{children}</div>`)
-8. **`Provider` removed** — Root component IS the provider
+3. **Two spatial modes** — `capsule` (detached: free-floating bar) and `chrome` (attached: merges into content edge). Both share the same interaction pattern: icon always visible, text expands on active
+4. **Capsule** = centered in a padded wrapper, pixel-rounded-xs, self-contained
+5. **Chrome** = pixel-rounded-t-sm, active tab bg merges with content card, inactive tabs raised
+6. **Position left** gets special List wrapper for sidebar layout with optional DotPill
+7. **`useTabsState` preserved** as deprecated export — maps old `layout` to new `position` for backward compat
+8. **`Frame` removed** — it was dead weight (`<div>{children}</div>`)
+9. **`Provider` removed** — Root component IS the provider
 
 **Step 2: Run the new tests**
 
@@ -1142,7 +801,7 @@ git commit -m "feat(Tabs): rewrite with orthogonal axes — mode/position/tone/s
 
 ## Phase 3: Migrate consumers
 
-### Task 5: Migrate RadiantsStudioApp
+### Task 4: Migrate RadiantsStudioApp
 
 **Files:**
 - Modify: `apps/rad-os/components/apps/RadiantsStudioApp.tsx`
@@ -1166,7 +825,7 @@ const tabs = useTabsState({ defaultValue: 'creation', mode: 'pill', layout: 'def
 To:
 
 ```tsx
-<Tabs defaultValue="creation" mode="pill" position="top">
+<Tabs defaultValue="creation" position="top">
   <Tabs.List>...</Tabs.List>
   ...content panels...
 </Tabs>
@@ -1195,7 +854,7 @@ git commit -m "refactor(RadiantsStudioApp): migrate to flattened Tabs API"
 
 ---
 
-### Task 6: Migrate WindowTabs
+### Task 5: Migrate WindowTabs
 
 **Files:**
 - Modify: `apps/rad-os/components/Rad_os/WindowTabs.tsx`
@@ -1232,7 +891,7 @@ interface WindowTabsProps {
 
 function WindowTabsRoot({ defaultValue, children }: WindowTabsProps) {
   return (
-    <Tabs defaultValue={defaultValue} mode="pill" position="top">
+    <Tabs defaultValue={defaultValue} position="top">
       {children}
     </Tabs>
   );
@@ -1283,7 +942,7 @@ git commit -m "refactor(WindowTabs): simplify to thin wrapper over new Tabs API"
 
 ---
 
-### Task 7: Migrate playground runtime-attachments
+### Task 6: Migrate playground runtime-attachments
 
 **Files:**
 - Modify: `packages/radiants/registry/runtime-attachments.tsx`
@@ -1295,7 +954,7 @@ At line 606-641, replace the Provider-ceremony demo with the new API:
 ```tsx
 Tabs: {
   component: Tabs,
-  Demo: ({ mode = 'pill', ...rest }: Record<string, unknown>) => {
+  Demo: ({ mode = 'capsule', ...rest }: Record<string, unknown>) => {
     return (
       <div className="w-full max-w-[24rem]">
         <Tabs defaultValue="design" mode={mode as any} {...rest}>
@@ -1333,7 +992,7 @@ git commit -m "refactor(playground): migrate Tabs demo to flattened API"
 
 ## Phase 4: Chrome mode + AppWindow.Nav integration
 
-### Task 8: Add chrome mode styling + tests
+### Task 7: Add chrome mode styling + tests
 
 **Files:**
 - Modify: `packages/radiants/components/core/Tabs/Tabs.test.tsx` — add chrome mode tests
@@ -1381,9 +1040,7 @@ describe('Tabs mode="chrome"', () => {
 
 Run: `cd /Users/rivermassey/Desktop/dev/DNA-tabs-refactor && pnpm vitest run packages/radiants/components/core/Tabs/Tabs.test.tsx`
 
-Chrome mode should already work from the CVA + the capsule-like text visibility logic in Trigger. Verify the chrome and capsule modes both use the icon-always/text-when-active pattern.
-
-If the Trigger currently only applies that pattern for `mode === 'capsule'`, update the condition to `mode === 'capsule' || mode === 'chrome'`.
+Both modes share the icon-always/text-when-active pattern — the Trigger implementation handles this uniformly. The only difference is the CVA classes (capsule = `pixel-rounded-xs p-1`, chrome = `pixel-rounded-t-sm h-8 px-2`).
 
 **Step 3: Commit**
 
@@ -1395,7 +1052,7 @@ git commit -m "feat(Tabs): add chrome mode with tests"
 
 ---
 
-### Task 9: Migrate AppWindow.Nav to use Tabs mode="chrome"
+### Task 8: Migrate AppWindow.Nav to use Tabs mode="chrome"
 
 **Files:**
 - Modify: `packages/radiants/components/core/AppWindow/AppWindow.tsx`
@@ -1456,7 +1113,7 @@ Remove the `layout` prop from `AppWindowNavProps` since it's no longer needed (c
 
 **Step 3: Check visual parity**
 
-The chrome mode CVA classes (`pixel-rounded-t-sm h-8 px-2`) should match the old bespoke implementation. The AppWindow title bar injects the nav content via `chrome.setNav()` — that mechanism is unchanged.
+The chrome (attached) mode CVA classes (`pixel-rounded-t-sm h-8 px-2`) should match the old bespoke implementation. The AppWindow title bar injects the nav content via `chrome.setNav()` — that mechanism is unchanged.
 
 The chrome-specific decorative styling (pattern overlay on inactive, translate-y offset, bg-card on active) will need CSS rules targeting `[data-mode="chrome"] [data-slot="tab-trigger"]`. These should be added to the theme CSS (`packages/radiants/components/core/Tabs/` or `base.css`), **not** inline in the component. For now, add the essential visual classes to the CVA or as data-attribute-driven classes in the Trigger render.
 
@@ -1497,7 +1154,7 @@ git commit -m "refactor(AppWindow.Nav): replace bespoke tabs with Tabs mode=chro
 
 ## Phase 5: Update meta, schema, cleanup
 
-### Task 10: Update Tabs meta + regenerate schema
+### Task 9: Update Tabs meta + regenerate schema
 
 **Files:**
 - Rewrite: `packages/radiants/components/core/Tabs/Tabs.meta.ts`
@@ -1510,7 +1167,7 @@ import { defineComponentMeta } from '../../../meta/defineComponentMeta';
 
 export const TabsMeta = defineComponentMeta({
   name: 'Tabs',
-  description: 'Tabbed navigation with orthogonal mode/position/tone/size axes. Built on Base UI Tabs.',
+  description: 'Tabbed navigation — capsule (detached) or chrome (attached). Built on Base UI Tabs.',
   props: {
     value: {
       type: 'string',
@@ -1527,9 +1184,9 @@ export const TabsMeta = defineComponentMeta({
     },
     mode: {
       type: 'enum',
-      values: ['pill', 'line', 'capsule', 'chrome'],
-      default: 'pill',
-      description: 'Visual treatment of triggers — pill (filled), line (underline), capsule (icon-expanding), chrome (title bar)',
+      values: ['capsule', 'chrome'],
+      default: 'capsule',
+      description: 'Spatial mode — capsule (detached, free-floating bar) or chrome (attached, merges into content edge)',
     },
     position: {
       type: 'enum',
@@ -1562,19 +1219,19 @@ export const TabsMeta = defineComponentMeta({
   },
   examples: [
     {
-      title: 'Pill tabs (default)',
+      title: 'Capsule tabs (default — detached)',
       code: `<Tabs defaultValue="design">
   <Tabs.List>
-    <Tabs.Trigger value="design">Design</Tabs.Trigger>
-    <Tabs.Trigger value="code">Code</Tabs.Trigger>
+    <Tabs.Trigger value="design" icon={<PencilIcon />}>Design</Tabs.Trigger>
+    <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
   </Tabs.List>
   <Tabs.Content value="design">Design panel</Tabs.Content>
   <Tabs.Content value="code">Code panel</Tabs.Content>
 </Tabs>`,
     },
     {
-      title: 'Capsule tabs with icons',
-      code: `<Tabs defaultValue="home" mode="capsule">
+      title: 'Chrome tabs (attached — merges into content)',
+      code: `<Tabs defaultValue="home" mode="chrome">
   <Tabs.List>
     <Tabs.Trigger value="home" icon={<HomeIcon />}>Home</Tabs.Trigger>
     <Tabs.Trigger value="settings" icon={<GearIcon />}>Settings</Tabs.Trigger>
@@ -1632,7 +1289,7 @@ git commit -m "docs(Tabs): update meta + schema for new orthogonal API"
 
 ---
 
-### Task 11: Remove dead code + final cleanup
+### Task 10: Remove dead code + final cleanup
 
 **Files:**
 - Modify: `packages/radiants/components/core/Tabs/Tabs.tsx` — remove any leftover dead types/exports
@@ -1672,7 +1329,7 @@ git commit -m "chore(Tabs): remove dead types and stale references"
 
 ## Phase 6: Visual QA
 
-### Task 12: Visual regression check
+### Task 11: Visual regression check
 
 **Step 1: Start dev server**
 
@@ -1700,12 +1357,13 @@ If chrome mode styling doesn't match the old AppWindow.Nav look, add CSS targeti
 
 | Metric | Before | After |
 |--------|--------|-------|
-| Lines (Tabs.tsx) | 487 | ~280 |
+| Lines (Tabs.tsx) | 487 | ~250 |
 | Layout branches (List) | 5 | 1 (capsule centering wrapper) |
 | Render branches (Trigger) | 4 | 0 (single CVA path) |
-| Types | 6 layout + 2 mode | 4 mode + 3 position (orthogonal) |
+| Types | 6 layout + 2 mode | 2 mode (capsule/chrome) + 3 position |
 | External imports | BaseTabs, Collapsible, Button | BaseTabs only |
 | API ceremony | `useTabsState` → destructure → Provider | `<Tabs defaultValue>` |
 | AppWindow.Nav | 70-line bespoke reimplementation | Thin wrapper around `Tabs mode="chrome"` |
 | Dead sub-components | Frame (noop div) | None |
-| New standalone component | — | Accordion (extracted) |
+| Accordion layout | Baked into Tabs (foreign body) | Deleted — use existing `Collapsible` |
+| Tasks | 12 | 11 |
