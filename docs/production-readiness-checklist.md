@@ -130,25 +130,18 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 ### T1f-swarm — Newly Discovered UI Issues
 
-<<<<<<< HEAD
-=======
 * [x] ~20 pixel-corner + border violations (border-* on pixel-rounded-* breaks clip-path) across RadiantsStudioApp, RadRadioWidget, BrandAssetsApp, Taskbar, DesignSystemTab ✅ No border-* on pixel-rounded-* elements remain
 * [x] RadiantsStudioApp: 3 instances of `overflow-hidden` on pixel-cornered elements ✅ Removed
 * [x] `border-ink` in BrandAssetsApp won't flip in dark mode (use `border-line`) ✅ Removed
->>>>>>> f96e2b5b (chore: mark 8 verified-complete items on production-readiness checklist)
 * [x] Duplicate dark mode tokens in `base.css` `[data-theme="dark"]` block vs `dark.css` (stale legacy block) — ✅ Verified intentional: base.css uses [data-theme="dark"] (attribute forcing), dark.css uses .dark (preference-driven) — different selectors, different token sets
 * [x] 6 inline SVG icons in RadiantsStudioApp bypass icon system — ✅ All migrated to Icon component from @rdna/radiants/icons/runtime
 * [x] 2 inline SVG icons in RadRadioApp (QueueIcon, ResizeIcon) — add to icon set — ✅ All migrated to Icon component
-* [ ] StartMenu mobile close button uses inline SVG instead of Icon component
+* [x] StartMenu mobile close button uses inline SVG instead of Icon component ✅ Migrated to Icon in `8547d8d1`; mobile UI subsequently removed in `fc3ef8e4`
 * [x] DesktopIcon wraps Button in clickable div — no keyboard access, double event dispatch — ✅ Verified clean — Button is direct child of Tooltip, no wrapping div
-* [ ] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]`
-<<<<<<< HEAD
-* [x] No `prefers-reduced-motion` on WebGLSun rAF loop — ✅ Properly implemented with matchMedia listener + reduceMotionRef check in rAF
-=======
+* [x] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]` ✅ Verified: already uses RDNA Switch component correctly
 * [x] InvertOverlay `duration-500` violates 300ms max spec ✅ Fixed to `duration-300`
 * [x] No `prefers-reduced-motion` on WebGLSun rAF loop — ✅ Properly implemented with matchMedia listener + reduceMotionRef check in rAF
 * [x] InvertOverlay + ambient widget both use `z-[900]` — overlapping z-layers ✅ Fixed: InvertOverlay z-[900], widget z-[950]
->>>>>>> f96e2b5b (chore: mark 8 verified-complete items on production-readiness checklist)
 
 ### T1g — Dropdown Unification
 
@@ -248,10 +241,7 @@ Reforge items here are reference inputs, not copy-paste implementations. Integra
 * [x] Sync `sun-red` oklch value across `tokens.css`, `token-map.mjs`, and `DESIGN.md` (currently divergent) — ✅ Consistent oklch(0.7429 0.1568 21.43) across all files; token-map.mjs deprecated
 * [x] Update stale hex values in `token-map.mjs` (pre-oklch migration artifacts) — ✅ token-map.mjs deprecated and removed (see archive/plans/2026-03-22-meta-first-phase4-token-map-deprecation.md)
 * [x] Migrate 4 remaining `rgba()` values in `tokens.css` to oklch — ✅ All values migrated to oklch; only migration-history comments remain
-<<<<<<< HEAD
-=======
-* [ ] Add tests for `no-clipped-shadow` and `no-pixel-border` ESLint rules (complex ancestor-walking, untested)
->>>>>>> f96e2b5b (chore: mark 8 verified-complete items on production-readiness checklist)
+* [x] Add tests for `no-clipped-shadow` and `no-pixel-border` ESLint rules (complex ancestor-walking, untested)
 
 ***
 
