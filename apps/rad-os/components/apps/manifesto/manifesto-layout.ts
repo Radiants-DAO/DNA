@@ -313,10 +313,18 @@ export function paginateManifesto(
       }
 
       case 'image': {
-        const imgH = IMAGE_PLACEHOLDER_H;
+        // Compute display size: scale to layout width, preserving aspect ratio.
+        // If natural dimensions are known, use them; otherwise fall back to placeholder.
+        let defaultW = layoutW;
+        let defaultH = IMAGE_PLACEHOLDER_H;
+        if (element.naturalWidth && element.naturalHeight) {
+          const aspect = element.naturalWidth / element.naturalHeight;
+          defaultW = Math.min(layoutW, element.naturalWidth);
+          defaultH = defaultW / aspect;
+        }
 
         // Image doesn't fit on current page? Push to next.
-        if (y + imgH > maxY) {
+        if (y + defaultH > maxY) {
           startNewPage();
         }
 
@@ -327,8 +335,8 @@ export function paginateManifesto(
 
         const imgX = userObs?.x ?? PAGE_MARGIN;
         const imgY = userObs?.y ?? y;
-        const imgW = userObs?.w ?? layoutW;
-        const imgHFinal = userObs?.h ?? imgH;
+        const imgW = userObs?.w ?? defaultW;
+        const imgHFinal = userObs?.h ?? defaultH;
 
         currentPage.push({
           kind: 'image',

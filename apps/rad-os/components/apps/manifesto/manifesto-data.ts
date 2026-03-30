@@ -5,12 +5,18 @@
 export type ManifestoElement =
   | { kind: 'heading'; text: string }
   | { kind: 'paragraph'; text: string }
-  | { kind: 'image'; id: string; alt: string; src: string }
+  | { kind: 'image'; id: string; alt: string; src: string; naturalWidth?: number; naturalHeight?: number }
   | { kind: 'rule' };
 
 // ---------------------------------------------------------------------------
 // Parser — splits a markdown string into ManifestoElement[]
 // ---------------------------------------------------------------------------
+
+/** Known image dimensions (natural px). Add entries as real images are placed. */
+const IMAGE_DIMENSIONS: Record<string, { w: number; h: number }> = {
+  '/manifesto/mustang-1967.jpg': { w: 1600, h: 1200 },
+  '/manifesto/mercedes-1980.jpg': { w: 1280, h: 960 },
+};
 
 let imgCounter = 0;
 
@@ -45,11 +51,14 @@ export function parseContent(md: string): ManifestoElement[] {
     // Images: ![alt](src)
     const imgMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (imgMatch) {
+      const src = imgMatch[2];
+      const dims = IMAGE_DIMENSIONS[src];
       elements.push({
         kind: 'image',
         id: `img-${imgCounter++}`,
         alt: imgMatch[1],
-        src: imgMatch[2],
+        src,
+        ...(dims ? { naturalWidth: dims.w, naturalHeight: dims.h } : {}),
       });
       continue;
     }
