@@ -14,7 +14,6 @@
 // ---------------------------------------------------------------------------
 
 import {
-  prepareWithSegments,
   layoutNextLine,
   type PreparedTextWithSegments,
   type LayoutCursor,
@@ -22,7 +21,6 @@ import {
 import {
   getRectIntervalsForBand,
   carveTextLineSlots,
-  type Interval,
   type Rect,
 } from '@chenglou/pretext/demos/wrap-geometry';
 import {
@@ -30,6 +28,16 @@ import {
   spacing,
   lineHeight as lhScale,
 } from '@rdna/radiants/patterns/pretext-type-scale';
+import {
+  prepareHyphenated,
+  measureSpaceWidth,
+  measureHyphenWidth,
+} from '@rdna/radiants/patterns/pretext-prepare';
+import {
+  optimalLayout,
+  type JustifiedLine,
+  type JustifiedSegment,
+} from '@rdna/radiants/patterns/pretext-justify';
 import type { ManifestoElement } from './manifesto-data';
 
 // ---------------------------------------------------------------------------
@@ -71,7 +79,8 @@ function buildColumns(pageWidth: number): Column[] {
 // ---------------------------------------------------------------------------
 
 export type PageEl =
-  | { kind: 'line'; x: number; y: number; text: string; font: string }
+  | { kind: 'line'; x: number; y: number; text: string; font: string;
+      justified?: { segments: JustifiedSegment[]; maxWidth: number; isLast: boolean } }
   | { kind: 'heading-line'; x: number; y: number; text: string; font: string }
   | { kind: 'section-title'; text: string; font: string }
   | { kind: 'rule'; x: number; y: number; w: number }
@@ -85,6 +94,7 @@ export interface PaginationResult {
   pages: Page[];
   bodyFontSize: number;
   bodyLh: number;
+  normalSpaceW: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -112,7 +122,7 @@ function getPrepared(
   const key = `${font}::${text}`;
   const cached = cache.get(key);
   if (cached) return cached;
-  const prep = prepareWithSegments(text, font);
+  const prep = prepareHyphenated(text, font);
   cache.set(key, prep);
   return prep;
 }
@@ -199,7 +209,7 @@ export function paginateManifesto(
   const maxY = pageHeight - PAGE_MARGIN;
 
   if (cols[0]!.width <= 0 || maxY <= PAGE_MARGIN) {
-    return { pages: [], bodyFontSize: 14, bodyLh: 19 };
+    return { pages: [], bodyFontSize: 14, bodyLh: 19, normalSpaceW: 4 };
   }
 
   // Resolve sizes from column width (text lives in columns, not full page)
@@ -211,6 +221,10 @@ export function paginateManifesto(
 
   const bodyFont = `${bodyFontSize}px '${BODY_FONT_FAMILY}'`;
   const headingFont = `bold ${headingFontSize}px '${HEADING_FONT_FAMILY}'`;
+
+  // Measure space/hyphen widths for justification
+  const spaceW = measureSpaceWidth(bodyFont);
+  const hyphenW = measureHyphenWidth(bodyFont);
 
   // Column rule X position (between the two columns)
   const ruleX = cols[0]!.x + cols[0]!.width + COL_GAP;
@@ -326,44 +340,77 @@ export function paginateManifesto(
 
       case 'paragraph': {
         const prep = getPrepared(cache, element.text, bodyFont);
-        let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
-        let done = false;
-        while (!done) {
-          if (y + bodyLh > maxY) {
-            advanceOrNewPage();
-          }
+        if (imageObstacles.length === 0) {
+          // ── Optimal justified layout (no obstacles) ──────────────
+          const justified = optimalLayout(prep, colW, spaceW, hyphenW);
 
-          const obstacles = pageObstacleRects();
-          const result = layoutLinesWithObstacles(
-            prep,
-            cursor,
-            col().x,
-            y,
-            col().width,
-            bodyLh,
-            maxY,
-            obstacles,
-          );
+          for (const jLine of justified) {
+            if (y + bodyLh > maxY) {
+              advanceOrNewPage();
+            }
 
-          for (const line of result.lines) {
+            // Reconstruct plain text for annotation matching
+            const plainText = jLine.segments
+              .map(s => s.text)
+              .join('');
+
             currentPage.push({
               kind: 'line',
-              x: line.x,
-              y: line.y,
-              text: line.text,
+              x: col().x,
+              y,
+              text: plainText,
               font: bodyFont,
+              justified: {
+                segments: jLine.segments,
+                maxWidth: jLine.maxWidth,
+                isLast: jLine.isLast,
+              },
             });
+            y += bodyLh;
           }
+        } else {
+          // ── Greedy layout with obstacle avoidance ─────────────
+          // Falls back to per-line greedy when obstacles are present.
+          // Still benefits from hyphenation (soft hyphens in prep).
+          let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
-          cursor = result.cursor;
-          y = result.y;
+          let done = false;
+          while (!done) {
+            if (y + bodyLh > maxY) {
+              advanceOrNewPage();
+            }
 
-          if (result.exhausted) {
-            done = true;
-          } else {
-            // Column/page full — advance
-            advanceOrNewPage();
+            const obstacles = pageObstacleRects();
+            const result = layoutLinesWithObstacles(
+              prep,
+              cursor,
+              col().x,
+              y,
+              col().width,
+              bodyLh,
+              maxY,
+              obstacles,
+            );
+
+            for (const line of result.lines) {
+              currentPage.push({
+                kind: 'line',
+                x: line.x,
+                y: line.y,
+                text: line.text,
+                font: bodyFont,
+              });
+            }
+
+            cursor = result.cursor;
+            y = result.y;
+
+            if (result.exhausted) {
+              done = true;
+            } else {
+              advanceOrNewPage();
+            }
           }
         }
 
@@ -402,5 +449,5 @@ export function paginateManifesto(
     pages.push({ els: currentPage });
   }
 
-  return { pages, bodyFontSize, bodyLh };
+  return { pages, bodyFontSize, bodyLh, normalSpaceW: spaceW };
 }

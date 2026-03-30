@@ -130,13 +130,13 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 ### T1f-swarm — Newly Discovered UI Issues
 
-* [ ] Duplicate dark mode tokens in `base.css` `[data-theme="dark"]` block vs `dark.css` (stale legacy block)
-* [ ] 6 inline SVG icons in RadiantsStudioApp bypass icon system
-* [ ] 2 inline SVG icons in RadRadioApp (QueueIcon, ResizeIcon) — add to icon set
+* [x] Duplicate dark mode tokens in `base.css` `[data-theme="dark"]` block vs `dark.css` (stale legacy block) — ✅ Verified intentional: base.css uses [data-theme="dark"] (attribute forcing), dark.css uses .dark (preference-driven) — different selectors, different token sets
+* [x] 6 inline SVG icons in RadiantsStudioApp bypass icon system — ✅ All migrated to Icon component from @rdna/radiants/icons/runtime
+* [x] 2 inline SVG icons in RadRadioApp (QueueIcon, ResizeIcon) — add to icon set — ✅ All migrated to Icon component
 * [ ] StartMenu mobile close button uses inline SVG instead of Icon component
-* [ ] DesktopIcon wraps Button in clickable div — no keyboard access, double event dispatch
+* [x] DesktopIcon wraps Button in clickable div — no keyboard access, double event dispatch — ✅ Verified clean — Button is direct child of Tooltip, no wrapping div
 * [ ] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]`
-* [ ] No `prefers-reduced-motion` on WebGLSun rAF loop
+* [x] No `prefers-reduced-motion` on WebGLSun rAF loop — ✅ Properly implemented with matchMedia listener + reduceMotionRef check in rAF
 
 ### T1g — Dropdown Unification
 
@@ -233,9 +233,9 @@ Reforge items here are reference inputs, not copy-paste implementations. Integra
 
 ### Token Drift
 
-* [ ] Sync `sun-red` oklch value across `tokens.css`, `token-map.mjs`, and `DESIGN.md` (currently divergent)
-* [ ] Update stale hex values in `token-map.mjs` (pre-oklch migration artifacts)
-* [ ] Migrate 4 remaining `rgba()` values in `tokens.css` to oklch
+* [x] Sync `sun-red` oklch value across `tokens.css`, `token-map.mjs`, and `DESIGN.md` (currently divergent) — ✅ Consistent oklch(0.7429 0.1568 21.43) across all files; token-map.mjs deprecated
+* [x] Update stale hex values in `token-map.mjs` (pre-oklch migration artifacts) — ✅ token-map.mjs deprecated and removed (see archive/plans/2026-03-22-meta-first-phase4-token-map-deprecation.md)
+* [x] Migrate 4 remaining `rgba()` values in `tokens.css` to oklch — ✅ All values migrated to oklch; only migration-history comments remain
 
 ***
 
