@@ -96,13 +96,13 @@ export function CoverPage({ pageWidth, pageHeight }: CoverPageProps) {
 
   return (
     <div
-      className="relative bg-page"
+      className="relative bg-card"
       style={{ width: pageWidth, height: pageHeight }}
     >
       {fit.lines.map((line, i) => (
         <div
           key={i}
-          className="absolute text-main"
+          className="absolute text-head"
           style={{
             left: margin + (layoutW - line.width) / 2,
             top: startY + line.y,

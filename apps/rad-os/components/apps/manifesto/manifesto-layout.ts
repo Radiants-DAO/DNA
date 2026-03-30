@@ -37,6 +37,9 @@ import type { ManifestoElement } from './manifesto-data';
 // ---------------------------------------------------------------------------
 
 const PAGE_MARGIN = 32;
+const COL_GAP = 16;                     // gutter between columns
+const COL_RULE_W = 1;                   // column rule width
+const NUM_COLS = 2;
 const BODY_FONT_FAMILY = 'Mondwest';
 const HEADING_FONT_FAMILY = 'Joystix Monospace';
 const IMAGE_PLACEHOLDER_H = 160;
@@ -45,6 +48,24 @@ const MIN_SLOT_WIDTH = 50;
 // Padding around rect obstacles when carving text line slots
 const OBS_H_PAD = 8;
 const OBS_V_PAD = 4;
+
+// ---------------------------------------------------------------------------
+// Column geometry
+// ---------------------------------------------------------------------------
+
+interface Column { x: number; width: number }
+
+function buildColumns(pageWidth: number): Column[] {
+  const totalMargin = PAGE_MARGIN * 2;
+  const totalGutter = (NUM_COLS - 1) * (COL_GAP * 2 + COL_RULE_W);
+  const avail = pageWidth - totalMargin - totalGutter;
+  const colW = Math.floor(avail / NUM_COLS);
+
+  return [
+    { x: PAGE_MARGIN, width: colW },
+    { x: PAGE_MARGIN + colW + COL_GAP + COL_RULE_W + COL_GAP, width: colW },
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // Output types
@@ -63,7 +84,8 @@ export type PageEl =
       alt: string;
       src: string;
     }
-  | { kind: 'rule'; x: number; y: number; w: number };
+  | { kind: 'rule'; x: number; y: number; w: number }
+  | { kind: 'col-rule'; x: number; y: number; h: number };
 
 export interface Page {
   els: PageEl[];
@@ -183,30 +205,54 @@ export function paginateManifesto(
   cache: Map<string, PreparedTextWithSegments>,
 ): PaginationResult {
   const pages: Page[] = [];
-  const layoutW = pageWidth - PAGE_MARGIN * 2;
+  const cols = buildColumns(pageWidth);
   const maxY = pageHeight - PAGE_MARGIN;
 
-  if (layoutW <= 0 || maxY <= PAGE_MARGIN) {
+  if (cols[0]!.width <= 0 || maxY <= PAGE_MARGIN) {
     return { pages: [], bodyFontSize: 14, bodyLh: 19 };
   }
 
-  // Resolve sizes from layout width
-  const bodyFontSize = resolveFluid('base', layoutW);
-  const headingFontSize = resolveFluid('xl', layoutW);
+  // Resolve sizes from column width (text lives in columns, not full page)
+  const colW = cols[0]!.width;
+  const bodyFontSize = resolveFluid('base', colW);
+  const headingFontSize = resolveFluid('xl', colW);
   const bodyLh = bodyFontSize * lhScale.snug;
   const headingLh = headingFontSize * lhScale.none;
 
   const bodyFont = `${bodyFontSize}px '${BODY_FONT_FAMILY}'`;
   const headingFont = `bold ${headingFontSize}px '${HEADING_FONT_FAMILY}'`;
 
+  // Column rule X position (between the two columns)
+  const ruleX = cols[0]!.x + cols[0]!.width + COL_GAP;
+
   let currentPage: PageEl[] = [];
   let y = PAGE_MARGIN;
+  let ci = 0;  // current column index (0 = left, 1 = right)
   let pageIndex = 0;
 
+  function col() { return cols[ci]!; }
+
+  function nextCol(): boolean {
+    if (ci < NUM_COLS - 1) {
+      ci++;
+      y = PAGE_MARGIN;
+      return true;
+    }
+    return false;
+  }
+
   function startNewPage() {
+    // Add column rule for completed pages
+    currentPage.push({
+      kind: 'col-rule',
+      x: ruleX,
+      y: PAGE_MARGIN,
+      h: maxY - PAGE_MARGIN,
+    });
     pages.push({ els: currentPage });
     currentPage = [];
     pageIndex++;
+    ci = 0;
     y = PAGE_MARGIN;
   }
 
@@ -214,7 +260,13 @@ export function paginateManifesto(
     return maxY - y;
   }
 
-  // Get obstacles for current page as Rects for wrap-geometry
+  function advanceOrNewPage() {
+    if (!nextCol()) {
+      startNewPage();
+    }
+  }
+
+  // Get obstacles for current page as Rects
   function pageObstacleRects(): Rect[] {
     return imageObstacles
       .filter((o) => o.pageIndex === pageIndex)
@@ -226,15 +278,14 @@ export function paginateManifesto(
 
     switch (element.kind) {
       case 'heading': {
-        // Space needed: headingBefore gap + heading line + headingAfter gap + 1 body line
         const headingSpace =
           bodyLh * spacing.headingBefore +
           headingLh +
           bodyLh * spacing.headingAfter;
 
-        // Don't orphan heading at bottom — need room for at least 1 body line after
+        // Don't orphan heading — need room for heading + at least 1 body line
         if (spaceLeft() < headingSpace + bodyLh) {
-          startNewPage();
+          advanceOrNewPage();
         }
 
         y += bodyLh * spacing.headingBefore;
@@ -244,14 +295,14 @@ export function paginateManifesto(
 
         while (true) {
           if (y + headingLh > maxY) {
-            startNewPage();
+            advanceOrNewPage();
           }
-          const line = layoutNextLine(prep, cursor, layoutW);
+          const line = layoutNextLine(prep, cursor, col().width);
           if (!line) break;
 
           currentPage.push({
             kind: 'heading-line',
-            x: PAGE_MARGIN,
+            x: col().x,
             y,
             text: line.text,
             font: headingFont,
@@ -268,20 +319,19 @@ export function paginateManifesto(
         const prep = getPrepared(cache, element.text, bodyFont);
         let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
 
-        // Layout paragraph lines, potentially spanning multiple pages
         let done = false;
         while (!done) {
           if (y + bodyLh > maxY) {
-            startNewPage();
+            advanceOrNewPage();
           }
 
           const obstacles = pageObstacleRects();
           const result = layoutLinesWithObstacles(
             prep,
             cursor,
-            PAGE_MARGIN,
+            col().x,
             y,
-            layoutW,
+            col().width,
             bodyLh,
             maxY,
             obstacles,
@@ -303,8 +353,8 @@ export function paginateManifesto(
           if (result.exhausted) {
             done = true;
           } else {
-            // More text but page is full — continue on next page
-            startNewPage();
+            // Column/page full — advance
+            advanceOrNewPage();
           }
         }
 
@@ -313,27 +363,31 @@ export function paginateManifesto(
       }
 
       case 'image': {
-        // Compute display size: scale to layout width, preserving aspect ratio.
-        // If natural dimensions are known, use them; otherwise fall back to placeholder.
-        let defaultW = layoutW;
+        // Scale image to column width
+        let defaultW = col().width;
         let defaultH = IMAGE_PLACEHOLDER_H;
         if (element.naturalWidth && element.naturalHeight) {
           const aspect = element.naturalWidth / element.naturalHeight;
-          defaultW = Math.min(layoutW, element.naturalWidth);
+          defaultW = Math.min(col().width, element.naturalWidth);
           defaultH = defaultW / aspect;
         }
 
-        // Image doesn't fit on current page? Push to next.
+        // Image doesn't fit in current column? Advance.
         if (y + defaultH > maxY) {
-          startNewPage();
+          advanceOrNewPage();
+          // Recalculate for new column width (same in 2-col, but future-proof)
+          if (element.naturalWidth && element.naturalHeight) {
+            const aspect = element.naturalWidth / element.naturalHeight;
+            defaultW = Math.min(col().width, element.naturalWidth);
+            defaultH = defaultW / aspect;
+          }
         }
 
-        // Check if user has positioned this image (obstacle state)
         const userObs = imageObstacles.find(
           (o) => o.id === element.id && o.pageIndex === pageIndex,
         );
 
-        const imgX = userObs?.x ?? PAGE_MARGIN;
+        const imgX = userObs?.x ?? col().x;
         const imgY = userObs?.y ?? y;
         const imgW = userObs?.w ?? defaultW;
         const imgHFinal = userObs?.h ?? defaultH;
@@ -349,7 +403,6 @@ export function paginateManifesto(
           src: element.src,
         });
 
-        // If no user-positioned obstacle, advance Y past the image
         if (!userObs) {
           y += imgHFinal + bodyLh * spacing.paragraph;
         }
@@ -359,24 +412,31 @@ export function paginateManifesto(
       case 'rule': {
         const ruleSpace = bodyLh * spacing.rule * 2 + 1;
         if (spaceLeft() < ruleSpace) {
-          startNewPage();
+          advanceOrNewPage();
         }
         y += bodyLh * spacing.rule;
         currentPage.push({
           kind: 'rule',
-          x: PAGE_MARGIN,
+          x: col().x,
           y,
-          w: layoutW,
+          w: col().width,
         });
-        y += 1; // rule thickness
+        y += 1;
         y += bodyLh * spacing.rule;
         break;
       }
     }
   }
 
-  // Push final page if it has content
+  // Push final page
   if (currentPage.length > 0) {
+    // Add column rule for final page
+    currentPage.push({
+      kind: 'col-rule',
+      x: ruleX,
+      y: PAGE_MARGIN,
+      h: maxY - PAGE_MARGIN,
+    });
     pages.push({ els: currentPage });
   }
 

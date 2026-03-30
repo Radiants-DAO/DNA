@@ -74,7 +74,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     windowTitle: 'Becoming Substance',
     windowIcon: <Icon name="document" large />,
     component: ManifestoApp,
-    defaultSize: { width: '28rem', height: '44rem' },
+    defaultSize: { width: '42rem', height: '44rem' },
     resizable: true,
     contentPadding: false,
     desktopVisible: true,

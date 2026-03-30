@@ -23,7 +23,7 @@ function renderElement(el: PageEl, idx: number) {
       return (
         <div
           key={idx}
-          className="absolute text-sub"
+          className="absolute text-head"
           style={{ left: el.x, top: el.y, whiteSpace: 'pre', font: el.font }}
         >
           {el.text}
@@ -34,7 +34,7 @@ function renderElement(el: PageEl, idx: number) {
       return (
         <div
           key={idx}
-          className="absolute text-main"
+          className="absolute text-head"
           style={{ left: el.x, top: el.y, whiteSpace: 'pre', font: el.font }}
         >
           {el.text}
@@ -67,8 +67,17 @@ function renderElement(el: PageEl, idx: number) {
       return (
         <div
           key={idx}
-          className="absolute bg-line"
+          className="absolute bg-head"
           style={{ left: el.x, top: el.y, width: el.w, height: 1 }}
+        />
+      );
+
+    case 'col-rule':
+      return (
+        <div
+          key={`col-rule-${idx}`}
+          className="absolute bg-head opacity-20"
+          style={{ left: el.x, top: el.y, width: 1, height: el.h }}
         />
       );
   }
@@ -148,7 +157,7 @@ export function ManifestoBook() {
       : `${currentPage} / ${totalContentPages}`;
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center bg-page">
+    <div className="h-full w-full flex flex-col items-center justify-center bg-card">
       {/* Page area */}
       <div
         ref={containerRef}
@@ -158,7 +167,7 @@ export function ManifestoBook() {
           <CoverPage pageWidth={pageWidth} pageHeight={pageHeight} />
         ) : contentPage ? (
           <div
-            className="relative bg-page"
+            className="relative bg-card"
             style={{ width: pageWidth, height: pageHeight }}
           >
             {contentPage.els.map((el, i) => renderElement(el, i))}
