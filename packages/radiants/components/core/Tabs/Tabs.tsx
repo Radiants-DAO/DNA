@@ -2,8 +2,6 @@
 
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
-import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
-import { Button } from '../Button/Button';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
 
@@ -12,7 +10,7 @@ import { createCompoundContext } from '../../shared/createCompoundContext';
 // ============================================================================
 
 type TabsMode = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule' | 'accordion';
+type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule';
 
 interface TabsState {
   activeTab: string;
@@ -50,10 +48,6 @@ interface TriggerProps {
   value: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
-  /** Settings content rendered in a collapsible panel below the trigger (accordion layout only) */
-  settings?: React.ReactNode;
-  /** Use PixelCode (mono) font instead of Joystix (heading) — forwarded to Button's compact prop (accordion layout only) */
-  compact?: boolean;
   className?: string;
 }
 
@@ -157,7 +151,6 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
         className={
           meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-t-sm-b-md'
-          : meta.layout === 'accordion' ? 'h-full'
           : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
           : undefined
         }
@@ -244,14 +237,6 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
     );
   }
 
-  if (layout === 'accordion') {
-    return (
-      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`} data-slot="tab-list" data-tabs-accordion="">
-        {children}
-      </div>
-    );
-  }
-
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
@@ -267,7 +252,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
   );
 }
 
-function Trigger({ value, children, icon, settings, compact, className = '' }: TriggerProps): React.ReactElement | null {
+function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
   const { mode, layout } = useTabsMeta();
   const { registerTab, unregisterTab, activeTab, setActiveTab: setActive } = useTabsContext();
 
@@ -276,66 +261,6 @@ function Trigger({ value, children, icon, settings, compact, className = '' }: T
     registerTab(value);
     return () => unregisterTab(value);
   }, [value, registerTab, unregisterTab]);
-
-  // Accordion layout: ghost button trigger + collapsible settings panel.
-  // When active, the wrapper gets ghost-selected styling to visually
-  // encompass both the title and the expanded settings as one pressed unit.
-  if (layout === 'accordion') {
-    const isActive = activeTab === value;
-    return (
-      <div
-        data-slot="tab-trigger"
-        data-mode="accordion"
-        data-state={isActive ? 'selected' : 'default'}
-        className={isActive
-          ? 'bg-card border-r border-r-card relative z-10'
-          : ''
-        }
-        style={isActive
-          ? { transform: 'translateY(-1px)', filter: 'drop-shadow(0 1px 0 var(--color-ink))' }
-          : { transform: 'translateY(1px)', filter: 'drop-shadow(0 -1px 0 var(--color-ink))' }
-        }
-      >
-        <div className="flex items-center">
-          <Button
-            mode={compact ? 'pattern' : 'flat'}
-            size="md"
-            fullWidth
-            compact={compact}
-            quiet={compact}
-            textOnly={compact}
-            icon={compact ? undefined : icon}
-            onClick={() => setActive(value)}
-          >
-            {children}
-          </Button>
-          {settings && (
-            <button
-              type="button"
-              onClick={() => setActive(isActive ? '' : value)}
-              className={`shrink-0 px-2 cursor-pointer transition-transform duration-200 ease-out ${isActive ? 'rotate-180' : ''}`}
-              aria-label={isActive ? 'Collapse settings' : 'Expand settings'}
-            >
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" className="text-current opacity-40">
-                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          )}
-        </div>
-        {settings && (
-          <BaseCollapsible.Root open={isActive}>
-            <BaseCollapsible.Panel
-              className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
-            >
-              <div className="p-2 space-y-2 bg-card">
-                {settings}
-              </div>
-            </BaseCollapsible.Panel>
-          </BaseCollapsible.Root>
-        )}
-      </div>
-    );
-  }
 
   return (
     <BaseTabs.Tab

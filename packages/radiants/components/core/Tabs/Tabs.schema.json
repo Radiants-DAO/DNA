@@ -35,8 +35,7 @@
         "bottom-tabs",
         "sidebar",
         "dot",
-        "capsule",
-        "accordion"
+        "capsule"
       ],
       "default": "default",
       "description": "Arrangement of tab list relative to content panels"

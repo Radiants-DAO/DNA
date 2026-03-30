@@ -31,6 +31,9 @@
       "ignoreFiles": [
         "contract/system.ts",
         "eslint/lib/no-legacy-color-format.mjs",
+        "patterns/pretext-hyphenation.ts",
+        "patterns/pretext-justify.ts",
+        "patterns/pretext-prepare.ts",
         "patterns/pretext-type-scale.ts",
         "scripts/generate-figma-contracts.ts",
         "scripts/generate-icons.mjs",
