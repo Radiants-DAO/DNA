@@ -71,10 +71,10 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   },
   {
     id: 'manifesto',
-    windowTitle: 'Manifesto',
+    windowTitle: 'Becoming Substance',
     windowIcon: <Icon name="document" large />,
     component: ManifestoApp,
-    defaultSize: 'lg',
+    defaultSize: { width: '28rem', height: '44rem' },
     resizable: true,
     contentPadding: false,
     desktopVisible: true,
