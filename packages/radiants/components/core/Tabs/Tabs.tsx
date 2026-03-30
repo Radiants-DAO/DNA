@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
@@ -9,49 +9,45 @@ import { createCompoundContext } from '../../shared/createCompoundContext';
 // Types
 // ============================================================================
 
-type TabsMode = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule';
+export type TabsMode = 'capsule' | 'chrome';
+export type TabsPosition = 'top' | 'bottom' | 'left';
+export type TabsTone = 'neutral' | 'accent';
+export type TabsSize = 'sm' | 'md' | 'lg';
 
-interface TabsState {
-  activeTab: string;
-}
-
-interface TabsActions {
-  setActiveTab: (value: string) => void;
-}
-
-interface TabsMeta {
-  mode: TabsMode;
-  layout: TabsLayout;
-}
-
-interface ProviderProps {
-  state: TabsState;
-  actions: TabsActions;
-  meta: TabsMeta;
-  children: React.ReactNode;
-}
-
-interface FrameProps {
+interface TabsRootProps {
+  /** Active tab value (controlled) */
+  value?: string;
+  /** Initially active tab (uncontrolled) */
+  defaultValue?: string;
+  /** Callback when active tab changes */
+  onValueChange?: (value: string) => void;
+  /** Spatial mode — capsule (detached, free-floating) or chrome (attached, merges into content) */
+  mode?: TabsMode;
+  /** Where the tab list sits relative to content */
+  position?: TabsPosition;
+  /** Color tone */
+  tone?: TabsTone;
+  /** Trigger size preset */
+  size?: TabsSize;
+  /** Show dot indicator alongside tab list */
+  indicator?: 'none' | 'dot';
   children: React.ReactNode;
   className?: string;
 }
 
-interface ListProps {
+interface TabsListProps {
   children: React.ReactNode;
   className?: string;
-  /** Optional content above the tab triggers (sidebar layout only) */
-  header?: React.ReactNode;
 }
 
-interface TriggerProps {
+interface TabsTriggerProps {
   value: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
   className?: string;
 }
 
-interface ContentProps {
+interface TabsContentProps {
   value: string;
   children: React.ReactNode;
   className?: string;
@@ -59,118 +55,98 @@ interface ContentProps {
 }
 
 // ============================================================================
-// Context (for meta like mode/layout — Base UI handles tab state)
+// Context
 // ============================================================================
 
 interface TabsInternalContext {
-  meta: TabsMeta;
+  mode: TabsMode;
+  position: TabsPosition;
+  tone: TabsTone;
+  size: TabsSize;
+  indicator: 'none' | 'dot';
   activeTab: string;
-  /** Ref-based tab collection — read `.current` and pair with `tabVersion` for reactivity. */
+  setActiveTab: (value: string) => void;
   tabValuesRef: React.RefObject<string[]>;
-  /** Incremented when a tab registers/unregisters; subscribe to this for render updates. */
   tabVersion: number;
   registerTab: (value: string) => void;
   unregisterTab: (value: string) => void;
-  setActiveTab: (value: string) => void;
 }
 
 const {
   Context: TabsContext,
   useCompoundContext: useTabsContext,
 } = createCompoundContext<TabsInternalContext>('Tabs', {
-  errorMessage: 'Tab components must be used within a Tabs.Provider',
+  errorMessage: 'Tab components must be used within <Tabs>',
 });
-
-function useTabsMeta(): TabsMeta {
-  return useTabsContext().meta;
-}
 
 // ============================================================================
 // CVA Variants
 // ============================================================================
 
-export const tabTriggerVariants = cva(
-  `flex items-center px-4 py-2
-   font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
-   relative pixel-rounded-xs flex-1 shadow-none
+export const tabsRootVariants = cva('', {
+  variants: {
+    position: {
+      top: 'flex flex-col w-full h-full',
+      bottom: 'flex flex-col w-full h-full',
+      left: 'flex flex-row items-start w-full h-full',
+    },
+  },
+  defaultVariants: { position: 'top' },
+});
+
+export const tabsListVariants = cva('flex shrink-0', {
+  variants: {
+    position: {
+      top: 'flex-row items-center gap-2 px-2 py-2',
+      bottom: 'flex-row items-center gap-2 px-2 py-2 border-t border-line',
+      left: 'flex-col gap-0 p-1 h-full border-r border-line bg-card',
+    },
+    mode: {
+      capsule: 'gap-1 py-1 px-1 bg-card pixel-rounded-xs w-fit',
+      chrome: 'gap-0.5 items-end -mb-2 bg-transparent border-none p-0',
+    },
+  },
+  defaultVariants: { position: 'top', mode: 'capsule' },
+});
+
+export const tabsTriggerVariants = cva(
+  `flex items-center cursor-pointer select-none
+   font-heading text-xs uppercase tracking-tight leading-none
+   relative shadow-none border-none
+   transition-[border-color,background-color,color,transform,gap,padding,max-width,opacity] duration-200 ease-out
    focus-visible:outline-none`,
   {
     variants: {
       mode: {
-        pill: '',
-        line: 'rounded-none',
+        capsule: 'pixel-rounded-xs p-1 justify-center',
+        chrome: 'pixel-rounded-t-sm h-8 px-2 justify-center',
+      },
+      size: {
+        sm: 'text-xs [&_svg]:size-3.5',
+        md: 'text-xs [&_svg]:size-4',
+        lg: 'text-sm [&_svg]:size-4',
       },
     },
-    defaultVariants: {
-      mode: 'pill',
-    },
-  }
+    defaultVariants: { mode: 'capsule', size: 'md' },
+  },
 );
 
-// ============================================================================
-// Sub-components
-// ============================================================================
-
-function Provider({ state, actions, meta, children }: ProviderProps): React.ReactElement {
-  const tabValuesRef = useRef<string[]>([]);
-  const [tabVersion, setTabVersion] = useState(0);
-  const registerTab = useCallback((value: string) => {
-    const tabs = tabValuesRef.current;
-    if (!tabs.includes(value)) {
-      tabs.push(value);
-      setTabVersion((v) => v + 1);
-    }
-  }, []);
-
-  const unregisterTab = useCallback((value: string) => {
-    const tabs = tabValuesRef.current;
-    const idx = tabs.indexOf(value);
-    if (idx !== -1) {
-      tabs.splice(idx, 1);
-      setTabVersion((v) => v + 1);
-    }
-  }, []);
-
-  const contextValue = useMemo(() => ({
-    meta,
-    activeTab: state.activeTab,
-    tabValuesRef,
-    tabVersion,
-    registerTab,
-    unregisterTab,
-    setActiveTab: actions.setActiveTab,
-  }), [meta, state.activeTab, tabVersion, registerTab, unregisterTab, actions.setActiveTab]);
-
-  return (
-    <TabsContext value={contextValue}>
-      <BaseTabs.Root
-        data-rdna="tabs"
-        data-layout={meta.layout}
-        value={state.activeTab}
-        onValueChange={(value) => actions.setActiveTab(value as string)}
-        orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
-        className={
-          meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-t-sm-b-md'
-          : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
-          : undefined
-        }
-      >
-        {children}
-      </BaseTabs.Root>
-    </TabsContext>
-  );
-}
-
-function Frame({ children, className = '' }: FrameProps): React.ReactElement {
-  return <div className={className}>{children}</div>;
-}
+export const tabsContentVariants = cva('@container', {
+  variants: {
+    position: {
+      top: '',
+      bottom: '',
+      left: 'flex-1 min-w-0 h-full overflow-auto',
+    },
+  },
+  defaultVariants: { position: 'top' },
+});
 
 // ============================================================================
-// DotPill — compact clickable tab indicator
+// DotPill — compact dot indicator (reusable)
 // ============================================================================
 
-function DotPill({ className = '' }: { className?: string }): React.ReactElement {
-  // _tabVersion is subscribed to trigger re-renders when tabs register
+function DotPill({ className = '' }: { className?: string }) {
   const { activeTab, tabValuesRef, tabVersion: _tabVersion, setActiveTab } = useTabsContext();
   const tabValues = tabValuesRef.current;
 
@@ -196,68 +172,126 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   );
 }
 
-function List({ children, header, className = '' }: ListProps): React.ReactElement {
-  const { layout } = useTabsMeta();
+// ============================================================================
+// Sub-components
+// ============================================================================
 
-  if (layout === 'capsule') {
+function TabsRoot({
+  value,
+  defaultValue = '',
+  onValueChange,
+  mode = 'capsule',
+  position = 'top',
+  tone = 'neutral',
+  size = 'md',
+  indicator = 'none',
+  children,
+  className = '',
+}: TabsRootProps) {
+  const [internal, setInternal] = useState(defaultValue);
+  const isControlled = value !== undefined;
+  const activeTab = isControlled ? value : internal;
+
+  const tabValuesRef = useRef<string[]>([]);
+  const [tabVersion, setTabVersion] = useState(0);
+
+  const registerTab = useCallback((value: string) => {
+    const tabs = tabValuesRef.current;
+    if (!tabs.includes(value)) {
+      tabs.push(value);
+      setTabVersion((v) => v + 1);
+    }
+  }, []);
+
+  const unregisterTab = useCallback((value: string) => {
+    const tabs = tabValuesRef.current;
+    const idx = tabs.indexOf(value);
+    if (idx !== -1) {
+      tabs.splice(idx, 1);
+      setTabVersion((v) => v + 1);
+    }
+  }, []);
+
+  const setActiveTab = useCallback((newValue: string) => {
+    if (!isControlled) setInternal(newValue);
+    onValueChange?.(newValue);
+  }, [isControlled, onValueChange]);
+
+  const ctx = useMemo(() => ({
+    mode, position, tone, size, indicator,
+    activeTab,
+    setActiveTab,
+    tabValuesRef,
+    tabVersion,
+    registerTab,
+    unregisterTab,
+  }), [mode, position, tone, size, indicator, activeTab, setActiveTab, tabVersion, registerTab, unregisterTab]);
+
+  const rootClasses = tabsRootVariants({ position, className });
+
+  return (
+    <TabsContext value={ctx}>
+      <BaseTabs.Root
+        data-rdna="tabs"
+        data-mode={mode}
+        data-position={position}
+        data-size={size}
+        {...(tone !== 'neutral' ? { 'data-color': tone } : {})}
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v as string)}
+        orientation={position === 'left' ? 'vertical' : 'horizontal'}
+        className={rootClasses}
+      >
+        {children}
+      </BaseTabs.Root>
+    </TabsContext>
+  );
+}
+
+function List({ children, className = '' }: TabsListProps) {
+  const { mode, position, indicator } = useTabsContext();
+  const listClasses = tabsListVariants({ mode, position, className });
+
+  // Capsule (detached): wrap in a centering container
+  if (mode === 'capsule') {
     return (
-      <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
-        <BaseTabs.List
-          activateOnFocus
-          data-slot="tab-list"
-          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 pixel-rounded-xs bg-card"
-        >
+      <div className="shrink-0 flex items-center justify-center p-2">
+        <BaseTabs.List activateOnFocus data-slot="tab-list" className={listClasses}>
           {children}
         </BaseTabs.List>
       </div>
     );
   }
 
-  if (layout === 'dot') {
+  // Sidebar position with dot indicator
+  if (position === 'left') {
     return (
-      <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
-        {/* Hidden triggers for tab registration */}
-        <BaseTabs.List data-slot="tab-list" className="hidden">
-          {children}
-        </BaseTabs.List>
-        <DotPill />
-      </div>
-    );
-  }
-
-  if (layout === 'sidebar') {
-    return (
-      <div className={`shrink-0 flex flex-col h-full w-fit bg-card border-r border-line ${className}`}>
-        {header}
-        <DotPill />
-        <BaseTabs.List activateOnFocus data-slot="tab-list" className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
+      <div className="shrink-0 flex flex-col h-full w-fit bg-card border-r border-line">
+        {indicator === 'dot' && <DotPill />}
+        <BaseTabs.List activateOnFocus data-slot="tab-list" className={`flex flex-col gap-0 p-1 ${className}`}>
           {children}
         </BaseTabs.List>
       </div>
     );
   }
-
-  const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
     <BaseTabs.List
       activateOnFocus
       data-slot="tab-list"
-      className={`flex items-center justify-between gap-4 px-2 py-2 bg-page border-t border-line ${shrinkClass} ${className}`}
+      className={listClasses}
     >
-      <div className="flex flex-wrap gap-2 items-center w-full">
-        {children}
-      </div>
+      {indicator === 'dot' && <DotPill className="mr-2" />}
+      {children}
     </BaseTabs.List>
   );
 }
 
-function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
-  const { mode, layout } = useTabsMeta();
-  const { registerTab, unregisterTab, activeTab, setActiveTab: setActive } = useTabsContext();
+function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
+  const { mode, size, registerTab, unregisterTab } = useTabsContext();
 
-  // Register this trigger's value for the DotPill; unregister on unmount
-  useEffect(() => {
+  // Register for DotPill reactivity
+  React.useEffect(() => {
     registerTab(value);
     return () => unregisterTab(value);
   }, [value, registerTab, unregisterTab]);
@@ -267,65 +301,27 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
       value={value}
       render={(props) => {
         const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
-
-        if (layout === 'capsule') {
-          return (
-            <button
-              {...props}
-              type="button"
-              data-slot="tab-trigger"
-              data-mode="capsule"
-              data-state={isActive ? 'selected' : 'default'}
-              className={`flex items-center justify-center cursor-pointer select-none border-none pixel-rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
-                isActive ? 'gap-1.5 px-2.5 py-1' : 'p-1'
-              } ${className}`}
-            >
-              {icon && <span className="shrink-0 flex items-center justify-center size-4">{icon}</span>}
-              {isActive && (
-                <span className="font-heading text-xs uppercase tracking-tight leading-none whitespace-nowrap">
-                  {children}
-                </span>
-              )}
-            </button>
-          );
-        }
-
-        if (layout === 'sidebar') {
-          return (
-            <button
-              {...props}
-              type="button"
-              data-slot="tab-trigger"
-              data-mode="sidebar"
-              data-state={isActive ? 'selected' : 'default'}
-              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${className}`}
-            >
-              {icon && <span className="shrink-0">{icon}</span>}
-              {children}
-            </button>
-          );
-        }
-
-        const classes = tabTriggerVariants({
-          mode,
-          className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
-        });
+        const classes = tabsTriggerVariants({ mode, size, className });
 
         return (
           <button
             {...props}
             type="button"
-            className={classes}
             data-slot="tab-trigger"
             data-mode={mode}
+            data-size={size}
             data-state={isActive ? 'selected' : 'default'}
+            className={classes}
           >
-            {children}
             {icon && (
-              <>
-                <span className="flex-1 h-px bg-line opacity-30" />
+              <span className="shrink-0 flex items-center justify-center">
                 {icon}
-              </>
+              </span>
+            )}
+
+            {/* With icon: text expands on active only. Without icon: text always visible. */}
+            {(!icon || isActive) && (
+              <span className="whitespace-nowrap">{children}</span>
             )}
           </button>
         );
@@ -334,23 +330,15 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
   );
 }
 
-function Content({ value, children, className = '', keepMounted }: ContentProps): React.ReactElement | null {
-  const { mode, layout } = useTabsMeta();
-
-  const contentClasses =
-    layout === 'sidebar'
-      ? `@container flex-1 min-w-0 h-full overflow-auto bg-card ${className}`
-      : layout === 'dot' || layout === 'capsule'
-        ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
-        : mode === 'line'
-          ? `bg-page border-r border-line ${className}`
-          : className;
+function Content({ value, children, className = '', keepMounted }: TabsContentProps) {
+  const { position } = useTabsContext();
+  const classes = tabsContentVariants({ position, className });
 
   return (
     <BaseTabs.Panel
       data-slot="tab-panel"
       value={value}
-      className={contentClasses}
+      className={classes}
       keepMounted={keepMounted}
     >
       {children}
@@ -358,54 +346,67 @@ function Content({ value, children, className = '', keepMounted }: ContentProps)
   );
 }
 
-function Indicator({ className = '' }: { className?: string }): React.ReactElement {
+function Indicator({ className = '' }: { className?: string }) {
   return <BaseTabs.Indicator className={className} />;
 }
 
 // ============================================================================
-// Public API
+// Backward compat: useTabsState
 // ============================================================================
 
-export type { TabsMode, TabsLayout, TabsState, TabsActions, TabsMeta };
-
+/** @deprecated Use <Tabs defaultValue={...} mode={...}> directly. */
 export function useTabsState({
   defaultValue = '',
   value,
   onValueChange,
-  mode = 'pill',
+  mode = 'capsule',
   layout = 'bottom-tabs',
 }: {
   defaultValue?: string;
   value?: string;
   onValueChange?: (value: string) => void;
   mode?: TabsMode;
-  layout?: TabsLayout;
-} = {}): { state: TabsState; actions: TabsActions; meta: TabsMeta } {
-  const [internalValue, setInternalValue] = useState(defaultValue);
+  layout?: string;
+} = {}) {
+  const [internal, setInternal] = useState(defaultValue);
   const isControlled = value !== undefined;
-  const activeTab = isControlled ? value : internalValue;
+  const activeTab = isControlled ? value : internal;
 
   const setActiveTab = useCallback((newValue: string) => {
-    if (!isControlled) setInternalValue(newValue);
+    if (!isControlled) setInternal(newValue);
     onValueChange?.(newValue);
   }, [isControlled, onValueChange]);
 
-  const state: TabsState = { activeTab };
-  const actions: TabsActions = { setActiveTab };
-  const meta: TabsMeta = { mode, layout };
+  // Map old layout values to new position values
+  const positionMap: Record<string, TabsPosition> = {
+    'default': 'top',
+    'bottom-tabs': 'bottom',
+    'sidebar': 'left',
+  };
 
-  return { state, actions, meta };
+  return {
+    state: { activeTab },
+    actions: { setActiveTab },
+    meta: {
+      mode,
+      layout,
+      position: positionMap[layout] ?? 'top',
+    },
+  };
 }
 
-export const Tabs = {
-  Provider,
-  Frame,
+// ============================================================================
+// Public API
+// ============================================================================
+
+export type { TabsRootProps, TabsListProps, TabsTriggerProps, TabsContentProps };
+
+export const Tabs = Object.assign(TabsRoot, {
   List,
   Trigger,
   Content,
   Indicator,
   DotPill,
-  useTabsState,
-};
+});
 
 export default Tabs;

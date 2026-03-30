@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect } from 'vitest';
 import { Tabs } from './Tabs';
 import type { TabsMode, TabsPosition } from './Tabs';
@@ -43,21 +44,24 @@ describe('Tabs', () => {
     expect(screen.getByText('Content one')).toBeInTheDocument();
   });
 
-  it('clicking a tab changes selection', () => {
+  it('clicking a tab changes selection', async () => {
+    const user = userEvent.setup();
     render(<TestTabs />);
-    fireEvent.click(screen.getByText('Two'));
+    await user.click(screen.getByText('Two'));
     expect(screen.getByText('Content two')).toBeInTheDocument();
   });
 
-  it('arrow keys move focus between tabs', () => {
+  it('arrow keys move focus between tabs', async () => {
+    const user = userEvent.setup();
     render(<TestTabs />);
     const tabs = screen.getAllByRole('tab');
-    tabs[0].focus();
-    fireEvent.keyDown(tabs[0], { key: 'ArrowRight' });
-    expect(document.activeElement).toBe(tabs[1]);
+    await user.click(tabs[0]);
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement).toBe(screen.getAllByRole('tab')[1]);
   });
 
-  it('supports controlled value + onValueChange', () => {
+  it('supports controlled value + onValueChange', async () => {
+    const user = userEvent.setup();
     let current = 'one';
     const onChange = (v: string) => { current = v; };
 
@@ -72,7 +76,7 @@ describe('Tabs', () => {
       </Tabs>,
     );
 
-    fireEvent.click(screen.getByText('Two'));
+    await user.click(screen.getByText('Two'));
     expect(current).toBe('two');
 
     rerender(
@@ -88,7 +92,8 @@ describe('Tabs', () => {
     expect(screen.getByText('Content two')).toBeInTheDocument();
   });
 
-  it('preserves panel state when keepMounted is enabled', () => {
+  it('preserves panel state when keepMounted is enabled', async () => {
+    const user = userEvent.setup();
     render(
       <Tabs defaultValue="one">
         <Tabs.List>
@@ -103,9 +108,9 @@ describe('Tabs', () => {
     );
 
     const input = screen.getByTestId('preserved-input') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 'hello' } });
-    fireEvent.click(screen.getByText('Two'));
-    fireEvent.click(screen.getByText('One'));
+    await user.type(input, 'hello');
+    await user.click(screen.getByText('Two'));
+    await user.click(screen.getByText('One'));
     expect((screen.getByTestId('preserved-input') as HTMLInputElement).value).toBe('hello');
   });
 
@@ -126,12 +131,13 @@ describe('Tabs', () => {
     expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-position', 'bottom');
   });
 
-  it('uses vertical keyboard navigation when position=left', () => {
+  it('uses vertical keyboard navigation when position=left', async () => {
+    const user = userEvent.setup();
     render(<TestTabs position="left" />);
     const tabs = screen.getAllByRole('tab');
-    tabs[0].focus();
-    fireEvent.keyDown(tabs[0], { key: 'ArrowDown' });
-    expect(document.activeElement).toBe(tabs[1]);
+    await user.click(tabs[0]);
+    await user.keyboard('{ArrowDown}');
+    expect(document.activeElement).toBe(screen.getAllByRole('tab')[1]);
   });
 
   it('sets data-size on triggers', () => {
