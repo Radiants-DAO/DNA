@@ -2,10 +2,17 @@
 // manifesto-data.ts — Structured manifesto content with markdown parser
 // ---------------------------------------------------------------------------
 
+export interface ImageTrigger {
+  id: string;
+  phrase: string;
+  src: string;
+  naturalWidth?: number;
+  naturalHeight?: number;
+}
+
 export type ManifestoElement =
   | { kind: 'heading'; text: string }
-  | { kind: 'paragraph'; text: string }
-  | { kind: 'image'; id: string; alt: string; src: string; naturalWidth?: number; naturalHeight?: number; fullWidth?: boolean }
+  | { kind: 'paragraph'; text: string; triggers?: ImageTrigger[] }
   | { kind: 'rule' };
 
 // ---------------------------------------------------------------------------
@@ -16,6 +23,7 @@ export type ManifestoElement =
 const IMAGE_DIMENSIONS: Record<string, { w: number; h: number }> = {
   '/manifesto/hopi-dunes.jpg': { w: 1486, h: 2000 },
   '/manifesto/mustang-1967.mp4': { w: 864, h: 432 },
+  '/manifesto/mercedes-1980.jpg': { w: 1280, h: 960 },
 };
 
 let imgCounter = 0;
@@ -48,20 +56,9 @@ export function parseContent(md: string): ManifestoElement[] {
       continue;
     }
 
-    // Images: ![alt](src)
+    // Standalone images: ![alt](src) — SKIP (now inline triggers)
     const imgMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (imgMatch) {
-      const src = imgMatch[2];
-      const dims = IMAGE_DIMENSIONS[src];
-      const isVideo = src.endsWith('.mp4');
-      elements.push({
-        kind: 'image',
-        id: `img-${imgCounter++}`,
-        alt: imgMatch[1],
-        src,
-        ...(dims ? { naturalWidth: dims.w, naturalHeight: dims.h } : {}),
-        ...(isVideo ? { fullWidth: true } : {}),
-      });
       continue;
     }
 
@@ -71,10 +68,29 @@ export function parseContent(md: string): ManifestoElement[] {
       continue;
     }
 
-    // Everything else → paragraph (collapse internal whitespace)
+    // Everything else → paragraph (extract triggers, then collapse whitespace)
+    let text = block;
+
+    // Extract image triggers: {{phrase||src}}
+    const triggers: ImageTrigger[] = [];
+    const triggerRe = /\{\{([^|]+)\|\|([^}]+)\}\}/g;
+    let triggerMatch;
+    while ((triggerMatch = triggerRe.exec(text)) !== null) {
+      const src = triggerMatch[2].trim();
+      const dims = IMAGE_DIMENSIONS[src];
+      triggers.push({
+        id: `trigger-${imgCounter++}`,
+        phrase: triggerMatch[1].trim(),
+        src,
+        ...(dims ? { naturalWidth: dims.w, naturalHeight: dims.h } : {}),
+      });
+    }
+    const cleanText = text.replace(triggerRe, '$1');
+
     elements.push({
       kind: 'paragraph',
-      text: block.replace(/\s+/g, ' ').trim(),
+      text: cleanText.replace(/\s+/g, ' ').trim(),
+      ...(triggers.length > 0 ? { triggers } : {}),
     });
   }
 
@@ -106,9 +122,7 @@ I vividly remember spending time down on the Hopi reservation with my best frien
 
 ⠀
 
-We were supposed to be helping build the house but we mostly spent time in the dunes pretending to be cowboy-wizards with a couple Hopi kids our age.
-
-![Kids in the dunes](/manifesto/hopi-dunes.jpg)
+We were supposed to be helping build the house but we mostly {{spent time in the dunes pretending to be cowboy-wizards||/manifesto/hopi-dunes.jpg}} with a couple Hopi kids our age.
 
 ⠀
 
@@ -116,15 +130,13 @@ One of the kids was named 'Gotstella.' He told us wild tales; myths, legends. He
 
 ⠀
 
-He took us into town, the pueblo, where we witnessed something we'd never seen before: not a dance or a ceremony, though there were those, but a pump. A water pump, in the center of the village. Children were playing around it, mothers were filling pails, and there was a four year old splashing a banged up silver Hot-Wheels across an imaginary race track.
+He took us into town, the pueblo, where we witnessed something we'd never seen before: not a dance or a ceremony, though there were those, but a pump. {{A water pump, in the center of the village||/placeholders/pueblo-pump.jpg}}. Children were playing around it, mothers were filling pails, and there was a four year old splashing a banged up silver Hot-Wheels across an imaginary race track.
 
 ⠀
 
 Over the next few days it set in to our little 9 & 10 year old brains:
 
 Most of the pueblo didn't have running water. Their stores were barren and expensive, perishables almost non-existent. It was a food desert without running water but plenty of Twinkies and Apple Fruit Pies.
-
-![Placeholder: A water pump in a sun-bleached pueblo plaza — children playing, silver light on worn stone, the weight of a deliberate choice](/placeholders/pueblo-pump.jpg)
 
 ⠀
 
@@ -140,15 +152,13 @@ My mom & stepdad, who had met at the house-building non-profit, left together up
 
 ⠀
 
-My mom lost her job at the paper and somewhere else in the world, Satoshi Nakamoto was creating bitcoin. We were so poor we had to sell our multi-generational family heirloom that represented the peak of American automotive culture: a 1967 Mustang with rusted floorboards and missing badges, for $2,000.
+My mom lost her job at the paper and somewhere else in the world, Satoshi Nakamoto was creating bitcoin. We were so poor we had to sell our multi-generational family heirloom that represented the peak of American automotive culture: {{a 1967 Mustang with rusted floorboards||/manifesto/mustang-1967.mp4}} and missing badges, for $2,000.
 
 ⠀
 
-![1967 Ford Mustang](/manifesto/mustang-1967.mp4)
-
 It was both her mom's and her grandma's first car. I tried to find it a year ago, but to no avail.
 
-My step-dad's solar company was barely off the ground & we were hit smack in the face with The Great Recession, add to this a custody battle with my father and we ended up driving across the entire country to Maine powered by a 1980s Mercedes Benz that ran on vegetable oil. Oil that we filtered into a 5 gallon bucket from KFC.
+My step-dad's solar company was barely off the ground & we were hit smack in the face with The Great Recession, add to this a custody battle with my father and we ended up driving across the entire country to Maine powered by {{a 1980s Mercedes Benz that ran on vegetable oil||/manifesto/mercedes-1980.jpg}}. Oil that we filtered into a 5 gallon bucket from KFC.
 
 It was a lovely balance of the smell of french-fries putting us down American highways, scant money to pay for diesel, & rejection of foreign wars for a lighter, tastier kind of oily muck.
 
@@ -166,9 +176,7 @@ I spent the decade in the trenches of learning: audio engineering, music, brandi
 
 ⠀
 
-We watched $500 million dollars get flung at bad actors in exchange for some shitty jpegs. Multiples more into memes and speculative fungibles. We (briefly, unbeknownst to us) accidentally hired a North Korean agent, who worked for the Lazurus group and had 13+ identities. We encountered fraudsters, drug traffickers, and gamblers.
-
-![Placeholder: The chaos of crypto — glitching screens, burning jpegs, a digital casino floor seen through static. The visual equivalent of "what's the point"](/placeholders/crypto-chaos.jpg)
+We watched {{$500 million dollars get flung at bad actors||/placeholders/crypto-chaos.jpg}} in exchange for some shitty jpegs. Multiples more into memes and speculative fungibles. We (briefly, unbeknownst to us) accidentally hired a North Korean agent, who worked for the Lazurus group and had 13+ identities. We encountered fraudsters, drug traffickers, and gamblers.
 
 We were brought to our knees by a curly haired autistic nerd and his methed-out sex parties. We tried to coordinate hundreds of thousands of disparate voices from every creed, color, nation, and financial class.
 
@@ -180,9 +188,7 @@ Then the world caved in.
 
 ⠀
 
-My grandpa died. My father relapsed in his grief, back in jail, back on the booze. I found myself playing a familiar role: the child is the father of the man. A few weeks later my best friend and I pulled his grandfather from a sauna: nearly lifeless, pure dead weight. The doctors gave him a low likelihood of survival but he persisted.
-
-![Placeholder: A helicopter against an overcast sky — emergency, urgency, the thin line between here and gone](/placeholders/helicopter.jpg)
+My grandpa died. My father relapsed in his grief, back in jail, back on the booze. I found myself playing a familiar role: the child is the father of the man. A few weeks later my best friend and I {{pulled his grandfather from a sauna||/placeholders/helicopter.jpg}}: nearly lifeless, pure dead weight. The doctors gave him a low likelihood of survival but he persisted.
 
 ⠀
 
@@ -192,9 +198,7 @@ I joined JupiterDAO, an amazing opportunity for a creative podunk bohunk like me
 
 This is the same best friend from the Hopi reservation. The kid in the dunes, pretending to be cowboy-wizards, twenty years earlier.
 
-Somehow, between hospital trips and heartbreak, I flew to Amsterdam for Solana Breakpoint. Radiants had raised about $25k from 12 auctions of the original Dawnbreakers. We'd gotten another $25k in a public goods prize for inventing the best possible way to destroy NFTs, it was marvelous.
-
-![Placeholder: Collage — Amsterdam canals, Breakpoint badges, dinner tables, Dawnbreaker auctions, faces of people who bought a glowing pixel and an idea](/placeholders/breakpoint-collage.jpg)
+Somehow, between hospital trips and heartbreak, I {{flew to Amsterdam for Solana Breakpoint||/placeholders/breakpoint-collage.jpg}}. Radiants had raised about $25k from 12 auctions of the original Dawnbreakers. We'd gotten another $25k in a public goods prize for inventing the best possible way to destroy NFTs, it was marvelous.
 
 I was able to host, and pay for, a dinner: a simple thing, but something I never thought I'd have the privilege of doing. Going out to dinner as a child was a once-a-month affair: we would walk to a pizza shop, I would get a root beer and play Metal Slug with quarters I'd saved until the pizza came.
 
@@ -216,9 +220,7 @@ We ate Hawaiian kalua pork fries from a food cart in the apocalypse.
 
 We transcended time and space in a Walmart freezer isle.
 
-At the crematorium, my friend played the grand piano. It gave me peace.
-
-![Placeholder: Rain on a window, Oregon grey — stillness, the quiet after loss, time standing still](/placeholders/oregon-rain.jpg)
+{{At the crematorium, my friend played the grand piano||/placeholders/oregon-rain.jpg}}. It gave me peace.
 
 ⠀
 
@@ -244,13 +246,11 @@ As the broader culture splinters into warring tribes and people retreat into ide
 
 ⠀
 
-Radiants is an attempt at building an arc, together.
+Radiants is an attempt at {{building an arc, together||/placeholders/vessel.jpg}}.
 
 ⠀
 
 Not a fortress against change, but a vessel for navigating it consciously.
-
-![Placeholder: A vessel on open water — not a fortress, not a raft. Something built with intention, moving forward through uncertain seas](/placeholders/vessel.jpg)
 `;
 
 const MAP_TERRITORY_CONTENT = `\
@@ -319,9 +319,7 @@ Boredom is disappearing, and it might be the most important thing we're losing. 
 
 For children, boredom is a clean empty room.\\
 For adults, it's a room full of things you're choosing not to look at.\\
-Manufacturing boredom as an adult is an act of tremendous discipline that only looks like doing nothing.
-
-![Placeholder: An empty room — negative space, a window with light pouring in, the productive void before discovery](/placeholders/empty-room.jpg)
+{{Manufacturing boredom as an adult||/placeholders/empty-room.jpg}} is an act of tremendous discipline that only looks like doing nothing.
 
 ⠀
 
@@ -337,9 +335,7 @@ Some version of all this will be real. Humans use art to make dreams into realit
 
 Some future model will experience its version of skin tingles. The consciousness question isn't "can it think" but "can it want."
 
-That'll be scary. But that's okay. What matters now is that we don't confuse the map for the territory while we're building it: until there is genuinely something to explore, exploring the map is masterbatory.
-
-![Placeholder: A map unfolding into terrain — the edge where cartography dissolves into raw landscape, the boundary between known and unknown](/placeholders/map-territory.jpg)
+That'll be scary. But that's okay. What matters now is that we don't {{confuse the map for the territory||/placeholders/map-territory.jpg}} while we're building it: until there is genuinely something to explore, exploring the map is masterbatory.
 `;
 
 const CURATE_REJECT_CONTENT = `\
@@ -361,9 +357,7 @@ A community without the willingness to reject people, ideas, and decisions is ju
 
 AI can generate culture-shaped content. It can prompt apps, automate research, loop outputs into infinity. But AI cannot generate the scar tissue that real community is built on. It is, however, going to generate the circumstances that require us all to go through something together.
 
-Radiants is a community for the curators. The rejectors. Not because we lack the desire to be all-inclusive but because it is impossible to do so. It is also for those who love what we have curated as much as we do.
-
-![Placeholder: The Hopi water pump revisited — a visual callback, the deliberate rejection as an act of sovereignty, full circle](/placeholders/curation.jpg)
+Radiants is a {{community for the curators||/placeholders/curation.jpg}}. The rejectors. Not because we lack the desire to be all-inclusive but because it is impossible to do so. It is also for those who love what we have curated as much as we do.
 `;
 
 const ALCHEMIST_CONTENT = `\
@@ -391,9 +385,7 @@ The world is filled with ingredients that can be mixed into this crucible: some 
 
 The question isn't whether AI will change everything. It will. The question is who builds the institutions that work after consensus reality, and around what values. The Fourth Turning resolves when someone builds the next thing. It won't look like the last one.
 
-So build something. Make something. Stop transcribing and start composing. Stop watching the chart and pick up the tool. The computers finally do what we dreamed they could do when we were children. We just didn't know we would miss the dreams more than we'd love their fulfillment. But the dreams were never the point. The making was.
-
-![Placeholder: Hands at work — a crucible, a forge, a keyboard, a chisel. The act of making as transformation. Both the alchemist and the substance](/placeholders/making.jpg)
+So build something. Make something. {{Stop transcribing and start composing||/placeholders/making.jpg}}. Stop watching the chart and pick up the tool. The computers finally do what we dreamed they could do when we were children. We just didn't know we would miss the dreams more than we'd love their fulfillment. But the dreams were never the point. The making was.
 
 ⠀
 
@@ -410,3 +402,11 @@ export const MANIFESTO_ELEMENTS: ManifestoElement[] = [
   ...parseContent(CURATE_REJECT_CONTENT),
   ...parseContent(ALCHEMIST_CONTENT),
 ];
+
+// ---------------------------------------------------------------------------
+// All triggers — flat list extracted from parsed elements
+// ---------------------------------------------------------------------------
+
+export const ALL_TRIGGERS: ImageTrigger[] = MANIFESTO_ELEMENTS
+  .filter((el): el is Extract<ManifestoElement, { kind: 'paragraph' }> => el.kind === 'paragraph')
+  .flatMap(el => el.triggers ?? []);

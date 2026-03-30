@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import { useContainerSize } from '@/hooks/useContainerSize';
-import { MANIFESTO_ELEMENTS } from './manifesto-data';
+import { MANIFESTO_ELEMENTS, ALL_TRIGGERS } from './manifesto-data';
+import type { ImageTrigger } from './manifesto-data';
 import {
   paginateManifesto,
   type ImageObstacle,
@@ -15,20 +16,124 @@ import { CoverPage } from './CoverPage';
 import { ForwardPage } from './ForwardPage';
 
 // ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const PAGE_MARGIN = 32;
+
+// ---------------------------------------------------------------------------
+// Trigger-aware line renderer
+// ---------------------------------------------------------------------------
+
+function renderLineWithTriggers(
+  lineText: string,
+  x: number,
+  y: number,
+  font: string,
+  triggers: ImageTrigger[],
+  activeTriggers: Map<string, ImageTrigger>,
+  onToggle: (trigger: ImageTrigger) => void,
+  idx: number,
+) {
+  // Check if any trigger phrase appears in this line
+  const parts: React.ReactNode[] = [];
+  let remaining = lineText;
+  let hasMatch = false;
+  let partKey = 0;
+
+  for (const trigger of triggers) {
+    const phraseIdx = remaining.indexOf(trigger.phrase);
+    if (phraseIdx !== -1) {
+      hasMatch = true;
+      const before = remaining.slice(0, phraseIdx);
+      const match = remaining.slice(phraseIdx, phraseIdx + trigger.phrase.length);
+      const after = remaining.slice(phraseIdx + trigger.phrase.length);
+
+      if (before) parts.push(<span key={`t-${partKey++}`}>{before}</span>);
+      parts.push(
+        <span
+          key={trigger.id}
+          className={`cursor-pointer ${activeTriggers.has(trigger.id) ? 'bg-accent/50' : 'bg-accent/30'}`}
+          title="tap to show image"
+          onClick={(e) => { e.stopPropagation(); onToggle(trigger); }}
+        >
+          {match}
+        </span>,
+      );
+      remaining = after;
+    }
+  }
+  if (remaining) parts.push(<span key={`t-${partKey++}`}>{remaining}</span>);
+
+  if (!hasMatch) {
+    return (
+      <div key={idx} className="absolute text-head" style={{ left: x, top: y, whiteSpace: 'pre', font }}>
+        {lineText}
+      </div>
+    );
+  }
+
+  return (
+    <div key={idx} className="absolute text-head" style={{ left: x, top: y, whiteSpace: 'pre', font }}>
+      {parts}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Compute obstacle position from an active trigger
+// ---------------------------------------------------------------------------
+
+function computeObstacleForTrigger(
+  trigger: ImageTrigger,
+  page: Page,
+  pageIndex: number,
+  colWidth: number,
+): ImageObstacle {
+  // Find the line containing the trigger phrase
+  let triggerY = PAGE_MARGIN + 40; // fallback
+  let triggerX = PAGE_MARGIN;
+  for (const el of page.els) {
+    if ((el.kind === 'line' || el.kind === 'heading-line') && el.text.includes(trigger.phrase)) {
+      triggerY = el.y + 20; // just below the trigger line
+      triggerX = el.x;
+      break;
+    }
+  }
+
+  const maxW = colWidth * 0.5;
+  const aspect = (trigger.naturalWidth && trigger.naturalHeight)
+    ? trigger.naturalWidth / trigger.naturalHeight
+    : 16 / 9;
+  const w = maxW;
+  const h = w / aspect;
+
+  return {
+    id: trigger.id,
+    x: triggerX + colWidth - maxW, // right-align in column
+    y: triggerY,
+    w,
+    h,
+    pageIndex,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Element renderers
 // ---------------------------------------------------------------------------
 
-function renderElement(el: PageEl, idx: number) {
+function renderElement(
+  el: PageEl,
+  idx: number,
+  triggers: ImageTrigger[],
+  activeTriggers: Map<string, ImageTrigger>,
+  onToggle: (trigger: ImageTrigger) => void,
+) {
   switch (el.kind) {
     case 'line':
-      return (
-        <div
-          key={idx}
-          className="absolute text-head"
-          style={{ left: el.x, top: el.y, whiteSpace: 'pre', font: el.font }}
-        >
-          {el.text}
-        </div>
+      return renderLineWithTriggers(
+        el.text, el.x, el.y, el.font,
+        triggers, activeTriggers, onToggle, idx,
       );
 
     case 'heading-line':
@@ -41,46 +146,6 @@ function renderElement(el: PageEl, idx: number) {
           {el.text}
         </div>
       );
-
-    case 'image': {
-      const isPlaceholder = el.src.startsWith('/placeholders/');
-      const isVideo = el.src.endsWith('.mp4');
-      const label = el.alt.replace(/^Placeholder:\s*/i, '');
-      if (isPlaceholder) {
-        return (
-          <div
-            key={idx}
-            className="absolute bg-depth flex items-center justify-center text-mute font-joystix text-xs p-2 text-center leading-relaxed"
-            style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
-          >
-            {label}
-          </div>
-        );
-      }
-      if (isVideo) {
-        return (
-          <video
-            key={idx}
-            src={el.src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute object-cover"
-            style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
-          />
-        );
-      }
-      return (
-        <img
-          key={idx}
-          src={el.src}
-          alt={el.alt}
-          className="absolute object-cover"
-          style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
-        />
-      );
-    }
 
     case 'rule':
       return (
@@ -113,7 +178,53 @@ export function ManifestoBook() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [result, setResult] = useState<PaginationResult | null>(null);
-  const [imageObstacles] = useState<ImageObstacle[]>([]);
+  const [activeTriggers, setActiveTriggers] = useState<Map<string, ImageTrigger>>(new Map());
+  const [imageObstacles, setImageObstacles] = useState<ImageObstacle[]>([]);
+
+  // Toggle a trigger on/off
+  const handleToggleTrigger = useCallback((trigger: ImageTrigger) => {
+    setActiveTriggers((prev) => {
+      const next = new Map(prev);
+      if (next.has(trigger.id)) {
+        next.delete(trigger.id);
+      } else {
+        next.set(trigger.id, trigger);
+      }
+      return next;
+    });
+  }, []);
+
+  // Recompute obstacles when active triggers or pagination changes
+  useEffect(() => {
+    if (!result || activeTriggers.size === 0) {
+      setImageObstacles([]);
+      return;
+    }
+
+    // Compute column width from page width
+    const totalMargin = PAGE_MARGIN * 2;
+    const colGap = 16;
+    const colRuleW = 1;
+    const numCols = 2;
+    const totalGutter = (numCols - 1) * (colGap * 2 + colRuleW);
+    const colWidth = Math.floor((pageWidth - totalMargin - totalGutter) / numCols);
+
+    const obstacles: ImageObstacle[] = [];
+    for (const trigger of activeTriggers.values()) {
+      // Search all pages for the line containing this trigger
+      for (let pi = 0; pi < result.pages.length; pi++) {
+        const page = result.pages[pi]!;
+        const hasPhrase = page.els.some(
+          (el) => (el.kind === 'line' || el.kind === 'heading-line') && el.text.includes(trigger.phrase),
+        );
+        if (hasPhrase) {
+          obstacles.push(computeObstacleForTrigger(trigger, page, pi, colWidth));
+          break;
+        }
+      }
+    }
+    setImageObstacles(obstacles);
+  }, [activeTriggers, result, pageWidth]);
 
   // Paginate whenever dimensions or obstacles change
   useEffect(() => {
@@ -194,7 +305,53 @@ export function ManifestoBook() {
             className="relative bg-card"
             style={{ width: pageWidth, height: pageHeight }}
           >
-            {contentPage.els.map((el, i) => renderElement(el, i))}
+            {contentPage.els.map((el, i) =>
+              renderElement(el, i, ALL_TRIGGERS, activeTriggers, handleToggleTrigger),
+            )}
+            {/* Render active trigger images/videos */}
+            {Array.from(activeTriggers.values()).map((trigger) => {
+              const obs = imageObstacles.find((o) => o.id === trigger.id);
+              if (!obs || obs.pageIndex !== contentPageIndex) return null;
+              const isPlaceholder = trigger.src.startsWith('/placeholders/');
+              const isVideo = trigger.src.endsWith('.mp4');
+              if (isPlaceholder) {
+                return (
+                  <div
+                    key={trigger.id}
+                    className="absolute bg-depth flex items-center justify-center text-mute font-joystix text-xs p-2 text-center leading-relaxed cursor-pointer"
+                    style={{ left: obs.x, top: obs.y, width: obs.w, height: obs.h }}
+                    onClick={() => handleToggleTrigger(trigger)}
+                  >
+                    {trigger.phrase}
+                  </div>
+                );
+              }
+              if (isVideo) {
+                return (
+                  <video
+                    key={trigger.id}
+                    src={trigger.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute object-cover cursor-pointer"
+                    style={{ left: obs.x, top: obs.y, width: obs.w, height: obs.h }}
+                    onClick={() => handleToggleTrigger(trigger)}
+                  />
+                );
+              }
+              return (
+                <img
+                  key={trigger.id}
+                  src={trigger.src}
+                  alt={trigger.phrase}
+                  className="absolute object-cover cursor-pointer"
+                  style={{ left: obs.x, top: obs.y, width: obs.w, height: obs.h }}
+                  onClick={() => handleToggleTrigger(trigger)}
+                />
+              );
+            })}
           </div>
         ) : null}
       </div>

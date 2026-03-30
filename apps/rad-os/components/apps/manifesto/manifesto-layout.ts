@@ -36,13 +36,12 @@ import type { ManifestoElement } from './manifesto-data';
 // Constants
 // ---------------------------------------------------------------------------
 
-const PAGE_MARGIN = 16;
+const PAGE_MARGIN = 32;
 const COL_GAP = 16;                     // gutter between columns
 const COL_RULE_W = 1;                   // column rule width
 const NUM_COLS = 2;
 const BODY_FONT_FAMILY = 'Mondwest';
 const HEADING_FONT_FAMILY = 'Joystix Monospace';
-const IMAGE_PLACEHOLDER_H = 160;
 const MIN_SLOT_WIDTH = 50;
 
 // Padding around rect obstacles when carving text line slots
@@ -74,16 +73,6 @@ function buildColumns(pageWidth: number): Column[] {
 export type PageEl =
   | { kind: 'line'; x: number; y: number; text: string; font: string }
   | { kind: 'heading-line'; x: number; y: number; text: string; font: string }
-  | {
-      kind: 'image';
-      id: string;
-      x: number;
-      y: number;
-      w: number;
-      h: number;
-      alt: string;
-      src: string;
-    }
   | { kind: 'rule'; x: number; y: number; w: number }
   | { kind: 'col-rule'; x: number; y: number; h: number };
 
@@ -359,63 +348,6 @@ export function paginateManifesto(
         }
 
         y += bodyLh * spacing.paragraph;
-        break;
-      }
-
-      case 'image': {
-        const fullPageW = pageWidth - PAGE_MARGIN * 2;
-        const isFull = element.fullWidth === true;
-        const baseW = isFull ? fullPageW : col().width;
-
-        let defaultW = baseW;
-        let defaultH = IMAGE_PLACEHOLDER_H;
-        if (element.naturalWidth && element.naturalHeight) {
-          const aspect = element.naturalWidth / element.naturalHeight;
-          defaultW = Math.min(baseW, element.naturalWidth);
-          defaultH = defaultW / aspect;
-        }
-
-        // Full-width images start a new page if they won't fit
-        if (isFull) {
-          if (y + defaultH > maxY || ci > 0) {
-            startNewPage();
-          }
-        } else if (y + defaultH > maxY) {
-          advanceOrNewPage();
-          if (element.naturalWidth && element.naturalHeight) {
-            const aspect = element.naturalWidth / element.naturalHeight;
-            defaultW = Math.min(col().width, element.naturalWidth);
-            defaultH = defaultW / aspect;
-          }
-        }
-
-        const userObs = imageObstacles.find(
-          (o) => o.id === element.id && o.pageIndex === pageIndex,
-        );
-
-        const imgX = userObs?.x ?? (isFull ? PAGE_MARGIN : col().x);
-        const imgY = userObs?.y ?? y;
-        const imgW = userObs?.w ?? defaultW;
-        const imgHFinal = userObs?.h ?? defaultH;
-
-        currentPage.push({
-          kind: 'image',
-          id: element.id,
-          x: imgX,
-          y: imgY,
-          w: imgW,
-          h: imgHFinal,
-          alt: element.alt,
-          src: element.src,
-        });
-
-        if (!userObs) {
-          y += imgHFinal + bodyLh * spacing.paragraph;
-          // Full-width images reset to column 0 after
-          if (isFull) {
-            ci = 0;
-          }
-        }
         break;
       }
 
