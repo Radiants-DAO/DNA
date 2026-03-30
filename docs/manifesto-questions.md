@@ -23,9 +23,12 @@ Nothing. i’ve been able to do everything i enjoy *for it* → though it may ha
 1. **Your archive shows you stopped tweeting in 2026 because the hands got busier.** But your strongest engagement came from vulnerability and personal narrative. Is the silence a sign of growth or a loss? Has building replaced a form of creative expression you actually need?\
    Growth. I stopped tweeting (though i’ve tweeted quite a bit since → roasting Marc Andreeson for his recent comments, getting thousands of likes, roasting Gary Tan for geting 1-shotted by AI, getting thousands of likes (honestly didn’t expect it). Have been silent because i’ve been in build mode for RadOS.
 
-2. **The voice.md says "systems get anger, people get tenderness — never the reverse."** But in the grief essay, you're angry at people — Malcolm, your father. Has the rule broken? And if it has, does the manifesto need to hold space for the anger that's directed at people you loved, not just systems you despise?
+2. **The voice.md says "systems get anger, people get tenderness — never the reverse."** But in the grief essay, you're angry at people — Malcolm, your father. Has the rule broken? And if it has, does the manifesto need to hold space for the anger that's directed at people you loved, not just systems you despise?\
+   I never showed them that anger. I dealt with it, soothed it, they deserve compassion.
 
-3. **You grew up in a five-generation copper mining family and bought your first crypto to escape poverty.** Are you a leftist who found crypto, or a crypto person with class consciousness? The manifesto tries to be both without declaring either. At some point you have to tell the reader which fire you're lighting.
+3. **You grew up in a five-generation copper mining family and bought your first crypto to escape poverty.** Are you a leftist who found crypto, or a crypto person with class consciousness? The manifesto tries to be both without declaring either. At some point you have to tell the reader which fire you're lighting.\
+   \
+   I didn’t buy my first crypto to escape poverty, whatsoever. My first crypto was litecoin
 
 4. **"Be the alchemist and the substance" is your north star.** But you arrived at it AFTER the grief, after the betrayal, after the friendship ended. Is the phrase a resolution of those losses, or a way of holding them at arm's length? What does the phrase mean when you say it to yourself at 3am versus when you put it on a website?
 
