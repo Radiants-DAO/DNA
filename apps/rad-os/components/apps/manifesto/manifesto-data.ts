@@ -5,7 +5,7 @@
 export type ManifestoElement =
   | { kind: 'heading'; text: string }
   | { kind: 'paragraph'; text: string }
-  | { kind: 'image'; id: string; alt: string; src: string; naturalWidth?: number; naturalHeight?: number }
+  | { kind: 'image'; id: string; alt: string; src: string; naturalWidth?: number; naturalHeight?: number; fullWidth?: boolean }
   | { kind: 'rule' };
 
 // ---------------------------------------------------------------------------
@@ -16,7 +16,6 @@ export type ManifestoElement =
 const IMAGE_DIMENSIONS: Record<string, { w: number; h: number }> = {
   '/manifesto/hopi-dunes.jpg': { w: 1486, h: 2000 },
   '/manifesto/mustang-1967.mp4': { w: 864, h: 432 },
-  '/manifesto/mercedes-1980.jpg': { w: 1280, h: 960 },
 };
 
 let imgCounter = 0;
@@ -54,12 +53,14 @@ export function parseContent(md: string): ManifestoElement[] {
     if (imgMatch) {
       const src = imgMatch[2];
       const dims = IMAGE_DIMENSIONS[src];
+      const isVideo = src.endsWith('.mp4');
       elements.push({
         kind: 'image',
         id: `img-${imgCounter++}`,
         alt: imgMatch[1],
         src,
         ...(dims ? { naturalWidth: dims.w, naturalHeight: dims.h } : {}),
+        ...(isVideo ? { fullWidth: true } : {}),
       });
       continue;
     }
@@ -148,8 +149,6 @@ My mom lost her job at the paper and somewhere else in the world, Satoshi Nakamo
 It was both her mom's and her grandma's first car. I tried to find it a year ago, but to no avail.
 
 My step-dad's solar company was barely off the ground & we were hit smack in the face with The Great Recession, add to this a custody battle with my father and we ended up driving across the entire country to Maine powered by a 1980s Mercedes Benz that ran on vegetable oil. Oil that we filtered into a 5 gallon bucket from KFC.
-
-![Used 1980 Mercedes-Benz 300-Class](/manifesto/mercedes-1980.jpg)
 
 It was a lovely balance of the smell of french-fries putting us down American highways, scant money to pay for diesel, & rejection of foreign wars for a lighter, tastier kind of oily muck.
 

@@ -72,7 +72,7 @@ interface CoverPageProps {
 
 export function CoverPage({ pageWidth, pageHeight }: CoverPageProps) {
   const [fit, setFit] = useState<HeadlineFit | null>(null);
-  const margin = 32;
+  const margin = 16;
   const layoutW = pageWidth - margin * 2;
 
   useEffect(() => {

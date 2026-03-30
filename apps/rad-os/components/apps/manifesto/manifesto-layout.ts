@@ -36,7 +36,7 @@ import type { ManifestoElement } from './manifesto-data';
 // Constants
 // ---------------------------------------------------------------------------
 
-const PAGE_MARGIN = 32;
+const PAGE_MARGIN = 16;
 const COL_GAP = 16;                     // gutter between columns
 const COL_RULE_W = 1;                   // column rule width
 const NUM_COLS = 2;
@@ -363,19 +363,25 @@ export function paginateManifesto(
       }
 
       case 'image': {
-        // Scale image to column width
-        let defaultW = col().width;
+        const fullPageW = pageWidth - PAGE_MARGIN * 2;
+        const isFull = element.fullWidth === true;
+        const baseW = isFull ? fullPageW : col().width;
+
+        let defaultW = baseW;
         let defaultH = IMAGE_PLACEHOLDER_H;
         if (element.naturalWidth && element.naturalHeight) {
           const aspect = element.naturalWidth / element.naturalHeight;
-          defaultW = Math.min(col().width, element.naturalWidth);
+          defaultW = Math.min(baseW, element.naturalWidth);
           defaultH = defaultW / aspect;
         }
 
-        // Image doesn't fit in current column? Advance.
-        if (y + defaultH > maxY) {
+        // Full-width images start a new page if they won't fit
+        if (isFull) {
+          if (y + defaultH > maxY || ci > 0) {
+            startNewPage();
+          }
+        } else if (y + defaultH > maxY) {
           advanceOrNewPage();
-          // Recalculate for new column width (same in 2-col, but future-proof)
           if (element.naturalWidth && element.naturalHeight) {
             const aspect = element.naturalWidth / element.naturalHeight;
             defaultW = Math.min(col().width, element.naturalWidth);
@@ -387,7 +393,7 @@ export function paginateManifesto(
           (o) => o.id === element.id && o.pageIndex === pageIndex,
         );
 
-        const imgX = userObs?.x ?? col().x;
+        const imgX = userObs?.x ?? (isFull ? PAGE_MARGIN : col().x);
         const imgY = userObs?.y ?? y;
         const imgW = userObs?.w ?? defaultW;
         const imgHFinal = userObs?.h ?? defaultH;
@@ -405,6 +411,10 @@ export function paginateManifesto(
 
         if (!userObs) {
           y += imgHFinal + bodyLh * spacing.paragraph;
+          // Full-width images reset to column 0 after
+          if (isFull) {
+            ci = 0;
+          }
         }
         break;
       }

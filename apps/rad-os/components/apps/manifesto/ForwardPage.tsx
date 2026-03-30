@@ -21,7 +21,7 @@ interface LaidOutBlock {
 export function ForwardPage({ pageWidth, pageHeight }: ForwardPageProps) {
   const [blocks, setBlocks] = useState<LaidOutBlock[] | null>(null);
   const [headingBlock, setHeadingBlock] = useState<LaidOutBlock | null>(null);
-  const margin = 32;
+  const margin = 16;
   const layoutW = pageWidth - margin * 2;
   const maxTextW = Math.min(layoutW, 340); // comfortable reading width for centered block
 
