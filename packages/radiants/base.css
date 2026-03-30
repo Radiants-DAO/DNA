@@ -232,6 +232,12 @@ body {
   --btn-tint: var(--color-accent-soft);
 }
 
+[data-slot="button-face"][data-color="transparent"] {
+  --btn-fill: transparent;
+  --btn-text: var(--color-main);
+  --btn-tint: transparent;
+}
+
 /* Disabled — no bg, pressed position, diagonal-right pattern overlay */
 [data-slot="button-root"][disabled],
 [data-slot="button-root"][aria-disabled="true"],
@@ -431,7 +437,8 @@ body {
 }
 
 /* Pattern overlay — uses ::before so the mask only affects the background layer,
-   not the text content. Color uses semantic border token (--color-line). */
+   not the text content. Color uses semantic border token (--color-line).
+   Rest state shows a subtle dust pattern; hover densifies to mist; press to spray-grid. */
 [data-slot="button-face"][data-mode="pattern"]::before {
   content: '';
   position: absolute;
@@ -439,6 +446,12 @@ body {
   z-index: 0;
   border-radius: inherit;
   pointer-events: none;
+  background-color: var(--color-line);
+  -webkit-mask-image: var(--pat-dust);
+  mask-image: var(--pat-dust);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
 }
 
 [data-slot="button-face"][data-mode="pattern"]:hover::before {

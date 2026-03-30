@@ -59,12 +59,12 @@ Quick wins that prevent broken builds and confusing code for incoming devs.
 
 The largest body of work. Refactor before testing. Grouped by component.
 
-### T1a — Button (7 issues)
+### T1a — Button ✅
 
-* [ ] Disabled: reconcile `disabled` prop vs disabled state (prop has correct styles, state does not)
-* [ ] Pattern mode: rest state should show pattern (currently acts like quiet). Fix invisible text/icons in rest + superstate
-* [ ] Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
-* [ ] Add "transparent" tone option
+* [x] Disabled: reconcile `disabled` prop vs disabled state ✅ CSS handles `[disabled]`, `[aria-disabled="true"]`, and `[data-disabled]` identically — all three paths aligned
+* [x] Pattern mode: rest state should show pattern ✅ `::before` now renders `--pat-dust` at rest, densifying to `--pat-mist` on hover and `--pat-spray-grid` on press
+* [x] Add pattern lint rules ✅ `rdna/no-pattern-color-override` warns when pattern-mode buttons or `rdna-pat` elements have hardcoded color overrides that break dark/light mode
+* [x] Add "transparent" tone option ✅ `data-color="transparent"` with `--btn-fill: transparent`, `--btn-text: var(--color-main)` — type, CSS, meta, schema, and Figma contract updated
 
 ### T1c — Toggle / ToggleGroup
 

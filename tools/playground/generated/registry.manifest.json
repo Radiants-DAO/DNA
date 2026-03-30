@@ -525,7 +525,8 @@
               "cream",
               "white",
               "info",
-              "tinted"
+              "tinted",
+              "transparent"
             ],
             "default": "accent",
             "description": "Color tone — controls bg, border, and text color via data-color attribute"

@@ -10,7 +10,7 @@ import { Icon } from '../../../icons/Icon';
 // ============================================================================
 
 type ButtonMode = 'solid' | 'flat' | 'text' | 'pattern';
-type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
+type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted' | 'transparent';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 type ButtonMode = "solid" | "flat" | "text" | "pattern";
-type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
+type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted" | "transparent";
 type ButtonSize = "sm" | "md" | "lg" | "xl";
 type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
 
@@ -39,7 +39,7 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
     },
     tone: {
       type: "enum",
-      values: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted"],
+      values: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted", "transparent"],
       default: "accent",
       description:
         "Color tone — controls bg, border, and text color via data-color attribute",
