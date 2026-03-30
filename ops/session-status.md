@@ -1,35 +1,44 @@
-## Session Status — 2026-03-30 02:40
+## Session Status — 2026-03-30 09:30
 
-**Plan:** docs/plans/2026-03-30-appwindow-island-layouts.md
-**Branch:** feat/appwindow-taskbar-api (worktree: DNA-taskbar-api)
+**Plan:** Cherry-pick from feat/appwindow-taskbar-api (no plan doc — branch was messy, selective port)
+**Branch:** main
 
 ### Completed
-[7 earlier tasks completed — core API, migrations, deprecation, meta]
-- [x] Island defaults to standard CSS corners, pixel opt-in (commit: 69460937)
-- [x] Manifesto width fix — w-full inside Tabs sidebar (commit: 08a44b53)
-- [x] BrandAssets DOM match — padding="none", scroll, overflow-x-hidden (commit: b10d0059)
-- [x] GoodNews set to layout="bleed" (commit: b10d0059)
-- [x] Manifesto: remove Tabs sidebar styling, sidebar Island corners="none" (commit: 77aa1f4e)
+- [x] Analyzed taskbar-api branch: 76 files, identified cherry-pick vs skip (research)
+- [x] Compared pretext patterns across main / pretext-migration / taskbar-api (research)
+- [x] AppWindow compound API — Nav, Toolbar, Content, Island, Banner (commit: 7aafd71c)
+- [x] App migrations — About, BrandAssets, RadRadio, GoodNews, Links, PatternPlayground, typography layouts (commit: bab0f509)
+- [x] Restored RadiantsStudio Figma-matching redesign overwritten by taskbar-api copy (commit: af5cc49d)
+- [x] Team review (3 agents): API architecture, app migrations, tests & contracts
 
 ### In Progress
-- [ ] ~Codify visual QA lessons into API rules~ — meta needs corners docs, padding default guidance, sidebar nav pattern
+- [ ] ~Review findings triage~ — fixes identified but not yet applied
 
-### Remaining
-- [ ] Update Island default padding to match BrandAssets gutter (user confirmed BrandAssets padding = correct default ≈ gap between islands ≈ resize handle size)
-- [ ] Update AppWindow.meta.ts with corners='none', padding guidance, layout selection rules
-- [ ] Update plan doc API reference to match final implementation
-- [ ] RadiantsStudio: empty space below bottom tab bar (layout refinement)
-- [ ] Dark mode visual sweep
+### Remaining (2 tasks)
+- [ ] Fix Island padding default mismatch (meta says 'sm', impl says 'lg')
+- [ ] Fix `fill-bucket` icon → `design-color-bucket` in RadiantsStudioApp (if still present after restore)
+
+### Review Findings (from 3-agent team review)
+**Warnings (address before merge):**
+- `useEffect` with no deps on Nav/Toolbar — re-registers every render (fragile closure coupling)
+- Mobile presentation silently swallows `navContent`
+- ResizeObserver missing defensive cleanup on unmount
+- No test for Nav `onChange` callback
+
+**Nits (track, don't block):**
+- `Island.width` prop name suggests CSS value, takes Tailwind class
+- `"AppWindow"` listed in own subcomponents array
+- Legacy sub-components not marked deprecated in meta
 
 ### Next Action
-> Align Island default padding with BrandAssets gutter size, then codify all rules in meta.
+> Fix the Island padding default mismatch in meta, then visually verify all apps in browser.
 
 ### What to Test
-- [ ] BrandAssetsApp: pixel corners, content fills card, no extra padding, scroll works
-- [ ] ManifestoApp: no pixel corners on layout wrapper, sidebar nav borderless, tab switching
-- [ ] GoodNewsApp: full bleed, no gutters around editorial content
-- [ ] AboutApp: standard rounded corners with border, content scrolls
-- [ ] RadRadioApp: full bleed media player, no visual change from main
+- [ ] RadiantsStudio: verify Figma-matching redesign renders (was overwritten, now restored)
+- [ ] BrandAssetsApp: capsule nav tabs in titlebar, tab switching, scroll
+- [ ] AboutApp: content in Island with padding, scroll works
+- [ ] RadRadioApp: bleed layout, audio plays, video visible
+- [ ] AppWindow compound API: toolbar renders between titlebar and content
 
 ### Team Status
 No active agents
