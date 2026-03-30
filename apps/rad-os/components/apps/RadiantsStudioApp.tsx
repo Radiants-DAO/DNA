@@ -1,12 +1,9 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { AppWindow, Button, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { AppWindow, Button, Input, Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
-import {
-  mockSubmissions,
-  formatCreatedAt,
-} from '@/lib/mockData/studioSubmissions';
+import { mockSubmissions } from '@/lib/mockData/studioSubmissions';
 import { useMockDataStore } from '@/store';
 import { type AppProps } from '@/lib/apps';
 
@@ -15,7 +12,7 @@ import { type AppProps } from '@/lib/apps';
 // ============================================================================
 
 const CANVAS_SIZE = 32;
-const PIXEL_SIZE = 10; // Each pixel rendered at 10x10 for visibility
+const PIXEL_SIZE = 10;
 const COLORS = {
   cream: '#FEF8E2',
   yellow: '#FCE184',
@@ -24,98 +21,7 @@ const COLORS = {
 
 type ColorKey = keyof typeof COLORS;
 type Tool = 'pencil' | 'fill';
-
-// ============================================================================
-// Tool Button Component
-// ============================================================================
-
-interface ToolButtonProps {
-  active?: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-  className?: string;
-}
-
-function ToolButton({ active = false, onClick, children, className = '' }: ToolButtonProps) {
-  return (
-    <Button
-      quiet
-      size="sm"
-      onClick={onClick}
-      className={`
-        size-8
-        flex items-center justify-center
-        font-joystix text-sm text-main
-        bg-page pixel-rounded-sm
-        hover:bg-hover
-        ${active ? 'bg-accent' : ''}
-        ${className}
-      `}
-    >
-      {children}
-    </Button>
-  );
-}
-
-// ============================================================================
-// Color Swatch Component
-// ============================================================================
-
-interface ColorSwatchProps {
-  color: string;
-  active: boolean;
-  onClick: () => void;
-}
-
-function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
-  return (
-    <Button
-      quiet
-      size="sm"
-      onClick={onClick}
-      className={`
-        size-8
-        pixel-rounded-sm
-        transition-transform
-        ${active ? 'ring-2 ring-line ring-offset-1' : ''}
-      `}
-      style={{ backgroundColor: color }}
-    />
-  );
-}
-
-// ============================================================================
-// Action Button Component
-// ============================================================================
-
-interface ActionButtonProps {
-  onClick: () => void;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-  primary?: boolean;
-  className?: string;
-}
-
-function ActionButton({ onClick, icon, children, primary = false, className = '' }: ActionButtonProps) {
-  return (
-    <Button
-      quiet={!primary}
-      size="sm"
-      onClick={onClick}
-      className={`
-        h-9 px-2
-        flex items-center gap-1.5
-        font-joystix text-sm text-main
-        pixel-rounded-sm
-        ${primary ? 'bg-accent' : 'bg-page hover:bg-hover'}
-        ${className}
-      `}
-    >
-      {icon}
-      {children}
-    </Button>
-  );
-}
+type CreationStep = 'draw' | 'metadata' | 'confirmed';
 
 // ============================================================================
 // Pixel Art Creation Tab
@@ -130,15 +36,16 @@ function PixelArtCreation() {
   const [currentTool, setCurrentTool] = useState<Tool>('pencil');
   const [isDrawing, setIsDrawing] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
+  const [step, setStep] = useState<CreationStep>('draw');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
-  // Render canvas whenever pixels change
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Draw pixels
     for (let y = 0; y < CANVAS_SIZE; y++) {
       for (let x = 0; x < CANVAS_SIZE; x++) {
         ctx.fillStyle = COLORS[pixels[y][x]];
@@ -146,7 +53,6 @@ function PixelArtCreation() {
       }
     }
 
-    // Draw grid lines if enabled
     if (showGrid) {
       ctx.strokeStyle = 'rgba(0,0,0,0.15)';
       ctx.lineWidth = 0.5;
@@ -178,19 +84,15 @@ function PixelArtCreation() {
   const fillBucket = useCallback((startX: number, startY: number, newColor: ColorKey) => {
     const targetColor = pixels[startY][startX];
     if (targetColor === newColor) return;
-
     const newPixels = pixels.map(row => [...row]);
     const stack: [number, number][] = [[startX, startY]];
-
     while (stack.length > 0) {
       const [x, y] = stack.pop()!;
       if (x < 0 || x >= CANVAS_SIZE || y < 0 || y >= CANVAS_SIZE) continue;
       if (newPixels[y][x] !== targetColor) continue;
-
       newPixels[y][x] = newColor;
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
-
     setPixels(newPixels);
   }, [pixels]);
 
@@ -239,59 +141,136 @@ function PixelArtCreation() {
   }, []);
 
   const exportCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Create a clean export canvas without grid
     const exportCanvas = document.createElement('canvas');
     exportCanvas.width = CANVAS_SIZE;
     exportCanvas.height = CANVAS_SIZE;
     const ctx = exportCanvas.getContext('2d');
     if (!ctx) return;
-
     for (let y = 0; y < CANVAS_SIZE; y++) {
       for (let x = 0; x < CANVAS_SIZE; x++) {
         ctx.fillStyle = COLORS[pixels[y][x]];
         ctx.fillRect(x, y, 1, 1);
       }
     }
-
     const link = document.createElement('a');
     link.download = 'radiant-pixel-art.png';
     link.href = exportCanvas.toDataURL('image/png');
     link.click();
   }, [pixels]);
 
+  const handleSubmit = useCallback(() => {
+    setStep('confirmed');
+    setName('');
+    setDescription('');
+  }, []);
+
+  const handleContinue = useCallback(() => {
+    setStep('draw');
+    clearCanvas();
+  }, [clearCanvas]);
+
+  // ── Submission Confirmed ──────────────────────────────────────────────
+  if (step === 'confirmed') {
+    return (
+      <div className="flex flex-col items-center justify-center gap-6 p-6 bg-accent">
+        <Icon name="checkmark" size={48} />
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h3 className="font-joystix text-lg">SUBMISSION CONFIRMED</h3>
+          <p className="font-body text-base text-main leading-snug max-w-72">
+            Congrats, your artwork has been submitted and will now be available
+            to vote on by the community.
+          </p>
+        </div>
+        <Button
+          mode="flat"
+          tone="accent"
+          size="sm"
+          onClick={handleContinue}
+          className="font-joystix"
+        >
+          Continue
+        </Button>
+      </div>
+    );
+  }
+
+  // ── NFT Metadata Step ─────────────────────────────────────────────────
+  if (step === 'metadata') {
+    return (
+      <div className="flex flex-col gap-2 p-2">
+        {/* Art Preview */}
+        <div className="border border-line rounded-sm overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_SIZE * PIXEL_SIZE}
+            height={CANVAS_SIZE * PIXEL_SIZE}
+            className="w-full"
+            style={{ imageRendering: 'pixelated', aspectRatio: '1' }}
+          />
+        </div>
+
+        {/* Metadata Form */}
+        <div className="bg-card border border-line rounded-sm flex flex-col gap-4 items-center px-2 pt-4 pb-2">
+          <h3 className="font-joystix text-base text-main">ADD NFT METADATA</h3>
+          <div className="flex flex-col gap-2 w-full">
+            <Input
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              size="md"
+              fullWidth
+              className="font-joystix"
+            />
+            <Input
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              size="md"
+              fullWidth
+              className="font-joystix"
+            />
+            <Button
+              mode="solid"
+              tone="accent"
+              size="md"
+              onClick={handleSubmit}
+              className="w-full font-joystix gap-2"
+              icon={<Icon name="paper-plane" size={16} />}
+            >
+              SUBMIT NFT
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Drawing Canvas Step ───────────────────────────────────────────────
   return (
-    <div className="flex flex-col gap-2 p-6">
+    <div className="flex flex-col gap-2 p-4 pt-6">
       {/* Top Controls */}
       <div className="flex items-center justify-between pr-10">
         <div className="flex items-center gap-3">
-          <Switch
-            checked={showGrid}
-            onChange={setShowGrid}
-            size="sm"
-          />
-          <span className="font-joystix text-sm text-main">SHOW GRID</span>
+          <Switch checked={showGrid} onChange={setShowGrid} size="sm" />
+          <span className="font-joystix text-xs text-main">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
           <Button quiet size="sm" iconOnly aria-label="Previous">
-            <Icon name="chevron-left" size={24} />
+            <Icon name="chevron-left" size={20} />
           </Button>
           <Button quiet size="sm" iconOnly aria-label="Next">
-            <Icon name="chevron-right" size={24} />
+            <Icon name="chevron-right" size={20} />
           </Button>
         </div>
       </div>
 
       {/* Canvas + Tools Row */}
       <div className="flex items-start justify-center gap-2">
-        {/* Canvas */}
         <canvas
           ref={canvasRef}
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
-          className="pixel-rounded-sm cursor-crosshair bg-accent"
+          className="rounded-sm border border-line cursor-crosshair bg-accent"
           style={{ width: 350, height: 350, touchAction: 'none' }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -301,34 +280,75 @@ function PixelArtCreation() {
 
         {/* Tools Sidebar */}
         <div className="flex flex-col justify-between h-[350px]">
-          {/* Top Tools */}
           <div className="flex flex-col gap-2">
-            {/* Fill Bucket */}
-            <ToolButton
+            {/* Fill Bucket Tool */}
+            <Button
+              quiet
+              size="sm"
+              iconOnly
               active={currentTool === 'fill'}
               onClick={() => setCurrentTool(currentTool === 'fill' ? 'pencil' : 'fill')}
+              aria-label="Fill bucket"
+              className="size-8"
             >
-              <Icon name="fill-bucket" size={20} />
-            </ToolButton>
+              <Icon name="design-color-bucket" size={24} />
+            </Button>
 
             {/* Color Swatches */}
             <div className="flex flex-col gap-1">
               {(Object.keys(COLORS) as ColorKey[]).map((colorKey) => (
-                <ColorSwatch
+                <Button
                   key={colorKey}
-                  color={COLORS[colorKey]}
-                  active={currentColor === colorKey}
+                  quiet
+                  size="sm"
+                  iconOnly
                   onClick={() => setCurrentColor(colorKey)}
-                />
+                  active={currentColor === colorKey}
+                  className={`
+                    size-8 rounded-sm
+                    ${currentColor === colorKey ? 'ring-2 ring-main ring-offset-1' : ''}
+                  `}
+                  style={{ backgroundColor: COLORS[colorKey] }}
+                  aria-label={`Color: ${colorKey}`}
+                >
+                  <span className="sr-only">{colorKey}</span>
+                </Button>
               ))}
             </div>
           </div>
 
-          {/* Bottom Tools */}
+          {/* Bottom Tools: Mirror / Flip / Clear */}
           <div className="flex flex-col gap-1">
-            <ToolButton onClick={mirrorHorizontal}>M</ToolButton>
-            <ToolButton onClick={flipVertical}>F</ToolButton>
-            <ToolButton onClick={clearCanvas}>C</ToolButton>
+            <Button
+              quiet
+              size="sm"
+              iconOnly
+              onClick={mirrorHorizontal}
+              aria-label="Mirror horizontal"
+              className="size-8 font-joystix text-sm"
+            >
+              M
+            </Button>
+            <Button
+              quiet
+              size="sm"
+              iconOnly
+              onClick={flipVertical}
+              aria-label="Flip vertical"
+              className="size-8 font-joystix text-sm"
+            >
+              F
+            </Button>
+            <Button
+              quiet
+              size="sm"
+              iconOnly
+              onClick={clearCanvas}
+              aria-label="Clear canvas"
+              className="size-8 font-joystix text-sm"
+            >
+              C
+            </Button>
           </div>
         </div>
       </div>
@@ -336,16 +356,89 @@ function PixelArtCreation() {
       {/* Bottom Action Bar */}
       <div className="flex items-start justify-between pr-10">
         <div className="flex items-center gap-2">
-          <ActionButton onClick={clearCanvas} icon={<Icon name="trash" size={20} />}>
+          <Button
+            mode="flat"
+            tone="neutral"
+            size="sm"
+            onClick={clearCanvas}
+            icon={<Icon name="trash" size={16} />}
+            className="font-joystix"
+          >
             Clear
-          </ActionButton>
-          <ActionButton onClick={exportCanvas} icon={<Icon name="save" size={20} />}>
+          </Button>
+          <Button
+            mode="flat"
+            tone="neutral"
+            size="sm"
+            onClick={exportCanvas}
+            icon={<Icon name="save" size={16} />}
+            className="font-joystix"
+          >
             Save
-          </ActionButton>
+          </Button>
         </div>
-        <ActionButton onClick={() => {}} primary>
+        <Button
+          mode="solid"
+          tone="accent"
+          size="sm"
+          onClick={() => setStep('metadata')}
+          className="font-joystix"
+        >
           NEXT
-        </ActionButton>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Voting Card Component
+// ============================================================================
+
+interface VoteCardProps {
+  name: string;
+  creator: string;
+  image: string;
+  upvotes: number;
+  downvotes: number;
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+function VoteCard({ name, creator, image, upvotes, downvotes, style, className = '' }: VoteCardProps) {
+  return (
+    <div
+      className={`bg-card border border-line rounded-sm overflow-hidden flex flex-col items-center justify-end ${className}`}
+      style={style}
+    >
+      {/* Artwork */}
+      <div className="border-b border-line w-full aspect-square">
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-full object-cover"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
+
+      {/* Info Bar */}
+      <div className="flex items-end justify-between w-full px-4 py-3 bg-page rounded-md">
+        <div className="flex flex-col gap-2">
+          <span className="font-joystix text-sm text-main">{name.toUpperCase()}</span>
+          <span className="inline-flex bg-accent px-2 py-1 rounded-md font-body text-sm text-main w-fit">
+            by {creator}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <Icon name="hand-dislike" size={16} />
+            <span className="font-joystix text-xs text-main">{downvotes}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Icon name="hand-love-sign" size={16} />
+            <span className="font-joystix text-xs text-main">{upvotes}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -358,27 +451,32 @@ function PixelArtCreation() {
 function VotingSystem() {
   const { studioSubmissions, updateSubmissionVotes } = useMockDataStore();
   const [votedIds, setVotedIds] = useState<Set<string>>(new Set());
+  const [voteAnimation, setVoteAnimation] = useState<'bad' | 'rad' | null>(null);
 
-  // Use store submissions or fall back to mock data
   const submissions = studioSubmissions.length > 0 ? studioSubmissions : mockSubmissions;
+  const unvoted = submissions.filter(s => !votedIds.has(s.id));
+  const currentSubmission = unvoted[0] ?? null;
 
-  // Derived state — first unvoted submission
-  const currentSubmission = submissions.find(s => !votedIds.has(s.id)) ?? null;
-
-  const handleVote = useCallback((isUpvote: boolean) => {
+  const handleVote = useCallback((isRad: boolean) => {
     if (!currentSubmission) return;
 
-    const update = isUpvote
-      ? { upvotes: currentSubmission.upvotes + 1 }
-      : { downvotes: currentSubmission.downvotes + 1 };
-    updateSubmissionVotes(currentSubmission.id, update);
-    setVotedIds(prev => new Set([...prev, currentSubmission.id]));
+    setVoteAnimation(isRad ? 'rad' : 'bad');
+
+    setTimeout(() => {
+      const update = isRad
+        ? { upvotes: currentSubmission.upvotes + 1 }
+        : { downvotes: currentSubmission.downvotes + 1 };
+      updateSubmissionVotes(currentSubmission.id, update);
+      setVotedIds(prev => new Set([...prev, currentSubmission.id]));
+      setVoteAnimation(null);
+    }, 600);
   }, [currentSubmission, updateSubmissionVotes]);
 
   if (!currentSubmission) {
     return (
-      <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center">
-        <p>
+      <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center gap-4">
+        <Icon name="checkmark" size={48} />
+        <p className="font-joystix text-sm text-main">
           You&apos;ve voted on all submissions!
         </p>
       </div>
@@ -386,49 +484,148 @@ function VotingSystem() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 p-6">
-      {/* Submission Preview */}
-      <div className="w-64 h-64 bg-accent pixel-rounded-sm">
-        <img
-          src={currentSubmission.image}
-          alt={currentSubmission.name}
-          className="w-full h-full object-cover"
-          style={{ imageRendering: 'pixelated' }}
-        />
-      </div>
+    <div className="flex flex-col items-center gap-4 p-4">
+      {/* Card Stack Area */}
+      <div className="relative w-[342px] h-[420px] mt-8">
+        {/* Background cards (stack effect) */}
+        {unvoted.slice(1, 3).reverse().map((sub, i) => {
+          const offset = (2 - i) * 12;
+          return (
+            <div
+              key={sub.id}
+              className="absolute inset-0 bg-card border border-line rounded-sm"
+              style={{
+                top: offset,
+                transform: `scale(${0.92 + i * 0.04})`,
+                opacity: 0.7 - (1 - i) * 0.2,
+                zIndex: i,
+              }}
+            />
+          );
+        })}
 
-      {/* Submission Info */}
-      <div className="text-center">
-        <h3 className="mb-1">
-          {currentSubmission.name}
-        </h3>
-        <p>
-          by {currentSubmission.creator} • {formatCreatedAt(currentSubmission.createdAt)}
-        </p>
+        {/* Active Card */}
+        <div
+          className="absolute inset-0 transition-transform duration-500 ease-out"
+          style={{
+            zIndex: 10,
+            transform: voteAnimation === 'rad'
+              ? 'rotate(8deg) translateX(60px)'
+              : voteAnimation === 'bad'
+              ? 'rotate(-6deg) translateX(-60px)'
+              : 'none',
+          }}
+        >
+          <VoteCard
+            name={currentSubmission.name}
+            creator={currentSubmission.creator}
+            image={currentSubmission.image}
+            upvotes={currentSubmission.upvotes}
+            downvotes={currentSubmission.downvotes}
+            className="w-full h-full"
+          />
+
+          {/* Vote Overlay */}
+          {voteAnimation && (
+            <div className="absolute inset-0 top-0 h-[calc(100%-60px)] backdrop-blur-sm bg-inv/60 flex flex-col items-center justify-center gap-4 rounded-t-sm">
+              <Icon
+                name={voteAnimation === 'rad' ? 'hand-love-sign' : 'hand-dislike'}
+                size={64}
+                className="text-accent"
+              />
+              <span className="font-joystix text-2xl text-card drop-shadow-glow">
+                {voteAnimation === 'rad' ? 'RAD' : 'BAD'}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Vote Buttons */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 pb-4">
         <Button
           quiet
           size="lg"
           onClick={() => handleVote(false)}
-          className="size-16 flex items-center justify-center text-3xl bg-page pixel-rounded-sm hover:bg-hover"
+          className={`
+            flex flex-col items-center justify-center gap-2
+            w-[70px] h-[88px] rounded-sm
+            ${voteAnimation === 'bad' ? 'bg-accent' : 'bg-card'}
+          `}
         >
-          👎
+          <Icon name="hand-dislike" size={32} />
+          <span className="font-joystix text-sm text-main drop-shadow-glow">BAD</span>
         </Button>
         <Button
+          quiet
           size="lg"
           onClick={() => handleVote(true)}
-          className="size-16 flex items-center justify-center text-3xl bg-accent pixel-rounded-sm hover:brightness-105"
+          className={`
+            flex flex-col items-center justify-center gap-2
+            w-[70px] h-[88px] rounded-sm
+            ${voteAnimation === 'rad' ? 'bg-accent' : 'bg-card'}
+          `}
         >
-          👍
+          <Icon name="hand-love-sign" size={32} />
+          <span className="font-joystix text-sm text-main drop-shadow-glow">RAD</span>
         </Button>
       </div>
+    </div>
+  );
+}
 
-      <p>
-        {submissions.length - votedIds.size} submissions remaining
-      </p>
+// ============================================================================
+// Leaderboard Entry Component
+// ============================================================================
+
+interface LeaderboardEntryProps {
+  rank: number;
+  name: string;
+  creator: string;
+  image: string;
+  upvotes: number;
+  downvotes: number;
+  isFirst: boolean;
+}
+
+function LeaderboardEntry({ rank: _rank, name, creator, image, upvotes, downvotes, isFirst }: LeaderboardEntryProps) {
+  return (
+    <div
+      className={`
+        flex items-center justify-between p-1 rounded-sm border border-line
+        ${isFirst ? 'bg-card shadow-glow' : 'bg-page'}
+      `}
+    >
+      {/* Left: Thumbnail + Info */}
+      <div className="flex items-center gap-2.5">
+        <div className="size-12 rounded-sm border border-line overflow-hidden shrink-0">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover"
+            style={{ imageRendering: 'pixelated' }}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 h-4">
+            <span className="font-joystix text-sm text-main">{name}</span>
+            {isFirst && <Icon name="interface-essential-crown" size={16} />}
+          </div>
+          <span className="font-body text-sm text-main">by {creator}</span>
+        </div>
+      </div>
+
+      {/* Right: Vote Counts */}
+      <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-1">
+          <Icon name="hand-dislike" size={16} />
+          <span className="font-joystix text-xs text-main">{downvotes}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Icon name="hand-love-sign" size={16} />
+          <span className="font-joystix text-xs text-main">{upvotes.toLocaleString()}</span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -443,43 +640,25 @@ function Leaderboard() {
   const sortedByVotes = [...submissions].sort((a, b) => b.netVotes - a.netVotes);
 
   return (
-    <div className="flex flex-col gap-3 p-4">
-      <h3>Top Submissions</h3>
+    <div className="flex flex-col gap-1 py-2">
+      {sortedByVotes.map((sub, index) => (
+        <LeaderboardEntry
+          key={sub.id}
+          rank={index + 1}
+          name={sub.name}
+          creator={sub.creator}
+          image={sub.image}
+          upvotes={sub.upvotes}
+          downvotes={sub.downvotes}
+          isFirst={index === 0}
+        />
+      ))}
 
-      <div className="flex flex-col gap-2">
-        {sortedByVotes.slice(0, 10).map((sub, index) => (
-          <div
-            key={sub.id}
-            className="flex items-center gap-3 p-2 bg-page pixel-rounded-sm"
-          >
-            <span className="font-joystix text-sm text-mute w-6">
-              #{index + 1}
-            </span>
-            <div className="w-10 h-10 bg-accent pixel-rounded-sm">
-              <img
-                src={sub.image}
-                alt={sub.name}
-                className="w-full h-full object-cover"
-                style={{ imageRendering: 'pixelated' }}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="truncate">{sub.name}</p>
-              <p>{sub.creator}</p>
-            </div>
-            <div className="text-right">
-              <p>{sub.netVotes}</p>
-              <p>votes</p>
-            </div>
-          </div>
-        ))}
-
-        {sortedByVotes.length === 0 && (
-          <div className="text-center py-8">
-            <p>No submissions yet.</p>
-          </div>
-        )}
-      </div>
+      {sortedByVotes.length === 0 && (
+        <div className="text-center py-8">
+          <p className="font-joystix text-sm text-mute">No submissions yet.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -489,31 +668,32 @@ function Leaderboard() {
 // ============================================================================
 
 export function RadiantsStudioApp({ windowId: _windowId }: AppProps) {
-  const tabs = useTabsState({ defaultValue: 'creation', mode: 'pill', layout: 'bottom-tabs' });
-
-  const renderPanel = (value: string, children: React.ReactNode) => (
-    <Tabs.Content value={value} className="overflow-auto">
-      {children}
-    </Tabs.Content>
-  );
+  const tabs = useTabsState({ defaultValue: 'creation', mode: 'pill', layout: 'default' });
 
   return (
-    <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
-      <Tabs.Frame className="h-full flex flex-col">
-        <AppWindow.Content>
-          <AppWindow.Island>
-            {renderPanel('creation', <PixelArtCreation />)}
-            {renderPanel('voting', <VotingSystem />)}
-            {renderPanel('leaderboard', <Leaderboard />)}
-          </AppWindow.Island>
-        </AppWindow.Content>
-        <Tabs.List className="mt-auto">
-          <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
-          <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
-          <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
-        </Tabs.List>
-      </Tabs.Frame>
-    </Tabs.Provider>
+    <AppWindow.Content layout="bleed">
+      <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
+        <Tabs.Frame className="h-full flex flex-col">
+          {/* Top Tab Bar */}
+          <Tabs.List className="px-2 pt-1 shrink-0">
+            <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
+            <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
+            <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
+          </Tabs.List>
+
+          {/* Tab Panels */}
+          <Tabs.Content value="creation" className="flex-1 overflow-auto">
+            <PixelArtCreation />
+          </Tabs.Content>
+          <Tabs.Content value="voting" className="flex-1 overflow-auto">
+            <VotingSystem />
+          </Tabs.Content>
+          <Tabs.Content value="leaderboard" className="flex-1 overflow-auto px-2">
+            <Leaderboard />
+          </Tabs.Content>
+        </Tabs.Frame>
+      </Tabs.Provider>
+    </AppWindow.Content>
   );
 }
 

@@ -120,7 +120,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     windowTitle: 'Radiants Studio',
     windowIcon: <Icon name="code-window" large />,
     component: RadiantsStudioApp,
-    defaultSize: 'lg',
+    defaultSize: { width: '520px', height: '680px' },
     resizable: true,
     contentPadding: false,
     desktopVisible: true,
