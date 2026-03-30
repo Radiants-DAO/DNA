@@ -73,6 +73,7 @@ function buildColumns(pageWidth: number): Column[] {
 export type PageEl =
   | { kind: 'line'; x: number; y: number; text: string; font: string }
   | { kind: 'heading-line'; x: number; y: number; text: string; font: string }
+  | { kind: 'section-title'; text: string; font: string }
   | { kind: 'rule'; x: number; y: number; w: number }
   | { kind: 'col-rule'; x: number; y: number; h: number };
 
@@ -266,6 +267,25 @@ export function paginateManifesto(
     const element = elements[ei]!;
 
     switch (element.kind) {
+      case 'section-title': {
+        // Flush any current content as a page
+        if (currentPage.length > 0) {
+          currentPage.push({ kind: 'col-rule', x: ruleX, y: PAGE_MARGIN, h: maxY - PAGE_MARGIN });
+          pages.push({ els: currentPage });
+          currentPage = [];
+          pageIndex++;
+        }
+
+        // Create a dedicated title-only page (centered by the renderer)
+        currentPage = [{ kind: 'section-title', text: element.text, font: headingFont }];
+        pages.push({ els: currentPage });
+        currentPage = [];
+        pageIndex++;
+        ci = 0;
+        y = PAGE_MARGIN;
+        break;
+      }
+
       case 'heading': {
         const headingSpace =
           bodyLh * spacing.headingBefore +

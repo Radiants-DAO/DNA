@@ -147,6 +147,10 @@ function renderElement(
         </div>
       );
 
+    case 'section-title':
+      // Rendered as a full centered page — see page-level rendering below
+      return null;
+
     case 'rule':
       return (
         <div
@@ -313,6 +317,19 @@ export function ManifestoBook() {
           <CoverPage pageWidth={pageWidth} pageHeight={pageHeight} />
         ) : currentPage === 1 ? (
           <ForwardPage pageWidth={pageWidth} pageHeight={pageHeight} />
+        ) : contentPage && contentPage.els.length === 1 && contentPage.els[0]!.kind === 'section-title' ? (
+          // Section title page — centered like cover/forward
+          <div
+            className="relative bg-card flex items-center justify-center"
+            style={{ width: pageWidth, height: pageHeight }}
+          >
+            <div
+              className="text-head text-center px-8"
+              style={{ font: contentPage.els[0]!.font }}
+            >
+              {contentPage.els[0]!.text}
+            </div>
+          </div>
         ) : contentPage ? (
           <div
             className="relative bg-card"

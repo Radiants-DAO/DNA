@@ -12,6 +12,7 @@ export interface ImageTrigger {
 
 export type ManifestoElement =
   | { kind: 'heading'; text: string }
+  | { kind: 'section-title'; text: string }
   | { kind: 'paragraph'; text: string; triggers?: ImageTrigger[] }
   | { kind: 'rule' };
 
@@ -52,7 +53,10 @@ export function parseContent(md: string): ManifestoElement[] {
     // Headings (## or ###)
     const headingMatch = block.match(/^#{2,3}\s+(.+)$/);
     if (headingMatch) {
-      elements.push({ kind: 'heading', text: headingMatch[1].trim() });
+      const text = headingMatch[1].trim();
+      // Numbered sections (I., II., III.) get their own dedicated page
+      const isSectionTitle = /^[IVX]+\.\s/.test(text);
+      elements.push({ kind: isSectionTitle ? 'section-title' : 'heading', text });
       continue;
     }
 
