@@ -1,5 +1,6 @@
 'use client';
 import { Button, Slider } from '@rdna/radiants/components/core';
+import { AlignLeft, AlignCenter, AlignRight } from '@rdna/radiants/icons';
 import { type FontEntry, type TemplateId, TEMPLATES } from './typography-data';
 
 interface PlaygroundControlsProps {
@@ -21,23 +22,6 @@ interface PlaygroundControlsProps {
   glow: boolean;
   onGlowChange: (v: boolean) => void;
 }
-
-/* Inline align icons — no align icons in the RDNA icon set */
-const AlignLeftIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="15" y2="12" /><line x1="3" y1="18" x2="18" y2="18" />
-  </svg>
-);
-const AlignCenterIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="3" y1="6" x2="21" y2="6" /><line x1="6" y1="12" x2="18" y2="12" /><line x1="4" y1="18" x2="20" y2="18" />
-  </svg>
-);
-const AlignRightIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="3" y1="6" x2="21" y2="6" /><line x1="9" y1="12" x2="21" y2="12" /><line x1="6" y1="18" x2="21" y2="18" />
-  </svg>
-);
 
 export function PlaygroundControls({
   font,
@@ -154,13 +138,13 @@ export function PlaygroundControls({
           </div>
           <div className="flex gap-1">
             <Button quiet={align !== 'left'} size="sm" compact iconOnly onClick={() => onAlignChange('left')} aria-label="Align left">
-              <AlignLeftIcon />
+              <AlignLeft size={12} />
             </Button>
             <Button quiet={align !== 'center'} size="sm" compact iconOnly onClick={() => onAlignChange('center')} aria-label="Align center">
-              <AlignCenterIcon />
+              <AlignCenter size={12} />
             </Button>
             <Button quiet={align !== 'right'} size="sm" compact iconOnly onClick={() => onAlignChange('right')} aria-label="Align right">
-              <AlignRightIcon />
+              <AlignRight size={12} />
             </Button>
           </div>
         </div>
