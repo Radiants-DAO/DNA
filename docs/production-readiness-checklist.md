@@ -126,7 +126,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 **CountdownTimer:**
 
-* [ ] Fix type mismatch: schema says string, implementation accepts number|Date
+* [x] Fix type mismatch: schema says string, implementation accepts number|Date ✅ Schema updated to accept number (timestamp) or date-time string
 
 ### T1f-swarm — Newly Discovered UI Issues
 
