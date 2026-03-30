@@ -165,6 +165,40 @@ describe('Tabs', () => {
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
   });
 
+  // ── Chrome mode ─────────────────────────────────────────────
+
+  describe('mode="chrome"', () => {
+    it('sets data-mode="chrome" on root', () => {
+      const { container } = render(
+        <Tabs defaultValue="a" mode="chrome">
+          <Tabs.List>
+            <Tabs.Trigger value="a" icon={<svg data-testid="icon-a" />}>Tab A</Tabs.Trigger>
+            <Tabs.Trigger value="b" icon={<svg data-testid="icon-b" />}>Tab B</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="a">Content A</Tabs.Content>
+        </Tabs>,
+      );
+      expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'chrome');
+    });
+
+    it('shows icon always, shows text only when active', () => {
+      render(
+        <Tabs defaultValue="a" mode="chrome">
+          <Tabs.List>
+            <Tabs.Trigger value="a" icon={<svg data-testid="icon-a" />}>Active</Tabs.Trigger>
+            <Tabs.Trigger value="b" icon={<svg data-testid="icon-b" />}>Inactive</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="a">Content</Tabs.Content>
+        </Tabs>,
+      );
+      expect(screen.getByTestId('icon-a')).toBeInTheDocument();
+      expect(screen.getByTestId('icon-b')).toBeInTheDocument();
+      expect(screen.getByText('Active')).toBeInTheDocument();
+      // Inactive text should not be rendered (icon-expand-on-active pattern)
+      expect(screen.queryByText('Inactive')).not.toBeInTheDocument();
+    });
+  });
+
   // ── Backward compat: useTabsState still exported ───────────
 
   it('exports useTabsState for backward compatibility', async () => {
