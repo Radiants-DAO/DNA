@@ -66,10 +66,6 @@ The largest body of work. Refactor before testing. Grouped by component.
 * [ ] Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
 * [ ] Add "transparent" tone option
 
-### T1b — Tabs (worktree needs recreation — `/private/tmp/claude/tabs-refactor` was pruned)
-
-* [ ] Fix known bugs (most-used UI pattern — bugs here cascade everywhere)
-
 ### T1c — Toggle / ToggleGroup
 
 * [ ] Fix inconsistent button pattern inheritance
