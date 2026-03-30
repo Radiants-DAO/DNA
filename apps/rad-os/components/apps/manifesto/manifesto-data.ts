@@ -135,13 +135,13 @@ My mom lost her job at the paper and somewhere else in the world, Satoshi Nakamo
 
 ⠀
 
-![Rock or Restore: 1967 Ford Mustang Fastback](https://www.motorious.com/content/images/2020/11/gta4.jpg)
+![Rock or Restore: 1967 Ford Mustang Fastback](/manifesto/mustang-1967.jpg)
 
 It was both her mom's and her grandma's first car. I tried to find it a year ago, but to no avail.
 
 My step-dad's solar company was barely off the ground & we were hit smack in the face with The Great Recession, add to this a custody battle with my father and we ended up driving across the entire country to Maine powered by a 1980s Mercedes Benz that ran on vegetable oil. Oil that we filtered into a 5 gallon bucket from KFC.
 
-![Used 1980 Mercedes-Benz 300-Class For Sale (Sold) | Dodi Auto Sales Stock #](https://www.dodiauto.com/imagetag/195/19/l/Used-1980-Mercedes-Benz-300-Class-1696436576.jpg)
+![Used 1980 Mercedes-Benz 300-Class](/manifesto/mercedes-1980.jpg)
 
 It was a lovely balance of the smell of french-fries putting us down American highways, scant money to pay for diesel, & rejection of foreign wars for a lighter, tastier kind of oily muck.
 

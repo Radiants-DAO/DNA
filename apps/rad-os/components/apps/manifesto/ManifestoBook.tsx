@@ -42,8 +42,9 @@ function renderElement(el: PageEl, idx: number) {
       );
 
     case 'image': {
+      const isPlaceholder = el.src.startsWith('/placeholders/');
       const label = el.alt.replace(/^Placeholder:\s*/i, '');
-      return (
+      return isPlaceholder ? (
         <div
           key={idx}
           className="absolute bg-depth flex items-center justify-center text-mute font-joystix text-xs p-2 text-center leading-relaxed"
@@ -51,6 +52,14 @@ function renderElement(el: PageEl, idx: number) {
         >
           {label}
         </div>
+      ) : (
+        <img
+          key={idx}
+          src={el.src}
+          alt={el.alt}
+          className="absolute object-cover"
+          style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
+        />
       );
     }
 
