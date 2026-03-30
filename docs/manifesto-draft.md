@@ -2,7 +2,7 @@
 
 ## Forward
 
-The world is changing faster than our ability to consciously navigate that change. Most people are being unconsciously shaped by forces they don't understand — digital media, cultural fragmentation, the collapse of shared institutions. I've spent my life learning the alternative: how to make conscious choices about how we live, organize, and create meaning together.
+The world is changing faster than our ability to consciously navigate that change. Most people are being unconsciously shaped by forces they don't understand. AI, digital media, cultural fragmentation, the collapse of shared institutions. I've spent my life learning the alternative: how to make conscious choices about how we live, organize, and create meaning together.
 
 ⠀
 
