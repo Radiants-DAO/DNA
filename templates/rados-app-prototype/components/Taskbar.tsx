@@ -26,7 +26,7 @@ function VolumeControl() {
           mode="text"
           size="md"
           iconOnly
-          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} size={20} />}
+          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} large />}
           aria-label={`Volume: ${volume}%`}
         />
       </PopoverTrigger>

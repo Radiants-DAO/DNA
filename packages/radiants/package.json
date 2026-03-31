@@ -41,6 +41,10 @@
     "./patterns": {
       "types": "./patterns/index.ts",
       "import": "./patterns/index.ts"
+    },
+    "./blocknote": {
+      "types": "./generated/blocknote-blocks.tsx",
+      "import": "./generated/blocknote-blocks.tsx"
     }
   },
   "files": [
@@ -72,10 +76,18 @@
   "peerDependencies": {
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "@blocknote/core": "^0.47.0",
+    "@blocknote/react": "^0.47.0"
   },
   "peerDependenciesMeta": {
     "next": {
+      "optional": true
+    },
+    "@blocknote/core": {
+      "optional": true
+    },
+    "@blocknote/react": {
       "optional": true
     }
   },
@@ -96,6 +108,7 @@
     "generate:figma-contracts": "node --experimental-strip-types scripts/generate-figma-contracts.ts",
     "generate:pixel-corners": "node scripts/generate-pixel-corners.mjs",
     "generate:tokens": "node --experimental-strip-types scripts/generate-typography-tokens.ts",
+    "generate:blocknote": "node --experimental-strip-types scripts/generate-blocknote-blocks.ts",
     "test": "vitest run",
     "test:ci": "vitest run",
     "test:components": "vitest run",

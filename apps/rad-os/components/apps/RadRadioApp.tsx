@@ -264,7 +264,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
           <span className="font-mono text-sm text-mute tracking-tight">
             {dimensions.width}x{dimensions.height}
           </span>
-          <Icon name="resize-corner" size={10} className="opacity-60" />
+          <Icon name="resize-corner" className="opacity-60" />
         </div>
       </div>
     </div>
@@ -294,7 +294,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
   return (
     <div className="flex items-center gap-2">
       {/* Play marker */}
-      <Icon name="play" size={8} className="text-mute" />
+      <Icon name="play" className="text-mute" />
 
       {/* Progress track */}
       <div
@@ -386,7 +386,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
             className="rounded-sm border border-line"
             aria-label="Add to queue"
           >
-            <Icon name="queue" size={14} />
+            <Icon name="queue" />
           </Button>
         </>
       )}
@@ -635,7 +635,7 @@ export function RadRadioApp({ windowId: _windowId }: AppProps) {
               onClick={toggleMinified}
               aria-label={minified ? 'Show video' : 'Hide video'}
             >
-              <Icon name={minified ? 'chevron-down' : 'chevron-up'} size={14} />
+              <Icon name={minified ? 'chevron-down' : 'chevron-up'} />
             </Button>
             <Button
               quiet

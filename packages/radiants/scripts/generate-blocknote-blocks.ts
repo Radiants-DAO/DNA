@@ -123,10 +123,12 @@ if (simpleEntries.length > 0) {
   lines.push(`import { ${imports} } from '../components/core';`);
 }
 
-// Imports — custom render functions
+// Imports — custom render functions (paths are relative to packages/radiants/,
+// but the generated file lives in generated/, so prefix with ../)
 for (const entry of customEntries) {
   const fnName = `render${entry.name}Block`;
-  lines.push(`import { ${fnName} } from '${entry.blockNote.render}';`);
+  const renderPath = entry.blockNote.render!.replace(/^\.\//, '../');
+  lines.push(`import { ${fnName} } from '${renderPath}';`);
 }
 
 lines.push(``);

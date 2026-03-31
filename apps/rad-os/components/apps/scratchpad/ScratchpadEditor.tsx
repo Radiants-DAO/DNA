@@ -18,18 +18,21 @@ import type { DefaultReactSuggestionItem } from '@blocknote/react';
 import '@blocknote/mantine/style.css';
 import './scratchpad-theme.css';
 
-import { alertBlock } from './rdna-blocks';
+import {
+  rdnaBlockSpecs,
+  rdnaSlashMenuDescriptors,
+} from '@rdna/radiants/blocknote';
 import { applyRdnaIcons, RdnaSlashMenu } from './RdnaSlashMenu';
 import { Icon } from '@rdna/radiants/icons/runtime';
 
 // ============================================================================
-// Schema — default blocks + RDNA Alert
+// Schema — default blocks + all RDNA blocks from generated registry
 // ============================================================================
 
 const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
-    alert: alertBlock(),
+    ...rdnaBlockSpecs,
   },
 });
 
@@ -52,10 +55,9 @@ function loadContent() {
 }
 
 // ============================================================================
-// Custom slash menu items (defaults + RDNA Alert)
+// Slash menu items — defaults + RDNA components from generated descriptors
 // ============================================================================
 
-// BlockNote's generics are deeply nested — use a type-safe wrapper
 type AnyBNEditor = Parameters<typeof getDefaultReactSlashMenuItems>[0];
 
 function getSlashMenuItems(
@@ -63,21 +65,24 @@ function getSlashMenuItems(
 ): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
-  const alertItem: DefaultReactSuggestionItem = {
-    title: 'Alert',
-    subtext: 'RDNA alert callout',
-    aliases: ['alert', 'callout', 'info', 'warning'],
-    group: 'RDNA',
-    icon: <Icon name="comments-blank" /> as React.JSX.Element,
-    onItemClick: () => {
-      (insertOrUpdateBlockForSlashMenu as Function)(
-        editor,
-        { type: 'alert', props: { variant: 'info' } },
-      );
-    },
-  };
+  // Hydrate generated descriptors into BlockNote suggestion items
+  const rdnaItems: DefaultReactSuggestionItem[] = rdnaSlashMenuDescriptors.map(
+    (desc) => ({
+      title: desc.title,
+      subtext: desc.subtext,
+      aliases: desc.aliases,
+      group: desc.group,
+      icon: <Icon name={desc.icon} /> as React.JSX.Element,
+      onItemClick: () => {
+        (insertOrUpdateBlockForSlashMenu as Function)(editor, {
+          type: desc.type,
+          props: desc.defaultProps,
+        });
+      },
+    }),
+  );
 
-  return applyRdnaIcons([...defaults, alertItem]);
+  return applyRdnaIcons([...defaults, ...rdnaItems]);
 }
 
 // ============================================================================
@@ -106,10 +111,12 @@ export default function ScratchpadEditor() {
     };
   }, []);
 
-  // Memoized getItems for the slash menu
   const getItems = useMemo(
     () => async (query: string) =>
-      filterSuggestionItems(getSlashMenuItems(editor as unknown as AnyBNEditor), query),
+      filterSuggestionItems(
+        getSlashMenuItems(editor as unknown as AnyBNEditor),
+        query,
+      ),
     [editor],
   );
 

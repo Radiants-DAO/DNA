@@ -52,10 +52,12 @@ async function processDir(
       density: _density,
       wraps: _wraps,
       a11y: _a11y,
+      blockNote: _blockNote,
       ...schema
     } = meta as ComponentMeta & {
       registry?: unknown;
       sourcePath?: string;
+      blockNote?: unknown;
     };
 
     writeFileSync(schemaPath, JSON.stringify(schema, null, 2) + "\n");

@@ -530,7 +530,7 @@ function VotingSystem() {
             <div className="absolute inset-0 top-0 h-[calc(100%-60px)] backdrop-blur-sm bg-inv/60 flex flex-col items-center justify-center gap-4 rounded-t-sm">
               <Icon
                 name={voteAnimation === 'rad' ? 'hand-love-sign' : 'hand-dislike'}
-                size={64}
+                large
                 className="text-accent"
               />
               <span className="font-joystix text-2xl text-card drop-shadow-glow">

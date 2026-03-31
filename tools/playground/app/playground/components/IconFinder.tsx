@@ -79,7 +79,7 @@ export function IconFinder({ onClose }: IconFinderProps) {
                     title={`<Icon name="${name}" />`}
                   >
                     {IconComp ? (
-                      <IconComp size={20} className="text-main" />
+                      <IconComp size={24} className="text-main" />
                     ) : (
                       <span className="text-sub text-xs">?</span>
                     )}
