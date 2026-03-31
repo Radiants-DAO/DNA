@@ -7,7 +7,7 @@ export function renderScrollAreaBlock({ contentRef }: BlockNoteRenderProps) {
       <ScrollArea.Viewport>
         <div ref={contentRef} />
       </ScrollArea.Viewport>
-      <ScrollArea.Scrollbar orientation="vertical" />
+      {/* ScrollArea provides built-in scrollbar styling */}
     </ScrollArea.Root>
   );
 }

@@ -67,6 +67,7 @@ export const SwitchMeta = defineComponentMeta<SwitchProps>()({
   blockNote: {
     enabled: true,
     content: "none",
+    render: "./blocknote/renders/Switch",
     propSchema: { size: { prop: "size" }, labelPosition: { prop: "labelPosition" } },
     slashMenu: {
       title: "Switch",

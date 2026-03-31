@@ -77,6 +77,7 @@ export const PatternMeta = defineComponentMeta<PatternProps>()({
   blockNote: {
     enabled: true,
     content: "inline",
+    render: "./blocknote/renders/Pattern",
     propSchema: { pat: { prop: "pat" }, scale: { prop: "scale" } },
     slashMenu: {
       title: "Pattern",

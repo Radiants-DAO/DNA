@@ -5,7 +5,7 @@
 
 import { createReactBlockSpec } from '@blocknote/react';
 
-import { Avatar, Badge, Button, Checkbox, CountdownTimer, Icon, Input, Meter, Pattern, ScrollArea, Separator, Slider, Spinner, Switch, Toggle } from '../components/core';
+import { Avatar, Badge, Button, Checkbox, CountdownTimer, Icon, Input, Meter, Separator, Spinner, Toggle } from '../components/core';
 import { renderAlertBlock } from '../blocknote/renders/Alert';
 import { renderAlertDialogBlock } from '../blocknote/renders/AlertDialog';
 import { renderAppWindowBlock } from '../blocknote/renders/AppWindow';
@@ -21,10 +21,14 @@ import { renderInputSetBlock } from '../blocknote/renders/InputSet';
 import { renderMenubarBlock } from '../blocknote/renders/Menubar';
 import { renderNavigationMenuBlock } from '../blocknote/renders/NavigationMenu';
 import { renderNumberFieldBlock } from '../blocknote/renders/NumberField';
+import { renderPatternBlock } from '../blocknote/renders/Pattern';
 import { renderPopoverBlock } from '../blocknote/renders/Popover';
 import { renderPreviewCardBlock } from '../blocknote/renders/PreviewCard';
+import { renderScrollAreaBlock } from '../blocknote/renders/ScrollArea';
 import { renderSelectBlock } from '../blocknote/renders/Select';
 import { renderSheetBlock } from '../blocknote/renders/Sheet';
+import { renderSliderBlock } from '../blocknote/renders/Slider';
+import { renderSwitchBlock } from '../blocknote/renders/Switch';
 import { renderTabsBlock } from '../blocknote/renders/Tabs';
 import { renderToastBlock } from '../blocknote/renders/Toast';
 import { renderToggleGroupBlock } from '../blocknote/renders/ToggleGroup';
@@ -283,7 +287,7 @@ export const meterBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: () => <Meter />,
+    render: () => <Meter value={0} />,
   },
 );
 
@@ -319,9 +323,7 @@ export const patternBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: ({ contentRef }: any) => (
-      <Pattern><span ref={contentRef} /></Pattern>
-    ),
+    render: (props: any) => renderPatternBlock(props),
   },
 );
 
@@ -354,9 +356,7 @@ export const scrollareaBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: ({ contentRef }: any) => (
-      <ScrollArea><span ref={contentRef} /></ScrollArea>
-    ),
+    render: (props: any) => renderScrollAreaBlock(props),
   },
 );
 
@@ -405,7 +405,7 @@ export const sliderBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: () => <Slider />,
+    render: (props: any) => renderSliderBlock(props),
   },
 );
 
@@ -432,7 +432,7 @@ export const switchBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: () => <Switch />,
+    render: (props: any) => renderSwitchBlock(props),
   },
 );
 

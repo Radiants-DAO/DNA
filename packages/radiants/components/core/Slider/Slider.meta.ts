@@ -62,6 +62,7 @@ export const SliderMeta = defineComponentMeta<SliderProps>()({
   blockNote: {
     enabled: true,
     content: "none",
+    render: "./blocknote/renders/Slider",
     propSchema: { size: { prop: "size" } },
     slashMenu: {
       title: "Slider",
