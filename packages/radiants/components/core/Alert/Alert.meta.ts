@@ -96,4 +96,16 @@ export const AlertMeta = defineComponentMeta<AlertProps>()({
     tags: ["message", "banner", "notification"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    render: "./blocknote/renders/Alert",
+    propSchema: { variant: { prop: "variant" } },
+    slashMenu: {
+      title: "Alert",
+      subtext: "RDNA alert callout",
+      aliases: ["alert", "callout", "info", "warning"],
+      icon: "comments-blank",
+    },
+  },
 });

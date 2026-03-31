@@ -62,4 +62,16 @@ export const CollapsibleMeta = defineComponentMeta<CollapsibleProps>()({
     tags: ["collapse", "expand", "toggle"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    render: "./blocknote/renders/Collapsible",
+    propSchema: {},
+    slashMenu: {
+      title: "Collapsible",
+      subtext: "Expandable content section",
+      aliases: ["collapsible", "collapse", "expand", "toggle"],
+      icon: "chevron-down",
+    },
+  },
 });

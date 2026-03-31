@@ -252,7 +252,7 @@ export function WindowTitleBar({
             {icon ? (
               <span className="text-head">{icon}</span>
             ) : iconName ? (
-              <Icon name={iconName} size={16} className="text-head" />
+              <Icon name={iconName} className="text-head" />
             ) : null}
             <span
               id={`window-title-${windowId}`}

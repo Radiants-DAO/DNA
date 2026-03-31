@@ -21,7 +21,7 @@ function VolumeControl() {
           mode="text"
           size="md"
           iconOnly
-          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} size={20} />}
+          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} large />}
           aria-label={`Volume: ${volume}%`}
         />
       </PopoverTrigger>
@@ -91,7 +91,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="twitter" size={20} />}
+            icon={<Icon name="twitter" large />}
             onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Twitter"
           />
@@ -102,7 +102,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="discord" size={20} />}
+            icon={<Icon name="discord" large />}
             onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Discord"
           />

@@ -36,20 +36,20 @@ export const videos = [
 // ============================================================================
 
 // Playback icons
-const PlayIcon = () => <Icon name="play" size={16} />;
-const PauseIcon = () => <Icon name="pause" size={16} />;
-const PrevIcon = () => <Icon name="skip-back" size={14} />;
-const NextIcon = () => <Icon name="skip-forward" size={14} />;
+const PlayIcon = () => <Icon name="play" />;
+const PauseIcon = () => <Icon name="pause" />;
+const PrevIcon = () => <Icon name="skip-back" />;
+const NextIcon = () => <Icon name="skip-forward" />;
 
 // Small prev/next icons for video controls
-const SmallPrevIcon = () => <Icon name="skip-back" size={8} />;
-const SmallNextIcon = () => <Icon name="skip-forward" size={8} />;
+const SmallPrevIcon = () => <Icon name="skip-back" />;
+const SmallNextIcon = () => <Icon name="skip-forward" />;
 
 const HeartIcon = ({ filled }: { filled: boolean }) => (
-  <Icon name="heart" size={14} className={filled ? 'fill-current text-danger' : ''} />
+  <Icon name="heart" className={filled ? 'fill-current text-danger' : ''} />
 );
-const VolumeIcon = () => <Icon name="volume-high" size={14} />;
-const ChevronDownIcon = () => <Icon name="chevron-down" size={10} />;
+const VolumeIcon = () => <Icon name="volume-high" />;
+const ChevronDownIcon = () => <Icon name="chevron-down" />;
 
 
 // ============================================================================

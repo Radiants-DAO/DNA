@@ -24,6 +24,7 @@ import noPixelBorder from './rules/no-pixel-border.mjs';
 import noRawLineHeight from './rules/no-raw-line-height.mjs';
 import noRawFontFamily from './rules/no-raw-font-family.mjs';
 import noPatternColorOverride from './rules/no-pattern-color-override.mjs';
+import noArbitraryIconSize from './rules/no-arbitrary-icon-size.mjs';
 
 const plugin = {
   meta: {
@@ -48,6 +49,7 @@ const plugin = {
     'no-raw-line-height': noRawLineHeight,
     'no-raw-font-family': noRawFontFamily,
     'no-pattern-color-override': noPatternColorOverride,
+    'no-arbitrary-icon-size': noArbitraryIconSize,
   },
   configs: {},
 };
@@ -71,6 +73,7 @@ plugin.configs.recommended = {
     'rdna/no-raw-line-height': 'warn',
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
+    'rdna/no-arbitrary-icon-size': 'warn',
   },
 };
 
@@ -90,6 +93,7 @@ plugin.configs.internals = {
     'rdna/no-raw-line-height': 'warn',
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
+    'rdna/no-arbitrary-icon-size': 'warn',
   },
 };
 
@@ -110,6 +114,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-line-height': 'error',
     'rdna/no-raw-font-family': 'error',
     'rdna/no-pattern-color-override': 'error',
+    'rdna/no-arbitrary-icon-size': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },

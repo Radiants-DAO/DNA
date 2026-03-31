@@ -173,7 +173,7 @@ function PixelArtCreation() {
   if (step === 'confirmed') {
     return (
       <div className="flex flex-col items-center justify-center gap-6 p-6 bg-accent">
-        <Icon name="checkmark" size={48} />
+        <Icon name="checkmark" large />
         <div className="flex flex-col items-center gap-4 text-center">
           <h3 className="font-joystix text-lg">SUBMISSION CONFIRMED</h3>
           <p className="font-body text-base text-main leading-snug max-w-72">
@@ -235,7 +235,7 @@ function PixelArtCreation() {
               size="md"
               onClick={handleSubmit}
               className="w-full font-joystix gap-2"
-              icon={<Icon name="paper-plane" size={16} />}
+              icon={<Icon name="paper-plane" />}
             >
               SUBMIT NFT
             </Button>
@@ -256,10 +256,10 @@ function PixelArtCreation() {
         </div>
         <div className="flex items-center gap-2">
           <Button quiet size="sm" iconOnly aria-label="Previous">
-            <Icon name="chevron-left" size={20} />
+            <Icon name="chevron-left" large />
           </Button>
           <Button quiet size="sm" iconOnly aria-label="Next">
-            <Icon name="chevron-right" size={20} />
+            <Icon name="chevron-right" large />
           </Button>
         </div>
       </div>
@@ -291,7 +291,7 @@ function PixelArtCreation() {
               aria-label="Fill bucket"
               className="size-8"
             >
-              <Icon name="design-color-bucket" size={24} />
+              <Icon name="design-color-bucket" large />
             </Button>
 
             {/* Color Swatches */}
@@ -361,7 +361,7 @@ function PixelArtCreation() {
             tone="neutral"
             size="sm"
             onClick={clearCanvas}
-            icon={<Icon name="trash" size={16} />}
+            icon={<Icon name="trash" />}
             className="font-joystix"
           >
             Clear
@@ -371,7 +371,7 @@ function PixelArtCreation() {
             tone="neutral"
             size="sm"
             onClick={exportCanvas}
-            icon={<Icon name="save" size={16} />}
+            icon={<Icon name="save" />}
             className="font-joystix"
           >
             Save
@@ -431,11 +431,11 @@ function VoteCard({ name, creator, image, upvotes, downvotes, style, className =
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <Icon name="hand-dislike" size={16} />
+            <Icon name="hand-dislike" />
             <span className="font-joystix text-xs text-main">{downvotes}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Icon name="hand-love-sign" size={16} />
+            <Icon name="hand-love-sign" />
             <span className="font-joystix text-xs text-main">{upvotes}</span>
           </div>
         </div>
@@ -475,7 +475,7 @@ function VotingSystem() {
   if (!currentSubmission) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center gap-4">
-        <Icon name="checkmark" size={48} />
+        <Icon name="checkmark" large />
         <p className="font-joystix text-sm text-main">
           You&apos;ve voted on all submissions!
         </p>
@@ -553,7 +553,7 @@ function VotingSystem() {
             ${voteAnimation === 'bad' ? 'bg-accent' : 'bg-card'}
           `}
         >
-          <Icon name="hand-dislike" size={32} />
+          <Icon name="hand-dislike" large />
           <span className="font-joystix text-sm text-main drop-shadow-glow">BAD</span>
         </Button>
         <Button
@@ -566,7 +566,7 @@ function VotingSystem() {
             ${voteAnimation === 'rad' ? 'bg-accent' : 'bg-card'}
           `}
         >
-          <Icon name="hand-love-sign" size={32} />
+          <Icon name="hand-love-sign" large />
           <span className="font-joystix text-sm text-main drop-shadow-glow">RAD</span>
         </Button>
       </div>
@@ -609,7 +609,7 @@ function LeaderboardEntry({ rank: _rank, name, creator, image, upvotes, downvote
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 h-4">
             <span className="font-joystix text-sm text-main">{name}</span>
-            {isFirst && <Icon name="interface-essential-crown" size={16} />}
+            {isFirst && <Icon name="interface-essential-crown" />}
           </div>
           <span className="font-body text-sm text-main">by {creator}</span>
         </div>
@@ -618,11 +618,11 @@ function LeaderboardEntry({ rank: _rank, name, creator, image, upvotes, downvote
       {/* Right: Vote Counts */}
       <div className="flex items-center gap-2 px-2">
         <div className="flex items-center gap-1">
-          <Icon name="hand-dislike" size={16} />
+          <Icon name="hand-dislike" />
           <span className="font-joystix text-xs text-main">{downvotes}</span>
         </div>
         <div className="flex items-center gap-1">
-          <Icon name="hand-love-sign" size={16} />
+          <Icon name="hand-love-sign" />
           <span className="font-joystix text-xs text-main">{upvotes.toLocaleString()}</span>
         </div>
       </div>

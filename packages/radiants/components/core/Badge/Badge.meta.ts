@@ -49,4 +49,15 @@ export const BadgeMeta = defineComponentMeta<BadgeProps>()({
     tags: ["status", "label", "indicator"],
     renderMode: "inline",
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    propSchema: { variant: { prop: "variant" }, size: { prop: "size" } },
+    slashMenu: {
+      title: "Badge",
+      subtext: "Status indicator label",
+      aliases: ["badge", "tag", "label", "status"],
+      icon: "info",
+    },
+  },
 });

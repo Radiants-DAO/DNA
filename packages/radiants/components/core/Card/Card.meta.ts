@@ -84,4 +84,16 @@ export const CardMeta = defineComponentMeta<CardProps>()({
     tags: ["container", "panel", "surface"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    render: "./blocknote/renders/Card",
+    propSchema: { variant: { prop: "variant" } },
+    slashMenu: {
+      title: "Card",
+      subtext: "Container with pixel-corner surface",
+      aliases: ["card", "panel", "container", "box"],
+      icon: "outline-box",
+    },
+  },
 });
