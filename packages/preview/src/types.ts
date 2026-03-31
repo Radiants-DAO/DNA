@@ -118,6 +118,40 @@ export interface RegistryMeta<TProps> {
   states?: PreviewState<TProps>[];
 }
 
+// ============================================================================
+// BlockNote integration — opt-in for RDNA components as editor blocks
+// ============================================================================
+
+export interface BlockNoteSlashMenuMeta {
+  title?: string;
+  subtext?: string;
+  aliases?: string[];
+  /** RDNA icon name (from icons/runtime) */
+  icon?: string;
+  /** Slash menu group label. Defaults to "RDNA". */
+  group?: string;
+}
+
+export interface BlockNoteMeta {
+  enabled: boolean;
+  /** "inline" = editable text content (default). "none" = static block. */
+  content?: "inline" | "none";
+  /**
+   * Module path (relative to packages/radiants/) for a hand-written render function.
+   * Required for compound components. When omitted, the generator emits a simple
+   * wrapper: <Component><div ref={contentRef} /></Component>
+   */
+  render?: string;
+  /** Whitelist of component props to expose as BlockNote block properties. */
+  propSchema?: Record<string, { prop: string }>;
+  /** Slash menu registration. */
+  slashMenu?: BlockNoteSlashMenuMeta;
+}
+
+// ============================================================================
+// ComponentMeta
+// ============================================================================
+
 export interface ComponentMeta<TProps = Record<string, unknown>> {
   name: string;
   description: string;
@@ -142,4 +176,6 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
    * Stripped from generated schema.json — registry only.
    */
   sourcePath?: string;
+  /** Opt-in for BlockNote editor block generation. */
+  blockNote?: BlockNoteMeta;
 }

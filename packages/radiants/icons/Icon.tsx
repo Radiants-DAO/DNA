@@ -8,21 +8,10 @@ import type { IconProps as SvgIconProps, IconSet } from './types';
 interface IconProps {
   /** Icon name (filename without .svg extension) */
   name: string;
-  /**
-   * Render size in pixels (applies to both width and height).
-   * Prefer using the `large` prop instead. When both are provided, `size` takes precedence.
-   * @deprecated Use `large` prop for 24px icons. Omit for default 16px.
-   */
-  size?: number;
+  /** Render size: 16 (default) or 24. Prefer `large` for 24px icons. */
+  size?: IconSet;
   /** When true, renders at 24px (1.5rem) using the 24px icon set. Default: 16px (1rem). */
   large?: boolean;
-  /**
-   * Which icon set to load from (16px pixel-art or 24px detailed).
-   * Defaults based on size: ≤20 → 16, >20 → 24.
-   * When switching sets, names are auto-translated through the size map.
-   * If no mapping exists, falls back to the 16px set.
-   */
-  iconSet?: IconSet;
   /** Additional CSS classes for styling (use text-* for color) */
   className?: string;
   /** Accessible label for screen readers */
