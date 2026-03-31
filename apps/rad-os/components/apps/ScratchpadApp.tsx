@@ -1,7 +1,7 @@
 'use client';
 
 import { type AppProps } from '@/lib/apps';
-import { AppWindow } from '@rdna/radiants/components/core';
+import { AppWindow, Separator } from '@rdna/radiants/components/core';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   resolveFluid,
@@ -137,8 +137,8 @@ function renderInline(text: string, hyphenate = false): React.ReactNode[] {
       parts.push(
         <code
           key={k++}
-          className="px-1 py-0.5 bg-card text-accent"
-          style={{ fontFamily: 'var(--font-pixel-code)', fontSize: '0.85em' }}
+          className="px-1 py-0.5 bg-card text-accent text-sm"
+          style={{ fontFamily: 'var(--font-pixel-code)' }}
         >
           {m[6]}
         </code>,
@@ -314,11 +314,9 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
 
                 case 'hr':
                   return (
-                    <hr
-                      key={i}
-                      className="border-line"
-                      style={{ marginTop: gap, marginBottom: gap }}
-                    />
+                    <div key={i} style={{ marginTop: gap, marginBottom: gap }}>
+                      <Separator />
+                    </div>
                   );
 
                 default:
