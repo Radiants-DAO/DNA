@@ -3,7 +3,6 @@ import { Desktop } from './Desktop';
 import { InvertModeProvider } from './InvertModeProvider';
 import { ToastProvider } from '@rdna/radiants/components/core';
 import { Agentation } from 'agentation';
-import { InterfaceKit } from 'interface-kit/react';
 import { useHashRouting } from '@/hooks';
 
 /**
@@ -23,7 +22,6 @@ export function RadOSDesktop() {
       <InvertModeProvider>
         <Desktop />
         <Agentation />
-        <InterfaceKit />
       </InvertModeProvider>
     </ToastProvider>
   );
