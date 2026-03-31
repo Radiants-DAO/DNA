@@ -46,6 +46,7 @@ export const ScrollAreaMeta = defineComponentMeta<ScrollAreaProps>()({
   blockNote: {
     enabled: true,
     content: "inline",
+    render: "./blocknote/renders/ScrollArea",
     propSchema: {},
     slashMenu: {
       title: "ScrollArea",
