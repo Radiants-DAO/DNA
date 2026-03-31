@@ -75,6 +75,7 @@ export const CountdownTimerMeta = defineComponentMeta<CountdownTimerProps>()({
   blockNote: {
     enabled: true,
     content: "none",
+    render: "./blocknote/renders/CountdownTimer",
     propSchema: {},
     slashMenu: {
       title: "CountdownTimer",

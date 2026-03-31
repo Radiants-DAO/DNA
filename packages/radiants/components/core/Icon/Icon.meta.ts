@@ -64,7 +64,8 @@ export const IconMeta = defineComponentMeta<IconProps>()({
   blockNote: {
     enabled: true,
     content: "none",
-    propSchema: { size: { prop: "size" } },
+    render: "./blocknote/renders/Icon",
+    propSchema: {},
     slashMenu: {
       title: "Icon",
       subtext: "Dynamic SVG icon loader with dual-size support. Lo...",

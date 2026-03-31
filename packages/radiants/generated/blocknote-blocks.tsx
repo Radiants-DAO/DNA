@@ -5,7 +5,7 @@
 
 import { createReactBlockSpec } from '@blocknote/react';
 
-import { Avatar, Badge, Button, Checkbox, CountdownTimer, Icon, Input, Meter, Separator, Spinner, Toggle } from '../components/core';
+import { Avatar, Badge, Button, Checkbox, Input, Meter, Separator, Spinner, Toggle } from '../components/core';
 import { renderAlertBlock } from '../blocknote/renders/Alert';
 import { renderAlertDialogBlock } from '../blocknote/renders/AlertDialog';
 import { renderAppWindowBlock } from '../blocknote/renders/AppWindow';
@@ -14,9 +14,11 @@ import { renderCardBlock } from '../blocknote/renders/Card';
 import { renderCollapsibleBlock } from '../blocknote/renders/Collapsible';
 import { renderComboboxBlock } from '../blocknote/renders/Combobox';
 import { renderContextMenuBlock } from '../blocknote/renders/ContextMenu';
+import { renderCountdownTimerBlock } from '../blocknote/renders/CountdownTimer';
 import { renderDialogBlock } from '../blocknote/renders/Dialog';
 import { renderDrawerBlock } from '../blocknote/renders/Drawer';
 import { renderDropdownMenuBlock } from '../blocknote/renders/DropdownMenu';
+import { renderIconBlock } from '../blocknote/renders/Icon';
 import { renderInputSetBlock } from '../blocknote/renders/InputSet';
 import { renderMenubarBlock } from '../blocknote/renders/Menubar';
 import { renderNavigationMenuBlock } from '../blocknote/renders/NavigationMenu';
@@ -195,7 +197,7 @@ export const countdowntimerBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: () => <CountdownTimer />,
+    render: (props: any) => renderCountdownTimerBlock(props),
   },
 );
 
@@ -235,13 +237,11 @@ export const dropdownmenuBlock = createReactBlockSpec(
 export const iconBlock = createReactBlockSpec(
   {
     type: 'icon' as const,
-    propSchema: {
-    size: { default: '16' as const, values: ['16', '24'] as const },
-    },
+    propSchema: {},
     content: 'none' as const,
   },
   {
-    render: () => <Icon />,
+    render: (props: any) => renderIconBlock(props),
   },
 );
 
@@ -711,7 +711,7 @@ export const rdnaSlashMenuDescriptors: RdnaSlashMenuDescriptor[] = [
     aliases: ["icon","icon","svg","16px"],
     icon: 'plus',
     group: 'RDNA',
-    defaultProps: {"size":16},
+    defaultProps: {},
   },
   {
     type: 'input',
