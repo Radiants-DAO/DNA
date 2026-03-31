@@ -19,7 +19,7 @@ export const alertBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props) => renderAlertBlock(props as any),
+    render: (props: any) => renderAlertBlock(props),
   },
 );
 
@@ -33,7 +33,7 @@ export const badgeBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: ({ block: _block, contentRef }) => (
+    render: ({ block: _block, contentRef }: any) => (
       <Badge>
         <span ref={contentRef} />
       </Badge>
@@ -50,7 +50,7 @@ export const cardBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props) => renderCardBlock(props as any),
+    render: (props: any) => renderCardBlock(props),
   },
 );
 
@@ -61,7 +61,7 @@ export const collapsibleBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props) => renderCollapsibleBlock(props as any),
+    render: (props: any) => renderCollapsibleBlock(props),
   },
 );
 

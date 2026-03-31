@@ -74,11 +74,11 @@
     "url": "https://github.com/Radiants-DAO/DNA/issues"
   },
   "peerDependencies": {
+    "@blocknote/core": "^0.47.0",
+    "@blocknote/react": "^0.47.0",
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "tailwindcss": "^4.0.0",
-    "@blocknote/core": "^0.47.0",
-    "@blocknote/react": "^0.47.0"
+    "tailwindcss": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "next": {
@@ -115,6 +115,8 @@
     "test:components:watch": "vitest"
   },
   "devDependencies": {
+    "@blocknote/core": "^0.47.3",
+    "@blocknote/react": "^0.47.3",
     "@rdna/preview": "workspace:*",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",

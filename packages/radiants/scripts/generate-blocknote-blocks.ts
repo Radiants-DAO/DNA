@@ -114,7 +114,7 @@ lines.push(``);
 lines.push(`import { createReactBlockSpec } from '@blocknote/react';`);
 lines.push(``);
 
-// Imports — RDNA components (for simple renders without custom render files)
+// Imports — RDNA components (for auto-generated renders, no custom render file)
 const simpleEntries = entries.filter((e) => !e.blockNote.render);
 const customEntries = entries.filter((e) => e.blockNote.render);
 
@@ -177,16 +177,29 @@ for (const entry of entries) {
   lines.push(`  {`);
 
   if (blockNote.render) {
-    // Custom render function
-    lines.push(`    render: (props) => render${name}Block(props as any),`);
+    // Custom render function — explicit any to avoid deep BlockNote generic noise
+    lines.push(`    render: (props: any) => render${name}Block(props),`);
+  } else if (content === "inline") {
+    // Inline content — component wraps editable contentRef
+    const hasChildren = Boolean(meta.slots?.['children']);
+    if (hasChildren) {
+      lines.push(`    render: ({ contentRef }: any) => (`);
+      lines.push(`      <${name}><span ref={contentRef} /></${name}>`);
+      lines.push(`    ),`);
+    } else {
+      // No children slot but content: inline — just provide contentRef in a wrapper
+      lines.push(`    render: ({ contentRef }: any) => (`);
+      lines.push(`      <div><${name} /><span ref={contentRef} /></div>`);
+      lines.push(`    ),`);
+    }
   } else {
-    // Simple wrapper — component wraps contentRef directly
-    const contentEl = content === "inline" ? `<span ref={contentRef} />` : `null`;
-    lines.push(`    render: ({ block: _block, contentRef }) => (`);
-    lines.push(`      <${name}>`);
-    lines.push(`        ${contentEl}`);
-    lines.push(`      </${name}>`);
-    lines.push(`    ),`);
+    // content: "none" — static block, no editable text
+    const hasChildren = Boolean(meta.slots?.['children']);
+    if (hasChildren) {
+      lines.push(`    render: () => <${name}>${name}</${name}>,`);
+    } else {
+      lines.push(`    render: () => <${name} />,`);
+    }
   }
 
   lines.push(`  },`);

@@ -117,6 +117,25 @@ Goals:
 - No double viewport
 - Apps never nest `AppWindow.Content` inside `AppWindow.Content`
 - `data-aw-*` attributes on structural nodes for debugging
+- **ScrollArea.Root is absolute-positioned** — always fills its Island regardless of resize
+
+### Scroll strategy: absolute fill
+
+The Island shell is `position: relative` and gets its size from the flex algorithm.
+ScrollArea.Root is `position: absolute; inset: 0` — it fills whatever the Island is,
+without participating in layout. Content inside can never push the Island larger than
+the flex algorithm determined. Resize, fullscreen, drag-resize — all automatic, zero
+layout recalc race conditions.
+
+```
+[ISLAND]   position: relative;  flex: 1;  min-height: 0;
+  [SA-ROOT]  position: absolute;  inset: 0;       ← always fills Island exactly
+    [VIEWPORT] overflow: auto;
+      [CONTENT]
+        {app content}
+```
+
+### Full ideal tree
 
 ```
 <Draggable>                                           ← react-draggable (no DOM)
@@ -130,12 +149,18 @@ Goals:
     <div data-aw="stage">                             ← [STAGE] flex container, chrome padding, --max-height
       <div data-aw="banner"> ... </div>               ← [BANNER] (conditional, above islands)
       <div data-aw="layout" data-layout="{mode}">     ← [LAYOUT] single | split | sidebar | bleed
-        <div data-aw="island">                        ← [ISLAND] corners, bg, contains scroll
-          <ScrollArea>                                 ← single Viewport+Content (no double nesting)
-            <div data-aw="island-pad">                ← [PAD] padding wrapper (omitted when none)
-              {app content}
-            </div>
-          </ScrollArea>
+        <div data-aw="island"                         ← [ISLAND] relative, corners, bg
+             style="position: relative">
+          <ScrollArea.Root                            ← absolute inset-0, single scroll owner
+               style="position: absolute; inset: 0">
+            <ScrollArea.Viewport>
+              <ScrollArea.Content>
+                <div data-aw="island-pad">            ← [PAD] padding wrapper (omitted when none)
+                  {app content}
+                </div>
+              </ScrollArea.Content>
+            </ScrollArea.Viewport>
+          </ScrollArea.Root>
         </div>
       </div>
     </div>
@@ -150,14 +175,31 @@ div [data-aw="window"]
   div [data-aw="titlebar"]
   div [data-aw="stage"]
     div [data-aw="layout" data-layout="single"]
-      div [data-aw="island"]                          ← pixel corners, bg-card
-        ScrollArea.Root                               ← single scroll owner
-          ScrollArea.Viewport
-            ScrollArea.Content
+      div [data-aw="island"]                          ← relative, pixel corners, bg-card
+        div [ScrollArea.Root]                         ← absolute inset-0
+          div [ScrollArea.Viewport]                   ← overflow: auto
+            div [ScrollArea.Content]                  ← measured by Base UI for scrollbar
               <PatternPlayground />                   ← no wrapper, no nested Content
 ```
 
-**5 structural divs** + 3 ScrollArea nodes (unavoidable, from Base UI). Down from 13.
+**5 structural divs** + 3 ScrollArea nodes. Down from 13.
+
+The 3 ScrollArea nodes are unavoidable — Base UI needs Root (positions the scrollbar track), Viewport (the scroll surface), and Content (measured to determine if scrollbars appear). But because Root is absolute, it adds zero layout cost.
+
+### `<AppWindow.Island noScroll>` (ideal)
+
+When an app manages its own scroll or needs full layout control:
+
+```
+<div data-aw="island" style="position: relative">     ← still relative for consistent API
+  <div data-aw="island-pad"                           ← padding wrapper (omitted when none)
+       style="position: absolute; inset: 0">          ← absolute fill, same pattern as scroll
+    {app content}
+  </div>
+</div>
+```
+
+Same absolute-fill pattern, just without the ScrollArea. Consistent mental model.
 
 ### Key changes from current → ideal
 
@@ -165,9 +207,10 @@ div [data-aw="window"]
 |---|--------|-----|
 | 1 | **Merge CONTENT-ZONE + Content outer + Content inner → STAGE + LAYOUT** | 3 divs → 2. `--app-content-max-height` moves to STAGE. Chrome padding moves to STAGE. Layout mode stays on LAYOUT. |
 | 2 | **Fix double ScrollArea in Island** | Island should use `ScrollArea.Root` *without* also nesting `ScrollArea.Viewport`. Either use the compound `Root` (which auto-wraps) or use `BaseScrollArea.Root` + explicit `Viewport` — not both. |
-| 3 | **Ban nested `AppWindow.Content`** | Apps like PatternPlayground that render inside an Island must not re-wrap in `AppWindow.Content`. Content is a chrome-level primitive, not a layout helper. Add a dev-mode warning. |
-| 4 | **Add `data-aw` debug attributes** | Every structural node gets `data-aw="window|titlebar|toolbar|stage|banner|layout|island|island-pad"`. Zero runtime cost, massive DevTools clarity. |
-| 5 | **Island owns all scrolling** | Remove any `overflow-y-auto` / `overflow-auto` divs that apps add inside Islands. If an app needs no-scroll, use `<Island noScroll>`. |
+| 3 | **Absolute-position ScrollArea.Root inside Island** | Island shell is `relative`, ScrollArea.Root is `absolute inset-0`. Content can never push the Island past its flex-determined size. Resize is automatic — no layout recalc race. |
+| 4 | **Ban nested `AppWindow.Content`** | Apps like PatternPlayground that render inside an Island must not re-wrap in `AppWindow.Content`. Content is a chrome-level primitive, not a layout helper. Add a dev-mode warning. |
+| 5 | **Add `data-aw` debug attributes** | Every structural node gets `data-aw="window|titlebar|toolbar|stage|banner|layout|island|island-pad"`. Zero runtime cost, massive DevTools clarity. |
+| 6 | **Island owns all scrolling** | Remove any `overflow-y-auto` / `overflow-auto` divs that apps add inside Islands. If an app needs no-scroll, use `<Island noScroll>`. |
 
 ### Layout modes on LAYOUT node
 
@@ -183,8 +226,10 @@ div [data-aw="window"]
 ## Action items
 
 1. Fix `AppWindowIsland` double Viewport (bug, no API change)
-2. Remove `PatternPlayground`'s nested `<AppWindow.Content>` wrapper
-3. Remove `BrandAssetsApp`'s manual `overflow-y-auto` div (line 528)
-4. Add `data-aw` attributes to structural nodes
-5. Merge the 3-div content zone into 2 (STAGE + LAYOUT)
-6. Add dev-mode `console.warn` if `AppWindow.Content` is nested inside another `AppWindow.Content`
+2. Make Island shell `position: relative`, ScrollArea.Root `position: absolute; inset: 0`
+3. Apply same absolute-fill pattern to `<Island noScroll>` for consistency
+4. Remove `PatternPlayground`'s nested `<AppWindow.Content>` wrapper
+5. Remove `BrandAssetsApp`'s manual `overflow-y-auto` div (line 528)
+6. Add `data-aw` attributes to structural nodes
+7. Merge the 3-div content zone into 2 (STAGE + LAYOUT)
+8. Add dev-mode `console.warn` if `AppWindow.Content` is nested inside another `AppWindow.Content`
