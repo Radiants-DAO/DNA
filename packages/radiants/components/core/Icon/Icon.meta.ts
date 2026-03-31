@@ -2,15 +2,15 @@ import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 interface IconProps {
   name: string;
-  size?: number;
-  iconSet?: 16 | 24;
+  size?: 16 | 24;
+  large?: boolean;
   className?: string;
 }
 
 export const IconMeta = defineComponentMeta<IconProps>()({
   name: "Icon",
   description:
-    "Dynamic SVG icon loader with dual-size support. Loads pixel-art icons (16px) or detailed icons (24px) based on size, with automatic name translation between sets via the size map.",
+    "Dynamic SVG icon loader with dual-size support. Loads pixel-art icons (16px) or detailed icons (24px). Size is locked to 16 or 24 — no arbitrary scaling.",
   props: {
     name: {
       type: "string",
@@ -18,16 +18,17 @@ export const IconMeta = defineComponentMeta<IconProps>()({
         "Icon name (filename without .svg). Aliases like 'search', 'home', 'trash' resolve automatically.",
     },
     size: {
-      type: "number",
-      default: 16,
-      description:
-        "Render size in pixels. Also determines icon set: ≤20 → 16px, >20 → 24px.",
-    },
-    iconSet: {
       type: "enum",
       values: [16, 24],
+      default: 16,
       description:
-        "Force a specific icon set regardless of size. Overrides the automatic size-based selection.",
+        "Render size: 16 (pixel-art set) or 24 (detailed set). Prefer `large` for 24px.",
+    },
+    large: {
+      type: "boolean",
+      default: false,
+      description:
+        "When true, renders at 24px using the 24px icon set. Equivalent to size={24}.",
     },
     className: {
       type: "string",
@@ -38,20 +39,16 @@ export const IconMeta = defineComponentMeta<IconProps>()({
   slots: {},
   examples: [
     {
-      name: "16px pixel-art",
-      code: '<Icon name="search" size={16} />',
+      name: "16px pixel-art (default)",
+      code: '<Icon name="search" />',
     },
     {
       name: "24px detailed",
-      code: '<Icon name="search" size={24} />',
-    },
-    {
-      name: "Forced icon set",
-      code: '<Icon name="search" size={20} iconSet={24} />',
+      code: '<Icon name="search" large />',
     },
     {
       name: "24px-only icon",
-      code: '<Icon name="coding-apps-websites-database" size={24} />',
+      code: '<Icon name="coding-apps-websites-database" large />',
     },
   ],
   tokenBindings: {
