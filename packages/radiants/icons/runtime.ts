@@ -5,7 +5,7 @@
  * icons, without pulling the eager generated icon barrels.
  */
 
-export { type IconProps, type IconSet, ICON_SIZE, type IconSize } from './types';
+export { type IconProps, type IconSet } from './types';
 export { Icon } from './Icon';
 export {
   RadMarkIcon,

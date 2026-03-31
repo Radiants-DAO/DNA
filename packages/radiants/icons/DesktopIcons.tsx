@@ -6,7 +6,6 @@
  */
 
 import type { IconProps } from './types';
-export { ICON_SIZE, type IconSize } from './types';
 
 // ============================================================================
 // Brand Icons
@@ -37,11 +36,11 @@ export function RadMarkIcon({ className = '', size: sizeProp, large = false }: I
 // ============================================================================
 
 export function FontAaIcon({ className = '', size: sizeProp, large = false }: IconProps) {
-  const numSize = sizeProp ? (typeof sizeProp === 'string' ? parseFloat(sizeProp) || 16 : Number(sizeProp)) : (large ? 24 : 16);
+  const size = sizeProp ?? (large ? 24 : 16);
   return (
     <span
       className={`font-mondwest font-bold ${className}`}
-      style={{ fontSize: numSize * 0.85, lineHeight: 1 }}
+      style={{ fontSize: size * 0.85, lineHeight: 1 }}
     >
       Aa
     </span>

@@ -25,7 +25,7 @@
  */
 
 // Types
-export { type IconProps, type IconSet, ICON_SIZE, type IconSize } from './types';
+export { type IconProps, type IconSet } from './types';
 
 // Size mapping between 16px and 24px icon sets
 export { ICON_16_TO_24, ICON_24_TO_16 } from './size-map';
