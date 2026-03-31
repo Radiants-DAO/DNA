@@ -83,7 +83,6 @@ function IconComponent({
   name,
   size: sizeProp,
   large = false,
-  iconSet,
   className = '',
   'aria-label': ariaLabel,
   basePath = DEFAULT_ICON_BASE_PATH,
@@ -92,7 +91,7 @@ function IconComponent({
   const [LoadedIcon, setLoadedIcon] = useState<LoadedIcon | null>(null);
   const [fetchedSvg, setFetchedSvg] = useState<string | null>(null);
 
-  const requestedSet: IconSet = iconSet ?? (size > 20 ? 24 : 16);
+  const requestedSet: IconSet = size === 24 ? 24 : 16;
   const { resolvedName, resolvedSet } = resolveIconRequest(name, requestedSet);
   const normalizedBasePath = normalizeBasePath(basePath);
   const shouldFetchFromBasePath = normalizedBasePath !== DEFAULT_ICON_BASE_PATH;
