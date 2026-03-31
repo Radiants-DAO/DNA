@@ -1,13 +1,17 @@
 /**
  * Default Scratchpad content — full spec of all capabilities.
  * Shown on first open when no localStorage content exists.
+ *
+ * Uses only standard BlockNote block types for initialContent reliability.
+ * RDNA blocks are available via the / slash menu — the spec page documents
+ * them as text descriptions so users know what to try.
  */
 
-// Helper to make block definitions less verbose
+// Helpers
 function h(level: 1 | 2 | 3, text: string) {
   return {
     type: 'heading' as const,
-    props: { level, textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
+    props: { level },
     content: [{ type: 'text' as const, text, styles: {} }],
     children: [],
   };
@@ -16,17 +20,22 @@ function h(level: 1 | 2 | 3, text: string) {
 function p(...segments: Array<string | { text: string; bold?: boolean; italic?: boolean; code?: boolean; underline?: boolean; strikethrough?: boolean }>) {
   return {
     type: 'paragraph' as const,
-    props: { textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
     content: segments.map((s) =>
       typeof s === 'string'
         ? { type: 'text' as const, text: s, styles: {} }
-        : { type: 'text' as const, text: s.text, styles: {
-            ...(s.bold ? { bold: true } : {}),
-            ...(s.italic ? { italic: true } : {}),
-            ...(s.code ? { code: true } : {}),
-            ...(s.underline ? { underline: true } : {}),
-            ...(s.strikethrough ? { strikethrough: true } : {}),
-          } as Record<string, boolean> },
+        : {
+            type: 'text' as const,
+            text: s.text,
+            styles: Object.fromEntries(
+              Object.entries({
+                bold: s.bold,
+                italic: s.italic,
+                code: s.code,
+                underline: s.underline,
+                strikethrough: s.strikethrough,
+              }).filter(([, v]) => v),
+            ),
+          },
     ),
     children: [],
   };
@@ -35,7 +44,6 @@ function p(...segments: Array<string | { text: string; bold?: boolean; italic?: 
 function li(text: string) {
   return {
     type: 'bulletListItem' as const,
-    props: { textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
     content: [{ type: 'text' as const, text, styles: {} }],
     children: [],
   };
@@ -44,7 +52,6 @@ function li(text: string) {
 function nl(text: string) {
   return {
     type: 'numberedListItem' as const,
-    props: { textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
     content: [{ type: 'text' as const, text, styles: {} }],
     children: [],
   };
@@ -53,64 +60,40 @@ function nl(text: string) {
 function cl(text: string, checked = false) {
   return {
     type: 'checkListItem' as const,
-    props: { checked, textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
+    props: { checked },
     content: [{ type: 'text' as const, text, styles: {} }],
     children: [],
   };
 }
 
 function empty() {
-  return {
-    type: 'paragraph' as const,
-    props: { textColor: 'default' as const, backgroundColor: 'default' as const, textAlignment: 'left' as const },
-    content: [],
-    children: [],
-  };
-}
-
-function rdna(type: string, props: Record<string, unknown> = {}, text?: string) {
-  const block: Record<string, unknown> = {
-    type,
-    props: { ...props },
-    children: [],
-  };
-  if (text) {
-    block.content = [{ type: 'text', text, styles: {} }];
-  }
-  return block;
+  return { type: 'paragraph' as const, children: [] };
 }
 
 // ============================================================================
-// The default document
+// The default document — standard blocks only (RDNA blocks via / menu)
 // ============================================================================
 
 export const DEFAULT_CONTENT = [
-  // ── Title ──
   h(1, 'Scratchpad'),
   p(
     'A block-based editor inside RadOS, powered by ',
     { text: 'BlockNote', bold: true },
-    ' + ',
+    ' and the ',
     { text: 'RDNA', bold: true },
-    ' design system components. Type ',
+    ' design system. Type ',
     { text: '/', code: true },
-    ' to open the command menu.',
+    ' anywhere to open the command menu.',
   ),
 
   empty(),
 
   // ── Typography ──
   h(2, 'Typography'),
-  h(1, 'Heading 1'),
-  h(2, 'Heading 2'),
-  h(3, 'Heading 3'),
-  p(
-    'Body text in ',
-    { text: 'Mondwest', italic: true },
-    '. Headings render in ',
-    { text: 'Joystix', italic: true },
-    '.',
-  ),
+  h(1, 'Heading 1 — Joystix'),
+  h(2, 'Heading 2 — Joystix'),
+  h(3, 'Heading 3 — Joystix'),
+  p('Body text renders in Mondwest. The type scale is fluid — resize the window to see it adapt.'),
 
   empty(),
 
@@ -118,21 +101,21 @@ export const DEFAULT_CONTENT = [
   h(2, 'Inline Formatting'),
   p(
     { text: 'Bold', bold: true },
-    ', ',
-    { text: 'italic', italic: true },
-    ', ',
-    { text: 'underline', underline: true },
-    ', ',
-    { text: 'strikethrough', strikethrough: true },
-    ', and ',
-    { text: 'inline code', code: true },
-    '.',
+    '  ·  ',
+    { text: 'Italic', italic: true },
+    '  ·  ',
+    { text: 'Underline', underline: true },
+    '  ·  ',
+    { text: 'Strikethrough', strikethrough: true },
+    '  ·  ',
+    { text: 'Inline code', code: true },
   ),
 
   empty(),
 
   // ── Lists ──
   h(2, 'Lists'),
+
   h(3, 'Bullet List'),
   li('First item'),
   li('Second item'),
@@ -144,184 +127,56 @@ export const DEFAULT_CONTENT = [
   nl('Step three'),
 
   h(3, 'Check List'),
-  cl('Done task', true),
+  cl('Completed task', true),
   cl('In progress'),
   cl('Todo'),
 
   empty(),
 
-  // ── RDNA Feedback Components ──
-  h(2, 'RDNA Feedback'),
-
-  h(3, 'Alert'),
-  rdna('alert', { variant: 'info' }, 'Info — helpful context or guidance.'),
-  rdna('alert', { variant: 'success' }, 'Success — action completed.'),
-  rdna('alert', { variant: 'warning' }, 'Warning — proceed with caution.'),
-  rdna('alert', { variant: 'error' }, 'Error — something went wrong.'),
-
-  h(3, 'Badge'),
-  rdna('badge', { variant: 'default' }, 'Default'),
-  rdna('badge', { variant: 'success' }, 'Success'),
-  rdna('badge', { variant: 'warning' }, 'Warning'),
-  rdna('badge', { variant: 'error' }, 'Error'),
-  rdna('badge', { variant: 'info' }, 'Info'),
-
-  h(3, 'Toast'),
-  rdna('toast'),
-
-  h(3, 'Tooltip'),
-  rdna('tooltip'),
-
-  empty(),
-
-  // ── RDNA Layout Components ──
-  h(2, 'RDNA Layout'),
-
-  h(3, 'Card'),
-  rdna('card', { variant: 'default' }, 'Default card — the primary content surface.'),
-  rdna('card', { variant: 'inverted' }, 'Inverted card — dark surface.'),
-  rdna('card', { variant: 'raised' }, 'Raised card — elevated with pixel shadow.'),
-
-  h(3, 'Separator'),
-  rdna('separator'),
-
-  h(3, 'Collapsible'),
-  rdna('collapsible', {}, 'Expandable content section — click the trigger to toggle.'),
-
-  h(3, 'Tabs'),
-  rdna('tabs'),
-
-  h(3, 'Pattern'),
-  rdna('pattern', {}, 'Content overlaid on a diagonal-dots pattern.'),
-
-  h(3, 'ScrollArea'),
-  rdna('scrollarea', {}, 'Scrollable container with custom styled scrollbars.'),
-
-  h(3, 'AppWindow'),
-  rdna('appwindow'),
-
-  empty(),
-
-  // ── RDNA Form Controls ──
-  h(2, 'RDNA Form Controls'),
-
-  h(3, 'Input & TextArea'),
-  rdna('input'),
-  p({ text: 'Text input field with RDNA styling.', italic: true }),
-
-  h(3, 'Number Field'),
-  rdna('numberfield'),
-
-  h(3, 'Select'),
-  rdna('select'),
-
-  h(3, 'Combobox'),
-  rdna('combobox'),
-
-  h(3, 'Checkbox'),
-  rdna('checkbox'),
-
-  h(3, 'Switch'),
-  rdna('switch'),
-
-  h(3, 'Slider'),
-  rdna('slider'),
-
-  h(3, 'Toggle'),
-  rdna('toggle'),
-
-  h(3, 'Toggle Group'),
-  rdna('togglegroup'),
-
-  h(3, 'Input Set'),
-  rdna('inputset'),
-
-  empty(),
-
-  // ── RDNA Action Components ──
-  h(2, 'RDNA Actions'),
-
-  h(3, 'Button'),
-  rdna('button', { mode: 'filled', tone: 'primary' }, 'Primary Button'),
-  rdna('button', { mode: 'outline', tone: 'default' }, 'Outline Button'),
-  rdna('button', { mode: 'text', tone: 'default' }, 'Text Button'),
-
-  h(3, 'Toolbar'),
-  rdna('toolbar'),
-
-  empty(),
-
-  // ── RDNA Overlays ──
-  h(2, 'RDNA Overlays'),
-  p('Overlay components render as placeholders in the editor. In the live app, they produce modals, sheets, and popovers.'),
-
-  h(3, 'Dialog'),
-  rdna('dialog'),
-
-  h(3, 'Alert Dialog'),
-  rdna('alertdialog'),
-
-  h(3, 'Sheet'),
-  rdna('sheet'),
-
-  h(3, 'Drawer'),
-  rdna('drawer'),
-
-  h(3, 'Popover'),
-  rdna('popover'),
-
-  h(3, 'Dropdown Menu'),
-  rdna('dropdownmenu'),
-
-  h(3, 'Context Menu'),
-  rdna('contextmenu'),
-
-  h(3, 'Preview Card'),
-  rdna('previewcard'),
-
-  empty(),
-
-  // ── RDNA Navigation ──
-  h(2, 'RDNA Navigation'),
-
-  h(3, 'Breadcrumbs'),
-  rdna('breadcrumbs'),
-
-  h(3, 'Navigation Menu'),
-  rdna('navigationmenu'),
-
-  h(3, 'Menubar'),
-  rdna('menubar'),
-
-  empty(),
-
-  // ── RDNA Data Display ──
-  h(2, 'RDNA Data Display'),
-
-  h(3, 'Meter'),
-  rdna('meter'),
-
-  h(3, 'Countdown Timer'),
-  rdna('countdowntimer'),
-
-  h(3, 'Avatar'),
-  rdna('avatar'),
-
-  h(3, 'Icon'),
-  rdna('icon'),
-
-  h(3, 'Spinner'),
-  rdna('spinner'),
-
-  empty(),
-
-  // ── Closing ──
-  h(2, 'Slash Commands'),
+  // ── RDNA Components ──
+  h(2, 'RDNA Components'),
   p(
-    'Type ',
+    'All 39 RDNA design system components are available as blocks. Type ',
     { text: '/', code: true },
-    ' anywhere to insert any block type. Search by name, alias, or category. All 39 RDNA components are available alongside standard blocks.',
+    ' and search by name or category.',
   ),
 
   empty(),
-] as const;
+
+  h(3, 'Feedback'),
+  p('Type ', { text: '/Alert', code: true }, ' — contextual messages (info, success, warning, error)'),
+  p('Type ', { text: '/Badge', code: true }, ' — status indicator labels'),
+  p('Type ', { text: '/Toast', code: true }, ' — ephemeral notifications'),
+
+  h(3, 'Layout'),
+  p('Type ', { text: '/Card', code: true }, ' — content surface with pixel-corner bevels (default, inverted, raised)'),
+  p('Type ', { text: '/Collapsible', code: true }, ' — expandable content section'),
+  p('Type ', { text: '/Tabs', code: true }, ' — tabbed navigation'),
+  p('Type ', { text: '/Separator', code: true }, ' — visual divider'),
+  p('Type ', { text: '/Pattern', code: true }, ' — decorative background pattern'),
+
+  h(3, 'Form Controls'),
+  p('Type ', { text: '/Input', code: true }, ', ', { text: '/Select', code: true }, ', ', { text: '/Checkbox', code: true }, ', ', { text: '/Switch', code: true }, ', ', { text: '/Slider', code: true }, ', ', { text: '/Toggle', code: true }),
+
+  h(3, 'Actions'),
+  p('Type ', { text: '/Button', code: true }, ' — primary, outline, and text modes'),
+  p('Type ', { text: '/Toolbar', code: true }, ' — action bar with grouped buttons'),
+
+  h(3, 'Navigation'),
+  p('Type ', { text: '/Breadcrumbs', code: true }, ', ', { text: '/NavigationMenu', code: true }, ', ', { text: '/Menubar', code: true }),
+
+  h(3, 'Overlays'),
+  p('Type ', { text: '/Dialog', code: true }, ', ', { text: '/Sheet', code: true }, ', ', { text: '/Drawer', code: true }, ', ', { text: '/Popover', code: true }, ', ', { text: '/DropdownMenu', code: true }),
+
+  h(3, 'Data Display'),
+  p('Type ', { text: '/CountdownTimer', code: true }, ', ', { text: '/Meter', code: true }, ', ', { text: '/Spinner', code: true }, ', ', { text: '/Avatar', code: true }, ', ', { text: '/Icon', code: true }),
+
+  empty(),
+
+  // ── Slash Commands ──
+  h(2, 'Getting Started'),
+  p('Try it: click anywhere in this document, type ', { text: '/', code: true }, ', and pick a component. Drag blocks to reorder. Select text for formatting options.'),
+  p('Use the ', { text: 'Documents', bold: true }, ' menu to create new documents, rename, or switch between them.'),
+
+  empty(),
+];

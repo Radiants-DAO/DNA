@@ -87,7 +87,7 @@ export function useScratchpadDocs() {
     const specDoc: ScratchpadDoc = {
       id: generateId(),
       title: 'Spec Page',
-      content: DEFAULT_CONTENT as unknown as unknown[],
+      content: JSON.parse(JSON.stringify(DEFAULT_CONTENT)) as unknown[],
       updatedAt: Date.now(),
     };
     saveDocs([specDoc]);
@@ -130,7 +130,7 @@ export function useScratchpadDocs() {
     const doc: ScratchpadDoc = {
       id: generateId(),
       title: 'Spec Page',
-      content: DEFAULT_CONTENT as unknown as unknown[],
+      content: JSON.parse(JSON.stringify(DEFAULT_CONTENT)) as unknown[],
       updatedAt: Date.now(),
     };
     setDocs((prev) => {

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { type AppProps } from '@/lib/apps';
-import { AppWindow, Menubar, Separator } from '@rdna/radiants/components/core';
+import { AppWindow, Menubar } from '@rdna/radiants/components/core';
 import { useScratchpadDocs } from './scratchpad/use-scratchpad-docs';
 
 // BlockNote requires browser APIs — load client-only
