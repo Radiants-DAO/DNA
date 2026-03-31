@@ -88,4 +88,17 @@ export const TooltipMeta = defineComponentMeta<TooltipProps>()({
     tags: ["hint", "info", "hover"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Tooltip",
+    propSchema: { position: { prop: "position" }, size: { prop: "size" } },
+    slashMenu: {
+      title: "Tooltip",
+      subtext: "A floating label that appears on hover or focus of...",
+      aliases: ["tooltip","hint","info","hover"],
+      icon: "comments-blank",
+    },
+  },
+
 });

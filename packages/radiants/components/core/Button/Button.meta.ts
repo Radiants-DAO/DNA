@@ -165,4 +165,16 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    propSchema: { mode: { prop: "mode" }, tone: { prop: "tone" }, size: { prop: "size" }, rounded: { prop: "rounded" } },
+    slashMenu: {
+      title: "Button",
+      subtext: "Action trigger with retro pixel-corner lift effect...",
+      aliases: ["button","cta","action","click"],
+      icon: "hand-point",
+    },
+  },
+
 });

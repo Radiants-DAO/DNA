@@ -46,4 +46,17 @@ export const ToolbarMeta = defineComponentMeta<ToolbarProps>()({
     tags: ["toolbar", "actions", "controls"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Toolbar",
+    propSchema: {},
+    slashMenu: {
+      title: "Toolbar",
+      subtext: "Accessible toolbar container with keyboard navigat...",
+      aliases: ["toolbar","toolbar","actions","controls"],
+      icon: "grip-horizontal",
+    },
+  },
+
 });

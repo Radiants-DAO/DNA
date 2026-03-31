@@ -195,10 +195,31 @@ for (const entry of entries) {
   } else {
     // content: "none" — static block, no editable text
     const hasChildren = Boolean(meta.slots?.['children']);
+
+    // Build required prop defaults for components with required props
+    const requiredProps: string[] = [];
+    for (const [propName, propDef] of Object.entries(meta.props)) {
+      if (!propDef.required) continue;
+      if (propDef.type === "function") continue; // skip callbacks
+      const defaultVal = propDef.default;
+      if (defaultVal !== undefined) {
+        requiredProps.push(`${propName}={${JSON.stringify(defaultVal)}}`);
+      } else if (propDef.type === "string") {
+        requiredProps.push(`${propName}="${propName}"`);
+      } else if (propDef.type === "number") {
+        requiredProps.push(`${propName}={0}`);
+      } else if (propDef.type === "boolean") {
+        requiredProps.push(`${propName}={false}`);
+      } else if (propDef.type === "enum" && propDef.values?.[0] !== undefined) {
+        requiredProps.push(`${propName}="${propDef.values[0]}"`);
+      }
+    }
+    const propsStr = requiredProps.length > 0 ? ` ${requiredProps.join(" ")}` : "";
+
     if (hasChildren) {
-      lines.push(`    render: () => <${name}>${name}</${name}>,`);
+      lines.push(`    render: () => <${name}${propsStr}>${name}</${name}>,`);
     } else {
-      lines.push(`    render: () => <${name} />,`);
+      lines.push(`    render: () => <${name}${propsStr} />,`);
     }
   }
 

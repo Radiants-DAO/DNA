@@ -72,4 +72,17 @@ export const NumberFieldMeta = defineComponentMeta<NumberFieldProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/NumberField",
+    propSchema: {},
+    slashMenu: {
+      title: "NumberField",
+      subtext: "Numeric input with increment/decrement buttons and...",
+      aliases: ["numberfield","number","input","stepper"],
+      icon: "plus",
+    },
+  },
+
 });

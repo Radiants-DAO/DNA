@@ -53,4 +53,17 @@ export const ToastMeta = defineComponentMeta<ToastProps>()({
     tags: ["notification", "snackbar", "message"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Toast",
+    propSchema: {},
+    slashMenu: {
+      title: "Toast",
+      subtext: "Ephemeral notification that appears and disappears...",
+      aliases: ["toast","notification","snackbar","message"],
+      icon: "comments-typing",
+    },
+  },
+
 });

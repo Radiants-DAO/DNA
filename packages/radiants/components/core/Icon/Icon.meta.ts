@@ -61,4 +61,16 @@ export const IconMeta = defineComponentMeta<IconProps>()({
     tags: ["icon", "svg", "16px", "24px", "pixel-art"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { size: { prop: "size" } },
+    slashMenu: {
+      title: "Icon",
+      subtext: "Dynamic SVG icon loader with dual-size support. Lo...",
+      aliases: ["icon","icon","svg","16px"],
+      icon: "plus",
+    },
+  },
+
 });

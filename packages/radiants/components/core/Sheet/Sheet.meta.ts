@@ -52,4 +52,17 @@ export const SheetMeta = defineComponentMeta<SheetProps>()({
     renderMode: "custom",
     controlledProps: ["side"],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Sheet",
+    propSchema: {},
+    slashMenu: {
+      title: "Sheet",
+      subtext: "Side panel that slides in from a viewport edge. Si...",
+      aliases: ["sheet","drawer","panel","slide"],
+      icon: "grip-horizontal",
+    },
+  },
+
 });

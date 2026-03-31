@@ -112,4 +112,17 @@ export const AppWindowMeta = defineComponentMeta<AppWindowProps>()({
     tags: ["window", "desktop", "shell"],
     renderMode: "description-only",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/AppWindow",
+    propSchema: { presentation: { prop: "presentation" } },
+    slashMenu: {
+      title: "AppWindow",
+      subtext: "Desktop-style application window with draggable ch...",
+      aliases: ["appwindow","window","desktop","shell"],
+      icon: "code-window",
+    },
+  },
+
 });

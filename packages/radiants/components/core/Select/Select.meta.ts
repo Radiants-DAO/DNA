@@ -65,4 +65,17 @@ export const SelectMeta = defineComponentMeta<SelectProps>()({
     ],
     controlledProps: ["value", "placeholder", "disabled", "error", "fullWidth"],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Select",
+    propSchema: {},
+    slashMenu: {
+      title: "Select",
+      subtext: "Custom dropdown select with retro styling. Provide...",
+      aliases: ["select","dropdown","picker","choice"],
+      icon: "chevron-down",
+    },
+  },
+
 });

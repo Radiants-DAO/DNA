@@ -76,4 +76,16 @@ export const MeterMeta = defineComponentMeta<MeterProps>()({
     tags: ["meter", "gauge", "measure", "level"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: {},
+    slashMenu: {
+      title: "Meter",
+      subtext: "Gauge component for displaying a scalar measuremen...",
+      aliases: ["meter","meter","gauge","measure"],
+      icon: "line-chart",
+    },
+  },
+
 });

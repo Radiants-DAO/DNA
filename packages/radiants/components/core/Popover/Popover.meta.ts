@@ -41,4 +41,17 @@ export const PopoverMeta = defineComponentMeta<PopoverProps>()({
     renderMode: "custom",
     controlledProps: ["position"],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Popover",
+    propSchema: {},
+    slashMenu: {
+      title: "Popover",
+      subtext: "Floating panel anchored to a trigger element. Supp...",
+      aliases: ["popover","popup","tooltip","float"],
+      icon: "comments-blank",
+    },
+  },
+
 });

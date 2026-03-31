@@ -103,4 +103,16 @@ export const InputMeta = defineComponentMeta<InputProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { size: { prop: "size" } },
+    slashMenu: {
+      title: "Input",
+      subtext: "Text input with semantic token styling. Works stan...",
+      aliases: ["input","text","field","form"],
+      icon: "cursor-text",
+    },
+  },
+
 });

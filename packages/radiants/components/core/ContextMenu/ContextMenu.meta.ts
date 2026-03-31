@@ -31,4 +31,17 @@ export const ContextMenuMeta = defineComponentMeta<ContextMenuProps>()({
     tags: ["right-click", "menu"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/ContextMenu",
+    propSchema: {},
+    slashMenu: {
+      title: "ContextMenu",
+      subtext: "Right-click context menu with keyboard navigation...",
+      aliases: ["contextmenu","right-click","menu"],
+      icon: "more-horizontal",
+    },
+  },
+
 });

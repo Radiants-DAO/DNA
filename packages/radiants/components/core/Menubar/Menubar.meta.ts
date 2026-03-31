@@ -42,4 +42,17 @@ export const MenubarMeta = defineComponentMeta<MenubarProps>()({
     tags: ["menubar", "menu", "desktop", "file-menu"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Menubar",
+    propSchema: {},
+    slashMenu: {
+      title: "Menubar",
+      subtext: "Desktop-style application menu bar with keyboard n...",
+      aliases: ["menubar","menubar","menu","desktop"],
+      icon: "hamburger",
+    },
+  },
+
 });

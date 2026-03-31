@@ -59,4 +59,16 @@ export const SliderMeta = defineComponentMeta<SliderProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { size: { prop: "size" } },
+    slashMenu: {
+      title: "Slider",
+      subtext: "Numeric range input with draggable thumb. Supports...",
+      aliases: ["slider","range","volume","adjust"],
+      icon: "grip-horizontal",
+    },
+  },
+
 });

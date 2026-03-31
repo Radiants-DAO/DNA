@@ -52,4 +52,17 @@ export const DrawerMeta = defineComponentMeta<DrawerProps>()({
     renderMode: "custom",
     controlledProps: ["direction", "defaultOpen"],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Drawer",
+    propSchema: {},
+    slashMenu: {
+      title: "Drawer",
+      subtext: "Slide-in panel anchored to a viewport edge. Dismis...",
+      aliases: ["drawer","drawer","bottom-sheet","slide"],
+      icon: "grip-vertical",
+    },
+  },
+
 });

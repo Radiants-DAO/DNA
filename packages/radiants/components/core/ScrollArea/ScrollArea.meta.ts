@@ -43,4 +43,16 @@ export const ScrollAreaMeta = defineComponentMeta<ScrollAreaProps>()({
     tags: ["scroll", "overflow", "container"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    propSchema: {},
+    slashMenu: {
+      title: "ScrollArea",
+      subtext: "Custom scrollable container with styled scrollbars...",
+      aliases: ["scrollarea","scroll","overflow","container"],
+      icon: "scroll-vertical",
+    },
+  },
+
 });

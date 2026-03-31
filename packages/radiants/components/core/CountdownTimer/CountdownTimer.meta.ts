@@ -72,4 +72,16 @@ export const CountdownTimerMeta = defineComponentMeta<CountdownTimerProps>()({
     tags: ["timer", "clock", "deadline"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: {},
+    slashMenu: {
+      title: "CountdownTimer",
+      subtext: "Live countdown display with days, hours, minutes,...",
+      aliases: ["countdowntimer","timer","clock","deadline"],
+      icon: "clock",
+    },
+  },
+
 });

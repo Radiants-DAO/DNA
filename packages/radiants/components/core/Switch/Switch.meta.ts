@@ -64,4 +64,16 @@ export const SwitchMeta = defineComponentMeta<SwitchProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { size: { prop: "size" }, labelPosition: { prop: "labelPosition" } },
+    slashMenu: {
+      title: "Switch",
+      subtext: "On/off toggle control for binary settings. Provide...",
+      aliases: ["switch","toggle","on-off","boolean"],
+      icon: "power1",
+    },
+  },
+
 });

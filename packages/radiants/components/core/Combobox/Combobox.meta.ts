@@ -71,4 +71,17 @@ export const ComboboxMeta = defineComponentMeta<ComboboxProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Combobox",
+    propSchema: {},
+    slashMenu: {
+      title: "Combobox",
+      subtext: "Searchable select / autocomplete input. Combines a...",
+      aliases: ["combobox","combobox","autocomplete","search"],
+      icon: "search",
+    },
+  },
+
 });

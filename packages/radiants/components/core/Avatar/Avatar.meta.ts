@@ -76,4 +76,16 @@ export const AvatarMeta = defineComponentMeta<AvatarProps>()({
     tags: ["avatar", "user", "image", "profile"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { size: { prop: "size" }, shape: { prop: "shape" } },
+    slashMenu: {
+      title: "Avatar",
+      subtext: "User profile image with automatic fallback to init...",
+      aliases: ["avatar","avatar","user","image"],
+      icon: "single-user-shield",
+    },
+  },
+
 });

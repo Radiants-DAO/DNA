@@ -51,4 +51,16 @@ export const CheckboxMeta = defineComponentMeta<CheckboxProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: {},
+    slashMenu: {
+      title: "Checkbox",
+      subtext: "Retro-styled checkbox and radio components for for...",
+      aliases: ["checkbox","toggle","check","boolean"],
+      icon: "checkmark",
+    },
+  },
+
 });

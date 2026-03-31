@@ -58,4 +58,16 @@ export const SpinnerMeta = defineComponentMeta<SpinnerProps>()({
     tags: ["loading", "spinner", "animation"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { variant: { prop: "variant" } },
+    slashMenu: {
+      title: "Spinner",
+      subtext: "Animated loading indicator with two display modes:...",
+      aliases: ["spinner","loading","spinner","animation"],
+      icon: "hourglass",
+    },
+  },
+
 });

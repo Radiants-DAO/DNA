@@ -51,4 +51,17 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
     tags: ["sections", "switch"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Tabs",
+    propSchema: {},
+    slashMenu: {
+      title: "Tabs",
+      subtext: "Accessible tabbed navigation with keyboard support...",
+      aliases: ["tabs","sections","switch"],
+      icon: "folder-open",
+    },
+  },
+
 });

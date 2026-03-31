@@ -51,4 +51,17 @@ export const NavigationMenuMeta = defineComponentMeta<NavigationMenuProps>()({
     tags: ["navigation", "nav", "flyout", "site-nav"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/NavigationMenu",
+    propSchema: {},
+    slashMenu: {
+      title: "NavigationMenu",
+      subtext: "Site navigation component with flyout content pane...",
+      aliases: ["navigationmenu","navigation","nav","flyout"],
+      icon: "globe",
+    },
+  },
+
 });

@@ -101,4 +101,16 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
       { name: "disabled", driver: "prop", prop: "disabled", value: true },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: {},
+    slashMenu: {
+      title: "Toggle",
+      subtext: "Pressable toggle button that holds a pressed/unpre...",
+      aliases: ["toggle","toggle","press","on-off"],
+      icon: "power1",
+    },
+  },
+
 });

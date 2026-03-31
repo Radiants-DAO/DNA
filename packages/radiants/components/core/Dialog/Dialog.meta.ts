@@ -46,4 +46,17 @@ export const DialogMeta = defineComponentMeta<DialogProps>()({
     tags: ["modal", "popup", "confirm"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Dialog",
+    propSchema: {},
+    slashMenu: {
+      title: "Dialog",
+      subtext: "Modal dialog with focus trap and overlay. Provides...",
+      aliases: ["dialog","modal","popup","confirm"],
+      icon: "full-screen",
+    },
+  },
+
 });

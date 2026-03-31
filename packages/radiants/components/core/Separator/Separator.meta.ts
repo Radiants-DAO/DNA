@@ -73,4 +73,16 @@ export const SeparatorMeta = defineComponentMeta<SeparatorProps>()({
       { label: "Decorated", props: { variant: "decorated" } },
     ],
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    propSchema: { orientation: { prop: "orientation" }, variant: { prop: "variant" } },
+    slashMenu: {
+      title: "Separator",
+      subtext: "Accessible separator element for visually dividing...",
+      aliases: ["separator","divider","line","separator"],
+      icon: "minus",
+    },
+  },
+
 });

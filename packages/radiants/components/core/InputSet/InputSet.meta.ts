@@ -36,4 +36,17 @@ export const InputSetMeta = defineComponentMeta<InputSetProps>()({
     tags: ["fieldset", "form", "group", "legend", "input-set"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/InputSet",
+    propSchema: {},
+    slashMenu: {
+      title: "InputSet",
+      subtext: "Groups related form fields with a legend, providin...",
+      aliases: ["inputset","fieldset","form","group"],
+      icon: "list",
+    },
+  },
+
 });

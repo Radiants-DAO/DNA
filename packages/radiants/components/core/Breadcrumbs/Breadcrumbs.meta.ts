@@ -67,4 +67,17 @@ export const BreadcrumbsMeta = defineComponentMeta<BreadcrumbsProps>()({
     tags: ["path", "navigation", "trail"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/Breadcrumbs",
+    propSchema: {},
+    slashMenu: {
+      title: "Breadcrumbs",
+      subtext: "Hierarchical navigation trail showing the current...",
+      aliases: ["breadcrumbs","path","navigation","trail"],
+      icon: "chevron-right",
+    },
+  },
+
 });

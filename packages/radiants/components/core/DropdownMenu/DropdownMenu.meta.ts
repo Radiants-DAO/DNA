@@ -48,4 +48,17 @@ export const DropdownMenuMeta = defineComponentMeta<DropdownMenuProps>()({
     tags: ["menu", "actions", "overflow"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/DropdownMenu",
+    propSchema: {},
+    slashMenu: {
+      title: "DropdownMenu",
+      subtext: "Dropdown menu triggered by a button or icon. Suppo...",
+      aliases: ["dropdownmenu","menu","actions","overflow"],
+      icon: "chevron-down",
+    },
+  },
+
 });

@@ -35,4 +35,17 @@ export const PreviewCardMeta = defineComponentMeta<PreviewCardProps>()({
     tags: ["preview", "hover", "card", "popup"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/PreviewCard",
+    propSchema: {},
+    slashMenu: {
+      title: "PreviewCard",
+      subtext: "Hover-triggered floating card for rich content pre...",
+      aliases: ["previewcard","preview","hover","card"],
+      icon: "eye",
+    },
+  },
+
 });

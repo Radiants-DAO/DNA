@@ -44,4 +44,17 @@ export const AlertDialogMeta = defineComponentMeta<AlertDialogProps>()({
     tags: ["alert", "confirm", "modal", "destructive"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/AlertDialog",
+    propSchema: {},
+    slashMenu: {
+      title: "AlertDialog",
+      subtext: "Destructive action confirmation dialog. Requires e...",
+      aliases: ["alertdialog","alert","confirm","modal"],
+      icon: "info-filled",
+    },
+  },
+
 });

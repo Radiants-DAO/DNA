@@ -74,4 +74,16 @@ export const PatternMeta = defineComponentMeta<PatternProps>()({
     renderMode: "inline",
     exampleProps: { pat: "checkerboard" },
   },
+  blockNote: {
+    enabled: true,
+    content: "inline",
+    propSchema: { pat: { prop: "pat" }, scale: { prop: "scale" } },
+    slashMenu: {
+      title: "Pattern",
+      subtext: "Renders a recolorable 8x8 tiling pattern from the...",
+      aliases: ["pattern","pattern","texture","pixel"],
+      icon: "grid-3x3",
+    },
+  },
+
 });

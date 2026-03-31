@@ -102,4 +102,17 @@ export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
     tags: ["toggle-group", "segmented", "multi-select"],
     renderMode: "custom",
   },
+  blockNote: {
+    enabled: true,
+    content: "none",
+    render: "./blocknote/renders/ToggleGroup",
+    propSchema: {},
+    slashMenu: {
+      title: "ToggleGroup",
+      subtext: "Group of related toggle buttons for single or mult...",
+      aliases: ["togglegroup","toggle-group","segmented","multi-select"],
+      icon: "grid-3x3",
+    },
+  },
+
 });
