@@ -37,7 +37,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
  */
 export function applyRdnaIcons(items: DefaultReactSuggestionItem[]): DefaultReactSuggestionItem[] {
   return items.map((item) => {
-    const icon = ICON_MAP[item.title];
+    const icon = ICON_MAP[item.title] as React.JSX.Element | undefined;
     return icon ? { ...item, icon } : item;
   });
 }

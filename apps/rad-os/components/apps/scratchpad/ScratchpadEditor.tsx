@@ -12,6 +12,7 @@ import {
   defaultBlockSpecs,
   filterSuggestionItems,
   insertOrUpdateBlockForSlashMenu,
+  type BlockNoteEditor,
 } from '@blocknote/core';
 import type { DefaultReactSuggestionItem } from '@blocknote/react';
 
@@ -29,7 +30,7 @@ import { Icon } from '@rdna/radiants/icons/runtime';
 const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
-    alert: alertBlock,
+    alert: alertBlock(),
   },
 });
 
@@ -56,7 +57,8 @@ function loadContent() {
 // ============================================================================
 
 function getSlashMenuItems(
-  editor: typeof schema.BlockNoteEditor.prototype,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editor: BlockNoteEditor<any, any, any>,
 ): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
@@ -65,12 +67,13 @@ function getSlashMenuItems(
     subtext: 'RDNA alert callout',
     aliases: ['alert', 'callout', 'info', 'warning'],
     group: 'RDNA',
-    icon: <Icon name="comments-blank" />,
+    icon: <Icon name="comments-blank" /> as React.JSX.Element,
     onItemClick: () => {
       insertOrUpdateBlockForSlashMenu(editor, {
         type: 'alert',
         props: { variant: 'info' },
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
     },
   };
 
