@@ -11,7 +11,7 @@ import type { DefaultReactSuggestionItem, SuggestionMenuProps } from '@blocknote
 /** Heading badge rendered as styled text (no icon fits perfectly) */
 function HeadingBadge({ level }: { level: number }) {
   return (
-    <span className="font-joystix text-accent" style={{ fontSize: 11 }}>
+    <span className="font-joystix text-accent text-xs">
       H{level}
     </span>
   );
@@ -84,14 +84,14 @@ export function RdnaSlashMenu({
   return (
     <div
       ref={menuRef}
-      className="rdna-slash-menu bg-card border border-line overflow-y-auto py-1"
-      style={{ maxHeight: 320, minWidth: 220, boxShadow: '0 4px 16px oklch(0 0 0 / 0.18)' }}
+      className="rdna-slash-menu bg-card border border-line overflow-y-auto py-1 shadow-lg"
+      style={{ maxHeight: 320, minWidth: 220 }}
     >
       {[...groups.entries()].map(([group, groupItems]) => (
         <div key={group}>
           {/* Group header */}
           <div className="px-3 pt-2 pb-1">
-            <span className="font-joystix text-mute" style={{ fontSize: 9, letterSpacing: '0.05em' }}>
+            <span className="font-joystix text-mute text-xs tracking-wide">
               {group}
             </span>
           </div>
@@ -123,7 +123,7 @@ export function RdnaSlashMenu({
                     {item.title}
                   </div>
                   {item.subtext && (
-                    <div className="text-mute truncate" style={{ fontSize: 11, fontFamily: 'var(--font-sans)' }}>
+                    <div className="text-xs text-mute truncate" style={{ fontFamily: 'var(--font-sans)' }}>
                       {item.subtext}
                     </div>
                   )}
@@ -131,7 +131,7 @@ export function RdnaSlashMenu({
 
                 {/* Keyboard badge */}
                 {item.badge && (
-                  <span className="text-mute shrink-0" style={{ fontSize: 10, fontFamily: 'var(--font-pixel-code)' }}>
+                  <span className="text-xs text-mute shrink-0" style={{ fontFamily: 'var(--font-pixel-code)' }}>
                     {item.badge}
                   </span>
                 )}

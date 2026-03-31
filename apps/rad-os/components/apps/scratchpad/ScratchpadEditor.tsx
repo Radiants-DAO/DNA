@@ -12,7 +12,6 @@ import {
   defaultBlockSpecs,
   filterSuggestionItems,
   insertOrUpdateBlockForSlashMenu,
-  type BlockNoteEditor,
 } from '@blocknote/core';
 import type { DefaultReactSuggestionItem } from '@blocknote/react';
 
@@ -56,9 +55,11 @@ function loadContent() {
 // Custom slash menu items (defaults + RDNA Alert)
 // ============================================================================
 
+// BlockNote's generics are deeply nested — use a type-safe wrapper
+type AnyBNEditor = Parameters<typeof getDefaultReactSlashMenuItems>[0];
+
 function getSlashMenuItems(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editor: BlockNoteEditor<any, any, any>,
+  editor: AnyBNEditor,
 ): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
@@ -69,11 +70,10 @@ function getSlashMenuItems(
     group: 'RDNA',
     icon: <Icon name="comments-blank" /> as React.JSX.Element,
     onItemClick: () => {
-      insertOrUpdateBlockForSlashMenu(editor, {
-        type: 'alert',
-        props: { variant: 'info' },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+      (insertOrUpdateBlockForSlashMenu as Function)(
+        editor,
+        { type: 'alert', props: { variant: 'info' } },
+      );
     },
   };
 
@@ -109,7 +109,7 @@ export default function ScratchpadEditor() {
   // Memoized getItems for the slash menu
   const getItems = useMemo(
     () => async (query: string) =>
-      filterSuggestionItems(getSlashMenuItems(editor), query),
+      filterSuggestionItems(getSlashMenuItems(editor as unknown as AnyBNEditor), query),
     [editor],
   );
 
