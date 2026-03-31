@@ -1,6 +1,4 @@
 import { useCallback, useState } from 'react';
-import { DEFAULT_CONTENT } from './default-content';
-
 // ============================================================================
 // Types
 // ============================================================================
@@ -83,16 +81,16 @@ export function useScratchpadDocs() {
       return migrated;
     }
 
-    // First time — create spec page
-    const specDoc: ScratchpadDoc = {
+    // First time — create empty doc
+    const firstDoc: ScratchpadDoc = {
       id: generateId(),
-      title: 'Spec Page',
-      content: JSON.parse(JSON.stringify(DEFAULT_CONTENT)) as unknown[],
+      title: 'Untitled',
+      content: [],
       updatedAt: Date.now(),
     };
-    saveDocs([specDoc]);
-    saveActiveId(specDoc.id);
-    return [specDoc];
+    saveDocs([firstDoc]);
+    saveActiveId(firstDoc.id);
+    return [firstDoc];
   });
 
   const [activeId, setActiveId] = useState<string>(() => {
@@ -130,7 +128,7 @@ export function useScratchpadDocs() {
     const doc: ScratchpadDoc = {
       id: generateId(),
       title: 'Spec Page',
-      content: JSON.parse(JSON.stringify(DEFAULT_CONTENT)) as unknown[],
+      content: [],
       updatedAt: Date.now(),
     };
     setDocs((prev) => {

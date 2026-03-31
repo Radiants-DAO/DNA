@@ -279,16 +279,31 @@ The JSX becomes just:
 Corner style and bg are the only things that vary per-island — those stay as Tailwind classes.\
 Everything structural is handled by the attribute selector.
 
+### Kill the presentation forks
+
+Currently AppWindow has **3 completely separate render paths** based on `presentation`:
+
+| Presentation | What it renders | Difference from `window` |
+|---|---|---|
+| `window` | Draggable → shell → titlebar → toolbar → content zone → resize handles | The real one |
+| `fullscreen` | Same shell but `fixed inset-0`, no Draggable, no resize handles | Just a size/position change |
+| `mobile` | Completely different DOM: custom `<header>`, `<main>`, no titlebar component, no unfocused overlay | A whole second component hiding in an `if` branch |
+
+**Ideal:** Delete both forks. One render path. Fullscreen = set position to `{x:0, y:0}` and size to viewport dimensions, disable drag/resize. Mobile = same shell, responsive tweaks come later as CSS (not a separate DOM tree).
+
+This eliminates ~90 lines of duplicated JSX and means every structural fix (data-aw, absolute scroll, etc.) only needs to happen once.
+
 ### Key changes from current → ideal
 
-| # | Change                                                                  | Why                                                                                                                                                                                                |
-| - | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **Merge CONTENT-ZONE + Content outer + Content inner → STAGE + LAYOUT** | 3 divs → 2. `--app-content-max-height` moves to STAGE. Chrome padding moves to STAGE. Layout mode stays on LAYOUT.                                                                                 |
-| 2 | **Fix double ScrollArea in Island**                                     | Island should use `ScrollArea.Root` *without* also nesting `ScrollArea.Viewport`. Either use the compound `Root` (which auto-wraps) or use `BaseScrollArea.Root` + explicit `Viewport` — not both. |
-| 3 | **Absolute-position ScrollArea.Root inside Island**                     | Island shell is `relative`, ScrollArea.Root is `absolute inset-0`. Content can never push the Island past its flex-determined size. Resize is automatic — no layout recalc race.                   |
-| 4 | **Ban nested&#x20;**`AppWindow.Content`                                 | Apps like PatternPlayground that render inside an Island must not re-wrap in `AppWindow.Content`. Content is a chrome-level primitive, not a layout helper. Add a dev-mode warning.                |
-| 5 | **Add&#x20;**`data-aw`**&#x20;debug attributes**                        | Every structural node gets `data-aw="window                                                                                                                                                        |
-| 6 | **Island owns all scrolling**                                           | Remove any `overflow-y-auto` / `overflow-auto` divs that apps add inside Islands. If an app needs no-scroll, use `<Island noScroll>`.                                                              |
+| # | Change | Why |
+|---|--------|-----|
+| 1 | **Delete `fullscreen` and `mobile` presentation forks** | 3 render paths → 1. Fullscreen is just a resize. Mobile gets identical structure, responsive tweaks via CSS later. ~90 lines of duplicated JSX removed. |
+| 2 | **Merge CONTENT-ZONE + Content outer + Content inner → STAGE + LAYOUT** | 3 divs → 2. `--app-content-max-height` moves to STAGE. Chrome padding moves to STAGE. Layout mode stays on LAYOUT. |
+| 3 | **Fix double ScrollArea in Island** | Island should use `ScrollArea.Root` *without* also nesting `ScrollArea.Viewport`. Either use the compound `Root` (which auto-wraps) or use `BaseScrollArea.Root` + explicit `Viewport` — not both. |
+| 4 | **Absolute-position ScrollArea.Root inside Island** | Island shell is `relative`, ScrollArea.Root is `absolute inset-0`. Content can never push the Island past its flex-determined size. Resize is automatic — no layout recalc race. |
+| 5 | **Ban nested `AppWindow.Content`** | Apps like PatternPlayground that render inside an Island must not re-wrap in `AppWindow.Content`. Content is a chrome-level primitive, not a layout helper. Add a dev-mode warning. |
+| 6 | **Add `data-aw` debug attributes** | Every structural node gets `data-aw="window|titlebar|toolbar|stage|banner|layout|island|island-pad"`. Zero runtime cost, massive DevTools clarity. |
+| 7 | **Island owns all scrolling** | Remove any `overflow-y-auto` / `overflow-auto` divs that apps add inside Islands. If an app needs no-scroll, use `<Island noScroll>`. |
 
 ### Layout modes on LAYOUT node
 
@@ -303,22 +318,21 @@ Everything structural is handled by the attribute selector.
 
 ## Action items
 
-1. Fix `AppWindowIsland` double Viewport (bug, no API change)
+### Phase 1 — Quick wins (no API change, ship independently)
 
-2. Make Island shell `position: relative`, ScrollArea.Root `position: absolute; inset: 0`
+1. Fix `AppWindowIsland` double Viewport bug
+2. Remove `PatternPlayground`'s nested `<AppWindow.Content>` wrapper
+3. Remove `BrandAssetsApp`'s manual `overflow-y-auto` div (line 528)
 
-3. Apply same absolute-fill pattern to `<Island noScroll>` for consistency
+### Phase 2 — Structural refactor
 
-4. Remove `PatternPlayground`'s nested `<AppWindow.Content>` wrapper
-
-5. Remove `BrandAssetsApp`'s manual `overflow-y-auto` div (line 528)
-
-6. Add `data-aw` attributes to structural nodes
-
-7. Create `appwindow.css` with `data-aw` selector rules (`@apply` compounders), strip matching Tailwind classes from JSX
-
-8. Merge the 3-div content zone into 2 (STAGE + LAYOUT)
-
-9. Add dev-mode `console.warn` if `AppWindow.Content` is nested inside another `AppWindow.Content`
+4. Delete `fullscreen` and `mobile` presentation forks — one render path
+5. Merge the 3-div content zone into 2 (STAGE + LAYOUT)
+6. Make Island shell `position: relative`, ScrollArea.Root `position: absolute; inset: 0`
+7. Apply same absolute-fill pattern to `<Island noScroll>` for consistency
+8. Add `data-aw` attributes to structural nodes
+9. Create `appwindow.css` with `data-aw` selector rules (`@apply` compounders), strip matching Tailwind classes from JSX
+10. Add dev-mode `console.warn` if `AppWindow.Content` is nested inside another `AppWindow.Content`
+11. Evaluate whether `--app-content-max-height` can be removed (absolute-fill may make it unnecessary)
 
 ⠀
