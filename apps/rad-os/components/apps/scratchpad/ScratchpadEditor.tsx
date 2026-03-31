@@ -24,7 +24,6 @@ import {
 } from '@rdna/radiants/blocknote';
 import { applyRdnaIcons, RdnaSlashMenu } from './RdnaSlashMenu';
 import { Icon } from '@rdna/radiants/icons/runtime';
-import { DEFAULT_CONTENT } from './default-content';
 
 // ============================================================================
 // Schema — default blocks + all RDNA blocks from generated registry
@@ -38,24 +37,6 @@ const schema = BlockNoteSchema.create({
 });
 
 // ============================================================================
-// Persistence
-// ============================================================================
-
-const STORAGE_KEY = 'rados-scratchpad';
-
-function loadContent() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return undefined;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-  } catch {
-    // Corrupted — start fresh
-  }
-  return undefined;
-}
-
-// ============================================================================
 // Slash menu items — defaults + RDNA components from generated descriptors
 // ============================================================================
 
@@ -66,7 +47,6 @@ function getSlashMenuItems(
 ): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
-  // Hydrate generated descriptors into BlockNote suggestion items
   const rdnaItems: DefaultReactSuggestionItem[] = rdnaSlashMenuDescriptors.map(
     (desc) => ({
       title: desc.title,
@@ -87,24 +67,36 @@ function getSlashMenuItems(
 }
 
 // ============================================================================
+// Props
+// ============================================================================
+
+interface ScratchpadEditorProps {
+  initialContent: unknown[];
+  onSave: (content: unknown[]) => void;
+}
+
+// ============================================================================
 // Editor Component
 // ============================================================================
 
-export default function ScratchpadEditor() {
+export default function ScratchpadEditor({
+  initialContent,
+  onSave,
+}: ScratchpadEditorProps) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const editor = useCreateBlockNote({
     schema,
-    initialContent: loadContent() ?? (DEFAULT_CONTENT as any),
+    initialContent: initialContent.length > 0 ? (initialContent as any) : undefined,
   });
 
   // Debounced save
   const handleChange = useCallback(() => {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(editor.document));
+      onSave(editor.document as unknown as unknown[]);
     }, 300);
-  }, [editor]);
+  }, [editor, onSave]);
 
   useEffect(() => {
     return () => {
