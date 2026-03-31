@@ -24,6 +24,7 @@ import {
 } from '@rdna/radiants/blocknote';
 import { applyRdnaIcons, RdnaSlashMenu } from './RdnaSlashMenu';
 import { Icon } from '@rdna/radiants/icons/runtime';
+import { DEFAULT_CONTENT } from './default-content';
 
 // ============================================================================
 // Schema — default blocks + all RDNA blocks from generated registry
@@ -94,7 +95,7 @@ export default function ScratchpadEditor() {
 
   const editor = useCreateBlockNote({
     schema,
-    initialContent: loadContent(),
+    initialContent: loadContent() ?? (DEFAULT_CONTENT as any),
   });
 
   // Debounced save
