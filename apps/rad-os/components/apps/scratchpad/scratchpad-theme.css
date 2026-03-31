@@ -1,0 +1,114 @@
+/*
+ * Scratchpad — RDNA theme overrides for BlockNote
+ *
+ * Maps BlockNote's internal classes to RDNA semantic tokens so the editor
+ * feels native inside RadOS. Scoped under .scratchpad-editor to avoid
+ * leaking into other components.
+ */
+
+/* ── Editor surface ── */
+.scratchpad-editor .bn-editor {
+  background: var(--color-page);
+  color: var(--color-main);
+  font-family: var(--font-sans);
+  padding: 1.5rem;
+}
+
+.scratchpad-editor .bn-container {
+  background: var(--color-page);
+}
+
+/* ── Headings — Joystix display font ── */
+.scratchpad-editor [data-content-type='heading'][data-level='1'] .bn-inline-content {
+  font-family: var(--font-heading);
+  color: var(--color-head);
+}
+
+.scratchpad-editor [data-content-type='heading'][data-level='2'] .bn-inline-content {
+  font-family: var(--font-heading);
+  color: var(--color-head);
+}
+
+.scratchpad-editor [data-content-type='heading'][data-level='3'] .bn-inline-content {
+  font-family: var(--font-heading);
+  color: var(--color-head);
+}
+
+/* ── Paragraph body text ── */
+.scratchpad-editor [data-content-type='paragraph'] .bn-inline-content {
+  font-family: var(--font-sans);
+  color: var(--color-main);
+}
+
+/* ── Inline code ── */
+.scratchpad-editor .bn-inline-content code {
+  font-family: var(--font-pixel-code);
+  color: var(--color-accent);
+  background: var(--color-card);
+  padding: 0.125rem 0.25rem;
+  border-radius: 2px;
+}
+
+/* ── Code blocks ── */
+.scratchpad-editor [data-content-type='codeBlock'] {
+  font-family: var(--font-pixel-code);
+  background: var(--color-card);
+  color: var(--color-accent);
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+}
+
+/* ── Blockquotes ── */
+.scratchpad-editor [data-content-type='bulletListItem']::before,
+.scratchpad-editor [data-content-type='numberedListItem']::before {
+  color: var(--color-accent);
+}
+
+/* ── Side menu (drag handle + add button) ── */
+.scratchpad-editor .bn-side-menu {
+  color: var(--color-mute);
+}
+
+/* ── Placeholder text ── */
+.scratchpad-editor .bn-block-content.bn-is-empty .bn-inline-content::before {
+  color: var(--color-mute);
+}
+
+/* ── Selection / highlight ── */
+.scratchpad-editor .bn-editor ::selection {
+  background: oklch(from var(--color-accent) l c h / 0.25);
+}
+
+/* ── Toolbar & menus — match RDNA card surface ── */
+.scratchpad-editor .bn-toolbar,
+.scratchpad-editor .bn-suggestion-menu,
+.scratchpad-editor .bn-slash-menu,
+.scratchpad-editor .bn-color-picker {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  color: var(--color-main);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.15);
+}
+
+.scratchpad-editor .bn-toolbar button,
+.scratchpad-editor .bn-suggestion-menu-item {
+  color: var(--color-main);
+}
+
+.scratchpad-editor .bn-toolbar button:hover,
+.scratchpad-editor .bn-suggestion-menu-item:hover,
+.scratchpad-editor .bn-suggestion-menu-item[aria-selected='true'] {
+  background: oklch(from var(--color-accent) l c h / 0.12);
+}
+
+/* ── Link styling ── */
+.scratchpad-editor a {
+  color: var(--color-accent);
+  text-decoration-color: oklch(from var(--color-accent) l c h / 0.4);
+}
+
+/* ── Horizontal rule ── */
+.scratchpad-editor hr {
+  border-color: var(--color-line);
+}
