@@ -103,7 +103,7 @@ export const tabsListVariants = cva('flex shrink-0', {
     },
     mode: {
       capsule: 'gap-1 py-1 px-1 bg-card pixel-rounded-xs w-fit',
-      chrome: 'gap-0.5 items-end -mb-2 bg-transparent border-none p-0',
+      chrome: 'absolute right-2 gap-1 items-end bg-transparent border-none p-0',
     },
   },
   defaultVariants: { position: 'top', mode: 'capsule' },
@@ -263,6 +263,19 @@ function List({ children, className = '' }: TabsListProps) {
     );
   }
 
+  // Chrome (attached): positioned absolutely in parent (e.g. AppWindow title bar)
+  if (mode === 'chrome') {
+    return (
+      <BaseTabs.List
+        activateOnFocus
+        data-slot="tab-list"
+        className={`flex absolute right-2 gap-1 items-end ${className}`}
+      >
+        {children}
+      </BaseTabs.List>
+    );
+  }
+
   // Sidebar position with dot indicator
   if (position === 'left') {
     return (
@@ -299,8 +312,8 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
   return (
     <BaseTabs.Tab
       value={value}
-      render={(props) => {
-        const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
+      render={(props, state) => {
+        const isActive = state.active;
         const classes = tabsTriggerVariants({ mode, size, className });
 
         // Chrome mode: active drops flush, inactive is raised with pattern overlay
