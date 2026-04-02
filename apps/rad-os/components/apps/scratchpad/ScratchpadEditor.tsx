@@ -36,6 +36,17 @@ const schema = BlockNoteSchema.create({
   },
 });
 
+const validBlockTypes = new Set(Object.keys(schema.blockSpecs));
+
+/** Strip blocks whose type isn't in the current schema so BlockNote won't choke. */
+function sanitizeContent(raw: unknown[]): unknown[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+  const clean = raw.filter(
+    (b: any) => b && typeof b === 'object' && typeof b.type === 'string' && validBlockTypes.has(b.type),
+  );
+  return clean.length > 0 ? clean : undefined;
+}
+
 // ============================================================================
 // Slash menu items — defaults + RDNA components from generated descriptors
 // ============================================================================
@@ -85,9 +96,11 @@ export default function ScratchpadEditor({
 }: ScratchpadEditorProps) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
+  const safeContent = sanitizeContent(initialContent);
+
   const editor = useCreateBlockNote({
     schema,
-    initialContent: initialContent.length > 0 ? (initialContent as any) : undefined,
+    initialContent: safeContent as any,
   });
 
   // Debounced save
