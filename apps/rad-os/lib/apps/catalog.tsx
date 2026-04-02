@@ -130,7 +130,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   },
   {
     id: 'america',
-    windowTitle: 'America',
+    windowTitle: 'SHIP PRETTY OR DIE',
     windowIcon: <Icon name="broadcast-dish" large />,
     component: AmericaApp,
     defaultSize: { width: '48rem', height: '24rem' },

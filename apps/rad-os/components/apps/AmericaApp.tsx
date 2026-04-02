@@ -1,20 +1,33 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { usePreferencesStore } from '@/store';
 import type { AppProps } from '@/lib/apps';
 
 export default function AmericaApp({ windowId: _windowId }: AppProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { volume } = usePreferencesStore();
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    let cancelled = false;
     video.currentTime = 7;
-    video.play();
+    video.play().catch(() => {
+      // Interrupted — ignore if cleanup already ran
+    });
     return () => {
+      cancelled = true;
       video.pause();
     };
   }, []);
+
+  // Sync volume from store
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume / 100;
+    }
+  }, [volume]);
 
   return (
     <div className="relative w-full h-full bg-inv overflow-hidden">
@@ -23,7 +36,6 @@ export default function AmericaApp({ windowId: _windowId }: AppProps) {
         ref={videoRef}
         src="/media/video/america.mov"
         loop
-        muted
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       />
