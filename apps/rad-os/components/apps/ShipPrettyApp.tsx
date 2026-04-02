@@ -28,28 +28,30 @@ const SLIDES: Slide[] = [
     body: [
       '"Taste" is bullshit.',
       'There is no inherent value in having taste.',
-      'What matters is applying it — relentlessly, over a large number of years.',
+      'What matters is applying it, relentlessly, over a large number of years.',
     ],
     label: 'Thesis',
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'I.',
     subhead: 'Long Live the Tradesman',
-    body: [
-      'The old division — designer makes mockups, developer writes code — is dead.',
-      'Design is a full-stack trade now. Tokens, components, linting rules, deployment, motion, typography, color science. If you can\'t ship it, you didn\'t design it.',
-      'The walls just fell down. Design was always full stack — we just didn\'t have the tools to prove it.',
+    bullets: [
+      'The old division is dead. Designer makes mockups, developer writes code. Gone.',
+      'Design is a full-stack trade now. Tokens, components, linting rules, deployment, motion, typography, color science.',
+      'If you can\'t ship it, you didn\'t design it.',
+      'The walls just fell down. Design was always full stack. We just didn\'t have the tools to prove it.',
     ],
     note: 'AI is the best chisel ever made. It\'s still just a chisel. You need to know what you\'re carving.',
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'II.',
     subhead: 'The Filter Is the Brand Kit',
-    body: [
+    bullets: [
       'Your linter is your brand guardian now. Not your brand PDF. Not your Figma library. Your linter.',
-      'A good filter — enforced token usage, semantic color rules, spacing constraints, motion limits — produces consistent design at scale without a 40-page style guide nobody reads.',
+      'Enforced token usage, semantic color rules, spacing constraints, motion limits.',
+      'Consistent design at scale without a 40-page style guide nobody reads.',
     ],
     note: 'Build a good filter, have good design.',
   },
@@ -58,52 +60,60 @@ const SLIDES: Slide[] = [
     heading: 'III.',
     subhead: 'Build Your Own Tools',
     body: [
-      'You cannot compete with the flaming money pile. They will have access to tools you do not — unless you build your own.',
+      'You cannot compete with the flaming money pile. They will have access to tools you do not. Unless you build your own.',
     ],
     bullets: [
-      'Flow — Webflow replacement. Chrome extension. Edit the web directly.',
-      'RadOS — Desktop-OS UI. Window system. App ecosystem.',
-      'DNA / Radiants — Token system, component schemas, theme spec. Portable design system that agents can read.',
+      'Flow: Webflow replacement. Chrome extension. Edit the web directly.',
+      'RadOS: Desktop-OS UI. Window system. App ecosystem.',
+      'DNA / Radiants: Token system, component schemas, theme spec. Portable design system that agents can read.',
     ],
     note: 'The moat isn\'t the technology. It\'s the taste baked into the toolchain.',
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'IV.',
     subhead: 'The Agentic Web Demands Beauty',
-    body: [
-      'As the web gets more agentic — agents browsing, agents buying, agents comparing — humans become the scarce resource.',
+    bullets: [
+      'The web is getting more agentic. Agents browsing, agents buying, agents comparing.',
+      'Humans become the scarce resource.',
       'You must give people reasons to want to use the website. Not need to. Want to.',
-      'Agents don\'t care about your brand. Humans do. Beauty is the last defensible moat against automation.',
+      'Agents don\'t care about your brand. Humans do.',
+      'Beauty is the last defensible moat against automation.',
     ],
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'V.',
     subhead: 'Branding Has Collapsed Into Design',
-    body: [
-      'Branding, UI/UX, visual design, product design, motion design — these used to be separate careers. They\'ve collapsed into one discipline.',
-      'The strongest designers have always been generalists. Now they need only a team of agents and a Claude Max subscription.',
-      'The generalist designer with taste and agency is the new full-stack. The specialist who can only push pixels in one tool is the new junior.',
+    bullets: [
+      'Branding, UI/UX, visual design, product design, motion design. These used to be separate careers. They\'ve collapsed into one discipline.',
+      'The strongest designers have always been generalists.',
+      'Now they need only a team of agents and a Claude Max subscription.',
+      'The generalist designer with taste and agency is the new full-stack.',
+      'The specialist who can only push pixels in one tool is the new junior.',
     ],
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'VI.',
     subhead: 'Time in the Market of the Mind',
-    body: [
-      'We\'re all fatigued by new things. Every day there\'s a new tool, a new framework, a new AI wrapper. The brands that win are the ones that stay. Not the ones that launch loudest.',
+    bullets: [
+      'We\'re all fatigued by new things. Every day there\'s a new tool, a new framework, a new AI wrapper.',
+      'The brands that win are the ones that stay. Not the ones that launch loudest.',
       'Consistency compounds. Every day your brand exists and doesn\'t embarrass itself is a day it gets stronger.',
     ],
     note: 'Taste is a snapshot. Applied taste, over years, is a brand.',
   },
   {
-    kind: 'section',
+    kind: 'bullets',
     heading: 'VII.',
     subhead: 'Open Brand > Protected Brand',
-    body: [
-      'You\'ve been there. Scraping assets off of websites to build pitches. Pulling logos from Google Images. Begging for brand guidelines that don\'t exist or are locked behind an NDA.',
-      'Now flip it: make every asset, every token, every component available. Your superfans become your design team. You can hire based on what people have already made for you, unprompted.',
+    bullets: [
+      'You\'ve been there. Scraping assets off of websites to build pitches. Pulling logos from Google Images.',
+      'Begging for brand guidelines that don\'t exist or are locked behind an NDA.',
+      'Now flip it: make every asset, every token, every component available.',
+      'Your superfans become your design team. They build things you never imagined.',
+      'You can hire based on what people have already made for you, unprompted.',
     ],
     note: 'Free cult labor is the best kind of labor.',
   },
@@ -126,12 +136,12 @@ function TitleSlide({ slide }: { slide: Slide }) {
     <div className="flex flex-col items-center justify-center h-full px-8">
       <h1
         className="text-head text-center whitespace-pre-line leading-none"
-        style={{ font: "700 48px 'Mondwest'" }}
+        style={{ font: "700 64px 'Mondwest'" }}
       >
         {slide.heading}
       </h1>
       {slide.subhead && (
-        <p className="mt-6 text-mute font-joystix text-xs uppercase tracking-widest">
+        <p className="mt-8 text-mute font-joystix text-sm uppercase tracking-widest">
           {slide.subhead}
         </p>
       )}
@@ -143,16 +153,16 @@ function QuoteSlide({ slide }: { slide: Slide }) {
   return (
     <div className="flex flex-col items-center justify-center h-full px-12">
       {slide.label && (
-        <p className="mb-6 text-mute font-joystix text-xs uppercase tracking-widest">
+        <p className="mb-8 text-mute font-joystix text-sm uppercase tracking-widest">
           {slide.label}
         </p>
       )}
-      <div className="max-w-[28rem] space-y-3">
+      <div className="max-w-[34rem] space-y-4">
         {slide.body?.map((line, i) => (
           <p
             key={i}
             className="text-head text-center leading-relaxed"
-            style={{ font: "20px 'Mondwest'" }}
+            style={{ font: "26px 'Mondwest'" }}
           >
             {line}
           </p>
@@ -164,13 +174,13 @@ function QuoteSlide({ slide }: { slide: Slide }) {
 
 function SectionSlide({ slide }: { slide: Slide }) {
   return (
-    <div className="flex flex-col justify-center h-full px-10 py-8">
+    <div className="flex flex-col justify-center h-full px-12 py-10">
       {/* Section number + title */}
-      <div className="mb-6">
+      <div className="mb-8">
         {slide.heading && (
           <span
-            className="text-mute block mb-1"
-            style={{ font: "bold 12px 'Joystix Monospace'" }}
+            className="text-mute block mb-2"
+            style={{ font: "bold 14px 'Joystix Monospace'" }}
           >
             {slide.heading}
           </span>
@@ -178,7 +188,7 @@ function SectionSlide({ slide }: { slide: Slide }) {
         {slide.subhead && (
           <h2
             className="text-head leading-tight"
-            style={{ font: "700 28px 'Mondwest'" }}
+            style={{ font: "700 36px 'Mondwest'" }}
           >
             {slide.subhead}
           </h2>
@@ -186,26 +196,28 @@ function SectionSlide({ slide }: { slide: Slide }) {
       </div>
 
       {/* Body */}
-      <div className="max-w-[32rem] space-y-3">
-        {slide.body?.map((line, i) => (
-          <p
-            key={i}
-            className="text-head leading-relaxed"
-            style={{ font: "15px 'Mondwest'" }}
-          >
-            {line}
-          </p>
-        ))}
-      </div>
+      {slide.body && (
+        <div className="max-w-[36rem] space-y-3 mb-4">
+          {slide.body.map((line, i) => (
+            <p
+              key={i}
+              className="text-head leading-relaxed"
+              style={{ font: "20px 'Mondwest'" }}
+            >
+              {line}
+            </p>
+          ))}
+        </div>
+      )}
 
-      {/* Bullets (for the tools slide) */}
+      {/* Bullets */}
       {slide.bullets && (
-        <ul className="mt-4 max-w-[32rem] space-y-2">
+        <ul className="mt-2 max-w-[36rem] space-y-3">
           {slide.bullets.map((b, i) => (
             <li
               key={i}
-              className="text-head leading-relaxed pl-4 border-l border-line"
-              style={{ font: "15px 'Mondwest'" }}
+              className="text-head leading-relaxed pl-5 border-l-2 border-line"
+              style={{ font: "19px 'Mondwest'" }}
             >
               {b}
             </li>
@@ -216,8 +228,8 @@ function SectionSlide({ slide }: { slide: Slide }) {
       {/* Pull-quote / note */}
       {slide.note && (
         <p
-          className="mt-6 text-accent italic max-w-[28rem]"
-          style={{ font: "italic 16px 'Mondwest'" }}
+          className="mt-8 text-accent italic max-w-[32rem]"
+          style={{ font: "italic 20px 'Mondwest'" }}
         >
           {slide.note}
         </p>
@@ -230,16 +242,16 @@ function EndSlide({ slide }: { slide: Slide }) {
   return (
     <div className="flex flex-col items-center justify-center h-full px-12">
       {slide.label && (
-        <p className="mb-6 text-mute font-joystix text-xs uppercase tracking-widest">
+        <p className="mb-8 text-mute font-joystix text-sm uppercase tracking-widest">
           {slide.label}
         </p>
       )}
-      <div className="max-w-[28rem] space-y-3">
+      <div className="max-w-[34rem] space-y-4">
         {slide.body?.map((line, i) => (
           <p
             key={i}
             className="text-head text-center leading-relaxed"
-            style={{ font: "700 20px 'Mondwest'" }}
+            style={{ font: "700 26px 'Mondwest'" }}
           >
             {line}
           </p>

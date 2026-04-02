@@ -214,6 +214,8 @@ export function usePush2() {
       // --- CC (encoder / button) ---
       if (type === 0xb0) {
         const cc = d1;
+        // Debug: uncomment to discover your Push 2's CC numbers
+        // console.log(`[Push2] CC ${cc} value=${d2} delta=${decodeRelative(d2)}`);
         const delta = decodeRelative(d2);
         const state = store.getState();
         const topId = getTopWindowId(state.windows);

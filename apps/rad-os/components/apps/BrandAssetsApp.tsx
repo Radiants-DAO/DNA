@@ -222,7 +222,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="pixel-rounded-xs">
+    <div className="pixel-rounded-xs h-full">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}

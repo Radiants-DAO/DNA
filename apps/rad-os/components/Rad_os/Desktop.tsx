@@ -4,6 +4,7 @@ import { Suspense, useMemo, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { usePreferencesStore } from '@/store';
 import { useTypewriter } from '@/hooks/useTypewriter';
+import { usePush2 } from '@/hooks/usePush2';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
 import { DesktopIcon } from './DesktopIcon';
@@ -65,6 +66,7 @@ const TAGLINES = [
 ];
 
 export function Desktop({ className: _className = '' }: DesktopProps) {
+  usePush2();
   const { toggleWidget, windows, openWindowWithZoom } = useWindowManager();
   const { toggleAmericaMode } = usePreferencesStore();
   const flagRef = useRef<HTMLButtonElement>(null);
