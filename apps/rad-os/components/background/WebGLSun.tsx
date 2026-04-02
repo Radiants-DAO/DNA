@@ -43,6 +43,20 @@ const DARK_COLORS = {
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow (#FCE184)
 } as const;
 
+/** America Mode light: white + red dither, blue sun glow */
+const AMERICA_LIGHT_COLORS = {
+  light: [1.0, 1.0, 1.0],        // pure white
+  dark: [0.698, 0.133, 0.204],   // Old Glory Red (#B22234)
+  sunGlow: [0.235, 0.231, 0.431], // Old Glory Blue (#3C3B6E)
+} as const;
+
+/** America Mode dark: deep navy with red glow */
+const AMERICA_DARK_COLORS = {
+  light: [0.698, 0.133, 0.204],  // Old Glory Red
+  dark: [0.08, 0.07, 0.16],      // deep navy
+  sunGlow: [0.698, 0.133, 0.204], // red glow
+} as const;
+
 // ============================================================================
 // Shaders
 // ============================================================================
@@ -259,12 +273,14 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const darkModeRef = useRef(false);
+  const americaModeRef = useRef(false);
   const reduceMotionRef = useRef(false);
   const renderRef = useRef<((time: number) => void) | null>(null);
-  const { darkMode, reduceMotion } = usePreferencesStore();
+  const { darkMode, americaMode, reduceMotion } = usePreferencesStore();
 
-  // Keep ref in sync so the render loop reads the latest value
+  // Keep refs in sync so the render loop reads the latest values
   darkModeRef.current = darkMode;
+  americaModeRef.current = americaMode;
 
   // Sync reduced-motion preference (OS-level + app-level)
   useEffect(() => {
@@ -402,9 +418,12 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     const render = (time: number) => {
       time *= 0.001; // Convert to seconds
 
-      // Determine target colors based on dark mode
+      // Determine target colors based on dark mode + america mode
       const isDark = darkModeRef.current;
-      const targetColors = isDark ? DARK_COLORS : LIGHT_COLORS;
+      const isAmerica = americaModeRef.current;
+      const targetColors = isAmerica
+        ? (isDark ? AMERICA_DARK_COLORS : AMERICA_LIGHT_COLORS)
+        : (isDark ? DARK_COLORS : LIGHT_COLORS);
       const targetDarkModeVal = isDark ? 1 : 0;
 
       // Smoothly interpolate colors for seamless transition
