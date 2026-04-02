@@ -1,0 +1,169 @@
+/* =============================================================================
+   @rdna/radiants - America Mode
+   Red / White / Blue palette override — activated by .america class on <html>
+   ============================================================================= */
+
+.america {
+  /* ============================================
+     BRAND COLORS — flag palette
+     ============================================ */
+
+  --color-cream: oklch(1.0000 0.0000 0);                /* pure white page */
+  --color-sun-yellow: oklch(0.55 0.21 25);              /* Old Glory Red — accent */
+  --color-sky-blue: oklch(0.55 0.12 260);               /* Old Glory Blue */
+  --color-sky-blue-dark: oklch(0.40 0.14 265);          /* dark blue for links */
+  --color-sunset-fuzz: oklch(0.82 0.09 20);             /* soft rose — tinted surfaces */
+  --color-sun-red: oklch(0.55 0.21 25);                 /* error red = flag red */
+  --color-mint: oklch(0.88 0.06 245);                   /* light blue — success */
+  --color-pure-white: oklch(1.0000 0.0000 0);
+
+  /* System Colors */
+  --color-success-mint: var(--color-mint);
+  --color-warning-yellow: var(--color-sun-yellow);
+  --color-error-red: var(--color-sun-red);
+  --color-focus-state: var(--color-sky-blue);
+
+  /* ============================================
+     SEMANTIC — Backgrounds
+     ============================================ */
+
+  --color-page: var(--color-cream);
+  --color-card: var(--color-pure-white);
+  --color-tinted: var(--color-sunset-fuzz);
+  --color-hover: var(--color-sun-yellow);
+  --color-active: var(--color-sun-yellow);
+  --color-depth: var(--color-cream);
+
+  /* ============================================
+     SEMANTIC — Text
+     ============================================ */
+
+  --color-link: var(--color-sky-blue-dark);
+
+  /* ============================================
+     SEMANTIC — Borders / Focus
+     Focus ring is blue, not red
+     ============================================ */
+
+  --color-focus: var(--color-sky-blue);
+  --color-edge-focus: var(--color-sky-blue);
+  --focus-ring-color: var(--color-sky-blue);
+
+  /* ============================================
+     SEMANTIC — Action
+     ============================================ */
+
+  --color-action-primary: var(--color-sun-yellow);
+  --color-action-accent: var(--color-sunset-fuzz);
+  --color-action-destructive: var(--color-sun-red);
+
+  /* ============================================
+     SEMANTIC — Status
+     ============================================ */
+
+  --color-status-success: var(--color-mint);
+  --color-status-warning: var(--color-sun-yellow);
+  --color-status-error: var(--color-sun-red);
+  --color-status-info: var(--color-sky-blue);
+
+  /* ============================================
+     UTILITY ALIASES
+     ============================================ */
+
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-ink);
+  --color-accent-soft: var(--color-sunset-fuzz);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-warning: var(--color-sun-yellow);
+  --color-content-link: var(--color-sky-blue-dark);
+
+  /* ============================================
+     WINDOW CHROME — red-to-white gradient
+     ============================================ */
+
+  --color-window-chrome-from: var(--color-sun-yellow);
+  --color-window-chrome-to: var(--color-cream);
+
+  /* ============================================
+     GLOWS — red-tinted (zeroed in light mode, same pattern as default)
+     ============================================ */
+
+  --glow-sun-yellow: oklch(0.55 0.21 25 / 0);
+  --glow-sun-yellow-subtle: oklch(0.55 0.21 25 / 0);
+  --glow-sun-red: oklch(0.55 0.21 25 / 0);
+  --glow-mint: oklch(0.88 0.06 245 / 0);
+  --glow-sky-blue: oklch(0.55 0.12 260 / 0);
+
+  /* ============================================
+     EMPHASIS SHADOWS — blue-tinted focus
+     ============================================ */
+
+  --shadow-glow-success: 2px 2px 0 0 var(--color-mint);
+  --shadow-glow-error: 2px 2px 0 0 var(--color-sun-red);
+  --shadow-glow-info: 2px 2px 0 0 var(--color-sky-blue);
+
+  --shadow-focused: 0 0 0 2px oklch(0.55 0.12 260 / 0.35), 0 0 8px 3px oklch(0.55 0.12 260 / 0.18);
+}
+
+/* ============================================
+   AMERICA + DARK MODE
+   Dark flag palette — navy bg, red/blue glows
+   ============================================ */
+
+.america.dark {
+  /* Surfaces: deep navy */
+  --color-page: oklch(0.18 0.04 265);
+  --color-card: oklch(0.13 0.03 265);
+  --color-depth: oklch(0.22 0.04 265);
+  --color-inv: oklch(0.18 0.04 265);
+  --color-tinted: oklch(0.30 0.08 25);
+
+  /* Overlays: red glow ladder */
+  --color-hover: oklch(0.55 0.21 25 / 0.08);
+  --color-active: oklch(0.55 0.21 25 / 0.12);
+  --color-hover-overlay: oklch(0.55 0.21 25 / 0.08);
+  --color-active-overlay: oklch(0.55 0.21 25 / 0.12);
+  --color-surface-overlay-subtle: oklch(0.55 0.21 25 / 0.04);
+  --color-surface-overlay-medium: oklch(0.55 0.21 25 / 0.08);
+
+  /* Text: white/cream on navy */
+  --color-main: oklch(0.96 0.01 90);
+  --color-head: var(--color-pure-white);
+  --color-sub: oklch(0.96 0.01 90 / 0.85);
+  --color-mute: oklch(0.96 0.01 90 / 0.6);
+  --color-flip: oklch(0.96 0.01 90);
+  --color-link: var(--color-sky-blue);
+  --color-content-primary: oklch(0.96 0.01 90);
+  --color-content-heading: var(--color-pure-white);
+  --color-content-secondary: oklch(0.96 0.01 90 / 0.85);
+  --color-content-inverted: oklch(0.18 0.04 265);
+  --color-content-muted: oklch(0.96 0.01 90 / 0.6);
+  --color-content-link: var(--color-sky-blue);
+
+  /* Borders: white at low opacity on navy */
+  --color-line: oklch(1.0 0.0 0 / 0.2);
+  --color-rule: oklch(1.0 0.0 0 / 0.12);
+  --color-line-hover: oklch(1.0 0.0 0 / 0.35);
+  --color-edge-primary: oklch(1.0 0.0 0 / 0.2);
+  --color-edge-muted: oklch(1.0 0.0 0 / 0.12);
+  --color-edge-hover: oklch(1.0 0.0 0 / 0.35);
+
+  /* Glows: visible in dark mode */
+  --glow-sun-yellow: oklch(0.55 0.21 25 / 0.5);
+  --glow-sun-yellow-subtle: oklch(0.55 0.21 25 / 0.25);
+  --glow-sun-red: oklch(0.55 0.21 25 / 0.5);
+  --glow-mint: oklch(0.88 0.06 245 / 0.4);
+  --glow-sky-blue: oklch(0.55 0.12 260 / 0.5);
+
+  /* Emphasis shadows: soft red/blue glow halos */
+  --shadow-glow-sm: 0 0 6px 1px oklch(0.55 0.21 25 / 0.2);
+  --shadow-glow-md: 0 0 10px 2px oklch(0.55 0.21 25 / 0.25);
+  --shadow-glow-lg: 0 0 16px 3px oklch(0.55 0.21 25 / 0.3);
+  --shadow-glow-xl: 0 0 24px 4px oklch(0.55 0.21 25 / 0.35);
+  --shadow-glow-success: 0 0 8px 2px oklch(0.88 0.06 245 / 0.3);
+  --shadow-glow-error: 0 0 8px 2px oklch(0.55 0.21 25 / 0.35);
+  --shadow-glow-info: 0 0 8px 2px oklch(0.55 0.12 260 / 0.3);
+
+  --shadow-focused: 0 0 0 2px oklch(0.55 0.12 260 / 0.5), 0 0 8px 3px oklch(0.55 0.12 260 / 0.25);
+}
