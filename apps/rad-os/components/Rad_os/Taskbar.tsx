@@ -52,7 +52,7 @@ function DarkModeToggle() {
 
   return (
     <Tooltip content={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} position="top">
-      <span aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+      <span className="inline-flex items-center" aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
         <Switch
           checked={darkMode}
           onChange={() => toggleDarkMode()}

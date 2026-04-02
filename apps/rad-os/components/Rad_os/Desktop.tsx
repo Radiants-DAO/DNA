@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { usePreferencesStore } from '@/store';
 import { useTypewriter } from '@/hooks/useTypewriter';
@@ -65,8 +65,9 @@ const TAGLINES = [
 ];
 
 export function Desktop({ className: _className = '' }: DesktopProps) {
-  const { toggleWidget, windows } = useWindowManager();
+  const { toggleWidget, windows, openWindowWithZoom } = useWindowManager();
   const { toggleAmericaMode } = usePreferencesStore();
+  const flagRef = useRef<HTMLButtonElement>(null);
   const desktopApps = getDesktopLaunchers();
   const taglines = useMemo(() => TAGLINES, []);
   const { displayed, cursorVisible } = useTypewriter(taglines);
@@ -95,7 +96,14 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
         <div className="relative">
           {/* America Mode flag — absolute above the logo, appears on hover */}
           <button
-            onClick={() => toggleAmericaMode()}
+            ref={flagRef}
+            onClick={() => {
+              toggleAmericaMode();
+              const rect = flagRef.current?.getBoundingClientRect();
+              if (rect) {
+                openWindowWithZoom('america', { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
+              }
+            }}
             aria-label="Toggle America Mode"
             className="pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 hover:opacity-100 transition-opacity duration-base cursor-pointer"
           >

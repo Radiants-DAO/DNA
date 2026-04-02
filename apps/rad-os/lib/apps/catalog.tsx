@@ -11,6 +11,7 @@ const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
+const AmericaApp = lazy(() => import('@/components/apps/AmericaApp'));
 // ============================================================================
 // Types
 // ============================================================================
@@ -126,6 +127,15 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     contentPadding: false,
     desktopVisible: true,
     startMenuSection: 'apps',
+  },
+  {
+    id: 'america',
+    windowTitle: 'America',
+    windowIcon: <Icon name="broadcast-dish" large />,
+    component: AmericaApp,
+    defaultSize: { width: '48rem', height: '24rem' },
+    resizable: true,
+    contentPadding: false,
   },
   {
     id: 'studio',
