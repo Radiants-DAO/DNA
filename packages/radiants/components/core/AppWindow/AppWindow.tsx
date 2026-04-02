@@ -6,6 +6,7 @@ import { Button } from '../Button/Button';
 import { Icon } from '../Icon/Icon';
 import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
+import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
 
 type WindowDimension = number | string;
@@ -86,7 +87,6 @@ export interface AppWindowPaneProps extends AppWindowBodyProps {}
 export interface AppWindowNavProps {
   value: string;
   onChange: (value: string) => void;
-  layout?: 'capsule';
   children: React.ReactNode;
 }
 
@@ -447,7 +447,7 @@ function AppWindowNavItem({ value: _value, icon: _icon, label: _label, children:
 }
 AppWindowNavItem.displayName = 'AppWindow.Nav.Item';
 
-function AppWindowNav({ value, onChange, layout: _layout = 'capsule', children }: AppWindowNavProps) {
+function AppWindowNav({ value, onChange, children }: AppWindowNavProps) {
   const chrome = React.useContext(AppWindowChromeCtx);
 
   const items: AppWindowNavItemProps[] = [];
@@ -458,49 +458,15 @@ function AppWindowNav({ value, onChange, layout: _layout = 'capsule', children }
   });
 
   const navContent = (
-    <div role="tablist" className="flex items-end gap-0.5 -mb-2">
-      {items.map((item) => {
-        const isActive = value === item.value;
-        const accessibleName = item.label ?? (typeof item.children === 'string' ? item.children : undefined);
-        return (
-          <button
-            key={item.value}
-            role="tab"
-            type="button"
-            aria-selected={isActive}
-            aria-label={accessibleName}
-            onClick={() => onChange(item.value)}
-            className={`relative flex items-center justify-center cursor-pointer select-none pixel-rounded-t-sm h-8 px-2 transition-all duration-300 ease-out focus-visible:outline-none ${
-              isActive
-                ? 'gap-1.5 bg-card z-10'
-                : 'bg-accent hover:bg-cream group translate-y-1 hover:translate-y-0.5'
-            }`}
-          >
-            {item.icon && (
-              <span className="shrink-0 flex items-center justify-center size-4">
-                {item.icon}
-              </span>
-            )}
-            <span
-              className={`font-mono text-xs uppercase tracking-tight leading-none whitespace-nowrap overflow-hidden transition-all duration-300 ease-out ${
-                isActive ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0'
-              }`}
-            >
-              {item.children}
-            </span>
-            {!isActive && (
-              <span
-                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out"
-                style={{
-                  backgroundImage: 'var(--pat-spray-grid)',
-                  backgroundRepeat: 'repeat',
-                }}
-              />
-            )}
-          </button>
-        );
-      })}
-    </div>
+    <Tabs value={value} onValueChange={onChange} mode="chrome">
+      <Tabs.List>
+        {items.map((item) => (
+          <Tabs.Trigger key={item.value} value={item.value} icon={item.icon}>
+            {item.children}
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
+    </Tabs>
   );
 
   // Register nav content with AppWindow via context; render nothing here

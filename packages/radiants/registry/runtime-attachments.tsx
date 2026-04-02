@@ -53,13 +53,12 @@ const NON_COMPONENT_EXPORTS = new Set([
   'inputVariants',
   'selectTriggerVariants',
   'switchTrackVariants',
-  'tabTriggerVariants',
+  'tabsTriggerVariants',
   'useAlertDialogState',
   'useComboboxFilter',
   'useDialogState',
   'useDrawerState',
   'useSelectState',
-  'useTabsState',
   'useToast',
   'useDialKit',
 ]);
@@ -606,35 +605,19 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Tabs: {
     component: Tabs,
-    Demo: ({ mode = 'pill', layout = 'default', ...rest }: Record<string, unknown>) => {
-      const tabs = Tabs.useTabsState({ defaultValue: 'design', mode: mode as any, layout: layout as any });
+    Demo: ({ mode = 'capsule', ...rest }: Record<string, unknown>) => {
       return (
         <div className="w-full max-w-[24rem]">
-          <Tabs.Provider {...tabs} {...rest}>
-            {layout === 'default' ? (
-              <Tabs.Frame>
-                <Tabs.List>
-                  <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
-                  <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
-                  <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
-                </Tabs.List>
-                <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
-                <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
-                <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
-              </Tabs.Frame>
-            ) : (
-              <>
-                <Tabs.List>
-                  <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
-                  <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
-                  <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
-                </Tabs.List>
-                <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
-                <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
-                <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
-              </>
-            )}
-          </Tabs.Provider>
+          <Tabs defaultValue="design" mode={mode as any} {...rest}>
+            <Tabs.List>
+              <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
+              <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
+              <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
+            <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
+            <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
+          </Tabs>
         </div>
       );
     },
