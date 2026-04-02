@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { usePreferencesStore } from '@/store';
 import { useTypewriter } from '@/hooks/useTypewriter';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
@@ -65,6 +66,7 @@ const TAGLINES = [
 
 export function Desktop({ className: _className = '' }: DesktopProps) {
   const { toggleWidget, windows } = useWindowManager();
+  const { toggleAmericaMode } = usePreferencesStore();
   const desktopApps = getDesktopLaunchers();
   const taglines = useMemo(() => TAGLINES, []);
   const { displayed, cursorVisible } = useTypewriter(taglines);
@@ -90,7 +92,21 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
 
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
-        <div>
+        <div className="relative">
+          {/* America Mode flag — absolute above the logo, appears on hover */}
+          <button
+            onClick={() => toggleAmericaMode()}
+            aria-label="Toggle America Mode"
+            className="pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 hover:opacity-100 transition-opacity duration-base cursor-pointer"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- reason:static-pixel-art owner:rad-os expires:2026-12-31 issue:DNA-000 */}
+            <img
+              src="/assets/america-flag.png"
+              alt="America Mode"
+              className="w-36 h-36 object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </button>
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}

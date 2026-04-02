@@ -1,10 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { Component, useState } from 'react';
+import type { ErrorInfo, ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { type AppProps } from '@/lib/apps';
 import { AppWindow, Menubar } from '@rdna/radiants/components/core';
 import { useScratchpadDocs } from './scratchpad/use-scratchpad-docs';
+
+// ============================================================================
+// Error Boundary — catches BlockNote initialContent parse failures
+// ============================================================================
+
+interface EditorErrorBoundaryProps {
+  children: ReactNode;
+  onReset: () => void;
+}
+
+interface EditorErrorBoundaryState {
+  hasError: boolean;
+}
+
+class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, EditorErrorBoundaryState> {
+  state: EditorErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): EditorErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, _info: ErrorInfo) {
+    if (error.message?.includes('initialContent')) {
+      this.props.onReset();
+    }
+  }
+
+  componentDidUpdate(prevProps: EditorErrorBoundaryProps) {
+    if (prevProps.children !== this.props.children && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex items-center justify-center h-full text-mute text-sm gap-2">
+          <span>Document was corrupted.</span>
+          <button
+            className="text-accent underline"
+            onClick={() => {
+              this.props.onReset();
+              this.setState({ hasError: false });
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // BlockNote requires browser APIs — load client-only
 const ScratchpadEditor = dynamic(
@@ -145,11 +199,15 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
 
         {/* Editor surface */}
         <div className="bg-card flex-1 overflow-hidden min-h-0">
-          <ScratchpadEditor
+          <EditorErrorBoundary
             key={activeId}
-            initialContent={activeDoc.content}
-            onSave={saveContent}
-          />
+            onReset={() => saveContent([])}
+          >
+            <ScratchpadEditor
+              initialContent={activeDoc.content}
+              onSave={saveContent}
+            />
+          </EditorErrorBoundary>
         </div>
       </div>
     </AppWindow.Content>

@@ -21,7 +21,7 @@ function VolumeControl() {
           mode="text"
           size="md"
           iconOnly
-          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} large />}
+          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} />}
           aria-label={`Volume: ${volume}%`}
         />
       </PopoverTrigger>
@@ -63,25 +63,6 @@ function DarkModeToggle() {
   );
 }
 
-function AmericaModeToggle() {
-  const { americaMode, toggleAmericaMode } = usePreferencesStore();
-
-  return (
-    <Tooltip content={americaMode ? 'Disable America Mode' : 'America Mode'} position="top">
-      <Button
-        mode={americaMode ? 'flat' : 'text'}
-        size="md"
-        onClick={() => toggleAmericaMode()}
-        aria-label={americaMode ? 'Disable America Mode' : 'Enable America Mode'}
-        className="!px-1.5 !text-base"
-      >
-        {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:emoji-button owner:design-system expires:2026-07-01 issue:DNA-000 */}
-        <span className="leading-none" style={{ fontSize: '1.25rem' }}>🇺🇸</span>
-      </Button>
-    </Tooltip>
-  );
-}
-
 // ============================================================================
 // Taskbar — unified dock with Start button + utility icons
 // ============================================================================
@@ -110,7 +91,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="twitter" large />}
+            icon={<Icon name="twitter" />}
             onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Twitter"
           />
@@ -121,7 +102,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="discord" large />}
+            icon={<Icon name="discord" />}
             onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Discord"
           />
@@ -130,7 +111,6 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
         <Toolbar.Separator />
 
         {/* Settings controls */}
-        <AmericaModeToggle />
         <VolumeControl />
         <DarkModeToggle />
       </Toolbar.Root>

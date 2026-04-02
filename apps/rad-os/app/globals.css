@@ -1,7 +1,7 @@
 /* Import theme styles */
 @import '@rdna/radiants';
 @import '@rdna/radiants/dark';
-@import '@rdna/radiants/america';
+@import '../../../packages/radiants/america.css';
 
 /* Class-based dark mode — required for .dark selector to activate dark: variants */
 @custom-variant dark (&:where(.dark, .dark *));

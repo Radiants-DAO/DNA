@@ -32,6 +32,7 @@ const COLOR_EASING = 0.04;
 /** Light mode: cream (#FEF8E2) and sun-yellow (#FCE184) */
 const LIGHT_COLORS = {
   light: [0.996, 0.973, 0.886],  // cream
+  mid: [0.996, 0.973, 0.886],    // same as light — no tri-color
   dark: [0.988, 0.882, 0.518],   // sun-yellow
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow
 } as const;
@@ -39,22 +40,25 @@ const LIGHT_COLORS = {
 /** Dark mode: enough contrast for visible dithering, glowing sun */
 const DARK_COLORS = {
   light: [0.988, 0.882, 0.518],  // sun-yellow (#FCE184)
+  mid: [0.988, 0.882, 0.518],    // same as light — no tri-color
   dark: [0.059, 0.055, 0.047],   // brand black (#0F0E0C)
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow (#FCE184)
 } as const;
 
-/** America Mode light: white + red dither, blue sun glow */
+/** America Mode light: red (top) → white (mid) → blue (bottom) */
 const AMERICA_LIGHT_COLORS = {
-  light: [1.0, 1.0, 1.0],        // pure white
-  dark: [0.698, 0.133, 0.204],   // Old Glory Red (#B22234)
-  sunGlow: [0.235, 0.231, 0.431], // Old Glory Blue (#3C3B6E)
+  light: [0.75, 0.25, 0.28],     // flag red (top)
+  mid: [1.0, 1.0, 1.0],          // white (middle)
+  dark: [0.42, 0.55, 0.78],      // flag blue (bottom)
+  sunGlow: [1.0, 1.0, 1.0],      // white sun glow
 } as const;
 
-/** America Mode dark: deep navy with red glow */
+/** America Mode dark: deep red (top) → dark gray (mid) → navy (bottom) */
 const AMERICA_DARK_COLORS = {
-  light: [0.698, 0.133, 0.204],  // Old Glory Red
-  dark: [0.08, 0.07, 0.16],      // deep navy
-  sunGlow: [0.698, 0.133, 0.204], // red glow
+  light: [0.55, 0.15, 0.18],     // dark red (top)
+  mid: [0.12, 0.12, 0.12],       // dark mid
+  dark: [0.07, 0.08, 0.16],      // deep navy (bottom)
+  sunGlow: [0.75, 0.25, 0.28],   // red glow
 } as const;
 
 // ============================================================================
@@ -82,9 +86,11 @@ const FRAGMENT_SHADER_SOURCE = `
   uniform vec2 u_mouse;
   uniform vec2 u_sunOffset;
   uniform vec3 u_lightColor;
+  uniform vec3 u_midColor;
   uniform vec3 u_darkColor;
   uniform vec3 u_sunGlowColor;
   uniform float u_darkMode;
+  uniform float u_americaMode;
   varying vec2 v_texCoord;
 
   /**
@@ -197,9 +203,28 @@ const FRAGMENT_SHADER_SOURCE = `
 
     vec3 glowDark = u_sunGlowColor * 0.85;
     vec3 effectiveLightColor = mix(u_lightColor, u_sunGlowColor, dm);
+    vec3 effectiveMidColor = mix(u_midColor, u_sunGlowColor, dm * 0.5);
     vec3 effectiveDarkColor = mix(u_darkColor, glowDark, dm);
 
-    vec3 finalColor = mix(effectiveDarkColor, effectiveLightColor, dithered);
+    // Standard two-color dither
+    vec3 standardColor = mix(effectiveDarkColor, effectiveLightColor, dithered);
+
+    // Tri-color flag gradient: light(top) → mid(center) → dark(bottom)
+    // v_texCoord.y: 0 = bottom, 1 = top
+    float y = v_texCoord.y;
+    vec3 bandTarget;
+    if (y > 0.5) {
+      bandTarget = mix(effectiveMidColor, effectiveLightColor, smoothstep(0.45, 0.9, y));
+    } else {
+      bandTarget = mix(effectiveDarkColor, effectiveMidColor, smoothstep(0.1, 0.55, y));
+    }
+    // Dither creates texture within each band
+    vec3 bandBright = bandTarget;
+    vec3 bandDim = bandTarget * 0.82;
+    vec3 flagColor = mix(bandDim, bandBright, dithered);
+
+    // Blend between standard and flag based on america mode
+    vec3 finalColor = mix(standardColor, flagColor, u_americaMode);
 
     gl_FragColor = vec4(finalColor, 1.0);
   }
@@ -337,9 +362,11 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     const mouseUniformLocation = gl.getUniformLocation(program, 'u_mouse');
     const sunOffsetUniformLocation = gl.getUniformLocation(program, 'u_sunOffset');
     const lightColorLocation = gl.getUniformLocation(program, 'u_lightColor');
+    const midColorLocation = gl.getUniformLocation(program, 'u_midColor');
     const darkColorLocation = gl.getUniformLocation(program, 'u_darkColor');
     const sunGlowColorLocation = gl.getUniformLocation(program, 'u_sunGlowColor');
     const darkModeLocation = gl.getUniformLocation(program, 'u_darkMode');
+    const americaModeLocation = gl.getUniformLocation(program, 'u_americaMode');
 
     // Mouse tracking state
     let mouseX = -1000;
@@ -351,9 +378,11 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
 
     // Smoothed color values (start at light mode)
     let curLight = [...LIGHT_COLORS.light];
+    let curMid = [...LIGHT_COLORS.mid];
     let curDark = [...LIGHT_COLORS.dark];
     let curGlow = [...LIGHT_COLORS.sunGlow];
     let curDarkModeVal = 0;
+    let curAmericaModeVal = 0;
 
     // Mouse event handler
     const handlePointerMove = (e: PointerEvent) => {
@@ -425,14 +454,17 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
         ? (isDark ? AMERICA_DARK_COLORS : AMERICA_LIGHT_COLORS)
         : (isDark ? DARK_COLORS : LIGHT_COLORS);
       const targetDarkModeVal = isDark ? 1 : 0;
+      const targetAmericaModeVal = isAmerica ? 1 : 0;
 
       // Smoothly interpolate colors for seamless transition
       for (let i = 0; i < 3; i++) {
         curLight[i] += (targetColors.light[i] - curLight[i]) * COLOR_EASING;
+        curMid[i] += (targetColors.mid[i] - curMid[i]) * COLOR_EASING;
         curDark[i] += (targetColors.dark[i] - curDark[i]) * COLOR_EASING;
         curGlow[i] += (targetColors.sunGlow[i] - curGlow[i]) * COLOR_EASING;
       }
       curDarkModeVal += (targetDarkModeVal - curDarkModeVal) * COLOR_EASING;
+      curAmericaModeVal += (targetAmericaModeVal - curAmericaModeVal) * COLOR_EASING;
 
       // Smooth mouse movement
       smoothMouseX += (mouseX - smoothMouseX) * MOUSE_EASING;
@@ -475,9 +507,11 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       gl.uniform2f(mouseUniformLocation, smoothMouseX, smoothMouseY);
       gl.uniform2f(sunOffsetUniformLocation, sunOffsetX, sunOffsetY);
       gl.uniform3f(lightColorLocation, curLight[0], curLight[1], curLight[2]);
+      gl.uniform3f(midColorLocation, curMid[0], curMid[1], curMid[2]);
       gl.uniform3f(darkColorLocation, curDark[0], curDark[1], curDark[2]);
       gl.uniform3f(sunGlowColorLocation, curGlow[0], curGlow[1], curGlow[2]);
       gl.uniform1f(darkModeLocation, curDarkModeVal);
+      gl.uniform1f(americaModeLocation, curAmericaModeVal);
 
       // Bind position buffer
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);

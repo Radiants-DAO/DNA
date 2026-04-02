@@ -84,6 +84,7 @@ export const ICON_16_TO_24: Record<string, string> = {
   'moon': 'weather-moon',
   'multiple-images': 'photography-frame-picture',
   'music-8th-notes': 'music-notes-music-1',
+  'newspaper': 'content-files-newspaper',
   'paper-plane': 'send-email',
   'pause': 'video-movies-square-off',
   'pencil': 'design-pencil',
