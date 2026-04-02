@@ -12,6 +12,7 @@ const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
 const AmericaApp = lazy(() => import('@/components/apps/AmericaApp'));
+const ShipPrettyApp = lazy(() => import('@/components/apps/ShipPrettyApp'));
 // ============================================================================
 // Types
 // ============================================================================
@@ -136,6 +137,17 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     defaultSize: { width: '48rem', height: '24rem' },
     resizable: true,
     contentPadding: false,
+  },
+  {
+    id: 'ship-pretty',
+    windowTitle: 'Ship Pretty or Die',
+    windowIcon: <Icon name="document" large />,
+    component: ShipPrettyApp,
+    defaultSize: { width: '42rem', height: '32rem' },
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    startMenuSection: 'apps',
   },
   {
     id: 'studio',
