@@ -39,6 +39,8 @@ interface RadioProps {
   className?: string;
   /** Controlled checked state (standalone mode) */
   checked?: boolean;
+  /** Uncontrolled initial checked state (standalone mode) */
+  defaultChecked?: boolean;
   /** Value for use inside RadioGroup */
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -218,6 +220,7 @@ export function Radio({
   className = '',
   disabled,
   checked,
+  defaultChecked,
   onChange,
   name,
   value,
@@ -276,26 +279,30 @@ export function Radio({
   }
 
   // Standalone mode — wrap in own group for backwards compat with checked/onChange API
-  const uncheckedValue = '__rdna-radio-unchecked__';
-  const isChecked = checked === true;
+  const isControlled = checked !== undefined;
+
+  const handleValueChange = () => {
+    if (onChange) {
+      const syntheticEvent = {
+        target: { checked: true, name, value, type: 'radio' },
+        currentTarget: { checked: true, name, value, type: 'radio' },
+        preventDefault: () => {},
+        stopPropagation: () => {},
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(syntheticEvent);
+    }
+  };
 
   return (
     <label
       className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <BaseRadioGroup
-        value={isChecked ? radioValue : uncheckedValue}
-        onValueChange={() => {
-          if (onChange) {
-            const syntheticEvent = {
-              target: { checked: true, name, value, type: 'radio' },
-              currentTarget: { checked: true, name, value, type: 'radio' },
-              preventDefault: () => {},
-              stopPropagation: () => {},
-            } as React.ChangeEvent<HTMLInputElement>;
-            onChange(syntheticEvent);
-          }
-        }}
+        {...(isControlled
+          ? { value: checked ? radioValue : '__rdna-radio-unchecked__' }
+          : { defaultValue: defaultChecked ? radioValue : undefined }
+        )}
+        onValueChange={handleValueChange}
         name={name}
         disabled={disabled}
         required={required}

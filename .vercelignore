@@ -1,0 +1,17 @@
+# Large directories not needed for rad-os build
+archive/
+ideas/
+docs/
+references/
+tests/
+ops/
+fonts/
+.claude/
+.auto-claude/
+
+# Tool apps (not part of rad-os)
+tools/playground/
+
+# Templates
+templates/
+packages/create/

@@ -59,3 +59,4 @@ coverage/
 
 # Collaborator app state
 .collaborator/
+.vercel
