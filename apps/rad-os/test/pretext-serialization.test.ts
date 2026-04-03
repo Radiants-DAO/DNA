@@ -24,6 +24,38 @@ const sampleSettings: PretextDocumentSettings = {
   assets: {},
 };
 
+const sampleBroadsheetSettings: PretextDocumentSettings = {
+  version: 1,
+  id: 'doc-2',
+  title: 'News',
+  slug: 'news',
+  primitive: 'broadsheet',
+  preview: { windowWidth: 960, windowHeight: 720, density: 'comfortable' },
+  primitiveSettings: {
+    primitive: 'broadsheet',
+    columns: 3,
+    masthead: 'The Daily',
+    heroWrap: 'leftSide',
+  },
+  assets: {},
+};
+
+const sampleBookSettings: PretextDocumentSettings = {
+  version: 1,
+  id: 'doc-3',
+  title: 'Book',
+  slug: 'book',
+  primitive: 'book',
+  preview: { windowWidth: 680, windowHeight: 880, density: 'comfortable' },
+  primitiveSettings: {
+    primitive: 'book',
+    pageWidth: 612,
+    pageHeight: 792,
+    columns: 1,
+  },
+  assets: {},
+};
+
 describe('pretext bundle serialization', () => {
   it('round-trips markdown + settings', () => {
     const bundle = {
@@ -85,13 +117,92 @@ describe('validateSettings', () => {
       validateSettings({
         ...sampleSettings,
         primitive: 'editorial',
-        primitiveSettings: { ...sampleSettings.primitiveSettings, primitive: 'book' },
+        primitiveSettings: {
+          ...sampleSettings.primitiveSettings,
+          primitive: 'book',
+        },
       }),
     ).toThrow(/primitiveSettings\.primitive/);
   });
 
-  it('accepts valid settings', () => {
+  it('accepts valid editorial settings', () => {
     expect(validateSettings(sampleSettings)).toEqual(sampleSettings);
+  });
+
+  it('accepts valid broadsheet settings', () => {
+    expect(validateSettings(sampleBroadsheetSettings)).toEqual(
+      sampleBroadsheetSettings,
+    );
+  });
+
+  it('accepts valid book settings', () => {
+    expect(validateSettings(sampleBookSettings)).toEqual(sampleBookSettings);
+  });
+
+  // Per-primitive validation
+  it('rejects editorial with missing dropCap', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleSettings,
+        primitiveSettings: { primitive: 'editorial' },
+      }),
+    ).toThrow(/dropCap/);
+  });
+
+  it('rejects editorial with invalid columnCount', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleSettings,
+        primitiveSettings: {
+          ...sampleSettings.primitiveSettings,
+          columnCount: 5,
+        },
+      }),
+    ).toThrow(/columnCount/);
+  });
+
+  it('rejects broadsheet with missing columns', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleBroadsheetSettings,
+        primitiveSettings: { primitive: 'broadsheet' },
+      }),
+    ).toThrow(/columns/);
+  });
+
+  it('rejects broadsheet with invalid heroWrap', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleBroadsheetSettings,
+        primitiveSettings: {
+          ...sampleBroadsheetSettings.primitiveSettings,
+          heroWrap: 'top',
+        },
+      }),
+    ).toThrow(/heroWrap/);
+  });
+
+  it('rejects book with missing pageWidth', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleBookSettings,
+        primitiveSettings: { primitive: 'book', columns: 1 },
+      }),
+    ).toThrow(/pageWidth/);
+  });
+
+  it('rejects book with non-numeric pageHeight', () => {
+    expect(() =>
+      validateSettings({
+        ...sampleBookSettings,
+        primitiveSettings: {
+          primitive: 'book',
+          pageWidth: 612,
+          pageHeight: 'tall',
+          columns: 1,
+        },
+      }),
+    ).toThrow(/pageHeight/);
   });
 });
 
@@ -102,7 +213,9 @@ describe('deserializePretextBundleFromPaste', () => {
   });
 
   it('returns markdown-only for plain markdown', () => {
-    const result = deserializePretextBundleFromPaste('# Hello\n\nSome body text.');
+    const result = deserializePretextBundleFromPaste(
+      '# Hello\n\nSome body text.',
+    );
     expect(result.kind).toBe('markdown-only');
     if (result.kind === 'markdown-only') {
       expect(result.markdown).toBe('# Hello\n\nSome body text.');
@@ -132,6 +245,42 @@ describe('deserializePretextBundleFromPaste', () => {
   it('treats malformed fenced JSON as markdown-only', () => {
     const text = '# Title\n\n```json\n{not valid json}\n```';
     const result = deserializePretextBundleFromPaste(text);
+    expect(result.kind).toBe('markdown-only');
+  });
+
+  // Finding 1: settings-shaped JSON with bad data must throw, not downgrade
+  it('throws on pasted JSON with wrong version', () => {
+    const badSettings = { ...sampleSettings, version: 2 };
+    expect(() =>
+      deserializePretextBundleFromPaste(JSON.stringify(badSettings)),
+    ).toThrow(/version/);
+  });
+
+  it('throws on pasted JSON with invalid primitive', () => {
+    const badSettings = { ...sampleSettings, primitive: 'zine' };
+    expect(() =>
+      deserializePretextBundleFromPaste(JSON.stringify(badSettings)),
+    ).toThrow(/primitive/);
+  });
+
+  it('throws on fenced settings with invalid primitive', () => {
+    const badSettings = { ...sampleSettings, primitive: 'zine' };
+    const text = `# Title\n\n\`\`\`json\n${JSON.stringify(badSettings)}\n\`\`\``;
+    expect(() => deserializePretextBundleFromPaste(text)).toThrow(/primitive/);
+  });
+
+  it('throws on fenced settings with missing per-primitive fields', () => {
+    const badSettings = {
+      ...sampleBookSettings,
+      primitiveSettings: { primitive: 'book' },
+    };
+    const text = `# Title\n\n\`\`\`json\n${JSON.stringify(badSettings)}\n\`\`\``;
+    expect(() => deserializePretextBundleFromPaste(text)).toThrow(/pageWidth/);
+  });
+
+  it('treats non-settings JSON as markdown-only', () => {
+    // Valid JSON but not settings-shaped (no version/primitive keys)
+    const result = deserializePretextBundleFromPaste('{"name":"test","items":[1,2]}');
     expect(result.kind).toBe('markdown-only');
   });
 });

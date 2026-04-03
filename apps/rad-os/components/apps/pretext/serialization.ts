@@ -20,6 +20,64 @@ export function serializePretextBundle(
   };
 }
 
+/** Returns true when the value looks like a settings object (has version or primitive key). */
+function looksLikeSettings(value: unknown): value is Record<string, unknown> {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    ('version' in value || 'primitive' in value)
+  );
+}
+
+function requireNumber(obj: Record<string, unknown>, key: string, label: string): void {
+  if (typeof obj[key] !== 'number') {
+    throw new Error(`Invalid settings: ${label} must be a number, got ${typeof obj[key]}`);
+  }
+}
+
+function requireString(obj: Record<string, unknown>, key: string, label: string): void {
+  if (typeof obj[key] !== 'string') {
+    throw new Error(`Invalid settings: ${label} must be a string, got ${typeof obj[key]}`);
+  }
+}
+
+function validateEditorialSettings(ps: Record<string, unknown>): void {
+  if (typeof ps.dropCap !== 'boolean') {
+    throw new Error('Invalid editorial settings: dropCap must be a boolean');
+  }
+  if (typeof ps.pullquote !== 'boolean') {
+    throw new Error('Invalid editorial settings: pullquote must be a boolean');
+  }
+  if (ps.columnCount !== 1 && ps.columnCount !== 2) {
+    throw new Error('Invalid editorial settings: columnCount must be 1 or 2');
+  }
+}
+
+function validateBroadsheetSettings(ps: Record<string, unknown>): void {
+  if (ps.columns !== 2 && ps.columns !== 3) {
+    throw new Error('Invalid broadsheet settings: columns must be 2 or 3');
+  }
+  requireString(ps, 'masthead', 'broadsheet masthead');
+  const validWraps = ['leftSide', 'rightSide', 'both'];
+  if (!validWraps.includes(ps.heroWrap as string)) {
+    throw new Error(`Invalid broadsheet settings: heroWrap must be one of: ${validWraps.join(', ')}`);
+  }
+}
+
+function validateBookSettings(ps: Record<string, unknown>): void {
+  requireNumber(ps, 'pageWidth', 'book pageWidth');
+  requireNumber(ps, 'pageHeight', 'book pageHeight');
+  if (ps.columns !== 1 && ps.columns !== 2) {
+    throw new Error('Invalid book settings: columns must be 1 or 2');
+  }
+}
+
+const primitiveValidators: Record<string, (ps: Record<string, unknown>) => void> = {
+  editorial: validateEditorialSettings,
+  broadsheet: validateBroadsheetSettings,
+  book: validateBookSettings,
+};
+
 export function validateSettings(parsed: unknown): PretextDocumentSettings {
   if (!parsed || typeof parsed !== 'object') {
     throw new Error('Invalid settings: expected an object');
@@ -53,11 +111,15 @@ export function validateSettings(parsed: unknown): PretextDocumentSettings {
   if (!ps || typeof ps !== 'object') {
     throw new Error('Invalid settings: missing primitiveSettings');
   }
-  if ((ps as Record<string, unknown>).primitive !== obj.primitive) {
+  const psObj = ps as Record<string, unknown>;
+  if (psObj.primitive !== obj.primitive) {
     throw new Error(
-      `primitiveSettings.primitive ("${(ps as Record<string, unknown>).primitive}") must match primitive ("${obj.primitive}")`,
+      `primitiveSettings.primitive ("${psObj.primitive}") must match primitive ("${obj.primitive}")`,
     );
   }
+
+  // Validate per-primitive required fields
+  primitiveValidators[obj.primitive as string](psObj);
 
   return parsed as PretextDocumentSettings;
 }
@@ -110,28 +172,36 @@ export type PasteResult =
 export function deserializePretextBundleFromPaste(text: string): PasteResult {
   if (!text.trim()) return { kind: 'empty' };
 
-  // Try parsing as pure JSON settings
+  // Try parsing as pure JSON — if it looks like settings, validate strictly (throws on bad data)
   try {
     const parsed = JSON.parse(text);
-    if (parsed && typeof parsed === 'object' && isPrimitiveKind(parsed.primitive as string)) {
+    if (looksLikeSettings(parsed)) {
       const settings = validateSettings(parsed);
       return { kind: 'settings-only', settings };
     }
+    // Valid JSON but not settings-shaped — fall through to markdown
   } catch {
-    // Not pure JSON — continue
+    // Not valid JSON at all — continue to fenced / plain markdown
   }
 
   // Try markdown with fenced JSON settings block at the end
   const fencePattern = /\n```(?:json)?\s*\n(\{[\s\S]*\})\s*\n```\s*$/;
   const match = text.match(fencePattern);
   if (match) {
+    let fencedJson: unknown;
     try {
-      const settings = validateSettings(JSON.parse(match[1]));
+      fencedJson = JSON.parse(match[1]);
+    } catch {
+      // Not valid JSON in fence — treat entire text as markdown
+      return { kind: 'markdown-only', markdown: text };
+    }
+    // If the fenced block looks like settings, validate strictly (throws on bad data)
+    if (looksLikeSettings(fencedJson)) {
+      const settings = validateSettings(fencedJson);
       const markdown = text.slice(0, match.index!).trimEnd();
       return { kind: 'full', markdown, settings };
-    } catch {
-      // Malformed JSON in fence — treat as plain markdown
     }
+    // Fenced JSON that isn't settings-shaped — treat as markdown
   }
 
   // Plain markdown
