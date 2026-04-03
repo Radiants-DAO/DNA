@@ -9,7 +9,7 @@ import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
 
 type ScrollAreaOrientation = 'vertical' | 'horizontal' | 'both';
 
-interface ScrollAreaRootProps {
+interface ScrollAreaRootProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Content to be scrollable */
   children: React.ReactNode;
   /** Additional classes for the root container */
@@ -51,9 +51,10 @@ interface ViewportProps {
 function Viewport({ children, className = '' }: ViewportProps): React.ReactNode {
   return (
     <BaseScrollArea.Viewport
+      data-rdna="scrollarea-viewport"
       className={`h-full ${className}`.trim()}
     >
-      <BaseScrollArea.Content>
+      <BaseScrollArea.Content data-rdna="scrollarea-content">
         {children}
       </BaseScrollArea.Content>
     </BaseScrollArea.Viewport>
@@ -99,6 +100,7 @@ function Root({
   className = '',
   style,
   orientation = 'vertical',
+  ...props
 }: ScrollAreaRootProps): React.ReactNode {
   const showVertical = orientation === 'vertical' || orientation === 'both';
   const showHorizontal = orientation === 'horizontal' || orientation === 'both';
@@ -108,6 +110,7 @@ function Root({
       data-rdna="scrollarea"
       className={`relative overflow-hidden ${className}`.trim()}
       style={style}
+      {...props}
     >
       <Viewport>{children}</Viewport>
       {showVertical && <VerticalScrollbar />}

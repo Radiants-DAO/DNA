@@ -10,7 +10,6 @@
     ".": "./index.css",
     "./tokens": "./tokens.css",
     "./dark": "./dark.css",
-    "./america": "./america.css",
     "./animations": "./animations.css",
     "./base": "./base.css",
     "./typography": "./typography.css",

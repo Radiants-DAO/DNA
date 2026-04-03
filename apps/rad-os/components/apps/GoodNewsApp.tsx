@@ -48,7 +48,14 @@ type El =
   | { kind: 'rule'; x: number; y: number; w: number; section: 'masthead' | 'editorial' }
   | { kind: 'masthead-text'; x: number; y: number; w: number; text: string; family: string; fontSize: number; bold: boolean; lh: number; align: 'left' | 'center' | 'right'; uppercase: boolean; letterSpacing: string }
 
-interface SpreadResult { els: El[]; height: number; baseFontSize: number; bodyLh: number; mastheadHeight: number }
+interface SpreadResult {
+  els: El[];
+  height: number;
+  baseFontSize: number;
+  bodyLh: number;
+  mastheadHeight: number;
+  dcGlyphW: number;
+}
 
 // ============================================================================
 // Obstacle avoidance — polygon hull wrapping (matches dynamic-layout demo)
@@ -104,10 +111,6 @@ const HEADING_SPECS = [
   { text: 'The Battlefield Widens for RadOS Agent Seats', family: "Mondwest", tier: '3xl' as FluidTierName, bold: true },
 ] as const;
 
-const DROP_CAP_SIZE = 80; // px — matches line-height for this font
-const DROP_CAP_LH_PX = 80; // line-height in px — must match render
-const DROP_CAP_FONT = `${DROP_CAP_LH_PX}px 'Waves Blackletter CPC'`;
-
 const PAT_TOKENS = [
   '--pat-checkerboard', '--pat-checkerboard-alt', '--pat-pinstripe-v', '--pat-pinstripe-v-wide',
   '--pat-pinstripe-h', '--pat-pinstripe-h-wide', '--pat-diagonal', '--pat-diagonal-dots',
@@ -151,7 +154,6 @@ function DropCapBox({
 }: DropCapProps) {
   const s = scale;
   const fontSize = DC_BASE.fontSize * s;
-  const lh = `${DC_BASE.lineHeight * s}px`;
   const borderWidth = DC_BASE.borderWidth * s;
   const maskSz = `${DC_BASE.patternScale * s}px`;
 
@@ -507,7 +509,6 @@ function computeLayout(
   function layMastheadTitle(x: number, w: number) {
     const fontSize = resolveFluidRaw(MASTHEAD.titleSize, containerWidth);
     const lh = Math.round(fontSize * 1.05);
-    const font = `${fontSize}px ${MASTHEAD.titleFamily}`;
     const prep = prepared.masthead.get('title');
     if (!prep) return;
     let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
@@ -533,8 +534,6 @@ function computeLayout(
   // Side columns for left/right info (use editorial column widths if 3-col, else stack)
   if (colCount >= 3) {
     const sideW = cols[0].width;
-    const centerX = cols[1].x;
-    const centerW = cols[1].width;
     const rightX = cols[2].x;
     const rightW = cols[2].width;
 
@@ -667,7 +666,7 @@ function computeLayout(
 // Component
 // ============================================================================
 
-export function GoodNewsApp({ windowId }: AppProps) {
+export function GoodNewsApp(_props: AppProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(790);
   const [result, setResult] = useState<SpreadResult | null>(null);

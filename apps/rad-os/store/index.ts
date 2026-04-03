@@ -31,7 +31,6 @@ export const useRadOSStore = create<RadOSState>()(
           volume: state.volume,
           reduceMotion: state.reduceMotion,
           darkMode: state.darkMode,
-          americaMode: state.americaMode,
           // Persist radio favorites
           radioFavorites: state.radioFavorites,
           // Don't persist windows (fresh start each session)
@@ -90,7 +89,6 @@ export const usePreferencesStore = () =>
       reduceMotion: state.reduceMotion,
       invertMode: state.invertMode,
       darkMode: state.darkMode,
-      americaMode: state.americaMode,
       setVolume: state.setVolume,
       setReduceMotion: state.setReduceMotion,
       toggleReduceMotion: state.toggleReduceMotion,
@@ -98,8 +96,6 @@ export const usePreferencesStore = () =>
       toggleInvertMode: state.toggleInvertMode,
       setDarkMode: state.setDarkMode,
       toggleDarkMode: state.toggleDarkMode,
-      setAmericaMode: state.setAmericaMode,
-      toggleAmericaMode: state.toggleAmericaMode,
     }))
   );
 

@@ -2717,16 +2717,11 @@
         "states": [
           {
             "name": "hover",
-            "type": "pseudo"
-          },
-          {
-            "name": "selected",
-            "type": "data",
-            "attribute": "data-state"
+            "driver": "wrapper"
           },
           {
             "name": "focus",
-            "type": "pseudo"
+            "driver": "wrapper"
           }
         ],
         "props": {
@@ -2815,9 +2810,11 @@
           }
         ],
         "tokenBindings": {
-          "background": "card",
-          "border": "line",
-          "text": "main"
+          "base": {
+            "background": "card",
+            "border": "line",
+            "text": "main"
+          }
         }
       },
       {

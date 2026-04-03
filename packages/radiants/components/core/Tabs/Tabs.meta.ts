@@ -100,18 +100,19 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
     },
   ],
   tokenBindings: {
-    background: "card",
-    border: "line",
-    text: "main",
+    base: {
+      background: "card",
+      border: "line",
+      text: "main",
+    },
   },
   registry: {
     category: "navigation",
     tags: ["sections", "switch", "tabs"],
     renderMode: "custom",
     states: [
-      { name: "hover", type: "pseudo" },
-      { name: "selected", type: "data", attribute: "data-state" },
-      { name: "focus", type: "pseudo" },
+      { name: "hover", driver: "wrapper" },
+      { name: "focus", driver: "wrapper" },
     ],
     exampleProps: {
       defaultValue: "design",

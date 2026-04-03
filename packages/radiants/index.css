@@ -20,6 +20,9 @@
 /* Base styles - box-sizing, body defaults, scrollbars */
 @import './base.css';
 
+/* AppWindow structural selectors */
+@import './components/core/AppWindow/appwindow.css';
+
 /* Animations - keyframes and utility classes */
 @import './animations.css';
 

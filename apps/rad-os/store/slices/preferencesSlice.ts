@@ -6,7 +6,6 @@ export interface PreferencesSlice {
   reduceMotion: boolean;
   invertMode: boolean;
   darkMode: boolean;
-  americaMode: boolean;
 
   // Actions
   setVolume: (volume: number) => void;
@@ -16,8 +15,6 @@ export interface PreferencesSlice {
   toggleInvertMode: () => void;
   setDarkMode: (darkMode: boolean) => void;
   toggleDarkMode: () => void;
-  setAmericaMode: (americaMode: boolean) => void;
-  toggleAmericaMode: () => void;
 }
 
 export const createPreferencesSlice: StateCreator<
@@ -30,7 +27,6 @@ export const createPreferencesSlice: StateCreator<
   reduceMotion: false,
   invertMode: false,
   darkMode: false,
-  americaMode: false,
 
   setVolume: (volume) => set({ volume: Math.max(0, Math.min(100, volume)) }),
 
@@ -48,9 +44,4 @@ export const createPreferencesSlice: StateCreator<
 
   toggleDarkMode: () =>
     set((state) => ({ darkMode: !state.darkMode })),
-
-  setAmericaMode: (americaMode) => set({ americaMode }),
-
-  toggleAmericaMode: () =>
-    set((state) => ({ americaMode: !state.americaMode })),
 });

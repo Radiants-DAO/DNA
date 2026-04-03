@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { AppWindow } from '@rdna/radiants/components/core';
 
 import type { PatternPlaygroundState } from './types';
 import { DEFAULT_STATE } from './presets';
@@ -21,32 +20,30 @@ export function PatternPlayground() {
   }, []);
 
   return (
-    <AppWindow.Content>
-      <div className="h-full flex flex-col">
-        <div className="flex-1 min-h-0 flex">
-          {/* ── Left: pattern picker sidebar ── */}
-          <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
-            <div className="px-3 py-2">
-              <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
-                Pattern
-              </span>
-              <PatternGridPicker
-                selected={state.pat}
-                onSelect={handlePatternSelect}
-                color={state.color}
-              />
-            </div>
-          </div>
-
-          {/* ── Right: preview area ── */}
-          <div className="flex-1 min-w-0 flex flex-col">
-            <PatternPreview state={state} />
+    <div className="h-full flex flex-col">
+      <div className="flex-1 min-h-0 flex">
+        {/* ── Left: pattern picker sidebar ── */}
+        <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
+          <div className="px-3 py-2">
+            <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
+              Pattern
+            </span>
+            <PatternGridPicker
+              selected={state.pat}
+              onSelect={handlePatternSelect}
+              color={state.color}
+            />
           </div>
         </div>
 
-        {/* ── Bottom: code output ── */}
-        <PatternCodeOutput state={state} />
+        {/* ── Right: preview area ── */}
+        <div className="flex-1 min-w-0 flex flex-col">
+          <PatternPreview state={state} />
+        </div>
       </div>
-    </AppWindow.Content>
+
+      {/* ── Bottom: code output ── */}
+      <PatternCodeOutput state={state} />
+    </div>
   );
 }

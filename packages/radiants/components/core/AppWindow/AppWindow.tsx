@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Button } from '../Button/Button';
-import { Icon } from '../Icon/Icon';
 import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
@@ -11,6 +10,9 @@ import { Tooltip } from '../Tooltip/Tooltip';
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
+type AppWindowShellStyle = React.CSSProperties & {
+  '--app-content-max-height': string;
+};
 
 export interface AppWindowPosition {
   x: number;
@@ -145,10 +147,12 @@ const PADDING_MAP: Record<NonNullable<AppWindowBodyProps['padding']>, string> = 
 
 interface AppWindowChromeContext {
   setNav: (content: React.ReactNode) => void;
-  setToolbar: (content: React.ReactNode) => void;
+  setToolbar: (content: { children: React.ReactNode; className: string } | null) => void;
+  contentPadding: boolean;
 }
 
 const AppWindowChromeCtx = React.createContext<AppWindowChromeContext | null>(null);
+const AppWindowContentDepthCtx = React.createContext(0);
 
 function renderWindowBodyShell({
   children,
@@ -183,9 +187,7 @@ function renderWindowBodyShell({
       className={shellClasses}
       style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
     >
-      <ScrollArea.Viewport>
-        {paddingClass ? <div className={paddingClass}>{children}</div> : children}
-      </ScrollArea.Viewport>
+      {paddingClass ? <div className={paddingClass}>{children}</div> : children}
     </ScrollArea.Root>
   );
 }
@@ -273,7 +275,9 @@ function AppWindowTitleBar({
 
   return (
     <div
-      className="flex items-center gap-3 pl-1 pr-2 py-1.5 h-fit cursor-move select-none"
+      className="relative"
+      data-aw="titlebar"
+      data-draggable={presentation === 'window' ? 'true' : 'false'}
       data-drag-handle={presentation === 'window' ? '' : undefined}
       style={presentation === 'window' ? { touchAction: 'none' } : undefined}
     >
@@ -457,23 +461,26 @@ function AppWindowNav({ value, onChange, children }: AppWindowNavProps) {
     }
   });
 
-  const navContent = (
-    <Tabs value={value} onValueChange={onChange} mode="chrome">
-      <Tabs.List>
-        {items.map((item) => (
-          <Tabs.Trigger key={item.value} value={item.value} icon={item.icon}>
-            {item.children}
-          </Tabs.Trigger>
-        ))}
-      </Tabs.List>
-    </Tabs>
+  const navContent = useMemo(
+    () => (
+      <Tabs value={value} onValueChange={onChange} mode="chrome">
+        <Tabs.List>
+          {items.map((item) => (
+            <Tabs.Trigger key={item.value} value={item.value} icon={item.icon}>
+              {item.children}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+      </Tabs>
+    ),
+    [items, onChange, value],
   );
 
   // Register nav content with AppWindow via context; render nothing here
   useEffect(() => {
     chrome?.setNav(navContent);
     return () => chrome?.setNav(null);
-  });
+  }, [chrome, navContent]);
 
   // Render inline if no AppWindow context (e.g., tests without AppWindow wrapper)
   if (!chrome) return navContent;
@@ -484,30 +491,36 @@ AppWindowNav.Item = AppWindowNavItem;
 
 function AppWindowToolbar({ children, className = '' }: AppWindowToolbarProps) {
   const chrome = React.useContext(AppWindowChromeCtx);
-
-  const toolbarContent = (
-    <div
-      className={`shrink-0 px-3 py-2 border-b border-ink bg-card flex items-center gap-3 ${className}`.trim()}
-      data-window-toolbar=""
-    >
-      {children}
-    </div>
-  );
+  const toolbarContent = useMemo(() => ({ children, className }), [children, className]);
 
   // Register toolbar content with AppWindow via context; render nothing here
   useEffect(() => {
     chrome?.setToolbar(toolbarContent);
     return () => chrome?.setToolbar(null);
-  });
+  }, [chrome, toolbarContent]);
 
   // Render inline if no AppWindow context (e.g., tests without AppWindow wrapper)
-  if (!chrome) return toolbarContent;
+  if (!chrome) {
+    return (
+      <div
+        className={className.trim()}
+        data-aw="toolbar"
+        data-window-toolbar=""
+      >
+        {children}
+      </div>
+    );
+  }
   return null;
 }
 AppWindowToolbar.displayName = 'AppWindow.Toolbar';
 
 function AppWindowBanner({ children, className = '' }: AppWindowBannerProps) {
-  return <div className={`shrink-0 ${className}`.trim()}>{children}</div>;
+  return (
+    <div className={className.trim()} data-aw="banner">
+      {children}
+    </div>
+  );
 }
 AppWindowBanner.displayName = 'AppWindow.Banner';
 
@@ -520,27 +533,36 @@ function AppWindowIsland({
   width,
   className = '',
 }: AppWindowIslandProps) {
-  const sizeClass = width ? `shrink-0 ${width}` : 'flex-1 min-w-0';
+  const sizeClass = width ? `shrink-0 min-h-0 ${width}` : 'flex-1 min-w-0 min-h-0';
   const paddingClass = PADDING_MAP[padding];
   const cornerClass = corners === 'pixel' ? 'pixel-rounded-sm' : corners === 'none' ? '' : 'border border-line rounded';
 
   if (noScroll) {
     return (
-      <div className={`${sizeClass} min-h-0 ${cornerClass} ${bgClassName} ${className}`.trim()}>
-        <div className={`h-full ${paddingClass}`.trim()}>{children}</div>
+      <div
+        className={`${sizeClass} ${cornerClass} ${bgClassName} ${className}`.trim()}
+        data-aw="island"
+      >
+        <div
+          className={paddingClass}
+          data-aw="island-pad"
+          data-fill="true"
+        >
+          {children}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={`${sizeClass} min-h-0 ${cornerClass} ${bgClassName} ${className}`.trim()}>
-      <ScrollArea.Root
-        className="h-full"
-        style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
-      >
-        <ScrollArea.Viewport className="h-full overflow-x-hidden">
-          {paddingClass ? <div className={paddingClass}>{children}</div> : children}
-        </ScrollArea.Viewport>
+    <div
+      className={`${sizeClass} ${cornerClass} ${bgClassName} ${className}`.trim()}
+      data-aw="island"
+    >
+      <ScrollArea.Root className="" data-aw="island-scroll">
+        <div className={paddingClass} data-aw="island-pad">
+          {children}
+        </div>
       </ScrollArea.Root>
     </div>
   );
@@ -548,9 +570,14 @@ function AppWindowIsland({
 AppWindowIsland.displayName = 'AppWindow.Island';
 
 function AppWindowContent({ children, layout = 'single', className = '' }: AppWindowContentProps) {
-  if (layout === 'bleed') {
-    return <div className={`h-full flex flex-col ${className}`.trim()}>{children}</div>;
-  }
+  const chrome = React.useContext(AppWindowChromeCtx);
+  const contentDepth = React.useContext(AppWindowContentDepthCtx);
+
+  useEffect(() => {
+    if (contentDepth > 0 && process.env.NODE_ENV !== 'production') {
+      console.warn('AppWindow.Content should not be nested inside another AppWindow.Content. Use AppWindow.Island or a plain layout wrapper instead.');
+    }
+  }, [contentDepth]);
 
   // Separate Banner children from Islands/other content
   const banners: React.ReactNode[] = [];
@@ -563,14 +590,20 @@ function AppWindowContent({ children, layout = 'single', className = '' }: AppWi
     }
   });
 
-  const isRow = layout === 'split' || layout === 'sidebar';
-  const layoutClass = isRow ? 'flex gap-1.5' : 'flex flex-col';
-
   return (
-    <div className={`h-full flex flex-col px-1.5 pb-1.5 ${className}`.trim()}>
-      {banners}
-      <div className={`flex-1 min-h-0 ${layoutClass}`}>{rest}</div>
-    </div>
+    <AppWindowContentDepthCtx.Provider value={contentDepth + 1}>
+      <div
+        className={className.trim()}
+        data-aw="stage"
+        data-layout={layout}
+        data-content-padding={chrome?.contentPadding ? 'true' : 'false'}
+      >
+        {banners}
+        <div data-aw="layout" data-layout={layout}>
+          {rest}
+        </div>
+      </div>
+    </AppWindowContentDepthCtx.Provider>
   );
 }
 AppWindowContent.displayName = 'AppWindow.Content';
@@ -615,11 +648,11 @@ function AppWindow({
 
   // --- Context for compound children (state-registration) ---
   const [navContent, setNavContent] = useState<React.ReactNode>(null);
-  const [toolbarContent, setToolbarContent] = useState<React.ReactNode>(null);
+  const [toolbarContent, setToolbarContent] = useState<{ children: React.ReactNode; className: string } | null>(null);
 
   const chromeCtx = useMemo<AppWindowChromeContext>(
-    () => ({ setNav: setNavContent, setToolbar: setToolbarContent }),
-    [],
+    () => ({ setNav: setNavContent, setToolbar: setToolbarContent, contentPadding }),
+    [contentPadding],
   );
 
   // --- Toolbar height measurement via ref callback ---
@@ -856,93 +889,140 @@ function AppWindow({
     ? actualWindowHeight - TITLE_BAR_HEIGHT - toolbarHeight - CHROME_PADDING
     : getMaxContentHeight(viewportBottomInset) - toolbarHeight;
   const hasExplicitWidth = effectiveSize?.width !== undefined;
+  const isWindowPresentation = presentation === 'window';
+  const isMobilePresentation = presentation === 'mobile';
+  const shellStyle: AppWindowShellStyle = {
+    zIndex,
+    background: isMobilePresentation
+      ? 'var(--color-page)'
+      : 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
+    '--app-content-max-height': `${maxContentHeight}px`,
+  };
 
-  if (presentation === 'mobile') {
-    return (
-      <div
-        ref={nodeRef}
-        role="dialog"
-        aria-labelledby={`window-title-${id}`}
-        className={`fixed inset-0 bg-page flex flex-col pointer-events-auto ${className}`.trim()}
-        style={{ zIndex }}
-        data-app-window={id}
-      >
-        <header
-          className="flex items-center justify-between px-4 py-3 bg-page border-b flex-shrink-0"
-          style={{ borderBottomColor: 'var(--color-rule)' }}
-        >
-          <span id={`window-title-${id}`} className="font-joystix text-sm text-main uppercase">
-            {title}
-          </span>
-          {onClose ? (
-            <Button
-              type="button"
-              quiet
-              size="sm"
-              onClick={onClose}
-              className="w-11 h-11 flex items-center justify-center hover:bg-hover active:bg-active pixel-rounded-sm -mr-2"
-              aria-label={`Close ${title}`}
-            >
-              <Icon name="close" size={16} className="text-main" />
-            </Button>
-          ) : null}
-        </header>
-        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
-        <main className="flex-1 overflow-auto @container">
-          <AppWindowChromeCtx.Provider value={chromeCtx}>
-            {children}
-          </AppWindowChromeCtx.Provider>
-        </main>
-      </div>
-    );
+  if (isWindowPresentation) {
+    shellStyle.width = effectiveSize?.width ?? 'fit-content';
+    shellStyle.height = effectiveSize?.height ?? 'fit-content';
+    shellStyle.minWidth = minSize.width;
+    shellStyle.minHeight = minSize.height;
+    shellStyle.maxWidth = effectiveMax.width;
+    shellStyle.maxHeight = effectiveMax.height;
+    shellStyle.boxShadow = 'var(--shadow-floating)';
   }
 
-  if (presentation === 'fullscreen') {
-    return (
-      <div
-        ref={nodeRef}
-        role="dialog"
-        aria-labelledby={`window-title-${id}`}
-        className={`
-          fixed inset-0 pointer-events-auto border border-line overflow-hidden flex flex-col p-0
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}
-        `.trim()}
-        style={{
-          zIndex,
-          background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
-        }}
-        onPointerDown={handleFocus}
-        onClick={handleFocus}
-        tabIndex={-1}
-        data-app-window={id}
-        data-fullscreen="true"
-        data-focused={focused || undefined}
-      >
-        <AppWindowTitleBar
-          id={id}
-          title={title}
-          icon={icon}
-          showCopyButton={showCopyButton}
-          showCloseButton={showCloseButton}
-          showFullscreenButton={showFullscreenButton}
-          showWidgetButton={showWidgetButton}
-          showActionButton={showActionButton}
-          actionButton={actionButton}
-          widgetActive={widgetActive}
-          presentation={presentation}
-          navContent={navContent}
-          onClose={onClose}
-          onFullscreen={onFullscreen}
-          onWidget={onWidget}
+  const shell = (
+    <div
+      ref={nodeRef}
+      role="dialog"
+      aria-labelledby={`window-title-${id}`}
+      className={`${isWindowPresentation ? 'pixel-rounded-md ' : ''}${hasExplicitWidth ? '@container ' : ''}${className}`.trim()}
+      style={shellStyle}
+      onPointerDown={handleFocus}
+      onClick={handleFocus}
+      tabIndex={-1}
+      data-app-window={id}
+      data-aw="window"
+      data-presentation={presentation}
+      data-fullscreen={presentation === 'fullscreen' ? 'true' : undefined}
+      data-resizable={isWindowPresentation && resizable ? 'true' : undefined}
+      data-focused={focused || undefined}
+    >
+      {!focused && isWindowPresentation ? (
+        <div
+          className="absolute inset-0 z-20 pointer-events-none"
+          style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
         />
-        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
-        <div className="flex-1 min-h-0 @container">
-          <AppWindowChromeCtx.Provider value={chromeCtx}>
-            {children}
-          </AppWindowChromeCtx.Provider>
+      ) : null}
+
+      <AppWindowTitleBar
+        id={id}
+        title={title}
+        icon={icon}
+        showCopyButton={isMobilePresentation ? false : showCopyButton}
+        showCloseButton={showCloseButton}
+        showFullscreenButton={isMobilePresentation ? false : showFullscreenButton}
+        showWidgetButton={isMobilePresentation ? false : showWidgetButton}
+        showActionButton={isMobilePresentation ? false : showActionButton}
+        actionButton={actionButton}
+        widgetActive={widgetActive}
+        presentation={presentation}
+        navContent={navContent}
+        onClose={onClose}
+        onFullscreen={onFullscreen}
+        onWidget={onWidget}
+      />
+
+      {toolbarContent ? (
+        <div
+          ref={toolbarRef}
+          className={toolbarContent.className.trim()}
+          data-aw="toolbar"
+          data-window-toolbar=""
+        >
+          {toolbarContent.children}
         </div>
-      </div>
-    );
+      ) : null}
+
+      <AppWindowChromeCtx.Provider value={chromeCtx}>
+        {children}
+      </AppWindowChromeCtx.Provider>
+
+      {isWindowPresentation && resizable ? (
+        <>
+          <div
+            className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-10"
+            data-resize-handle="nw"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'nw')}
+          />
+          <div
+            className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-10"
+            data-resize-handle="ne"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'ne')}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-10"
+            data-resize-handle="sw"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'sw')}
+          />
+          <div
+            className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize z-10"
+            data-resize-handle="se"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'se')}
+          />
+          <div
+            className="absolute top-0 left-3 right-3 h-2 cursor-ns-resize z-10"
+            data-resize-handle="n"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'n')}
+          />
+          <div
+            className="absolute bottom-0 left-3 right-3 h-2 cursor-ns-resize z-10"
+            data-resize-handle="s"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 's')}
+          />
+          <div
+            className="absolute left-0 top-3 bottom-3 w-2 cursor-ew-resize z-10"
+            data-resize-handle="w"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'w')}
+          />
+          <div
+            className="absolute right-0 top-3 bottom-3 w-2 cursor-ew-resize z-10"
+            data-resize-handle="e"
+            style={{ touchAction: 'none' }}
+            onPointerDown={(event) => handleResizeStart(event, 'e')}
+          />
+        </>
+      ) : null}
+    </div>
+  );
+
+  if (!isWindowPresentation) {
+    return shell;
   }
 
   return (
@@ -954,122 +1034,7 @@ function AppWindow({
       bounds="parent"
       disabled={isResizing}
     >
-      <div
-        ref={nodeRef}
-        role="dialog"
-        aria-labelledby={`window-title-${id}`}
-        className={`
-          absolute pointer-events-auto pixel-rounded-md flex flex-col p-0
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}
-        `.trim()}
-        style={{
-          position: 'absolute',
-          width: effectiveSize?.width ?? 'fit-content',
-          height: effectiveSize?.height ?? 'fit-content',
-          minWidth: minSize.width,
-          minHeight: minSize.height,
-          maxWidth: effectiveMax.width,
-          maxHeight: effectiveMax.height,
-          zIndex,
-          background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
-          boxShadow: 'var(--shadow-floating)',
-        }}
-        onPointerDown={handleFocus}
-        onClick={handleFocus}
-        tabIndex={-1}
-        data-app-window={id}
-        data-resizable={resizable}
-        data-focused={focused || undefined}
-      >
-        {!focused && (
-          <div
-            className="absolute inset-0 z-20 pointer-events-none"
-            style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
-          />
-        )}
-
-        <AppWindowTitleBar
-          id={id}
-          title={title}
-          icon={icon}
-          showCopyButton={showCopyButton}
-          showCloseButton={showCloseButton}
-          showFullscreenButton={showFullscreenButton}
-          showWidgetButton={showWidgetButton}
-          showActionButton={showActionButton}
-          actionButton={actionButton}
-          widgetActive={widgetActive}
-          presentation={presentation}
-          navContent={navContent}
-          onClose={onClose}
-          onFullscreen={onFullscreen}
-          onWidget={onWidget}
-        />
-
-        {toolbarContent && <div ref={toolbarRef}>{toolbarContent}</div>}
-
-        <div
-          className={`flex-1 min-h-0${hasExplicitWidth ? ' @container' : ''}${contentPadding ? ' pb-2' : ''}`}
-          style={{ '--app-content-max-height': `${maxContentHeight}px` } as React.CSSProperties}
-        >
-          <AppWindowChromeCtx.Provider value={chromeCtx}>
-            {children}
-          </AppWindowChromeCtx.Provider>
-        </div>
-
-        {resizable ? (
-          <>
-            <div
-              className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-10"
-              data-resize-handle="nw"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'nw')}
-            />
-            <div
-              className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-10"
-              data-resize-handle="ne"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'ne')}
-            />
-            <div
-              className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-10"
-              data-resize-handle="sw"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'sw')}
-            />
-            <div
-              className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize z-10"
-              data-resize-handle="se"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'se')}
-            />
-            <div
-              className="absolute top-0 left-3 right-3 h-2 cursor-ns-resize z-10"
-              data-resize-handle="n"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'n')}
-            />
-            <div
-              className="absolute bottom-0 left-3 right-3 h-2 cursor-ns-resize z-10"
-              data-resize-handle="s"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 's')}
-            />
-            <div
-              className="absolute left-0 top-3 bottom-3 w-2 cursor-ew-resize z-10"
-              data-resize-handle="w"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'w')}
-            />
-            <div
-              className="absolute right-0 top-3 bottom-3 w-2 cursor-ew-resize z-10"
-              data-resize-handle="e"
-              style={{ touchAction: 'none' }}
-              onPointerDown={(event) => handleResizeStart(event, 'e')}
-            />
-          </>
-        ) : null}
-      </div>
+      {shell}
     </Draggable>
   );
 }

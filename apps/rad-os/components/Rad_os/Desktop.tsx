@@ -1,10 +1,8 @@
 'use client';
 
-import { Suspense, useMemo, useRef } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { usePreferencesStore } from '@/store';
 import { useTypewriter } from '@/hooks/useTypewriter';
-import { usePush2 } from '@/hooks/usePush2';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
 import { DesktopIcon } from './DesktopIcon';
@@ -66,10 +64,7 @@ const TAGLINES = [
 ];
 
 export function Desktop({ className: _className = '' }: DesktopProps) {
-  usePush2();
-  const { toggleWidget, windows, openWindowWithZoom } = useWindowManager();
-  const { toggleAmericaMode } = usePreferencesStore();
-  const flagRef = useRef<HTMLButtonElement>(null);
+  const { toggleWidget, windows } = useWindowManager();
   const desktopApps = getDesktopLaunchers();
   const taglines = useMemo(() => TAGLINES, []);
   const { displayed, cursorVisible } = useTypewriter(taglines);
@@ -96,27 +91,6 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
         <div className="relative">
-          {/* America Mode flag — absolute above the logo, appears on hover */}
-          <button
-            ref={flagRef}
-            onClick={() => {
-              toggleAmericaMode();
-              const rect = flagRef.current?.getBoundingClientRect();
-              if (rect) {
-                openWindowWithZoom('america', { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
-              }
-            }}
-            aria-label="Toggle America Mode"
-            className="pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 hover:opacity-100 transition-opacity duration-base cursor-pointer"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- reason:static-pixel-art owner:rad-os expires:2026-12-31 issue:DNA-000 */}
-            <img
-              src="/assets/america-flag.png"
-              alt="America Mode"
-              className="w-36 h-36 object-contain"
-              style={{ imageRendering: 'pixelated' }}
-            />
-          </button>
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
