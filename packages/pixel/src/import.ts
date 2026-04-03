@@ -33,7 +33,7 @@ interface Shape {
 }
 
 const ATTRIBUTE_RE = /([\w:-]+)\s*=\s*(['"])(.*?)\2/g;
-const SHAPE_RE = /<(path|rect)\b([^>]*)\/?>/gi;
+const TAG_RE = /<\/?([a-zA-Z][\w:-]*)\b([^>]*)>/g;
 const TOKEN_RE = /[a-zA-Z]|[-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?/g;
 const CURVE_COMMAND_RE = /[CcSsQqTtAa]/;
 const EPSILON = 1e-9;
@@ -118,37 +118,50 @@ function collectShapes(
   offGridSeen: Set<string>,
 ): Shape[] {
   const shapes: Shape[] = [];
-  SHAPE_RE.lastIndex = 0;
+  const stack: Array<{ tagName: string; fillRule: FillRule }> = [];
+  TAG_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
 
-  while ((match = SHAPE_RE.exec(svg)) !== null) {
+  while ((match = TAG_RE.exec(svg)) !== null) {
+    const rawTag = match[0];
     const tag = match[1].toLowerCase();
+
+    if (rawTag.startsWith('</')) {
+      popTagContext(stack, tag);
+      continue;
+    }
+
     const attrs = parseAttributes(match[2]);
+    const fillRule = resolveFillRule(attrs['fill-rule'], stack.at(-1)?.fillRule);
+    const isSelfClosing = /\/\s*>$/.test(rawTag);
 
     if (attrs.fill === 'none') {
+      if (!isSelfClosing) {
+        stack.push({ tagName: tag, fillRule });
+      }
+
       continue;
     }
 
     if (tag === 'rect') {
       shapes.push({
-        fillRule: parseFillRule(attrs['fill-rule']),
+        fillRule,
         polygons: [
           rectToPolygon(attrs, viewBox, size, snapStep, report, offGridSeen),
         ],
       });
-      continue;
+    } else if (tag === 'path') {
+      const d = attrs.d;
+      if (d) {
+        shapes.push({
+          fillRule,
+          polygons: pathToPolygons(d, viewBox, size, snapStep, report, offGridSeen),
+        });
+      }
     }
 
-    if (tag === 'path') {
-      const d = attrs.d;
-      if (!d) {
-        continue;
-      }
-
-      shapes.push({
-        fillRule: parseFillRule(attrs['fill-rule']),
-        polygons: pathToPolygons(d, viewBox, size, snapStep, report, offGridSeen),
-      });
+    if (!isSelfClosing) {
+      stack.push({ tagName: tag, fillRule });
     }
   }
 
@@ -442,6 +455,42 @@ function parseFillRule(value: string | undefined): FillRule {
   }
 
   return 'nonzero';
+}
+
+function resolveFillRule(
+  localValue: string | undefined,
+  inheritedValue: FillRule | undefined,
+): FillRule {
+  if (localValue === 'inherit') {
+    return inheritedValue ?? 'nonzero';
+  }
+
+  if (localValue === undefined) {
+    return inheritedValue ?? 'nonzero';
+  }
+
+  return parseFillRule(localValue);
+}
+
+function popTagContext(
+  stack: Array<{ tagName: string; fillRule: FillRule }>,
+  tagName: string,
+): void {
+  if (stack.length === 0) {
+    return;
+  }
+
+  if (stack.at(-1)?.tagName === tagName) {
+    stack.pop();
+    return;
+  }
+
+  for (let i = stack.length - 1; i >= 0; i--) {
+    if (stack[i].tagName === tagName) {
+      stack.length = i;
+      return;
+    }
+  }
 }
 
 function pointInShape(point: Point, shape: Shape): boolean {

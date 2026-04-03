@@ -87,4 +87,24 @@ describe('svgToGrid', () => {
     expect(grid.bits[4 * 24 + 3]).toBe('1');
     expect(grid.bits[13 * 24 + 19]).toBe('1');
   });
+
+  it.each(['svg', 'g'] as const)(
+    'inherits evenodd fill-rule from <%s> ancestors',
+    (containerTag) => {
+      const path =
+        '<path d="M0.5 0.5H3.5V3.5H0.5ZM1.5 1.5H2.5V2.5H1.5Z" fill="#000001"/>';
+      const svg =
+        containerTag === 'svg'
+          ? `<svg width="4" height="4" viewBox="0 0 4 4" fill="none" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg">${path}</svg>`
+          : `<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill-rule="evenodd">${path}</g></svg>`;
+
+      const { grid } = svgToGrid(`evenodd-${containerTag}`, svg, {
+        size: 4,
+        snapStep: 0.5,
+      });
+
+      expect(grid.bits[1 * 4 + 1]).toBe('0');
+      expect(grid.bits[0]).toBe('1');
+    },
+  );
 });
