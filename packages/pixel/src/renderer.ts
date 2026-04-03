@@ -3,6 +3,12 @@ import type { PixelGrid } from './types.js';
 
 const parsedGridCache = new WeakMap<PixelGrid, Uint8Array>();
 
+function validatePixelSize(pixelSize: number): void {
+  if (!Number.isFinite(pixelSize) || pixelSize <= 0) {
+    throw new Error(`pixelSize must be greater than 0, received ${pixelSize}`);
+  }
+}
+
 function getParsed(grid: PixelGrid): Uint8Array {
   const cached = parsedGridCache.get(grid);
   if (cached) {
@@ -23,6 +29,7 @@ export function paintGrid(
   color: string,
   pixelSize: number,
 ): void {
+  validatePixelSize(pixelSize);
   const parsed = getParsed(grid);
   ctx.fillStyle = color;
 
@@ -48,6 +55,7 @@ export function paintTiledGrid(
   cssWidth: number,
   cssHeight: number,
 ): void {
+  validatePixelSize(pixelSize);
   const parsed = getParsed(grid);
   const tileWidth = grid.width * pixelSize;
   const tileHeight = grid.height * pixelSize;
@@ -78,6 +86,7 @@ export function createGridCanvas(
   color: string,
   pixelSize: number,
 ): HTMLCanvasElement {
+  validatePixelSize(pixelSize);
   const canvas = document.createElement('canvas');
   canvas.width = grid.width * pixelSize;
   canvas.height = grid.height * pixelSize;

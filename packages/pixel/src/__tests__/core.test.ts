@@ -41,7 +41,19 @@ describe('validateGrid', () => {
   it('throws when dimensions are not integers', () => {
     expect(() =>
       validateGrid({ name: 'test', width: 1.5, height: 2, bits: '101' }),
-    ).toThrow('width must be a non-negative integer');
+    ).toThrow('width must be a positive integer');
+  });
+
+  it('throws when width is zero', () => {
+    expect(() =>
+      validateGrid({ name: 'test', width: 0, height: 1, bits: '' }),
+    ).toThrow('width must be a positive integer');
+  });
+
+  it('throws when height is zero', () => {
+    expect(() =>
+      validateGrid({ name: 'test', width: 1, height: 0, bits: '' }),
+    ).toThrow('height must be a positive integer');
   });
 });
 

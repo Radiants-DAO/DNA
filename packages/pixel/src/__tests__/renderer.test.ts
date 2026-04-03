@@ -58,6 +58,15 @@ describe('paintTiledGrid', () => {
 
     expect(ctx.fillRect).toHaveBeenCalledTimes(4);
   });
+
+  it('throws when pixelSize is not positive', () => {
+    const grid = bitsToGrid('dot', 2, 2, '1000');
+    const { ctx } = mockCanvas(4, 4);
+
+    expect(() => paintTiledGrid(ctx, grid, '#000', 0, 4, 4)).toThrow(
+      'pixelSize must be greater than 0',
+    );
+  });
 });
 
 describe('createGridCanvas', () => {

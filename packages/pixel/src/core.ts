@@ -24,12 +24,12 @@ export function parseBits(bits: string): Uint8Array {
  * Validate that a grid's bit count matches its dimensions.
  */
 export function validateGrid(grid: PixelGrid): void {
-  if (!Number.isInteger(grid.width) || grid.width < 0) {
-    throw new Error(`width must be a non-negative integer, received ${grid.width}`);
+  if (!Number.isInteger(grid.width) || grid.width <= 0) {
+    throw new Error(`width must be a positive integer, received ${grid.width}`);
   }
 
-  if (!Number.isInteger(grid.height) || grid.height < 0) {
-    throw new Error(`height must be a non-negative integer, received ${grid.height}`);
+  if (!Number.isInteger(grid.height) || grid.height <= 0) {
+    throw new Error(`height must be a positive integer, received ${grid.height}`);
   }
 
   parseBits(grid.bits);
