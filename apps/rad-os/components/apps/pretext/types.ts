@@ -34,13 +34,30 @@ export type PrimitiveSettings =
   | BroadsheetSettings
   | BookSettings;
 
-export interface PretextDocumentSettings {
+/** Maps a primitive kind to its typed settings interface. */
+export type PrimitiveSettingsFor<K extends PretextPrimitiveKind> =
+  K extends 'editorial' ? EditorialSettings :
+  K extends 'broadsheet' ? BroadsheetSettings :
+  K extends 'book' ? BookSettings :
+  never;
+
+export interface PretextDocumentSettingsBase {
   version: 1;
   id: string;
   title: string;
   slug: string;
-  primitive: PretextPrimitiveKind;
   preview: PretextPreviewSettings;
-  primitiveSettings: PrimitiveSettings;
   assets: Record<string, string>;
 }
+
+export interface PretextDocumentSettingsOf<K extends PretextPrimitiveKind>
+  extends PretextDocumentSettingsBase {
+  primitive: K;
+  primitiveSettings: PrimitiveSettingsFor<K>;
+}
+
+/** Union of all concrete document settings. Use PretextDocumentSettingsOf<K> when the kind is known. */
+export type PretextDocumentSettings =
+  | PretextDocumentSettingsOf<'editorial'>
+  | PretextDocumentSettingsOf<'broadsheet'>
+  | PretextDocumentSettingsOf<'book'>;

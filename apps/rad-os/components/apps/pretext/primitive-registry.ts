@@ -2,8 +2,9 @@ import type {
   BookSettings,
   BroadsheetSettings,
   EditorialSettings,
-  PretextDocumentSettings,
+  PretextDocumentSettingsOf,
   PretextPrimitiveKind,
+  PrimitiveSettingsFor,
 } from './types';
 
 export const primitiveKinds: PretextPrimitiveKind[] = [
@@ -37,11 +38,11 @@ const defaultBook: BookSettings = {
   columns: 1,
 };
 
-const primitiveDefaults: Record<PretextPrimitiveKind, EditorialSettings | BroadsheetSettings | BookSettings> = {
+const primitiveDefaults = {
   editorial: defaultEditorial,
   broadsheet: defaultBroadsheet,
   book: defaultBook,
-};
+} satisfies Record<PretextPrimitiveKind, EditorialSettings | BroadsheetSettings | BookSettings>;
 
 const previewDefaults: Record<PretextPrimitiveKind, { windowWidth: number; windowHeight: number }> = {
   editorial: { windowWidth: 720, windowHeight: 900 },
@@ -49,7 +50,9 @@ const previewDefaults: Record<PretextPrimitiveKind, { windowWidth: number; windo
   book: { windowWidth: 680, windowHeight: 880 },
 };
 
-export function createDefaultSettings(kind: PretextPrimitiveKind): PretextDocumentSettings {
+export function createDefaultSettings<K extends PretextPrimitiveKind>(
+  kind: K,
+): PretextDocumentSettingsOf<K> {
   const preview = previewDefaults[kind];
   return {
     version: 1,
@@ -58,7 +61,7 @@ export function createDefaultSettings(kind: PretextPrimitiveKind): PretextDocume
     slug: '',
     primitive: kind,
     preview: { ...preview, density: 'comfortable' },
-    primitiveSettings: { ...primitiveDefaults[kind] },
+    primitiveSettings: { ...primitiveDefaults[kind] } as PrimitiveSettingsFor<K>,
     assets: {},
-  };
+  } as PretextDocumentSettingsOf<K>;
 }
