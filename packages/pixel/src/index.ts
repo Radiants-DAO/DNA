@@ -6,3 +6,13 @@ export type {
   PixelAnimation,
   CornerPosition,
 } from './types';
+
+export {
+  parseBits,
+  validateGrid,
+  bitsToGrid,
+  gridFromHex,
+  mirrorH,
+  mirrorV,
+  diffBits,
+} from './core';
