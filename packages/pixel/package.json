@@ -1,0 +1,53 @@
+{
+  "name": "@rdna/pixel",
+  "version": "0.1.0",
+  "description": "1-bit pixel engine — core grids, SVG/canvas renderers, transitions, icon import",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./core": {
+      "types": "./src/core.ts",
+      "import": "./src/core.ts"
+    },
+    "./renderer": {
+      "types": "./src/renderer.ts",
+      "import": "./src/renderer.ts"
+    },
+    "./svg": {
+      "types": "./src/svg.ts",
+      "import": "./src/svg.ts"
+    },
+    "./transition": {
+      "types": "./src/transition.ts",
+      "import": "./src/transition.ts"
+    },
+    "./corners": {
+      "types": "./src/corners.ts",
+      "import": "./src/corners.ts"
+    },
+    "./import": {
+      "types": "./src/import.ts",
+      "import": "./src/import.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:ci": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5",
+    "vitest": "^2.1.9"
+  }
+}
