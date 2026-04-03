@@ -93,6 +93,11 @@ export function animateTransition(
   duration: number,
   onFrame: (bits: string) => void,
 ): () => void {
+  if (flipOrder.length === 0 || duration <= 0) {
+    onFrame(interpolateFrame(from, to, flipOrder, 1));
+    return () => {};
+  }
+
   let startTime: number | null = null;
   let rafId = 0;
   let cancelled = false;
@@ -107,7 +112,7 @@ export function animateTransition(
     }
 
     const elapsed = timestamp - startTime;
-    const progress = duration <= 0 ? 1 : Math.min(elapsed / duration, 1);
+    const progress = Math.min(elapsed / duration, 1);
 
     onFrame(interpolateFrame(from, to, flipOrder, progress));
 

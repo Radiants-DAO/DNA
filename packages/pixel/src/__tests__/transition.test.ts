@@ -120,4 +120,86 @@ describe('animateTransition', () => {
       });
     }
   });
+
+  it('settles identical frames immediately without scheduling RAF', () => {
+    const requestAnimationFrame = vi.fn();
+    const cancelAnimationFrame = vi.fn();
+    const onFrame = vi.fn();
+
+    const previousRaf = globalThis.requestAnimationFrame;
+    const previousCancel = globalThis.cancelAnimationFrame;
+
+    Object.defineProperty(globalThis, 'requestAnimationFrame', {
+      configurable: true,
+      value: requestAnimationFrame,
+    });
+    Object.defineProperty(globalThis, 'cancelAnimationFrame', {
+      configurable: true,
+      value: cancelAnimationFrame,
+    });
+
+    try {
+      const cancel = animateTransition('1010', '1010', [], 100, onFrame);
+
+      expect(onFrame).toHaveBeenCalledTimes(1);
+      expect(onFrame).toHaveBeenCalledWith('1010');
+      expect(requestAnimationFrame).not.toHaveBeenCalled();
+
+      cancel();
+      expect(cancelAnimationFrame).not.toHaveBeenCalled();
+    } finally {
+      Object.defineProperty(globalThis, 'requestAnimationFrame', {
+        configurable: true,
+        value: previousRaf,
+      });
+      Object.defineProperty(globalThis, 'cancelAnimationFrame', {
+        configurable: true,
+        value: previousCancel,
+      });
+    }
+  });
+
+  it('settles duration <= 0 immediately without scheduling RAF', () => {
+    const requestAnimationFrame = vi.fn();
+    const cancelAnimationFrame = vi.fn();
+    const onFrame = vi.fn();
+
+    const previousRaf = globalThis.requestAnimationFrame;
+    const previousCancel = globalThis.cancelAnimationFrame;
+
+    Object.defineProperty(globalThis, 'requestAnimationFrame', {
+      configurable: true,
+      value: requestAnimationFrame,
+    });
+    Object.defineProperty(globalThis, 'cancelAnimationFrame', {
+      configurable: true,
+      value: cancelAnimationFrame,
+    });
+
+    try {
+      const cancel = animateTransition(
+        '11110000',
+        '00001111',
+        [0, 1, 2, 3, 4, 5, 6, 7],
+        0,
+        onFrame,
+      );
+
+      expect(onFrame).toHaveBeenCalledTimes(1);
+      expect(onFrame).toHaveBeenCalledWith('00001111');
+      expect(requestAnimationFrame).not.toHaveBeenCalled();
+
+      cancel();
+      expect(cancelAnimationFrame).not.toHaveBeenCalled();
+    } finally {
+      Object.defineProperty(globalThis, 'requestAnimationFrame', {
+        configurable: true,
+        value: previousRaf,
+      });
+      Object.defineProperty(globalThis, 'cancelAnimationFrame', {
+        configurable: true,
+        value: previousCancel,
+      });
+    }
+  });
 });
