@@ -7,9 +7,17 @@ import { describe, expect, it } from 'vitest';
 import { svgToGrid } from '../import';
 
 const FIXTURES_DIR = resolve(dirname(fileURLToPath(import.meta.url)), 'fixtures');
+const ICONS_24_DIR = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../../radiants/assets/icons/24px',
+);
 
 async function readFixture(name: string): Promise<string> {
   return readFile(resolve(FIXTURES_DIR, name), 'utf8');
+}
+
+async function readIcon24(name: string): Promise<string> {
+  return readFile(resolve(ICONS_24_DIR, name), 'utf8');
 }
 
 describe('svgToGrid', () => {
@@ -66,5 +74,17 @@ describe('svgToGrid', () => {
     expect(() => svgToGrid('diagonal', svg, { size: 4, snapStep: 0.5 })).toThrow(
       'Diagonal path segments are not supported',
     );
+  });
+
+  it('preserves compound-path holes from real 24px icons', async () => {
+    const svg = await readIcon24('coding-apps-websites-music-player.svg');
+    const { grid } = svgToGrid('music-player', svg, {
+      size: 24,
+      snapStep: 0.5,
+    });
+
+    expect(grid.bits[8 * 24 + 12]).toBe('0');
+    expect(grid.bits[4 * 24 + 3]).toBe('1');
+    expect(grid.bits[13 * 24 + 19]).toBe('1');
   });
 });

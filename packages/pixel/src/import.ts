@@ -18,11 +18,18 @@ interface Point {
   y: number;
 }
 
+type FillRule = 'nonzero' | 'evenodd';
+
 interface ViewBox {
   minX: number;
   minY: number;
   width: number;
   height: number;
+}
+
+interface Shape {
+  fillRule: FillRule;
+  polygons: Point[][];
 }
 
 const ATTRIBUTE_RE = /([\w:-]+)\s*=\s*(['"])(.*?)\2/g;
@@ -48,14 +55,14 @@ export function svgToGrid(
   const offGridSeen = new Set<string>();
   const snapStep = options.snapStep ?? 0.5;
   const viewBox = parseViewBox(svg);
-  const polygons = collectPolygons(svg, viewBox, options.size, snapStep, report, offGridSeen);
+  const shapes = collectShapes(svg, viewBox, options.size, snapStep, report, offGridSeen);
 
   const bits: string[] = Array(options.size * options.size).fill('0');
 
   for (let y = 0; y < options.size; y++) {
     for (let x = 0; x < options.size; x++) {
       const sample = { x: x + 1, y: y + 1 };
-      if (polygons.some((polygon) => pointInPolygon(sample, polygon))) {
+      if (shapes.some((shape) => pointInShape(sample, shape))) {
         bits[y * options.size + x] = '1';
       }
     }
@@ -102,15 +109,15 @@ function parseViewBox(svg: string): ViewBox {
   return { minX, minY, width, height };
 }
 
-function collectPolygons(
+function collectShapes(
   svg: string,
   viewBox: ViewBox,
   size: number,
   snapStep: 1 | 0.5,
   report: ImportReport,
   offGridSeen: Set<string>,
-): Point[][] {
-  const polygons: Point[][] = [];
+): Shape[] {
+  const shapes: Shape[] = [];
   SHAPE_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -123,9 +130,12 @@ function collectPolygons(
     }
 
     if (tag === 'rect') {
-      polygons.push(
-        rectToPolygon(attrs, viewBox, size, snapStep, report, offGridSeen),
-      );
+      shapes.push({
+        fillRule: parseFillRule(attrs['fill-rule']),
+        polygons: [
+          rectToPolygon(attrs, viewBox, size, snapStep, report, offGridSeen),
+        ],
+      });
       continue;
     }
 
@@ -135,13 +145,14 @@ function collectPolygons(
         continue;
       }
 
-      polygons.push(
-        ...pathToPolygons(d, viewBox, size, snapStep, report, offGridSeen),
-      );
+      shapes.push({
+        fillRule: parseFillRule(attrs['fill-rule']),
+        polygons: pathToPolygons(d, viewBox, size, snapStep, report, offGridSeen),
+      });
     }
   }
 
-  return polygons;
+  return shapes;
 }
 
 function parseAttributes(source: string): Record<string, string> {
@@ -425,7 +436,47 @@ function parseRequiredNumber(value: string | undefined, label: string): number {
   return parsed;
 }
 
-function pointInPolygon(point: Point, polygon: Point[]): boolean {
+function parseFillRule(value: string | undefined): FillRule {
+  if (value === 'evenodd') {
+    return 'evenodd';
+  }
+
+  return 'nonzero';
+}
+
+function pointInShape(point: Point, shape: Shape): boolean {
+  if (shape.fillRule === 'evenodd') {
+    let crossings = 0;
+
+    for (const polygon of shape.polygons) {
+      const winding = windingNumber(point, polygon);
+      if (winding === null) {
+        return true;
+      }
+
+      if (winding !== 0) {
+        crossings += 1;
+      }
+    }
+
+    return crossings % 2 === 1;
+  }
+
+  let totalWinding = 0;
+
+  for (const polygon of shape.polygons) {
+    const winding = windingNumber(point, polygon);
+    if (winding === null) {
+      return true;
+    }
+
+    totalWinding += winding;
+  }
+
+  return totalWinding !== 0;
+}
+
+function windingNumber(point: Point, polygon: Point[]): number | null {
   let winding = 0;
 
   for (let i = 0; i < polygon.length; i++) {
@@ -433,7 +484,7 @@ function pointInPolygon(point: Point, polygon: Point[]): boolean {
     const end = polygon[(i + 1) % polygon.length];
 
     if (pointOnSegment(point, start, end)) {
-      return true;
+      return null;
     }
 
     if (start.y <= point.y) {
@@ -445,7 +496,7 @@ function pointInPolygon(point: Point, polygon: Point[]): boolean {
     }
   }
 
-  return winding !== 0;
+  return winding;
 }
 
 function pointOnSegment(point: Point, start: Point, end: Point): boolean {
