@@ -34,6 +34,10 @@
     "./transition": {
       "types": "./dist/transition.d.ts",
       "import": "./dist/transition.js"
+    },
+    "./corners": {
+      "types": "./dist/corners.d.ts",
+      "import": "./dist/corners.js"
     }
   },
   "scripts": {

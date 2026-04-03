@@ -25,4 +25,5 @@ export {
   interpolateFrame,
   animateTransition,
 } from './transition.js';
+export { mirrorForCorner, getCornerStyle, CORNER_POSITIONS } from './corners.js';
 export type { ImportOptions, ImportReport } from './import.js';
