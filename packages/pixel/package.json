@@ -30,6 +30,10 @@
     "./import": {
       "types": "./dist/import.d.ts",
       "import": "./dist/import.js"
+    },
+    "./transition": {
+      "types": "./dist/transition.d.ts",
+      "import": "./dist/transition.js"
     }
   },
   "scripts": {
