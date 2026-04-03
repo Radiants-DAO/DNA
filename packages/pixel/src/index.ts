@@ -16,3 +16,5 @@ export {
   mirrorV,
   diffBits,
 } from './core';
+
+export { paintGrid, paintTiledGrid, createGridCanvas } from './renderer';
