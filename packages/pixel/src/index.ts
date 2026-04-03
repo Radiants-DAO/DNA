@@ -5,7 +5,7 @@ export type {
   TransitionConfig,
   PixelAnimation,
   CornerPosition,
-} from './types';
+} from './types.js';
 
 export {
   parseBits,
@@ -15,6 +15,6 @@ export {
   mirrorH,
   mirrorV,
   diffBits,
-} from './core';
+} from './core.js';
 
-export { paintGrid, paintTiledGrid, createGridCanvas } from './renderer';
+export { paintGrid, paintTiledGrid, createGridCanvas } from './renderer.js';

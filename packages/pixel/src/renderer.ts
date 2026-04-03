@@ -1,5 +1,5 @@
-import { parseBits } from './core';
-import type { PixelGrid } from './types';
+import { parseBits } from './core.js';
+import type { PixelGrid } from './types.js';
 
 const parsedGridCache = new WeakMap<PixelGrid, Uint8Array>();
 

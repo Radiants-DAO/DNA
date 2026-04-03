@@ -37,6 +37,18 @@ describe('validateGrid', () => {
       validateGrid({ name: 'test', width: 2, height: 2, bits: '101' }),
     ).toThrow('bits length 3 !== width(2) × height(2) = 4');
   });
+
+  it('throws when dimensions are not integers', () => {
+    expect(() =>
+      validateGrid({ name: 'test', width: 1.5, height: 2, bits: '101' }),
+    ).toThrow('width must be a non-negative integer');
+  });
+});
+
+describe('bitsToGrid', () => {
+  it('rejects invalid bitstrings during construction', () => {
+    expect(() => bitsToGrid('bad', 2, 2, '10x0')).toThrow('Invalid bitstring');
+  });
 });
 
 describe('gridFromHex', () => {
@@ -47,6 +59,12 @@ describe('gridFromHex', () => {
     expect(grid.bits.length).toBe(64);
     expect(grid.bits.slice(0, 8)).toBe('10101010');
     expect(grid.bits.slice(8, 16)).toBe('01010101');
+  });
+
+  it('throws on invalid hex bytes', () => {
+    expect(() =>
+      gridFromHex('bad', 8, 'GG GG GG GG GG GG GG GG'),
+    ).toThrow('Invalid hex byte: GG');
   });
 });
 
@@ -75,5 +93,11 @@ describe('diffBits', () => {
 
   it('returns empty array for identical strings', () => {
     expect(diffBits('1010', '1010')).toEqual([]);
+  });
+
+  it('throws for unequal bitstring lengths', () => {
+    expect(() => diffBits('1', '10')).toThrow(
+      'Bitstrings must have equal length',
+    );
   });
 });

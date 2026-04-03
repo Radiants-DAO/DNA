@@ -1,4 +1,4 @@
-import type { PixelGrid } from './types';
+import type { PixelGrid } from './types.js';
 
 /**
  * Parse a bitstring into a Uint8Array where each element is 0 or 1.
@@ -24,6 +24,16 @@ export function parseBits(bits: string): Uint8Array {
  * Validate that a grid's bit count matches its dimensions.
  */
 export function validateGrid(grid: PixelGrid): void {
+  if (!Number.isInteger(grid.width) || grid.width < 0) {
+    throw new Error(`width must be a non-negative integer, received ${grid.width}`);
+  }
+
+  if (!Number.isInteger(grid.height) || grid.height < 0) {
+    throw new Error(`height must be a non-negative integer, received ${grid.height}`);
+  }
+
+  parseBits(grid.bits);
+
   const expectedLength = grid.width * grid.height;
   if (grid.bits.length !== expectedLength) {
     throw new Error(
@@ -54,10 +64,15 @@ export function gridFromHex(
   size: number,
   hex: string,
 ): PixelGrid {
-  const bits = hex
-    .trim()
-    .split(/\s+/)
-    .map((part) => Number.parseInt(part, 16).toString(2).padStart(8, '0'))
+  const parts = hex.trim().split(/\s+/).filter(Boolean);
+  const bits = parts
+    .map((part) => {
+      if (!/^[\da-fA-F]{2}$/.test(part)) {
+        throw new Error(`Invalid hex byte: ${part}`);
+      }
+
+      return Number.parseInt(part, 16).toString(2).padStart(8, '0');
+    })
     .join('');
 
   return bitsToGrid(name, size, size, bits);
@@ -102,6 +117,12 @@ export function mirrorV(grid: PixelGrid): PixelGrid {
  * Return indices where two bitstrings differ.
  */
 export function diffBits(a: string, b: string): number[] {
+  if (a.length !== b.length) {
+    throw new Error(
+      `Bitstrings must have equal length (${a.length} !== ${b.length})`,
+    );
+  }
+
   const diff: number[] = [];
 
   for (let i = 0; i < a.length; i++) {

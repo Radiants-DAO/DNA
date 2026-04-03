@@ -6,44 +6,29 @@
   "publishConfig": {
     "access": "public"
   },
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./core": {
-      "types": "./src/core.ts",
-      "import": "./src/core.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
     },
     "./renderer": {
-      "types": "./src/renderer.ts",
-      "import": "./src/renderer.ts"
-    },
-    "./svg": {
-      "types": "./src/svg.ts",
-      "import": "./src/svg.ts"
-    },
-    "./transition": {
-      "types": "./src/transition.ts",
-      "import": "./src/transition.ts"
-    },
-    "./corners": {
-      "types": "./src/corners.ts",
-      "import": "./src/corners.ts"
-    },
-    "./import": {
-      "types": "./src/import.ts",
-      "import": "./src/import.ts"
+      "types": "./dist/renderer.d.ts",
+      "import": "./dist/renderer.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "test:ci": "vitest run"
+    "test:ci": "pnpm run build && vitest run && node scripts/check-package-boundary.mjs",
+    "prepack": "pnpm run build"
   },
   "devDependencies": {
     "@types/node": "^20",
