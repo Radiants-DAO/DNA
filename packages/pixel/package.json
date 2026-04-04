@@ -38,6 +38,10 @@
     "./corners": {
       "types": "./dist/corners.d.ts",
       "import": "./dist/corners.js"
+    },
+    "./patterns": {
+      "types": "./dist/patterns.d.ts",
+      "import": "./dist/patterns.js"
     }
   },
   "scripts": {
