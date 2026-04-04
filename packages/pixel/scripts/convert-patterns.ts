@@ -1,12 +1,14 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const REGISTRY_PATH = resolve(SCRIPT_DIR, '../../radiants/patterns/registry.ts');
-const ENTRY_RE = /\{\s*name:\s*'([^']+)'.*?\bhex:\s*'([^']+)'.*?\}/g;
+const ENTRY_BLOCK_RE = /\{[^{}]*\}/gs;
+const NAME_RE = /\bname:\s*(['"])(.*?)\1/s;
+const HEX_RE = /\bhex:\s*(['"])(.*?)\1/s;
 
-function hexToBitstring(hex: string): string {
+export function hexToBitstring(hex: string): string {
   const bytes = hex.trim().split(/\s+/).filter(Boolean);
 
   if (bytes.length !== 8) {
@@ -24,12 +26,32 @@ function hexToBitstring(hex: string): string {
     .join('');
 }
 
+export function extractPatternEntries(
+  source: string,
+): Array<{ name: string; bits: string }> {
+  const entries = [...source.matchAll(ENTRY_BLOCK_RE)]
+    .map((match) => match[0])
+    .map((block) => {
+      const nameMatch = block.match(NAME_RE);
+      const hexMatch = block.match(HEX_RE);
+
+      if (!nameMatch || !hexMatch) {
+        return null;
+      }
+
+      return {
+        name: nameMatch[2],
+        bits: hexToBitstring(hexMatch[2]),
+      };
+    })
+    .filter((entry): entry is { name: string; bits: string } => entry !== null);
+
+  return entries;
+}
+
 async function main(): Promise<void> {
   const source = await readFile(REGISTRY_PATH, 'utf8');
-  const entries = [...source.matchAll(ENTRY_RE)].map((match) => ({
-    name: match[1],
-    bits: hexToBitstring(match[2]),
-  }));
+  const entries = extractPatternEntries(source);
 
   if (entries.length === 0) {
     throw new Error(`No pattern entries found in ${REGISTRY_PATH}`);
@@ -42,4 +64,6 @@ async function main(): Promise<void> {
   }
 }
 
-await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}
