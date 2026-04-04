@@ -13,6 +13,8 @@ export interface PatternProps extends React.HTMLAttributes<HTMLDivElement> {
   bg?: string;
   /** Scale multiplier: 1 = 8px, 2 = 16px, 3 = 24px, 4 = 32px */
   scale?: 1 | 2 | 3 | 4;
+  /** If true, tile the pattern to fill the host. Defaults to true. */
+  tiled?: boolean;
 }
 
 export function Pattern({
@@ -20,6 +22,7 @@ export function Pattern({
   color,
   bg,
   scale = 1,
+  tiled = true,
   className = '',
   style,
   children,
@@ -59,26 +62,41 @@ export function Pattern({
           zIndex: 0,
         }}
       >
-        <defs>
-          <pattern
-            id={patternId}
-            width={tileWidth}
-            height={tileHeight}
-            patternUnits="userSpaceOnUse"
-          >
-            {rects.map((rect) => (
-              <rect
-                key={`${rect.x}-${rect.y}`}
-                x={rect.x}
-                y={rect.y}
-                width={rect.width}
-                height={rect.height}
-                fill="currentColor"
-              />
-            ))}
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+        {tiled ? (
+          <>
+            <defs>
+              <pattern
+                id={patternId}
+                width={tileWidth}
+                height={tileHeight}
+                patternUnits="userSpaceOnUse"
+              >
+                {rects.map((rect) => (
+                  <rect
+                    key={`${rect.x}-${rect.y}`}
+                    x={rect.x}
+                    y={rect.y}
+                    width={rect.width}
+                    height={rect.height}
+                    fill="currentColor"
+                  />
+                ))}
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+          </>
+        ) : (
+          rects.map((rect) => (
+            <rect
+              key={`single-${rect.x}-${rect.y}`}
+              x={rect.x}
+              y={rect.y}
+              width={rect.width}
+              height={rect.height}
+              fill="currentColor"
+            />
+          ))
+        )}
       </svg>
       {children ? (
         <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>

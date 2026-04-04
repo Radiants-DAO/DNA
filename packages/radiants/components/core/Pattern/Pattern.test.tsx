@@ -47,6 +47,21 @@ describe('Pattern', () => {
     expect(childWrapper?.style.zIndex).toBe('1');
   });
 
+  test('renders a single untiled tile when tiled is false', () => {
+    const { container } = render(
+      <Pattern pat="checkerboard" tiled={false} className="w-20 h-20" />,
+    );
+
+    const svg = container.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg?.querySelector('pattern')).toBeNull();
+
+    const rects = svg?.querySelectorAll('rect');
+    expect(rects).toBeDefined();
+    expect(rects).toHaveLength(32);
+    expect([...rects ?? []].every((rect) => rect.getAttribute('fill') === 'currentColor')).toBe(true);
+  });
+
   test('returns null for unknown patterns', () => {
     const { container } = render(<Pattern pat="definitely-not-real" />);
     expect(container.firstChild).toBeNull();

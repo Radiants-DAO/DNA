@@ -19,12 +19,13 @@ interface PatternProps {
   color?: string;
   bg?: string;
   scale?: 1 | 2 | 3 | 4;
+  tiled?: boolean;
 }
 
 export const PatternMeta = defineComponentMeta<PatternProps>()({
   name: "Pattern",
   description:
-    "Renders a recolorable 8x8 tiling pattern from the System 6 pattern library. Uses CSS mask-image so any color paints through the pattern shape.",
+    "Renders a recolorable 8x8 pixel pattern from the System 6 library. Uses inline SVG so colors, backgrounds, and theme changes stay live without CSS masks.",
   props: {
     pat: {
       type: "enum",
@@ -58,15 +59,21 @@ export const PatternMeta = defineComponentMeta<PatternProps>()({
       default: 1,
       description: "Scale multiplier: 1=8px, 2=16px, 3=24px, 4=32px",
     },
+    tiled: {
+      type: "boolean",
+      default: true,
+      description: "If true, tile the pattern to fill the host. If false, render a single 8x8 tile.",
+    },
   },
   slots: {
-    children: { description: "Content rendered on top of the pattern (when using bg mode)" },
+    children: { description: "Content rendered above the pattern art" },
   },
   examples: [
     { name: "Basic checkerboard", code: '<Pattern pat="checkerboard" className="w-20 h-20" />' },
     { name: "Colored diagonal", code: '<Pattern pat="diagonal" color="var(--color-accent)" className="w-20 h-20" />' },
     { name: "With background", code: '<Pattern pat="brick" color="white" bg="var(--color-accent)" className="w-20 h-20" />' },
     { name: "Scaled up", code: '<Pattern pat="grid" scale={2} className="w-20 h-20" />' },
+    { name: "Single tile", code: '<Pattern pat="checkerboard" tiled={false} className="w-20 h-20" />' },
   ],
   registry: {
     category: "layout",
