@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useId } from 'react';
+
+import { getPattern, listFilledRects } from '@rdna/pixel';
 
 export interface PatternProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Pattern name from the registry */
@@ -13,53 +15,74 @@ export interface PatternProps extends React.HTMLAttributes<HTMLDivElement> {
   scale?: 1 | 2 | 3 | 4;
 }
 
-const SCALE_CLASSES: Record<number, string> = {
-  2: 'rdna-pat--2x',
-  3: 'rdna-pat--3x',
-  4: 'rdna-pat--4x',
-};
-
 export function Pattern({
   pat,
   color,
   bg,
-  scale,
+  scale = 1,
   className = '',
   style,
+  children,
   ...rest
 }: PatternProps) {
-  const patClass = `rdna-pat--${pat}`;
-  const scaleClass = scale ? SCALE_CLASSES[scale] ?? '' : '';
+  const grid = getPattern(pat);
+  const patternId = useId().replace(/:/g, '_');
 
-  if (bg) {
-    // Two-tone: bg div + masked fg div
-    return (
-      <div
-        className={className}
-        style={{ position: 'relative', backgroundColor: bg, ...style }}
-        {...rest}
-      >
-        <div
-          className={`rdna-pat ${patClass} ${scaleClass}`}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            ...(color ? { '--pat-color': color, backgroundColor: color } as React.CSSProperties : {}),
-          }}
-        />
-      </div>
-    );
+  if (!grid) {
+    return null;
   }
 
-  // Single layer: pattern overlay (transparent bg)
+  const rects = listFilledRects(grid, scale);
+  const tileWidth = grid.width * scale;
+  const tileHeight = grid.height * scale;
+
   return (
     <div
-      className={`rdna-pat ${patClass} ${scaleClass} ${className}`}
+      className={className}
       style={{
-        ...(color ? { '--pat-color': color, backgroundColor: color } as React.CSSProperties : {}),
+        position: 'relative',
+        backgroundColor: bg,
         ...style,
       }}
       {...rest}
-    />
+    >
+      <svg
+        aria-hidden
+        preserveAspectRatio="none"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          color: color ?? 'var(--color-main)',
+          zIndex: 0,
+        }}
+      >
+        <defs>
+          <pattern
+            id={patternId}
+            width={tileWidth}
+            height={tileHeight}
+            patternUnits="userSpaceOnUse"
+          >
+            {rects.map((rect) => (
+              <rect
+                key={`${rect.x}-${rect.y}`}
+                x={rect.x}
+                y={rect.y}
+                width={rect.width}
+                height={rect.height}
+                fill="currentColor"
+              />
+            ))}
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+      </svg>
+      {children ? (
+        <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
+      ) : null}
+    </div>
   );
 }

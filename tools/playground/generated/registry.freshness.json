@@ -1,7 +1,8 @@
 {
-  "sourceHash": "218df535bb7008ade5a69372aa8ec092a9520e19cb0ea911c52501e6e4ad646b",
+  "sourceHash": "db9d96a29601306cc767d8c6e68baecba74818110df4aaec156ef6a1d9375f7a",
   "inputs": [
     "packages/create/package.json",
+    "packages/pixel/package.json",
     "packages/preview/package.json",
     "packages/radiants/components/core/Alert/Alert.meta.ts",
     "packages/radiants/components/core/Alert/Alert.schema.json",
