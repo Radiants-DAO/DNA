@@ -1,44 +1,37 @@
-## Session Status — 2026-03-30 09:30
+## Session Status — 2026-04-08 (Control Surface Library Design)
 
-**Plan:** Cherry-pick from feat/appwindow-taskbar-api (no plan doc — branch was messy, selective port)
+**Plan:** `docs/plans/2026-04-08-control-surface-primitives.md`
 **Branch:** main
+**Canvas:** Paper — "Continuous controls" artboard (`Q1Y-0`)
 
 ### Completed
-- [x] Analyzed taskbar-api branch: 76 files, identified cherry-pick vs skip (research)
-- [x] Compared pretext patterns across main / pretext-migration / taskbar-api (research)
-- [x] AppWindow compound API — Nav, Toolbar, Content, Island, Banner (commit: 7aafd71c)
-- [x] App migrations — About, BrandAssets, RadRadio, GoodNews, Links, PatternPlayground, typography layouts (commit: bab0f509)
-- [x] Restored RadiantsStudio Figma-matching redesign overwritten by taskbar-api copy (commit: af5cc49d)
-- [x] Team review (3 agents): API architecture, app migrations, tests & contracts
+- [x] Created control surface primitives checklist (27 controls, 6 categories)
+- [x] Extracted style language from Layout panel (gold-on-black, Pixel Code, CRT glow)
+- [x] Built grid layout in Paper artboard (4+3 slot grid)
+- [x] **Knob** — Rotary encoder w/ tick marks, active arc, indicator (via team agent)
+- [x] **Fader** — Vertical slider w/ dB scale, groove track, glowing thumb (via team agent)
+- [x] **Slider** — Horizontal pan control w/ filled/unfilled track, ticks (via team agent)
+- [x] **XY Pad** — 2D dot-grid w/ crosshair cursor, axis labels (via team agent)
+- [x] **Number Scrubber** — 4 variants: basic, scrubbing, multi-field, stepper (via team agent)
+- [x] **Ribbon** — Pitch bend + spring-back variants, thumbless touch glow (via team agent)
+- [x] **Arc / Ring** — 160px + 80px compact, Ableton macro style (via team agent)
+- [x] Fixed displaced SVG filter glow on Knob and Arc/Ring (overflow:clip → CSS drop-shadow)
 
 ### In Progress
-- [ ] ~Review findings triage~ — fixes identified but not yet applied
+- [ ] ~Continuous Value Controls~ — all 7 designed in Paper, pending checklist update
 
-### Remaining (2 tasks)
-- [ ] Fix Island padding default mismatch (meta says 'sm', impl says 'lg')
-- [ ] Fix `fill-bucket` icon → `design-color-bucket` in RadiantsStudioApp (if still present after restore)
-
-### Review Findings (from 3-agent team review)
-**Warnings (address before merge):**
-- `useEffect` with no deps on Nav/Toolbar — re-registers every render (fragile closure coupling)
-- Mobile presentation silently swallows `navContent`
-- ResizeObserver missing defensive cleanup on unmount
-- No test for Nav `onChange` callback
-
-**Nits (track, don't block):**
-- `Island.width` prop name suggests CSS value, takes Tailwind class
-- `"AppWindow"` listed in own subcomponents array
-- Legacy sub-components not marked deprecated in meta
+### Remaining (20 controls across 5 categories)
+- [ ] Discrete Selection Controls (7 controls)
+- [ ] Readout / Feedback Controls (5 controls)
+- [ ] Editor / Compound Controls (5 controls)
+- [ ] Structural / Container Controls (3 controls)
 
 ### Next Action
-> Fix the Island padding default mismatch in meta, then visually verify all apps in browser.
+> User sources reference images for next category, then spawn team to design in Paper.
 
 ### What to Test
-- [ ] RadiantsStudio: verify Figma-matching redesign renders (was overwritten, now restored)
-- [ ] BrandAssetsApp: capsule nav tabs in titlebar, tab switching, scroll
-- [ ] AboutApp: content in Island with padding, scroll works
-- [ ] RadRadioApp: bleed layout, audio plays, video visible
-- [ ] AppWindow compound API: toolbar renders between titlebar and content
+- [ ] Visual: Check all 7 continuous controls in Paper artboard for alignment and glow consistency
+- [ ] Visual: Verify Knob and Arc/Ring glow fix — no displacement at 2x zoom
 
 ### Team Status
 No active agents
