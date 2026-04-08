@@ -1,10 +1,10 @@
 import type {
   BookSettings,
   BroadsheetSettings,
+  PretextDocumentSettings,
   EditorialSettings,
   PretextDocumentSettingsOf,
   PretextPrimitiveKind,
-  PrimitiveSettingsFor,
 } from './types';
 
 export const primitiveKinds: PretextPrimitiveKind[] = [
@@ -38,30 +38,62 @@ const defaultBook: BookSettings = {
   columns: 1,
 };
 
-const primitiveDefaults = {
-  editorial: defaultEditorial,
-  broadsheet: defaultBroadsheet,
-  book: defaultBook,
-} satisfies Record<PretextPrimitiveKind, EditorialSettings | BroadsheetSettings | BookSettings>;
-
 const previewDefaults: Record<PretextPrimitiveKind, { windowWidth: number; windowHeight: number }> = {
   editorial: { windowWidth: 720, windowHeight: 900 },
   broadsheet: { windowWidth: 960, windowHeight: 720 },
   book: { windowWidth: 680, windowHeight: 880 },
 };
 
-export function createDefaultSettings<K extends PretextPrimitiveKind>(
-  kind: K,
-): PretextDocumentSettingsOf<K> {
-  const preview = previewDefaults[kind];
-  return {
-    version: 1,
-    id: crypto.randomUUID(),
-    title: '',
-    slug: '',
-    primitive: kind,
-    preview: { ...preview, density: 'comfortable' },
-    primitiveSettings: { ...primitiveDefaults[kind] } as PrimitiveSettingsFor<K>,
-    assets: {},
-  } as PretextDocumentSettingsOf<K>;
+export function createDefaultSettings(
+  kind: 'editorial',
+): PretextDocumentSettingsOf<'editorial'>;
+export function createDefaultSettings(
+  kind: 'broadsheet',
+): PretextDocumentSettingsOf<'broadsheet'>;
+export function createDefaultSettings(
+  kind: 'book',
+): PretextDocumentSettingsOf<'book'>;
+export function createDefaultSettings(
+  kind: PretextPrimitiveKind,
+): PretextDocumentSettings;
+export function createDefaultSettings(
+  kind: PretextPrimitiveKind,
+): PretextDocumentSettings {
+  switch (kind) {
+    case 'editorial':
+      return {
+        version: 1,
+        id: crypto.randomUUID(),
+        title: '',
+        slug: '',
+        primitive: 'editorial',
+        preview: { ...previewDefaults.editorial, density: 'comfortable' },
+        primitiveSettings: { ...defaultEditorial },
+        assets: {},
+      };
+
+    case 'broadsheet':
+      return {
+        version: 1,
+        id: crypto.randomUUID(),
+        title: '',
+        slug: '',
+        primitive: 'broadsheet',
+        preview: { ...previewDefaults.broadsheet, density: 'comfortable' },
+        primitiveSettings: { ...defaultBroadsheet },
+        assets: {},
+      };
+
+    case 'book':
+      return {
+        version: 1,
+        id: crypto.randomUUID(),
+        title: '',
+        slug: '',
+        primitive: 'book',
+        preview: { ...previewDefaults.book, density: 'comfortable' },
+        primitiveSettings: { ...defaultBook },
+        assets: {},
+      };
+  }
 }

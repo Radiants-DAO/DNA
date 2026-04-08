@@ -42,6 +42,10 @@
       "types": "./patterns/index.ts",
       "import": "./patterns/index.ts"
     },
+    "./patterns/*": {
+      "types": "./patterns/*.ts",
+      "import": "./patterns/*.ts"
+    },
     "./blocknote": {
       "types": "./generated/blocknote-blocks.tsx",
       "import": "./generated/blocknote-blocks.tsx"

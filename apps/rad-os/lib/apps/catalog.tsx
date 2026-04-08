@@ -8,7 +8,6 @@ const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
-const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
 // ============================================================================
@@ -126,17 +125,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     contentPadding: false,
     desktopVisible: true,
     startMenuSection: 'apps',
-  },
-  {
-    id: 'studio',
-    windowTitle: 'Radiants Studio',
-    windowIcon: <Icon name="code-window" large />,
-    component: RadiantsStudioApp,
-    defaultSize: { width: '520px', height: '680px' },
-    resizable: true,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'web3',
   },
 ];
 

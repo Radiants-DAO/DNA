@@ -3,6 +3,22 @@
 **Date:** 2026-03-29
 **Status:** Decided
 
+## Status Update — 2026-04-03
+
+This brainstorm is now partially historical.
+
+What shipped since this note was written:
+
+- Scratchpad became the pretext authoring surface
+- RadOS extracted three shared primitives: `editorial`, `broadsheet`, `book`
+- GoodNews and Manifesto now consume shared primitive code instead of remaining isolated experiments
+
+What is no longer current in this document:
+
+- Manifesto is not the "next" migration target
+- Scratchpad is not a future idea; it is the active authoring workflow
+- The primitive conversation is no longer speculative; the shared set is `editorial`, `broadsheet`, and `book`
+
 ## What We're Building
 
 Migrate all RadOS apps to use `@chenglou/pretext` for text layout and reflow. `pretext-type-scale.ts` becomes the single source of truth for all typography — root clamp, static font-size tokens, fluid tiers, spacing scale, and line-height ratios. CSS font-size tokens are *generated* from it via a new `tokens:generate` pipeline. `typography.css` is deleted entirely.
@@ -37,13 +53,10 @@ By making pretext the single authority:
 5. Delete `typography.css` — element sizing/leading/tracking moves to pretext; color/decoration stays in component styles
 
 ### Phase 2 — App Migration (by text complexity)
-1. **ManifestoApp** — long-form paragraphs, multi-tab, good second case after GoodNews
-2. **BrandAssetsApp** — metadata, truncation, accordion patterns, `@container` removal
-3. **RadRadioApp** — track metadata, truncation, ResizeObserver replacement
-4. **TypographyPlayground** — gut to Specimen only, rebuild as pretext reflow demo
-5. **RadiantsStudioApp** — light text, simple migration
-6. **AboutApp** — minimal text
-7. **LinksApp** — minimal text
+1. **Scratchpad** — done as the canonical markdown + settings authoring surface
+2. **Shared primitives** — done for `editorial`, `broadsheet`, and `book`
+3. **GoodNews / Manifesto extraction** — done via shared primitive code paths
+4. **Remaining app migration** — BrandAssetsApp, RadRadioApp, TypographyPlayground, RadiantsStudioApp, AboutApp, LinksApp
 
 ### Phase 3 — Cleanup
 1. Remove `@container` class from AppWindow content wrapper (no longer needed for typography)
@@ -87,7 +100,7 @@ By making pretext the single authority:
 
 ## Reference Implementation
 
-**GoodNewsApp.tsx** (`apps/rad-os/components/apps/GoodNewsApp.tsx`) — 815 lines demonstrating:
+**GoodNewsApp.tsx** (`apps/rad-os/components/apps/GoodNewsApp.tsx`) — now a wrapper over the shared broadsheet primitive, originally demonstrating:
 - `prepareWithSegments` + `layoutNextLine` for per-line control
 - `resolveFluid()` / `resolveFluidRaw()` from pretext-type-scale.ts
 - ResizeObserver → containerWidth state → reflow on resize

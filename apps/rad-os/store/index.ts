@@ -3,15 +3,13 @@ import { devtools, persist } from 'zustand/middleware';
 import { useShallow } from 'zustand/shallow';
 import { WindowsSlice, createWindowsSlice } from './slices/windowsSlice';
 import { PreferencesSlice, createPreferencesSlice } from './slices/preferencesSlice';
-import { MockDataSlice, createMockDataSlice } from './slices/mockDataSlice';
 import { RadRadioSlice, createRadRadioSlice } from './slices/radRadioSlice';
 
 // Re-export types for convenience
 export type { WindowState } from './slices/windowsSlice';
-export type { Radiant, StudioSubmission } from './slices/mockDataSlice';
 
 // Combined store type
-type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & RadRadioSlice;
+type RadOSState = WindowsSlice & PreferencesSlice & RadRadioSlice;
 
 // Main store with all slices
 export const useRadOSStore = create<RadOSState>()(
@@ -20,7 +18,6 @@ export const useRadOSStore = create<RadOSState>()(
       (set, get, api) => ({
         ...createWindowsSlice(set, get, api),
         ...createPreferencesSlice(set, get, api),
-        ...createMockDataSlice(set, get, api),
         ...createRadRadioSlice(set, get, api),
       }),
       {
@@ -96,18 +93,6 @@ export const usePreferencesStore = () =>
       toggleInvertMode: state.toggleInvertMode,
       setDarkMode: state.setDarkMode,
       toggleDarkMode: state.toggleDarkMode,
-    }))
-  );
-
-export const useMockDataStore = () =>
-  useRadOSStore(
-    useShallow((state) => ({
-      radiants: state.radiants,
-      studioSubmissions: state.studioSubmissions,
-      setRadiants: state.setRadiants,
-      setStudioSubmissions: state.setStudioSubmissions,
-      addStudioSubmission: state.addStudioSubmission,
-      updateSubmissionVotes: state.updateSubmissionVotes,
     }))
   );
 

@@ -1,3 +1,4 @@
+import { validateSettings } from './serialization';
 import type { PretextDocumentSettings } from './types';
 
 export interface LegacyScratchpadDraft {
@@ -19,6 +20,14 @@ export interface PretextScratchpadDraft {
 
 export type ScratchpadDraft = LegacyScratchpadDraft | PretextScratchpadDraft;
 
+function requireString(value: unknown, fallback: string) {
+  return typeof value === 'string' && value.trim() ? value : fallback;
+}
+
+function requireNumber(value: unknown, fallback: number) {
+  return typeof value === 'number' ? value : fallback;
+}
+
 export function coerceStoredDoc(raw: unknown): ScratchpadDraft {
   if (!raw || typeof raw !== 'object') {
     throw new Error('Invalid stored document');
@@ -28,12 +37,25 @@ export function coerceStoredDoc(raw: unknown): ScratchpadDraft {
 
   // Already typed as pretext
   if (doc.kind === 'pretext') {
-    return raw as PretextScratchpadDraft;
+    return {
+      kind: 'pretext',
+      id: requireString(doc.id, crypto.randomUUID()),
+      title: requireString(doc.title, 'Untitled'),
+      markdown: requireString(doc.markdown, ''),
+      settings: validateSettings(doc.settings),
+      updatedAt: requireNumber(doc.updatedAt, Date.now()),
+    };
   }
 
   // Already typed as legacy
   if (doc.kind === 'legacy-blocknote') {
-    return raw as LegacyScratchpadDraft;
+    return {
+      kind: 'legacy-blocknote',
+      id: requireString(doc.id, crypto.randomUUID()),
+      title: requireString(doc.title, 'Untitled'),
+      content: Array.isArray(doc.content) ? doc.content : [],
+      updatedAt: requireNumber(doc.updatedAt, Date.now()),
+    };
   }
 
   // Untyped old BlockNote doc — wrap as legacy

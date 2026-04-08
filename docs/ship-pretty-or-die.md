@@ -114,4 +114,103 @@ The assets are the invitation. The filter (the linter, the curation, the rejecti
 
 * **Emotional arc:** Americana conviction opener → build through practical proof (tools, filter, demos) → land on the open brand philosophy.
 
+# Pretext Browser Smoke Checklist
+
+## Setup
+
+* [ ] Run `pnpm --filter rad-os dev`
+* [ ] Open RadOS in the browser
+* [ ] Open `Scratchpad`
+* [ ] Confirm there are no immediate console errors
+
+## Scratchpad Basics
+
+* [ ] The layout is three-pane:
+
+  * [ ] document list/actions on the left
+  * [ ] markdown source in the middle
+  * [ ] settings + import/export + live preview on the right
+
+* [ ] Creating `New Editorial` opens an editorial preview
+
+* [ ] Creating `New Broadsheet` opens a broadsheet preview
+
+* [ ] Creating `New Book` opens a book preview
+
+* [ ] Switching between docs preserves each doc’s content and settings
+
+* [ ] Legacy docs, if present, show the compatibility banner instead of crashing
+
+## Markdown Editing
+
+* [ ] Editing markdown updates the preview live
+* [ ] `# Heading` renders as the document title/ headline
+* [ ] Paragraphs render as body copy
+* [ ] Bullet and numbered lists render correctly
+* [ ] Blockquotes render correctly
+* [ ] `---` renders as a rule/divider
+* [ ] Fenced code blocks render as code
+* [ ] `![Alt](key)` resolves when the asset key exists in settings/assets
+* [ ] No stale preview state remains after rapid edits
+
+## Editorial Primitive
+
+* [ ] `Drop cap` toggle visibly adds/removes the opening drop cap
+* [ ] `Pullquote` toggle changes blockquote rendering into the pullquote treatment
+* [ ] Editorial column count changes the layout when width allows
+* [ ] Large pasted markdown does not freeze the UI
+
+## Broadsheet Primitive
+
+* [ ] Column count switch changes between 2 and 3 columns
+* [ ] Masthead text updates in preview
+* [ ] Hero wrap changes layout around the image
+* [ ] Headline comes from the markdown title
+* [ ] Preview still looks correct after switching away and back
+
+## Book Primitive
+
+* [ ] Page size controls affect the rendered page dimensions
+* [ ] Column count changes pagination/layout
+* [ ] Multi-section markdown produces multiple pages when expected
+* [ ] Scrolling through pages feels stable
+
+## Export / Import
+
+* [ ] `Export bundle` downloads two files:
+
+  * [ ] `slug.md`
+  * [ ] `slug.pretext.json`
+
+* [ ] Importing both files restores the same primitive and preview
+
+* [ ] Importing markdown alone updates body content but preserves current primitive/settings
+
+* [ ] Pasting markdown alone stages correctly before apply
+
+* [ ] Pasting markdown plus fenced JSON stages both markdown and settings
+
+* [ ] The staged import UI clearly shows what will be applied before overwrite
+
+## Shared Consumers
+
+* [ ] `GoodNews` still opens and renders correctly
+* [ ] `Manifesto` still opens and renders correctly
+* [ ] Their layouts still respond correctly to window size changes
+
+## Sample Bundles
+
+* [ ] The sample bundles under `/pretext/` load without parse errors
+* [ ] `editorial-demo` renders as editorial
+* [ ] `broadsheet-demo` renders as broadsheet
+* [ ] `book-demo` renders as book
+
+## Red Flags
+
+* [ ] No missing-font flashes that permanently break layout
+* [ ] No import path silently downgrades invalid settings into plain markdown
+* [ ] No duplicate or stale docs appear after import/apply
+* [ ] No console errors during create/edit/export/ import flows
+* [ ] No preview primitive mismatches the selected/ settings primitive
+
 ⠀

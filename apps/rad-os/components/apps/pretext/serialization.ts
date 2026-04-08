@@ -1,5 +1,5 @@
 import { isPrimitiveKind } from './primitive-registry';
-import type { PretextDocumentSettings, PretextPrimitiveKind } from './types';
+import type { PretextDocumentSettings } from './types';
 
 export interface PretextBundle {
   markdown: string;
@@ -172,16 +172,17 @@ export type PasteResult =
 export function deserializePretextBundleFromPaste(text: string): PasteResult {
   if (!text.trim()) return { kind: 'empty' };
 
-  // Try parsing as pure JSON — if it looks like settings, validate strictly (throws on bad data)
+  // Try parsing as pure JSON
+  let parsedJson: unknown = undefined;
   try {
-    const parsed = JSON.parse(text);
-    if (looksLikeSettings(parsed)) {
-      const settings = validateSettings(parsed);
-      return { kind: 'settings-only', settings };
-    }
-    // Valid JSON but not settings-shaped — fall through to markdown
+    parsedJson = JSON.parse(text);
   } catch {
     // Not valid JSON at all — continue to fenced / plain markdown
+  }
+  // If it parsed and looks like settings, validate strictly (throws on bad data)
+  if (parsedJson !== undefined && looksLikeSettings(parsedJson)) {
+    const settings = validateSettings(parsedJson);
+    return { kind: 'settings-only', settings };
   }
 
   // Try markdown with fenced JSON settings block at the end
@@ -195,7 +196,7 @@ export function deserializePretextBundleFromPaste(text: string): PasteResult {
       // Not valid JSON in fence — treat entire text as markdown
       return { kind: 'markdown-only', markdown: text };
     }
-    // If the fenced block looks like settings, validate strictly (throws on bad data)
+    // Parsed successfully — if it looks like settings, validate strictly (throws on bad data)
     if (looksLikeSettings(fencedJson)) {
       const settings = validateSettings(fencedJson);
       const markdown = text.slice(0, match.index!).trimEnd();

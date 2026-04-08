@@ -10,7 +10,6 @@ Desktop launchers are defined in [lib/apps/catalog.tsx](/Users/rivermassey/Deskt
 - `manifesto` -> Manifesto
 - `music` -> Rad Radio
 - `about` -> About
-- `studio` -> Radiants Studio
 
 Internal product/design tooling also lives in this app, especially under `components/apps/pattern-playground` and `components/apps/typography-playground`, but not every internal surface is exposed as a desktop launcher.
 
@@ -107,11 +106,10 @@ On desktop, launcher clicks open/focus windows. On mobile, the same app surfaces
 
 ### State Model
 
-RadOS uses one Zustand store composed from four slices in [store/index.ts](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/store/index.ts):
+RadOS uses one Zustand store composed from three slices in [store/index.ts](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/store/index.ts):
 
 - `windows` -> open/close/focus/fullscreen/widget state, window position/size, active tabs
 - `preferences` -> volume, reduce motion, dark mode, invert mode
-- `mockData` -> Radiants and studio submission data used by app surfaces
 - `radRadio` -> channel, playback, seek state, favorites
 
 Persisted state is intentionally limited. Preferences and radio favorites persist; window positions/open windows do not.

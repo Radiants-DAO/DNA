@@ -37,7 +37,7 @@ export function DesktopIcon({
   icon,
   className = '',
 }: DesktopIconProps) {
-  const { openWindowWithZoom, isWindowOpen } = useWindowManager();
+  const { openWindow, openWindowWithZoom, isWindowOpen } = useWindowManager();
 
   const isActive = isWindowOpen(appId);
 
@@ -51,7 +51,17 @@ export function DesktopIcon({
         aria-label={label}
         onClick={(e: React.MouseEvent) => {
           const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-          openWindowWithZoom(appId, { x: rect.x, y: rect.y, width: rect.width, height: rect.height });
+          if (typeof openWindowWithZoom === 'function') {
+            openWindowWithZoom(appId, {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height,
+            });
+            return;
+          }
+
+          openWindow(appId);
         }}
         className={className}
       />

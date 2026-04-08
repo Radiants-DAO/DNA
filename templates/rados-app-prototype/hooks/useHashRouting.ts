@@ -5,26 +5,40 @@ import { useWindowManager } from './useWindowManager';
 import { isValidAppId } from '../lib/catalog';
 
 export function useHashRouting() {
-  const { windows, openWindow, setActiveTab } = useWindowManager();
+  const { windows, openWindow, closeWindow, setActiveTab } = useWindowManager();
   const isInitialMount = useRef(true);
   const isUpdatingFromHash = useRef(false);
+  const windowsRef = useRef(windows);
+
+  windowsRef.current = windows;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const parseAndOpenFromHash = () => {
+    const syncWindowsFromHash = () => {
       const hash = window.location.hash.slice(1);
-      if (!hash) return;
-
-      const segments = hash.split(',').filter((s) => s.trim());
+      const segments = hash ? hash.split(',').filter((s) => s.trim()) : [];
+      const desiredWindows = new Map<string, string | undefined>();
       isUpdatingFromHash.current = true;
 
       segments.forEach((segment) => {
         const [appId, tabId] = segment.trim().split(':');
         if (isValidAppId(appId)) {
-          openWindow(appId);
-          if (tabId) setActiveTab(appId, tabId);
+          desiredWindows.set(appId, tabId);
         }
+      });
+
+      windowsRef.current
+        .filter((windowState) => windowState.isOpen && isValidAppId(windowState.id))
+        .forEach((windowState) => {
+          if (!desiredWindows.has(windowState.id)) {
+            closeWindow(windowState.id);
+          }
+        });
+
+      desiredWindows.forEach((tabId, appId) => {
+        openWindow(appId);
+        if (tabId) setActiveTab(appId, tabId);
       });
 
       queueMicrotask(() => {
@@ -32,15 +46,15 @@ export function useHashRouting() {
       });
     };
 
-    parseAndOpenFromHash();
+    syncWindowsFromHash();
 
     const handleHashChange = () => {
-      if (!isUpdatingFromHash.current) parseAndOpenFromHash();
+      if (!isUpdatingFromHash.current) syncWindowsFromHash();
     };
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [openWindow, setActiveTab]);
+  }, [openWindow, closeWindow, setActiveTab]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

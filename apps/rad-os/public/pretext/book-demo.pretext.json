@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "id": "book-demo",
+  "title": "Small Systems, Big Type",
+  "slug": "small-systems-big-type",
+  "primitive": "book",
+  "preview": {
+    "windowWidth": 680,
+    "windowHeight": 880,
+    "density": "comfortable"
+  },
+  "assets": {
+    "plate": "/assets/images/Yellow-Bandana-Product-Detail.png"
+  },
+  "primitiveSettings": {
+    "primitive": "book",
+    "pageWidth": 612,
+    "pageHeight": 792,
+    "columns": 1
+  }
+}

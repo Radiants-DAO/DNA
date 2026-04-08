@@ -26,31 +26,45 @@ import { isValidAppId } from '@/lib/apps';
  * }
  */
 export function useHashRouting() {
-  const { windows, openWindow, setActiveTab } = useWindowManager();
+  const { windows, openWindow, closeWindow, setActiveTab } = useWindowManager();
   const isInitialMount = useRef(true);
   const isUpdatingFromHash = useRef(false);
+  const windowsRef = useRef(windows);
+
+  windowsRef.current = windows;
 
   // Parse hash and open windows on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const parseAndOpenFromHash = () => {
+    const syncWindowsFromHash = () => {
       const hash = window.location.hash.slice(1); // Remove #
-      if (!hash) return;
-
-      const segments = hash.split(',').filter((s) => s.trim());
+      const segments = hash ? hash.split(',').filter((s) => s.trim()) : [];
+      const desiredWindows = new Map<string, string | undefined>();
 
       isUpdatingFromHash.current = true;
 
       segments.forEach((segment) => {
         const [appId, tabId] = segment.trim().split(':');
         if (isValidAppId(appId)) {
-          openWindow(appId);
-          if (tabId) {
-            setActiveTab(appId, tabId);
-          }
+          desiredWindows.set(appId, tabId);
         }
         // Invalid IDs are silently ignored
+      });
+
+      windowsRef.current
+        .filter((windowState) => windowState.isOpen && isValidAppId(windowState.id))
+        .forEach((windowState) => {
+          if (!desiredWindows.has(windowState.id)) {
+            closeWindow(windowState.id);
+          }
+        });
+
+      desiredWindows.forEach((tabId, appId) => {
+        openWindow(appId);
+        if (tabId) {
+          setActiveTab(appId, tabId);
+        }
       });
 
       // Reset flag after state updates have flushed
@@ -59,18 +73,18 @@ export function useHashRouting() {
       });
     };
 
-    parseAndOpenFromHash();
+    syncWindowsFromHash();
 
     // Also listen for hash changes (e.g., back/forward navigation)
     const handleHashChange = () => {
       if (!isUpdatingFromHash.current) {
-        parseAndOpenFromHash();
+        syncWindowsFromHash();
       }
     };
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [openWindow, setActiveTab]);
+  }, [openWindow, closeWindow, setActiveTab]);
 
   // Update hash when windows change
   useEffect(() => {

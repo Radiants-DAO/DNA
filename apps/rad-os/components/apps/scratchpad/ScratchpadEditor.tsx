@@ -25,10 +25,6 @@ import {
 import { applyRdnaIcons, RdnaSlashMenu } from './RdnaSlashMenu';
 import { Icon } from '@rdna/radiants/icons/runtime';
 
-// ============================================================================
-// Schema — default blocks + all RDNA blocks from generated registry
-// ============================================================================
-
 const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
@@ -38,64 +34,55 @@ const schema = BlockNoteSchema.create({
 
 const validBlockTypes = new Set(Object.keys(schema.blockSpecs));
 
-/** Strip blocks whose type isn't in the current schema so BlockNote won't choke. */
 function sanitizeContent(raw: unknown[]): unknown[] | undefined {
-  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return undefined;
+  }
+
   const clean = raw.filter(
-    (b: any) => b && typeof b === 'object' && typeof b.type === 'string' && validBlockTypes.has(b.type),
+    (block: any) =>
+      block &&
+      typeof block === 'object' &&
+      typeof block.type === 'string' &&
+      validBlockTypes.has(block.type),
   );
+
   return clean.length > 0 ? clean : undefined;
 }
 
-// ============================================================================
-// Slash menu items — defaults + RDNA components from generated descriptors
-// ============================================================================
-
 type AnyBNEditor = Parameters<typeof getDefaultReactSlashMenuItems>[0];
 
-function getSlashMenuItems(
-  editor: AnyBNEditor,
-): DefaultReactSuggestionItem[] {
+function getSlashMenuItems(editor: AnyBNEditor): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
-  const rdnaItems: DefaultReactSuggestionItem[] = rdnaSlashMenuDescriptors.map(
-    (desc) => ({
-      title: desc.title,
-      subtext: desc.subtext,
-      aliases: desc.aliases,
-      group: desc.group,
-      icon: <Icon name={desc.icon} /> as React.JSX.Element,
+  const rdnaItems: DefaultReactSuggestionItem[] =
+    rdnaSlashMenuDescriptors.map((descriptor) => ({
+      title: descriptor.title,
+      subtext: descriptor.subtext,
+      aliases: descriptor.aliases,
+      group: descriptor.group,
+      icon: <Icon name={descriptor.icon} /> as React.JSX.Element,
       onItemClick: () => {
         (insertOrUpdateBlockForSlashMenu as Function)(editor, {
-          type: desc.type,
-          props: desc.defaultProps,
+          type: descriptor.type,
+          props: descriptor.defaultProps,
         });
       },
-    }),
-  );
+    }));
 
   return applyRdnaIcons([...defaults, ...rdnaItems]);
 }
-
-// ============================================================================
-// Props
-// ============================================================================
 
 interface ScratchpadEditorProps {
   initialContent: unknown[];
   onSave: (content: unknown[]) => void;
 }
 
-// ============================================================================
-// Editor Component
-// ============================================================================
-
 export default function ScratchpadEditor({
   initialContent,
   onSave,
 }: ScratchpadEditorProps) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-
   const safeContent = sanitizeContent(initialContent);
 
   const editor = useCreateBlockNote({
@@ -103,9 +90,11 @@ export default function ScratchpadEditor({
     initialContent: safeContent as any,
   });
 
-  // Debounced save
   const handleChange = useCallback(() => {
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
     saveTimeoutRef.current = setTimeout(() => {
       onSave(editor.document as unknown as unknown[]);
     }, 300);
@@ -113,7 +102,9 @@ export default function ScratchpadEditor({
 
   useEffect(() => {
     return () => {
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
     };
   }, []);
 

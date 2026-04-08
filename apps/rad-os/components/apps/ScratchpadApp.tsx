@@ -7,10 +7,6 @@ import { type AppProps } from '@/lib/apps';
 import { AppWindow, Menubar } from '@rdna/radiants/components/core';
 import { useScratchpadDocs } from './scratchpad/use-scratchpad-docs';
 
-// ============================================================================
-// Error Boundary — catches BlockNote initialContent parse failures
-// ============================================================================
-
 interface EditorErrorBoundaryProps {
   children: ReactNode;
   onReset: () => void;
@@ -20,7 +16,10 @@ interface EditorErrorBoundaryState {
   hasError: boolean;
 }
 
-class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, EditorErrorBoundaryState> {
+class EditorErrorBoundary extends Component<
+  EditorErrorBoundaryProps,
+  EditorErrorBoundaryState
+> {
   state: EditorErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(): EditorErrorBoundaryState {
@@ -42,7 +41,7 @@ class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, EditorErro
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center h-full text-mute text-sm gap-2">
+        <div className="flex h-full items-center justify-center gap-2 text-sm text-mute">
           <span>Document was corrupted.</span>
           <button
             className="text-accent underline"
@@ -56,33 +55,33 @@ class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, EditorErro
         </div>
       );
     }
+
     return this.props.children;
   }
 }
 
-// BlockNote requires browser APIs — load client-only
 const ScratchpadEditor = dynamic(
   () => import('./scratchpad/ScratchpadEditor'),
   { ssr: false },
 );
 
-// ============================================================================
-// Rename Dialog (inline prompt — keeps it simple)
-// ============================================================================
-
 function useRenamePrompt() {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState('');
-  const [onConfirm, setOnConfirm] = useState<((v: string) => void) | null>(null);
+  const [onConfirm, setOnConfirm] = useState<((value: string) => void) | null>(
+    null,
+  );
 
-  function open(currentTitle: string, cb: (newTitle: string) => void) {
+  function open(currentTitle: string, callback: (newTitle: string) => void) {
     setValue(currentTitle);
-    setOnConfirm(() => cb);
+    setOnConfirm(() => callback);
     setIsOpen(true);
   }
 
   function confirm() {
-    if (value.trim() && onConfirm) onConfirm(value.trim());
+    if (value.trim() && onConfirm) {
+      onConfirm(value.trim());
+    }
     setIsOpen(false);
   }
 
@@ -92,10 +91,6 @@ function useRenamePrompt() {
 
   return { isOpen, value, setValue, open, confirm, cancel };
 }
-
-// ============================================================================
-// Component
-// ============================================================================
 
 export function ScratchpadApp({ windowId: _windowId }: AppProps) {
   const {
@@ -114,21 +109,25 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
 
   return (
     <AppWindow.Content layout="bleed">
-      <div className="h-full relative flex flex-col">
-        {/* Pattern shadow strips */}
+      <div className="relative flex h-full flex-col">
         <div className="relative shrink-0">
           <div
-            className="absolute top-0 left-0 right-0 h-1 z-10"
-            style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
+            className="absolute left-0 right-0 top-0 z-10 h-1"
+            style={{
+              backgroundImage: 'var(--pat-diagonal-dots)',
+              backgroundRepeat: 'repeat',
+            }}
           />
           <div
-            className="absolute top-1 left-0 right-0 h-1 z-10"
-            style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }}
+            className="absolute left-0 right-0 top-1 z-10 h-1"
+            style={{
+              backgroundImage: 'var(--pat-spray-grid)',
+              backgroundRepeat: 'repeat',
+            }}
           />
         </div>
 
-        {/* Menubar */}
-        <div className="bg-card border-b border-line shrink-0 pt-2">
+        <div className="shrink-0 border-b border-line bg-card pt-2">
           <Menubar.Root>
             <Menubar.Menu>
               <Menubar.Trigger>Documents</Menubar.Trigger>
@@ -136,23 +135,16 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
                 <Menubar.Item shortcut="Ctrl+N" onClick={newDoc}>
                   New Document
                 </Menubar.Item>
-                <Menubar.Item onClick={newSpecPage}>
-                  New Spec Page
-                </Menubar.Item>
+                <Menubar.Item onClick={newSpecPage}>New Spec Page</Menubar.Item>
                 <Menubar.Separator />
                 <Menubar.Label>Open</Menubar.Label>
                 {docs.map((doc) => (
-                  <Menubar.Item
-                    key={doc.id}
-                    onClick={() => switchDoc(doc.id)}
-                  >
+                  <Menubar.Item key={doc.id} onClick={() => switchDoc(doc.id)}>
                     {doc.id === activeId ? `● ${doc.title}` : `  ${doc.title}`}
                   </Menubar.Item>
                 ))}
                 <Menubar.Separator />
-                <Menubar.Item
-                  onClick={() => rename.open(activeDoc.title, renameDoc)}
-                >
+                <Menubar.Item onClick={() => rename.open(activeDoc.title, renameDoc)}>
                   Rename...
                 </Menubar.Item>
                 <Menubar.Item
@@ -167,42 +159,41 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
           </Menubar.Root>
         </div>
 
-        {/* Rename inline prompt */}
-        {rename.isOpen && (
-          <div className="bg-card border-b border-line px-3 py-2 flex items-center gap-2 shrink-0">
-            <span className="text-sm text-mute font-joystix">Rename:</span>
+        {rename.isOpen ? (
+          <div className="flex shrink-0 items-center gap-2 border-b border-line bg-card px-3 py-2">
+            <span className="font-joystix text-sm text-mute">Rename:</span>
             <input
-              className="flex-1 bg-page text-main text-sm px-2 py-1 border border-line outline-none"
+              className="flex-1 border border-line bg-page px-2 py-1 text-sm text-main outline-none"
               style={{ fontFamily: 'var(--font-sans)' }}
               value={rename.value}
-              onChange={(e) => rename.setValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') rename.confirm();
-                if (e.key === 'Escape') rename.cancel();
+              onChange={(event) => rename.setValue(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  rename.confirm();
+                }
+                if (event.key === 'Escape') {
+                  rename.cancel();
+                }
               }}
               autoFocus
             />
             <button
-              className="text-sm text-accent px-2 py-1"
+              className="px-2 py-1 text-sm text-accent"
               onClick={rename.confirm}
             >
               Save
             </button>
             <button
-              className="text-sm text-mute px-2 py-1"
+              className="px-2 py-1 text-sm text-mute"
               onClick={rename.cancel}
             >
               Cancel
             </button>
           </div>
-        )}
+        ) : null}
 
-        {/* Editor surface */}
-        <div className="bg-card flex-1 overflow-hidden min-h-0">
-          <EditorErrorBoundary
-            key={activeId}
-            onReset={() => saveContent([])}
-          >
+        <div className="min-h-0 flex-1 overflow-hidden bg-card">
+          <EditorErrorBoundary key={activeId} onReset={() => saveContent([])}>
             <ScratchpadEditor
               initialContent={activeDoc.content}
               onSave={saveContent}
