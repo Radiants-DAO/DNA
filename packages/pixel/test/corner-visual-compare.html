@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pixel Corner A/B — Clip-path vs Bitstring</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: monospace; background: #1a1a1a; color: #e0e0e0; padding: 2rem; }
+  h1 { font-size: 1.2rem; margin-bottom: 1.5rem; color: #aaa; }
+  h2 { font-size: 0.9rem; margin-bottom: 0.75rem; color: #888; }
+  .compare { display: flex; gap: 3rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .panel { text-align: center; }
+  .panel label { display: block; font-size: 0.7rem; color: #666; margin-top: 0.4rem; }
+  .grid-render { image-rendering: pixelated; border: 1px solid #333; }
+  .old-box {
+    width: 200px; height: 140px;
+    background: #2a2a2a;
+    border: 1px solid transparent;
+    position: relative;
+  }
+  .old-box::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 1;
+    background: #888;
+    display: block;
+    pointer-events: none;
+    margin: -1px;
+  }
+
+  /* Old clip-path styles from pixel-corners.generated.css */
+  .old-xs { border-radius: 2px; clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px); }
+  .old-xs::after { clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px, 0px 50%, 1px 50%, 1px 2px, 2px 2px, 2px 1px, calc(100% - 2px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 2px, calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), 2px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 2px), 1px 50%, 0px 50%); }
+
+  .old-sm { border-radius: 6px; clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px); }
+  .old-sm::after { clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px, 0px 50%, 1px 50%, 1px 5px, 2px 5px, 2px 3px, 3px 3px, 3px 2px, 5px 2px, 5px 1px, calc(100% - 5px) 1px, calc(100% - 5px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 5px, calc(100% - 1px) 5px, calc(100% - 1px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 1px), 5px calc(100% - 1px), 5px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 5px), 1px calc(100% - 5px), 1px 50%, 0px 50%); }
+
+  .old-md { border-radius: 6px; clip-path: polygon(0px calc(100% - 9px), 1px calc(100% - 9px), 1px calc(100% - 8px), 1px calc(100% - 6px), 2px calc(100% - 6px), 2px calc(100% - 5px), 3px calc(100% - 5px), 3px calc(100% - 4px), 4px calc(100% - 3px), 5px calc(100% - 3px), 5px calc(100% - 2px), 6px calc(100% - 2px), 6px calc(100% - 1px), 8px calc(100% - 1px), 9px calc(100% - 1px), 9px 100%, calc(100% - 9px) 100%, calc(100% - 9px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 6px) calc(100% - 1px), calc(100% - 6px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 3px), calc(100% - 4px) calc(100% - 3px), calc(100% - 3px) calc(100% - 4px), calc(100% - 3px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 6px), calc(100% - 1px) calc(100% - 6px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 9px), 100% calc(100% - 9px), 100% 9px, calc(100% - 1px) 9px, calc(100% - 1px) 8px, calc(100% - 1px) 6px, calc(100% - 2px) 6px, calc(100% - 2px) 5px, calc(100% - 3px) 5px, calc(100% - 3px) 4px, calc(100% - 4px) 3px, calc(100% - 5px) 3px, calc(100% - 5px) 2px, calc(100% - 6px) 2px, calc(100% - 6px) 1px, calc(100% - 8px) 1px, calc(100% - 9px) 1px, calc(100% - 9px) 0px, 9px 0px, 9px 1px, 8px 1px, 6px 1px, 6px 2px, 5px 2px, 5px 3px, 4px 3px, 3px 4px, 3px 5px, 2px 5px, 2px 6px, 1px 6px, 1px 8px, 1px 9px, 0px 9px); }
+
+  .old-lg { border-radius: 8px; clip-path: polygon(0px calc(100% - 12px), 1px calc(100% - 12px), 1px calc(100% - 9px), 2px calc(100% - 9px), 2px calc(100% - 8px), 3px calc(100% - 8px), 3px calc(100% - 7px), 3px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 5px), 5px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 3px), 7px calc(100% - 3px), 8px calc(100% - 3px), 8px calc(100% - 2px), 9px calc(100% - 2px), 9px calc(100% - 1px), 12px calc(100% - 1px), 12px 100%, calc(100% - 12px) 100%, calc(100% - 12px) calc(100% - 1px), calc(100% - 9px) calc(100% - 1px), calc(100% - 9px) calc(100% - 2px), calc(100% - 8px) calc(100% - 2px), calc(100% - 8px) calc(100% - 3px), calc(100% - 7px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) calc(100% - 4px), calc(100% - 5px) calc(100% - 4px), calc(100% - 4px) calc(100% - 5px), calc(100% - 4px) calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 7px), calc(100% - 3px) calc(100% - 8px), calc(100% - 2px) calc(100% - 8px), calc(100% - 2px) calc(100% - 9px), calc(100% - 1px) calc(100% - 9px), calc(100% - 1px) calc(100% - 12px), 100% calc(100% - 12px), 100% 12px, calc(100% - 1px) 12px, calc(100% - 1px) 9px, calc(100% - 2px) 9px, calc(100% - 2px) 8px, calc(100% - 3px) 8px, calc(100% - 3px) 7px, calc(100% - 3px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 5px, calc(100% - 5px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 3px, calc(100% - 7px) 3px, calc(100% - 8px) 3px, calc(100% - 8px) 2px, calc(100% - 9px) 2px, calc(100% - 9px) 1px, calc(100% - 12px) 1px, calc(100% - 12px) 0px, 12px 0px, 12px 1px, 9px 1px, 9px 2px, 8px 2px, 8px 3px, 7px 3px, 6px 3px, 6px 4px, 5px 4px, 4px 5px, 4px 6px, 3px 6px, 3px 7px, 3px 8px, 2px 8px, 2px 9px, 1px 9px, 1px 12px, 0px 12px); }
+</style>
+</head>
+<body>
+<h1>Pixel Corner A/B — Clip-path (old) vs Canvas Bitstring (new)</h1>
+<p style="color:#666;margin-bottom:2rem;font-size:0.8rem">Cover = dark bg pixels hiding smooth corner. Border = staircase edge. Scale = 8x for visibility.</p>
+
+<script>
+// Corner bitstring data (from corner-sets.ts)
+const CORNERS = {
+  xs: {
+    size: 2,
+    cover: '11' + '10',
+    border: '00' + '01',
+  },
+  sm: {
+    size: 5,
+    cover: '11111' + '11100' + '11000' + '10000' + '10000',
+    border: '00000' + '00011' + '00100' + '01000' + '01000',
+  },
+  md: {
+    size: 9,
+    cover: '111111111' + '111111000' + '111110000' + '111000000' + '111000000' + '110000000' + '100000000' + '100000000' + '100000000',
+    border: '000000000' + '000000111' + '000001000' + '000110000' + '000100000' + '001000000' + '010000000' + '010000000' + '010000000',
+  },
+  lg: {
+    size: 12,
+    cover: '111111111111' + '111111111000' + '111111110000' + '111111000000' + '111100000000' + '111100000000' + '111000000000' + '111000000000' + '110000000000' + '100000000000' + '100000000000' + '100000000000',
+    border: '000000000000' + '000000000111' + '000000001000' + '000000110000' + '000011000000' + '000010000000' + '000100000000' + '000100000000' + '001000000000' + '010000000000' + '010000000000' + '010000000000',
+  },
+  xl: {
+    size: 19,
+    cover: '1111111111111111111' + '1111111111111111000' + '1111111111111000000' + '1111111111110000000' + '1111111111000000000' + '1111111110000000000' + '1111111100000000000' + '1111111000000000000' + '1111110000000000000' + '1111100000000000000' + '1111000000000000000' + '1111000000000000000' + '1110000000000000000' + '1100000000000000000' + '1100000000000000000' + '1100000000000000000' + '1000000000000000000' + '1000000000000000000' + '1000000000000000000',
+    border: '0000000000000000000' + '0000000000000000111' + '0000000000000111000' + '0000000000001000000' + '0000000000110000000' + '0000000001000000000' + '0000000010000000000' + '0000000100000000000' + '0000001000000000000' + '0000010000000000000' + '0000100000000000000' + '0000100000000000000' + '0001000000000000000' + '0010000000000000000' + '0010000000000000000' + '0010000000000000000' + '0100000000000000000' + '0100000000000000000' + '0100000000000000000',
+  },
+};
+
+function renderGrid(canvasId, bits, size, scale, coverColor, borderColor) {
+  const canvas = document.getElementById(canvasId);
+  canvas.width = size * scale;
+  canvas.height = size * scale;
+  canvas.style.width = (size * scale) + 'px';
+  canvas.style.height = (size * scale) + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  for (let i = 0; i < bits.length; i++) {
+    if (bits[i] === '1') {
+      const x = (i % size) * scale;
+      const y = Math.floor(i / size) * scale;
+      ctx.fillStyle = coverColor;
+      ctx.fillRect(x, y, scale, scale);
+    }
+  }
+}
+
+function renderCorner(canvasId, corner, scale) {
+  const canvas = document.getElementById(canvasId);
+  const size = corner.size;
+  canvas.width = size * scale;
+  canvas.height = size * scale;
+  canvas.style.width = (size * scale) + 'px';
+  canvas.style.height = (size * scale) + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  // Draw cover in dark bg color
+  for (let i = 0; i < corner.cover.length; i++) {
+    if (corner.cover[i] === '1') {
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect((i % size) * scale, Math.floor(i / size) * scale, scale, scale);
+    }
+  }
+  // Draw border in border color
+  for (let i = 0; i < corner.border.length; i++) {
+    if (corner.border[i] === '1') {
+      ctx.fillStyle = '#888';
+      ctx.fillRect((i % size) * scale, Math.floor(i / size) * scale, scale, scale);
+    }
+  }
+  // Draw content area (transparent pixels) in element bg
+  for (let i = 0; i < corner.cover.length; i++) {
+    if (corner.cover[i] === '0' && corner.border[i] === '0') {
+      ctx.fillStyle = '#2a2a2a';
+      ctx.fillRect((i % size) * scale, Math.floor(i / size) * scale, scale, scale);
+    }
+  }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= size; x++) {
+    ctx.beginPath(); ctx.moveTo(x * scale + 0.5, 0); ctx.lineTo(x * scale + 0.5, size * scale); ctx.stroke();
+  }
+  for (let y = 0; y <= size; y++) {
+    ctx.beginPath(); ctx.moveTo(0, y * scale + 0.5); ctx.lineTo(size * scale, y * scale + 0.5); ctx.stroke();
+  }
+}
+
+// Render each size
+const SCALE = 8;
+for (const [name, corner] of Object.entries(CORNERS)) {
+  const section = document.createElement('div');
+  section.style.marginBottom = '2.5rem';
+
+  const h2 = document.createElement('h2');
+  h2.textContent = name.toUpperCase() + ' (' + corner.size + '×' + corner.size + ')';
+  section.appendChild(h2);
+
+  const compare = document.createElement('div');
+  compare.className = 'compare';
+
+  // A: Old clip-path box
+  const panelA = document.createElement('div');
+  panelA.className = 'panel';
+  const oldBox = document.createElement('div');
+  oldBox.className = 'old-box old-' + name;
+  panelA.appendChild(oldBox);
+  const labelA = document.createElement('label');
+  labelA.textContent = 'A: clip-path (current)';
+  panelA.appendChild(labelA);
+  compare.appendChild(panelA);
+
+  // B: New canvas bitstring (TL corner only, at scale)
+  const panelB = document.createElement('div');
+  panelB.className = 'panel';
+  const canvasB = document.createElement('canvas');
+  canvasB.id = 'new-' + name;
+  canvasB.className = 'grid-render';
+  panelB.appendChild(canvasB);
+  const labelB = document.createElement('label');
+  labelB.textContent = 'B: bitstring TL corner (' + SCALE + 'x scale)';
+  panelB.appendChild(labelB);
+  compare.appendChild(panelB);
+
+  // C: Cover grid (isolated)
+  const panelC = document.createElement('div');
+  panelC.className = 'panel';
+  const canvasC = document.createElement('canvas');
+  canvasC.id = 'cover-' + name;
+  canvasC.className = 'grid-render';
+  panelC.appendChild(canvasC);
+  const labelC = document.createElement('label');
+  labelC.textContent = 'Cover layer (hides smooth corner)';
+  panelC.appendChild(labelC);
+  compare.appendChild(panelC);
+
+  // D: Border grid (isolated)
+  const panelD = document.createElement('div');
+  panelD.className = 'panel';
+  const canvasD = document.createElement('canvas');
+  canvasD.id = 'border-' + name;
+  canvasD.className = 'grid-render';
+  panelD.appendChild(canvasD);
+  const labelD = document.createElement('label');
+  labelD.textContent = 'Border layer (staircase edge)';
+  panelD.appendChild(labelD);
+  compare.appendChild(panelD);
+
+  section.appendChild(compare);
+  document.body.appendChild(section);
+
+  renderCorner('new-' + name, corner, SCALE);
+  renderGrid('cover-' + name, corner.cover, corner.size, SCALE, '#ff4444', 'transparent');
+  renderGrid('border-' + name, corner.border, corner.size, SCALE, '#44ff44', 'transparent');
+}
+</script>
+</body>
+</html>
