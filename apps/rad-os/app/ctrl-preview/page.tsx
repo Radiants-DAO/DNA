@@ -53,8 +53,7 @@ function Trap({ side, value, variant }: {
         style={{
           fontSize: 10,
           lineHeight: 'round(up, 100%, 1px)',
-          color: active ? 'var(--color-accent)' : 'var(--ctrl-label)',
-          textShadow: active ? GLOW : 'none',
+          ...(active ? { color: 'var(--color-accent)', textShadow: GLOW } : {}),
         }}
       >
         {value}
@@ -90,19 +89,18 @@ function ValueCell({ label, unit, active = false }: {
         style={{
           fontSize: 10,
           lineHeight: 'round(up, 100%, 1px)',
-          color: active ? 'var(--color-main)' : 'var(--ctrl-label)',
-          textShadow: active ? GLOW : 'none',
+          ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
         }}
       >
         {label}
       </span>
       <span className="flex items-start gap-[3px]">
         {unit && (
-          <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', color: 'var(--ctrl-label)', textAlign: 'center' }}>
+          <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', textAlign: 'center' }}>
             {unit}
           </span>
         )}
-        <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', color: 'var(--ctrl-label)', textAlign: 'center', width: 'max-content' }}>
+        <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', textAlign: 'center', width: 'max-content' }}>
           ▾
         </span>
       </span>
@@ -123,7 +121,7 @@ function IconEye() {
 function IconResize() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
-      <path fill="var(--ctrl-label)" d="M1 7H2V8H1V7ZM2 6H3V7H2V6ZM2 8H3V9H2V8ZM3 5H5V6H3V5ZM3 9H5V10H3V9ZM4 12H5V13H4V12ZM5 4H10V5H5V4ZM5 11H6V12H5V11ZM6 6H8V7H7V8H6V6ZM6 10H7V11H6V10ZM7 9H8V10H7V9ZM8 8H9V9H8V8ZM8 10H11V11H8V10ZM9 7H10V8H9V7ZM10 6H11V7H10V6ZM11 5H12V6H11V5ZM11 9H13V10H11V9ZM12 4H13V5H12V4ZM13 3H14V4H13V3ZM13 6H14V7H13V6ZM13 8H14V9H13V8ZM14 7H15V8H14V7Z" />
+      <path fill="currentColor" d="M1 7H2V8H1V7ZM2 6H3V7H2V6ZM2 8H3V9H2V8ZM3 5H5V6H3V5ZM3 9H5V10H3V9ZM4 12H5V13H4V12ZM5 4H10V5H5V4ZM5 11H6V12H5V11ZM6 6H8V7H7V8H6V6ZM6 10H7V11H6V10ZM7 9H8V10H7V9ZM8 8H9V9H8V8ZM8 10H11V11H8V10ZM9 7H10V8H9V7ZM10 6H11V7H10V6ZM11 5H12V6H11V5ZM11 9H13V10H11V9ZM12 4H13V5H12V4ZM13 3H14V4H13V3ZM13 6H14V7H13V6ZM13 8H14V9H13V8ZM14 7H15V8H14V7Z" />
     </svg>
   );
 }
@@ -131,7 +129,7 @@ function IconResize() {
 function IconPosition() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
-      <path fill="var(--ctrl-label)" d="M11 1H12V4H11ZM4 4H15V5H4ZM4 5H5V11H4ZM11 5H12V11H11ZM1 11H12V12H1ZM4 12H5V15H4Z" />
+      <path fill="currentColor" d="M11 1H12V4H11ZM4 4H15V5H4ZM4 5H5V11H4ZM11 5H12V11H11ZM1 11H12V12H1ZM4 12H5V15H4Z" />
     </svg>
   );
 }
@@ -139,8 +137,8 @@ function IconPosition() {
 function IconFloat() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
-      <path fill="var(--ctrl-label)" d="M3 4H8V11H3Z" style={{ opacity: 0.3 }} />
-      <path fill="var(--ctrl-label)" d="M1 2H15V3H1ZM1 11H9V12H1ZM12 5H13V10H12ZM11 10H14V11H11ZM12 11H13V12H12Z" />
+      <path fill="currentColor" d="M3 4H8V11H3Z" style={{ opacity: 0.3 }} />
+      <path fill="currentColor" d="M1 2H15V3H1ZM1 11H9V12H1ZM12 5H13V10H12ZM11 10H14V11H11ZM12 11H13V12H12Z" />
     </svg>
   );
 }
@@ -155,7 +153,7 @@ export default function CtrlPreview() {
     <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
       {/* Panel Container */}
       <div
-        className="flex flex-col font-mono text-xs leading-4"
+        className="flex flex-col font-mono text-xs leading-4 text-ctrl-label"
         style={{
           width: 353,
           padding: 16,
@@ -207,7 +205,7 @@ export default function CtrlPreview() {
 
             {/* Min/Max toggle */}
             <div className="flex items-center gap-1 shrink-0 self-stretch justify-center" style={{ width: 60 }}>
-              <span className="shrink-0 text-center text-ctrl-label uppercase" style={{ fontSize: 8, lineHeight: '10px', width: 'max-content' }}>
+              <span className="shrink-0 text-center uppercase" style={{ fontSize: 8, lineHeight: '10px', width: 'max-content' }}>
                 min
               </span>
               <div
@@ -234,7 +232,7 @@ export default function CtrlPreview() {
             {/* Rule (short) */}
             <div className="shrink-0 relative" style={{ width: 12, height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
 
-            <span className="self-stretch flex items-center shrink-0 text-ctrl-label uppercase" style={{ fontSize: 8, lineHeight: '10px' }}>
+            <span className="self-stretch flex items-center shrink-0 uppercase" style={{ fontSize: 8, lineHeight: '10px' }}>
               {open ? 'Collapse' : 'Expand'}
             </span>
 
@@ -296,7 +294,7 @@ export default function CtrlPreview() {
                               </div>
                               <div className="flex flex-1 items-center justify-center self-stretch bg-black flex-col gap-1 px-1">
                                 <span
-                                  className="text-ctrl-label uppercase overflow-hidden"
+                                  className="uppercase overflow-hidden"
                                   style={{ fontSize: 8, lineHeight: '10px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1, width: 'fit-content' }}
                                 >
                                   Auto
@@ -316,7 +314,7 @@ export default function CtrlPreview() {
           {/* Footer: SHOW CSS */}
           <div className="flex items-start gap-1 h-6 shrink-0">
             <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderLeft: '1px solid var(--ctrl-border-inactive)' }} />
-            <span className="self-stretch flex items-center text-ctrl-label uppercase text-center" style={{ fontSize: 8, lineHeight: '10px' }}>
+            <span className="self-stretch flex items-center uppercase text-center" style={{ fontSize: 8, lineHeight: '10px' }}>
               Show css
             </span>
             <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderRight: '1px solid var(--ctrl-border-inactive)' }} />
