@@ -40,3 +40,8 @@ export { LEDArray } from './readouts/LEDArray/LEDArray';
 export { Sparkline } from './readouts/Sparkline/Sparkline';
 export { Waveform } from './readouts/Waveform/Waveform';
 export { Spectrum } from './readouts/Spectrum/Spectrum';
+
+// Layout (panel composition)
+export { Section } from './layout/Section/Section';
+export { PropertyRow } from './layout/PropertyRow/PropertyRow';
+export { ControlPanel, useDensity } from './layout/ControlPanel/ControlPanel';
