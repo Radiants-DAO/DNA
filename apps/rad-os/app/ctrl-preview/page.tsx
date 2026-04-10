@@ -153,11 +153,12 @@ export default function CtrlPreview() {
     <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
       {/* Panel Container */}
       <div
-        className="flex flex-col font-mono text-xs leading-4 text-ctrl-label"
+        className="flex flex-col font-mono text-xs leading-4"
         style={{
           width: 353,
           padding: 16,
           backgroundColor: '#000',
+          color: 'var(--ctrl-label)',
           boxShadow: 'inset 2px 2px 9.6px #000, 0 1px 0 1px oklch(1 0 0 / 0.04), 0 -2px 0 #000',
           WebkitFontSmoothing: 'antialiased',
           fontSynthesis: 'none',
