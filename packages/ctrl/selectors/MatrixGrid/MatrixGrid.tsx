@@ -56,7 +56,7 @@ export function MatrixGrid({
 
       <div
         role="grid"
-        className="inline-grid gap-px"
+        className="inline-grid gap-[--ctrl-cell-gap] border border-ctrl-border-inactive p-px"
         style={{ gridTemplateColumns: `repeat(${cols}, auto)` }}
       >
         {value.map((row, ri) =>
@@ -70,12 +70,13 @@ export function MatrixGrid({
               onClick={() => toggleCell(ri, ci)}
               className={[
                 cellSize[size],
-                'rounded-[1px] outline-none transition-colors duration-fast',
+                'outline-none transition-all duration-fast',
                 'focus-visible:ring-1 focus-visible:ring-ctrl-glow',
                 cell
                   ? 'bg-ctrl-fill'
-                  : 'bg-ctrl-track hover:bg-ctrl-hover/20',
+                  : 'bg-ctrl-cell-bg hover:bg-ctrl-track',
               ].filter(Boolean).join(' ')}
+              style={cell ? { boxShadow: '0 0 4px var(--glow-sun-yellow)' } : undefined}
             />
           )),
         )}

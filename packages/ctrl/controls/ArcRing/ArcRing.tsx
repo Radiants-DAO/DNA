@@ -128,9 +128,10 @@ export function ArcRing({
             y={cy + 1}
             textAnchor="middle"
             dominantBaseline="central"
-            fill="var(--ctrl-value)"
+            fill="var(--ctrl-text-active)"
             fontSize={dim * 0.22}
             fontFamily="var(--font-mono, monospace)"
+            style={{ filter: 'drop-shadow(0 0 4px var(--glow-sun-yellow))' }}
           >
             {displayValue}
           </text>

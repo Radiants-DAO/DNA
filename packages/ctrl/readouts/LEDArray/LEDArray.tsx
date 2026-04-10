@@ -51,11 +51,11 @@ export function LEDArray({
               className={[
                 dotSize[size],
                 'rounded-full transition-all duration-fast',
-                !isOn && 'bg-ctrl-track',
+                !isOn && 'bg-ctrl-cell-bg',
               ].filter(Boolean).join(' ')}
               style={isOn ? {
                 backgroundColor: ledColor,
-                boxShadow: `0 0 4px ${ledColor}`,
+                boxShadow: `0 0 6px ${ledColor}`,
               } : undefined}
             />
           );

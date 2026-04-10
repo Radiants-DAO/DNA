@@ -91,24 +91,23 @@ export function RadialMenu({
             <g key={opt.value} role="radio" aria-checked={isActive}>
               <path
                 d={sectorPath(cx, cy, r, startAngle, endAngle)}
-                fill={isActive ? 'var(--ctrl-fill)' : 'var(--ctrl-track)'}
-                stroke="var(--ctrl-grid-line)"
+                fill="var(--ctrl-cell-bg)"
+                stroke={isActive ? 'var(--ctrl-border-active)' : 'var(--ctrl-border-inactive)'}
                 strokeWidth={1}
-                className={[
-                  'cursor-pointer outline-none transition-colors duration-fast',
-                  !isActive && 'hover:fill-[var(--ctrl-hover)]',
-                ].filter(Boolean).join(' ')}
+                className="cursor-pointer outline-none transition-colors duration-fast"
                 onClick={() => !disabled && onChange(opt.value)}
+                style={isActive ? { filter: 'drop-shadow(0 0 4px var(--glow-sun-yellow))' } : undefined}
               />
               <text
                 x={lp.x}
                 y={lp.y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fill={isActive ? 'var(--ctrl-active)' : 'var(--ctrl-label)'}
-                fontSize={dim * 0.1}
+                fill={isActive ? 'var(--ctrl-text-active)' : 'var(--ctrl-label)'}
+                fontSize={dim * 0.11}
                 fontFamily="var(--font-mono, monospace)"
-                className="pointer-events-none"
+                className="pointer-events-none uppercase"
+                letterSpacing="0.05em"
               >
                 {opt.label}
               </text>

@@ -69,7 +69,8 @@ export function Stepper({
         </span>
       )}
 
-      <div className="inline-flex items-center rounded-sm bg-ctrl-track overflow-hidden">
+      {/* Paper ref: 04 — Stepper. Cell-based: [-] [value] [+] with 1px gaps */}
+      <div className="inline-flex items-stretch gap-[--ctrl-cell-gap] border border-ctrl-border-inactive">
         <button
           type="button"
           disabled={disabled || atMin}
@@ -77,7 +78,7 @@ export function Stepper({
           aria-label="Decrease"
           className={[
             buttonVariants({ size }),
-            'text-ctrl-label hover:bg-ctrl-hover/20 hover:text-ctrl-value',
+            'bg-ctrl-cell-bg text-ctrl-label hover:text-ctrl-value',
             'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
             atMin && 'opacity-30 pointer-events-none',
           ].filter(Boolean).join(' ')}
@@ -87,9 +88,11 @@ export function Stepper({
 
         <span
           className={[
-            'font-mono tabular-nums text-ctrl-value px-2',
+            'flex-1 flex items-center justify-center font-mono tabular-nums px-2 bg-ctrl-cell-bg',
+            'text-ctrl-text-active',
             size === 'sm' ? 'text-[0.625rem]' : size === 'lg' ? 'text-sm' : 'text-xs',
           ].join(' ')}
+          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
         >
           {displayValue}
         </span>
@@ -101,7 +104,7 @@ export function Stepper({
           aria-label="Increase"
           className={[
             buttonVariants({ size }),
-            'text-ctrl-label hover:bg-ctrl-hover/20 hover:text-ctrl-value',
+            'bg-ctrl-cell-bg text-ctrl-label hover:text-ctrl-value',
             'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
             atMax && 'opacity-30 pointer-events-none',
           ].filter(Boolean).join(' ')}

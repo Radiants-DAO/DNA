@@ -112,7 +112,10 @@ export function Ribbon({
             </span>
           )}
           {showValue && (
-            <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+            <span
+              className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+              style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+            >
               {displayValue}
             </span>
           )}
@@ -129,7 +132,7 @@ export function Ribbon({
         aria-orientation="horizontal"
         onPointerDown={onPointerDown}
         className={[
-          'relative h-3 w-full rounded-full bg-ctrl-track overflow-hidden',
+          'relative h-3 w-full rounded-full bg-ctrl-cell-bg border border-ctrl-border-inactive overflow-hidden',
           'cursor-pointer outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isActive && 'cursor-grabbing',

@@ -68,11 +68,12 @@ export function NumberScrubber({
       <span
         {...bind}
         className={[
-          'text-ctrl-value cursor-ew-resize outline-none px-1 rounded-sm',
+          'text-ctrl-text-active cursor-ew-resize outline-none px-1 rounded-sm',
           'hover:bg-ctrl-hover/10',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'bg-ctrl-hover/20',
         ].filter(Boolean).join(' ')}
+        style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
       >
         {displayValue}
       </span>

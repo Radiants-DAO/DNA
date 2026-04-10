@@ -32,6 +32,7 @@ import { Spectrum } from '@rdna/ctrl/readouts/Spectrum/Spectrum';
 import { Section } from '@rdna/ctrl/layout/Section/Section';
 import { PropertyRow } from '@rdna/ctrl/layout/PropertyRow/PropertyRow';
 import { ControlPanel } from '@rdna/ctrl/layout/ControlPanel/ControlPanel';
+import { PanelTitle } from '@rdna/ctrl/layout/PanelTitle/PanelTitle';
 
 // ============================================================================
 // Demo data
@@ -114,7 +115,7 @@ export default function CtrlPreview() {
   }, [animateMeter]);
 
   return (
-    <div className="min-h-screen bg-inv text-flip p-6 pb-20">
+    <div className="dark min-h-screen bg-page text-main p-6 pb-20">
       <div className="max-w-[28rem] mx-auto space-y-8">
         {/* ── Header ── */}
         <header className="space-y-1">
@@ -130,38 +131,70 @@ export default function CtrlPreview() {
             LAYOUT COMPONENTS
            ════════════════════════════════════════════════════ */}
         <PreviewSection id="layout" title="Layout">
-          <div className="space-y-4">
-            {/* ControlPanel + Section + PropertyRow composed */}
-            <ControlPanel density="normal">
-              <Section title="Oscillator">
-                <PropertyRow label="Shape">
-                  <SegmentedControl
-                    value={segment}
-                    onChange={setSegment}
-                    options={[
-                      { value: 'sin', label: 'Sin' },
-                      { value: 'tri', label: 'Tri' },
-                      { value: 'sqr', label: 'Sqr' },
-                    ]}
-                    size="sm"
-                  />
+          <div className="space-y-6">
+            {/* PanelTitle — isolated */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Panel Title</span>
+              <PanelTitle title="Layout" />
+              <PanelTitle title="Inspector" subtitle="CSS Properties" />
+            </div>
+
+            {/* Section — isolated variants */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Section Headers</span>
+              <Section title="Size">
+                <PropertyRow label="W">
+                  <span className="font-mono text-[0.625rem] text-ctrl-value">Fill</span>
                 </PropertyRow>
-                <PropertyRow label="Frequency">
-                  <NumberScrubber value={scrub} onChange={setScrub} formatValue={(v) => `${v} Hz`} size="sm" />
-                </PropertyRow>
-                <PropertyRow label="Gain">
-                  <Knob value={knob} onChange={setKnob} showValue size="sm" />
-                </PropertyRow>
-              </Section>
-              <Section title="Filter">
-                <PropertyRow label="Cutoff">
-                  <CtrlSlider value={slider} onChange={setSlider} min={20} max={20000} size="sm" />
-                </PropertyRow>
-                <PropertyRow label="Active">
-                  <Toggle value={toggle} onChange={setToggle} size="sm" />
+                <PropertyRow label="H">
+                  <span className="font-mono text-[0.625rem] text-ctrl-text-active"
+                    style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+                  >10</span>
+                  <span className="font-mono text-[0.5rem] text-ctrl-label ml-1">REM</span>
                 </PropertyRow>
               </Section>
-            </ControlPanel>
+              <Section title="Layers" count={12}>
+                <PropertyRow label="App">
+                  <span className="font-mono text-[0.625rem] text-ctrl-label">div</span>
+                </PropertyRow>
+              </Section>
+            </div>
+
+            {/* Full composed panel */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Composed Panel</span>
+              <ControlPanel density="normal">
+                <PanelTitle title="Layout" />
+                <Section title="Oscillator">
+                  <PropertyRow label="Shape">
+                    <SegmentedControl
+                      value={segment}
+                      onChange={setSegment}
+                      options={[
+                        { value: 'sin', label: 'Sin' },
+                        { value: 'tri', label: 'Tri' },
+                        { value: 'sqr', label: 'Sqr' },
+                      ]}
+                      size="sm"
+                    />
+                  </PropertyRow>
+                  <PropertyRow label="Freq">
+                    <NumberScrubber value={scrub} onChange={setScrub} formatValue={(v) => `${v} Hz`} size="sm" />
+                  </PropertyRow>
+                  <PropertyRow label="Gain">
+                    <Knob value={knob} onChange={setKnob} showValue size="sm" />
+                  </PropertyRow>
+                </Section>
+                <Section title="Filter">
+                  <PropertyRow label="Cutoff">
+                    <CtrlSlider value={slider} onChange={setSlider} min={20} max={20000} size="sm" />
+                  </PropertyRow>
+                  <PropertyRow label="Active">
+                    <Toggle value={toggle} onChange={setToggle} size="sm" />
+                  </PropertyRow>
+                </Section>
+              </ControlPanel>
+            </div>
           </div>
         </PreviewSection>
 

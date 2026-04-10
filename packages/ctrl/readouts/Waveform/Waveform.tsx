@@ -32,12 +32,15 @@ export function Waveform({
       if (data.length === 0) return;
 
       const fillStyle = getComputedStyle(ctx.canvas).getPropertyValue('--ctrl-fill').trim() || '#FCE184';
+      const glowColor = getComputedStyle(ctx.canvas).getPropertyValue('--glow-sun-yellow').trim() || 'rgba(252, 225, 132, 0.5)';
 
       const mid = height / 2;
       const step = width / data.length;
 
       ctx.strokeStyle = fillStyle;
       ctx.lineWidth = 1;
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = 6;
 
       ctx.beginPath();
       for (let i = 0; i < data.length; i++) {
@@ -66,7 +69,7 @@ export function Waveform({
 
       <canvas
         ref={canvasRef}
-        className={['w-full', heightMap[size]].join(' ')}
+        className={['w-full bg-ctrl-cell-bg border border-ctrl-border-inactive rounded-sm', heightMap[size]].join(' ')}
       />
     </div>
   );

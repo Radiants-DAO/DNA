@@ -70,7 +70,7 @@ export function Fader({
       <div
         {...bind}
         className={[
-          'relative w-2 flex-1 rounded-full bg-ctrl-track',
+          'relative w-2 flex-1 rounded-full bg-ctrl-cell-bg',
           'cursor-grab outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'cursor-grabbing',
@@ -84,13 +84,16 @@ export function Fader({
 
         {/* Thumb */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-2 rounded-sm bg-ctrl-thumb border border-ctrl-fill"
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-2 rounded-sm bg-ctrl-thumb border border-ctrl-border-active"
           style={{ bottom: `${norm * 100}%`, top: 'auto', position: 'absolute' }}
         />
       </div>
 
       {showValue && (
-        <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+        <span
+          className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+        >
           {displayValue}
         </span>
       )}

@@ -8,12 +8,12 @@
 
 @theme {
   /* ── Cell Layout ────────────────────────────────────────── */
-  --ctrl-cell-bg: var(--color-inv);           /* dark cell bg — flips per mode */
+  --ctrl-cell-bg: oklch(0 0 0 / 0.8);        /* black 80% — always dark per Paper */
   --ctrl-cell-gap: 1px;
   --ctrl-row-height: 1.5rem;                  /* 24px standard row */
 
   /* ── Track / Fill / Thumb ───────────────────────────────── */
-  --ctrl-track: var(--color-inv);             /* track/sunken bg — was broken ref */
+  --ctrl-track: oklch(0 0 0 / 0.6);          /* track bg — slightly lighter than cell */
   --ctrl-fill: var(--color-accent);           /* gold fill for active arcs/bars */
   --ctrl-thumb: var(--color-page);            /* thumb/dot fill */
 

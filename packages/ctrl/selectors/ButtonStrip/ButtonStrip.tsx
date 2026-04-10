@@ -5,7 +5,10 @@ import { cva } from 'class-variance-authority';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
-// ButtonStrip — Row of icon/label buttons, radio or multi-select mode
+// ButtonStrip — Cell-based preset bar, radio or multi-select
+//
+// Paper ref: 06 — Preset Bar
+// 1px gap cells, dark bg. Active = gold text + glow. Optional leading label.
 // =============================================================================
 
 interface ButtonStripOption {
@@ -26,13 +29,13 @@ interface ButtonStripProps {
 }
 
 const itemVariants = cva(
-  'flex items-center justify-center font-mono outline-none transition-colors duration-fast',
+  'flex items-center justify-center font-mono outline-none transition-all duration-fast bg-ctrl-cell-bg',
   {
     variants: {
       size: {
-        sm: 'size-5 text-[0.5625rem]',
-        md: 'size-6 text-[0.625rem]',
-        lg: 'size-7 text-xs',
+        sm: 'min-w-5 min-h-5 px-1 text-[0.5625rem]',
+        md: 'min-w-6 min-h-[--ctrl-row-height] px-1.5 text-[0.625rem]',
+        lg: 'min-w-7 min-h-7 px-2 text-xs',
       },
     },
     defaultVariants: { size: 'md' },
@@ -79,7 +82,7 @@ export function ButtonStrip({
 
       <div
         role={mode === 'radio' ? 'radiogroup' : 'group'}
-        className="inline-flex rounded-sm bg-ctrl-track overflow-hidden"
+        className="inline-flex gap-[--ctrl-cell-gap] border border-ctrl-border-inactive"
       >
         {options.map((opt) => {
           const isActive = selected.includes(opt.value);
@@ -94,11 +97,13 @@ export function ButtonStrip({
               onClick={() => toggle(opt.value)}
               className={[
                 itemVariants({ size }),
+                'uppercase tracking-wider',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
                 isActive
-                  ? 'bg-ctrl-fill text-ctrl-active'
-                  : 'text-ctrl-label hover:text-ctrl-value hover:bg-ctrl-hover/10',
+                  ? 'text-ctrl-text-active'
+                  : 'text-ctrl-label hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
+              style={isActive ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
             >
               {opt.icon ?? opt.label ?? opt.value}
             </button>

@@ -5,7 +5,10 @@ import { cva } from 'class-variance-authority';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
-// SegmentedControl — Row of mutually exclusive options with active highlight
+// SegmentedControl — Horizontal tab bar with border-driven active state
+//
+// Paper ref: 03 — Segment Picker
+// Active: gold text + glow + border-top/sides. Inactive: cream 50%.
 // =============================================================================
 
 interface SegmentedOption {
@@ -29,9 +32,9 @@ const sizeVariants = cva(
   {
     variants: {
       size: {
-        sm: 'text-[0.5625rem] px-1.5 py-0.5',
-        md: 'text-[0.625rem] px-2 py-1',
-        lg: 'text-xs px-3 py-1.5',
+        sm: 'text-[0.5625rem] px-1.5 min-h-5',
+        md: 'text-[0.625rem] px-2 min-h-[--ctrl-row-height]',
+        lg: 'text-xs px-3 min-h-7',
       },
     },
     defaultVariants: { size: 'md' },
@@ -64,7 +67,7 @@ export function SegmentedControl({
 
       <div
         role="radiogroup"
-        className="inline-flex rounded-sm bg-ctrl-track overflow-hidden"
+        className="inline-flex gap-[--ctrl-cell-gap]"
       >
         {options.map((opt) => {
           const isActive = opt.value === value;
@@ -78,12 +81,14 @@ export function SegmentedControl({
               onClick={() => onChange(opt.value)}
               className={[
                 sizeVariants({ size }),
-                'flex items-center gap-1 transition-colors duration-fast outline-none',
+                'flex items-center justify-center gap-1 transition-all duration-fast outline-none',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
+                'bg-ctrl-cell-bg',
                 isActive
-                  ? 'bg-ctrl-fill text-ctrl-active'
-                  : 'text-ctrl-label hover:text-ctrl-value',
+                  ? 'text-ctrl-text-active border-t border-l border-r border-ctrl-border-active'
+                  : 'text-ctrl-label border-t border-l border-r border-transparent hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
+              style={isActive ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
             >
               {opt.icon}
               {opt.label}

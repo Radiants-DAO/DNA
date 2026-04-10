@@ -24,14 +24,15 @@ export function PropertyRow({
     <div
       data-rdna="ctrl-property-row"
       className={[
-        'flex items-center gap-[--ctrl-cell-gap] min-h-[--ctrl-row-height]',
+        'flex items-stretch min-h-[--ctrl-row-height]',
+        'bg-ctrl-cell-bg border border-ctrl-border-inactive',
         className,
       ].filter(Boolean).join(' ')}
     >
       {/* Label cell */}
       <span className={[
-        'shrink-0 flex items-center px-1.5',
-        'min-h-[--ctrl-row-height] bg-ctrl-cell-bg',
+        'shrink-0 flex items-center justify-center px-1.5',
+        'min-w-7 border-r border-ctrl-border-inactive',
         'font-mono text-ctrl-text-active text-[0.625rem] uppercase tracking-wider',
       ].join(' ')}
         style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
@@ -39,11 +40,8 @@ export function PropertyRow({
         {label}
       </span>
 
-      {/* Control cells */}
-      <div className={[
-        'flex-1 flex items-center gap-[--ctrl-cell-gap]',
-        'min-h-[--ctrl-row-height] bg-ctrl-cell-bg px-1.5',
-      ].join(' ')}>
+      {/* Value cell */}
+      <div className="flex-1 flex items-center gap-1 px-1.5">
         {children}
       </div>
     </div>

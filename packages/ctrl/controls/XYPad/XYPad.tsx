@@ -87,7 +87,7 @@ export function XYPad({
         {...bind}
         className={[
           dimMap[size],
-          'relative rounded-sm bg-ctrl-track',
+          'relative rounded-sm bg-ctrl-cell-bg border border-ctrl-border-inactive',
           'cursor-crosshair outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'cursor-grabbing',
@@ -100,23 +100,26 @@ export function XYPad({
       >
         {/* Crosshair lines */}
         <div
-          className="absolute top-0 bottom-0 w-px bg-ctrl-grid-line pointer-events-none"
+          className="absolute top-0 bottom-0 w-px bg-ctrl-fill pointer-events-none"
           style={{ left: `${norm.x * 100}%` }}
         />
         <div
-          className="absolute left-0 right-0 h-px bg-ctrl-grid-line pointer-events-none"
+          className="absolute left-0 right-0 h-px bg-ctrl-fill pointer-events-none"
           style={{ bottom: `${norm.y * 100}%` }}
         />
 
         {/* Position dot */}
         <div
           className="absolute size-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-ctrl-fill pointer-events-none"
-          style={{ left: `${norm.x * 100}%`, bottom: `${norm.y * 100}%` }}
+          style={{ left: `${norm.x * 100}%`, bottom: `${norm.y * 100}%`, boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)' }}
         />
       </div>
 
       {showValue && (
-        <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+        <span
+          className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+        >
           {displayValue}
         </span>
       )}

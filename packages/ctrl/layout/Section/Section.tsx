@@ -59,7 +59,7 @@ export function Section({
 
         {/* Count badge */}
         {count != null && (
-          <span className="font-mono text-ctrl-label text-[0.5rem] tracking-wider shrink-0">
+          <span className="font-mono text-ctrl-label text-[0.5rem] tracking-wider shrink-0 ml-1 mr-1">
             {count} found
           </span>
         )}

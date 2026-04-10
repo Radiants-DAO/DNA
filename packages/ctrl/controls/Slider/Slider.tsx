@@ -70,7 +70,10 @@ export function CtrlSlider({
             </span>
           )}
           {showValue && (
-            <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+            <span
+              className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+              style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+            >
               {displayValue}
             </span>
           )}
@@ -80,7 +83,7 @@ export function CtrlSlider({
       <div
         {...bind}
         className={[
-          'relative h-2 w-full rounded-full bg-ctrl-track',
+          'relative h-2 w-full rounded-full bg-ctrl-cell-bg',
           'cursor-grab outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'cursor-grabbing',
@@ -94,7 +97,7 @@ export function CtrlSlider({
 
         {/* Thumb */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-2 rounded-sm bg-ctrl-thumb border border-ctrl-fill"
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-2 rounded-sm bg-ctrl-thumb border border-ctrl-border-active"
           style={{ left: `${norm * 100}%` }}
         />
       </div>

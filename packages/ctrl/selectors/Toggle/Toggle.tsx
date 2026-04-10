@@ -1,13 +1,13 @@
 'use client';
 
-import { cva } from 'class-variance-authority';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
-// ctrl/Toggle — LED lamp/latch indicator
+// ctrl/Toggle — Slider-dot binary switch
 //
-// Distinct from core Toggle (which is a button variant wrapping Base UI).
-// This is an LED-style on/off indicator with optional label.
+// Paper ref: 05 — Toggle Indicator
+// ON: gold border + glow, cream fill, dot right.
+// OFF: cream 25% border, dim fill, dot left.
 // =============================================================================
 
 interface ToggleProps {
@@ -16,29 +16,14 @@ interface ToggleProps {
   label?: string;
   disabled?: boolean;
   size?: ControlSize;
-  /** LED color token override — defaults to ctrl-fill (accent) */
-  color?: string;
   className?: string;
 }
 
-const ledSize: Record<ControlSize, string> = {
-  sm: 'size-2',
-  md: 'size-2.5',
-  lg: 'size-3',
+const trackSize: Record<ControlSize, { track: string; dot: string; translate: string }> = {
+  sm: { track: 'w-6 h-2.5', dot: 'size-1.5', translate: 'translate-x-3' },
+  md: { track: 'w-8 h-3', dot: 'size-2', translate: 'translate-x-4' },
+  lg: { track: 'w-9 h-3.5', dot: 'size-2.5', translate: 'translate-x-4' },
 };
-
-const toggleVariants = cva(
-  'inline-flex items-center gap-1.5 select-none cursor-pointer outline-none',
-  {
-    variants: {
-      disabled: {
-        true: 'opacity-[--ctrl-disabled-opacity] pointer-events-none cursor-default',
-        false: '',
-      },
-    },
-    defaultVariants: { disabled: false },
-  },
-);
 
 export function Toggle({
   value,
@@ -46,9 +31,10 @@ export function Toggle({
   label,
   disabled = false,
   size = 'md',
-  color,
   className = '',
 }: ToggleProps) {
+  const dims = trackSize[size];
+
   return (
     <button
       type="button"
@@ -58,28 +44,41 @@ export function Toggle({
       disabled={disabled}
       onClick={() => onChange(!value)}
       className={[
-        toggleVariants({ disabled }),
+        'inline-flex items-center gap-1.5 select-none cursor-pointer outline-none',
         'focus-visible:ring-2 focus-visible:ring-ctrl-glow focus-visible:ring-offset-1',
+        disabled && 'opacity-[--ctrl-disabled-opacity] pointer-events-none cursor-default',
         className,
       ].filter(Boolean).join(' ')}
     >
-      {/* LED indicator */}
+      {/* Track */}
       <span
         className={[
-          ledSize[size],
-          'rounded-full transition-all duration-fast',
+          dims.track,
+          'relative rounded-full border transition-all duration-fast',
+          'flex items-center px-0.5',
           value
-            ? 'shadow-[0_0_4px_var(--ctrl-glow)]'
-            : 'bg-ctrl-track',
-        ].filter(Boolean).join(' ')}
-        style={value ? { backgroundColor: color ?? 'var(--ctrl-fill)' } : undefined}
-      />
+            ? 'border-ctrl-border-active bg-ctrl-cell-bg'
+            : 'border-ctrl-border-inactive bg-ctrl-cell-bg',
+        ].join(' ')}
+        style={value ? { boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)' } : undefined}
+      >
+        {/* Dot */}
+        <span
+          className={[
+            dims.dot,
+            'rounded-full transition-transform duration-fast',
+            value ? ['bg-ctrl-thumb', dims.translate].join(' ') : 'bg-ctrl-label translate-x-0',
+          ].join(' ')}
+        />
+      </span>
 
       {label && (
         <span className={[
           'font-mono text-[0.625rem] uppercase tracking-wider transition-colors duration-fast',
-          value ? 'text-ctrl-value' : 'text-ctrl-label',
-        ].join(' ')}>
+          value ? 'text-ctrl-text-active' : 'text-ctrl-label',
+        ].join(' ')}
+          style={value ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
+        >
           {label}
         </span>
       )}

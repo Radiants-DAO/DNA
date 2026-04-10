@@ -137,14 +137,18 @@ export function Knob({
           y1={cy}
           x2={needle.x}
           y2={needle.y}
-          stroke="var(--ctrl-thumb)"
+          stroke="var(--ctrl-fill)"
           strokeWidth={1.5}
           strokeLinecap="round"
+          style={{ filter: 'drop-shadow(0 0 3px var(--glow-sun-yellow))' }}
         />
       </svg>
 
       {showValue && (
-        <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+        <span
+          className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+        >
           {displayValue}
         </span>
       )}

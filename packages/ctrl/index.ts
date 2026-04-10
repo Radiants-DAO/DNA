@@ -45,3 +45,4 @@ export { Spectrum } from './readouts/Spectrum/Spectrum';
 export { Section } from './layout/Section/Section';
 export { PropertyRow } from './layout/PropertyRow/PropertyRow';
 export { ControlPanel, useDensity } from './layout/ControlPanel/ControlPanel';
+export { PanelTitle } from './layout/PanelTitle/PanelTitle';

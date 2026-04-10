@@ -82,11 +82,16 @@ export function ChipTag({
               onClick={() => toggle(opt)}
               className={[
                 chipVariants({ size }),
+                'border',
                 'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
                 isActive
-                  ? 'bg-ctrl-fill text-ctrl-active'
-                  : 'bg-ctrl-track text-ctrl-label hover:text-ctrl-value hover:bg-ctrl-hover/20',
+                  ? 'border-ctrl-border-active text-ctrl-text-active bg-ctrl-cell-bg'
+                  : 'border-ctrl-border-inactive text-ctrl-label bg-ctrl-cell-bg hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
+              style={isActive ? {
+                textShadow: '0 0 8px var(--glow-sun-yellow)',
+                boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)',
+              } : undefined}
             >
               {opt}
             </button>

@@ -92,7 +92,10 @@ export function Meter({
             </span>
           )}
           {showValue && (
-            <span className="font-mono text-ctrl-value text-[0.625rem] tabular-nums">
+            <span
+              className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+              style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+            >
               {displayValue}
             </span>
           )}
@@ -105,7 +108,7 @@ export function Meter({
         aria-valuemax={max}
         aria-valuenow={value}
         className={[
-          'flex gap-px',
+          'flex gap-px border border-ctrl-border-inactive rounded-sm p-0.5',
           isVertical ? 'flex-col-reverse' : 'flex-row',
         ].join(' ')}
       >
@@ -120,7 +123,7 @@ export function Meter({
                 isVertical ? `${segSizeV[size]} h-1.5` : `${segSizeH[size]} flex-1`,
               ].join(' ')}
               style={{
-                backgroundColor: isLit ? segmentColor(segRatio) : 'var(--ctrl-track)',
+                backgroundColor: isLit ? segmentColor(segRatio) : 'var(--ctrl-cell-bg)',
               }}
             />
           );
