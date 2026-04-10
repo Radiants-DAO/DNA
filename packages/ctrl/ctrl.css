@@ -1,0 +1,38 @@
+/* =============================================================================
+   @rdna/ctrl — Control Surface Tokens
+   Thin semantic layer over RDNA tokens for control primitives.
+   Import radiants tokens first so var() references resolve.
+   ============================================================================= */
+
+@import '@rdna/radiants/tokens';
+
+@theme {
+  /* Track / Fill / Thumb */
+  --ctrl-track: var(--color-surface-sunken);
+  --ctrl-fill: var(--color-accent);
+  --ctrl-thumb: var(--color-page);
+
+  /* Labels & Values */
+  --ctrl-label: var(--color-mute);
+  --ctrl-value: var(--color-main);
+
+  /* Grid visuals (XY pad, matrix) */
+  --ctrl-grid-line: oklch(from var(--color-line) l c h / 0.25);
+  --ctrl-grid-dot: var(--color-mute);
+
+  /* Meter segments (VU-style) */
+  --ctrl-meter-low: var(--color-success);
+  --ctrl-meter-mid: var(--color-accent);
+  --ctrl-meter-high: var(--color-danger);
+
+  /* Interaction states */
+  --ctrl-glow: var(--color-accent);
+  --ctrl-hover: var(--color-accent);
+  --ctrl-active: var(--color-inv);
+  --ctrl-disabled-opacity: 0.4;
+
+  /* Control sizes */
+  --ctrl-size-sm: 2rem;
+  --ctrl-size-md: 3rem;
+  --ctrl-size-lg: 4rem;
+}
