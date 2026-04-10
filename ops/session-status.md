@@ -16,19 +16,19 @@
 - [x] **Radial Menu** — 6-segment pie menu + compact 4-way (via team)
 
 ### In Progress
-- [ ] ~Discrete Selection Controls~ — all 7 designed in Paper, verified on canvas
+- [ ] ~Discrete Selection Controls~ — all 7 designed, icons + borders + cream-gap pattern fixed
+- [x] **Readout / Feedback Controls** — all 5 designed in Paper (Meter ×4, Waveform ×2, Spectrum ×2, Sparkline ×4, LED Array ×3)
 
-### Remaining (13 controls across 3 categories)
-- [ ] Readout / Feedback Controls (5): Meter, Waveform, Spectrum, Sparkline, LED Array
+### Remaining (8 controls across 2 categories)
 - [ ] Editor / Compound Controls (5): Curve Editor, Crossfader, Color Swatch, Minimap, Node Socket
 - [ ] Structural / Container Controls (3): Collapsible Section, Dropdown, Scrub Timeline
 
 ### Next Action
-> Create artboard for Readout/Feedback controls and spawn team of 5 agents.
+> Create artboard for Editor/Compound controls and spawn team of 5 agents.
 
 ### What to Test
-- [ ] Visual: Check all 7 discrete controls in Paper artboard for style consistency
-- [ ] Visual: Verify Matrix Grid playhead column highlight and drum patterns
+- [ ] Visual: Check all 7 discrete controls — cream-gap pattern, SVG icons, no borders
+- [ ] Visual: Check all 5 readout controls — meter segments, waveform bars, spectrum bands, sparkline dots, LED states
 - [ ] Visual: Verify Radial Menu pie segments and label positioning
 
 ### Team Status

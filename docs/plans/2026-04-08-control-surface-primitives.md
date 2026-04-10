@@ -14,21 +14,21 @@ Style reference: Layout panel (gold-on-black terminal aesthetic, monospace, beve
 
 ## Discrete Selection Controls
 
-* [ ] **Segmented Control** — Mutually exclusive mode selector with icon+label. *(Flex/Grid/Block/None row)*
-* [ ] **Stepper** — Increment/decrement with editable center value. *(Blender spinners)*
-* [ ] **Button Strip** — Row of icon buttons, radio or multi-select. *(DAW transport, align/justify rows)*
-* [ ] **Toggle** — On/off switch, lamp, or latching button. *(Bypass buttons, DAW solo/mute)*
-* [ ] **Chip / Tag** — Selectable label pills. *(VS Code filters, Ableton clip colors)*
-* [ ] **Matrix Grid** — On/off grid, step sequencer / drum machine style. *(808 pattern editor, Bitwig)*
-* [ ] **Radial Menu** — Pie-style contextual selector. *(Blender pie menus, Maya marking menus)*
+* [x] **Segmented Control** — Mutually exclusive mode selector with icon+label.
+* [x] **Stepper** — Increment/decrement with editable center value. *(Blender spinners)*
+* [x] **Button Strip** — Row of icon buttons, radio or multi-select. *(DAW transport, align/justify rows)*
+* [x] **Toggle** — On/off switch, lamp, or latching button. *(Bypass buttons, DAW solo/mute)*
+* [x] **Chip / Tag** — Selectable label pills. *(VS Code filters, Ableton clip colors)*
+* [x] **Matrix Grid** — On/off grid, step sequencer / drum machine style. *(808 pattern editor, Bitwig)*
+* [x] **Radial Menu** — Pie-style contextual selector. *(Blender pie menus, Maya marking menus)*
 
 ## Readout / Feedback Controls
 
-* [ ] **Meter** — Segmented or continuous read-only bar. *(VU meters, level meters, CPU monitors)*
-* [ ] **Waveform** — Mini waveform thumbnail / oscilloscope. *(DAW waveform views, audio editors)*
-* [ ] **Spectrum** — Frequency or data distribution readout. *(EQ spectrum analyzers, FFT displays)*
-* [ ] **Sparkline** — Tiny inline graph, trend-at-a-glance. *(Grafana, dev tools performance)*
-* [ ] **LED Array** — Row/grid of status lamps. *(Hardware status indicators, MIDI controllers)*
+* [x] **Meter** — Segmented or continuous read-only bar. *(VU meters, level meters, CPU monitors)*
+* [x] **Waveform** — Mini waveform thumbnail / oscilloscope. *(DAW waveform views, audio editors)*
+* [x] **Spectrum** — Frequency or data distribution readout. *(EQ spectrum analyzers, FFT displays)*
+* [x] **Sparkline** — Tiny inline graph, trend-at-a-glance. *(Grafana, dev tools performance)*
+* [x] **LED Array** — Row/grid of status lamps. *(Hardware status indicators, MIDI controllers)*
 
 ## Editor / Compound Controls
 
