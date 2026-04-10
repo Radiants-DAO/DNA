@@ -49,17 +49,29 @@ export interface ReadoutProps {
 // Drag control hook config
 // =============================================================================
 
-export interface DragControlConfig {
-  axis: DragAxis;
-  min: number;
-  max: number;
-  step?: number;
-  sensitivity?: number;
-  value: number | Point2D;
-  onChange: (value: number | Point2D) => void;
-  disabled?: boolean;
-  inverted?: boolean;
-}
+export type DragControlConfig =
+  | {
+      axis: 'x' | 'y' | 'radial';
+      min: number;
+      max: number;
+      step?: number;
+      sensitivity?: number;
+      value: number;
+      onChange: (value: number) => void;
+      disabled?: boolean;
+      inverted?: boolean;
+    }
+  | {
+      axis: '2d';
+      min: number;
+      max: number;
+      step?: number;
+      sensitivity?: number;
+      value: Point2D;
+      onChange: (value: Point2D) => void;
+      disabled?: boolean;
+      inverted?: boolean;
+    };
 
 export interface DragControlReturn {
   bind: {
