@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { cva } from 'class-variance-authority';
 import { useDragControl } from '../../primitives/useDragControl';
 import type { ContinuousControlProps, ControlSize } from '../../primitives/types';

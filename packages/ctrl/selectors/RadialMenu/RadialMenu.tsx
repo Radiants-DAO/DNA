@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
@@ -10,7 +10,7 @@ import type { ControlSize } from '../../primitives/types';
 interface RadialMenuOption {
   value: string;
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 interface RadialMenuProps {

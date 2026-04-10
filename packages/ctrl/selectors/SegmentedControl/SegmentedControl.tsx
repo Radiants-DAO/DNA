@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { cva } from 'class-variance-authority';
 import type { ControlSize } from '../../primitives/types';
 
@@ -11,7 +11,7 @@ import type { ControlSize } from '../../primitives/types';
 interface SegmentedOption {
   value: string;
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 interface SegmentedControlProps {

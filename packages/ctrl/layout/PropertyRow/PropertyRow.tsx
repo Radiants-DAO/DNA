@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 
 // =============================================================================
 // PropertyRow — Label left, control right flex row
@@ -8,7 +8,7 @@ import React from 'react';
 
 interface PropertyRowProps {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
