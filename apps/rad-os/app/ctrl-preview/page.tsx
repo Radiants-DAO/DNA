@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import '@rdna/ctrl/ctrl.css';
 
 // Controls
@@ -34,7 +34,7 @@ import { PropertyRow } from '@rdna/ctrl/layout/PropertyRow/PropertyRow';
 import { ControlPanel } from '@rdna/ctrl/layout/ControlPanel/ControlPanel';
 
 // ============================================================================
-// Demo state
+// Demo data
 // ============================================================================
 
 const SPARKLINE_DATA = [10, 25, 18, 40, 35, 55, 48, 60, 52, 70, 65, 80, 72, 90, 85];
@@ -48,27 +48,33 @@ function initMatrix(rows: number, cols: number): boolean[][] {
 }
 
 // ============================================================================
-// Group wrapper
+// Shared preview helpers
 // ============================================================================
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+/** Section divider on the preview surface */
+function PreviewSection({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-3">
-      <h2 className="font-mono text-sm text-main uppercase tracking-wider border-b border-rule pb-1">
-        {title}
-      </h2>
-      <div className="flex flex-wrap items-end gap-6">
-        {children}
+    <section id={id} className="space-y-4">
+      <div className="flex items-center gap-3">
+        <h2 className="font-mono text-xs text-accent uppercase tracking-wider shrink-0">{title}</h2>
+        <div className="flex-1 h-px bg-rule" />
       </div>
-    </div>
+      {children}
+    </section>
   );
 }
 
-function ControlDemo({ label, children }: { label: string; children: React.ReactNode }) {
+/** Side-by-side size variants */
+function SizeRow({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap items-end gap-6">{children}</div>;
+}
+
+/** Labeled demo slot */
+function Demo({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-1.5">
       {children}
-      <span className="font-mono text-[0.5rem] text-mute uppercase">{label}</span>
+      <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">{label}</span>
     </div>
   );
 }
@@ -78,7 +84,7 @@ function ControlDemo({ label, children }: { label: string; children: React.React
 // ============================================================================
 
 export default function CtrlPreview() {
-  // Continuous controls
+  // ── State ──
   const [knob, setKnob] = useState(65);
   const [fader, setFader] = useState(70);
   const [slider, setSlider] = useState(40);
@@ -86,20 +92,15 @@ export default function CtrlPreview() {
   const [scrub, setScrub] = useState(16);
   const [ribbon, setRibbon] = useState(50);
   const [arc, setArc] = useState(75);
-
-  // Selectors
-  const [segment, setSegment] = useState('circle');
+  const [segment, setSegment] = useState('grid');
   const [stepper, setStepper] = useState(5);
   const [strip, setStrip] = useState('1');
   const [toggle, setToggle] = useState(true);
   const [chips, setChips] = useState<string | string[]>(['A', 'C']);
   const [matrix, setMatrix] = useState(() => initMatrix(4, 8));
   const [radial, setRadial] = useState('N');
-
-  // Readouts
   const [meter, setMeter] = useState(72);
 
-  // For live meter animation
   const animateMeter = useCallback(() => {
     setMeter((prev) => {
       const next = prev + (Math.random() - 0.48) * 8;
@@ -107,148 +108,30 @@ export default function CtrlPreview() {
     });
   }, []);
 
-  // Tick meter
-  useState(() => {
+  useEffect(() => {
     const id = setInterval(animateMeter, 200);
     return () => clearInterval(id);
-  });
+  }, [animateMeter]);
 
   return (
-    <div className="min-h-screen bg-inv text-flip p-8 space-y-10">
-      <div className="max-w-[56rem] mx-auto space-y-10">
-        <header>
-          <h1 className="font-mono text-lg text-accent tracking-wider">@rdna/ctrl</h1>
-          <p className="font-mono text-xs text-mute mt-1">Control Surface Primitives — 25 components</p>
+    <div className="min-h-screen bg-inv text-flip p-6 pb-20">
+      <div className="max-w-[28rem] mx-auto space-y-8">
+        {/* ── Header ── */}
+        <header className="space-y-1">
+          <h1 className="font-mono text-base text-accent uppercase tracking-wider">
+            @rdna/ctrl
+          </h1>
+          <p className="font-mono text-[0.625rem] text-mute">
+            Visual Fidelity Pass — working surface
+          </p>
         </header>
 
-        {/* ── Continuous Controls ── */}
-        <Group title="Controls — Continuous Value">
-          <ControlDemo label="Knob">
-            <Knob value={knob} onChange={setKnob} label="Vol" showValue size="lg" />
-          </ControlDemo>
-
-          <ControlDemo label="Knob sm">
-            <Knob value={knob} onChange={setKnob} showValue size="sm" />
-          </ControlDemo>
-
-          <ControlDemo label="Fader">
-            <Fader value={fader} onChange={setFader} label="Gain" showValue size="lg" />
-          </ControlDemo>
-
-          <ControlDemo label="Fader sm">
-            <Fader value={fader} onChange={setFader} showValue size="sm" />
-          </ControlDemo>
-
-          <ControlDemo label="ArcRing">
-            <ArcRing value={arc} onChange={setArc} label="CPU" size="lg" />
-          </ControlDemo>
-
-          <ControlDemo label="ArcRing sm">
-            <ArcRing value={arc} onChange={setArc} size="sm" />
-          </ControlDemo>
-
-          <ControlDemo label="XYPad">
-            <XYPad value={xy} onChange={setXY} label="Pan/Tilt" showValue size="lg" />
-          </ControlDemo>
-        </Group>
-
-        <Group title="Controls — Horizontal">
-          <div className="w-full space-y-3">
-            <CtrlSlider value={slider} onChange={setSlider} label="Pan" showValue size="lg" />
-            <CtrlSlider value={slider} onChange={setSlider} label="Pan (sm)" showValue size="sm" />
-            <Ribbon value={ribbon} onChange={setRibbon} label="Pitch Bend" showValue size="lg" />
-            <Ribbon value={50} onChange={setRibbon} label="Spring Return" showValue springReturn size="md" />
-            <div className="flex items-center gap-4">
-              <NumberScrubber value={scrub} onChange={setScrub} label="Size" size="lg" />
-              <NumberScrubber value={scrub} onChange={setScrub} label="Size" size="sm" />
-            </div>
-          </div>
-        </Group>
-
-        {/* ── Discrete Selectors ── */}
-        <Group title="Selectors — Discrete">
-          <div className="w-full space-y-4">
-            <div className="flex flex-wrap items-center gap-6">
-              <SegmentedControl
-                value={segment}
-                onChange={setSegment}
-                options={[
-                  { value: 'circle', label: 'Circle' },
-                  { value: 'ellipse', label: 'Ellipse' },
-                  { value: 'rect', label: 'Rect' },
-                ]}
-                label="Shape"
-              />
-
-              <Stepper value={stepper} onChange={setStepper} min={1} max={20} label="Count" />
-
-              <Toggle value={toggle} onChange={setToggle} label="Enabled" />
-              <Toggle value={!toggle} onChange={(v) => setToggle(!v)} label="Muted" size="sm" />
-            </div>
-
-            <ButtonStrip
-              value={strip}
-              onChange={(v) => setStrip(typeof v === 'string' ? v : v[0])}
-              options={[
-                { value: '1', label: '1' },
-                { value: '2', label: '2' },
-                { value: '3', label: '3' },
-                { value: '4', label: '4' },
-              ]}
-              label="Channel"
-            />
-
-            <ChipTag
-              value={chips}
-              onChange={setChips}
-              options={['A', 'B', 'C', 'D', 'E']}
-              mode="multi"
-              label="Tags"
-            />
-
-            <RadialMenu
-              value={radial}
-              onChange={setRadial}
-              options={[
-                { value: 'N', label: 'N' },
-                { value: 'E', label: 'E' },
-                { value: 'S', label: 'S' },
-                { value: 'W', label: 'W' },
-              ]}
-              label="Direction"
-              size="lg"
-            />
-
-            <div>
-              <span className="font-mono text-[0.625rem] text-mute uppercase tracking-wider block mb-1">Matrix Grid</span>
-              <MatrixGrid value={matrix} onChange={setMatrix} size="md" />
-            </div>
-          </div>
-        </Group>
-
-        {/* ── Readouts ── */}
-        <Group title="Readouts — Data Display">
-          <div className="w-full space-y-4">
-            <div className="flex flex-wrap items-end gap-6">
-              <Meter value={meter} label="Level" showValue size="lg" />
-              <Meter value={meter} label="VU" showValue size="md" orientation="vertical" />
-              <LEDArray values={[true, true, false, true, false, true, true, true]} label="Status" size="md" />
-              <LEDArray
-                values={['var(--color-success)', 'var(--color-accent)', '', 'var(--color-danger)', 'var(--color-success)']}
-                label="Multi-color"
-                size="lg"
-              />
-            </div>
-
-            <Sparkline data={SPARKLINE_DATA} label="Trend" showDots size="lg" />
-            <Waveform data={WAVEFORM_DATA} label="Audio" size="lg" />
-            <Spectrum data={SPECTRUM_DATA} label="Frequency" size="lg" />
-          </div>
-        </Group>
-
-        {/* ── Layout ── */}
-        <Group title="Layout — Panel Composition">
-          <div className="w-full max-w-[20rem]">
+        {/* ════════════════════════════════════════════════════
+            LAYOUT COMPONENTS
+           ════════════════════════════════════════════════════ */}
+        <PreviewSection id="layout" title="Layout">
+          <div className="space-y-4">
+            {/* ControlPanel + Section + PropertyRow composed */}
             <ControlPanel density="normal">
               <Section title="Oscillator">
                 <PropertyRow label="Shape">
@@ -256,9 +139,9 @@ export default function CtrlPreview() {
                     value={segment}
                     onChange={setSegment}
                     options={[
-                      { value: 'circle', label: 'Sin' },
-                      { value: 'ellipse', label: 'Tri' },
-                      { value: 'rect', label: 'Sqr' },
+                      { value: 'sin', label: 'Sin' },
+                      { value: 'tri', label: 'Tri' },
+                      { value: 'sqr', label: 'Sqr' },
                     ]}
                     size="sm"
                   />
@@ -274,16 +157,242 @@ export default function CtrlPreview() {
                 <PropertyRow label="Cutoff">
                   <CtrlSlider value={slider} onChange={setSlider} min={20} max={20000} size="sm" />
                 </PropertyRow>
-                <PropertyRow label="Resonance">
-                  <Knob value={fader} onChange={setFader} showValue size="sm" />
-                </PropertyRow>
                 <PropertyRow label="Active">
                   <Toggle value={toggle} onChange={setToggle} size="sm" />
                 </PropertyRow>
               </Section>
             </ControlPanel>
           </div>
-        </Group>
+        </PreviewSection>
+
+        {/* ════════════════════════════════════════════════════
+            SELECTORS
+           ════════════════════════════════════════════════════ */}
+        <PreviewSection id="selectors" title="Selectors">
+          <div className="space-y-6">
+            {/* Toggle — isolated, all states */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Toggle</span>
+              <SizeRow>
+                <Demo label="on / lg">
+                  <Toggle value={true} onChange={setToggle} label="ON" size="lg" />
+                </Demo>
+                <Demo label="off / lg">
+                  <Toggle value={false} onChange={setToggle} label="OFF" size="lg" />
+                </Demo>
+                <Demo label="on / md">
+                  <Toggle value={toggle} onChange={setToggle} label="Enabled" />
+                </Demo>
+                <Demo label="off / sm">
+                  <Toggle value={false} onChange={setToggle} size="sm" />
+                </Demo>
+              </SizeRow>
+            </div>
+
+            {/* SegmentedControl */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Segmented Control</span>
+              <SegmentedControl
+                value={segment}
+                onChange={setSegment}
+                options={[
+                  { value: 'flex', label: 'Flex' },
+                  { value: 'grid', label: 'Grid' },
+                  { value: 'block', label: 'Block' },
+                  { value: 'none', label: 'None' },
+                ]}
+                label="Display"
+              />
+            </div>
+
+            {/* ButtonStrip */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Button Strip</span>
+              <ButtonStrip
+                value={strip}
+                onChange={(v) => setStrip(typeof v === 'string' ? v : v[0])}
+                options={[
+                  { value: '-1', label: '-1' },
+                  { value: '0', label: '0' },
+                  { value: '10', label: '10' },
+                  { value: '25', label: '25' },
+                  { value: '50', label: '50' },
+                  { value: '99', label: '99' },
+                  { value: '100', label: '100' },
+                  { value: 'auto', label: 'Auto' },
+                ]}
+                label="Z-Index"
+              />
+            </div>
+
+            {/* Stepper */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Stepper</span>
+              <SizeRow>
+                <Stepper value={stepper} onChange={setStepper} min={0} max={100} label="Count" size="lg" />
+                <Stepper value={stepper} onChange={setStepper} min={0} max={100} label="Count" size="sm" />
+              </SizeRow>
+            </div>
+
+            {/* ChipTag */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Chip Tag</span>
+              <ChipTag value={chips} onChange={setChips} options={['A', 'B', 'C', 'D', 'E']} mode="multi" label="Tags" />
+            </div>
+
+            {/* MatrixGrid */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Matrix Grid</span>
+              <MatrixGrid value={matrix} onChange={setMatrix} size="md" />
+            </div>
+
+            {/* RadialMenu */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Radial Menu</span>
+              <SizeRow>
+                <Demo label="lg">
+                  <RadialMenu
+                    value={radial}
+                    onChange={setRadial}
+                    options={[
+                      { value: 'N', label: 'N' },
+                      { value: 'E', label: 'E' },
+                      { value: 'S', label: 'S' },
+                      { value: 'W', label: 'W' },
+                    ]}
+                    size="lg"
+                  />
+                </Demo>
+                <Demo label="sm">
+                  <RadialMenu
+                    value={radial}
+                    onChange={setRadial}
+                    options={[
+                      { value: 'N', label: 'N' },
+                      { value: 'E', label: 'E' },
+                      { value: 'S', label: 'S' },
+                      { value: 'W', label: 'W' },
+                    ]}
+                    size="sm"
+                  />
+                </Demo>
+              </SizeRow>
+            </div>
+          </div>
+        </PreviewSection>
+
+        {/* ════════════════════════════════════════════════════
+            CONTROLS
+           ════════════════════════════════════════════════════ */}
+        <PreviewSection id="controls" title="Controls">
+          <div className="space-y-6">
+            {/* Knob */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Knob</span>
+              <SizeRow>
+                <Demo label="lg"><Knob value={knob} onChange={setKnob} label="Vol" showValue size="lg" /></Demo>
+                <Demo label="md"><Knob value={knob} onChange={setKnob} showValue size="md" /></Demo>
+                <Demo label="sm"><Knob value={knob} onChange={setKnob} showValue size="sm" /></Demo>
+              </SizeRow>
+            </div>
+
+            {/* Fader */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Fader</span>
+              <SizeRow>
+                <Demo label="lg"><Fader value={fader} onChange={setFader} label="Gain" showValue size="lg" /></Demo>
+                <Demo label="md"><Fader value={fader} onChange={setFader} showValue size="md" /></Demo>
+                <Demo label="sm"><Fader value={fader} onChange={setFader} showValue size="sm" /></Demo>
+              </SizeRow>
+            </div>
+
+            {/* ArcRing */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Arc Ring</span>
+              <SizeRow>
+                <Demo label="lg"><ArcRing value={arc} onChange={setArc} label="CPU" size="lg" /></Demo>
+                <Demo label="md"><ArcRing value={arc} onChange={setArc} size="md" /></Demo>
+                <Demo label="sm"><ArcRing value={arc} onChange={setArc} size="sm" /></Demo>
+              </SizeRow>
+            </div>
+
+            {/* Slider */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Slider</span>
+              <CtrlSlider value={slider} onChange={setSlider} label="Pan" showValue size="lg" />
+              <CtrlSlider value={slider} onChange={setSlider} showValue size="sm" />
+            </div>
+
+            {/* Ribbon */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Ribbon</span>
+              <Ribbon value={ribbon} onChange={setRibbon} label="Pitch" showValue size="lg" />
+              <Ribbon value={50} onChange={setRibbon} label="Spring" showValue springReturn size="md" />
+            </div>
+
+            {/* NumberScrubber */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Number Scrubber</span>
+              <SizeRow>
+                <NumberScrubber value={scrub} onChange={setScrub} label="Size" size="lg" />
+                <NumberScrubber value={scrub} onChange={setScrub} label="Size" size="sm" />
+              </SizeRow>
+            </div>
+
+            {/* XYPad */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">XY Pad</span>
+              <XYPad value={xy} onChange={setXY} label="Pan/Tilt" showValue size="lg" />
+            </div>
+          </div>
+        </PreviewSection>
+
+        {/* ════════════════════════════════════════════════════
+            READOUTS
+           ════════════════════════════════════════════════════ */}
+        <PreviewSection id="readouts" title="Readouts">
+          <div className="space-y-6">
+            {/* Meter */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Meter</span>
+              <SizeRow>
+                <Meter value={meter} label="Level" showValue size="lg" />
+                <Meter value={meter} label="VU" showValue size="md" orientation="vertical" />
+              </SizeRow>
+            </div>
+
+            {/* LEDArray */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">LED Array</span>
+              <SizeRow>
+                <LEDArray values={[true, true, false, true, false, true, true, true]} label="Status" size="md" />
+                <LEDArray
+                  values={['var(--color-success)', 'var(--color-accent)', '', 'var(--color-danger)', 'var(--color-success)']}
+                  label="Multi"
+                  size="lg"
+                />
+              </SizeRow>
+            </div>
+
+            {/* Sparkline */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Sparkline</span>
+              <Sparkline data={SPARKLINE_DATA} label="Trend" showDots size="lg" />
+            </div>
+
+            {/* Waveform */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Waveform</span>
+              <Waveform data={WAVEFORM_DATA} label="Audio" size="lg" />
+            </div>
+
+            {/* Spectrum */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Spectrum</span>
+              <Spectrum data={SPECTRUM_DATA} label="Frequency" size="lg" />
+            </div>
+          </div>
+        </PreviewSection>
       </div>
     </div>
   );

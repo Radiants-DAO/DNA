@@ -5,13 +5,14 @@
 /* Class-based dark mode — required for .dark selector to activate dark: variants */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Ensure Tailwind v4 scans radiants package for utility classes */
+/* Ensure Tailwind v4 scans radiants + ctrl packages for utility classes */
 @source "../../../packages/radiants";
+@source "../../../packages/ctrl";
 
 /* Force-generate semantic color utilities that the scanner misses.
    These are used in radiants components (Toast, Badge, Progress, etc.)
    but don't get picked up reliably due to the @theme token chain. */
-@source inline("{bg,text,border}-status-{success,warning,info} bg-{tinted,depth,accent-soft} focus:ring-{success,warning,link} bg-{depth,hover,hover,active} hover:bg-{hover,active} text-head border-line-hover hover:border-line-hover shadow-glow-{sm,md,lg,xl} hover:shadow-glow-{sm,md,lg} focus:shadow-glow-{sm,md} shadow-glow-{success,error,info} z-{base,desktop,windows,chrome,menus,toasts,modals,system} shadow-{inset,surface,resting,raised,floating,focused} hover:shadow-{resting,raised,floating} {bg,text}-action-{primary,secondary,destructive,accent} hover:bg-accent hover:text-accent border-l-accent text-link bg-status-{success,warning,error,info} pixel-shadow-{surface,resting,lifted,raised,floating} pixel-border-danger");
+@source inline("{bg,text,border}-status-{success,warning,info} bg-{tinted,depth,accent-soft} focus:ring-{success,warning,link} bg-{depth,hover,hover,active} hover:bg-{hover,active} text-head border-line-hover hover:border-line-hover shadow-glow-{sm,md,lg,xl} hover:shadow-glow-{sm,md,lg} focus:shadow-glow-{sm,md} shadow-glow-{success,error,info} z-{base,desktop,windows,chrome,menus,toasts,modals,system} shadow-{inset,surface,resting,raised,floating,focused} hover:shadow-{resting,raised,floating} {bg,text}-action-{primary,secondary,destructive,accent} hover:bg-accent hover:text-accent border-l-accent text-link bg-status-{success,warning,error,info} pixel-shadow-{surface,resting,lifted,raised,floating} pixel-border-danger bg-ctrl-{cell-bg,track,fill,thumb} text-ctrl-{label,value,text-active} border-ctrl-{border-active,border-inactive,rule} ring-ctrl-glow gap-[--ctrl-cell-gap] min-h-[--ctrl-row-height]");
 
 /* App-specific overrides */
 

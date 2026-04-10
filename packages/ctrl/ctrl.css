@@ -7,31 +7,42 @@
 @import '@rdna/radiants/tokens';
 
 @theme {
-  /* Track / Fill / Thumb */
-  --ctrl-track: var(--color-surface-sunken);
-  --ctrl-fill: var(--color-accent);
-  --ctrl-thumb: var(--color-page);
+  /* ── Cell Layout ────────────────────────────────────────── */
+  --ctrl-cell-bg: var(--color-inv);           /* dark cell bg — flips per mode */
+  --ctrl-cell-gap: 1px;
+  --ctrl-row-height: 1.5rem;                  /* 24px standard row */
 
-  /* Labels & Values */
-  --ctrl-label: var(--color-mute);
-  --ctrl-value: var(--color-main);
+  /* ── Track / Fill / Thumb ───────────────────────────────── */
+  --ctrl-track: var(--color-inv);             /* track/sunken bg — was broken ref */
+  --ctrl-fill: var(--color-accent);           /* gold fill for active arcs/bars */
+  --ctrl-thumb: var(--color-page);            /* thumb/dot fill */
 
-  /* Grid visuals (XY pad, matrix) */
-  --ctrl-grid-line: oklch(from var(--color-line) l c h / 0.25);
+  /* ── Text ───────────────────────────────────────────────── */
+  --ctrl-label: var(--color-mute);            /* inactive label — cream 60% in dark */
+  --ctrl-value: var(--color-main);            /* body readout text */
+  --ctrl-text-active: var(--color-accent);    /* gold active text */
+
+  /* ── Borders ────────────────────────────────────────────── */
+  --ctrl-border-active: var(--color-accent);  /* gold active border */
+  --ctrl-border-inactive: var(--color-rule);  /* cream ~20% inactive border */
+  --ctrl-rule: var(--color-rule);             /* rule/divider lines */
+
+  /* ── Grid visuals (XY pad, matrix) ─────────────────────── */
+  --ctrl-grid-line: var(--color-rule);
   --ctrl-grid-dot: var(--color-mute);
 
-  /* Meter segments (VU-style) */
+  /* ── Meter segments (VU-style) ─────────────────────────── */
   --ctrl-meter-low: var(--color-success);
   --ctrl-meter-mid: var(--color-accent);
   --ctrl-meter-high: var(--color-danger);
 
-  /* Interaction states */
+  /* ── Interaction states ─────────────────────────────────── */
   --ctrl-glow: var(--color-accent);
   --ctrl-hover: var(--color-accent);
   --ctrl-active: var(--color-inv);
   --ctrl-disabled-opacity: 0.4;
 
-  /* Control sizes */
+  /* ── Control sizes ─────────────────────────────────────── */
   --ctrl-size-sm: 2rem;
   --ctrl-size-md: 3rem;
   --ctrl-size-lg: 4rem;
