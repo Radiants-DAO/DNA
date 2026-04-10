@@ -2,10 +2,10 @@
    @rdna/ctrl — Control Surface Tokens
    Thin semantic layer over RDNA tokens for control primitives.
 
-   Static values (oklch literals, sizes) stay in @theme for Tailwind utility
-   generation. Semantic aliases (var(--color-*)) go in :root so dark-mode
-   overrides propagate at runtime — Tailwind v4 resolves @theme var() chains
-   at build time, which freezes them to the light-mode value.
+   Static values (oklch literals, sizes) go in @theme for Tailwind utility
+   generation. Semantic aliases must be declared on BOTH :root and .dark so
+   var() references resolve in the correct color-mode context — custom
+   properties inherited from :root carry the already-resolved light value.
    ============================================================================= */
 
 @import '@rdna/radiants/tokens';
@@ -22,32 +22,21 @@
   --ctrl-size-lg: 4rem;
 }
 
-/* ── Semantic aliases — runtime var() so dark mode flips correctly ──────── */
-:root {
-  /* Track / Fill / Thumb */
+/* ── Semantic aliases — declared on both selectors for correct dark flip ── */
+:root, .dark {
   --ctrl-fill: var(--color-accent);
   --ctrl-thumb: var(--color-page);
-
-  /* Text */
   --ctrl-label: var(--color-mute);
   --ctrl-value: var(--color-main);
   --ctrl-text-active: var(--color-accent);
-
-  /* Borders */
   --ctrl-border-active: var(--color-accent);
   --ctrl-border-inactive: var(--color-rule);
   --ctrl-rule: var(--color-rule);
-
-  /* Grid visuals */
   --ctrl-grid-line: var(--color-rule);
   --ctrl-grid-dot: var(--color-mute);
-
-  /* Meter segments */
   --ctrl-meter-low: var(--color-success);
   --ctrl-meter-mid: var(--color-accent);
   --ctrl-meter-high: var(--color-danger);
-
-  /* Interaction states */
   --ctrl-glow: var(--color-accent);
   --ctrl-hover: var(--color-accent);
   --ctrl-active: var(--color-inv);
