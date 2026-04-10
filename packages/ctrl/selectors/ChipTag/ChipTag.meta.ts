@@ -24,7 +24,8 @@ export const ChipTagMeta = defineComponentMeta<ChipTagProps>()({
   },
   slots: {},
   tokenBindings: {
-    chip: { active: { background: "ctrl-fill", text: "ctrl-active" }, inactive: { background: "ctrl-track", text: "ctrl-label" } },
+    chipActive: { background: "ctrl-fill", text: "ctrl-active" },
+    chipInactive: { background: "ctrl-track", text: "ctrl-label" },
     label: { text: "ctrl-label" },
   },
   examples: [
