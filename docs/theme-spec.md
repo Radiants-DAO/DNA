@@ -187,10 +187,10 @@ The Growth Path (Like shadcn)
 | CSS location           | Package root (preferred) OR `theme/` subfolder     | Simpler is preferred                            |
 | Component organization | Flat `core/` (preferred) OR by type                | Simpler for ~30 components                      |
 | Typography             | `@apply` directive                                 | Consistent with Tailwind token system           |
-| Asset location         | Optional (bundled OR external libraries)           | Themes can use Phosphor, Lucide, etc.           |
+| Asset location         | Optional (bundled OR external libraries)           | Themes can bundle their own icon sets            |
 | Color modes            | Light + Dark only                                  | Keep it simple for v1                           |
 | Motion                 | CSS-First, Ease-Out Only                           | Simple, predictable animations (max 300ms)      |
-| Icons                  | Lucide Base + Custom Pipeline                      | 24x24 grid, 2px stroke, SVGO optimization       |
+| Icons                  | Custom dual-size sets (16px + 24px)                | Pixel-art 16px, detailed 24px, SVGO optimized   |
 | Accessibility          | WCAG 2.2 AA Minimum                                | Focus rings, touch targets, contrast validation |
 
 ***
@@ -666,15 +666,14 @@ className="shadow-[4px_4px_0_0_#000]"
 
 ### 8.2 Icon System
 
-**Base Library:** Lucide Icons (24x24 grid, 2px stroke)
+**Icon System:** Custom dual-size sets — 16px pixel-art and 24px detailed.
 
-| Token       | Size | Use Case            |
-| ----------- | ---- | ------------------- |
-| `--icon-xs` | 12px | Inline text, badges |
-| `--icon-sm` | 16px | Dense UI, tables    |
-| `--icon-md` | 20px | Default buttons     |
-| `--icon-lg` | 24px | Primary actions     |
-| `--icon-xl` | 32px | Feature highlights  |
+| Size | Set    | Use Case             |
+| ---- | ------ | -------------------- |
+| 16px | Pixel  | Default UI, buttons  |
+| 24px | Detail | Large actions, hero  |
+
+Size is locked to 16 or 24. Use `<Icon name="..." />` (16px default) or `<Icon name="..." large />` (24px).
 
 ### 8.3 Accessibility Tokens
 
@@ -769,10 +768,11 @@ Requirements:
 
 * kebab-case naming
 
-**Option B: External Library** (equally valid)
+**Option B: External Library** (equally valid — but Radiants uses its own icon sets)
 
 ```tsx
-import { ArrowRight } from 'lucide-react';
+import { Icon } from '@rdna/radiants/icons/runtime';
+<Icon name="arrow-right" />
 ```
 
 ### 9.2 Logos

@@ -251,7 +251,7 @@ Any CSS color works, but the brand-sanctioned options are:
 
 ## Icons
 
-152 custom pixel-art SVG icons at `packages/radiants/assets/icons/`. 24x24 grid, 2px stroke (Lucide-based).
+152 custom pixel-art SVG icons at `packages/radiants/assets/icons/`. Dual-size: 16px pixel-art + 24px detailed.
 
 <details>
 <summary>Full icon inventory (152 icons)</summary>

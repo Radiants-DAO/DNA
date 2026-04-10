@@ -64,7 +64,7 @@ All themes must define these minimum tokens:
 | Components | Copy-on-import, not installed as dependencies |
 | Color modes | Light + Dark only (v1) |
 | Motion | CSS-first, ease-out only, max 300ms |
-| Icons | Lucide base (24x24 grid, 2px stroke) |
+| Icons | Custom dual-size sets: 16px pixel-art + 24px detailed |
 
 ## Styling Rules
 
@@ -94,12 +94,13 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-clipped-shadow` | `shadow-*` tokens on pixel-cornered elements (use `pixel-shadow-*`) |
 | `rdna/no-pixel-border` | `border-*` on pixel-cornered elements (use `::after` pseudo-border) |
 | `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
+| `rdna/no-arbitrary-icon-size` | Icon size not 16 or 24, or removed `iconSet` prop |
 
 ### Configs
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**` | 10 shared RDNA rules at `warn` |
+| `recommended` | `apps/rad-os/**` | 14 shared RDNA rules at `warn` |
 | `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
 | `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
