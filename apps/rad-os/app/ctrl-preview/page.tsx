@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import '@rdna/ctrl/ctrl.css';
+
 
 // ============================================================================
 // Layout Inspector Panel — Visual build from Paper node SJE-0

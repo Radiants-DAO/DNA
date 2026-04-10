@@ -1,49 +1,54 @@
 /* =============================================================================
    @rdna/ctrl — Control Surface Tokens
    Thin semantic layer over RDNA tokens for control primitives.
-   Import radiants tokens first so var() references resolve.
+
+   Static values (oklch literals, sizes) stay in @theme for Tailwind utility
+   generation. Semantic aliases (var(--color-*)) go in :root so dark-mode
+   overrides propagate at runtime — Tailwind v4 resolves @theme var() chains
+   at build time, which freezes them to the light-mode value.
    ============================================================================= */
 
 @import '@rdna/radiants/tokens';
 
+/* ── Static tokens ──────────────────────────────────────────────────────── */
 @theme {
-  /* ── Cell Layout ────────────────────────────────────────── */
   --ctrl-cell-bg: oklch(0 0 0 / 0.8);        /* black 80% — always dark per Paper */
   --ctrl-cell-gap: 1px;
   --ctrl-row-height: 1.5rem;                  /* 24px standard row */
+  --ctrl-track: oklch(0 0 0 / 0.6);          /* track bg */
+  --ctrl-disabled-opacity: 0.4;
+  --ctrl-size-sm: 2rem;
+  --ctrl-size-md: 3rem;
+  --ctrl-size-lg: 4rem;
+}
 
-  /* ── Track / Fill / Thumb ───────────────────────────────── */
-  --ctrl-track: oklch(0 0 0 / 0.6);          /* track bg — slightly lighter than cell */
-  --ctrl-fill: var(--color-accent);           /* gold fill for active arcs/bars */
-  --ctrl-thumb: var(--color-page);            /* thumb/dot fill */
+/* ── Semantic aliases — runtime var() so dark mode flips correctly ──────── */
+:root {
+  /* Track / Fill / Thumb */
+  --ctrl-fill: var(--color-accent);
+  --ctrl-thumb: var(--color-page);
 
-  /* ── Text ───────────────────────────────────────────────── */
-  --ctrl-label: var(--color-mute);            /* inactive label — cream 60% in dark */
-  --ctrl-value: var(--color-main);            /* body readout text */
-  --ctrl-text-active: var(--color-accent);    /* gold active text */
+  /* Text */
+  --ctrl-label: var(--color-mute);
+  --ctrl-value: var(--color-main);
+  --ctrl-text-active: var(--color-accent);
 
-  /* ── Borders ────────────────────────────────────────────── */
-  --ctrl-border-active: var(--color-accent);  /* gold active border */
-  --ctrl-border-inactive: var(--color-rule);  /* cream ~20% inactive border */
-  --ctrl-rule: var(--color-rule);             /* rule/divider lines */
+  /* Borders */
+  --ctrl-border-active: var(--color-accent);
+  --ctrl-border-inactive: var(--color-rule);
+  --ctrl-rule: var(--color-rule);
 
-  /* ── Grid visuals (XY pad, matrix) ─────────────────────── */
+  /* Grid visuals */
   --ctrl-grid-line: var(--color-rule);
   --ctrl-grid-dot: var(--color-mute);
 
-  /* ── Meter segments (VU-style) ─────────────────────────── */
+  /* Meter segments */
   --ctrl-meter-low: var(--color-success);
   --ctrl-meter-mid: var(--color-accent);
   --ctrl-meter-high: var(--color-danger);
 
-  /* ── Interaction states ─────────────────────────────────── */
+  /* Interaction states */
   --ctrl-glow: var(--color-accent);
   --ctrl-hover: var(--color-accent);
   --ctrl-active: var(--color-inv);
-  --ctrl-disabled-opacity: 0.4;
-
-  /* ── Control sizes ─────────────────────────────────────── */
-  --ctrl-size-sm: 2rem;
-  --ctrl-size-md: 3rem;
-  --ctrl-size-lg: 4rem;
 }
