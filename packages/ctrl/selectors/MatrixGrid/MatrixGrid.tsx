@@ -26,7 +26,6 @@ const cellSize: Record<ControlSize, string> = {
 export function MatrixGrid({
   value,
   onChange,
-  rows = value.length,
   cols = value[0]?.length ?? 8,
   label,
   disabled = false,
