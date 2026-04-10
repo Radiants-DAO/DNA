@@ -5,7 +5,6 @@ export const REGISTRY_RELEVANT_PATHS = [
   "packages/radiants/registry/",
   "packages/radiants/meta/",
   "packages/radiants/schemas/",
-  "tools/playground/",
   "apps/rad-os/components/ui/DesignSystemTab.tsx",
 ];
 
@@ -47,7 +46,7 @@ export function getRegistryPlan(mode, changedPaths = []) {
     case "pre-dev":
       return {
         run: true,
-        command: ["pnpm", "--filter", "@rdna/playground", "registry:generate"],
+        command: ["pnpm", "registry:generate"],
         reason: "dev_start",
       };
     case "pre-build":
