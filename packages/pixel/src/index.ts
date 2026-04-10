@@ -29,5 +29,6 @@ export { mirrorForCorner, getCornerStyle, CORNER_POSITIONS } from './corners.js'
 export { PATTERN_REGISTRY, getPattern } from './patterns.js';
 export { CORNER_SETS, getCornerSet } from './corner-sets.js';
 export type { CornerSize } from './corner-sets.js';
+export { generateCorner } from './generate.js';
 export type { ImportOptions, ImportReport } from './import.js';
 export type { PatternEntry, PatternName } from './patterns.js';

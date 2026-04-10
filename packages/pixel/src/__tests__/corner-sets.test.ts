@@ -34,16 +34,19 @@ describe('CORNER_SETS', () => {
     }
   });
 
-  it('xs cover has expected shape', () => {
+  it('xs border has expected Bresenham shape', () => {
     const xs = getCornerSet('xs');
     expect(xs).toBeDefined();
-    expect(xs!.tl.bits).toBe('11' + '10');
+    // R=1 Bresenham: arc fills the grid, no cover pixels
+    expect(xs!.border!.bits).toBe('11' + '10');
   });
 
-  it('sm cover has expected top row (fully covered)', () => {
+  it('sm border starts at row 0 (Bresenham arc enters at top)', () => {
     const sm = getCornerSet('sm');
     expect(sm).toBeDefined();
-    expect(sm!.tl.bits.slice(0, 5)).toBe('11111');
+    // R=4 Bresenham: 3 border pixels at top row
+    const topRow = sm!.border!.bits.slice(0, 5);
+    expect(topRow).toBe('00111');
   });
 
   it('md cover grid is 9×9', () => {
