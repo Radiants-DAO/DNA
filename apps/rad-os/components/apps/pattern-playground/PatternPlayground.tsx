@@ -7,6 +7,7 @@ import { DEFAULT_STATE } from './presets';
 import { PatternGridPicker } from './PatternGridPicker';
 import { PatternPreview } from './PatternPreview';
 import { PatternCodeOutput } from './PatternCodeOutput';
+import { GlowControls } from './GlowControls';
 
 // ============================================================================
 // Main Component
@@ -19,13 +20,17 @@ export function PatternPlayground() {
     setState((prev) => ({ ...prev, pat: name }));
   }, []);
 
+  const handleGlowChange = useCallback((patch: Partial<PatternPlaygroundState>) => {
+    setState((prev) => ({ ...prev, ...patch }));
+  }, []);
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 min-h-0 flex">
         {/* ── Left: pattern picker sidebar ── */}
         <div className="w-64 shrink-0 border-r border-rule flex flex-col overflow-hidden">
-          <div className="px-3 py-2">
-            <span className="font-heading text-xs text-mute uppercase tracking-wide block mb-2">
+          <div className="px-3 py-2 flex flex-col gap-3 overflow-y-auto">
+            <span className="font-heading text-xs text-mute uppercase tracking-wide block">
               Pattern
             </span>
             <PatternGridPicker
@@ -33,6 +38,7 @@ export function PatternPlayground() {
               onSelect={handlePatternSelect}
               color={state.color}
             />
+            <GlowControls state={state} onChange={handleGlowChange} />
           </div>
         </div>
 
