@@ -64,7 +64,7 @@ export function XYPad({
     max,
     step,
     value,
-    onChange: onChange as (v: number | Point2D) => void,
+    onChange,
     disabled,
   });
 

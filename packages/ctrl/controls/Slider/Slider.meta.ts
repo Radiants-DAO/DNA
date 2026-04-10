@@ -29,7 +29,7 @@ export const CtrlSliderMeta = defineComponentMeta<ContinuousControlProps>()({
     { name: "With label", code: '<CtrlSlider value={30} onChange={setValue} label="Pan" showValue />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["horizontal", "slider", "continuous"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

@@ -26,7 +26,7 @@ export const NumberScrubberMeta = defineComponentMeta<ContinuousControlProps>()(
     { name: "With label", code: '<NumberScrubber value={16} onChange={setValue} label="Size" />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["inline", "number", "scrub"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

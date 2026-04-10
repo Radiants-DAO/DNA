@@ -41,7 +41,7 @@ export const XYPadMeta = defineComponentMeta<XYPadProps>()({
     { name: "With label", code: '<XYPad value={pos} onChange={setPos} label="Pan/Tilt" showValue />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["2d", "position", "coordinate"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

@@ -33,7 +33,7 @@ export const RibbonMeta = defineComponentMeta<RibbonProps>()({
     { name: "Spring return", code: '<Ribbon value={50} onChange={setValue} springReturn label="Pitch Bend" />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["strip", "ribbon", "position"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

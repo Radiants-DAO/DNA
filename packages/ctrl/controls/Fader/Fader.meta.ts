@@ -29,7 +29,7 @@ export const FaderMeta = defineComponentMeta<ContinuousControlProps>()({
     { name: "With label", code: '<Fader value={80} onChange={setValue} label="Gain" showValue />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["vertical", "slider", "continuous"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

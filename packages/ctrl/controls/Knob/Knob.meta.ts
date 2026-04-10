@@ -29,7 +29,7 @@ export const KnobMeta = defineComponentMeta<ContinuousControlProps>()({
     { name: "With label", code: '<Knob value={75} onChange={setValue} label="Volume" showValue />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["rotary", "dial", "continuous"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],

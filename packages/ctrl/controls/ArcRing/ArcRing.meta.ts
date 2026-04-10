@@ -28,7 +28,7 @@ export const ArcRingMeta = defineComponentMeta<ContinuousControlProps>()({
     { name: "With label", code: '<ArcRing value={60} onChange={setValue} label="CPU" />' },
   ],
   registry: {
-    category: "control",
+    category: "form",
     tags: ["arc", "ring", "progress", "continuous"],
     renderMode: "custom",
     controlledProps: ["value", "onChange"],
