@@ -5,3 +5,4 @@ export { Toggle } from './Toggle/Toggle';
 export { ChipTag } from './ChipTag/ChipTag';
 export { MatrixGrid } from './MatrixGrid/MatrixGrid';
 export { RadialMenu } from './RadialMenu/RadialMenu';
+export { ColorSwatch } from './ColorSwatch/ColorSwatch';

@@ -33,6 +33,8 @@ import { Section } from '@rdna/ctrl/layout/Section/Section';
 import { PropertyRow } from '@rdna/ctrl/layout/PropertyRow/PropertyRow';
 import { ControlPanel } from '@rdna/ctrl/layout/ControlPanel/ControlPanel';
 import { PanelTitle } from '@rdna/ctrl/layout/PanelTitle/PanelTitle';
+import { LayerTreeRow } from '@rdna/ctrl/layout/LayerTreeRow/LayerTreeRow';
+import { ColorSwatch } from '@rdna/ctrl/selectors/ColorSwatch/ColorSwatch';
 
 // ============================================================================
 // Demo data
@@ -101,6 +103,9 @@ export default function CtrlPreview() {
   const [matrix, setMatrix] = useState(() => initMatrix(4, 8));
   const [radial, setRadial] = useState('N');
   const [meter, setMeter] = useState(72);
+  const [selectedColor, setSelectedColor] = useState('#FCE184');
+  const [selectedLayer, setSelectedLayer] = useState('main');
+  const [layerExpanded, setLayerExpanded] = useState<Record<string, boolean>>({ app: true, header: true });
 
   const animateMeter = useCallback(() => {
     setMeter((prev) => {
@@ -423,6 +428,61 @@ export default function CtrlPreview() {
             <div className="space-y-2">
               <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Spectrum</span>
               <Spectrum data={SPECTRUM_DATA} label="Frequency" size="lg" />
+            </div>
+          </div>
+        </PreviewSection>
+
+        {/* ════════════════════════════════════════════════════
+            NEW COMPONENTS
+           ════════════════════════════════════════════════════ */}
+        <PreviewSection id="new" title="New Components">
+          <div className="space-y-6">
+            {/* ColorSwatch */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Color Swatch</span>
+              <SizeRow>
+                <ColorSwatch color="#FCE184" label="#FCE184" selected={selectedColor === '#FCE184'} onClick={() => setSelectedColor('#FCE184')} size="lg" />
+                <ColorSwatch color="#95BAD2" label="#95BAD2" selected={selectedColor === '#95BAD2'} onClick={() => setSelectedColor('#95BAD2')} size="lg" />
+                <ColorSwatch color="#FCC383" label="#FCC383" selected={selectedColor === '#FCC383'} onClick={() => setSelectedColor('#FCC383')} size="md" />
+                <ColorSwatch color="#FF7F7F" label="#FF7F7F" selected={selectedColor === '#FF7F7F'} onClick={() => setSelectedColor('#FF7F7F')} size="sm" />
+              </SizeRow>
+            </div>
+
+            {/* LayerTreeRow */}
+            <div className="space-y-2">
+              <span className="font-mono text-[0.5rem] text-mute uppercase tracking-wider">Layer Tree Row</span>
+              <div>
+                <LayerTreeRow
+                  label="App"
+                  tag="div"
+                  depth={0}
+                  expanded={layerExpanded.app}
+                  selected={selectedLayer === 'app'}
+                  onToggleExpand={() => setLayerExpanded(s => ({ ...s, app: !s.app }))}
+                  onSelect={() => setSelectedLayer('app')}
+                >
+                  <LayerTreeRow
+                    label="Header"
+                    tag="header"
+                    depth={1}
+                    expanded={layerExpanded.header}
+                    selected={selectedLayer === 'header'}
+                    onToggleExpand={() => setLayerExpanded(s => ({ ...s, header: !s.header }))}
+                    onSelect={() => setSelectedLayer('header')}
+                  >
+                    <LayerTreeRow label="Nav" depth={2} selected={selectedLayer === 'nav'} onSelect={() => setSelectedLayer('nav')} />
+                    <LayerTreeRow label="Logo" tag="img" depth={2} selected={selectedLayer === 'logo'} onSelect={() => setSelectedLayer('logo')} />
+                  </LayerTreeRow>
+                  <LayerTreeRow
+                    label="Main"
+                    tag="main"
+                    depth={1}
+                    selected={selectedLayer === 'main'}
+                    onSelect={() => setSelectedLayer('main')}
+                  />
+                  <LayerTreeRow label="Footer" tag="footer" depth={1} selected={selectedLayer === 'footer'} onSelect={() => setSelectedLayer('footer')} />
+                </LayerTreeRow>
+              </div>
             </div>
           </div>
         </PreviewSection>

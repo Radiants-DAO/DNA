@@ -33,6 +33,7 @@ export { Toggle } from './selectors/Toggle/Toggle';
 export { ChipTag } from './selectors/ChipTag/ChipTag';
 export { MatrixGrid } from './selectors/MatrixGrid/MatrixGrid';
 export { RadialMenu } from './selectors/RadialMenu/RadialMenu';
+export { ColorSwatch } from './selectors/ColorSwatch/ColorSwatch';
 
 // Readouts (data display / feedback)
 export { Meter } from './readouts/Meter/Meter';
@@ -46,3 +47,4 @@ export { Section } from './layout/Section/Section';
 export { PropertyRow } from './layout/PropertyRow/PropertyRow';
 export { ControlPanel, useDensity } from './layout/ControlPanel/ControlPanel';
 export { PanelTitle } from './layout/PanelTitle/PanelTitle';
+export { LayerTreeRow } from './layout/LayerTreeRow/LayerTreeRow';
