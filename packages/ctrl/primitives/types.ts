@@ -1,0 +1,87 @@
+// =============================================================================
+// @rdna/ctrl — Shared Types
+// =============================================================================
+
+/** Drag axis for continuous controls */
+export type DragAxis = 'x' | 'y' | 'radial' | '2d';
+
+/** Size preset shared across all controls */
+export type ControlSize = 'sm' | 'md' | 'lg';
+
+/** 2D point value for XY controls */
+export interface Point2D {
+  x: number;
+  y: number;
+}
+
+// =============================================================================
+// Continuous control props (Knob, Fader, Slider, etc.)
+// =============================================================================
+
+export interface ContinuousControlProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  label?: string;
+  disabled?: boolean;
+  size?: ControlSize;
+  showValue?: boolean;
+  formatValue?: (v: number) => string;
+  className?: string;
+}
+
+// =============================================================================
+// Readout props (Meter, Sparkline, Waveform, etc.)
+// =============================================================================
+
+export interface ReadoutProps {
+  value: number | number[];
+  min?: number;
+  max?: number;
+  label?: string;
+  size?: ControlSize;
+  className?: string;
+}
+
+// =============================================================================
+// Drag control hook config
+// =============================================================================
+
+export interface DragControlConfig {
+  axis: DragAxis;
+  min: number;
+  max: number;
+  step?: number;
+  sensitivity?: number;
+  value: number | Point2D;
+  onChange: (value: number | Point2D) => void;
+  disabled?: boolean;
+  inverted?: boolean;
+}
+
+export interface DragControlReturn {
+  bind: {
+    onPointerDown: (e: React.PointerEvent) => void;
+    onKeyDown: (e: React.KeyboardEvent) => void;
+    role: 'slider';
+    'aria-valuemin': number;
+    'aria-valuemax': number;
+    'aria-valuenow': number;
+    'aria-orientation'?: 'horizontal' | 'vertical';
+    tabIndex: 0;
+  };
+  isDragging: boolean;
+  normalizedValue: number | Point2D;
+}
+
+// =============================================================================
+// Canvas renderer hook config
+// =============================================================================
+
+export interface CanvasRendererConfig {
+  draw: (ctx: CanvasRenderingContext2D, width: number, height: number) => void;
+  /** Device pixel ratio override (defaults to window.devicePixelRatio) */
+  dpr?: number;
+}
