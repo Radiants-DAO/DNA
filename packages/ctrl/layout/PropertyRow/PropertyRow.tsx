@@ -3,7 +3,10 @@
 import type { ReactNode } from 'react';
 
 // =============================================================================
-// PropertyRow — Label left, control right flex row
+// PropertyRow — Cell-based label + control row
+//
+// Paper ref: 07 — Property Input Row
+// Dark cell bg, 1px gaps, 24px height. Label cell left, control cells right.
 // =============================================================================
 
 interface PropertyRowProps {
@@ -21,15 +24,26 @@ export function PropertyRow({
     <div
       data-rdna="ctrl-property-row"
       className={[
-        'flex items-center justify-between gap-2 min-h-6',
+        'flex items-center gap-[--ctrl-cell-gap] min-h-[--ctrl-row-height]',
         className,
       ].filter(Boolean).join(' ')}
     >
-      <span className="font-mono text-ctrl-label text-[0.625rem] uppercase tracking-wider shrink-0">
+      {/* Label cell */}
+      <span className={[
+        'shrink-0 flex items-center px-1.5',
+        'min-h-[--ctrl-row-height] bg-ctrl-cell-bg',
+        'font-mono text-ctrl-text-active text-[0.625rem] uppercase tracking-wider',
+      ].join(' ')}
+        style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+      >
         {label}
       </span>
 
-      <div className="flex items-center gap-1">
+      {/* Control cells */}
+      <div className={[
+        'flex-1 flex items-center gap-[--ctrl-cell-gap]',
+        'min-h-[--ctrl-row-height] bg-ctrl-cell-bg px-1.5',
+      ].join(' ')}>
         {children}
       </div>
     </div>

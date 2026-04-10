@@ -4,7 +4,10 @@ import React, { createContext, useContext } from 'react';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
-// ControlPanel — Vertical stack of Sections with density context
+// ControlPanel — Dark panel container with density context
+//
+// Provides the dark cell-bg surface that all ctrl components sit on.
+// Uses semantic tokens so light/dark mode flipping works automatically.
 // =============================================================================
 
 type Density = 'compact' | 'normal' | 'spacious';
@@ -23,9 +26,15 @@ interface ControlPanelProps {
 }
 
 const gapMap: Record<Density, string> = {
-  compact: 'gap-1',
-  normal: 'gap-2',
-  spacious: 'gap-3',
+  compact: 'gap-0.5',
+  normal: 'gap-1',
+  spacious: 'gap-2',
+};
+
+const paddingMap: Record<Density, string> = {
+  compact: 'p-1.5',
+  normal: 'p-2',
+  spacious: 'p-3',
 };
 
 export function ControlPanel({
@@ -38,8 +47,9 @@ export function ControlPanel({
       <div
         data-rdna="ctrl-panel"
         className={[
-          'flex flex-col',
+          'flex flex-col font-mono',
           gapMap[density],
+          paddingMap[density],
           className,
         ].filter(Boolean).join(' ')}
       >
