@@ -33,3 +33,10 @@ export { Toggle } from './selectors/Toggle/Toggle';
 export { ChipTag } from './selectors/ChipTag/ChipTag';
 export { MatrixGrid } from './selectors/MatrixGrid/MatrixGrid';
 export { RadialMenu } from './selectors/RadialMenu/RadialMenu';
+
+// Readouts (data display / feedback)
+export { Meter } from './readouts/Meter/Meter';
+export { LEDArray } from './readouts/LEDArray/LEDArray';
+export { Sparkline } from './readouts/Sparkline/Sparkline';
+export { Waveform } from './readouts/Waveform/Waveform';
+export { Spectrum } from './readouts/Spectrum/Spectrum';
