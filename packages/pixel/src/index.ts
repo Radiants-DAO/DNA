@@ -30,5 +30,6 @@ export { PATTERN_REGISTRY, getPattern } from './patterns.js';
 export { CORNER_SETS, getCornerSet } from './corner-sets.js';
 export type { CornerSize } from './corner-sets.js';
 export { generateCorner } from './generate.js';
+export { generatePixelCornerBorder } from './corner-border.js';
 export type { ImportOptions, ImportReport } from './import.js';
 export type { PatternEntry, PatternName } from './patterns.js';
