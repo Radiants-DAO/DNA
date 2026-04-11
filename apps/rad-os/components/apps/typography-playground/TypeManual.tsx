@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tooltip, Button } from '@rdna/radiants/components/core';
+import { Tooltip, Button, PixelBorder } from '@rdna/radiants/components/core';
 import { type FontEntry, FONTS, TYPE_SCALE, ELEMENT_STYLES } from './typography-data';
 
 // -- Shared copy helper --
@@ -59,92 +59,94 @@ function FontCard({ font, index }: { font: FontEntry; index: number }) {
   const DIGITS = '0123456789';
 
   return (
-    <div className="pixel-rounded-sm">
-      {/* Header */}
-      <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-flip/40">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          <span className="font-heading text-sm text-flip uppercase tracking-wide">
-            {font.name}
-          </span>
-        </div>
-        <span className="font-mono text-xs text-flip/60 shrink-0">
-          {font.role}
-        </span>
-      </div>
-
-      {/* Specimen */}
-      <div className="px-4 py-4 space-y-2 border-b border-rule">
-        <span className={`${font.className} text-3xl text-main leading-tight block`}>
-          AaBbCc
-        </span>
-        <div className={`${font.className} text-sm text-sub leading-relaxed break-all tracking-wide`}>
-          {UPPER}
-        </div>
-        <div className={`${font.className} text-sm text-sub leading-relaxed break-all tracking-wide`}>
-          {LOWER}
-        </div>
-        <div className={`${font.className} text-xs text-mute leading-relaxed break-all tracking-wide`}>
-          {DIGITS} {'!@#$%&*()-+=[]{}|;:\'",.?/'}
-        </div>
-      </div>
-
-      {/* Weights */}
-      <div className="px-4 py-3 border-b border-rule space-y-1">
-        {font.weights.map((w) => (
-          <div
-            key={w.value}
-            className="flex items-baseline justify-between"
-          >
-            <span
-              className={`${font.className} text-base text-main`}
-              style={{ fontWeight: w.value }}
-            >
-              The quick brown fox
+    <PixelBorder size="sm">
+      <div>
+        {/* Header */}
+        <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs text-flip/40">
+              {String(index + 1).padStart(2, '0')}
             </span>
-            <span className="font-mono text-xs text-mute shrink-0">
-              {w.label} {w.value}
+            <span className="font-heading text-sm text-flip uppercase tracking-wide">
+              {font.name}
             </span>
           </div>
-        ))}
-        {font.hasItalic && (
-          <div className="flex items-baseline justify-between">
-            <span className={`${font.className} text-base text-main italic`}>
-              The quick brown fox
-            </span>
-            <span className="font-mono text-xs text-mute shrink-0">
-              Italic
-            </span>
+          <span className="font-mono text-xs text-flip/60 shrink-0">
+            {font.role}
+          </span>
+        </div>
+
+        {/* Specimen */}
+        <div className="px-4 py-4 space-y-2 border-b border-rule">
+          <span className={`${font.className} text-3xl text-main leading-tight block`}>
+            AaBbCc
+          </span>
+          <div className={`${font.className} text-sm text-sub leading-relaxed break-all tracking-wide`}>
+            {UPPER}
+          </div>
+          <div className={`${font.className} text-sm text-sub leading-relaxed break-all tracking-wide`}>
+            {LOWER}
+          </div>
+          <div className={`${font.className} text-xs text-mute leading-relaxed break-all tracking-wide`}>
+            {DIGITS} {'!@#$%&*()-+=[]{}|;:\'",.?/'}
+          </div>
+        </div>
+
+        {/* Weights */}
+        <div className="px-4 py-3 border-b border-rule space-y-1">
+          {font.weights.map((w) => (
+            <div
+              key={w.value}
+              className="flex items-baseline justify-between"
+            >
+              <span
+                className={`${font.className} text-base text-main`}
+                style={{ fontWeight: w.value }}
+              >
+                The quick brown fox
+              </span>
+              <span className="font-mono text-xs text-mute shrink-0">
+                {w.label} {w.value}
+              </span>
+            </div>
+          ))}
+          {font.hasItalic && (
+            <div className="flex items-baseline justify-between">
+              <span className={`${font.className} text-base text-main italic`}>
+                The quick brown fox
+              </span>
+              <span className="font-mono text-xs text-mute shrink-0">
+                Italic
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* CSS Reference */}
+        <div className="divide-y divide-rule">
+          <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
+          <CopyableRow label="FAMILY" value={font.fontFamily} />
+          <CopyableRow label="TAILWIND" value={font.tailwindClass} displayValue={`className="${font.tailwindClass}"`} />
+          <CopyableRow label="ELEMENTS" value={font.usage} />
+        </div>
+
+        {/* Download */}
+        {font.downloadUrl && (
+          <div className="px-4 py-3 border-t border-rule">
+            <Button
+              size="sm"
+              icon={font.linkOut ? 'globe' : 'download'}
+              href={font.downloadUrl}
+              {...(font.linkOut ? { target: '_blank' } : {})}
+            >
+              {font.linkOut
+                ? `View at ${font.source}`
+                : `Download ${font.shortName}`}
+            </Button>
           </div>
         )}
       </div>
-
-      {/* CSS Reference */}
-      <div className="divide-y divide-rule">
-        <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
-        <CopyableRow label="FAMILY" value={font.fontFamily} />
-        <CopyableRow label="TAILWIND" value={font.tailwindClass} displayValue={`className="${font.tailwindClass}"`} />
-        <CopyableRow label="ELEMENTS" value={font.usage} />
-      </div>
-
-      {/* Download */}
-      {font.downloadUrl && (
-        <div className="px-4 py-3 border-t border-rule">
-          <Button
-            size="sm"
-            icon={font.linkOut ? 'globe' : 'download'}
-            href={font.downloadUrl}
-            {...(font.linkOut ? { target: '_blank' } : {})}
-          >
-            {font.linkOut
-              ? `View at ${font.source}`
-              : `Download ${font.shortName}`}
-          </Button>
-        </div>
-      )}
-    </div>
+    </PixelBorder>
   );
 }
 
@@ -187,33 +189,35 @@ export function TypeManual() {
             </div>
             <span className="font-mono text-xs text-mute shrink-0">typography.css</span>
           </div>
-          <div className="pixel-rounded-sm">
-            {/* Column headers */}
-            <div className="flex items-center gap-3 px-4 py-2 bg-inv">
-              <span className="font-mono text-xs text-flip/60 w-14 shrink-0">Element</span>
-              <span className="font-mono text-xs text-flip/60 flex-1">Font</span>
-              <span className="font-mono text-xs text-flip/60 shrink-0">Size / Weight / Leading</span>
+          <PixelBorder size="sm">
+            <div>
+              {/* Column headers */}
+              <div className="flex items-center gap-3 px-4 py-2 bg-inv">
+                <span className="font-mono text-xs text-flip/60 w-14 shrink-0">Element</span>
+                <span className="font-mono text-xs text-flip/60 flex-1">Font</span>
+                <span className="font-mono text-xs text-flip/60 shrink-0">Size / Weight / Leading</span>
+              </div>
+              <div className="divide-y divide-rule">
+                {ELEMENT_STYLES.map(({ el, fontClass, size, weight, leading }) => (
+                  <div key={el} className="flex items-center gap-3 px-4 py-2.5">
+                    <code className="text-xs font-mono text-main w-14 shrink-0">
+                      &lt;{el}&gt;
+                    </code>
+                    <span className={`${fontClass} text-sm text-main flex-1`} style={{ fontWeight: weight }}>
+                      {el === 'code' || el === 'pre'
+                        ? 'const radiants = true;'
+                        : el === 'label'
+                          ? 'FORM LABEL'
+                          : 'The quick brown fox'}
+                    </span>
+                    <span className="font-mono text-xs text-mute shrink-0">
+                      {size} / {weight} / {leading}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="divide-y divide-rule">
-              {ELEMENT_STYLES.map(({ el, fontClass, size, weight, leading }) => (
-                <div key={el} className="flex items-center gap-3 px-4 py-2.5">
-                  <code className="text-xs font-mono text-main w-14 shrink-0">
-                    &lt;{el}&gt;
-                  </code>
-                  <span className={`${fontClass} text-sm text-main flex-1`} style={{ fontWeight: weight }}>
-                    {el === 'code' || el === 'pre'
-                      ? 'const radiants = true;'
-                      : el === 'label'
-                        ? 'FORM LABEL'
-                        : 'The quick brown fox'}
-                  </span>
-                  <span className="font-mono text-xs text-mute shrink-0">
-                    {size} / {weight} / {leading}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          </PixelBorder>
         </section>
 
       </div>
@@ -247,9 +251,11 @@ export function TypeManual() {
               ))}
             </div>
             <div className="p-2 bg-depth text-xs text-mute leading-relaxed mt-2">
-              <span className="font-heading text-xs text-flip bg-inv px-1 py-0.5 pixel-rounded-sm uppercase tracking-tight mr-1">
-                Clamp
-              </span>
+              <PixelBorder size="sm" className="inline-block mr-1 align-middle">
+                <span className="block font-heading text-xs text-flip bg-inv px-1 py-0.5 uppercase tracking-tight">
+                  Clamp
+                </span>
+              </PixelBorder>
               Body: <code className="text-xs">clamp(1rem, 1vw, 1.125rem)</code>
             </div>
           </div>

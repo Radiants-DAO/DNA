@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { getStartMenuSections } from '@/lib/apps';
-import { Button, Separator } from '@rdna/radiants/components/core';
+import { Button, Separator, PixelBorder } from '@rdna/radiants/components/core';
 import {
   WordmarkLogo,
   Icon,
@@ -117,17 +117,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="
-        absolute bottom-full left-0 mb-2
-        flex flex-row
-        bg-page
-        pixel-shadow-floating
-        pixel-rounded-sm
-        z-10
-        w-72
-      "
+      className="absolute bottom-full left-0 mb-2 z-10 w-72"
       style={{ position: 'absolute' }}
     >
+      <PixelBorder size="sm" className="pixel-shadow-floating">
+        <div className="flex flex-row bg-page">
       {/* Left sidebar — Win95 branding strip */}
       <div
         className="w-10 bg-inv flex items-end justify-start pb-3 shrink-0"
@@ -198,6 +192,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
         </div>
       </div>
+        </div>
+      </PixelBorder>
     </div>
   );
 }

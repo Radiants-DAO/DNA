@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { AppWindow, Button, Switch, Tooltip, Input } from '@rdna/radiants/components/core';
+import { AppWindow, Button, Switch, Tooltip, Input, PixelBorder } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
   Icon,
@@ -222,7 +222,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="pixel-rounded-xs">
+    <PixelBorder size="xs">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
@@ -243,88 +243,96 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
           </Tooltip>
         </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 
 function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
-    <div className="pixel-rounded-sm pixel-shadow-raised h-full flex flex-col">
-      {/* Swatch */}
-      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-      <div
-        className="h-40 flex flex-col justify-between p-4 border-b border-line"
-        style={{ backgroundColor: color.hex }}
-      >
-        <div className="flex items-start justify-between">
-          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className="font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream pixel-rounded-sm">
-            {color.role}
-          </span>
-        </div>
+    <PixelBorder size="sm" className="pixel-shadow-raised h-full">
+      <div className="h-full flex flex-col">
+        {/* Swatch */}
         {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-        <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
-          {color.name}
-        </span>
-      </div>
+        <div
+          className="h-40 flex flex-col justify-between p-4 border-b border-line"
+          style={{ backgroundColor: color.hex }}
+        >
+          <div className="flex items-start justify-between">
+            {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+            <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+            <PixelBorder size="sm" className="inline-block">
+              <span className="block font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream">
+                {color.role}
+              </span>
+            </PixelBorder>
+          </div>
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
+            {color.name}
+          </span>
+        </div>
 
-      {/* Data */}
-      <div className="bg-page flex-1 flex flex-col">
-        <div className="px-4 py-3 border-b border-rule flex-1">
-          <p className="text-sm text-sub leading-snug">{color.description}</p>
-        </div>
-        <div className="divide-y divide-rule">
-          <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
-          <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
-          <CopyableRow label="OKLCH" value={color.oklch} />
-          <CopyableRow label="HEX" value={color.hex} />
+        {/* Data */}
+        <div className="bg-page flex-1 flex flex-col">
+          <div className="px-4 py-3 border-b border-rule flex-1">
+            <p className="text-sm text-sub leading-snug">{color.description}</p>
+          </div>
+          <div className="divide-y divide-rule">
+            <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
+            <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
+            <CopyableRow label="OKLCH" value={color.oklch} />
+            <CopyableRow label="HEX" value={color.hex} />
+          </div>
         </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 
 function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
-    <div className="pixel-rounded-sm pixel-shadow-raised">
-      {/* Swatch */}
-      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-      <div
-        className="h-40 flex flex-col justify-between p-4 border-b border-line"
-        style={{ backgroundColor: color.hex }}
-      >
-        <div className="flex items-start justify-between">
-          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className="font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream pixel-rounded-sm">
-            {color.role}
-          </span>
-        </div>
+    <PixelBorder size="sm" className="pixel-shadow-raised">
+      <div>
+        {/* Swatch */}
         {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-        <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
-          {color.name}
-        </span>
-      </div>
+        <div
+          className="h-40 flex flex-col justify-between p-4 border-b border-line"
+          style={{ backgroundColor: color.hex }}
+        >
+          <div className="flex items-start justify-between">
+            {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+            <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+            <PixelBorder size="sm" className="inline-block">
+              <span className="block font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream">
+                {color.role}
+              </span>
+            </PixelBorder>
+          </div>
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
+            {color.name}
+          </span>
+        </div>
 
-      {/* Data */}
-      <div className="bg-page">
-        <div className="divide-y divide-rule">
-          <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
-          <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
-          <CopyableRow label="OKLCH" value={color.oklch} />
-          <CopyableRow label="HEX" value={color.hex} />
+        {/* Data */}
+        <div className="bg-page">
+          <div className="divide-y divide-rule">
+            <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
+            <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
+            <CopyableRow label="OKLCH" value={color.oklch} />
+            <CopyableRow label="HEX" value={color.hex} />
+          </div>
         </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 
@@ -377,32 +385,34 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category, index }: { category: SemanticCategory; index: number }) {
   return (
-    <div className="pixel-rounded-sm">
-      {/* Header */}
-      <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-flip/40">{String(index + 1).padStart(2, '0')}</span>
-          <span className="font-joystix text-sm text-flip uppercase tracking-wide">{category.name}</span>
+    <PixelBorder size="sm">
+      <div>
+        {/* Header */}
+        <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs text-flip/40">{String(index + 1).padStart(2, '0')}</span>
+            <span className="font-joystix text-sm text-flip uppercase tracking-wide">{category.name}</span>
+          </div>
+          <span className="font-mondwest text-xs text-flip/60 shrink-0 hidden @sm:block">{category.description}</span>
         </div>
-        <span className="font-mondwest text-xs text-flip/60 shrink-0 hidden @sm:block">{category.description}</span>
-      </div>
 
-      {/* Column headers */}
-      <div className="flex items-center gap-3 px-4 py-2 border-b border-rule bg-depth">
-        <span className="w-5 font-mono text-xs text-center text-mute">LT</span>
-        <span className="font-mono text-xs text-mute min-w-[80px]">TOKEN</span>
-        <span className="font-mono text-xs text-mute flex-1">VAR</span>
-        <span className="font-mono text-xs text-mute hidden @sm:block shrink-0">USAGE</span>
-        <span className="w-5 font-mono text-xs text-center text-mute">DK</span>
-      </div>
+        {/* Column headers */}
+        <div className="flex items-center gap-3 px-4 py-2 border-b border-rule bg-depth">
+          <span className="w-5 font-mono text-xs text-center text-mute">LT</span>
+          <span className="font-mono text-xs text-mute min-w-[80px]">TOKEN</span>
+          <span className="font-mono text-xs text-mute flex-1">VAR</span>
+          <span className="font-mono text-xs text-mute hidden @sm:block shrink-0">USAGE</span>
+          <span className="w-5 font-mono text-xs text-center text-mute">DK</span>
+        </div>
 
-      {/* Token rows */}
-      <div className="divide-y divide-rule">
-        {category.tokens.map((token) => (
-          <SemanticTokenRow key={token.cssVar} token={token} />
-        ))}
+        {/* Token rows */}
+        <div className="divide-y divide-rule">
+          {category.tokens.map((token) => (
+            <SemanticTokenRow key={token.cssVar} token={token} />
+          ))}
+        </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 
@@ -443,19 +453,23 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-page pixel-rounded-sm p-2">
-      <Button size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
-        <span className="truncate">{sref.code}</span>
-      </Button>
-      <div className="grid grid-cols-2 gap-2">
-        {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-rule pixel-rounded-sm relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
-          </div>
-        ))}
+    <PixelBorder size="sm">
+      <div className="bg-page p-2">
+        <Button size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
+          <span className="truncate">{sref.code}</span>
+        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          {sref.images.map((src, i) => (
+            <PixelBorder key={i} size="sm" className="aspect-square">
+              <div className="bg-rule relative w-full h-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+              </div>
+            </PixelBorder>
+          ))}
+        </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 

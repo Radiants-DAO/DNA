@@ -11,7 +11,7 @@ import {
   useShowcaseProps,
 } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
-import { Button, Input } from '@rdna/radiants/components/core';
+import { Button, Input, PixelBorder } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Showcase Card
@@ -29,71 +29,74 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
     !(entry.renderMode === 'custom' && entry.controlledProps?.length === 0);
 
   return (
-    <div className="pixel-shadow-resting">
-    <div className="bg-page pixel-rounded-sm p-4 flex flex-col gap-3">
-      {/* Header */}
-      <div className="flex items-center gap-2">
-        <h3 className="text-base font-heading font-bold text-main">
-          {entry.name}
-        </h3>
-        <span className="text-xs font-heading text-sub bg-depth px-1.5 py-0.5 pixel-rounded-xs uppercase">
-          {entry.category}
-        </span>
-      </div>
+    <PixelBorder size="sm" className="pixel-shadow-resting">
+      <div className="bg-page p-4 flex flex-col gap-3">
+        {/* Header */}
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-heading font-bold text-main">
+            {entry.name}
+          </h3>
+          <PixelBorder size="xs" className="inline-block">
+            <span className="block text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
+              {entry.category}
+            </span>
+          </PixelBorder>
+        </div>
 
-      {/* Description */}
-      <p className="text-base text-sub">{entry.description}</p>
+        {/* Description */}
+        <p className="text-base text-sub">{entry.description}</p>
 
-      {/* Demo Area */}
-      {entry.renderMode === 'description-only' ? null : (
-        <div className="border-t border-rule pt-3">
-          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
-          <div data-force-state={wrapperState} key={remountKey}>
-            {entry.Demo ? (
-              <entry.Demo {...renderProps} />
-            ) : Component ? (
-              <Component {...renderProps} />
-            ) : null}
+        {/* Demo Area */}
+        {entry.renderMode === 'description-only' ? null : (
+          <div className="border-t border-rule pt-3">
+            <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
+            <div data-force-state={wrapperState} key={remountKey}>
+              {entry.Demo ? (
+                <entry.Demo {...renderProps} />
+              ) : Component ? (
+                <Component {...renderProps} />
+              ) : null}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Forced state strip */}
-      {entry.states && entry.states.length > 0 && (
-        <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
-          {availableStates.map((s) => (
-            // eslint-disable-next-line rdna/prefer-rdna-components -- reason:forced-state-chip-requires-inline-button owner:design-system expires:2026-12-31 issue:DNA-001
-            <button
-              key={s}
-              type="button"
-              onClick={() => setForcedState(s)}
-              className={`cursor-pointer px-1.5 py-0.5 font-mono text-xs pixel-rounded-xs transition-colors ${
-                forcedState === s
-                  ? 'bg-main text-page'
-                  : 'bg-depth text-sub hover:text-main'
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
+        {/* Forced state strip */}
+        {entry.states && entry.states.length > 0 && (
+          <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
+            {availableStates.map((s) => (
+              <PixelBorder key={s} size="xs" className="inline-block">
+                {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:forced-state-chip-requires-inline-button owner:design-system expires:2026-12-31 issue:DNA-001 */}
+                <button
+                  type="button"
+                  onClick={() => setForcedState(s)}
+                  className={`cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
+                    forcedState === s
+                      ? 'bg-main text-page'
+                      : 'bg-depth text-sub hover:text-main'
+                  }`}
+                >
+                  {s}
+                </button>
+              </PixelBorder>
+            ))}
+          </div>
+        )}
 
-      {/* Prop controls */}
-      {hasControllableProps && (
-        <div className="border-t border-rule pt-2">
-          <PropControls
-            props={entry.props}
-            values={props}
-            onChange={setPropValue}
-            onReset={resetProps}
-            controlledProps={entry.controlledProps}
-            renderMode={entry.renderMode}
-          />
-        </div>
-      )}
-    </div>
-    </div>
+        {/* Prop controls */}
+        {hasControllableProps && (
+          <div className="border-t border-rule pt-2">
+            <PropControls
+              props={entry.props}
+              values={props}
+              onChange={setPropValue}
+              onReset={resetProps}
+              controlledProps={entry.controlledProps}
+              renderMode={entry.renderMode}
+            />
+          </div>
+        )}
+      </div>
+    </PixelBorder>
   );
 }
 

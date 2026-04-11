@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useCallback, useState } from 'react';
-import { Pattern } from '@rdna/radiants/components/core';
+import { Pattern, PixelBorder } from '@rdna/radiants/components/core';
 import type { PatternPlaygroundState } from './types';
 
 interface PatternPreviewProps {
@@ -55,38 +55,41 @@ function MouseFollowerPanel({
       } as React.CSSProperties
     : undefined;
 
-  const wrapperClasses = dark
-    ? 'dark relative h-full pixel-rounded-sm bg-ink cursor-crosshair'
-    : 'relative h-full pixel-rounded-sm cursor-crosshair';
+  const panelClasses = dark
+    ? 'dark relative h-full bg-ink cursor-crosshair'
+    : 'relative h-full cursor-crosshair';
 
-  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dark-preview-container owner:design expires:2027-01-01 issue:DNA-001
-  const labelClasses = dark
-    ? 'absolute bottom-2 left-2 font-mono text-xs text-cream bg-ink/80 px-1.5 py-0.5 pixel-rounded-xs z-10'
-    : 'absolute bottom-2 left-2 font-mono text-xs text-mute bg-page/80 px-1.5 py-0.5 pixel-rounded-xs z-10';
+  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dark-preview-label owner:design expires:2027-01-01 issue:DNA-001
+  const labelInnerClasses = dark
+    ? 'block font-mono text-xs text-cream bg-ink/80 px-1.5 py-0.5'
+    : 'block font-mono text-xs text-mute bg-page/80 px-1.5 py-0.5';
 
   return (
     <div className="flex flex-col gap-2 flex-1 min-w-0">
       <span className="font-heading text-xs text-mute uppercase tracking-wide">{label}</span>
-      <div
-        ref={panelRef}
-        className={wrapperClasses}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        style={dark ? glowOverrides : undefined}
-        {...(pressing && dark ? { 'data-pat-active': '' } : {})}
-      >
-        <Pattern
-          pat={state.pat}
-          color={state.color}
-          bg={state.bg !== 'transparent' ? state.bg : undefined}
-          scale={state.scale}
-          style={{ position: 'absolute', inset: 0 }}
-        />
-        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:dark-preview-label owner:design expires:2027-01-01 issue:DNA-001 */}
-        <span className={labelClasses}>{label}</span>
-      </div>
+      <PixelBorder size="sm" className="h-full">
+        <div
+          ref={panelRef}
+          className={panelClasses}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          style={dark ? glowOverrides : undefined}
+          {...(pressing && dark ? { 'data-pat-active': '' } : {})}
+        >
+          <Pattern
+            pat={state.pat}
+            color={state.color}
+            bg={state.bg !== 'transparent' ? state.bg : undefined}
+            scale={state.scale}
+            style={{ position: 'absolute', inset: 0 }}
+          />
+          <PixelBorder size="xs" className="absolute bottom-2 left-2 z-10">
+            <span className={labelInnerClasses}>{label}</span>
+          </PixelBorder>
+        </div>
+      </PixelBorder>
     </div>
   );
 }

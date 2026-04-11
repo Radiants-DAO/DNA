@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { getStartMenuSections } from '../lib/catalog';
-import { Button, Separator } from '@rdna/radiants/components/core';
+import { Button, Separator, PixelBorder } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 
 interface StartMenuProps {
@@ -73,33 +73,37 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute bottom-full left-0 mb-2 flex flex-row bg-page pixel-shadow-floating pixel-rounded-sm z-10 w-72"
+      className="absolute bottom-full left-0 mb-2 z-10 w-72"
     >
-      {/* Left sidebar — branding strip */}
-      <div
-        className="w-10 bg-inv flex items-end justify-start pb-3 shrink-0"
-        style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-      >
-        <WordmarkLogo className="h-3 w-auto" color="cream" />
-      </div>
-
-      {/* Menu content */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="py-1">
-          <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-mute uppercase">Apps</span>
+      <PixelBorder size="sm" className="pixel-shadow-floating">
+        <div className="flex flex-row bg-page">
+          {/* Left sidebar — branding strip */}
+          <div
+            className="w-10 bg-inv flex items-end justify-start pb-3 shrink-0"
+            style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+          >
+            <WordmarkLogo className="h-3 w-auto" color="cream" />
           </div>
-          {sections.apps.map((item) => (
-            <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
-          ))}
-        </div>
 
-        <Separator className="mx-2" />
+          {/* Menu content */}
+          <div className="flex flex-col flex-1 min-w-0">
+            <div className="py-1">
+              <div className="px-3 py-1">
+                <span className="font-joystix text-sm text-mute uppercase">Apps</span>
+              </div>
+              {sections.apps.map((item) => (
+                <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
+              ))}
+            </div>
 
-        <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
-          <span className="font-mondwest text-sm text-mute">__APP_PASCAL_NAME__ v1.0</span>
+            <Separator className="mx-2" />
+
+            <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
+              <span className="font-mondwest text-sm text-mute">__APP_PASCAL_NAME__ v1.0</span>
+            </div>
+          </div>
         </div>
-      </div>
+      </PixelBorder>
     </div>
   );
 }

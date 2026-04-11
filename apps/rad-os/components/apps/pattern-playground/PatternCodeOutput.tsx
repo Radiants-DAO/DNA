@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, ToggleGroup } from '@rdna/radiants/components/core';
+import { Button, ToggleGroup, PixelBorder } from '@rdna/radiants/components/core';
 import type { PatternPlaygroundState, CodeFormat } from './types';
 import { generateCode } from './code-gen';
 
@@ -47,9 +47,11 @@ export function PatternCodeOutput({ state }: PatternCodeOutputProps) {
 
       {/* Code block */}
       <div className="px-3 pb-3">
-        <pre className="font-mono text-xs text-sub bg-page pixel-rounded-xs p-3 overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap">
-          {code}
-        </pre>
+        <PixelBorder size="xs">
+          <pre className="font-mono text-xs text-sub bg-page p-3 overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap">
+            {code}
+          </pre>
+        </PixelBorder>
       </div>
     </div>
   );

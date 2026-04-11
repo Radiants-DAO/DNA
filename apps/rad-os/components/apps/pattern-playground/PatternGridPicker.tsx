@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pattern } from '@rdna/radiants/components/core';
+import { Pattern, PixelBorder } from '@rdna/radiants/components/core';
 import {
   PATTERN_GROUPS,
   getPatternsByGroup,
@@ -44,23 +44,28 @@ export function PatternGridPicker({ selected, onSelect, color }: PatternGridPick
             {!isCollapsed && (
               <div className="grid grid-cols-6 gap-1 mt-1">
                 {entries.map((entry) => (
-                  // eslint-disable-next-line rdna/prefer-rdna-components -- reason:pattern-swatch-button owner:design expires:2027-01-01 issue:DNA-001
-                  <button
+                  <PixelBorder
                     key={entry.name}
-                    type="button"
-                    onClick={() => onSelect(entry.name)}
-                    title={`${entry.name} (${entry.fill}%)`}
-                    className={`relative aspect-square cursor-pointer pixel-rounded-xs transition-shadow duration-fast ${
+                    size="xs"
+                    className={`aspect-square transition-shadow duration-fast ${
                       selected === entry.name ? 'pixel-shadow-raised ring-1 ring-accent' : 'hover:pixel-shadow-surface'
                     }`}
                   >
-                    <Pattern
-                      pat={entry.name}
-                      color={color}
-                      scale={1}
-                      style={{ position: 'absolute', inset: 0 }}
-                    />
-                  </button>
+                    {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:pattern-swatch-button owner:design expires:2027-01-01 issue:DNA-001 */}
+                    <button
+                      type="button"
+                      onClick={() => onSelect(entry.name)}
+                      title={`${entry.name} (${entry.fill}%)`}
+                      className="relative w-full h-full cursor-pointer"
+                    >
+                      <Pattern
+                        pat={entry.name}
+                        color={color}
+                        scale={1}
+                        style={{ position: 'absolute', inset: 0 }}
+                      />
+                    </button>
+                  </PixelBorder>
                 ))}
               </div>
             )}

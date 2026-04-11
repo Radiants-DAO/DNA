@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tooltip } from '@rdna/radiants/components/core';
+import { Tooltip, PixelBorder } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Embedded CSS sources -- extracted from the actual source files
@@ -358,51 +358,53 @@ function CodeBlock({ filename, source, description }: CodeBlockProps) {
   };
 
   return (
-    <div className="pixel-rounded-sm">
-      {/* Header */}
-      <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-sm text-flip">{filename}</span>
-          <span className="font-mono text-xs text-flip/40">{description}</span>
+    <PixelBorder size="sm">
+      <div>
+        {/* Header */}
+        <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-sm text-flip">{filename}</span>
+            <span className="font-mono text-xs text-flip/40">{description}</span>
+          </div>
+          <Tooltip content={copied ? 'Copied!' : 'Copy source'}>
+            {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-001 */}
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="font-mono text-xs text-flip/60 hover:text-flip cursor-pointer transition-colors"
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </Tooltip>
         </div>
-        <Tooltip content={copied ? 'Copied!' : 'Copy source'}>
-          {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:inline-copy-trigger owner:design-system expires:2026-12-31 issue:DNA-001 */}
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="font-mono text-xs text-flip/60 hover:text-flip cursor-pointer transition-colors"
-          >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
-        </Tooltip>
-      </div>
 
-      {/* Code area */}
-      <div className="bg-depth overflow-x-auto">
-        <table className="w-full border-collapse">
-          <tbody>
-            {lines.map((line, i) => {
-              const tokens = tokenizeCssLine(line);
-              return (
-                <tr key={i} className="hover:bg-hover/30 transition-colors">
-                  <td className="text-right select-none px-3 py-0 font-mono text-xs text-mute/50 w-10 shrink-0 align-top leading-relaxed">
-                    {i + 1}
-                  </td>
-                  <td className="px-3 py-0 font-mono text-xs leading-relaxed whitespace-pre">
-                    {tokens.map((token, j) => (
-                      <span key={j} className={getTokenClassName(token.type)}>
-                        {token.text}
-                      </span>
-                    ))}
-                    {line === '' && '\u00A0'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {/* Code area */}
+        <div className="bg-depth overflow-x-auto">
+          <table className="w-full border-collapse">
+            <tbody>
+              {lines.map((line, i) => {
+                const tokens = tokenizeCssLine(line);
+                return (
+                  <tr key={i} className="hover:bg-hover/30 transition-colors">
+                    <td className="text-right select-none px-3 py-0 font-mono text-xs text-mute/50 w-10 shrink-0 align-top leading-relaxed">
+                      {i + 1}
+                    </td>
+                    <td className="px-3 py-0 font-mono text-xs leading-relaxed whitespace-pre">
+                      {tokens.map((token, j) => (
+                        <span key={j} className={getTokenClassName(token.type)}>
+                          {token.text}
+                        </span>
+                      ))}
+                      {line === '' && '\u00A0'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </PixelBorder>
   );
 }
 
