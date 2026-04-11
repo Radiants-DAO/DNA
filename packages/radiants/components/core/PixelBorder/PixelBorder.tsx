@@ -376,52 +376,6 @@ export function PixelBorderEdges({
   );
 }
 
-interface PixelBorderFocusRingProps {
-  radius: PixelBorderRadius;
-  edges?: PixelBorderEdgesFlags;
-  color: string;
-}
-
-/**
- * Activated by `:focus-within` on the parent's `group/pixel` selector.
- * Renders a second copy of `PixelBorderEdges` shifted 2px outward in the
- * focus color, hidden by default and faded in via `transition-opacity`.
- *
- * Strategy A (currently shipped): a sibling overlay that mirrors the
- * staircase using the existing `PixelBorderEdges` helper with `offset=2`.
- * The overlay sits above content but below pointer events (the corner
- * SVGs and edge divs are `pointer-events: none`).
- *
- * TODO Strategy B: replace with a single SVG path that's a true 2px outset
- * of the staircase polygon (path-offset math). Worth revisiting once we
- * want multi-layer animation, gradient strokes, or stroke widths > 1px,
- * since maintaining N stacked offset copies via Strategy A doesn't scale.
- */
-function PixelBorderFocusRing({ radius, edges, color }: PixelBorderFocusRingProps) {
-  return (
-    <div
-      aria-hidden
-      data-rdna-pixel-focus-ring=""
-      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-150 ease-out group-focus-within/pixel:opacity-100"
-    >
-      {/* `withViewBox={false}` runs the corner SVGs in presentational
-          overlay mode: no viewBox attribute (visually identical because
-          SVGs without a viewBox default to a 1:1 user-to-pixel mapping)
-          and no aria-hidden (the overlay div above already supplies it).
-          This keeps the focus-ring layer invisible to consumer tests that
-          query `svg[viewBox="0 0 R R"]` or `svg[aria-hidden="true"] path`
-          to count border edges. */}
-      <PixelBorderEdges
-        radius={radius}
-        edges={edges}
-        color={color}
-        offset={2}
-        withViewBox={false}
-      />
-    </div>
-  );
-}
-
 export interface PixelBorderProps {
   children: React.ReactNode;
   /** Size preset shorthand. Ignored when `radius` is passed. */
@@ -455,17 +409,6 @@ export interface PixelBorderProps {
    * `group-focus-within/pixel:`, etc. modifiers.
    */
   background?: string;
-  /**
-   * Set to `false` to disable the automatic SVG focus ring layer.
-   * @default true
-   */
-  focusRing?: boolean;
-  /**
-   * Focus ring color. Used for both the corner SVGs and straight edges of
-   * the focus ring overlay.
-   * @default 'var(--color-accent)'
-   */
-  focusRingColor?: string;
 }
 
 /**
@@ -477,10 +420,6 @@ export interface PixelBorderProps {
  * follows the staircase shape. The `background` prop is concatenated onto
  * the clipper div, so any surface bg / hover bg / pattern fill on it
  * respects the same clip.
- *
- * A focus ring layer (a 2px-outset copy of the same staircase) is rendered
- * by default and revealed via `:focus-within` on the wrapper. Disable with
- * `focusRing={false}` or recolor with `focusRingColor`.
  *
  * If the requested radii don't fit the container, they are clamped with the
  * CSS `border-radius` scaling algorithm (all four shrink proportionally).
@@ -495,8 +434,6 @@ export function PixelBorder({
   className = '',
   style,
   background,
-  focusRing = true,
-  focusRingColor = 'var(--color-accent)',
 }: PixelBorderProps) {
   const requested = normalizeRadius(radius, size);
 
@@ -545,6 +482,7 @@ export function PixelBorder({
   return (
     <div
       ref={wrapperRef}
+      data-rdna-pixel-border=""
       className={`relative group/pixel ${className}`.trim()}
       style={wrapperStyle}
     >
@@ -552,13 +490,6 @@ export function PixelBorder({
         {children}
       </div>
       <PixelBorderEdges radius={effective} edges={edges} color={color} />
-      {focusRing && (
-        <PixelBorderFocusRing
-          radius={effective}
-          edges={edges}
-          color={focusRingColor}
-        />
-      )}
     </div>
   );
 }
