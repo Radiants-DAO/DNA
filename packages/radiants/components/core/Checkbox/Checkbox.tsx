@@ -4,6 +4,7 @@ import React, { createContext, use } from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -144,23 +145,27 @@ export function Checkbox({
         value={value}
         inputRef={ref}
         id={id}
-        render={(props, state) => (
-          <span
-            {...props}
-            className={`
-              relative w-5 h-5
-              pixel-rounded-xs
-              flex items-center justify-center
-              transition-colors
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
-              cursor-pointer
-              ${state.checked || state.indeterminate
-                ? 'bg-accent'
-                : 'bg-page bg-card'
-              }
-            `}
-          />
-        )}
+        render={(props, state) => {
+          const isOn = state.checked || state.indeterminate;
+          return (
+            <PixelBorder
+              size="xs"
+              background={isOn ? 'bg-accent' : 'bg-card'}
+              className="inline-block"
+            >
+              <span
+                {...props}
+                className="
+                  relative w-5 h-5
+                  flex items-center justify-center
+                  cursor-pointer bg-transparent
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
+                  focus-visible:outline-offset-1
+                "
+              />
+            </PixelBorder>
+          );
+        }}
       >
         <BaseCheckbox.Indicator
           keepMounted

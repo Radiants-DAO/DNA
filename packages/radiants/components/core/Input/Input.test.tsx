@@ -3,15 +3,20 @@ import { Input, TextArea } from './Input';
 
 describe('Input', () => {
   // ── Standalone mode ──────────────────────────────────────────────────
-  test('standalone renders <input> with pixel-corner wrapper', () => {
+  test('standalone renders <input> wrapped by PixelBorder', () => {
     const { container } = render(<Input placeholder="Search..." />);
     const input = screen.getByPlaceholderText('Search...');
     expect(input).toBeInTheDocument();
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('data-rdna', 'input');
-    expect(container.querySelector('.pixel-rounded-xs--wrapper')).toBeInTheDocument();
-    expect(input.className).toContain('pixel-rounded-xs');
+    // PixelBorder renders four corner SVGs with viewBox matching the xs radius (4).
+    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
+    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
     expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
+    // Layered mode: a clipped bg layer (bg-page) sibling of the input.
+    const bgLayer = container.querySelector('.bg-page') as HTMLElement | null;
+    expect(bgLayer).toBeInTheDocument();
+    expect(bgLayer?.style.clipPath).toContain('polygon(');
   });
 
   test('size variants apply correct data-size', () => {
@@ -22,9 +27,13 @@ describe('Input', () => {
     expect(screen.getByPlaceholderText('lg')).toHaveAttribute('data-size', 'lg');
   });
 
-  test('standalone error colors the pixel-rounded wrapper border', () => {
+  test('standalone error colors the PixelBorder staircase with the danger token', () => {
     const { container } = render(<Input placeholder="err" error />);
-    expect(container.querySelector('.pixel-rounded-xs--wrapper')?.className).toContain('pixel-border-danger');
+    const cornerPaths = container.querySelectorAll('svg[aria-hidden="true"] path');
+    expect(cornerPaths.length).toBeGreaterThan(0);
+    cornerPaths.forEach((path) => {
+      expect(path.getAttribute('fill')).toBe('var(--color-danger)');
+    });
   });
 
   test('standalone renders correctly without Root', () => {
@@ -80,14 +89,18 @@ describe('Input', () => {
     expect(screen.getByText('Password is required.')).toBeInTheDocument();
   });
 
-  test('inside Root: error prop on Input is ignored (no pixel-border-danger)', () => {
+  test('inside Root: error prop on Input is ignored (PixelBorder stays on default line color)', () => {
     const { container } = render(
       <Input.Root>
         <Input.Label>Test</Input.Label>
         <Input placeholder="test" error />
       </Input.Root>
     );
-    expect(container.querySelector('.pixel-rounded-xs--wrapper')?.className ?? '').not.toContain('pixel-border-danger');
+    const cornerPaths = container.querySelectorAll('svg[aria-hidden="true"] path');
+    expect(cornerPaths.length).toBeGreaterThan(0);
+    cornerPaths.forEach((path) => {
+      expect(path.getAttribute('fill')).toBe('var(--color-line)');
+    });
   });
 
   test('disabled propagation from Root', () => {

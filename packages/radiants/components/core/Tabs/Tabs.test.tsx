@@ -128,9 +128,16 @@ describe('Tabs', () => {
     expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'capsule');
   });
 
-  it('renders capsule mode with a lightweight pixel-rounded list shell', () => {
+  it('renders capsule mode with a PixelBorder around the list shell', () => {
     const { container } = render(<TestTabs />);
-    expect(container.querySelector('[data-slot="tab-list"]')?.className).toContain('pixel-rounded-xs');
+    const list = container.querySelector('[data-slot="tab-list"]');
+    expect(list).toBeInTheDocument();
+    // Layered-mode wrapper: list's parent has a bg-card sibling with a polygon clip-path.
+    const listWrapper = list?.parentElement;
+    const bgLayer = listWrapper?.querySelector('.bg-card') as HTMLElement | null;
+    expect(bgLayer).toBeInTheDocument();
+    expect(bgLayer?.style.clipPath).toContain('polygon(');
+    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
     expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
@@ -162,7 +169,7 @@ describe('Tabs', () => {
   // ── Trigger with icon ──────────────────────────────────────
 
   it('renders icon in trigger when provided', () => {
-    render(
+    const { container } = render(
       <Tabs defaultValue="a">
         <Tabs.List>
           <Tabs.Trigger value="a" icon={<svg data-testid="test-icon" />}>Tab A</Tabs.Trigger>
@@ -173,11 +180,14 @@ describe('Tabs', () => {
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
     const trigger = screen.getByRole('tab', { name: 'Tab A' });
     const classTokens = trigger.className.split(/\s+/);
-    expect(trigger.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('pixel-rounded-xs');
     expect(classTokens).not.toContain('rounded-xs');
+    // Each capsule trigger is wrapped in a PixelBorder (xs = radius 4).
+    expect(trigger.closest('.overflow-hidden')).toBeInTheDocument();
+    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]').length).toBeGreaterThanOrEqual(4);
   });
 
-  it('renders the dot indicator shell with lightweight pixel corners', () => {
+  it('renders the dot indicator shell with a PixelBorder frame', () => {
     const { container } = render(
       <Tabs defaultValue="one">
         <Tabs.List>
@@ -189,7 +199,11 @@ describe('Tabs', () => {
         <Tabs.Content value="two">Content two</Tabs.Content>
       </Tabs>,
     );
-    expect(container.querySelector('.pixel-rounded-sm.bg-main')).toBeInTheDocument();
+    // DotPill renders a clipped bg-main layer (sm = radius 6) plus corner SVGs.
+    const bgLayer = container.querySelector('.bg-main') as HTMLElement | null;
+    expect(bgLayer).toBeInTheDocument();
+    expect(bgLayer?.style.clipPath).toContain('polygon(');
+    expect(container.querySelectorAll('svg[viewBox="0 0 6 6"]').length).toBeGreaterThanOrEqual(4);
   });
 
   // ── Chrome mode ─────────────────────────────────────────────

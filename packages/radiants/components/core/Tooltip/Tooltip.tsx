@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -82,20 +83,26 @@ function TooltipRoot({
             role="tooltip"
             className={`
               z-[1000]
-              px-2 py-1
-              bg-inv text-flip
-              font-heading uppercase tracking-tight leading-none
-              pixel-rounded-xs
-              whitespace-nowrap
               pointer-events-none
               transition-[opacity,transform] duration-100 ease-out
               data-[starting-style]:opacity-0 data-[starting-style]:scale-95
               data-[ending-style]:opacity-0 data-[ending-style]:scale-95
-              ${sizeStyles[size]}
               ${className}
             `}
           >
-            {content}
+            <PixelBorder size="xs" background="bg-inv">
+              <div
+                className={`
+                  px-2 py-1
+                  text-flip
+                  font-heading uppercase tracking-tight leading-none
+                  whitespace-nowrap
+                  ${sizeStyles[size]}
+                `}
+              >
+                {content}
+              </div>
+            </PixelBorder>
           </BaseTooltip.Popup>
         </BaseTooltip.Positioner>
       </BaseTooltip.Portal>

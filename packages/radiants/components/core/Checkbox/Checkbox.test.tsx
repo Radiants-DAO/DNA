@@ -3,13 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { Checkbox, Radio, RadioGroup } from './Checkbox';
 
 describe('Checkbox', () => {
-  test('renders with label', () => {
-    render(<Checkbox label="Accept terms" checked={false} onChange={() => {}} />);
+  test('renders with label and PixelBorder wrapper', () => {
+    const { container } = render(<Checkbox label="Accept terms" checked={false} onChange={() => {}} />);
     expect(screen.getByText('Accept terms')).toBeInTheDocument();
     const checkbox = screen.getByRole('checkbox');
     const classTokens = checkbox.className.split(/\s+/);
-    expect(checkbox.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('pixel-rounded-xs');
     expect(classTokens).not.toContain('rounded-xs');
+    // PixelBorder renders 4 corner SVGs around the checkbox.
+    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
   });
 
   test('fires onChange on click', async () => {

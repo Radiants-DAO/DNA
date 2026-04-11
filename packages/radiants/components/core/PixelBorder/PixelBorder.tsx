@@ -104,6 +104,103 @@ function pathForRadius(radius: number): string {
   return cellsToPath(generatePixelCornerBorder(radius));
 }
 
+/**
+ * Trace the clockwise outline of the TL-corner filled region for a pixel
+ * corner of radius R. Vertices walk from `(0, R)` to `(R, 0)` in R-cell space,
+ * following the same `inside(col, row)` circle-rasterization as
+ * `generatePixelCornerBorder`. Collinear points are not deduped; CSS
+ * `polygon()` handles them fine.
+ */
+function traceTLCornerVertices(R: number): Array<[number, number]> {
+  if (R < 1) return [];
+
+  const r2 = R * R;
+  const isInside = (col: number, row: number): boolean => {
+    const dx = col + 0.5 - R;
+    const dy = row + 0.5 - R;
+    return dx * dx + dy * dy < r2;
+  };
+
+  const leftmost = new Array<number>(R).fill(R);
+  for (let row = 0; row < R; row++) {
+    for (let col = 0; col < R; col++) {
+      if (isInside(col, row)) {
+        leftmost[row] = col;
+        break;
+      }
+    }
+  }
+
+  const vertices: Array<[number, number]> = [[0, R]];
+  let cx = 0;
+
+  for (let row = R - 1; row >= 0; row--) {
+    const lm = leftmost[row];
+    if (lm >= R) continue;
+    if (lm > cx) {
+      vertices.push([lm, row + 1]);
+      cx = lm;
+    }
+    vertices.push([cx, row]);
+  }
+
+  if (cx < R) {
+    vertices.push([R, 0]);
+  }
+
+  return vertices;
+}
+
+/**
+ * Build a CSS `clip-path: polygon(...)` string whose outline exactly matches
+ * the pixel-art staircase for the given per-corner radii. Edge coordinates
+ * use `calc(100% - Npx)` so the same string works regardless of the element's
+ * actual width/height at paint time.
+ *
+ * Walks clockwise: TL staircase → top edge → TR → right edge → BR → bottom
+ * edge → BL → left edge (implicit close). Zero-radius corners collapse to a
+ * single rectangle-corner vertex.
+ */
+export function pixelCornerClipPath(r: Radii): string {
+  const parts: string[] = [];
+
+  if (r.tl > 0) {
+    for (const [x, y] of traceTLCornerVertices(r.tl)) {
+      parts.push(`${x}px ${y}px`);
+    }
+  } else {
+    parts.push('0px 0px');
+  }
+
+  if (r.tr > 0) {
+    const verts = traceTLCornerVertices(r.tr).slice().reverse();
+    for (const [x, y] of verts) {
+      parts.push(`calc(100% - ${x}px) ${y}px`);
+    }
+  } else {
+    parts.push('100% 0px');
+  }
+
+  if (r.br > 0) {
+    for (const [x, y] of traceTLCornerVertices(r.br)) {
+      parts.push(`calc(100% - ${x}px) calc(100% - ${y}px)`);
+    }
+  } else {
+    parts.push('100% 100%');
+  }
+
+  if (r.bl > 0) {
+    const verts = traceTLCornerVertices(r.bl).slice().reverse();
+    for (const [x, y] of verts) {
+      parts.push(`${x}px calc(100% - ${y}px)`);
+    }
+  } else {
+    parts.push('0px 100%');
+  }
+
+  return `polygon(${parts.join(', ')})`;
+}
+
 const CORNER_TRANSFORM: Record<CornerKey, string | undefined> = {
   tl: undefined,
   tr: 'scaleX(-1)',
@@ -266,6 +363,20 @@ export interface PixelBorderProps {
   className?: string;
   /** Additional inline styles applied to the wrapper div. */
   style?: React.CSSProperties;
+  /**
+   * Optional Tailwind class string applied to an absolute-positioned background
+   * layer behind the children. The bg layer is clipped to the pixel-corner
+   * polygon via `clip-path`, while the children themselves remain unclipped —
+   * letting focus outlines, overflowing text, etc. render normally.
+   *
+   * When omitted, the component falls back to the legacy "wrapped clipper"
+   * mode: children sit inside an `overflow-hidden` div whose polygon clip-path
+   * matches the staircase exactly.
+   *
+   * The wrapper carries `group/pixel` so the bg layer class can use
+   * `group-hover/pixel:`, `group-focus-within/pixel:`, etc. modifiers.
+   */
+  background?: string;
 }
 
 /**
@@ -288,6 +399,7 @@ export function PixelBorder({
   shadow,
   className = '',
   style,
+  background,
 }: PixelBorderProps) {
   const requested = normalizeRadius(radius, size);
 
@@ -315,25 +427,39 @@ export function PixelBorder({
   }, []);
 
   const effective = clampPixelCornerRadii(requested, dimensions.w, dimensions.h);
-  const clipRadius =
-    effective.tl === effective.tr &&
-    effective.tl === effective.bl &&
-    effective.tl === effective.br
-      ? `${effective.tl}px`
-      : `${effective.tl}px ${effective.tr}px ${effective.br}px ${effective.bl}px`;
+  const clipPath = pixelCornerClipPath(effective);
+
+  const wrapperStyle: React.CSSProperties = {
+    isolation: 'isolate',
+    ...style,
+    filter: shadow ? `drop-shadow(${shadow})` : undefined,
+  };
 
   return (
     <div
       ref={wrapperRef}
-      className={`relative ${className}`.trim()}
-      style={{
-        ...style,
-        filter: shadow ? `drop-shadow(${shadow})` : undefined,
-      }}
+      className={`relative group/pixel ${className}`.trim()}
+      style={wrapperStyle}
     >
-      <div className="overflow-hidden" style={{ borderRadius: clipRadius }}>
-        {children}
-      </div>
+      {background !== undefined ? (
+        <>
+          {/* Layered mode: absolute bg layer clipped to the polygon; children
+              render unclipped at natural z so focus outlines, overflowing text,
+              etc. are preserved. */}
+          <div
+            aria-hidden
+            className={`absolute inset-0 pointer-events-none ${background}`.trim()}
+            style={{ clipPath, zIndex: -1 }}
+          />
+          {children}
+        </>
+      ) : (
+        /* Wrapped mode: legacy compat — children are clipped by a polygon
+           clip-path on their parent div, matching the staircase exactly. */
+        <div className="overflow-hidden" style={{ clipPath }}>
+          {children}
+        </div>
+      )}
       <PixelBorderEdges radius={effective} edges={edges} color={color} />
     </div>
   );

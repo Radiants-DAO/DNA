@@ -21,7 +21,7 @@ describe('PixelBorder', () => {
     expect(border?.querySelectorAll('svg[viewBox="0 0 6 6"]')).toHaveLength(4);
   });
 
-  test('clips children with the matching radius and applies drop-shadow filters', () => {
+  test('clips children via polygon clip-path and applies drop-shadow filters', () => {
     const { container } = render(
       <PixelBorder
         size="sm"
@@ -37,7 +37,10 @@ describe('PixelBorder', () => {
 
     expect(border?.style.filter).toBe('drop-shadow(4px 4px 0 var(--color-ink))');
     expect(clipper).toHaveClass('overflow-hidden');
-    expect(clipper?.style.borderRadius).toBe('6px');
+    // Polygon clip-path walks the staircase for all 4 sm corners, so every
+    // quadrant should contribute `calc(100% - Npx)` edge vertices.
+    expect(clipper?.style.clipPath).toContain('polygon(');
+    expect(clipper?.style.clipPath).toContain('calc(100% -');
   });
 
   test('renders only the corners requested when radius is per-corner', () => {
@@ -52,7 +55,10 @@ describe('PixelBorder', () => {
     svgs.forEach((s) => expect(s.getAttribute('viewBox')).toBe('0 0 6 6'));
 
     const clipper = border?.firstElementChild as HTMLElement | null;
-    expect(clipper?.style.borderRadius).toBe('6px 6px 0px 0px');
+    // For tl=6, tr=6, bl=0, br=0 the polygon should include explicit sharp
+    // corners at the bottom-right (100% 100%) and bottom-left (0px 100%).
+    expect(clipper?.style.clipPath).toContain('100% 100%');
+    expect(clipper?.style.clipPath).toContain('0px 100%');
   });
 
   test('omits the bottom straight edge when edges.bottom is false', () => {
@@ -72,6 +78,31 @@ describe('PixelBorder', () => {
       return style.bottom === '0px' && style.height === '1px';
     });
     expect(bottomEdge).toBeUndefined();
+  });
+
+  test('layered mode: renders a clipped background sibling and leaves children unclipped', () => {
+    const { container } = render(
+      <PixelBorder
+        size="sm"
+        background="bg-red-500"
+        className="test-pixel-layered"
+      >
+        <button data-testid="layered-button">click</button>
+      </PixelBorder>,
+    );
+
+    const border = container.querySelector('.test-pixel-layered') as HTMLElement | null;
+    expect(border).toBeInTheDocument();
+
+    // Background layer is the first child, clipped by the polygon.
+    const bgLayer = border?.firstElementChild as HTMLElement | null;
+    expect(bgLayer).toHaveClass('bg-red-500');
+    expect(bgLayer?.style.clipPath).toContain('polygon(');
+
+    // Children render directly, not inside an overflow-hidden wrapper.
+    const button = border?.querySelector('[data-testid="layered-button"]');
+    expect(button).toBeInTheDocument();
+    expect(button?.closest('.overflow-hidden')).toBeNull();
   });
 });
 

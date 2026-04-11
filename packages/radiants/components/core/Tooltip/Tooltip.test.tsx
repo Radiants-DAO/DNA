@@ -6,7 +6,7 @@ import React from 'react';
 describe('Tooltip', () => {
   test('shows tooltip on hover and hides on unhover', async () => {
     const user = userEvent.setup();
-    render(
+    const { baseElement } = render(
       <Tooltip content="Helpful tip" delay={0}>
         <button>Hover me</button>
       </Tooltip>,
@@ -17,7 +17,8 @@ describe('Tooltip', () => {
     await user.hover(screen.getByText('Hover me'));
     const tooltip = screen.getByRole('tooltip');
     expect(tooltip).toHaveTextContent('Helpful tip');
-    expect(tooltip.className).toContain('pixel-rounded-xs');
+    // PixelBorder is rendered inside the tooltip popup.
+    expect(baseElement.querySelectorAll('svg[viewBox="0 0 4 4"]').length).toBeGreaterThanOrEqual(1);
 
     await user.unhover(screen.getByText('Hover me'));
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();

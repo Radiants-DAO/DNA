@@ -4,6 +4,7 @@ import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -118,8 +119,8 @@ export const tabsTriggerVariants = cva(
   {
     variants: {
       mode: {
-        capsule: 'pixel-rounded-xs p-1 justify-center',
-        chrome: 'pixel-rounded-t-sm h-8 px-2 justify-center',
+        capsule: 'p-1 justify-center',
+        chrome: 'h-8 px-2 justify-center',
       },
       size: {
         sm: 'text-xs [&_svg]:size-3.5',
@@ -151,24 +152,30 @@ function DotPill({ className = '' }: { className?: string }) {
   const tabValues = tabValuesRef.current;
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main pixel-rounded-sm ${className}`}>
-      {tabValues.map((val) => {
-        const isActive = activeTab === val;
-        return (
-          <button
-            key={val}
-            type="button"
-            aria-label={`Go to ${val}`}
-            onClick={() => setActiveTab(val)}
-            className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
-              isActive
-                ? 'w-8 h-2 bg-page'
-                : 'size-2 bg-accent hover:bg-accent/75'
-            }`}
-          />
-        );
-      })}
-    </div>
+    <PixelBorder
+      size="sm"
+      background="bg-main"
+      className={`w-fit ${className}`.trim()}
+    >
+      <div className="flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1">
+        {tabValues.map((val) => {
+          const isActive = activeTab === val;
+          return (
+            <button
+              key={val}
+              type="button"
+              aria-label={`Go to ${val}`}
+              onClick={() => setActiveTab(val)}
+              className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
+                isActive
+                  ? 'w-8 h-2 bg-page'
+                  : 'size-2 bg-accent hover:bg-accent/75'
+              }`}
+            />
+          );
+        })}
+      </div>
+    </PixelBorder>
   );
 }
 
@@ -256,13 +263,15 @@ function List({ children, className = '' }: TabsListProps) {
   if (mode === 'capsule') {
     return (
       <div className="shrink-0 flex items-center justify-center p-2">
-        <BaseTabs.List
-          activateOnFocus
-          data-slot="tab-list"
-          className={`bg-card pixel-rounded-xs ${listClasses}`.trim()}
-        >
-          {children}
-        </BaseTabs.List>
+        <PixelBorder size="xs" background="bg-card">
+          <BaseTabs.List
+            activateOnFocus
+            data-slot="tab-list"
+            className={listClasses}
+          >
+            {children}
+          </BaseTabs.List>
+        </PixelBorder>
       </div>
     );
   }
@@ -320,14 +329,27 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
         const isActive = state.active;
         const classes = tabsTriggerVariants({ mode, size, className });
 
-        // Chrome mode: active drops flush, inactive is raised with pattern overlay
-        const chromeClasses = mode === 'chrome'
+        // Chrome mode: active sits flush with card bg; inactive is raised with a
+        // pattern overlay and lifts on hover. The bg flip lives on the
+        // PixelBorder background layer (clipped to the staircase) so the fill
+        // never spills past the pixel corners. The button itself stays
+        // transparent and keeps the `group` class for the pattern-overlay
+        // hover selector.
+        const chromeBackground = mode === 'chrome'
           ? isActive
-            ? 'gap-1.5 bg-card z-10'
-            : 'bg-accent hover:bg-cream group translate-y-1 hover:translate-y-0.5'
+            ? 'bg-card'
+            : 'bg-accent group-hover/pixel:bg-cream transition-colors duration-200 ease-out'
+          : undefined;
+        const chromeButtonClasses = mode === 'chrome'
+          ? isActive
+            ? 'gap-1.5 bg-transparent z-10'
+            : 'bg-transparent group'
           : '';
+        const chromeWrapperClasses = mode === 'chrome' && !isActive
+          ? 'translate-y-1 hover:translate-y-0.5 transition-transform duration-200 ease-out'
+          : undefined;
 
-        return (
+        const buttonEl = (
           <button
             {...props}
             type="button"
@@ -335,7 +357,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             data-mode={mode}
             data-size={size}
             data-state={isActive ? 'selected' : 'default'}
-            className={`${classes} ${chromeClasses}`}
+            className={`${classes} ${chromeButtonClasses}`}
           >
             {icon && (
               <span className="shrink-0 flex items-center justify-center">
@@ -360,6 +382,21 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             )}
           </button>
         );
+
+        if (mode === 'chrome') {
+          return (
+            <PixelBorder
+              radius={{ tl: 'sm', tr: 'sm', bl: 0, br: 0 }}
+              edges={{ bottom: false }}
+              background={chromeBackground}
+              className={chromeWrapperClasses}
+            >
+              {buttonEl}
+            </PixelBorder>
+          );
+        }
+
+        return <PixelBorder size="xs">{buttonEl}</PixelBorder>;
       }}
     />
   );

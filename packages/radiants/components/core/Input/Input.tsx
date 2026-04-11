@@ -3,6 +3,7 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField } from '@base-ui/react/field';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -98,11 +99,9 @@ function useInputRootContext() {
 // ============================================================================
 
 export const inputVariants = cva(
-  `font-sans bg-page text-main
+  `font-sans bg-transparent text-main
    placeholder:text-mute
-   focus:bg-card
-   focus-visible:outline-none
-   disabled:opacity-50 disabled:cursor-not-allowed`,
+   focus-visible:outline-none`,
   {
     variants: {
       size: {
@@ -126,6 +125,12 @@ export const inputVariants = cva(
     },
   }
 );
+
+const INPUT_BACKGROUND =
+  'bg-page group-focus-within/pixel:bg-card';
+
+const INPUT_DISABLED_WRAPPER =
+  'has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed';
 
 // ============================================================================
 // Sub-components
@@ -251,25 +256,25 @@ function InputControl({
   // In standalone mode, error prop colors the shell border.
   // Inside Root, the Root's invalid + Input.Error handles error display.
   const showStandaloneError = error && !rootCtx;
-  const wrapperClassName = [
-    'pixel-rounded-xs--wrapper',
-    fullWidth ? 'w-full' : '',
-    showStandaloneError ? 'pixel-border-danger' : '',
-  ].filter(Boolean).join(' ');
 
   const inputWithRef = rootCtx ? (
     <BaseField.Control
       ref={ref}
-      render={<input data-rdna="input" className={`pixel-rounded-xs ${classes}`.trim()} data-size={size} {...props} />}
+      render={<input data-rdna="input" className={classes} data-size={size} {...props} />}
     />
   ) : (
-    <input ref={ref} data-rdna="input" className={`pixel-rounded-xs ${classes}`.trim()} data-size={size} {...props} />
+    <input ref={ref} data-rdna="input" className={classes} data-size={size} {...props} />
   );
 
   const wrappedInput = (
-    <div className={wrapperClassName}>
+    <PixelBorder
+      size="xs"
+      background={INPUT_BACKGROUND}
+      className={`${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER}`.trim()}
+      color={showStandaloneError ? 'var(--color-danger)' : undefined}
+    >
       {inputWithRef}
-    </div>
+    </PixelBorder>
   );
 
   if (hasIcon) {
@@ -307,11 +312,6 @@ export function TextArea({
 }: TextAreaProps & { ref?: React.Ref<HTMLTextAreaElement> }) {
   const rootCtx = useInputRootContext();
   const showStandaloneError = error && !rootCtx;
-  const wrapperClassName = [
-    'pixel-rounded-xs--wrapper',
-    fullWidth ? 'w-full' : '',
-    showStandaloneError ? 'pixel-border-danger' : '',
-  ].filter(Boolean).join(' ');
 
   const classes = inputVariants({
     size: 'md',
@@ -323,16 +323,21 @@ export function TextArea({
   const textareaEl = rootCtx ? (
     <BaseField.Control
       ref={ref as React.Ref<HTMLElement>}
-      render={<textarea className={`pixel-rounded-xs ${classes}`.trim()} data-size="md" {...props} />}
+      render={<textarea className={classes} data-size="md" {...props} />}
     />
   ) : (
-    <textarea ref={ref} className={`pixel-rounded-xs ${classes}`.trim()} data-size="md" {...props} />
+    <textarea ref={ref} className={classes} data-size="md" {...props} />
   );
 
   return (
-    <div className={wrapperClassName}>
+    <PixelBorder
+      size="xs"
+      background={INPUT_BACKGROUND}
+      className={`${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER}`.trim()}
+      color={showStandaloneError ? 'var(--color-danger)' : undefined}
+    >
       {textareaEl}
-    </div>
+    </PixelBorder>
   );
 }
 
