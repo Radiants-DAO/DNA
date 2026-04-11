@@ -7,6 +7,7 @@ import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
 import { ScrubSurface } from '@rdna/ctrl/controls/ScrubSurface/ScrubSurface';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
 import { TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
+import { Agentation } from 'agentation';
 
 // ============================================================================
 // Layout Inspector Panel — Visual build from Paper node SJE-0
@@ -813,6 +814,7 @@ export default function CtrlPreview() {
           </div>
         </div>
       </div>
+      <Agentation />
     </TooltipProvider>
   );
 }

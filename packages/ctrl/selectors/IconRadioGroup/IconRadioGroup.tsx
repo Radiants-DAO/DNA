@@ -54,6 +54,7 @@ export function IconRadioGroup({
           <Tooltip key={option.value} content={option.tooltip}>
             <Radio.Root
               value={option.value}
+              nativeButton
               render={(props) => (
                 <button
                   {...props}
