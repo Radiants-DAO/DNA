@@ -33,6 +33,13 @@ function toHex(r, g, b) {
   return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
 }
 
+/** Snap each channel to the nearest multiple of `step`. Collapses Figma antialiasing edges. */
+function snap(v, step) {
+  const half = step >> 1;
+  const out = Math.min(255, Math.round((v + half) / step) * step - half);
+  return Math.max(0, Math.min(255, out));
+}
+
 function slugify(name) {
   return name
     .toLowerCase()
@@ -40,7 +47,7 @@ function slugify(name) {
     .replace(/^-+|-+$/g, '');
 }
 
-async function convertFile(file, srcDir) {
+async function convertFile(file, srcDir, quantizeStep) {
   const { data, info } = await sharp(resolve(srcDir, file))
     .ensureAlpha()
     .resize(TARGET, TARGET, { kernel: 'nearest' })
@@ -57,7 +64,17 @@ async function convertFile(file, srcDir) {
     for (let x = 0; x < TARGET; x++) {
       const i = (y * TARGET + x) * 4;
       const a = data[i + 3];
-      row[x] = a === 0 ? '' : toHex(data[i], data[i + 1], data[i + 2]);
+      if (a < 128) {
+        row[x] = '';
+      } else if (quantizeStep > 1) {
+        row[x] = toHex(
+          snap(data[i], quantizeStep),
+          snap(data[i + 1], quantizeStep),
+          snap(data[i + 2], quantizeStep),
+        );
+      } else {
+        row[x] = toHex(data[i], data[i + 1], data[i + 2]);
+      }
     }
     pixels.push(row);
   }
@@ -70,6 +87,7 @@ async function main() {
   const args = parseArgs(process.argv);
   const src = args.src;
   const outArg = args.out ?? 'public/templates/radiants.json';
+  const quantizeStep = args.quantize ? parseInt(args.quantize, 10) : 32;
   if (!src) {
     console.error('Missing --src <dir>');
     process.exit(2);
@@ -84,7 +102,7 @@ async function main() {
   let skipped = 0;
   for (const file of files) {
     try {
-      const t = await convertFile(file, src);
+      const t = await convertFile(file, src, quantizeStep);
       if (seen.has(t.id)) {
         let n = 2;
         while (seen.has(`${t.id}-${n}`)) n++;

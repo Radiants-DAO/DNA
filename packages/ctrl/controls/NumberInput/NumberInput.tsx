@@ -42,9 +42,9 @@ export interface NumberInputProps {
   id?: string;
 }
 
-/** Shared glow-only text-shadow for active/selected text (matches Dropdown) */
+/** Shared glow text-shadow for active/selected text (matches Dropdown) — accent + accent + cream bloom */
 const GLOW =
-  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-accent) 0 0 8px';
+  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-main) 0 0 10px';
 
 export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function NumberInput(
   {
@@ -110,14 +110,14 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
                     <input
                       {...props}
                       placeholder={placeholder}
-                      className="flex-1 bg-transparent outline-none border-none appearance-none min-w-0"
+                      className="flex-1 self-stretch bg-transparent outline-none border-none appearance-none min-w-0"
                       style={{
                         fontSize: 10,
                         lineHeight: 'round(up, 100%, 1px)',
                         textAlign: 'left',
                         cursor: disabled ? 'default' : 'text',
                         ...(active
-                          ? { color: 'var(--color-accent)', textShadow: GLOW }
+                          ? { color: 'var(--color-main)', textShadow: GLOW }
                           : {}),
                       }}
                       onPointerDown={(e) => {

@@ -48,13 +48,22 @@ export interface DropdownProps {
   popupFullWidth?: boolean;
 }
 
-/** Shared glow-only text-shadow for active/selected text (matches Paper exactly) */
+/** Full glow — accent 0.5px + accent 3px + main (cream) 10px. Used for selected/active/title. */
 const GLOW =
-  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-accent) 0 0 8px';
+  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-main) 0 0 10px';
 
-/** Popup frame — cream 25% outline wrap + pixel-art drop shadow */
+/** Hover glow — accent 0.5px + accent 3px only (no cream bloom). */
+const GLOW_HOVER = 'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px';
+
+/**
+ * Popup frame — pure black base, with a 25% cream overlay applied via
+ * `background-image`. The black ensures the popup is fully opaque even over
+ * transparent surfaces; the cream overlay gives it the subtle washed tone.
+ */
 const POPUP_FRAME: React.CSSProperties = {
-  backgroundColor: 'oklch(0.9780 0.0295 94.34 / 0.25)',
+  backgroundColor: '#000',
+  backgroundImage:
+    'linear-gradient(oklch(0.9780 0.0295 94.34 / 0.25), oklch(0.9780 0.0295 94.34 / 0.25))',
   padding: 1,
   gap: 1,
   boxShadow:
@@ -114,7 +123,7 @@ export function Dropdown({
                 style={{
                   fontSize: 10,
                   lineHeight: 'round(up, 100%, 1px)',
-                  ...(active ? { color: 'var(--color-accent)', textShadow: GLOW } : {}),
+                  ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
                 }}
               >
                 {currentLabel}
@@ -154,41 +163,41 @@ export function Dropdown({
                 ...(popupFullWidth ? { width: 'var(--anchor-width)' } : {}),
               }}
             >
-              {options.map((option) => {
-                const isSelected = option.value === value;
-                return (
-                  <BaseSelect.Item
-                    key={option.value}
-                    value={option.value}
-                    className="flex items-center shrink-0 cursor-pointer focus-visible:outline-none"
-                    style={{
-                      height: 20,
-                      paddingInline: 4,
-                      backgroundColor: isSelected ? ITEM_BG_SELECTED : ITEM_BG_UNSELECTED,
-                    }}
-                  >
-                    <BaseSelect.ItemText
-                      render={
-                        <span
-                          className="shrink-0"
-                          style={{
-                            fontSize: 10,
-                            lineHeight: '12px',
-                            ...(isSelected
-                              ? { color: 'var(--color-accent)', textShadow: GLOW }
-                              : {
-                                  color:
-                                    'color-mix(in oklch, var(--color-cream) 37.5%, transparent)',
-                                }),
-                          }}
-                        >
-                          {option.label}
-                        </span>
-                      }
-                    />
-                  </BaseSelect.Item>
-                );
-              })}
+              {options.map((option) => (
+                <BaseSelect.Item
+                  key={option.value}
+                  value={option.value}
+                  className="flex items-center shrink-0 cursor-pointer focus-visible:outline-none"
+                  style={(state) => ({
+                    height: 20,
+                    paddingInline: 4,
+                    backgroundColor: state.selected ? ITEM_BG_SELECTED : ITEM_BG_UNSELECTED,
+                    color: state.disabled
+                      ? 'color-mix(in oklch, var(--color-main) 25%, transparent)'
+                      : state.selected
+                      ? 'var(--color-main)'
+                      : state.highlighted
+                      ? 'var(--color-accent)'
+                      : 'color-mix(in oklch, var(--color-main) 50%, transparent)',
+                    textShadow: state.selected
+                      ? GLOW
+                      : state.highlighted && !state.disabled
+                      ? GLOW_HOVER
+                      : 'none',
+                  })}
+                >
+                  <BaseSelect.ItemText
+                    render={
+                      <span
+                        className="shrink-0"
+                        style={{ fontSize: 10, lineHeight: '12px' }}
+                      >
+                        {option.label}
+                      </span>
+                    }
+                  />
+                </BaseSelect.Item>
+              ))}
             </div>
           </BaseSelect.Popup>
         </BaseSelect.Positioner>
