@@ -77,7 +77,7 @@ function ScrubTrap({
         render={(props) => (
           <div
             {...props}
-            className={['absolute', className].filter(Boolean).join(' ')}
+            className={className}
             style={{ ...style, cursor: 'ns-resize', touchAction: 'none' }}
           >
             {children}
@@ -592,7 +592,7 @@ export default function CtrlPreview() {
                       <ScrubTrap
                         value={margin.left}
                         onValueChange={setMarginSide('left')}
-                        className="flex items-center justify-center"
+                        className="absolute flex items-center justify-center"
                         style={trapStyle('left', 'margin')}
                       >
                         <Pip horizontal={false} />
@@ -600,7 +600,7 @@ export default function CtrlPreview() {
                       <ScrubTrap
                         value={margin.right}
                         onValueChange={setMarginSide('right')}
-                        className="flex items-center justify-center"
+                        className="absolute flex items-center justify-center"
                         style={trapStyle('right', 'margin')}
                       >
                         <Pip horizontal={false} />
@@ -608,7 +608,7 @@ export default function CtrlPreview() {
                       <ScrubTrap
                         value={margin.bottom}
                         onValueChange={setMarginSide('bottom')}
-                        className="flex items-center justify-center"
+                        className="absolute flex items-center justify-center"
                         style={trapStyle('bottom', 'margin')}
                       >
                         <Pip horizontal={true} />
@@ -617,7 +617,7 @@ export default function CtrlPreview() {
                       <ScrubTrap
                         value={margin.top}
                         onValueChange={setMarginSide('top')}
-                        className="flex items-center"
+                        className="absolute flex items-center"
                         style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
                       >
                         <div
@@ -636,7 +636,12 @@ export default function CtrlPreview() {
                       {/* Center content — 3 rows: Border / Padding box / Corner Radius */}
                       <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ gap: 1 }}>
                         {/* ── Border row ── */}
-                        <div className="relative flex self-stretch shrink-0" style={{ gap: 1, height: 24 }}>
+                        <ScrubTrap
+                          value={borderWidth}
+                          onValueChange={setBorderWidth}
+                          className="relative flex self-stretch shrink-0"
+                          style={{ height: 24, gap: 1 }}
+                        >
                           <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
                             <div style={{ width: 6, height: 6, borderTop: `1px solid ${BOX.outline}`, borderLeft: `1px solid ${BOX.outline}` }} />
                           </div>
@@ -658,11 +663,11 @@ export default function CtrlPreview() {
                           <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4 }}>
                             <div style={{ width: 6, height: 6, borderTop: `1px solid ${BOX.outline}`, borderRight: `1px solid ${BOX.outline}` }} />
                           </div>
-                          <div className="absolute flex items-start" style={{ left: '50%', top: '50%', translate: '-50% -50%', gap: 4 }}>
-                            <ValueText>2</ValueText>
+                          <div className="absolute flex items-start pointer-events-none" style={{ left: '50%', top: '50%', translate: '-50% -50%', gap: 4 }}>
+                            <ValueText>{borderWidth}</ValueText>
                             <CaptionText>px</CaptionText>
                           </div>
-                        </div>
+                        </ScrubTrap>
 
                         {/* ── Padding row (flex 1) ── */}
                         <div className="flex self-stretch flex-1 min-w-0" style={{ gap: 1 }}>
@@ -681,7 +686,7 @@ export default function CtrlPreview() {
                                 <ScrubTrap
                                   value={padding.left}
                                   onValueChange={setPaddingSide('left')}
-                                  className="flex items-center justify-center"
+                                  className="absolute flex items-center justify-center"
                                   style={trapStyle('left', 'padding')}
                                 >
                                   <Pip horizontal={false} />
@@ -689,7 +694,7 @@ export default function CtrlPreview() {
                                 <ScrubTrap
                                   value={padding.right}
                                   onValueChange={setPaddingSide('right')}
-                                  className="flex items-center justify-center"
+                                  className="absolute flex items-center justify-center"
                                   style={trapStyle('right', 'padding')}
                                 >
                                   <Pip horizontal={false} />
@@ -697,7 +702,7 @@ export default function CtrlPreview() {
                                 <ScrubTrap
                                   value={padding.bottom}
                                   onValueChange={setPaddingSide('bottom')}
-                                  className="flex items-center justify-center"
+                                  className="absolute flex items-center justify-center"
                                   style={trapStyle('bottom', 'padding')}
                                 >
                                   <Pip horizontal={true} />
@@ -706,7 +711,7 @@ export default function CtrlPreview() {
                                 <ScrubTrap
                                   value={padding.top}
                                   onValueChange={setPaddingSide('top')}
-                                  className="flex items-center"
+                                  className="absolute flex items-center"
                                   style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
                                 >
                                   <div
@@ -742,7 +747,12 @@ export default function CtrlPreview() {
                         </div>
 
                         {/* ── Corner radius row ── */}
-                        <div className="flex self-stretch shrink-0" style={{ gap: 1, height: 24 }}>
+                        <ScrubTrap
+                          value={cornerRadius}
+                          onValueChange={setCornerRadius}
+                          className="flex self-stretch shrink-0"
+                          style={{ gap: 1, height: 24 }}
+                        >
                           <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
                             <div style={{ width: 6, height: 6, borderBottom: `1px solid ${BOX.outline}`, borderLeft: `1px solid ${BOX.outline}` }} />
                           </div>
@@ -750,11 +760,11 @@ export default function CtrlPreview() {
                             <div style={{ width: 3, height: 1, backgroundColor: BOX.outline, boxShadow: `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px` }} />
                           </div>
                           <div className="flex items-center" style={{ backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4, gap: 4 }}>
-                            <ValueText>0</ValueText>
+                            <ValueText>{cornerRadius}</ValueText>
                             <CaptionText>px</CaptionText>
                             <IconCornerRadius />
                           </div>
-                        </div>
+                        </ScrubTrap>
                       </div>
                     </div>
                   </div>
