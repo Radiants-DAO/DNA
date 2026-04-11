@@ -39,8 +39,19 @@ export { NavigationMenu } from './NavigationMenu/NavigationMenu';
 export { Combobox, useComboboxFilter } from './Combobox/Combobox';
 export { Pattern } from './Pattern/Pattern';
 export type { PatternProps } from './Pattern/Pattern';
-export { PixelBorder, PixelBorderEdges } from './PixelBorder';
-export type { PixelBorderProps, PixelBorderSize } from './PixelBorder';
+export {
+  PixelBorder,
+  PixelBorderEdges,
+  PIXEL_BORDER_RADII,
+  clampPixelCornerRadii,
+} from './PixelBorder';
+export type {
+  PixelBorderProps,
+  PixelBorderSize,
+  PixelBorderRadius,
+  PixelBorderEdgesFlags,
+} from './PixelBorder';
+export { generatePixelCornerBorder } from '@rdna/pixel';
 export { PixelCorner } from './PixelCorner';
 export type { PixelCornerProps } from './PixelCorner';
 export { Icon } from './Icon/Icon';
