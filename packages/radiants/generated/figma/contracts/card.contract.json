@@ -80,7 +80,7 @@
     "shape": {
       "default.bevel": "white-0.2/black-0.08",
       "inverted.bevel": "white-0.12/black-0.15",
-      "raised.shadow": "pixel-shadow-raised",
+      "raised.shadow": "shadow-raised",
       "raised.bevel": "white-0.2/black-0.08"
     }
   },
@@ -101,7 +101,7 @@
       "background": "card",
       "text": "main",
       "border": "line",
-      "shadow": "pixel-shadow-raised",
+      "shadow": "shadow-raised",
       "bevel": "white-0.2/black-0.08"
     }
   },

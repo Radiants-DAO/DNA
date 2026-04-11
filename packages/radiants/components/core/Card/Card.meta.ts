@@ -64,7 +64,7 @@ export const CardMeta = defineComponentMeta<CardProps>()({
       background: "card",
       text: "main",
       border: "line",
-      shadow: "pixel-shadow-raised",
+      shadow: "shadow-raised",
       bevel: "white-0.2/black-0.08",
     },
   },

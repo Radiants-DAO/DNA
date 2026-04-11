@@ -99,6 +99,11 @@ describe('Dialog', () => {
     expect(screen.getByText('Test description')).toBeInTheDocument();
   });
 
+  test('renders dialog content inside a PixelBorder shell', () => {
+    render(<TestDialog defaultOpen />);
+    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
+  });
+
   test('forwards eventDetails.reason from onOpenChange', async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();

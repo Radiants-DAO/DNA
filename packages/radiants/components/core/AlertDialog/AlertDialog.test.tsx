@@ -69,4 +69,9 @@ describe('AlertDialog', () => {
     render(<WithRef />);
     expect(actionsRef.current?.close).toBeTypeOf('function');
   });
+
+  test('renders alert dialog content inside a PixelBorder shell', () => {
+    render(<TestAlertDialog defaultOpen />);
+    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
+  });
 });

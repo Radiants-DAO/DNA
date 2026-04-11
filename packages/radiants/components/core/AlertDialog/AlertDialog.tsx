@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -110,15 +111,16 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           className={`
             relative z-10
             w-full max-w-[32rem] mx-4
-            pixel-shadow-floating
             transition-[opacity,transform,filter] duration-150 ease-out
             group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95
             group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
           `.trim()}
         >
-          <div className={`pixel-rounded-sm bg-page ${className}`.trim()}>
-            {children}
-          </div>
+          <PixelBorder size="sm" shadow="4px 4px 0 var(--color-ink)">
+            <div className={`bg-page ${className}`.trim()}>
+              {children}
+            </div>
+          </PixelBorder>
         </div>
       </BaseAlertDialog.Popup>
     </BaseAlertDialog.Portal>

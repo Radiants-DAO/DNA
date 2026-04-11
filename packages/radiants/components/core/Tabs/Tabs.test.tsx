@@ -126,6 +126,11 @@ describe('Tabs', () => {
     expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'capsule');
   });
 
+  it('renders capsule mode inside a PixelBorder shell', () => {
+    const { container } = render(<TestTabs />);
+    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+  });
+
   it('sets data-position on root', () => {
     const { container } = render(<TestTabs position="bottom" />);
     expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-position', 'bottom');
@@ -163,6 +168,9 @@ describe('Tabs', () => {
       </Tabs>,
     );
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    const trigger = screen.getByRole('tab', { name: 'Tab A' });
+    expect(trigger.className).toContain('rounded-xs');
+    expect(trigger.className).not.toContain('pixel-rounded');
   });
 
   // ── Chrome mode ─────────────────────────────────────────────

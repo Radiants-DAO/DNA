@@ -14,6 +14,14 @@ type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
+const ROUNDED_FALLBACK_CLASS: Record<Exclude<ButtonRounded, 'none'>, string> = {
+  xs: 'rounded-xs',
+  sm: 'rounded-sm',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-lg',
+};
+
 interface ButtonOwnProps {
   /** Visual mode — controls fill treatment. Defaults to 'solid'. */
   mode?: ButtonMode;
@@ -90,11 +98,11 @@ export const buttonFaceVariants = cva(
       },
       rounded: {
         none: '',
-        xs: 'pixel-rounded-xs',
-        sm: 'pixel-rounded-sm',
-        md: 'pixel-rounded-md',
-        lg: 'pixel-rounded-lg',
-        xl: 'pixel-rounded-xl',
+        xs: ROUNDED_FALLBACK_CLASS.xs,
+        sm: ROUNDED_FALLBACK_CLASS.sm,
+        md: ROUNDED_FALLBACK_CLASS.md,
+        lg: ROUNDED_FALLBACK_CLASS.lg,
+        xl: ROUNDED_FALLBACK_CLASS.xl,
       },
       size: {
         sm: 'h-6 text-xs gap-0.5 [&_svg]:size-4',
