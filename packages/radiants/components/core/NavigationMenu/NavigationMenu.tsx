@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { NavigationMenu as BaseNavigationMenu } from '@base-ui/react/navigation-menu';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -155,7 +156,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
         flex items-center gap-1
         px-3 py-2
         font-sans text-sm
-        pixel-rounded-xs
+        rounded-xs border border-line
         cursor-pointer
         focus-visible:outline-none
         ${className}
@@ -205,7 +206,7 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         block
         px-3 py-2
         font-sans text-sm
-        pixel-rounded-xs
+        rounded-xs border border-line
         focus-visible:outline-none
         ${className}
       `.trim()}
@@ -225,19 +226,18 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
       <BaseNavigationMenu.Positioner sideOffset={8}>
         <BaseNavigationMenu.Popup
           className={`
-            pixel-shadow-raised
             transition-[opacity,transform] duration-200 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
           `.trim()}
         >
-          <div className={`
-            bg-card
-            pixel-rounded-xs
-            ${className}
-          `.trim()}>
+          <PixelBorder
+            size="xs"
+            className={`bg-card ${className}`.trim()}
+            shadow="2px 2px 0 var(--color-ink)"
+          >
             <BaseNavigationMenu.Viewport />
-          </div>
+          </PixelBorder>
         </BaseNavigationMenu.Popup>
       </BaseNavigationMenu.Positioner>
     </BaseNavigationMenu.Portal>

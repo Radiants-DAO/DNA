@@ -3,6 +3,7 @@
 import React from 'react';
 import { Menubar as BaseMenubar } from '@base-ui/react/menubar';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -82,7 +83,7 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
       className={`
         flex items-center
         bg-inv
-        pixel-rounded-xs
+        rounded-xs border border-line
         ${className}
       `.trim()}
     >
@@ -136,15 +137,20 @@ function Content({ children, className = '' }: MenubarContentProps) {
           className={`
             z-50
             min-w-[10rem]
-            pixel-shadow-raised
             transition-[opacity,transform,filter] duration-150 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
           `.trim()}
         >
-          <div className={`bg-card pixel-rounded-xs py-1 ${className}`.trim()}>
+          <PixelBorder
+            size="xs"
+            className={`bg-card ${className}`.trim()}
+            shadow="2px 2px 0 var(--color-ink)"
+          >
+            <div className="py-1">
             {children}
-          </div>
+            </div>
+          </PixelBorder>
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>

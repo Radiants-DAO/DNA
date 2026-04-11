@@ -62,7 +62,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm pixel-rounded-sm px-0.5 py-0.5`,
+  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm rounded-sm border border-line px-0.5 py-0.5`,
   {
     variants: {
       orientation: {
@@ -92,7 +92,7 @@ const toolbarButtonVariants = cva(
   {
     variants: {
       variant: {
-        ghost: 'pixel-rounded-xs',
+        ghost: 'rounded-xs border border-line',
         flat: '',
       },
     },
@@ -120,7 +120,7 @@ const toolbarSeparatorVariants = cva(
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    cursor-pointer select-none no-underline
-   bg-transparent text-flip pixel-rounded-xs
+   bg-transparent text-flip rounded-xs border border-line
    transition-[background-color,color] duration-150 ease-out
    focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4`

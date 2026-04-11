@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -66,12 +67,16 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
   return (
     <BaseContextMenu.Portal>
       <BaseContextMenu.Positioner sideOffset={4}>
-        <BaseContextMenu.Popup
-          className="z-[1000] min-w-[160px] pixel-shadow-raised"
-        >
-          <div className={`bg-page text-main pixel-rounded-sm py-0 ${className}`.trim()}>
+        <BaseContextMenu.Popup className="z-[1000] min-w-[160px]">
+          <PixelBorder
+            size="sm"
+            className={`bg-page text-main ${className}`.trim()}
+            shadow="2px 2px 0 var(--color-ink)"
+          >
+            <div className="py-0">
             {children}
-          </div>
+            </div>
+          </PixelBorder>
         </BaseContextMenu.Popup>
       </BaseContextMenu.Positioner>
     </BaseContextMenu.Portal>

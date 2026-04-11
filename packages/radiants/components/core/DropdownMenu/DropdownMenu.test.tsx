@@ -43,6 +43,7 @@ describe('DropdownMenu', () => {
 
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
     await openMenu(user);
+    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
   });
 
   test('trigger works without asChild', async () => {

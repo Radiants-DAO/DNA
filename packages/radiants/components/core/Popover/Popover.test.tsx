@@ -23,6 +23,7 @@ describe('Popover', () => {
     expect(screen.queryByText('Popover content')).not.toBeInTheDocument();
     await user.click(screen.getByText('Open Popover'));
     expect(screen.getByText('Popover content')).toBeInTheDocument();
+    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
   });
 
   test('trigger works without asChild', async () => {
