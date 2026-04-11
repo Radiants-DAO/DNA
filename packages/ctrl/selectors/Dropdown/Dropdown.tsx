@@ -93,7 +93,7 @@ export function Dropdown({
           >
             {prefix}
             <span
-              className="shrink-0 uppercase"
+              className="shrink-0"
               style={{
                 fontSize: 10,
                 lineHeight: 'round(up, 100%, 1px)',
@@ -146,7 +146,7 @@ export function Dropdown({
                     <BaseSelect.ItemText
                       render={
                         <span
-                          className="shrink-0 uppercase"
+                          className="shrink-0"
                           style={{
                             fontSize: 10,
                             lineHeight: '12px',
@@ -154,7 +154,7 @@ export function Dropdown({
                               ? { color: 'var(--color-accent)', textShadow: GLOW }
                               : {
                                   color:
-                                    'color-mix(in oklch, var(--color-main) 37.5%, transparent)',
+                                    'color-mix(in oklch, var(--color-cream) 37.5%, transparent)',
                                 }),
                           }}
                         >

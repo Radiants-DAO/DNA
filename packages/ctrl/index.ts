@@ -34,6 +34,8 @@ export { ChipTag } from './selectors/ChipTag/ChipTag';
 export { MatrixGrid } from './selectors/MatrixGrid/MatrixGrid';
 export { RadialMenu } from './selectors/RadialMenu/RadialMenu';
 export { ColorSwatch } from './selectors/ColorSwatch/ColorSwatch';
+export { Dropdown } from './selectors/Dropdown/Dropdown';
+export type { DropdownOption, DropdownProps } from './selectors/Dropdown/Dropdown';
 
 // Readouts (data display / feedback)
 export { Meter } from './readouts/Meter/Meter';

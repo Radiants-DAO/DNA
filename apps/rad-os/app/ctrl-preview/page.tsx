@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
+import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
 
 // ============================================================================
 // Layout Inspector Panel — Visual build from Paper node SJE-0
@@ -145,9 +145,43 @@ function IconFloat() {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
+// Dropdown options for the W / H row dropdowns
+const WIDTH_OPTIONS = [
+  { value: 'fill', label: 'Fill' },
+  { value: 'fit', label: 'Fit' },
+  { value: 'fixed', label: 'Fixed' },
+  { value: 'auto', label: 'Auto' },
+];
+
+const CONSTRAINT_OPTIONS = [
+  { value: 'min', label: 'Min' },
+  { value: 'max', label: 'Max' },
+  { value: 'clamp', label: 'Clamp' },
+  { value: 'none', label: 'None' },
+];
+
+const UNIT_OPTIONS = [
+  { value: 'px', label: 'PX' },
+  { value: '%', label: '%' },
+  { value: 'em', label: 'EM' },
+  { value: 'rem', label: 'REM' },
+  { value: 'ch', label: 'CH' },
+  { value: 'vw', label: 'VW' },
+  { value: 'vh', label: 'VH' },
+  { value: 'svw', label: 'SVW' },
+  { value: 'svh', label: 'SVH' },
+  { value: 'auto', label: 'AUTO' },
+];
+
 export default function CtrlPreview() {
   const [open, setOpen] = useState(true);
   const [mode, setMode] = useState<'min' | 'max'>('max');
+  const [wValue, setWValue] = useState('fill');
+  const [wMin, setWMin] = useState('min');
+  const [wMax, setWMax] = useState('max');
+  const [hUnit, setHUnit] = useState('rem');
+  const [hMin, setHMin] = useState('min');
+  const [hMax, setHMax] = useState('min');
 
   return (
     <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
@@ -268,16 +302,59 @@ export default function CtrlPreview() {
                             {/* W row */}
                             <div className="flex self-stretch gap-[1px]">
                               <LabelCell label="W" />
-                              <ValueCell label="Fill" />
-                              <ValueCell label="Min" />
-                              <ValueCell label="Max" />
+                              <Dropdown
+                                value={wValue}
+                                onValueChange={setWValue}
+                                options={WIDTH_OPTIONS}
+                                className="flex-1"
+                              />
+                              <Dropdown
+                                value={wMin}
+                                onValueChange={setWMin}
+                                options={CONSTRAINT_OPTIONS}
+                                className="flex-1"
+                              />
+                              <Dropdown
+                                value={wMax}
+                                onValueChange={setWMax}
+                                options={CONSTRAINT_OPTIONS}
+                                className="flex-1"
+                              />
                             </div>
                             {/* H row */}
                             <div className="flex self-stretch gap-[1px]">
                               <LabelCell label="H" />
-                              <ValueCell label="10" unit="REM" active />
-                              <ValueCell label="Min" />
-                              <ValueCell label="Min" />
+                              <Dropdown
+                                value={hUnit}
+                                onValueChange={setHUnit}
+                                options={UNIT_OPTIONS}
+                                className="flex-1"
+                                prefix={
+                                  <span
+                                    className="shrink-0 mr-auto"
+                                    style={{
+                                      fontSize: 10,
+                                      lineHeight: 'round(up, 100%, 1px)',
+                                      color: 'var(--color-main)',
+                                      textShadow: GLOW,
+                                    }}
+                                  >
+                                    10
+                                  </span>
+                                }
+                              />
+                              <Dropdown
+                                value={hMin}
+                                onValueChange={setHMin}
+                                options={CONSTRAINT_OPTIONS}
+                                className="flex-1"
+                              />
+                              <Dropdown
+                                value={hMax}
+                                onValueChange={setHMax}
+                                options={CONSTRAINT_OPTIONS}
+                                className="flex-1"
+                              />
                             </div>
                             {/* Icon strip */}
                             <div className="flex self-stretch relative" style={{ height: 20, borderRadius: 3 }}>
