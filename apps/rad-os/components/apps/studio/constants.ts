@@ -23,6 +23,8 @@ export interface ToolDef {
   label: string;
   icon: string;
   large?: boolean;
+  /** Kept in the def list but hidden from the palette UI. Flip when re-wiring. */
+  hidden?: boolean;
 }
 
 export const TOOL_DEFS: ToolDef[] = [
@@ -35,8 +37,10 @@ export const TOOL_DEFS: ToolDef[] = [
   { tool: BrushTool.ELLIPSE, label: 'Ellipse', icon: 'interface-essential-alert-circle-1', large: true },
   { tool: BrushTool.ELLIPSE_FILLED, label: 'Fill Ellipse', icon: 'record-playback' },
   { tool: BrushTool.SELECT, label: 'Select', icon: 'interface-essential-cursor-select', large: true },
-  { tool: BrushTool.NONE, label: 'Pan', icon: 'hand-point' },
+  { tool: BrushTool.NONE, label: 'Pan', icon: 'hand-point', hidden: true },
 ];
 
 export const DEFAULT_BRUSH_COLOR = '#0f0e0c';
 export const CANVAS_BG_COLOR = '#fef8e2';
+/** Fixed canvas dimensions. Studio is locked to 32×32 for phase 1. */
+export const CANVAS_SIZE = 32;

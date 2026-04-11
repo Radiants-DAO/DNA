@@ -391,7 +391,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
     };
   }, [editor, canvasElementEventListeners]);
 
-  // We put resize handler
+  // Resize handler: reacts to both viewport resizes and container resizes
+  // (e.g. parent flex/grid layout changes, RadOS window drag). Using only
+  // window.resize misses the second case.
   useEffect(() => {
     const onResize = () => {
       if (containerRef.current && editor) {
@@ -404,8 +406,14 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
     };
     onResize();
     window.addEventListener("resize", onResize);
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && containerRef.current) {
+      observer = new ResizeObserver(() => onResize());
+      observer.observe(containerRef.current);
+    }
     return () => {
       window.removeEventListener("resize", onResize);
+      if (observer) observer.disconnect();
     };
   }, [
     editor,

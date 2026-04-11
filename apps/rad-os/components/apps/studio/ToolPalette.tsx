@@ -22,7 +22,7 @@ export function ToolPalette({ activeTool, onToolChange }: ToolPaletteProps) {
         if (next != null) onToolChange(next as BrushTool);
       }}
     >
-      {TOOL_DEFS.map((def) => (
+      {TOOL_DEFS.filter((def) => !def.hidden).map((def) => (
         <Tooltip key={def.tool} content={def.label} position="right">
           <ToggleGroup.Item
             value={def.tool}

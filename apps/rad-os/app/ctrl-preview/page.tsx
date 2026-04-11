@@ -1,9 +1,9 @@
 'use client';
 
 import { forwardRef, useRef, useState } from 'react';
-import { NumberField } from '@base-ui/react/number-field';
 import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
 import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
+import { ScrubSurface } from '@rdna/ctrl/controls/ScrubSurface/ScrubSurface';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
 import { TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
 
@@ -41,55 +41,8 @@ const TRAP_POS: Record<Side, React.CSSProperties> = {
   right: { right: -1, top: 0, bottom: 0, width: 24 },
 };
 
-/**
- * ScrubTrap — makes an arbitrary div into a vertical-scrub surface by wrapping
- * base-ui NumberField.Root + ScrubArea. The Root renders as `display: contents`
- * so it stays layout-transparent; the ScrubArea renders the caller's element.
- */
-function ScrubTrap({
-  value,
-  onValueChange,
-  step = 1,
-  pixelSensitivity = 2,
-  className = '',
-  style,
-  children,
-}: {
-  value: number;
-  onValueChange: (v: number) => void;
-  step?: number;
-  pixelSensitivity?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  children?: React.ReactNode;
-}) {
-  return (
-    <NumberField.Root
-      value={value}
-      onValueChange={(v) => onValueChange(v ?? 0)}
-      step={step}
-      min={0}
-      render={<span style={{ display: 'contents' }} />}
-    >
-      <NumberField.ScrubArea
-        direction="vertical"
-        pixelSensitivity={pixelSensitivity}
-        render={(props) => (
-          <div
-            {...props}
-            className={className}
-            style={{ ...style, cursor: 'ns-resize', touchAction: 'none' }}
-          >
-            {children}
-          </div>
-        )}
-      />
-      {/* Hidden input — base-ui's ScrubArea reads the root context's inputRef;
-          we keep it mounted but invisible so focus() calls don't throw. */}
-      <NumberField.Input tabIndex={-1} aria-hidden className="sr-only absolute" />
-    </NumberField.Root>
-  );
-}
+/** Local alias — use ScrubSurface from the ctrl package for the box-model scrub handles. */
+const ScrubTrap = ScrubSurface;
 
 /** Visual pip — the small centered dot/dash inside a side trapezoid. */
 function Pip({ horizontal }: { horizontal: boolean }) {
@@ -369,11 +322,10 @@ export default function CtrlPreview() {
 
   const [display, setDisplay] = useState('show');
 
-  // Box-model values — 4 sides for margin & padding, single for border + radius
+  // Box-model values — 4 sides for margin & padding, single value for border
   const [margin, setMargin] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
   const [padding, setPadding] = useState({ top: 2, right: 2, bottom: 2, left: 2 });
   const [borderWidth, setBorderWidth] = useState(2);
-  const [cornerRadius, setCornerRadius] = useState(0);
 
   const setMarginSide = (side: Side) => (v: number | null) =>
     setMargin((m) => ({ ...m, [side]: Math.max(0, v ?? 0) }));
@@ -746,10 +698,10 @@ export default function CtrlPreview() {
                           </div>
                         </div>
 
-                        {/* ── Corner radius row ── */}
+                        {/* ── Bottom border row (same value as top Border row) ── */}
                         <ScrubTrap
-                          value={cornerRadius}
-                          onValueChange={setCornerRadius}
+                          value={borderWidth}
+                          onValueChange={setBorderWidth}
                           className="flex self-stretch shrink-0"
                           style={{ gap: 1, height: 24 }}
                         >
@@ -760,7 +712,7 @@ export default function CtrlPreview() {
                             <div style={{ width: 3, height: 1, backgroundColor: BOX.outline, boxShadow: `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px` }} />
                           </div>
                           <div className="flex items-center" style={{ backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4, gap: 4 }}>
-                            <ValueText>{cornerRadius}</ValueText>
+                            <ValueText>{borderWidth}</ValueText>
                             <CaptionText>px</CaptionText>
                             <IconCornerRadius />
                           </div>

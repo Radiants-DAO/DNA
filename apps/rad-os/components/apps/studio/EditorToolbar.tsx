@@ -3,25 +3,21 @@
 import { type MutableRefObject } from 'react';
 import { type DottingRef, useDotting } from '@/lib/dotting';
 import { Button, Toolbar, Tooltip, Switch } from '@rdna/radiants/components/core';
-import { pickRandomRadiant } from './radnom';
 
 interface EditorToolbarProps {
   dottingRef: MutableRefObject<DottingRef | null>;
   isGridVisible: boolean;
   onGridToggle: (visible: boolean) => void;
+  onRadnom: () => void;
 }
 
-export function EditorToolbar({ dottingRef, isGridVisible, onGridToggle }: EditorToolbarProps) {
-  const { undo, redo, clear, downloadImage, setData } = useDotting(dottingRef);
-
-  const handleRadnom = async () => {
-    try {
-      const data = await pickRandomRadiant();
-      setData(data);
-    } catch (err) {
-      console.error('radnom failed', err);
-    }
-  };
+export function EditorToolbar({
+  dottingRef,
+  isGridVisible,
+  onGridToggle,
+  onRadnom,
+}: EditorToolbarProps) {
+  const { undo, redo, clear, downloadImage } = useDotting(dottingRef);
 
   return (
     <div className="shrink-0 border-b border-rule">
@@ -80,7 +76,7 @@ export function EditorToolbar({ dottingRef, isGridVisible, onGridToggle }: Edito
             iconOnly
             icon="sparkles"
             aria-label="Radnom"
-            onClick={handleRadnom}
+            onClick={onRadnom}
           />
         </Tooltip>
 
