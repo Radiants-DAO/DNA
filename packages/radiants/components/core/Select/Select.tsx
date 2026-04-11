@@ -3,6 +3,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { cva } from 'class-variance-authority';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -81,7 +82,7 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 
 export const selectTriggerVariants = cva(
   `flex items-center w-full
-   font-sans pixel-rounded-xs
+   font-sans
    focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -146,45 +147,51 @@ function Trigger({
 
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
-      <BaseSelect.Trigger
-        disabled={disabled}
-        data-variant="select"
-        data-size={size}
-        render={(props) => {
-          const isOpen = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
-          const classes = selectTriggerVariants({
-            size,
-            error,
-            open: isOpen,
-            className,
-          });
+      <PixelBorder
+        size="xs"
+        color={error ? 'var(--color-danger)' : undefined}
+        className={fullWidth ? 'w-full' : ''}
+      >
+        <BaseSelect.Trigger
+          disabled={disabled}
+          data-variant="select"
+          data-size={size}
+          render={(props) => {
+            const isOpen = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
+            const classes = selectTriggerVariants({
+              size,
+              error,
+              open: isOpen,
+              className,
+            });
 
-          return (
-            <button
-              {...props}
-              type="button"
-              className={classes}
-              data-slot="select-trigger"
-              data-variant="select"
-              data-size={size}
-              data-open={isOpen ? 'true' : 'false'}
-              data-state={isOpen ? 'open' : 'closed'}
-              data-invalid={error ? 'true' : 'false'}
-            >
-              {children ?? (
-                <BaseSelect.Value
-                  placeholder={placeholder}
-                  className="text-main data-[placeholder]:text-mute"
-                />
-              )}
-              <span className="flex-1 h-px bg-line opacity-30" />
-              <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
-                {chevron || <DefaultChevron size={chevronSize} />}
-              </span>
-            </button>
-          );
-        }}
-      />
+            return (
+              <button
+                {...props}
+                type="button"
+                className={classes}
+                data-slot="select-trigger"
+                data-variant="select"
+                data-size={size}
+                data-open={isOpen ? 'true' : 'false'}
+                data-state={isOpen ? 'open' : 'closed'}
+                data-invalid={error ? 'true' : 'false'}
+              >
+                {children ?? (
+                  <BaseSelect.Value
+                    placeholder={placeholder}
+                    className="text-main data-[placeholder]:text-mute"
+                  />
+                )}
+                <span className="flex-1 h-px bg-line opacity-30" />
+                <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
+                  {chevron || <DefaultChevron size={chevronSize} />}
+                </span>
+              </button>
+            );
+          }}
+        />
+      </PixelBorder>
     </div>
   );
 }
@@ -193,12 +200,16 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
     <BaseSelect.Portal>
       <BaseSelect.Positioner className="z-50">
-        <BaseSelect.Popup
-          className="pixel-shadow-raised"
-        >
-          <div className={`bg-page pixel-rounded-xs ${className}`}>
+        <BaseSelect.Popup className="z-50">
+          <PixelBorder
+            size="xs"
+            className={`bg-page ${className}`.trim()}
+            shadow="2px 2px 0 var(--color-ink)"
+          >
+            <div className="py-1">
             {children}
-          </div>
+            </div>
+          </PixelBorder>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>

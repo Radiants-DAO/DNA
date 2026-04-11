@@ -149,7 +149,7 @@ export function Checkbox({
             {...props}
             className={`
               relative w-5 h-5
-              pixel-rounded-xs
+              rounded-xs border border-line
               flex items-center justify-center
               transition-colors
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus

@@ -17,8 +17,9 @@ function TestNumberField(props: Parameters<typeof NumberField.Root>[0]) {
 
 describe('NumberField', () => {
   test('renders with numeric input', () => {
-    render(<TestNumberField defaultValue={5} />);
+    const { container } = render(<TestNumberField defaultValue={5} />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('forwards readOnly to the input', () => {

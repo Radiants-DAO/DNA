@@ -53,6 +53,8 @@ describe('Switch', () => {
     render(<Switch checked={false} onChange={() => {}} />);
     const el = document.querySelector('[data-variant="switch"]');
     expect(el).toBeInTheDocument();
+    expect(el?.className).toContain('rounded-xs');
+    expect(el?.className).not.toContain('pixel-rounded');
   });
 
   test('renders with different sizes', () => {
@@ -65,12 +67,12 @@ describe('Switch', () => {
     expect(document.querySelector('[data-size="lg"]')).toBeInTheDocument();
   });
 
-  test('track variants do not hardcode themed color utilities', () => {
+  test('track variants keep dynamic fill colors in CSS while using fallback borders', () => {
     const classes = switchTrackVariants({
       checked: true,
     });
 
-    expect(classes).not.toMatch(/\bborder-line\b/);
+    expect(classes).toMatch(/\bborder-line\b/);
     expect(classes).not.toMatch(/\bbg-accent\b/);
     expect(classes).not.toMatch(/\bbg-inv\b/);
   });

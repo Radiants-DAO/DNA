@@ -3,6 +3,7 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField } from '@base-ui/react/field';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -248,7 +249,7 @@ function InputControl({
     className: `${paddingLeft} ${className}`.trim(),
   });
 
-  // In standalone mode, error prop applies pixel-border-danger.
+  // In standalone mode, error prop colors the shell border.
   // Inside Root, the Root's invalid + Input.Error handles error display.
   const showStandaloneError = error && !rootCtx;
 
@@ -261,17 +262,19 @@ function InputControl({
     <input ref={ref} data-rdna="input" className={classes} data-size={size} {...props} />
   );
 
-  // Void elements (input) can't render ::after — wrap for pixel border
-  const wrapperClasses = `pixel-rounded-xs${showStandaloneError ? ' pixel-border-danger' : ''}${fullWidth ? ' w-full' : ''}`;
   const wrappedInput = (
-    <div className={wrapperClasses}>
+    <PixelBorder
+      size="xs"
+      color={showStandaloneError ? 'var(--color-danger)' : undefined}
+      className={fullWidth ? 'w-full' : ''}
+    >
       {inputWithRef}
-    </div>
+    </PixelBorder>
   );
 
   if (hasIcon) {
     return (
-      <div className="relative">
+      <div className={fullWidth ? 'relative w-full' : 'relative'}>
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute z-10">
           {icon || (
             <div
@@ -321,12 +324,14 @@ export function TextArea({
     <textarea ref={ref} className={classes} data-size="md" {...props} />
   );
 
-  // Wrap for consistent pixel border rendering
-  const wrapperClasses = `pixel-rounded-xs${showStandaloneError ? ' pixel-border-danger' : ''}${fullWidth ? ' w-full' : ''}`;
   return (
-    <div className={wrapperClasses}>
+    <PixelBorder
+      size="xs"
+      color={showStandaloneError ? 'var(--color-danger)' : undefined}
+      className={fullWidth ? 'w-full' : ''}
+    >
       {textareaEl}
-    </div>
+    </PixelBorder>
   );
 }
 

@@ -38,8 +38,9 @@ function TestSelectDisabledOption() {
 
 describe('Select', () => {
   test('trigger renders with placeholder text', () => {
-    render(<TestSelect />);
+    const { container } = render(<TestSelect />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('opens popup when trigger is clicked', async () => {
@@ -50,6 +51,7 @@ describe('Select', () => {
     await user.click(trigger);
 
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
+    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(8);
   });
 
   test('trigger has aria-expanded that updates on open/close', async () => {

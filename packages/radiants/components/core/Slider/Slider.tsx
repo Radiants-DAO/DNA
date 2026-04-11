@@ -71,8 +71,8 @@ export function Slider({
 
   // Track classes swap width/height depending on orientation
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible pixel-rounded-xs bg-page ${vTrack}`
-    : `slider-track relative w-full overflow-visible pixel-rounded-xs bg-page ${hTrack}`;
+    ? `slider-track relative h-full overflow-visible rounded-xs border border-line bg-page ${vTrack}`
+    : `slider-track relative w-full overflow-visible rounded-xs border border-line bg-page ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
@@ -129,7 +129,7 @@ export function Slider({
               className={[
                 'absolute z-[2] overflow-visible border-none outline-none',
                 thumb,
-                `bg-page pixel-rounded-xs switch-thumb ${thumbHoverClasses}`,
+                `bg-page rounded-xs border border-line switch-thumb ${thumbHoverClasses}`,
                 'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
               ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"

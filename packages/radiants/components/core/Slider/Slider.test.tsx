@@ -21,8 +21,10 @@ async function focusAndPress(key: string) {
 
 describe('Slider', () => {
   test('renders with slider role', async () => {
-    render(<Slider value={50} onChange={() => {}} min={0} max={100} />);
+    const { container } = render(<Slider value={50} onChange={() => {}} min={0} max={100} />);
     expect(await getSlider()).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="slider-track"]')?.className).toContain('rounded-xs');
+    expect(container.querySelector('[data-slot="slider-thumb"]')?.className).toContain('rounded-xs');
   });
 
   test('renders with label and value display', async () => {

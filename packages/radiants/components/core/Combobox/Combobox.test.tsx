@@ -26,8 +26,9 @@ function TestCombobox({
 
 describe('Combobox', () => {
   test('renders input', () => {
-    render(<TestCombobox />);
+    const { container } = render(<TestCombobox />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('Combobox.Status is exported in namespace', () => {
@@ -39,6 +40,7 @@ describe('Combobox', () => {
     render(<TestCombobox />);
     await user.click(screen.getByRole('combobox'));
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
+    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(8);
   });
 
   test('forwards onOpenChange', async () => {

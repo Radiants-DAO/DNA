@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -120,8 +121,7 @@ function Root<V = string>({
 function Input({ placeholder = 'Search...', disabled = false, className = '' }: ComboboxInputProps) {
   return (
     <div className="relative">
-      {/* Void elements can't render ::after — wrapper provides pixel border */}
-      <div className="pixel-rounded-xs--wrapper w-full">
+      <PixelBorder size="xs" className="w-full">
         <BaseCombobox.Input
           placeholder={placeholder}
           disabled={disabled}
@@ -131,7 +131,6 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
             font-sans text-sm
             text-main
             bg-page
-            pixel-rounded-xs
             placeholder:text-mute
             focus:bg-card
             disabled:opacity-50 disabled:cursor-not-allowed
@@ -139,7 +138,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
             ${className}
           `.trim()}
         />
-      </div>
+      </PixelBorder>
       <BaseCombobox.Trigger
         className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer z-10"
       >
@@ -184,22 +183,20 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
         className={`
           z-50
           w-[var(--anchor-width)]
-          pixel-shadow-raised
           transition-[opacity,transform] duration-150 ease-out
           data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
           data-[ending-style]:opacity-0
         `.trim()}
       >
-        <div className={`
-          bg-card
-          pixel-rounded-xs
-          py-1
-          ${className}
-        `.trim()}>
-          <BaseCombobox.List className="max-h-48 overflow-y-auto">
+        <PixelBorder
+          size="xs"
+          className={`w-full bg-card ${className}`.trim()}
+          shadow="2px 2px 0 var(--color-ink)"
+        >
+          <BaseCombobox.List className="max-h-48 overflow-y-auto py-1">
             {children}
           </BaseCombobox.List>
-        </div>
+        </PixelBorder>
       </BaseCombobox.Popup>
     </BaseCombobox.Positioner>
   );

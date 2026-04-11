@@ -9,8 +9,7 @@ describe('Input', () => {
     expect(input).toBeInTheDocument();
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('data-rdna', 'input');
-    // Wrapped in pixel-rounded-xs div
-    expect(container.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('size variants apply correct data-size', () => {
@@ -21,9 +20,9 @@ describe('Input', () => {
     expect(screen.getByPlaceholderText('lg')).toHaveAttribute('data-size', 'lg');
   });
 
-  test('standalone error applies pixel-border-danger', () => {
+  test('standalone error colors the PixelBorder shell', () => {
     const { container } = render(<Input placeholder="err" error />);
-    expect(container.querySelector('.pixel-border-danger')).toBeInTheDocument();
+    expect(container.querySelector('rect[fill="var(--color-danger)"]')).toBeInTheDocument();
   });
 
   test('standalone renders correctly without Root', () => {
@@ -86,8 +85,7 @@ describe('Input', () => {
         <Input placeholder="test" error />
       </Input.Root>
     );
-    // When inside Root, standalone error styling should NOT apply
-    expect(container.querySelector('.pixel-border-danger')).not.toBeInTheDocument();
+    expect(container.querySelector('rect[fill="var(--color-danger)"]')).not.toBeInTheDocument();
   });
 
   test('disabled propagation from Root', () => {
