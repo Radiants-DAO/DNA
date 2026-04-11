@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cva } from 'class-variance-authority';
+import { PixelBorder, type PixelBorderSize } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -46,9 +47,9 @@ interface CountdownTimerProps {
 const containerVariants = cva('text-center', {
   variants: {
     variant: {
-      default: 'p-4 bg-page pixel-rounded-lg',
-      compact: 'px-3 py-2 bg-page pixel-rounded-sm',
-      large: 'p-6 bg-page pixel-rounded-lg',
+      default: 'p-4 bg-page',
+      compact: 'px-3 py-2 bg-page',
+      large: 'p-6 bg-page',
     },
   },
   defaultVariants: { variant: 'default' },
@@ -81,11 +82,17 @@ const segmentVariants = cva('flex flex-col items-center', {
     variant: {
       default: 'min-w-[3rem]',
       compact: 'min-w-[2rem]',
-      large: 'min-w-[4rem] bg-depth pixel-rounded-sm px-3 py-2',
+      large: 'min-w-[4rem] bg-depth rounded-sm border border-line px-3 py-2',
     },
   },
   defaultVariants: { variant: 'default' },
 });
+
+const COUNTDOWN_BORDER_SIZE: Record<CountdownVariant, PixelBorderSize> = {
+  default: 'lg',
+  compact: 'sm',
+  large: 'lg',
+};
 
 const valueVariants = cva('font-heading text-main tabular-nums', {
   variants: {
@@ -213,13 +220,20 @@ export function CountdownTimer({
     return () => clearInterval(id);
   }, [endTime, startTime, onComplete]);
 
-  const wrap = (node: React.ReactElement) =>
-    variant === 'large' ? <div className="pixel-shadow-raised">{node}</div> : node;
+  const wrap = (node: React.ReactElement) => (
+    <PixelBorder
+      size={COUNTDOWN_BORDER_SIZE[variant]}
+      shadow={variant === 'large' ? '2px 2px 0 var(--color-ink)' : undefined}
+      className={className}
+    >
+      {node}
+    </PixelBorder>
+  );
 
   // Render ended state
   if (status === 'ended') {
     return wrap(
-      <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
+      <div data-rdna="countdowntimer" className={containerVariants({ variant })}>
         {label && <p className={labelVariants({ variant })}>{label}</p>}
         <p className={endedMessageVariants({ variant })}>
           {endedMessage}
@@ -232,7 +246,7 @@ export function CountdownTimer({
   if (status === 'upcoming' && startTime) {
     const startRemaining = getTimeRemaining(startTime);
     return wrap(
-      <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
+      <div data-rdna="countdowntimer" className={containerVariants({ variant })}>
         <p className={labelVariants({ variant })}>Starts in</p>
         <div className={timerVariants({ variant })}>
           {showDays && startRemaining.days > 0 && (
@@ -265,7 +279,7 @@ export function CountdownTimer({
 
   // Render active countdown
   return wrap(
-    <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
+    <div data-rdna="countdowntimer" className={containerVariants({ variant })}>
       {label && <p className={labelVariants({ variant })}>{label}</p>}
       <div className={timerVariants({ variant })}>
         {showDays && timeRemaining.days > 0 && (

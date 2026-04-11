@@ -27,4 +27,18 @@ describe('PreviewCard', () => {
     // Verify the type signature is correct (checked at build time)
     expect(PreviewCard).toBeDefined();
   });
+
+  test('renders preview content inside a PixelBorder shell when open', () => {
+    render(
+      <PreviewCard defaultOpen>
+        <PreviewCardTrigger asChild>
+          <a href="#">Hover me</a>
+        </PreviewCardTrigger>
+        <PreviewCardContent>Preview content</PreviewCardContent>
+      </PreviewCard>
+    );
+
+    expect(screen.getByText('Preview content')).toBeInTheDocument();
+    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+  });
 });

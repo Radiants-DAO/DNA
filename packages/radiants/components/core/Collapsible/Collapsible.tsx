@@ -83,7 +83,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         w-full flex items-center justify-between
         px-4 py-3
         font-sans text-sm uppercase tracking-tight leading-none
-        pixel-rounded-xs
+        rounded-xs border border-line
         transition-colors
         cursor-pointer
         focus-visible:outline-none
@@ -120,7 +120,7 @@ function Content({ children, className = '' }: ContentProps): React.ReactNode {
         ${className}
       `.trim()}
     >
-      <div className="px-4 py-3 font-sans text-main bg-card pixel-rounded-xs">
+      <div className="px-4 py-3 font-sans text-main bg-card rounded-xs border border-line">
         {children}
       </div>
     </BaseCollapsible.Panel>

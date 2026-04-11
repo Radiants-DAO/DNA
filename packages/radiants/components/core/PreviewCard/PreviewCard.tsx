@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { PreviewCard as BasePreviewCard } from '@base-ui/react/preview-card';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -94,24 +95,26 @@ export function PreviewCardContent({
         align={align}
         sideOffset={8}
       >
-        <div className="pixel-shadow-raised">
-          <BasePreviewCard.Popup
-            data-rdna="previewcard"
-            className={`
-              z-50
-              bg-card
-              pixel-rounded-xs
-              p-4
-              transition-[opacity,transform,filter] duration-150 ease-out
-              data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
-              data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
-              ${className}
-            `.trim()}
-            data-variant="preview-card"
+        <BasePreviewCard.Popup
+          data-rdna="previewcard"
+          className={`
+            z-50
+            transition-[opacity,transform,filter] duration-150 ease-out
+            data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
+            data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+          `.trim()}
+          data-variant="preview-card"
+        >
+          <PixelBorder
+            size="xs"
+            className={`bg-card ${className}`.trim()}
+            shadow="2px 2px 0 var(--color-ink)"
           >
-            {children}
-          </BasePreviewCard.Popup>
-        </div>
+            <div className="p-4">
+              {children}
+            </div>
+          </PixelBorder>
+        </BasePreviewCard.Popup>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>
   );
