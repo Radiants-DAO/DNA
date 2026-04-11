@@ -67,7 +67,10 @@ function TrapPip({ side, variant }: { side: Side; variant: 'margin' | 'padding' 
 
 function LabelCell({ label }: { label: string }) {
   return (
-    <div className="flex items-center justify-center shrink-0 bg-black" style={{ width: 24, height: 24, paddingInline: 4 }}>
+    <div
+      className="flex items-center justify-center shrink-0 bg-black self-stretch"
+      style={{ width: 24, minHeight: 24, paddingInline: 4 }}
+    >
       <span
         className="shrink-0 text-center text-ctrl-text-active uppercase"
         style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', textShadow: GLOW }}
