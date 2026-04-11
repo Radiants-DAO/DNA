@@ -31,6 +31,8 @@ export interface DropdownProps {
   prefix?: ReactNode;
   /** Suppress the built-in caret */
   hideCaret?: boolean;
+  /** Suppress the current-value label (trigger shows caret only) */
+  hideLabel?: boolean;
   /** Align popup to trigger — "start" (default) or "end" */
   align?: 'start' | 'end';
 }
@@ -64,6 +66,7 @@ export function Dropdown({
   className = '',
   prefix,
   hideCaret = false,
+  hideLabel = false,
   align = 'start',
 }: DropdownProps) {
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder;
@@ -92,16 +95,18 @@ export function Dropdown({
             style={{ height: 24, paddingInline: 4, gap: 4 }}
           >
             {prefix}
-            <span
-              className="shrink-0"
-              style={{
-                fontSize: 10,
-                lineHeight: 'round(up, 100%, 1px)',
-                ...(active ? { color: 'var(--color-accent)', textShadow: GLOW } : {}),
-              }}
-            >
-              {currentLabel}
-            </span>
+            {!hideLabel && (
+              <span
+                className="shrink-0"
+                style={{
+                  fontSize: 10,
+                  lineHeight: 'round(up, 100%, 1px)',
+                  ...(active ? { color: 'var(--color-accent)', textShadow: GLOW } : {}),
+                }}
+              >
+                {currentLabel}
+              </span>
+            )}
             {!hideCaret && (
               <span
                 className="shrink-0"

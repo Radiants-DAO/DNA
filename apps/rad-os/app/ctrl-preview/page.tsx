@@ -89,12 +89,44 @@ function SuffixLabel({ text, active = false }: { text: string; active?: boolean 
         fontSize: 10,
         lineHeight: 'round(up, 100%, 1px)',
         width: 'max-content',
-        marginLeft: 'auto',
+        marginRight: 4,
         ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
       }}
     >
       {text}
     </span>
+  );
+}
+
+/** Non-editable keyword cell (FILL / FIT / AUTO) — matches NumberInput cell shape */
+function KeywordCell({
+  text,
+  suffix,
+  className = '',
+}: {
+  text: string;
+  suffix?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={['flex items-center bg-black font-mono min-w-0', className].filter(Boolean).join(' ')}
+      style={{ height: 24 }}
+    >
+      <span
+        className="flex-1 uppercase truncate"
+        style={{
+          fontSize: 10,
+          lineHeight: 'round(up, 100%, 1px)',
+          paddingInline: 4,
+          color: 'var(--color-accent)',
+          textShadow: GLOW,
+        }}
+      >
+        {text}
+      </span>
+      {suffix}
+    </div>
   );
 }
 
@@ -104,14 +136,6 @@ function IconEye() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
       <path fill="currentColor" d="M1 7.5H2V8.5H1V7.5ZM2 6.5H3V7.5H2V6.5ZM2 8.5H3V9.5H2V8.5ZM3 5.5H5V6.5H3V5.5ZM3 9.5H5V10.5H3V9.5ZM5 4.5H11V5.5H5V4.5ZM5 10.5H11V11.5H5V10.5ZM6 6.5H8V7.5H7V8.5H6V6.5ZM7 8.5H9V9.5H7V8.5ZM9 6.5H10V8.5H9V6.5ZM11 5.5H13V6.5H11V5.5ZM11 9.5H13V10.5H11V9.5ZM13 6.5H14V7.5H13V6.5ZM13 8.5H14V9.5H13V8.5ZM14 7.5H15V8.5H14V7.5Z" />
-    </svg>
-  );
-}
-
-function IconEyeOff() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
-      <path fill="currentColor" d="M1 4.5H2V5.5H1V4.5ZM2 5.5H3V6.5H2V5.5ZM3 6.5H4V7.5H3V6.5ZM4 7.5H5V8.5H4V7.5ZM5 8.5H6V9.5H5V8.5ZM6 9.5H7V10.5H6V9.5ZM7 10.5H8V11.5H7V10.5ZM8 11.5H9V12.5H8V11.5ZM9 10.5H10V11.5H9V10.5ZM10 9.5H11V10.5H10V9.5ZM11 8.5H12V9.5H11V8.5ZM12 7.5H13V8.5H12V7.5ZM13 6.5H14V7.5H13V6.5ZM14 5.5H15V6.5H14V5.5ZM5 4.5H11V5.5H5V4.5Z" />
     </svg>
   );
 }
@@ -156,25 +180,15 @@ const MAIN_UNIT_OPTIONS = [
   { value: 'vh', label: 'VH' },
 ];
 
-/** Unit options for MIN/MAX constraint cells — numeric units only */
-const CONSTRAINT_UNIT_OPTIONS = [
-  { value: 'px', label: 'PX' },
-  { value: '%', label: '%' },
-  { value: 'em', label: 'EM' },
-  { value: 'rem', label: 'REM' },
-  { value: 'vw', label: 'VW' },
-  { value: 'vh', label: 'VH' },
-];
-
 /** Whether this unit is a keyword (no numeric value, input displays the unit text) */
 const KEYWORD_UNITS = new Set(['fill', 'fit', 'auto']);
 
 /** Display modes for the inspector — pixel-art icons + short labels */
 const DISPLAY_OPTIONS = [
-  { value: 'show', icon: <IconEye />, tooltip: 'Show' },
-  { value: 'hide', icon: <IconEyeOff />, tooltip: 'Hide' },
-  { value: 'clip', icon: <IconResize />, tooltip: 'Clip' },
-  { value: 'overflow', icon: <IconPosition />, tooltip: 'Overflow' },
+  { value: 'show', icon: <IconEye />, tooltip: 'Visible' },
+  { value: 'resize', icon: <IconResize />, tooltip: 'Resize' },
+  { value: 'position', icon: <IconPosition />, tooltip: 'Position' },
+  { value: 'float', icon: <IconFloat />, tooltip: 'Float' },
   { value: 'auto', icon: <span className="text-[8px] uppercase leading-[10px]">Auto</span>, tooltip: 'Auto' },
 ];
 
@@ -186,17 +200,13 @@ export default function CtrlPreview() {
   const [wValue, setWValue] = useState<number | null>(null);
   const [wUnit, setWUnit] = useState('fill');
   const [wMin, setWMin] = useState<number | null>(null);
-  const [wMinUnit, setWMinUnit] = useState('px');
   const [wMax, setWMax] = useState<number | null>(null);
-  const [wMaxUnit, setWMaxUnit] = useState('px');
 
   // H row
   const [hValue, setHValue] = useState<number | null>(10);
   const [hUnit, setHUnit] = useState('vh');
   const [hMin, setHMin] = useState<number | null>(null);
-  const [hMinUnit, setHMinUnit] = useState('px');
   const [hMax, setHMax] = useState<number | null>(null);
-  const [hMaxUnit, setHMaxUnit] = useState('px');
 
   const [display, setDisplay] = useState('show');
 
@@ -295,50 +305,62 @@ export default function CtrlPreview() {
 
             {/* Section Content */}
             {open && (
-              <div className="flex flex-1">
-                <div className="flex flex-col flex-1 gap-1">
+              <div className="flex flex-1 min-w-0">
+                <div className="flex flex-col flex-1 gap-1 min-w-0">
                   {/* Box-Model Visualizer */}
-                  <div className="flex flex-col flex-1" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
+                  <div className="flex flex-col flex-1 min-w-0" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
                     {/* Margin layer */}
-                    <div className="relative flex flex-1 overflow-clip" style={{ padding: 24 }}>
+                    <div className="relative flex flex-1 overflow-clip min-w-0" style={{ padding: 24 }}>
                       <Trap side="left" value={0} variant="margin" />
                       <Trap side="top" value={0} variant="margin" />
                       <Trap side="bottom" value={0} variant="margin" />
                       <Trap side="right" value={0} variant="margin" />
 
                       {/* Padding layer */}
-                      <div className="flex flex-1 items-center justify-center relative">
-                        <div className="flex flex-col flex-1 self-stretch" style={{ padding: 1 }}>
-                          <div className="relative flex flex-1" style={{ padding: 24 }}>
+                      <div className="flex flex-1 items-center justify-center relative min-w-0">
+                        <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ padding: 1 }}>
+                          <div className="relative flex flex-1 min-w-0" style={{ padding: 24 }}>
                             <Trap side="left" value={24} variant="padding" />
                             <Trap side="top" value={16} variant="padding" />
                             <Trap side="bottom" value={16} variant="padding" />
                             <Trap side="right" value={24} variant="padding" />
 
                             {/* Center: Property cells */}
-                            <div className="flex flex-col flex-1 self-stretch gap-[1px] items-center justify-center relative">
+                            <div className="flex flex-col flex-1 self-stretch gap-[1px] items-center justify-center relative min-w-0">
                               {/* W row */}
-                              <div className="flex self-stretch gap-[1px]">
+                              <div className="flex self-stretch gap-[1px] min-w-0">
                                 <LabelCell label="W" />
-                                <NumberInput
-                                  value={KEYWORD_UNITS.has(wUnit) ? null : wValue}
-                                  onValueChange={(v) => {
-                                    setWValue(v);
-                                    if (v !== null && KEYWORD_UNITS.has(wUnit)) setWUnit('px');
-                                  }}
-                                  placeholder={KEYWORD_UNITS.has(wUnit) ? wUnit.toUpperCase() : ''}
-                                  active={KEYWORD_UNITS.has(wUnit) || wValue !== null}
-                                  className="flex-1"
-                                  suffix={
-                                    <Dropdown
-                                      value={wUnit}
-                                      onValueChange={setWUnit}
-                                      options={MAIN_UNIT_OPTIONS}
-                                      className="shrink-0"
-                                      hideCaret
-                                    />
-                                  }
-                                />
+                                {KEYWORD_UNITS.has(wUnit) ? (
+                                  <KeywordCell
+                                    text={wUnit}
+                                    className="flex-1"
+                                    suffix={
+                                      <Dropdown
+                                        value={wUnit}
+                                        onValueChange={setWUnit}
+                                        options={MAIN_UNIT_OPTIONS}
+                                        className="shrink-0"
+                                        hideLabel
+                                      />
+                                    }
+                                  />
+                                ) : (
+                                  <NumberInput
+                                    value={wValue}
+                                    onValueChange={setWValue}
+                                    active={wValue !== null}
+                                    className="flex-1"
+                                    suffix={
+                                      <Dropdown
+                                        value={wUnit}
+                                        onValueChange={setWUnit}
+                                        options={MAIN_UNIT_OPTIONS}
+                                        className="shrink-0"
+                                        hideCaret
+                                      />
+                                    }
+                                  />
+                                )}
                                 <NumberInput
                                   value={wMin}
                                   onValueChange={setWMin}
@@ -355,27 +377,39 @@ export default function CtrlPreview() {
                                 />
                               </div>
                               {/* H row */}
-                              <div className="flex self-stretch gap-[1px]">
+                              <div className="flex self-stretch gap-[1px] min-w-0">
                                 <LabelCell label="H" />
-                                <NumberInput
-                                  value={KEYWORD_UNITS.has(hUnit) ? null : hValue}
-                                  onValueChange={(v) => {
-                                    setHValue(v);
-                                    if (v !== null && KEYWORD_UNITS.has(hUnit)) setHUnit('px');
-                                  }}
-                                  placeholder={KEYWORD_UNITS.has(hUnit) ? hUnit.toUpperCase() : ''}
-                                  active={KEYWORD_UNITS.has(hUnit) || hValue !== null}
-                                  className="flex-1"
-                                  suffix={
-                                    <Dropdown
-                                      value={hUnit}
-                                      onValueChange={setHUnit}
-                                      options={MAIN_UNIT_OPTIONS}
-                                      className="shrink-0"
-                                      hideCaret
-                                    />
-                                  }
-                                />
+                                {KEYWORD_UNITS.has(hUnit) ? (
+                                  <KeywordCell
+                                    text={hUnit}
+                                    className="flex-1"
+                                    suffix={
+                                      <Dropdown
+                                        value={hUnit}
+                                        onValueChange={setHUnit}
+                                        options={MAIN_UNIT_OPTIONS}
+                                        className="shrink-0"
+                                        hideLabel
+                                      />
+                                    }
+                                  />
+                                ) : (
+                                  <NumberInput
+                                    value={hValue}
+                                    onValueChange={setHValue}
+                                    active={hValue !== null}
+                                    className="flex-1"
+                                    suffix={
+                                      <Dropdown
+                                        value={hUnit}
+                                        onValueChange={setHUnit}
+                                        options={MAIN_UNIT_OPTIONS}
+                                        className="shrink-0"
+                                        hideCaret
+                                      />
+                                    }
+                                  />
+                                )}
                                 <NumberInput
                                   value={hMin}
                                   onValueChange={setHMin}

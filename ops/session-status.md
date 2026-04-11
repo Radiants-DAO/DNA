@@ -1,45 +1,43 @@
-## Session Status — 2026-04-10 (Ctrl Visual Fidelity + Layout Inspector Panel)
+## Session Status — 2026-04-10 (Ctrl NumberInput + IconRadioGroup + Tooltip)
 
 **Plan:** `~/.claude/plans/melodic-wiggling-dongarra.md` (Visual Fidelity Pass)
-**Branch:** main (103 commits ahead of origin, all auto-committed, tree clean)
-**Working surface:** `apps/rad-os/app/ctrl-preview/page.tsx` — Layout Inspector Panel from Paper node SJE-0
+**Branch:** main (clean)
+**Working surface:** `apps/rad-os/app/ctrl-preview/page.tsx` — Layout Inspector Panel
 
-### Completed
-[7 earlier tasks completed — ctrl.css tokens, @source, 25 components restyled, new components]
-- [x] Layout Inspector Panel built on ctrl-preview — near-perfect visual fidelity to Paper SJE-0
-- [x] Ctrl CSS dark mode fix — semantic aliases moved to `:root, .dark {}` (not `@theme`) so `var()` resolves per color mode
-- [x] Body font color — `--ctrl-label` = `color-mix(in oklch, var(--color-main) 50%, transparent)` (cream at 50%)
-- [x] Dropdown component — `packages/ctrl/selectors/Dropdown/Dropdown.tsx` wrapping `@base-ui/react/select` with ctrl styling
-- [x] Dropdown wired into W/H rows of Layout Inspector Panel (4 dropdowns, full popup + state update verified)
-- [x] Memory docs: `feedback_ctrl_theme_dark_mode.md`, `feedback_ctrl_portal_tokens.md`
+### Completed this session
+- [x] **NumberInput** — `packages/ctrl/controls/NumberInput/NumberInput.tsx` wraps `@base-ui/react/number-field`. Uses `NumberField.Root` + `NumberField.ScrubArea` (horizontal pointer-lock scrub, 2px sensitivity) + `NumberField.Input`. Cell shape matches Dropdown trigger (24px, black bg). Props: `value`, `onValueChange`, `min/max/step/smallStep/largeStep`, `placeholder`, `active`, `prefix`, `suffix`, `pixelSensitivity`, `format`.
+- [x] **Tooltip** — `packages/ctrl/readouts/Tooltip/Tooltip.tsx` wraps `@base-ui/react/tooltip` with dark cell styling (8px uppercase cream on black, pixel-art drop shadow). Exports `Tooltip` + `TooltipProvider`. Children render via `cloneElement(child, triggerProps)` so it works with any single React element trigger.
+- [x] **IconRadioGroup** — `packages/ctrl/selectors/IconRadioGroup/IconRadioGroup.tsx` wraps `@base-ui/react/radio-group` + `@base-ui/react/radio`. Each item = 20px-tall black cell with icon centered; active = accent color + glow. Every item auto-wrapped in a ctrl `Tooltip` for hover discovery.
+- [x] **Dropdown.hideLabel** prop — Dropdown trigger now supports `hideLabel` so the suffix can be a caret-only (▾) control in keyword mode.
+- [x] **ctrl-preview wired** —
+  - W row: `KeywordCell` (FILL/FIT/AUTO) OR `NumberInput` (numeric) based on unit. Unit dropdown uses `hideLabel` in keyword mode, `hideCaret` in numeric mode. Switching unit flips the cell mode.
+  - H row: same pattern (defaults to `10 VH`).
+  - MIN/MAX cells: `NumberInput` with `placeholder="-"` and `SuffixLabel` showing "MIN"/"MAX" text.
+  - Icon strip: `IconRadioGroup` with 5 options (Visible/Resize/Position/Float/Auto) + tooltips.
+  - Whole page wrapped in `TooltipProvider`.
+- [x] Flex min-w-0 chain added through box-model visualizer so NumberInput cells shrink to panel width (353px).
+- [x] Typecheck clean across `packages/ctrl` and `apps/rad-os`.
+- [x] Verified in browser: dropdown popup opens, mode switching works (FILL → PX flips to numeric cell), tooltips render on hover, radio selection updates.
 
-### In Progress
-- [ ] ~Layout Inspector Panel refinement~ — core done, dropdowns wired. Next: wire more ctrl primitives.
-
-### Remaining
-- [ ] Refactor `PanelTitle` to match Paper's L-shape trailing rule (top + right border, not horizontal line)
-- [ ] Refactor `Section` to support header controls slot (toggle + collapse action in the rule line)
-- [ ] Refactor `PropertyRow` to be a multi-cell grid (label + N value cells with 1px gap) instead of label + single children
-- [ ] Build `Toggle` ctrl variant at 16px micro-size (for the MIN/MAX toggle in Section headers)
-- [ ] **Namespace migration**: ctrl color tokens → `--color-ctrl-*` so Tailwind `text-ctrl-label`, `bg-ctrl-cell-bg`, `border-ctrl-*` utilities actually generate (currently silent no-ops across all 25+ ctrl components)
-- [ ] Replace custom `Trap`/`LabelCell`/`ValueCell` helpers in ctrl-preview page with refactored ctrl primitives
+### Remaining (backlog from earlier session)
+- [ ] Refactor PanelTitle (L-shape trailing rule)
+- [ ] Refactor Section (header controls slot)
+- [ ] Refactor PropertyRow (multi-cell grid)
+- [ ] Build Toggle micro-size (16px) for Section MIN/MAX
+- [ ] Namespace migration: `--ctrl-*` → `--color-ctrl-*` so Tailwind utilities pick them up
+- [ ] Replace Trap/LabelCell inline helpers with refactored ctrl primitives
+- [ ] Padding/Margin labeled bars (new Paper selection shows MARGIN / BORDER / PADDING as labeled horizontal bars instead of just trapezoids)
 
 ### Next Action
-> Refactor `PropertyRow` to a multi-cell grid (label + N value cells with 1px gap), then use it in the Layout Inspector Panel to replace the inline `flex gap-[1px]` rows.
+> User-directed. Likely the new Paper selection: MARGIN/BORDER/PADDING labeled bars, or continue on Section/PropertyRow refactors.
 
-### What to Test
-Based on recent file changes in `packages/ctrl/`:
-- [ ] Layout Inspector Panel at `localhost:3000/ctrl-preview` — dropdowns open, items show, selection updates trigger
-- [ ] Dark mode: all `--ctrl-*` tokens resolve to cream values (verified via getComputedStyle on `.dark` element)
-- [ ] Portal behavior: Dropdown popup uses `var(--color-cream)` (not `--color-main`) — works outside `.dark` context
-- [ ] Keyboard nav on Dropdown (base-ui provides: arrows, home/end, type-ahead)
-- [ ] Active states: H row "10" shows gold glow; other values show cream 50%
+### What to test
+- [ ] `localhost:3000/ctrl-preview` — drag a numeric cell (H=10) to scrub; click FILL dropdown → pick PX → type a number; hover an icon to see tooltip; click a different radio.
+- [ ] Keyboard a11y on NumberField inputs (arrow keys to step).
 
-### Team Status
-No active agents
-
-### Key Learnings This Session
-1. **Tailwind v4 `@theme` freezes var() at build time** — Can't use `@theme` for semantic aliases that need to flip between color modes. Put static values in `@theme` (for utility generation), put `var()` aliases in `:root, .dark {}`.
-2. **Portals escape `.dark`** — base-ui portals mount on `document.body`, outside the `.dark` wrapper. Mode-flipping tokens resolve to light-mode values inside portals. Fix: use brand primitives (`--color-cream`, `--color-ink`) inside portal content.
-3. **Tailwind v4 only generates color utilities from `--color-*` namespace** — `text-ctrl-label` / `bg-ctrl-cell-bg` / `border-ctrl-*` currently don't exist as CSS rules. All ctrl component Tailwind class usage is silent no-op. Fix requires namespace migration.
-4. **Dropdown architecture decision**: ctrl wraps `@base-ui/react` directly (same layer as radiants), NOT radiants components. Keeps visual languages independent, shares behavior.
+### Key learnings
+1. BaseUI `NumberField.ScrubArea` handles pointer-lock drag natively — no custom hook needed for numeric scrubbing.
+2. `NumberField` is strictly numeric (`value: number | null`); for mixed text/keyword cells, composite at the page level with a separate `KeywordCell`.
+3. BaseUI Tooltip.Trigger must wrap its target via render prop + `cloneElement` so the child element receives the trigger's event handlers.
+4. Flex containers need `min-w-0` all the way down the chain — otherwise children demand their content width and overflow.
+5. `Dropdown` with `hideLabel` gives a compact caret-only trigger; `hideCaret` gives label-only — combine as needed per layout.

@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 
 // =============================================================================
@@ -14,14 +14,12 @@ import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 export interface TooltipProps {
   /** Tooltip content (usually a short label) */
   content: ReactNode;
-  /** Trigger element */
-  children: ReactNode;
+  /** Trigger element — must be a single React element so the tooltip trigger props can merge in */
+  children: ReactElement;
   /** Which side to place the popup on — defaults to 'bottom' */
   side?: 'top' | 'right' | 'bottom' | 'left';
   /** Pixels of gap between trigger and popup */
   sideOffset?: number;
-  /** Delay before showing in ms */
-  delay?: number;
 }
 
 const POPUP: React.CSSProperties = {
@@ -40,12 +38,16 @@ const POPUP: React.CSSProperties = {
 
 /**
  * Ctrl Tooltip — must be rendered inside a <TooltipProvider> (rendered once at
- * a high point in the tree, e.g. app root or page root).
+ * a high point in the tree, e.g. app root or page root) to control show delay.
  */
-export function Tooltip({ content, children, side = 'bottom', sideOffset = 4, delay = 200 }: TooltipProps) {
+export function Tooltip({ content, children, side = 'bottom', sideOffset = 4 }: TooltipProps) {
   return (
-    <BaseTooltip.Root delay={delay}>
-      <BaseTooltip.Trigger render={children as React.ReactElement} />
+    <BaseTooltip.Root>
+      <BaseTooltip.Trigger
+        render={(props) =>
+          isValidElement(children) ? cloneElement(children, props) : <span {...props}>{children}</span>
+        }
+      />
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner side={side} sideOffset={sideOffset} className="z-50">
           <BaseTooltip.Popup className="font-mono" style={POPUP}>

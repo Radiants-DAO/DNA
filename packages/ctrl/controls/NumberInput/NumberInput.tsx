@@ -83,7 +83,7 @@ export function NumberInput({
         <div
           {...props}
           data-rdna="ctrl-number-input"
-          className={['flex items-center bg-black font-mono', className].filter(Boolean).join(' ')}
+          className={['flex items-center bg-black font-mono min-w-0', className].filter(Boolean).join(' ')}
           style={{ height: 24 }}
         >
           <NumberField.ScrubArea
@@ -92,7 +92,7 @@ export function NumberInput({
             render={(props) => (
               <span
                 {...props}
-                className="flex flex-1 items-center self-stretch"
+                className="flex flex-1 items-center self-stretch min-w-0"
                 style={{
                   cursor: disabled ? 'default' : 'ew-resize',
                   paddingInline: 4,
