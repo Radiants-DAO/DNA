@@ -252,7 +252,9 @@ export default class Editor extends EventDispatcher {
 
   adjustInitialZoomScale(dimensions: Dimensions, initScale?: number) {
     const { width, height } = dimensions;
-    const minMargin = 20;
+    // Was 20 upstream — forced a permanent inset around the grid even when the
+    // container matched the data. We want the grid to fill the container.
+    const minMargin = 0;
     const gridWidth = width * this.gridSquareLength;
     const canvasWidth = this.width;
     const gridHeight = height * this.gridSquareLength;

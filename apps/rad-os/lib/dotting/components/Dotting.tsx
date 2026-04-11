@@ -401,6 +401,13 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         const rect = containerRef.current.getBoundingClientRect();
         editor.setSize(rect.width, rect.height, dpr);
         editor.scale(dpr, dpr);
+        // Re-fit the grid to the new canvas bounds — without this, setSize only
+        // grows the underlying <canvas> element and leaves the grid stranded at
+        // the old scale/offset.
+        editor.adjustInitialZoomScale({
+          width: editor.getColumnCount(),
+          height: editor.getRowCount(),
+        });
         editor.renderAll();
       }
     };
