@@ -40,30 +40,28 @@ const TRAP_POS: Record<Side, React.CSSProperties> = {
   right: { right: -1, top: 0, bottom: 0, width: 24 },
 };
 
-function Trap({ side, value, variant }: {
-  side: Side;
-  value: string | number;
-  variant: 'margin' | 'padding';
-}) {
-  const active = variant === 'padding' && value !== 0 && value !== '0';
+function TrapPip({ side, variant }: { side: Side; variant: 'margin' | 'padding' }) {
+  const isHorizontal = side === 'top' || side === 'bottom';
   return (
     <div
       className="absolute flex items-center justify-center"
       style={{ ...TRAP_POS[side], clipPath: CLIP[side], backgroundColor: BOX[variant] }}
     >
-      <span
-        className="shrink-0 text-center uppercase"
+      <div
+        className="shrink-0"
         style={{
-          fontSize: 10,
-          lineHeight: 'round(up, 100%, 1px)',
-          ...(active ? { color: 'var(--color-accent)', textShadow: GLOW } : {}),
+          backgroundColor: BOX.outline,
+          boxShadow: isHorizontal
+            ? `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px`
+            : 'inset 0 2px 3px #00000033',
+          width: isHorizontal ? 3 : 1,
+          height: isHorizontal ? 1 : 3,
         }}
-      >
-        {value}
-      </span>
+      />
     </div>
   );
 }
+
 
 // ── Cell Primitives ────────────────────────────────────────────────────────
 
@@ -162,6 +160,110 @@ function IconFloat() {
       <path fill="currentColor" d="M3 4H8V11H3Z" style={{ opacity: 0.3 }} />
       <path fill="currentColor" d="M1 2H15V3H1ZM1 11H9V12H1ZM12 5H13V10H12ZM11 10H14V11H11ZM12 11H13V12H12Z" />
     </svg>
+  );
+}
+
+/** 11x11 — cross inside a dim bordered square. Used for margin + border color "lock" indicator. */
+function IconLock() {
+  return (
+    <div className="shrink-0 relative" style={{ width: 11, height: 11 }}>
+      <div style={{ position: 'absolute', top: 0, left: '50%', translate: '-50%', width: 5, height: 1, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', bottom: 0, left: '50%', translate: '-50%', width: 5, height: 1, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', right: 0, top: '50%', translate: '0 -50%', width: 1, height: 5, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', left: 0, top: '50%', translate: '0 -50%', width: 1, height: 5, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', top: '50%', left: '50%', translate: '-50% -50%', width: 7, height: 7, border: `1px solid ${BOX.outline}` }} />
+    </div>
+  );
+}
+
+/** 11x11 — vertical bar with dots top/bottom. Used for padding row label icon. */
+function IconPaddingGlyph() {
+  return (
+    <div className="shrink-0 relative" style={{ width: 11, height: 11, border: `1px solid ${BOX.outline}` }}>
+      <div style={{ position: 'absolute', top: 1, left: 3, width: 3, height: 1, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', top: 7, left: 3, width: 3, height: 1, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', top: 3, left: 7, width: 1, height: 3, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+      <div style={{ position: 'absolute', top: 3, left: 1, width: 1, height: 3, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+    </div>
+  );
+}
+
+/** 11x11 — four L-bracket corners inside a dim bordered square. Used for corner-radius row. */
+function IconCornerRadius() {
+  return (
+    <div className="shrink-0 relative" style={{ width: 11, height: 11 }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', translate: '-50% -50%', width: 7, height: 7, border: `1px solid ${BOX.outline}` }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: 3, borderTop: '1px solid var(--color-accent)', borderLeft: '1px solid var(--color-accent)' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, width: 3, height: 3, borderBottom: '1px solid var(--color-accent)', borderLeft: '1px solid var(--color-accent)' }} />
+      <div style={{ position: 'absolute', top: 0, right: 0, width: 3, height: 3, borderTop: '1px solid var(--color-accent)', borderRight: '1px solid var(--color-accent)' }} />
+      <div style={{ position: 'absolute', bottom: 0, right: 0, width: 3, height: 3, borderBottom: '1px solid var(--color-accent)', borderRight: '1px solid var(--color-accent)' }} />
+    </div>
+  );
+}
+
+/** Border-style picker — 4 patterns (2 bars, 6 dots, 3 dashes, 1 yellow bar = active). */
+function BorderStylePicker() {
+  return (
+    <div className="flex items-center" style={{ gap: 4 }}>
+      <div className="flex flex-col" style={{ gap: 1 }}>
+        <div style={{ width: 11, height: 1, backgroundColor: BOX.outline }} />
+        <div style={{ width: 11, height: 1, backgroundColor: BOX.outline }} />
+      </div>
+      <div className="flex" style={{ gap: 1 }}>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} style={{ width: 1, height: 1, backgroundColor: BOX.outline }} />
+        ))}
+      </div>
+      <div className="flex" style={{ gap: 1 }}>
+        <div style={{ width: 3, height: 1, backgroundColor: BOX.outline }} />
+        <div style={{ width: 3, height: 1, backgroundColor: BOX.outline }} />
+        <div style={{ width: 3, height: 1, backgroundColor: BOX.outline }} />
+      </div>
+      <div style={{ width: 11, height: 1, backgroundColor: 'var(--color-accent)', boxShadow: GLOW_SOFT }} />
+    </div>
+  );
+}
+
+/** Reusable pixel-code label text — the small 8px cream/accent caption style. */
+function CaptionText({
+  children,
+  accent = false,
+  className = '',
+}: {
+  children: React.ReactNode;
+  accent?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      className={['uppercase', className].filter(Boolean).join(' ')}
+      style={{
+        fontSize: 8,
+        lineHeight: '10px',
+        ...(accent
+          ? { color: 'var(--color-accent)', textShadow: GLOW_SOFT }
+          : { color: 'var(--ctrl-label)' }),
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Big value text — 10px cream with glow, used for px values in labeled rows. */
+function ValueText({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      className="text-center"
+      style={{
+        fontSize: 10,
+        lineHeight: 'round(up, 100%, 1px)',
+        color: 'var(--color-main)',
+        textShadow: GLOW,
+      }}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -307,132 +409,230 @@ export default function CtrlPreview() {
             {open && (
               <div className="flex flex-1 min-w-0">
                 <div className="flex flex-col flex-1 gap-1 min-w-0">
+                  {/* W/H rows — external, above box model */}
+                  <div className="flex flex-col shrink-0 min-w-0" style={{ gap: 1 }}>
+                    {/* W row */}
+                    <div className="flex self-stretch gap-[1px] min-w-0">
+                      <LabelCell label="W" />
+                      {KEYWORD_UNITS.has(wUnit) ? (
+                        <KeywordCell
+                          text={wUnit}
+                          className="flex-1"
+                          suffix={
+                            <Dropdown
+                              value={wUnit}
+                              onValueChange={setWUnit}
+                              options={MAIN_UNIT_OPTIONS}
+                              className="shrink-0"
+                              hideLabel
+                            />
+                          }
+                        />
+                      ) : (
+                        <NumberInput
+                          value={wValue}
+                          onValueChange={setWValue}
+                          active={wValue !== null}
+                          className="flex-1"
+                          suffix={
+                            <Dropdown
+                              value={wUnit}
+                              onValueChange={setWUnit}
+                              options={MAIN_UNIT_OPTIONS}
+                              className="shrink-0"
+                              hideCaret
+                            />
+                          }
+                        />
+                      )}
+                      <NumberInput
+                        value={wMin}
+                        onValueChange={setWMin}
+                        placeholder="-"
+                        className="flex-1"
+                        suffix={<SuffixLabel text="MIN" />}
+                      />
+                      <NumberInput
+                        value={wMax}
+                        onValueChange={setWMax}
+                        placeholder="-"
+                        className="flex-1"
+                        suffix={<SuffixLabel text="MAX" />}
+                      />
+                    </div>
+                    {/* H row */}
+                    <div className="flex self-stretch gap-[1px] min-w-0">
+                      <LabelCell label="H" />
+                      {KEYWORD_UNITS.has(hUnit) ? (
+                        <KeywordCell
+                          text={hUnit}
+                          className="flex-1"
+                          suffix={
+                            <Dropdown
+                              value={hUnit}
+                              onValueChange={setHUnit}
+                              options={MAIN_UNIT_OPTIONS}
+                              className="shrink-0"
+                              hideLabel
+                            />
+                          }
+                        />
+                      ) : (
+                        <NumberInput
+                          value={hValue}
+                          onValueChange={setHValue}
+                          active={hValue !== null}
+                          className="flex-1"
+                          suffix={
+                            <Dropdown
+                              value={hUnit}
+                              onValueChange={setHUnit}
+                              options={MAIN_UNIT_OPTIONS}
+                              className="shrink-0"
+                              hideCaret
+                            />
+                          }
+                        />
+                      )}
+                      <NumberInput
+                        value={hMin}
+                        onValueChange={setHMin}
+                        placeholder="-"
+                        className="flex-1"
+                        suffix={<SuffixLabel text="MIN" />}
+                      />
+                      <NumberInput
+                        value={hMax}
+                        onValueChange={setHMax}
+                        placeholder="-"
+                        className="flex-1"
+                        suffix={<SuffixLabel text="MAX" />}
+                      />
+                    </div>
+                  </div>
+
                   {/* Box-Model Visualizer */}
                   <div className="flex flex-col flex-1 min-w-0" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
                     {/* Margin layer */}
                     <div className="relative flex flex-1 overflow-clip min-w-0" style={{ padding: 24 }}>
-                      <Trap side="left" value={0} variant="margin" />
-                      <Trap side="top" value={0} variant="margin" />
-                      <Trap side="bottom" value={0} variant="margin" />
-                      <Trap side="right" value={0} variant="margin" />
+                      <TrapPip side="left" variant="margin" />
+                      <TrapPip side="right" variant="margin" />
+                      <TrapPip side="bottom" variant="margin" />
+                      {/* Top margin: labeled row with "margin" + lock icon, plus offset value overlay */}
+                      <div
+                        className="absolute flex items-center"
+                        style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
+                      >
+                        <div
+                          className="flex items-center self-stretch flex-1"
+                          style={{ backgroundColor: '#0A0A08', gap: 4, paddingInline: 24 }}
+                        >
+                          <CaptionText accent className="flex-1">margin</CaptionText>
+                          <IconLock />
+                        </div>
+                        <div className="absolute flex items-start" style={{ left: 168, top: 7, gap: 4 }}>
+                          <ValueText>0</ValueText>
+                          <CaptionText>px</CaptionText>
+                        </div>
+                      </div>
 
-                      {/* Padding layer */}
-                      <div className="flex flex-1 items-center justify-center relative min-w-0">
-                        <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ padding: 1 }}>
-                          <div className="relative flex flex-1 min-w-0" style={{ padding: 24 }}>
-                            <Trap side="left" value={24} variant="padding" />
-                            <Trap side="top" value={16} variant="padding" />
-                            <Trap side="bottom" value={16} variant="padding" />
-                            <Trap side="right" value={24} variant="padding" />
-
-                            {/* Center: Property cells */}
-                            <div className="flex flex-col flex-1 self-stretch gap-[1px] items-center justify-center relative min-w-0">
-                              {/* W row */}
-                              <div className="flex self-stretch gap-[1px] min-w-0">
-                                <LabelCell label="W" />
-                                {KEYWORD_UNITS.has(wUnit) ? (
-                                  <KeywordCell
-                                    text={wUnit}
-                                    className="flex-1"
-                                    suffix={
-                                      <Dropdown
-                                        value={wUnit}
-                                        onValueChange={setWUnit}
-                                        options={MAIN_UNIT_OPTIONS}
-                                        className="shrink-0"
-                                        hideLabel
-                                      />
-                                    }
-                                  />
-                                ) : (
-                                  <NumberInput
-                                    value={wValue}
-                                    onValueChange={setWValue}
-                                    active={wValue !== null}
-                                    className="flex-1"
-                                    suffix={
-                                      <Dropdown
-                                        value={wUnit}
-                                        onValueChange={setWUnit}
-                                        options={MAIN_UNIT_OPTIONS}
-                                        className="shrink-0"
-                                        hideCaret
-                                      />
-                                    }
-                                  />
-                                )}
-                                <NumberInput
-                                  value={wMin}
-                                  onValueChange={setWMin}
-                                  placeholder="-"
-                                  className="flex-1"
-                                  suffix={<SuffixLabel text="MIN" />}
-                                />
-                                <NumberInput
-                                  value={wMax}
-                                  onValueChange={setWMax}
-                                  placeholder="-"
-                                  className="flex-1"
-                                  suffix={<SuffixLabel text="MAX" />}
-                                />
-                              </div>
-                              {/* H row */}
-                              <div className="flex self-stretch gap-[1px] min-w-0">
-                                <LabelCell label="H" />
-                                {KEYWORD_UNITS.has(hUnit) ? (
-                                  <KeywordCell
-                                    text={hUnit}
-                                    className="flex-1"
-                                    suffix={
-                                      <Dropdown
-                                        value={hUnit}
-                                        onValueChange={setHUnit}
-                                        options={MAIN_UNIT_OPTIONS}
-                                        className="shrink-0"
-                                        hideLabel
-                                      />
-                                    }
-                                  />
-                                ) : (
-                                  <NumberInput
-                                    value={hValue}
-                                    onValueChange={setHValue}
-                                    active={hValue !== null}
-                                    className="flex-1"
-                                    suffix={
-                                      <Dropdown
-                                        value={hUnit}
-                                        onValueChange={setHUnit}
-                                        options={MAIN_UNIT_OPTIONS}
-                                        className="shrink-0"
-                                        hideCaret
-                                      />
-                                    }
-                                  />
-                                )}
-                                <NumberInput
-                                  value={hMin}
-                                  onValueChange={setHMin}
-                                  placeholder="-"
-                                  className="flex-1"
-                                  suffix={<SuffixLabel text="MIN" />}
-                                />
-                                <NumberInput
-                                  value={hMax}
-                                  onValueChange={setHMax}
-                                  placeholder="-"
-                                  className="flex-1"
-                                  suffix={<SuffixLabel text="MAX" />}
-                                />
-                              </div>
-                              {/* Icon strip — display mode radio group with tooltips */}
-                              <IconRadioGroup
-                                value={display}
-                                onValueChange={setDisplay}
-                                options={DISPLAY_OPTIONS}
-                                cellHeight={20}
-                              />
+                      {/* Center content — 3 rows: Border / Padding box / Corner Radius */}
+                      <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ gap: 1 }}>
+                        {/* ── Border row ── */}
+                        <div className="relative flex self-stretch shrink-0" style={{ gap: 1, height: 24 }}>
+                          <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
+                            <div style={{ width: 6, height: 6, borderTop: `1px solid ${BOX.outline}`, borderLeft: `1px solid ${BOX.outline}` }} />
+                          </div>
+                          <div
+                            className="flex items-center flex-1 self-stretch min-w-0"
+                            style={{ backgroundColor: '#0A0A08', gap: 4, paddingLeft: 8, paddingRight: 4 }}
+                          >
+                            <div className="flex items-center flex-1 min-w-0" style={{ gap: 8 }}>
+                              <CaptionText accent>Border</CaptionText>
+                              <BorderStylePicker />
                             </div>
+                            <div
+                              className="shrink-0"
+                              style={{ width: 10, height: 10, backgroundColor: 'var(--color-accent)', boxShadow: 'var(--color-accent) 0 0 2px' }}
+                            />
+                            <CaptionText>#FCE184</CaptionText>
+                            <IconLock />
+                          </div>
+                          <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4 }}>
+                            <div style={{ width: 6, height: 6, borderTop: `1px solid ${BOX.outline}`, borderRight: `1px solid ${BOX.outline}` }} />
+                          </div>
+                          <div className="absolute flex items-start" style={{ left: '50%', top: '50%', translate: '-50% -50%', gap: 4 }}>
+                            <ValueText>2</ValueText>
+                            <CaptionText>px</CaptionText>
+                          </div>
+                        </div>
+
+                        {/* ── Padding row (flex 1) ── */}
+                        <div className="flex self-stretch flex-1 min-w-0" style={{ gap: 1 }}>
+                          {/* Left pip cell */}
+                          <div className="flex items-center justify-center shrink-0 overflow-clip" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
+                            <div style={{ width: 1, height: 3, backgroundColor: BOX.outline, boxShadow: 'inset 0 2px 3px #00000033' }} />
+                          </div>
+
+                          {/* Yellow-bordered padding box */}
+                          <div className="flex flex-col flex-1 self-stretch min-w-0">
+                            <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ paddingInline: 1 }}>
+                              <div
+                                className="relative flex flex-1 items-center justify-center overflow-clip self-stretch min-w-0"
+                                style={{ padding: 24, border: '2px solid var(--color-accent)', borderRadius: 4 }}
+                              >
+                                <TrapPip side="left" variant="padding" />
+                                <TrapPip side="right" variant="padding" />
+                                <TrapPip side="bottom" variant="padding" />
+                                {/* Top padding: labeled row */}
+                                <div
+                                  className="absolute flex items-center"
+                                  style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
+                                >
+                                  <div
+                                    className="flex items-center self-stretch flex-1 relative"
+                                    style={{ backgroundColor: '#0A0A08', gap: 4, paddingInline: 22 }}
+                                  >
+                                    <CaptionText accent className="flex-1">padding</CaptionText>
+                                    <IconPaddingGlyph />
+                                    <div className="absolute flex items-start" style={{ left: '50%', top: '50%', translate: '-50% -50%', gap: 4 }}>
+                                      <ValueText>2</ValueText>
+                                      <CaptionText>px</CaptionText>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Center: display mode icon strip only (W/H moved to top) */}
+                                <div className="flex flex-col flex-1 self-stretch items-center justify-center relative min-w-0" style={{ gap: 1 }}>
+                                  <IconRadioGroup
+                                    value={display}
+                                    onValueChange={setDisplay}
+                                    options={DISPLAY_OPTIONS}
+                                    cellHeight={20}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right pip cell */}
+                          <div className="flex items-center justify-center shrink-0 overflow-clip" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
+                            <div style={{ width: 1, height: 3, backgroundColor: BOX.outline, boxShadow: 'inset 0 2px 3px #00000033' }} />
+                          </div>
+                        </div>
+
+                        {/* ── Corner radius row ── */}
+                        <div className="flex self-stretch shrink-0" style={{ gap: 1, height: 24 }}>
+                          <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
+                            <div style={{ width: 6, height: 6, borderBottom: `1px solid ${BOX.outline}`, borderLeft: `1px solid ${BOX.outline}` }} />
+                          </div>
+                          <div className="flex items-center justify-center flex-1 overflow-clip" style={{ backgroundColor: 'oklch(0 0 0 / 0.8)' }}>
+                            <div style={{ width: 3, height: 1, backgroundColor: BOX.outline, boxShadow: `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px` }} />
+                          </div>
+                          <div className="flex items-center" style={{ backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4, gap: 4 }}>
+                            <ValueText>0</ValueText>
+                            <CaptionText>px</CaptionText>
+                            <IconCornerRadius />
                           </div>
                         </div>
                       </div>
