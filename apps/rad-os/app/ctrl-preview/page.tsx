@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef, useRef, useState } from 'react';
+import { NumberField } from '@base-ui/react/number-field';
 import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
 import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
@@ -40,26 +41,76 @@ const TRAP_POS: Record<Side, React.CSSProperties> = {
   right: { right: -1, top: 0, bottom: 0, width: 24 },
 };
 
-function TrapPip({ side, variant }: { side: Side; variant: 'margin' | 'padding' }) {
-  const isHorizontal = side === 'top' || side === 'bottom';
+/**
+ * ScrubTrap — makes an arbitrary div into a vertical-scrub surface by wrapping
+ * base-ui NumberField.Root + ScrubArea. The Root renders as `display: contents`
+ * so it stays layout-transparent; the ScrubArea renders the caller's element.
+ */
+function ScrubTrap({
+  value,
+  onValueChange,
+  step = 1,
+  pixelSensitivity = 2,
+  className = '',
+  style,
+  children,
+}: {
+  value: number;
+  onValueChange: (v: number) => void;
+  step?: number;
+  pixelSensitivity?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}) {
+  return (
+    <NumberField.Root
+      value={value}
+      onValueChange={(v) => onValueChange(v ?? 0)}
+      step={step}
+      min={0}
+      render={<span style={{ display: 'contents' }} />}
+    >
+      <NumberField.ScrubArea
+        direction="vertical"
+        pixelSensitivity={pixelSensitivity}
+        render={(props) => (
+          <div
+            {...props}
+            className={['absolute', className].filter(Boolean).join(' ')}
+            style={{ ...style, cursor: 'ns-resize', touchAction: 'none' }}
+          >
+            {children}
+          </div>
+        )}
+      />
+      {/* Hidden input — base-ui's ScrubArea reads the root context's inputRef;
+          we keep it mounted but invisible so focus() calls don't throw. */}
+      <NumberField.Input tabIndex={-1} aria-hidden className="sr-only absolute" />
+    </NumberField.Root>
+  );
+}
+
+/** Visual pip — the small centered dot/dash inside a side trapezoid. */
+function Pip({ horizontal }: { horizontal: boolean }) {
   return (
     <div
-      className="absolute flex items-center justify-center"
-      style={{ ...TRAP_POS[side], clipPath: CLIP[side], backgroundColor: BOX[variant] }}
-    >
-      <div
-        className="shrink-0"
-        style={{
-          backgroundColor: BOX.outline,
-          boxShadow: isHorizontal
-            ? `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px`
-            : 'inset 0 2px 3px #00000033',
-          width: isHorizontal ? 3 : 1,
-          height: isHorizontal ? 1 : 3,
-        }}
-      />
-    </div>
+      className="shrink-0"
+      style={{
+        backgroundColor: BOX.outline,
+        boxShadow: horizontal
+          ? `${BOX.outline} 0 0 0.5px, ${BOX.outline} 0 0 3px`
+          : 'inset 0 2px 3px #00000033',
+        width: horizontal ? 3 : 1,
+        height: horizontal ? 1 : 3,
+      }}
+    />
   );
+}
+
+/** Style for a trapezoid side — combines position, clip-path, and variant bg. */
+function trapStyle(side: Side, variant: 'margin' | 'padding'): React.CSSProperties {
+  return { ...TRAP_POS[side], clipPath: CLIP[side], backgroundColor: BOX[variant] };
 }
 
 
@@ -318,6 +369,17 @@ export default function CtrlPreview() {
 
   const [display, setDisplay] = useState('show');
 
+  // Box-model values — 4 sides for margin & padding, single for border + radius
+  const [margin, setMargin] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
+  const [padding, setPadding] = useState({ top: 2, right: 2, bottom: 2, left: 2 });
+  const [borderWidth, setBorderWidth] = useState(2);
+  const [cornerRadius, setCornerRadius] = useState(0);
+
+  const setMarginSide = (side: Side) => (v: number | null) =>
+    setMargin((m) => ({ ...m, [side]: Math.max(0, v ?? 0) }));
+  const setPaddingSide = (side: Side) => (v: number | null) =>
+    setPadding((p) => ({ ...p, [side]: Math.max(0, v ?? 0) }));
+
   return (
     <TooltipProvider>
       <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
@@ -527,12 +589,35 @@ export default function CtrlPreview() {
                     </div>
                     {/* Margin layer */}
                     <div className="relative flex flex-1 overflow-clip min-w-0" style={{ padding: 24 }}>
-                      <TrapPip side="left" variant="margin" />
-                      <TrapPip side="right" variant="margin" />
-                      <TrapPip side="bottom" variant="margin" />
+                      <ScrubTrap
+                        value={margin.left}
+                        onValueChange={setMarginSide('left')}
+                        className="flex items-center justify-center"
+                        style={trapStyle('left', 'margin')}
+                      >
+                        <Pip horizontal={false} />
+                      </ScrubTrap>
+                      <ScrubTrap
+                        value={margin.right}
+                        onValueChange={setMarginSide('right')}
+                        className="flex items-center justify-center"
+                        style={trapStyle('right', 'margin')}
+                      >
+                        <Pip horizontal={false} />
+                      </ScrubTrap>
+                      <ScrubTrap
+                        value={margin.bottom}
+                        onValueChange={setMarginSide('bottom')}
+                        className="flex items-center justify-center"
+                        style={trapStyle('bottom', 'margin')}
+                      >
+                        <Pip horizontal={true} />
+                      </ScrubTrap>
                       {/* Top margin: labeled row with "margin" + lock icon, plus offset value overlay */}
-                      <div
-                        className="absolute flex items-center"
+                      <ScrubTrap
+                        value={margin.top}
+                        onValueChange={setMarginSide('top')}
+                        className="flex items-center"
                         style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
                       >
                         <div
@@ -543,10 +628,10 @@ export default function CtrlPreview() {
                           <IconLock />
                         </div>
                         <div className="absolute flex items-start" style={{ left: 168, top: 7, gap: 4 }}>
-                          <ValueText>0</ValueText>
+                          <ValueText>{margin.top}</ValueText>
                           <CaptionText>px</CaptionText>
                         </div>
-                      </div>
+                      </ScrubTrap>
 
                       {/* Center content — 3 rows: Border / Padding box / Corner Radius */}
                       <div className="flex flex-col flex-1 self-stretch min-w-0" style={{ gap: 1 }}>
@@ -593,12 +678,35 @@ export default function CtrlPreview() {
                                 className="relative flex flex-1 items-center justify-center overflow-clip self-stretch min-w-0"
                                 style={{ padding: 24, border: '2px solid var(--color-accent)', borderRadius: 4 }}
                               >
-                                <TrapPip side="left" variant="padding" />
-                                <TrapPip side="right" variant="padding" />
-                                <TrapPip side="bottom" variant="padding" />
+                                <ScrubTrap
+                                  value={padding.left}
+                                  onValueChange={setPaddingSide('left')}
+                                  className="flex items-center justify-center"
+                                  style={trapStyle('left', 'padding')}
+                                >
+                                  <Pip horizontal={false} />
+                                </ScrubTrap>
+                                <ScrubTrap
+                                  value={padding.right}
+                                  onValueChange={setPaddingSide('right')}
+                                  className="flex items-center justify-center"
+                                  style={trapStyle('right', 'padding')}
+                                >
+                                  <Pip horizontal={false} />
+                                </ScrubTrap>
+                                <ScrubTrap
+                                  value={padding.bottom}
+                                  onValueChange={setPaddingSide('bottom')}
+                                  className="flex items-center justify-center"
+                                  style={trapStyle('bottom', 'padding')}
+                                >
+                                  <Pip horizontal={true} />
+                                </ScrubTrap>
                                 {/* Top padding: labeled row */}
-                                <div
-                                  className="absolute flex items-center"
+                                <ScrubTrap
+                                  value={padding.top}
+                                  onValueChange={setPaddingSide('top')}
+                                  className="flex items-center"
                                   style={{ ...TRAP_POS.top, clipPath: CLIP.top }}
                                 >
                                   <div
@@ -608,11 +716,11 @@ export default function CtrlPreview() {
                                     <CaptionText accent className="flex-1">padding</CaptionText>
                                     <IconPaddingGlyph />
                                     <div className="absolute flex items-start" style={{ left: '50%', top: '50%', translate: '-50% -50%', gap: 4 }}>
-                                      <ValueText>2</ValueText>
+                                      <ValueText>{padding.top}</ValueText>
                                       <CaptionText>px</CaptionText>
                                     </div>
                                   </div>
-                                </div>
+                                </ScrubTrap>
 
                                 {/* Center: display mode icon strip only (W/H moved to top) */}
                                 <div className="flex flex-col flex-1 self-stretch items-center justify-center relative min-w-0" style={{ gap: 1 }}>
