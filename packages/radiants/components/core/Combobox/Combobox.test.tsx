@@ -28,7 +28,9 @@ describe('Combobox', () => {
   test('renders input', () => {
     const { container } = render(<TestCombobox />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(container.querySelector('.pixel-rounded-xs--wrapper')).toBeInTheDocument();
+    expect(screen.getByRole('combobox').className).toContain('pixel-rounded-xs');
+    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
   test('Combobox.Status is exported in namespace', () => {
@@ -40,7 +42,7 @@ describe('Combobox', () => {
     render(<TestCombobox />);
     await user.click(screen.getByRole('combobox'));
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
-    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(8);
+    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('forwards onOpenChange', async () => {

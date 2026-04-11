@@ -37,7 +37,7 @@ const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
 const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
 const thumbClasses =
-  'w-full rounded-xs bg-line/40 hover:bg-line transition-colors cursor-pointer';
+  'w-full pixel-rounded-xs bg-line/40 hover:bg-line transition-colors cursor-pointer';
 
 // ============================================================================
 // Sub-components

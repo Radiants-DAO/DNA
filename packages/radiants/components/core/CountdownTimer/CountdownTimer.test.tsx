@@ -9,5 +9,6 @@ describe('CountdownTimer', () => {
 
     expect(container.querySelector('[data-rdna="countdowntimer"]')).toBeInTheDocument();
     expect(container.querySelectorAll('svg[viewBox="0 0 12 12"]')).toHaveLength(4);
+    expect(container.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
   });
 });

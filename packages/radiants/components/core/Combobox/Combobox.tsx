@@ -121,11 +121,12 @@ function Root<V = string>({
 function Input({ placeholder = 'Search...', disabled = false, className = '' }: ComboboxInputProps) {
   return (
     <div className="relative">
-      <PixelBorder size="xs" className="w-full">
+      <div className="pixel-rounded-xs--wrapper w-full">
         <BaseCombobox.Input
           placeholder={placeholder}
           disabled={disabled}
           className={`
+            pixel-rounded-xs
             w-full h-8
             px-3 py-1.5
             font-sans text-sm
@@ -138,7 +139,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
             ${className}
           `.trim()}
         />
-      </PixelBorder>
+      </div>
       <BaseCombobox.Trigger
         className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer z-10"
       >

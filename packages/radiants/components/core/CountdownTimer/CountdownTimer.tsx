@@ -82,7 +82,7 @@ const segmentVariants = cva('flex flex-col items-center', {
     variant: {
       default: 'min-w-[3rem]',
       compact: 'min-w-[2rem]',
-      large: 'min-w-[4rem] bg-depth rounded-sm border border-line px-3 py-2',
+      large: 'min-w-[4rem] bg-depth pixel-rounded-sm px-3 py-2',
     },
   },
   defaultVariants: { variant: 'default' },

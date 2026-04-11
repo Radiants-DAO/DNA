@@ -54,11 +54,12 @@ describe('Button', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  test('uses rounded fallback classes instead of legacy pixel-rounded classes', () => {
+  test('uses pixel-rounded classes on bordered button faces', () => {
     render(<Button>Rounded</Button>);
     const face = screen.getByText('Rounded').closest('[data-slot="button-face"]');
+    const classTokens = face?.className.split(/\s+/) ?? [];
 
-    expect(face?.className).toContain('rounded-xs');
-    expect(face?.className).not.toContain('pixel-rounded');
+    expect(face?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 });

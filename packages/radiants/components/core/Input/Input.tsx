@@ -3,7 +3,6 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField } from '@base-ui/react/field';
-import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -252,24 +251,25 @@ function InputControl({
   // In standalone mode, error prop colors the shell border.
   // Inside Root, the Root's invalid + Input.Error handles error display.
   const showStandaloneError = error && !rootCtx;
+  const wrapperClassName = [
+    'pixel-rounded-xs--wrapper',
+    fullWidth ? 'w-full' : '',
+    showStandaloneError ? 'pixel-border-danger' : '',
+  ].filter(Boolean).join(' ');
 
   const inputWithRef = rootCtx ? (
     <BaseField.Control
       ref={ref}
-      render={<input data-rdna="input" className={classes} data-size={size} {...props} />}
+      render={<input data-rdna="input" className={`pixel-rounded-xs ${classes}`.trim()} data-size={size} {...props} />}
     />
   ) : (
-    <input ref={ref} data-rdna="input" className={classes} data-size={size} {...props} />
+    <input ref={ref} data-rdna="input" className={`pixel-rounded-xs ${classes}`.trim()} data-size={size} {...props} />
   );
 
   const wrappedInput = (
-    <PixelBorder
-      size="xs"
-      color={showStandaloneError ? 'var(--color-danger)' : undefined}
-      className={fullWidth ? 'w-full' : ''}
-    >
+    <div className={wrapperClassName}>
       {inputWithRef}
-    </PixelBorder>
+    </div>
   );
 
   if (hasIcon) {
@@ -307,6 +307,11 @@ export function TextArea({
 }: TextAreaProps & { ref?: React.Ref<HTMLTextAreaElement> }) {
   const rootCtx = useInputRootContext();
   const showStandaloneError = error && !rootCtx;
+  const wrapperClassName = [
+    'pixel-rounded-xs--wrapper',
+    fullWidth ? 'w-full' : '',
+    showStandaloneError ? 'pixel-border-danger' : '',
+  ].filter(Boolean).join(' ');
 
   const classes = inputVariants({
     size: 'md',
@@ -318,20 +323,16 @@ export function TextArea({
   const textareaEl = rootCtx ? (
     <BaseField.Control
       ref={ref as React.Ref<HTMLElement>}
-      render={<textarea className={classes} data-size="md" {...props} />}
+      render={<textarea className={`pixel-rounded-xs ${classes}`.trim()} data-size="md" {...props} />}
     />
   ) : (
-    <textarea ref={ref} className={classes} data-size="md" {...props} />
+    <textarea ref={ref} className={`pixel-rounded-xs ${classes}`.trim()} data-size="md" {...props} />
   );
 
   return (
-    <PixelBorder
-      size="xs"
-      color={showStandaloneError ? 'var(--color-danger)' : undefined}
-      className={fullWidth ? 'w-full' : ''}
-    >
+    <div className={wrapperClassName}>
       {textareaEl}
-    </PixelBorder>
+    </div>
   );
 }
 

@@ -2,13 +2,14 @@ import { render, screen } from '@testing-library/react';
 import { Badge } from './Badge';
 
 describe('Badge', () => {
-  test('uses rounded fallback and standard shadow tokens', () => {
+  test('uses pixel-rounded and pixel-shadow tokens', () => {
     render(<Badge>New</Badge>);
     const badge = screen.getByText('New');
+    const classTokens = badge.className.split(/\s+/);
 
-    expect(badge.className).toContain('rounded-xs');
-    expect(badge.className).toContain('shadow-raised');
-    expect(badge.className).not.toContain('pixel-rounded');
-    expect(badge.className).not.toContain('pixel-shadow');
+    expect(badge.className).toContain('pixel-rounded-xs');
+    expect(badge.className).toContain('pixel-shadow-raised');
+    expect(classTokens).not.toContain('rounded-xs');
+    expect(classTokens).not.toContain('shadow-raised');
   });
 });

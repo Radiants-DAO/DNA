@@ -156,7 +156,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
         flex items-center gap-1
         px-3 py-2
         font-sans text-sm
-        rounded-xs border border-line
+        pixel-rounded-xs
         cursor-pointer
         focus-visible:outline-none
         ${className}
@@ -206,7 +206,7 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         block
         px-3 py-2
         font-sans text-sm
-        rounded-xs border border-line
+        pixel-rounded-xs
         focus-visible:outline-none
         ${className}
       `.trim()}

@@ -9,6 +9,133 @@ const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+function pushUnique(points, nextPoint) {
+  const lastPoint = points[points.length - 1];
+  if (!lastPoint || lastPoint[0] !== nextPoint[0] || lastPoint[1] !== nextPoint[1]) {
+    points.push(nextPoint);
+  }
+}
+
+function collectRowRuns(bits, width, height) {
+  const rows = [];
+
+  for (let y = 0; y < height; y += 1) {
+    let left = -1;
+    let right = -1;
+
+    for (let x = 0; x < width; x += 1) {
+      if (bits[y * width + x] !== '1') continue;
+      if (left === -1) left = x;
+      right = x;
+    }
+
+    if (left === -1) continue;
+
+    for (let x = left; x <= right; x += 1) {
+      if (bits[y * width + x] !== '1') {
+        throw new Error(`Non-contiguous pixel row at y=${y}`);
+      }
+    }
+
+    rows.push({ y, left, right });
+  }
+
+  return rows;
+}
+
+function traceOuterPointsFromRuns(rows) {
+  if (!rows.length) throw new Error('Cannot derive outer points from an empty grid');
+
+  const bottom = rows[rows.length - 1];
+  const points = [
+    [bottom.left, bottom.y + 1],
+    [bottom.right + 1, bottom.y + 1],
+  ];
+
+  let currentX = bottom.right + 1;
+  let groupRight = bottom.right;
+  let groupTop = bottom.y;
+
+  for (let index = rows.length - 2; index >= 0; index -= 1) {
+    const row = rows[index];
+    if (row.right === groupRight) {
+      groupTop = row.y;
+      continue;
+    }
+
+    pushUnique(points, [currentX, groupTop]);
+    currentX = row.right + 1;
+    pushUnique(points, [currentX, groupTop]);
+    groupRight = row.right;
+    groupTop = row.y;
+  }
+
+  pushUnique(points, [currentX, groupTop]);
+  return points;
+}
+
+function traceInnerPointsFromRuns(rows) {
+  if (!rows.length) throw new Error('Cannot derive inner points from an empty grid');
+
+  const bottom = rows[rows.length - 1];
+  const top = rows[0];
+  const points = [
+    [bottom.left, bottom.y + 1],
+    [bottom.left + 1, bottom.y + 1],
+  ];
+
+  let currentX = bottom.left + 1;
+  let groupLeft = bottom.left;
+  let groupTop = bottom.y;
+
+  for (let index = rows.length - 2; index >= 0; index -= 1) {
+    const row = rows[index];
+    if (row.left === groupLeft) {
+      groupTop = row.y;
+      continue;
+    }
+
+    pushUnique(points, [currentX, groupTop + 1]);
+    currentX = row.left + 1;
+    pushUnique(points, [currentX, groupTop + 1]);
+    groupLeft = row.left;
+    groupTop = row.y;
+  }
+
+  pushUnique(points, [currentX, groupTop + 1]);
+
+  const topRightX = top.right + 1;
+  pushUnique(points, [topRightX, groupTop + 1]);
+  pushUnique(points, [topRightX, top.y]);
+
+  return points;
+}
+
+function buildInteriorBits(cornerSet) {
+  const borderBits = cornerSet.border?.bits ?? ''.padEnd(cornerSet.tl.bits.length, '0');
+  return [...cornerSet.tl.bits].map((bit, index) => (
+    bit === '0' && borderBits[index] !== '1' ? '1' : '0'
+  )).join('');
+}
+
+export function buildProfileFromCornerSet(cornerSet, options = {}) {
+  if (!cornerSet?.border) {
+    throw new Error(`Corner set "${cornerSet?.name ?? 'unknown'}" is missing a border grid`);
+  }
+
+  const { width, height } = cornerSet.tl;
+  const borderRows = collectRowRuns(cornerSet.border.bits, width, height);
+  const innerRows = collectRowRuns(buildInteriorBits(cornerSet), width, height);
+
+  return {
+    radius: options.radius ?? width - 1,
+    borderRadius: options.borderRadius ?? `${width + 1}px`,
+    points: traceOuterPointsFromRuns(borderRows),
+    innerPoints: traceInnerPointsFromRuns(innerRows),
+    ...(options.scale ? { scale: options.scale } : {}),
+  };
+}
+
 // --- Coordinate helpers ---
 
 function px(value) {

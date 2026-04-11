@@ -29,7 +29,7 @@ interface MeterProps {
 // ============================================================================
 
 const trackVariants = cva(
-  'w-full h-4 bg-page rounded-xs border border-line'
+  'w-full h-4 bg-page pixel-rounded-xs'
 );
 
 const indicatorVariants = cva('h-full transition-all duration-150 ease-out', {

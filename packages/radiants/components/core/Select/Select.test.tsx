@@ -40,7 +40,9 @@ describe('Select', () => {
   test('trigger renders with placeholder text', () => {
     const { container } = render(<TestSelect />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(container.querySelector('.pixel-rounded-xs--wrapper')).toBeInTheDocument();
+    expect(screen.getByRole('combobox').className).toContain('pixel-rounded-xs');
+    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
   test('opens popup when trigger is clicked', async () => {
@@ -51,7 +53,7 @@ describe('Select', () => {
     await user.click(trigger);
 
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
-    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(8);
+    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
   });
 
   test('trigger has aria-expanded that updates on open/close', async () => {

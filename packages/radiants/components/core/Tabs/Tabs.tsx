@@ -4,7 +4,6 @@ import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
-import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -119,8 +118,8 @@ export const tabsTriggerVariants = cva(
   {
     variants: {
       mode: {
-        capsule: 'rounded-xs p-1 justify-center',
-        chrome: 'rounded-t-sm h-8 px-2 justify-center',
+        capsule: 'pixel-rounded-xs p-1 justify-center',
+        chrome: 'pixel-rounded-t-sm h-8 px-2 justify-center',
       },
       size: {
         sm: 'text-xs [&_svg]:size-3.5',
@@ -152,7 +151,7 @@ function DotPill({ className = '' }: { className?: string }) {
   const tabValues = tabValuesRef.current;
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main rounded-sm ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main pixel-rounded-sm ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -257,11 +256,13 @@ function List({ children, className = '' }: TabsListProps) {
   if (mode === 'capsule') {
     return (
       <div className="shrink-0 flex items-center justify-center p-2">
-        <PixelBorder size="xs" className="bg-card w-fit">
-          <BaseTabs.List activateOnFocus data-slot="tab-list" className={listClasses}>
-            {children}
-          </BaseTabs.List>
-        </PixelBorder>
+        <BaseTabs.List
+          activateOnFocus
+          data-slot="tab-list"
+          className={`bg-card pixel-rounded-xs ${listClasses}`.trim()}
+        >
+          {children}
+        </BaseTabs.List>
       </div>
     );
   }

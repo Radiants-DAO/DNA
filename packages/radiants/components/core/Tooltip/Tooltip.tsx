@@ -85,7 +85,7 @@ function TooltipRoot({
               px-2 py-1
               bg-inv text-flip
               font-heading uppercase tracking-tight leading-none
-              rounded-xs
+              pixel-rounded-xs
               whitespace-nowrap
               pointer-events-none
               transition-[opacity,transform] duration-100 ease-out

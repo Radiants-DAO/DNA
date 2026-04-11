@@ -53,8 +53,9 @@ describe('Switch', () => {
     render(<Switch checked={false} onChange={() => {}} />);
     const el = document.querySelector('[data-variant="switch"]');
     expect(el).toBeInTheDocument();
-    expect(el?.className).toContain('rounded-xs');
-    expect(el?.className).not.toContain('pixel-rounded');
+    const classTokens = el?.className.split(/\s+/) ?? [];
+    expect(el?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 
   test('renders with different sizes', () => {
@@ -67,12 +68,12 @@ describe('Switch', () => {
     expect(document.querySelector('[data-size="lg"]')).toBeInTheDocument();
   });
 
-  test('track variants keep dynamic fill colors in CSS while using fallback borders', () => {
+  test('track variants keep dynamic fill colors in CSS while using pixel-rounded borders', () => {
     const classes = switchTrackVariants({
       checked: true,
     });
 
-    expect(classes).toMatch(/\bborder-line\b/);
+    expect(classes).toMatch(/\bpixel-rounded-xs\b/);
     expect(classes).not.toMatch(/\bbg-accent\b/);
     expect(classes).not.toMatch(/\bbg-inv\b/);
   });

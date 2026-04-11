@@ -12,15 +12,17 @@ function TestTabs({
   position,
   size,
   tone,
+  indicator,
 }: {
   defaultValue?: string;
   mode?: TabsMode;
   position?: TabsPosition;
   size?: 'sm' | 'md' | 'lg';
   tone?: string;
+  indicator?: 'none' | 'dot';
 }) {
   return (
-    <Tabs defaultValue={defaultValue} mode={mode} position={position} size={size} tone={tone}>
+    <Tabs defaultValue={defaultValue} mode={mode} position={position} size={size} tone={tone} indicator={indicator}>
       <Tabs.List>
         <Tabs.Trigger value="one">One</Tabs.Trigger>
         <Tabs.Trigger value="two">Two</Tabs.Trigger>
@@ -126,9 +128,10 @@ describe('Tabs', () => {
     expect(container.querySelector('[data-rdna="tabs"]')).toHaveAttribute('data-mode', 'capsule');
   });
 
-  it('renders capsule mode inside a PixelBorder shell', () => {
+  it('renders capsule mode with a lightweight pixel-rounded list shell', () => {
     const { container } = render(<TestTabs />);
-    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(container.querySelector('[data-slot="tab-list"]')?.className).toContain('pixel-rounded-xs');
+    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
   it('sets data-position on root', () => {
@@ -169,8 +172,24 @@ describe('Tabs', () => {
     );
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
     const trigger = screen.getByRole('tab', { name: 'Tab A' });
-    expect(trigger.className).toContain('rounded-xs');
-    expect(trigger.className).not.toContain('pixel-rounded');
+    const classTokens = trigger.className.split(/\s+/);
+    expect(trigger.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
+  });
+
+  it('renders the dot indicator shell with lightweight pixel corners', () => {
+    const { container } = render(
+      <Tabs defaultValue="one">
+        <Tabs.List>
+          <Tabs.Trigger value="one">One</Tabs.Trigger>
+          <Tabs.Trigger value="two">Two</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.DotPill />
+        <Tabs.Content value="one">Content one</Tabs.Content>
+        <Tabs.Content value="two">Content two</Tabs.Content>
+      </Tabs>,
+    );
+    expect(container.querySelector('.pixel-rounded-sm.bg-main')).toBeInTheDocument();
   });
 
   // ── Chrome mode ─────────────────────────────────────────────

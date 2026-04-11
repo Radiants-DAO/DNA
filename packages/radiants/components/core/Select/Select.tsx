@@ -144,14 +144,15 @@ function Trigger({
   chevron,
 }: TriggerProps): ReactNode {
   const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
+  const wrapperClassName = [
+    'pixel-rounded-xs--wrapper',
+    fullWidth ? 'w-full' : '',
+    error ? 'pixel-border-danger' : '',
+  ].filter(Boolean).join(' ');
 
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
-      <PixelBorder
-        size="xs"
-        color={error ? 'var(--color-danger)' : undefined}
-        className={fullWidth ? 'w-full' : ''}
-      >
+      <div className={wrapperClassName}>
         <BaseSelect.Trigger
           disabled={disabled}
           data-variant="select"
@@ -169,7 +170,7 @@ function Trigger({
               <button
                 {...props}
                 type="button"
-                className={classes}
+                className={`pixel-rounded-xs ${classes}`.trim()}
                 data-slot="select-trigger"
                 data-variant="select"
                 data-size={size}
@@ -191,7 +192,7 @@ function Trigger({
             );
           }}
         />
-      </PixelBorder>
+      </div>
     </div>
   );
 }

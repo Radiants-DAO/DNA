@@ -41,6 +41,79 @@ describe('generator contract', () => {
     expect(renderPixelCornersGeneratedCss(PIXEL_CORNER_CONFIG)).toBe(expected);
   });
 
+  it('derives lightweight clip-path profiles from @rdna/pixel corner sets', async () => {
+    const { buildProfileFromCornerSet } = await import('../scripts/pixel-corners-lib.mjs');
+    const { getCornerSet } = await import('@rdna/pixel');
+
+    const smProfile = buildProfileFromCornerSet(getCornerSet('sm'), { borderRadius: '6px' });
+    const mdProfile = buildProfileFromCornerSet(getCornerSet('md'), { borderRadius: '10px' });
+
+    expect(smProfile.points).toEqual([
+      [0, 5],
+      [1, 5],
+      [1, 2],
+      [2, 2],
+      [2, 1],
+      [5, 1],
+      [5, 0],
+    ]);
+    expect(smProfile.innerPoints).toEqual([
+      [1, 5],
+      [2, 5],
+      [2, 3],
+      [3, 3],
+      [3, 2],
+      [5, 2],
+      [5, 1],
+    ]);
+    expect(mdProfile.points).toEqual([
+      [0, 9],
+      [1, 9],
+      [1, 6],
+      [2, 6],
+      [2, 4],
+      [3, 4],
+      [3, 3],
+      [4, 3],
+      [4, 2],
+      [6, 2],
+      [6, 1],
+      [9, 1],
+      [9, 0],
+    ]);
+  });
+
+  it('builds the checked-in preset profiles from @rdna/pixel geometry', async () => {
+    const { PIXEL_CORNER_CONFIG } = await import('../scripts/pixel-corners.config.mjs');
+
+    expect(PIXEL_CORNER_CONFIG.profiles.sm.borderRadius).toBe('6px');
+    expect(PIXEL_CORNER_CONFIG.profiles.sm.points).toEqual([
+      [0, 5],
+      [1, 5],
+      [1, 2],
+      [2, 2],
+      [2, 1],
+      [5, 1],
+      [5, 0],
+    ]);
+    expect(PIXEL_CORNER_CONFIG.profiles.md.borderRadius).toBe('10px');
+    expect(PIXEL_CORNER_CONFIG.profiles.md.innerPoints).toEqual([
+      [1, 9],
+      [2, 9],
+      [2, 7],
+      [3, 7],
+      [3, 5],
+      [4, 5],
+      [4, 4],
+      [5, 4],
+      [5, 3],
+      [7, 3],
+      [7, 2],
+      [9, 2],
+      [9, 1],
+    ]);
+  });
+
   it('supports a single rounded corner without handwritten polygons', async () => {
     const { renderPixelCornersGeneratedCss } = await import('../scripts/pixel-corners-lib.mjs');
 

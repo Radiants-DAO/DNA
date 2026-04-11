@@ -22,18 +22,18 @@ function TestNavigationMenu() {
 }
 
 describe('NavigationMenu', () => {
-  test('uses rounded fallback styling on triggers and links', () => {
+  test('uses pixel-rounded styling on triggers and links', () => {
     render(<TestNavigationMenu />);
 
     const trigger = screen.getByText('Products').closest('button');
     const link = screen.getByRole('link', { name: 'About' });
+    const triggerTokens = trigger?.className.split(/\s+/) ?? [];
+    const linkTokens = link.className.split(/\s+/);
 
-    expect(trigger?.className).toContain('rounded-xs');
-    expect(trigger?.className).toContain('border-line');
-    expect(trigger?.className).not.toContain('pixel-rounded');
-    expect(link.className).toContain('rounded-xs');
-    expect(link.className).toContain('border-line');
-    expect(link.className).not.toContain('pixel-rounded');
+    expect(trigger?.className).toContain('pixel-rounded-xs');
+    expect(triggerTokens).not.toContain('rounded-xs');
+    expect(link.className).toContain('pixel-rounded-xs');
+    expect(linkTokens).not.toContain('rounded-xs');
   });
 
   test('renders viewport content inside a PixelBorder shell', async () => {

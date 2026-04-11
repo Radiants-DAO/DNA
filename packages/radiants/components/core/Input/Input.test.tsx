@@ -9,7 +9,9 @@ describe('Input', () => {
     expect(input).toBeInTheDocument();
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('data-rdna', 'input');
-    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(container.querySelector('.pixel-rounded-xs--wrapper')).toBeInTheDocument();
+    expect(input.className).toContain('pixel-rounded-xs');
+    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
   test('size variants apply correct data-size', () => {
@@ -20,9 +22,9 @@ describe('Input', () => {
     expect(screen.getByPlaceholderText('lg')).toHaveAttribute('data-size', 'lg');
   });
 
-  test('standalone error colors the PixelBorder shell', () => {
+  test('standalone error colors the pixel-rounded wrapper border', () => {
     const { container } = render(<Input placeholder="err" error />);
-    expect(container.querySelector('rect[fill="var(--color-danger)"]')).toBeInTheDocument();
+    expect(container.querySelector('.pixel-rounded-xs--wrapper')?.className).toContain('pixel-border-danger');
   });
 
   test('standalone renders correctly without Root', () => {
@@ -85,7 +87,7 @@ describe('Input', () => {
         <Input placeholder="test" error />
       </Input.Root>
     );
-    expect(container.querySelector('rect[fill="var(--color-danger)"]')).not.toBeInTheDocument();
+    expect(container.querySelector('.pixel-rounded-xs--wrapper')?.className ?? '').not.toContain('pixel-border-danger');
   });
 
   test('disabled propagation from Root', () => {

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Collapsible } from './Collapsible';
 
 describe('Collapsible', () => {
-  test('uses rounded fallback styling on trigger and content shells', async () => {
+  test('uses pixel-rounded styling on trigger and content shells', async () => {
     const user = userEvent.setup();
     const { container } = render(
       <Collapsible.Root>
@@ -13,15 +13,11 @@ describe('Collapsible', () => {
     );
 
     const trigger = screen.getByRole('button', { name: 'Section' });
-    expect(trigger.className).toContain('rounded-xs');
-    expect(trigger.className).toContain('border-line');
-    expect(trigger.className).not.toContain('pixel-rounded');
+    expect(trigger.className).toContain('pixel-rounded-xs');
 
     await user.click(trigger);
-    const panel = screen.getByText('Panel body').closest('.rounded-xs');
-    expect(panel?.className).toContain('rounded-xs');
-    expect(panel?.className).toContain('border-line');
-    expect(panel?.className).not.toContain('pixel-rounded');
-    expect(container.querySelector('.pixel-rounded-xs')).not.toBeInTheDocument();
+    const panel = screen.getByText('Panel body').closest('.pixel-rounded-xs');
+    expect(panel?.className).toContain('pixel-rounded-xs');
+    expect(container.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
   });
 });

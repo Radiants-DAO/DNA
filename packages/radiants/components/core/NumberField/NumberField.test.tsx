@@ -19,7 +19,8 @@ describe('NumberField', () => {
   test('renders with numeric input', () => {
     const { container } = render(<TestNumberField defaultValue={5} />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(container.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(container.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });
 
   test('forwards readOnly to the input', () => {

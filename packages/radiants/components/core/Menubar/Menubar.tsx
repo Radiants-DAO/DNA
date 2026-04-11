@@ -83,7 +83,7 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
       className={`
         flex items-center
         bg-inv
-        rounded-xs border border-line
+        pixel-rounded-xs
         ${className}
       `.trim()}
     >

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pixel Corner A/B — Clip-path vs Bitstring Geometry</title>
+<title>Pixel Corner A/B — Generated CSS vs PixelBorder</title>
+<link rel="stylesheet" href="../../radiants/pixel-corners.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: monospace; background: #1a1a1a; color: #e0e0e0; padding: 2rem; }
@@ -12,33 +13,13 @@
   .panel { text-align: center; }
   .panel label { display: block; font-size: 0.7rem; color: #666; margin-top: 0.4rem; }
   .grid-render { image-rendering: pixelated; border: 1px solid #333; }
-  .old-box {
+  :root {
+    --color-line: #888;
+    --color-page: #1a1a1a;
+  }
+  .css-box {
     width: 200px; height: 140px;
     background: #2a2a2a;
-    border: 1px solid transparent;
-    position: relative;
-  }
-  .old-box::after {
-    content: "";
-    position: absolute;
-    top: 0; bottom: 0; left: 0; right: 0;
-    z-index: 1;
-    background: #888;
-    display: block;
-    pointer-events: none;
-    margin: -1px;
-  }
-
-  /* Old clip-path styles from pixel-corners.generated.css */
-  .old-xs { border-radius: 2px; clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px); }
-  .old-xs::after { clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px, 0px 50%, 1px 50%, 1px 2px, 2px 2px, 2px 1px, calc(100% - 2px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 2px, calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), 2px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 2px), 1px 50%, 0px 50%); }
-
-  .old-sm { border-radius: 6px; clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px); }
-  .old-sm::after { clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px, 0px 50%, 1px 50%, 1px 5px, 2px 5px, 2px 3px, 3px 3px, 3px 2px, 5px 2px, 5px 1px, calc(100% - 5px) 1px, calc(100% - 5px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 5px, calc(100% - 1px) 5px, calc(100% - 1px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 1px), 5px calc(100% - 1px), 5px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 5px), 1px calc(100% - 5px), 1px 50%, 0px 50%); }
-
-  .old-md { border-radius: 6px; clip-path: polygon(0px calc(100% - 9px), 1px calc(100% - 9px), 1px calc(100% - 8px), 1px calc(100% - 6px), 2px calc(100% - 6px), 2px calc(100% - 5px), 3px calc(100% - 5px), 3px calc(100% - 4px), 4px calc(100% - 3px), 5px calc(100% - 3px), 5px calc(100% - 2px), 6px calc(100% - 2px), 6px calc(100% - 1px), 8px calc(100% - 1px), 9px calc(100% - 1px), 9px 100%, calc(100% - 9px) 100%, calc(100% - 9px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 6px) calc(100% - 1px), calc(100% - 6px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 3px), calc(100% - 4px) calc(100% - 3px), calc(100% - 3px) calc(100% - 4px), calc(100% - 3px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 6px), calc(100% - 1px) calc(100% - 6px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 9px), 100% calc(100% - 9px), 100% 9px, calc(100% - 1px) 9px, calc(100% - 1px) 8px, calc(100% - 1px) 6px, calc(100% - 2px) 6px, calc(100% - 2px) 5px, calc(100% - 3px) 5px, calc(100% - 3px) 4px, calc(100% - 4px) 3px, calc(100% - 5px) 3px, calc(100% - 5px) 2px, calc(100% - 6px) 2px, calc(100% - 6px) 1px, calc(100% - 8px) 1px, calc(100% - 9px) 1px, calc(100% - 9px) 0px, 9px 0px, 9px 1px, 8px 1px, 6px 1px, 6px 2px, 5px 2px, 5px 3px, 4px 3px, 3px 4px, 3px 5px, 2px 5px, 2px 6px, 1px 6px, 1px 8px, 1px 9px, 0px 9px); }
-
-  .old-lg { border-radius: 8px; clip-path: polygon(0px calc(100% - 12px), 1px calc(100% - 12px), 1px calc(100% - 9px), 2px calc(100% - 9px), 2px calc(100% - 8px), 3px calc(100% - 8px), 3px calc(100% - 7px), 3px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 5px), 5px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 3px), 7px calc(100% - 3px), 8px calc(100% - 3px), 8px calc(100% - 2px), 9px calc(100% - 2px), 9px calc(100% - 1px), 12px calc(100% - 1px), 12px 100%, calc(100% - 12px) 100%, calc(100% - 12px) calc(100% - 1px), calc(100% - 9px) calc(100% - 1px), calc(100% - 9px) calc(100% - 2px), calc(100% - 8px) calc(100% - 2px), calc(100% - 8px) calc(100% - 3px), calc(100% - 7px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) calc(100% - 4px), calc(100% - 5px) calc(100% - 4px), calc(100% - 4px) calc(100% - 5px), calc(100% - 4px) calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 7px), calc(100% - 3px) calc(100% - 8px), calc(100% - 2px) calc(100% - 8px), calc(100% - 2px) calc(100% - 9px), calc(100% - 1px) calc(100% - 9px), calc(100% - 1px) calc(100% - 12px), 100% calc(100% - 12px), 100% 12px, calc(100% - 1px) 12px, calc(100% - 1px) 9px, calc(100% - 2px) 9px, calc(100% - 2px) 8px, calc(100% - 3px) 8px, calc(100% - 3px) 7px, calc(100% - 3px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 5px, calc(100% - 5px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 3px, calc(100% - 7px) 3px, calc(100% - 8px) 3px, calc(100% - 8px) 2px, calc(100% - 9px) 2px, calc(100% - 9px) 1px, calc(100% - 12px) 1px, calc(100% - 12px) 0px, 12px 0px, 12px 1px, 9px 1px, 9px 2px, 8px 2px, 8px 3px, 7px 3px, 6px 3px, 6px 4px, 5px 4px, 4px 5px, 4px 6px, 3px 6px, 3px 7px, 3px 8px, 2px 8px, 2px 9px, 1px 9px, 1px 12px, 0px 12px); }
   .new-box {
     width: 200px; height: 140px;
     background: #2a2a2a;
@@ -62,8 +43,8 @@
 </style>
 </head>
 <body>
-<h1>Pixel Corner A/B — Clip-path (old) vs Bitstring Geometry (new)</h1>
-<p style="color:#666;margin-bottom:2rem;font-size:0.8rem">Cover = dark bg pixels hiding smooth corner. Border = staircase edge. Scale = 8x for visibility.</p>
+<h1>Pixel Corner A/B — Generated CSS vs PixelBorder</h1>
+<p style="color:#666;margin-bottom:2rem;font-size:0.8rem">Panel A loads the current lightweight `pixel-rounded-*` CSS. Panel B renders the same corner set through `PixelBorder`-style SVG edges. Cover = dark bg pixels hiding smooth corner. Border = staircase edge. Scale = 8x for visibility.</p>
 
 <script>
 // Corner bitstring data (from corner-sets.ts)
@@ -205,25 +186,25 @@ for (const [name, corner] of Object.entries(CORNERS)) {
   const compare = document.createElement('div');
   compare.className = 'compare';
 
-  // A: Old clip-path box
+  // A: Generated lightweight CSS box
   const panelA = document.createElement('div');
   panelA.className = 'panel';
   const oldBox = document.createElement('div');
-  oldBox.className = 'old-box old-' + name;
+  oldBox.className = 'css-box pixel-rounded-' + name;
   panelA.appendChild(oldBox);
   const labelA = document.createElement('label');
-  labelA.textContent = 'A: clip-path (current)';
+  labelA.textContent = 'A: generated lightweight CSS';
   panelA.appendChild(labelA);
   compare.appendChild(panelA);
 
-  // B: New full shell render (matches PixelBorder geometry)
+  // B: Full shell render (matches PixelBorder geometry)
   const panelB = document.createElement('div');
   panelB.className = 'panel';
   const shellB = document.createElement('div');
   shellB.id = 'shell-' + name;
   panelB.appendChild(shellB);
   const labelB = document.createElement('label');
-  labelB.textContent = 'B: full PixelBorder shell (new)';
+  labelB.textContent = 'B: full PixelBorder shell';
   panelB.appendChild(labelB);
   compare.appendChild(panelB);
 

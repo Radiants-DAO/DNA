@@ -65,7 +65,7 @@ interface ToggleGroupProps {
 // ============================================================================
 
 const toggleGroupRootVariants = cva(
-  'inline-flex rounded-xs border border-line',
+  'inline-flex pixel-rounded-xs',
   {
     variants: {
       orientation: {

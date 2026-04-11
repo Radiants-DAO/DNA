@@ -16,13 +16,13 @@ function TestMenubar() {
 }
 
 describe('Menubar', () => {
-  test('uses rounded fallback styling on the root bar', () => {
+  test('uses pixel-rounded styling on the root bar', () => {
     const { container } = render(<TestMenubar />);
     const root = container.querySelector('[data-rdna="menubar"]');
+    const classTokens = root?.className.split(/\s+/) ?? [];
 
-    expect(root?.className).toContain('rounded-xs');
-    expect(root?.className).toContain('border-line');
-    expect(root?.className).not.toContain('pixel-rounded');
+    expect(root?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 
   test('renders menu content inside a PixelBorder shell', async () => {

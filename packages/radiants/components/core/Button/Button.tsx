@@ -14,12 +14,12 @@ type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
-const ROUNDED_FALLBACK_CLASS: Record<Exclude<ButtonRounded, 'none'>, string> = {
-  xs: 'rounded-xs',
-  sm: 'rounded-sm',
-  md: 'rounded-md',
-  lg: 'rounded-lg',
-  xl: 'rounded-lg',
+const PIXEL_ROUNDED_CLASS: Record<Exclude<ButtonRounded, 'none'>, string> = {
+  xs: 'pixel-rounded-xs',
+  sm: 'pixel-rounded-sm',
+  md: 'pixel-rounded-md',
+  lg: 'pixel-rounded-lg',
+  xl: 'pixel-rounded-xl',
 };
 
 interface ButtonOwnProps {
@@ -98,11 +98,11 @@ export const buttonFaceVariants = cva(
       },
       rounded: {
         none: '',
-        xs: ROUNDED_FALLBACK_CLASS.xs,
-        sm: ROUNDED_FALLBACK_CLASS.sm,
-        md: ROUNDED_FALLBACK_CLASS.md,
-        lg: ROUNDED_FALLBACK_CLASS.lg,
-        xl: ROUNDED_FALLBACK_CLASS.xl,
+        xs: PIXEL_ROUNDED_CLASS.xs,
+        sm: PIXEL_ROUNDED_CLASS.sm,
+        md: PIXEL_ROUNDED_CLASS.md,
+        lg: PIXEL_ROUNDED_CLASS.lg,
+        xl: PIXEL_ROUNDED_CLASS.xl,
       },
       size: {
         sm: 'h-6 text-xs gap-0.5 [&_svg]:size-4',

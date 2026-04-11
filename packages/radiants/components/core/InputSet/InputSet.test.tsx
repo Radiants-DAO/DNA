@@ -29,17 +29,17 @@ describe('InputSet', () => {
     expect(container.querySelector('[data-rdna="input-set"]')).toBeInTheDocument();
   });
 
-  test('uses rounded fallback styling on the fieldset shell', () => {
+  test('uses pixel-rounded styling on the fieldset shell', () => {
     const { container } = render(
       <InputSet.Root>
         <InputSet.Legend>Styled</InputSet.Legend>
       </InputSet.Root>
     );
     const fieldset = container.querySelector('[data-rdna="input-set"]');
+    const classTokens = fieldset?.className.split(/\s+/) ?? [];
 
-    expect(fieldset?.className).toContain('rounded-xs');
-    expect(fieldset?.className).toContain('border-line');
-    expect(fieldset?.className).not.toContain('pixel-rounded');
+    expect(fieldset?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 
   test('disabled sets data-disabled on fieldset', () => {

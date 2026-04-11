@@ -2,12 +2,12 @@ import { render } from '@testing-library/react';
 import { Avatar } from './Avatar';
 
 describe('Avatar', () => {
-  test('uses rounded fallback styling for square avatars', () => {
+  test('uses pixel-rounded styling for square avatars', () => {
     const { container } = render(<Avatar shape="square" fallback="RM" />);
     const avatar = container.querySelector('[data-rdna="avatar"]');
+    const classTokens = avatar?.className.split(/\s+/) ?? [];
 
-    expect(avatar?.className).toContain('rounded-xs');
-    expect(avatar?.className).toContain('border-line');
-    expect(avatar?.className).not.toContain('pixel-rounded');
+    expect(avatar?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 });

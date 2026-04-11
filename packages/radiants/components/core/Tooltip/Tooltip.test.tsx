@@ -15,7 +15,9 @@ describe('Tooltip', () => {
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
     await user.hover(screen.getByText('Hover me'));
-    expect(screen.getByRole('tooltip')).toHaveTextContent('Helpful tip');
+    const tooltip = screen.getByRole('tooltip');
+    expect(tooltip).toHaveTextContent('Helpful tip');
+    expect(tooltip.className).toContain('pixel-rounded-xs');
 
     await user.unhover(screen.getByText('Hover me'));
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();

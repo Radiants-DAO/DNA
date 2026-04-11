@@ -32,7 +32,7 @@ function Root({ children, className = '', disabled }: RootProps): React.ReactNod
     <BaseFieldset.Root
       data-rdna="input-set"
       disabled={disabled}
-      className={`rounded-xs border border-line p-4 transition-shadow duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-focus ${className}`.trim()}
+      className={`pixel-rounded-xs p-4 transition-shadow duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-focus ${className}`.trim()}
     >
       {children}
     </BaseFieldset.Root>

@@ -32,7 +32,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center rounded-xs border border-line cursor-pointer transition-[background-color,border-color] duration-150',
+  'group relative inline-flex items-center pixel-rounded-xs cursor-pointer transition-[background-color,border-color] duration-150',
   {
     variants: {
       size: {
@@ -104,7 +104,7 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb rounded-xs border border-line pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
+    'switch-thumb pixel-rounded-xs pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
     'shadow-none',

@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { ToggleGroup } from './ToggleGroup';
 
 describe('ToggleGroup', () => {
-  test('uses rounded fallback styling on the group shell', () => {
+  test('uses pixel-rounded styling on the group shell', () => {
     const { container } = render(
       <ToggleGroup>
         <ToggleGroup.Item value="one">One</ToggleGroup.Item>
@@ -10,9 +10,9 @@ describe('ToggleGroup', () => {
       </ToggleGroup>,
     );
     const group = container.querySelector('[data-slot="toggle-group"]');
+    const classTokens = group?.className.split(/\s+/) ?? [];
 
-    expect(group?.className).toContain('rounded-xs');
-    expect(group?.className).toContain('border-line');
-    expect(group?.className).not.toContain('pixel-rounded');
+    expect(group?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('rounded-xs');
   });
 });
