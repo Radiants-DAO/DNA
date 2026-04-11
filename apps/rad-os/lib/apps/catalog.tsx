@@ -10,6 +10,7 @@ const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
+const StudioApp = lazy(() => import('@/components/apps/StudioApp'));
 // ============================================================================
 // Types
 // ============================================================================
@@ -120,6 +121,18 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     windowTitle: 'Scratchpad',
     windowIcon: <Icon name="pencil" large />,
     component: ScratchpadApp,
+    defaultSize: 'lg',
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    startMenuSection: 'apps',
+  },
+  {
+    id: 'studio',
+    windowTitle: 'Studio',
+    launcherTitle: 'Studio',
+    windowIcon: <Icon name="design-color-bucket" large />,
+    component: StudioApp,
     defaultSize: 'lg',
     resizable: true,
     contentPadding: false,

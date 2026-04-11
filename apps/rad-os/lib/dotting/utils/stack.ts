@@ -1,3 +1,4 @@
+// @ts-nocheck
 class StackNode<T> {
   data: T;
   next: StackNode<T> | null;

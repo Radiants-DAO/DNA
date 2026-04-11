@@ -25,6 +25,11 @@ export function resolveIconRequest(
       return { resolvedName: aliased, resolvedSet: 24 };
     }
 
+    // 24-only icon present in the importer map but absent from size-map
+    if (aliased in ICON_24_IMPORTERS) {
+      return { resolvedName: aliased, resolvedSet: 24 };
+    }
+
     return { resolvedName: aliased, resolvedSet: 16 };
   }
 
@@ -32,6 +37,13 @@ export function resolveIconRequest(
     return { resolvedName: ICON_24_TO_16[aliased], resolvedSet: 16 };
   }
 
+  // 16-only icon present in the importer map; default path already returns 16
+  if (aliased in ICON_IMPORTERS) {
+    return { resolvedName: aliased, resolvedSet: 16 };
+  }
+
+  // Fallback: icon not found in either importer map — let the caller surface
+  // the placeholder with the original name for debugging.
   return { resolvedName: aliased, resolvedSet: 16 };
 }
 

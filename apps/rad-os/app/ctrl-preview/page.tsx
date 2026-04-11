@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
 import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
@@ -97,19 +97,20 @@ function SuffixLabel({ text, active = false }: { text: string; active?: boolean 
 }
 
 /** Non-editable keyword cell (FILL / FIT / AUTO) — matches NumberInput cell shape */
-function KeywordCell({
-  text,
-  suffix,
-  className = '',
-}: {
-  text: string;
-  suffix?: React.ReactNode;
-  className?: string;
-}) {
+const KeywordCell = forwardRef<
+  HTMLDivElement,
+  {
+    text: string;
+    suffix?: React.ReactNode;
+    className?: string;
+  }
+>(function KeywordCell({ text, suffix, className = '' }, ref) {
   return (
     <div
-      className={['flex items-center bg-black font-mono min-w-0', className].filter(Boolean).join(' ')}
-      style={{ height: 24 }}
+      ref={ref}
+      data-rdna="ctrl-keyword-cell"
+      className={['flex items-center bg-black font-mono min-w-0 self-stretch', className].filter(Boolean).join(' ')}
+      style={{ minHeight: 24 }}
     >
       <span
         className="flex-1 uppercase truncate"
@@ -126,7 +127,7 @@ function KeywordCell({
       {suffix}
     </div>
   );
-}
+});
 
 // ── Pixel-Art Icons (from Paper SJE-0) ─────────────────────────────────────
 
@@ -303,12 +304,14 @@ export default function CtrlPreview() {
   const [wUnit, setWUnit] = useState('fill');
   const [wMin, setWMin] = useState<number | null>(null);
   const [wMax, setWMax] = useState<number | null>(null);
+  const wCellRef = useRef<HTMLDivElement>(null);
 
   // H row
   const [hValue, setHValue] = useState<number | null>(10);
   const [hUnit, setHUnit] = useState('vh');
   const [hMin, setHMin] = useState<number | null>(null);
   const [hMax, setHMax] = useState<number | null>(null);
+  const hCellRef = useRef<HTMLDivElement>(null);
 
   const [display, setDisplay] = useState('show');
 
@@ -409,13 +412,14 @@ export default function CtrlPreview() {
             {open && (
               <div className="flex flex-1 min-w-0">
                 <div className="flex flex-col flex-1 gap-1 min-w-0">
-                  {/* W/H rows — external, above box model */}
-                  <div className="flex flex-col shrink-0 min-w-0" style={{ gap: 1 }}>
+                  {/* Box-Model Visualizer — W/H rows stack above the margin layer */}
+                  <div className="flex flex-col flex-1 min-w-0" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
                     {/* W row */}
-                    <div className="flex self-stretch gap-[1px] min-w-0">
+                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 32 }}>
                       <LabelCell label="W" />
                       {KEYWORD_UNITS.has(wUnit) ? (
                         <KeywordCell
+                          ref={wCellRef}
                           text={wUnit}
                           className="flex-1"
                           suffix={
@@ -425,11 +429,14 @@ export default function CtrlPreview() {
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
                               hideLabel
+                              anchor={wCellRef}
+                              popupFullWidth
                             />
                           }
                         />
                       ) : (
                         <NumberInput
+                          ref={wCellRef}
                           value={wValue}
                           onValueChange={setWValue}
                           active={wValue !== null}
@@ -441,6 +448,8 @@ export default function CtrlPreview() {
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
                               hideCaret
+                              anchor={wCellRef}
+                              popupFullWidth
                             />
                           }
                         />
@@ -461,10 +470,11 @@ export default function CtrlPreview() {
                       />
                     </div>
                     {/* H row */}
-                    <div className="flex self-stretch gap-[1px] min-w-0">
+                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 32 }}>
                       <LabelCell label="H" />
                       {KEYWORD_UNITS.has(hUnit) ? (
                         <KeywordCell
+                          ref={hCellRef}
                           text={hUnit}
                           className="flex-1"
                           suffix={
@@ -474,11 +484,14 @@ export default function CtrlPreview() {
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
                               hideLabel
+                              anchor={hCellRef}
+                              popupFullWidth
                             />
                           }
                         />
                       ) : (
                         <NumberInput
+                          ref={hCellRef}
                           value={hValue}
                           onValueChange={setHValue}
                           active={hValue !== null}
@@ -490,6 +503,8 @@ export default function CtrlPreview() {
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
                               hideCaret
+                              anchor={hCellRef}
+                              popupFullWidth
                             />
                           }
                         />
@@ -509,10 +524,6 @@ export default function CtrlPreview() {
                         suffix={<SuffixLabel text="MAX" />}
                       />
                     </div>
-                  </div>
-
-                  {/* Box-Model Visualizer */}
-                  <div className="flex flex-col flex-1 min-w-0" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
                     {/* Margin layer */}
                     <div className="relative flex flex-1 overflow-clip min-w-0" style={{ padding: 24 }}>
                       <TrapPip side="left" variant="margin" />

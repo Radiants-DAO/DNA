@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { type ReactNode, type RefObject } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 
 // =============================================================================
@@ -35,6 +35,17 @@ export interface DropdownProps {
   hideLabel?: boolean;
   /** Align popup to trigger — "start" (default) or "end" */
   align?: 'start' | 'end';
+  /**
+   * Optional anchor element or ref. When set, the popup is positioned against
+   * this element instead of the trigger button. Use to anchor to a parent row
+   * or cell so the popup width can match the row width.
+   */
+  anchor?: Element | RefObject<Element | null> | null;
+  /**
+   * When true, the popup width matches the anchor element's width via
+   * `var(--anchor-width)`. Combine with `anchor` to anchor to a parent row.
+   */
+  popupFullWidth?: boolean;
 }
 
 /** Shared glow-only text-shadow for active/selected text (matches Paper exactly) */
@@ -68,6 +79,8 @@ export function Dropdown({
   hideCaret = false,
   hideLabel = false,
   align = 'start',
+  anchor,
+  popupFullWidth = false,
 }: DropdownProps) {
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder;
 
@@ -86,13 +99,13 @@ export function Dropdown({
             type="button"
             data-rdna="ctrl-dropdown-trigger"
             className={[
-              'flex items-center justify-between bg-black font-mono cursor-pointer',
+              'flex items-center justify-between bg-black font-mono cursor-pointer self-stretch',
               'focus-visible:outline-none',
               className,
             ]
               .filter(Boolean)
               .join(' ')}
-            style={{ height: 24, paddingInline: 4, gap: 4 }}
+            style={{ minHeight: 24, paddingInline: 4, gap: 4 }}
           >
             {prefix}
             {!hideLabel && (
@@ -126,14 +139,20 @@ export function Dropdown({
       <BaseSelect.Portal>
         <BaseSelect.Positioner
           className="z-50"
+          side="bottom"
           sideOffset={1}
           align={align}
+          anchor={anchor ?? undefined}
+          alignItemWithTrigger={anchor ? false : undefined}
         >
           <BaseSelect.Popup>
             <div
               className="flex flex-col font-mono"
               data-rdna="ctrl-dropdown-popup"
-              style={POPUP_FRAME}
+              style={{
+                ...POPUP_FRAME,
+                ...(popupFullWidth ? { width: 'var(--anchor-width)' } : {}),
+              }}
             >
               {options.map((option) => {
                 const isSelected = option.value === value;

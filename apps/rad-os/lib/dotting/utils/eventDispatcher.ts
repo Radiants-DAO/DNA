@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// @ts-nocheck
 type EventCallback = (...args: any[]) => void;
 
 class DottingEvent {

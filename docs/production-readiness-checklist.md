@@ -182,12 +182,16 @@ Launch blocker. Ground-up rework, not incremental patches.
 
 ## T3 — App Content & Functionality
 
-### RadiantsStudioApp — Full Refactor
+### StudioApp — Rebuild (was RadiantsStudioApp)
 
-* [ ] Fix pixel art canvas (touch support, fluid sizing, RDNA color tokens instead of hardcoded hex)
-* [ ] Wire NEXT button to actual functionality
-* [ ] Voting/submission system completion
-* [ ] `[explore]` Full scope TBD
+Legacy `RadiantsStudioApp` deleted. New `StudioApp` ported from `sandbox/studio` — a pixel-art editor built on vendored `Dotting` canvas engine. Registered in `lib/apps/catalog.tsx` as `id: 'studio'`.
+
+* [x] Ground-up rebuild: pixel-art editor with layers, brush tools, undo/redo, PNG export
+* [x] Vendored canvas engine (`lib/dotting/`) for HTML5 canvas drawing
+* [ ] Touch support on canvas (pan/draw on mobile — T2 dep)
+* [ ] Voting/submission system — scope + rewire (was tied to old app)
+* [ ] Replace hardcoded palette hex with RDNA brand token CSS vars (currently resolved at paint time)
+* [ ] Dark-mode pass on canvas grid stroke + background colors
 
 ### RadRadio — Refactor
 

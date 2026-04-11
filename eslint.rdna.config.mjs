@@ -41,6 +41,7 @@ export default [
       '**/.next/**',
       '**/.turbo/**',
       '**/generated/**',
+      'apps/rad-os/lib/dotting/**',
     ],
   },
   {

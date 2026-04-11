@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { NumberField } from '@base-ui/react/number-field';
 
 // =============================================================================
@@ -46,25 +46,28 @@ export interface NumberInputProps {
 const GLOW =
   'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-accent) 0 0 8px';
 
-export function NumberInput({
-  value,
-  onValueChange,
-  min,
-  max,
-  step = 1,
-  smallStep,
-  largeStep,
-  placeholder,
-  active = false,
-  disabled = false,
-  readOnly = false,
-  className = '',
-  prefix,
-  suffix,
-  pixelSensitivity = 2,
-  format,
-  id,
-}: NumberInputProps) {
+export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function NumberInput(
+  {
+    value,
+    onValueChange,
+    min,
+    max,
+    step = 1,
+    smallStep,
+    largeStep,
+    placeholder,
+    active = false,
+    disabled = false,
+    readOnly = false,
+    className = '',
+    prefix,
+    suffix,
+    pixelSensitivity = 2,
+    format,
+    id,
+  },
+  ref,
+) {
   return (
     <NumberField.Root
       id={id}
@@ -82,9 +85,10 @@ export function NumberInput({
       render={(props) => (
         <div
           {...props}
+          ref={ref}
           data-rdna="ctrl-number-input"
-          className={['flex items-center bg-black font-mono min-w-0', className].filter(Boolean).join(' ')}
-          style={{ height: 24 }}
+          className={['flex items-center bg-black font-mono min-w-0 self-stretch', className].filter(Boolean).join(' ')}
+          style={{ minHeight: 24 }}
         >
           <NumberField.ScrubArea
             direction="horizontal"
@@ -133,4 +137,4 @@ export function NumberInput({
       )}
     />
   );
-}
+});

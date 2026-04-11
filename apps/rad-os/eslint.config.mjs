@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored canvas engine (has @ts-nocheck, references rules not loaded here)
+    "lib/dotting/**",
   ]),
 ]);
 
