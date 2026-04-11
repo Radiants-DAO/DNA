@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+import { PIXEL_BORDER_RADII, pixelCornerClipPath } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -37,12 +37,19 @@ const scrollbarBase = [
 const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
 const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
-// The thumb is wrapped in a <PixelBorder> via the `render` prop below. The
-// `group/pixel` on the wrapper lets the bg layer flip on hover, while the
-// inner div keeps base-ui's forwarded ref + inline height/width style so the
-// scrollbar positioning math still works.
-const thumbWrapperClasses = 'w-full cursor-pointer';
-const thumbBgClasses = 'bg-line/40 group-hover/pixel:bg-line transition-colors';
+// Apply the pixel-corner clip-path directly to base-ui's Thumb element so its
+// forwarded ref, event handlers, and inline positioning (transform/height)
+// stay on the real thumb root. Wrapping the Thumb in <PixelBorder> breaks the
+// positioning — PixelBorder doesn't forward those props.
+const THUMB_RADIUS = PIXEL_BORDER_RADII.xs;
+const THUMB_CLIP_PATH = pixelCornerClipPath({
+  tl: THUMB_RADIUS,
+  tr: THUMB_RADIUS,
+  bl: THUMB_RADIUS,
+  br: THUMB_RADIUS,
+});
+const thumbClasses = 'w-full bg-line/40 hover:bg-line transition-colors cursor-pointer';
+const thumbStyle: React.CSSProperties = { clipPath: THUMB_CLIP_PATH };
 
 // ============================================================================
 // Sub-components
@@ -71,13 +78,7 @@ function VerticalScrollbar(): React.ReactNode {
       orientation="vertical"
       className={scrollbarVertical}
     >
-      <BaseScrollArea.Thumb
-        render={(props) => (
-          <PixelBorder size="xs" background={thumbBgClasses} className={thumbWrapperClasses}>
-            <div {...props} />
-          </PixelBorder>
-        )}
-      />
+      <BaseScrollArea.Thumb className={thumbClasses} style={thumbStyle} />
     </BaseScrollArea.Scrollbar>
   );
 }
@@ -88,13 +89,7 @@ function HorizontalScrollbar(): React.ReactNode {
       orientation="horizontal"
       className={scrollbarHorizontal}
     >
-      <BaseScrollArea.Thumb
-        render={(props) => (
-          <PixelBorder size="xs" background={thumbBgClasses} className={thumbWrapperClasses}>
-            <div {...props} />
-          </PixelBorder>
-        )}
-      />
+      <BaseScrollArea.Thumb className={thumbClasses} style={thumbStyle} />
     </BaseScrollArea.Scrollbar>
   );
 }
