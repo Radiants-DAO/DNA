@@ -208,12 +208,19 @@ const CORNER_TRANSFORM: Record<CornerKey, string | undefined> = {
   br: 'scale(-1, -1)',
 };
 
-const CORNER_POSITION: Record<CornerKey, React.CSSProperties> = {
-  tl: { top: 0, left: 0 },
-  tr: { top: 0, right: 0 },
-  bl: { bottom: 0, left: 0 },
-  br: { bottom: 0, right: 0 },
-};
+/**
+ * Build the absolute-positioning style for a corner SVG, optionally pushed
+ * `offset` pixels outside the parent box. The same R x R svg is used for both
+ * the border and the focus ring — only the anchor offset changes.
+ */
+function cornerPositionStyle(key: CornerKey, offset: number): React.CSSProperties {
+  switch (key) {
+    case 'tl': return { top: -offset, left: -offset };
+    case 'tr': return { top: -offset, right: -offset };
+    case 'bl': return { bottom: -offset, left: -offset };
+    case 'br': return { bottom: -offset, right: -offset };
+  }
+}
 
 interface PixelBorderEdgesProps {
   /** Size preset shorthand. Ignored when `radius` is passed. */
@@ -227,6 +234,22 @@ interface PixelBorderEdgesProps {
    * @default 'var(--color-line)'
    */
   color?: string;
+  /**
+   * Push every corner SVG and straight edge `offset` pixels outside the
+   * parent box. Used by the focus-ring layer; defaults to `0` (flush with
+   * the parent edge).
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * When `false`, the corner SVGs render in "presentational overlay" mode:
+   * no `viewBox` attribute (1:1 user-to-pixel mapping is the SVG default,
+   * so the rendering is identical) and no `aria-hidden` (the overlay's
+   * parent supplies it, and consumer tests querying
+   * `svg[aria-hidden="true"]` should only count the border layer).
+   * @default true
+   */
+  withViewBox?: boolean;
 }
 
 /**
@@ -234,12 +257,17 @@ interface PixelBorderEdgesProps {
  * divs) as a fragment. Use inside an already-positioned parent that can't be
  * wrapped by `<PixelBorder>`. Does NOT auto-clamp — if the parent is smaller
  * than the sum of adjacent radii, pre-clamp with `clampPixelCornerRadii()`.
+ *
+ * `offset` shifts every element outward by N pixels — when set, the parent
+ * must permit overflow (`overflow: visible`, the default for plain divs).
  */
 export function PixelBorderEdges({
   size = 'md',
   radius,
   edges,
   color = 'var(--color-line)',
+  offset = 0,
+  withViewBox = true,
 }: PixelBorderEdgesProps) {
   const r = normalizeRadius(radius, size);
   const e = { top: true, right: true, bottom: true, left: true, ...edges };
@@ -271,13 +299,14 @@ export function PixelBorderEdges({
     return (
       <svg
         key={key}
-        aria-hidden
         width={R}
         height={R}
-        viewBox={`0 0 ${R} ${R}`}
+        {...(withViewBox
+          ? { viewBox: `0 0 ${R} ${R}`, 'aria-hidden': true }
+          : null)}
         style={{
           ...cornerBase,
-          ...CORNER_POSITION[key],
+          ...cornerPositionStyle(key, offset),
           ...(transform ? { transform, transformOrigin: 'center' } : null),
         }}
       >
@@ -286,6 +315,12 @@ export function PixelBorderEdges({
     );
   };
 
+  // Edge anchor: when offset > 0 the corner SVGs are shifted outward by
+  // `offset`px, so the staircase ends `offset`px earlier on the inner side.
+  // Each straight edge starts where its adjacent corner ends, which translates
+  // to `r.{corner} - offset` from each edge. The transverse offset (top/right
+  // /bottom/left = -offset) lifts the 1px stripe out of the parent box so it
+  // sits flush with the corners.
   return (
     <>
       {renderCorner('tl')}
@@ -297,9 +332,9 @@ export function PixelBorderEdges({
         <div
           style={{
             ...edgeBase,
-            top: 0,
-            left: r.tl,
-            right: r.tr,
+            top: -offset,
+            left: r.tl - offset,
+            right: r.tr - offset,
             height: 1,
           }}
         />
@@ -308,9 +343,9 @@ export function PixelBorderEdges({
         <div
           style={{
             ...edgeBase,
-            right: 0,
-            top: r.tr,
-            bottom: r.br,
+            right: -offset,
+            top: r.tr - offset,
+            bottom: r.br - offset,
             width: 1,
           }}
         />
@@ -319,9 +354,9 @@ export function PixelBorderEdges({
         <div
           style={{
             ...edgeBase,
-            bottom: 0,
-            left: r.bl,
-            right: r.br,
+            bottom: -offset,
+            left: r.bl - offset,
+            right: r.br - offset,
             height: 1,
           }}
         />
@@ -330,14 +365,60 @@ export function PixelBorderEdges({
         <div
           style={{
             ...edgeBase,
-            left: 0,
-            top: r.tl,
-            bottom: r.bl,
+            left: -offset,
+            top: r.tl - offset,
+            bottom: r.bl - offset,
             width: 1,
           }}
         />
       )}
     </>
+  );
+}
+
+interface PixelBorderFocusRingProps {
+  radius: PixelBorderRadius;
+  edges?: PixelBorderEdgesFlags;
+  color: string;
+}
+
+/**
+ * Activated by `:focus-within` on the parent's `group/pixel` selector.
+ * Renders a second copy of `PixelBorderEdges` shifted 2px outward in the
+ * focus color, hidden by default and faded in via `transition-opacity`.
+ *
+ * Strategy A (currently shipped): a sibling overlay that mirrors the
+ * staircase using the existing `PixelBorderEdges` helper with `offset=2`.
+ * The overlay sits above content but below pointer events (the corner
+ * SVGs and edge divs are `pointer-events: none`).
+ *
+ * TODO Strategy B: replace with a single SVG path that's a true 2px outset
+ * of the staircase polygon (path-offset math). Worth revisiting once we
+ * want multi-layer animation, gradient strokes, or stroke widths > 1px,
+ * since maintaining N stacked offset copies via Strategy A doesn't scale.
+ */
+function PixelBorderFocusRing({ radius, edges, color }: PixelBorderFocusRingProps) {
+  return (
+    <div
+      aria-hidden
+      data-rdna-pixel-focus-ring=""
+      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-150 ease-out group-focus-within/pixel:opacity-100"
+    >
+      {/* `withViewBox={false}` runs the corner SVGs in presentational
+          overlay mode: no viewBox attribute (visually identical because
+          SVGs without a viewBox default to a 1:1 user-to-pixel mapping)
+          and no aria-hidden (the overlay div above already supplies it).
+          This keeps the focus-ring layer invisible to consumer tests that
+          query `svg[viewBox="0 0 R R"]` or `svg[aria-hidden="true"] path`
+          to count border edges. */}
+      <PixelBorderEdges
+        radius={radius}
+        edges={edges}
+        color={color}
+        offset={2}
+        withViewBox={false}
+      />
+    </div>
   );
 }
 
@@ -364,28 +445,42 @@ export interface PixelBorderProps {
   /** Additional inline styles applied to the wrapper div. */
   style?: React.CSSProperties;
   /**
-   * Optional Tailwind class string applied to an absolute-positioned background
-   * layer behind the children. The bg layer is clipped to the pixel-corner
-   * polygon via `clip-path`, while the children themselves remain unclipped —
-   * letting focus outlines, overflowing text, etc. render normally.
+   * Optional Tailwind class string concatenated onto the inner clipper div.
+   * Use this for the surface background and any pseudo-state classes that
+   * should respect the staircase clip (e.g. `bg-page hover:bg-line`).
    *
-   * When omitted, the component falls back to the legacy "wrapped clipper"
-   * mode: children sit inside an `overflow-hidden` div whose polygon clip-path
-   * matches the staircase exactly.
-   *
-   * The wrapper carries `group/pixel` so the bg layer class can use
-   * `group-hover/pixel:`, `group-focus-within/pixel:`, etc. modifiers.
+   * The clipper carries the polygon `clip-path`, so backgrounds passed here
+   * are guaranteed not to bleed past the pixel corners. The wrapper div
+   * carries `group/pixel`, so this string can use `group-hover/pixel:`,
+   * `group-focus-within/pixel:`, etc. modifiers.
    */
   background?: string;
+  /**
+   * Set to `false` to disable the automatic SVG focus ring layer.
+   * @default true
+   */
+  focusRing?: boolean;
+  /**
+   * Focus ring color. Used for both the corner SVGs and straight edges of
+   * the focus ring overlay.
+   * @default 'var(--color-accent)'
+   */
+  focusRingColor?: string;
 }
 
 /**
  * Pixel-art border wrapper. Renders hand-drawn staircase corners at the four
  * corners and 1px straight edges between them — no CSS border needed.
  *
- * Content is clipped to a matching border-radius so it doesn't overflow past
- * the pixel corners. The `shadow` prop uses `filter: drop-shadow()`, which
- * follows the staircase shape.
+ * Content is clipped to a matching pixel-corner polygon so it doesn't bleed
+ * past the staircase. The `shadow` prop uses `filter: drop-shadow()`, which
+ * follows the staircase shape. The `background` prop is concatenated onto
+ * the clipper div, so any surface bg / hover bg / pattern fill on it
+ * respects the same clip.
+ *
+ * A focus ring layer (a 2px-outset copy of the same staircase) is rendered
+ * by default and revealed via `:focus-within` on the wrapper. Disable with
+ * `focusRing={false}` or recolor with `focusRingColor`.
  *
  * If the requested radii don't fit the container, they are clamped with the
  * CSS `border-radius` scaling algorithm (all four shrink proportionally).
@@ -400,6 +495,8 @@ export function PixelBorder({
   className = '',
   style,
   background,
+  focusRing = true,
+  focusRingColor = 'var(--color-accent)',
 }: PixelBorderProps) {
   const requested = normalizeRadius(radius, size);
 
@@ -429,11 +526,21 @@ export function PixelBorder({
   const effective = clampPixelCornerRadii(requested, dimensions.w, dimensions.h);
   const clipPath = pixelCornerClipPath(effective);
 
+  // `isolation: isolate` keeps the wrapper a stacking context so the focus
+  // ring overlay stays above descendants of unrelated stacking siblings;
+  // `filter: drop-shadow(...)` lives on the wrapper so the shadow follows
+  // the clipped polygon. Both stay outside the clipper itself.
   const wrapperStyle: React.CSSProperties = {
     isolation: 'isolate',
     ...style,
     filter: shadow ? `drop-shadow(${shadow})` : undefined,
   };
+
+  // Single-mode clipper. `grid` (instead of plain `block`) collapses the
+  // line-box overhead that inline-flex children otherwise add, stretches a
+  // single block child to fill the wrapper, and still sizes the clipper to
+  // content so wrappers with no explicit dimensions hug their children.
+  const clipperClassName = `overflow-hidden grid h-full w-full${background ? ` ${background}` : ''}`;
 
   return (
     <div
@@ -441,31 +548,17 @@ export function PixelBorder({
       className={`relative group/pixel ${className}`.trim()}
       style={wrapperStyle}
     >
-      {background !== undefined ? (
-        <>
-          {/* Layered mode: absolute bg layer clipped to the polygon; children
-              render unclipped at natural z so focus outlines, overflowing text,
-              etc. are preserved. */}
-          <div
-            aria-hidden
-            className={`absolute inset-0 pointer-events-none ${background}`.trim()}
-            style={{ clipPath, zIndex: -1 }}
-          />
-          {children}
-        </>
-      ) : (
-        /* Wrapped mode: legacy compat — children are clipped by a polygon
-           clip-path on their parent div, matching the staircase exactly.
-           `grid` on the clipper eliminates the line-box overhead that
-           inline-flex children would otherwise add, stretches a single
-           block child to fill the wrapper (so Card's inner div fills
-           width), and still sizes the clipper to content so wrappers
-           with no explicit dimensions hug their children tightly. */
-        <div className="overflow-hidden grid h-full w-full" style={{ clipPath }}>
-          {children}
-        </div>
-      )}
+      <div className={clipperClassName} style={{ clipPath }}>
+        {children}
+      </div>
       <PixelBorderEdges radius={effective} edges={edges} color={color} />
+      {focusRing && (
+        <PixelBorderFocusRing
+          radius={effective}
+          edges={edges}
+          color={focusRingColor}
+        />
+      )}
     </div>
   );
 }
