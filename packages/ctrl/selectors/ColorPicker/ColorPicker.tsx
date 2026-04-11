@@ -33,9 +33,7 @@ export interface ColorPickerProps {
   className?: string;
 }
 
-/** Portal-safe glows — brand primitives only; popup escapes `.dark` context. */
-const GLOW_PORTAL =
-  'var(--color-sun-yellow) 0 0 0.5px, var(--color-sun-yellow) 0 0 3px, var(--color-cream) 0 0 10px';
+/** Portal-safe glow — brand primitives only; popup escapes `.dark` context. */
 const GLOW_HOVER_PORTAL =
   'var(--color-sun-yellow) 0 0 0.5px, var(--color-sun-yellow) 0 0 3px';
 

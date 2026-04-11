@@ -2,6 +2,7 @@
 
 import { forwardRef, useRef, useState } from 'react';
 import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
+import { ColorPicker } from '@rdna/ctrl/selectors/ColorPicker/ColorPicker';
 import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
 import { ScrubSurface } from '@rdna/ctrl/controls/ScrubSurface/ScrubSurface';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
@@ -290,6 +291,29 @@ const MAIN_UNIT_OPTIONS = [
   { value: 'vh', label: 'VH' },
 ];
 
+/** Numeric-only unit options for MIN/MAX cells (no keywords). */
+const NUMERIC_UNIT_OPTIONS = [
+  { value: 'px', label: 'PX' },
+  { value: '%', label: '%' },
+  { value: 'em', label: 'EM' },
+  { value: 'rem', label: 'REM' },
+  { value: 'vw', label: 'VW' },
+  { value: 'vh', label: 'VH' },
+];
+
+/** Brand color swatches for the box-model color picker */
+const BRAND_SWATCHES = [
+  { value: 'var(--color-cream)', label: '#FEF8E2' },
+  { value: 'var(--color-sun-yellow)', label: '#FCE184' },
+  { value: 'var(--color-sunset-fuzz)', label: '#FCC383' },
+  { value: 'var(--color-sun-red)', label: '#FF7F7F' },
+  { value: 'var(--color-mint)', label: '#CEF5CA' },
+  { value: 'var(--color-sky-blue)', label: '#95BAD2' },
+  { value: 'var(--color-sky-blue-dark)', label: '#467994' },
+  { value: 'var(--color-ink)', label: '#0F0E0C' },
+  { value: 'var(--color-pure-white)', label: '#FFFFFF' },
+];
+
 /** Whether this unit is a keyword (no numeric value, input displays the unit text) */
 const KEYWORD_UNITS = new Set(['fill', 'fit', 'auto']);
 
@@ -310,15 +334,23 @@ export default function CtrlPreview() {
   const [wValue, setWValue] = useState<number | null>(null);
   const [wUnit, setWUnit] = useState('fill');
   const [wMin, setWMin] = useState<number | null>(null);
+  const [wMinUnit, setWMinUnit] = useState('');
   const [wMax, setWMax] = useState<number | null>(null);
+  const [wMaxUnit, setWMaxUnit] = useState('');
   const wCellRef = useRef<HTMLDivElement>(null);
+  const wMinRef = useRef<HTMLDivElement>(null);
+  const wMaxRef = useRef<HTMLDivElement>(null);
 
   // H row
   const [hValue, setHValue] = useState<number | null>(10);
   const [hUnit, setHUnit] = useState('vh');
   const [hMin, setHMin] = useState<number | null>(null);
+  const [hMinUnit, setHMinUnit] = useState('');
   const [hMax, setHMax] = useState<number | null>(null);
+  const [hMaxUnit, setHMaxUnit] = useState('');
   const hCellRef = useRef<HTMLDivElement>(null);
+  const hMinRef = useRef<HTMLDivElement>(null);
+  const hMaxRef = useRef<HTMLDivElement>(null);
 
   const [display, setDisplay] = useState('show');
 
@@ -326,6 +358,7 @@ export default function CtrlPreview() {
   const [margin, setMargin] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
   const [padding, setPadding] = useState({ top: 2, right: 2, bottom: 2, left: 2 });
   const [borderWidth, setBorderWidth] = useState(2);
+  const [borderColor, setBorderColor] = useState('var(--color-sun-yellow)');
 
   const setMarginSide = (side: Side) => (v: number | null) =>
     setMargin((m) => ({ ...m, [side]: Math.max(0, v ?? 0) }));
@@ -471,18 +504,40 @@ export default function CtrlPreview() {
                         />
                       )}
                       <NumberInput
+                        ref={wMinRef}
                         value={wMin}
                         onValueChange={setWMin}
                         placeholder="-"
                         className="flex-1"
                         innerSuffix={<SuffixLabel text="MIN" />}
+                        suffix={
+                          <Dropdown
+                            value={wMinUnit}
+                            onValueChange={setWMinUnit}
+                            options={NUMERIC_UNIT_OPTIONS}
+                            className="shrink-0"
+                            anchor={wMinRef}
+                            popupFullWidth
+                          />
+                        }
                       />
                       <NumberInput
+                        ref={wMaxRef}
                         value={wMax}
                         onValueChange={setWMax}
                         placeholder="-"
                         className="flex-1"
                         innerSuffix={<SuffixLabel text="MAX" />}
+                        suffix={
+                          <Dropdown
+                            value={wMaxUnit}
+                            onValueChange={setWMaxUnit}
+                            options={NUMERIC_UNIT_OPTIONS}
+                            className="shrink-0"
+                            anchor={wMaxRef}
+                            popupFullWidth
+                          />
+                        }
                       />
                     </div>
                     {/* H row */}
@@ -525,18 +580,40 @@ export default function CtrlPreview() {
                         />
                       )}
                       <NumberInput
+                        ref={hMinRef}
                         value={hMin}
                         onValueChange={setHMin}
                         placeholder="-"
                         className="flex-1"
                         innerSuffix={<SuffixLabel text="MIN" />}
+                        suffix={
+                          <Dropdown
+                            value={hMinUnit}
+                            onValueChange={setHMinUnit}
+                            options={NUMERIC_UNIT_OPTIONS}
+                            className="shrink-0"
+                            anchor={hMinRef}
+                            popupFullWidth
+                          />
+                        }
                       />
                       <NumberInput
+                        ref={hMaxRef}
                         value={hMax}
                         onValueChange={setHMax}
                         placeholder="-"
                         className="flex-1"
                         innerSuffix={<SuffixLabel text="MAX" />}
+                        suffix={
+                          <Dropdown
+                            value={hMaxUnit}
+                            onValueChange={setHMaxUnit}
+                            options={NUMERIC_UNIT_OPTIONS}
+                            className="shrink-0"
+                            anchor={hMaxRef}
+                            popupFullWidth
+                          />
+                        }
                       />
                     </div>
                     {/* Margin layer */}
@@ -605,11 +682,12 @@ export default function CtrlPreview() {
                               <CaptionText accent>Border</CaptionText>
                               <BorderStylePicker />
                             </div>
-                            <div
-                              className="shrink-0"
-                              style={{ width: 10, height: 10, backgroundColor: 'var(--color-accent)', boxShadow: 'var(--color-accent) 0 0 2px' }}
+                            <ColorPicker
+                              value={borderColor}
+                              onValueChange={setBorderColor}
+                              swatches={BRAND_SWATCHES}
+                              onCustomClick={() => {}}
                             />
-                            <CaptionText>#FCE184</CaptionText>
                             <IconLock />
                           </div>
                           <div className="flex items-center justify-center shrink-0" style={{ width: 24, backgroundColor: 'oklch(0 0 0 / 0.8)', paddingInline: 4 }}>
