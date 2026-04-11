@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
+import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
+import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
+import { TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
 
 // ============================================================================
 // Layout Inspector Panel — Visual build from Paper node SJE-0
@@ -77,34 +80,21 @@ function LabelCell({ label }: { label: string }) {
   );
 }
 
-function ValueCell({ label, unit, active = false }: {
-  label: string;
-  unit?: string;
-  active?: boolean;
-}) {
+/** Right-slot label (MIN / MAX) — matches ValueCell suffix styling */
+function SuffixLabel({ text, active = false }: { text: string; active?: boolean }) {
   return (
-    <div className="flex flex-1 items-center justify-between bg-black" style={{ height: 24, paddingInline: 4, gap: 4 }}>
-      <span
-        className="shrink-0 text-center"
-        style={{
-          fontSize: 10,
-          lineHeight: 'round(up, 100%, 1px)',
-          ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
-        }}
-      >
-        {label}
-      </span>
-      <span className="flex items-start gap-[3px]">
-        {unit && (
-          <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', textAlign: 'center' }}>
-            {unit}
-          </span>
-        )}
-        <span style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)', textAlign: 'center', width: 'max-content' }}>
-          ▾
-        </span>
-      </span>
-    </div>
+    <span
+      className="shrink-0 uppercase"
+      style={{
+        fontSize: 10,
+        lineHeight: 'round(up, 100%, 1px)',
+        width: 'max-content',
+        marginLeft: 'auto',
+        ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
+      }}
+    >
+      {text}
+    </span>
   );
 }
 
@@ -113,7 +103,15 @@ function ValueCell({ label, unit, active = false }: {
 function IconEye() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
-      <path fill="var(--color-accent)" d="M1 7.5H2V8.5H1V7.5ZM2 6.5H3V7.5H2V6.5ZM2 8.5H3V9.5H2V8.5ZM3 5.5H5V6.5H3V5.5ZM3 9.5H5V10.5H3V9.5ZM5 4.5H11V5.5H5V4.5ZM5 10.5H11V11.5H5V10.5ZM6 6.5H8V7.5H7V8.5H6V6.5ZM7 8.5H9V9.5H7V8.5ZM9 6.5H10V8.5H9V6.5ZM11 5.5H13V6.5H11V5.5ZM11 9.5H13V10.5H11V9.5ZM13 6.5H14V7.5H13V6.5ZM13 8.5H14V9.5H13V8.5ZM14 7.5H15V8.5H14V7.5Z" />
+      <path fill="currentColor" d="M1 7.5H2V8.5H1V7.5ZM2 6.5H3V7.5H2V6.5ZM2 8.5H3V9.5H2V8.5ZM3 5.5H5V6.5H3V5.5ZM3 9.5H5V10.5H3V9.5ZM5 4.5H11V5.5H5V4.5ZM5 10.5H11V11.5H5V10.5ZM6 6.5H8V7.5H7V8.5H6V6.5ZM7 8.5H9V9.5H7V8.5ZM9 6.5H10V8.5H9V6.5ZM11 5.5H13V6.5H11V5.5ZM11 9.5H13V10.5H11V9.5ZM13 6.5H14V7.5H13V6.5ZM13 8.5H14V9.5H13V8.5ZM14 7.5H15V8.5H14V7.5Z" />
+    </svg>
+  );
+}
+
+function IconEyeOff() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="size-4 shrink-0 overflow-clip">
+      <path fill="currentColor" d="M1 4.5H2V5.5H1V4.5ZM2 5.5H3V6.5H2V5.5ZM3 6.5H4V7.5H3V6.5ZM4 7.5H5V8.5H4V7.5ZM5 8.5H6V9.5H5V8.5ZM6 9.5H7V10.5H6V9.5ZM7 10.5H8V11.5H7V10.5ZM8 11.5H9V12.5H8V11.5ZM9 10.5H10V11.5H9V10.5ZM10 9.5H11V10.5H10V9.5ZM11 8.5H12V9.5H11V8.5ZM12 7.5H13V8.5H12V7.5ZM13 6.5H14V7.5H13V6.5ZM14 5.5H15V6.5H14V5.5ZM5 4.5H11V5.5H5V4.5Z" />
     </svg>
   );
 }
@@ -145,239 +143,261 @@ function IconFloat() {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-// Dropdown options for the W / H row dropdowns
-const WIDTH_OPTIONS = [
-  { value: 'fill', label: 'Fill' },
-  { value: 'fit', label: 'Fit' },
-  { value: 'fixed', label: 'Fixed' },
-  { value: 'auto', label: 'Auto' },
-];
-
-const CONSTRAINT_OPTIONS = [
-  { value: 'min', label: 'Min' },
-  { value: 'max', label: 'Max' },
-  { value: 'clamp', label: 'Clamp' },
-  { value: 'none', label: 'None' },
-];
-
-const UNIT_OPTIONS = [
+/** Unit options shared by W/H main value cells — keywords + numeric units */
+const MAIN_UNIT_OPTIONS = [
+  { value: 'fill', label: 'FILL' },
+  { value: 'fit', label: 'FIT' },
+  { value: 'auto', label: 'AUTO' },
   { value: 'px', label: 'PX' },
   { value: '%', label: '%' },
   { value: 'em', label: 'EM' },
   { value: 'rem', label: 'REM' },
-  { value: 'ch', label: 'CH' },
   { value: 'vw', label: 'VW' },
   { value: 'vh', label: 'VH' },
-  { value: 'svw', label: 'SVW' },
-  { value: 'svh', label: 'SVH' },
-  { value: 'auto', label: 'AUTO' },
+];
+
+/** Unit options for MIN/MAX constraint cells — numeric units only */
+const CONSTRAINT_UNIT_OPTIONS = [
+  { value: 'px', label: 'PX' },
+  { value: '%', label: '%' },
+  { value: 'em', label: 'EM' },
+  { value: 'rem', label: 'REM' },
+  { value: 'vw', label: 'VW' },
+  { value: 'vh', label: 'VH' },
+];
+
+/** Whether this unit is a keyword (no numeric value, input displays the unit text) */
+const KEYWORD_UNITS = new Set(['fill', 'fit', 'auto']);
+
+/** Display modes for the inspector — pixel-art icons + short labels */
+const DISPLAY_OPTIONS = [
+  { value: 'show', icon: <IconEye />, tooltip: 'Show' },
+  { value: 'hide', icon: <IconEyeOff />, tooltip: 'Hide' },
+  { value: 'clip', icon: <IconResize />, tooltip: 'Clip' },
+  { value: 'overflow', icon: <IconPosition />, tooltip: 'Overflow' },
+  { value: 'auto', icon: <span className="text-[8px] uppercase leading-[10px]">Auto</span>, tooltip: 'Auto' },
 ];
 
 export default function CtrlPreview() {
   const [open, setOpen] = useState(true);
   const [mode, setMode] = useState<'min' | 'max'>('max');
-  const [wValue, setWValue] = useState('fill');
-  const [wMin, setWMin] = useState('min');
-  const [wMax, setWMax] = useState('max');
-  const [hUnit, setHUnit] = useState('rem');
-  const [hMin, setHMin] = useState('min');
-  const [hMax, setHMax] = useState('min');
+
+  // W row
+  const [wValue, setWValue] = useState<number | null>(null);
+  const [wUnit, setWUnit] = useState('fill');
+  const [wMin, setWMin] = useState<number | null>(null);
+  const [wMinUnit, setWMinUnit] = useState('px');
+  const [wMax, setWMax] = useState<number | null>(null);
+  const [wMaxUnit, setWMaxUnit] = useState('px');
+
+  // H row
+  const [hValue, setHValue] = useState<number | null>(10);
+  const [hUnit, setHUnit] = useState('vh');
+  const [hMin, setHMin] = useState<number | null>(null);
+  const [hMinUnit, setHMinUnit] = useState('px');
+  const [hMax, setHMax] = useState<number | null>(null);
+  const [hMaxUnit, setHMaxUnit] = useState('px');
+
+  const [display, setDisplay] = useState('show');
 
   return (
-    <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
-      {/* Panel Container */}
-      <div
-        className="flex flex-col font-mono text-xs leading-4"
-        style={{
-          width: 353,
-          padding: 16,
-          backgroundColor: '#000',
-          color: 'var(--ctrl-label)',
-          boxShadow: 'inset 2px 2px 9.6px #000, 0 1px 0 1px oklch(1 0 0 / 0.04), 0 -2px 0 #000',
-          WebkitFontSmoothing: 'antialiased',
-          fontSynthesis: 'none',
-        }}
-      >
-        {/* ── Panel Title: LAYOUT ── */}
-        <div className="flex items-end gap-2 h-6 shrink-0 justify-center">
-          <span
-            className="text-base leading-5 uppercase shrink-0"
-            style={{ color: 'var(--color-main)', textShadow: GLOW, width: 'max-content' }}
-          >
-            Layout
-          </span>
-          <div
-            className="relative"
-            style={{
-              width: '100%',
-              height: 'round(50%, 1px)',
-              borderTop: '1px solid var(--ctrl-border-active)',
-              borderRight: '1px solid var(--ctrl-border-active)',
-            }}
-          />
-        </div>
-
-        {/* ── Section Body ── */}
-        <div className="flex flex-col flex-1">
-          {/* Section Header: SIZE */}
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="flex items-end gap-1 h-6 w-full text-left shrink-0 cursor-pointer"
-          >
-            {/* Left bracket ⌐ */}
-            <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderLeft: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
-
+    <TooltipProvider>
+      <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
+        {/* Panel Container */}
+        <div
+          className="flex flex-col font-mono text-xs leading-4"
+          style={{
+            width: 353,
+            padding: 16,
+            backgroundColor: '#000',
+            color: 'var(--ctrl-label)',
+            boxShadow: 'inset 2px 2px 9.6px #000, 0 1px 0 1px oklch(1 0 0 / 0.04), 0 -2px 0 #000',
+            WebkitFontSmoothing: 'antialiased',
+            fontSynthesis: 'none',
+          }}
+        >
+          {/* ── Panel Title: LAYOUT ── */}
+          <div className="flex items-end gap-2 h-6 shrink-0 justify-center">
             <span
-              className="self-stretch flex items-center shrink-0 text-xs leading-4 uppercase"
-              style={{ color: 'var(--color-main)', textShadow: GLOW }}
+              className="text-base leading-5 uppercase shrink-0"
+              style={{ color: 'var(--color-main)', textShadow: GLOW, width: 'max-content' }}
             >
-              Size
+              Layout
             </span>
+            <div
+              className="relative"
+              style={{
+                width: '100%',
+                height: 'round(50%, 1px)',
+                borderTop: '1px solid var(--ctrl-border-active)',
+                borderRight: '1px solid var(--ctrl-border-active)',
+              }}
+            />
+          </div>
 
-            {/* Rule */}
-            <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+          {/* ── Section Body ── */}
+          <div className="flex flex-col flex-1">
+            {/* Section Header: SIZE */}
+            <button
+              type="button"
+              onClick={() => setOpen(!open)}
+              className="flex items-end gap-1 h-6 w-full text-left shrink-0 cursor-pointer"
+            >
+              {/* Left bracket ⌐ */}
+              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderLeft: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
 
-            {/* Min/Max toggle */}
-            <div className="flex items-center gap-1 shrink-0 self-stretch justify-center" style={{ width: 60 }}>
-              <span className="shrink-0 text-center uppercase" style={{ fontSize: 8, lineHeight: '10px', width: 'max-content' }}>
-                min
-              </span>
-              <div
-                className="flex items-center shrink-0 cursor-pointer"
-                style={{
-                  width: 16,
-                  padding: 1,
-                  border: '1px solid var(--ctrl-border-active)',
-                  boxShadow: GLOW_SOFT,
-                  justifyContent: mode === 'max' ? 'flex-end' : 'flex-start',
-                }}
-                onClick={(e) => { e.stopPropagation(); setMode(m => m === 'min' ? 'max' : 'min'); }}
-              >
-                <div className="shrink-0" style={{ width: 6, height: 6, backgroundColor: 'var(--color-main)', boxShadow: GLOW_SOFT }} />
-              </div>
               <span
-                className="shrink-0 text-center uppercase"
-                style={{ fontSize: 8, lineHeight: '10px', color: 'var(--color-main)', textShadow: GLOW_SOFT, width: 'max-content' }}
+                className="self-stretch flex items-center shrink-0 text-xs leading-4 uppercase"
+                style={{ color: 'var(--color-main)', textShadow: GLOW }}
               >
-                max
+                Size
               </span>
-            </div>
 
-            {/* Rule (short) */}
-            <div className="shrink-0 relative" style={{ width: 12, height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+              {/* Rule */}
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
 
-            <span className="self-stretch flex items-center shrink-0 uppercase" style={{ fontSize: 8, lineHeight: '10px' }}>
-              {open ? 'Collapse' : 'Expand'}
-            </span>
+              {/* Min/Max toggle */}
+              <div className="flex items-center gap-1 shrink-0 self-stretch justify-center" style={{ width: 60 }}>
+                <span className="shrink-0 text-center uppercase" style={{ fontSize: 8, lineHeight: '10px', width: 'max-content' }}>
+                  min
+                </span>
+                <div
+                  className="flex items-center shrink-0 cursor-pointer"
+                  style={{
+                    width: 16,
+                    padding: 1,
+                    border: '1px solid var(--ctrl-border-active)',
+                    boxShadow: GLOW_SOFT,
+                    justifyContent: mode === 'max' ? 'flex-end' : 'flex-start',
+                  }}
+                  onClick={(e) => { e.stopPropagation(); setMode(m => m === 'min' ? 'max' : 'min'); }}
+                >
+                  <div className="shrink-0" style={{ width: 6, height: 6, backgroundColor: 'var(--color-main)', boxShadow: GLOW_SOFT }} />
+                </div>
+                <span
+                  className="shrink-0 text-center uppercase"
+                  style={{ fontSize: 8, lineHeight: '10px', color: 'var(--color-main)', textShadow: GLOW_SOFT, width: 'max-content' }}
+                >
+                  max
+                </span>
+              </div>
 
-            {/* Right bracket ¬ */}
-            <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderRight: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
-          </button>
+              {/* Rule (short) */}
+              <div className="shrink-0 relative" style={{ width: 12, height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
 
-          {/* Section Content */}
-          {open && (
-            <div className="flex flex-1">
-              <div className="flex flex-col flex-1 gap-1">
-                {/* Box-Model Visualizer */}
-                <div className="flex flex-col flex-1" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
-                  {/* Margin layer */}
-                  <div className="relative flex flex-1 overflow-clip" style={{ padding: 24 }}>
-                    <Trap side="left" value={0} variant="margin" />
-                    <Trap side="top" value={0} variant="margin" />
-                    <Trap side="bottom" value={0} variant="margin" />
-                    <Trap side="right" value={0} variant="margin" />
+              <span className="self-stretch flex items-center shrink-0 uppercase" style={{ fontSize: 8, lineHeight: '10px' }}>
+                {open ? 'Collapse' : 'Expand'}
+              </span>
 
-                    {/* Padding layer */}
-                    <div className="flex flex-1 items-center justify-center relative">
-                      <div className="flex flex-col flex-1 self-stretch" style={{ padding: 1 }}>
-                        <div className="relative flex flex-1" style={{ padding: 24 }}>
-                          <Trap side="left" value={24} variant="padding" />
-                          <Trap side="top" value={16} variant="padding" />
-                          <Trap side="bottom" value={16} variant="padding" />
-                          <Trap side="right" value={24} variant="padding" />
+              {/* Right bracket ¬ */}
+              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderRight: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+            </button>
 
-                          {/* Center: Property cells */}
-                          <div className="flex flex-col flex-1 self-stretch gap-[1px] items-center justify-center relative">
-                            {/* W row */}
-                            <div className="flex self-stretch gap-[1px]">
-                              <LabelCell label="W" />
-                              <Dropdown
-                                value={wValue}
-                                onValueChange={setWValue}
-                                options={WIDTH_OPTIONS}
-                                className="flex-1"
-                              />
-                              <Dropdown
-                                value={wMin}
-                                onValueChange={setWMin}
-                                options={CONSTRAINT_OPTIONS}
-                                className="flex-1"
-                              />
-                              <Dropdown
-                                value={wMax}
-                                onValueChange={setWMax}
-                                options={CONSTRAINT_OPTIONS}
-                                className="flex-1"
-                              />
-                            </div>
-                            {/* H row */}
-                            <div className="flex self-stretch gap-[1px]">
-                              <LabelCell label="H" />
-                              <Dropdown
-                                value={hUnit}
-                                onValueChange={setHUnit}
-                                options={UNIT_OPTIONS}
-                                className="flex-1"
-                                prefix={
-                                  <span
-                                    className="shrink-0 mr-auto"
-                                    style={{
-                                      fontSize: 10,
-                                      lineHeight: 'round(up, 100%, 1px)',
-                                      color: 'var(--color-main)',
-                                      textShadow: GLOW,
-                                    }}
-                                  >
-                                    10
-                                  </span>
-                                }
-                              />
-                              <Dropdown
-                                value={hMin}
-                                onValueChange={setHMin}
-                                options={CONSTRAINT_OPTIONS}
-                                className="flex-1"
-                              />
-                              <Dropdown
-                                value={hMax}
-                                onValueChange={setHMax}
-                                options={CONSTRAINT_OPTIONS}
-                                className="flex-1"
-                              />
-                            </div>
-                            {/* Icon strip */}
-                            <div className="flex self-stretch relative" style={{ height: 20, borderRadius: 3 }}>
-                              <div className="flex flex-1 items-center justify-center self-stretch bg-black gap-1 px-1">
-                                <IconEye />
+            {/* Section Content */}
+            {open && (
+              <div className="flex flex-1">
+                <div className="flex flex-col flex-1 gap-1">
+                  {/* Box-Model Visualizer */}
+                  <div className="flex flex-col flex-1" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
+                    {/* Margin layer */}
+                    <div className="relative flex flex-1 overflow-clip" style={{ padding: 24 }}>
+                      <Trap side="left" value={0} variant="margin" />
+                      <Trap side="top" value={0} variant="margin" />
+                      <Trap side="bottom" value={0} variant="margin" />
+                      <Trap side="right" value={0} variant="margin" />
+
+                      {/* Padding layer */}
+                      <div className="flex flex-1 items-center justify-center relative">
+                        <div className="flex flex-col flex-1 self-stretch" style={{ padding: 1 }}>
+                          <div className="relative flex flex-1" style={{ padding: 24 }}>
+                            <Trap side="left" value={24} variant="padding" />
+                            <Trap side="top" value={16} variant="padding" />
+                            <Trap side="bottom" value={16} variant="padding" />
+                            <Trap side="right" value={24} variant="padding" />
+
+                            {/* Center: Property cells */}
+                            <div className="flex flex-col flex-1 self-stretch gap-[1px] items-center justify-center relative">
+                              {/* W row */}
+                              <div className="flex self-stretch gap-[1px]">
+                                <LabelCell label="W" />
+                                <NumberInput
+                                  value={KEYWORD_UNITS.has(wUnit) ? null : wValue}
+                                  onValueChange={(v) => {
+                                    setWValue(v);
+                                    if (v !== null && KEYWORD_UNITS.has(wUnit)) setWUnit('px');
+                                  }}
+                                  placeholder={KEYWORD_UNITS.has(wUnit) ? wUnit.toUpperCase() : ''}
+                                  active={KEYWORD_UNITS.has(wUnit) || wValue !== null}
+                                  className="flex-1"
+                                  suffix={
+                                    <Dropdown
+                                      value={wUnit}
+                                      onValueChange={setWUnit}
+                                      options={MAIN_UNIT_OPTIONS}
+                                      className="shrink-0"
+                                      hideCaret
+                                    />
+                                  }
+                                />
+                                <NumberInput
+                                  value={wMin}
+                                  onValueChange={setWMin}
+                                  placeholder="-"
+                                  className="flex-1"
+                                  suffix={<SuffixLabel text="MIN" />}
+                                />
+                                <NumberInput
+                                  value={wMax}
+                                  onValueChange={setWMax}
+                                  placeholder="-"
+                                  className="flex-1"
+                                  suffix={<SuffixLabel text="MAX" />}
+                                />
                               </div>
-                              <div className="flex flex-1 items-center justify-center self-stretch bg-black gap-1 px-1">
-                                <IconResize />
+                              {/* H row */}
+                              <div className="flex self-stretch gap-[1px]">
+                                <LabelCell label="H" />
+                                <NumberInput
+                                  value={KEYWORD_UNITS.has(hUnit) ? null : hValue}
+                                  onValueChange={(v) => {
+                                    setHValue(v);
+                                    if (v !== null && KEYWORD_UNITS.has(hUnit)) setHUnit('px');
+                                  }}
+                                  placeholder={KEYWORD_UNITS.has(hUnit) ? hUnit.toUpperCase() : ''}
+                                  active={KEYWORD_UNITS.has(hUnit) || hValue !== null}
+                                  className="flex-1"
+                                  suffix={
+                                    <Dropdown
+                                      value={hUnit}
+                                      onValueChange={setHUnit}
+                                      options={MAIN_UNIT_OPTIONS}
+                                      className="shrink-0"
+                                      hideCaret
+                                    />
+                                  }
+                                />
+                                <NumberInput
+                                  value={hMin}
+                                  onValueChange={setHMin}
+                                  placeholder="-"
+                                  className="flex-1"
+                                  suffix={<SuffixLabel text="MIN" />}
+                                />
+                                <NumberInput
+                                  value={hMax}
+                                  onValueChange={setHMax}
+                                  placeholder="-"
+                                  className="flex-1"
+                                  suffix={<SuffixLabel text="MAX" />}
+                                />
                               </div>
-                              <div className="flex flex-1 items-center justify-center self-stretch bg-black gap-1 px-1">
-                                <IconPosition />
-                              </div>
-                              <div className="flex flex-1 items-center justify-center self-stretch bg-black gap-1 px-1">
-                                <IconFloat />
-                              </div>
-                              <div className="flex flex-1 items-center justify-center self-stretch bg-black flex-col gap-1 px-1">
-                                <span
-                                  className="uppercase overflow-hidden"
-                                  style={{ fontSize: 8, lineHeight: '10px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1, width: 'fit-content' }}
-                                >
-                                  Auto
-                                </span>
-                              </div>
+                              {/* Icon strip — display mode radio group with tooltips */}
+                              <IconRadioGroup
+                                value={display}
+                                onValueChange={setDisplay}
+                                options={DISPLAY_OPTIONS}
+                                cellHeight={20}
+                              />
                             </div>
                           </div>
                         </div>
@@ -386,19 +406,19 @@ export default function CtrlPreview() {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Footer: SHOW CSS */}
-          <div className="flex items-start gap-1 h-6 shrink-0">
-            <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderLeft: '1px solid var(--ctrl-border-inactive)' }} />
-            <span className="self-stretch flex items-center uppercase text-center" style={{ fontSize: 8, lineHeight: '10px' }}>
-              Show css
-            </span>
-            <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderRight: '1px solid var(--ctrl-border-inactive)' }} />
+            {/* Footer: SHOW CSS */}
+            <div className="flex items-start gap-1 h-6 shrink-0">
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderLeft: '1px solid var(--ctrl-border-inactive)' }} />
+              <span className="self-stretch flex items-center uppercase text-center" style={{ fontSize: 8, lineHeight: '10px' }}>
+                Show css
+              </span>
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderRight: '1px solid var(--ctrl-border-inactive)' }} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
