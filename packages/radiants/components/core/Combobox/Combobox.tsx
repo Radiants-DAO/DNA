@@ -121,25 +121,27 @@ function Root<V = string>({
 function Input({ placeholder = 'Search...', disabled = false, className = '' }: ComboboxInputProps) {
   return (
     <div className="relative">
-      <div className="pixel-rounded-xs--wrapper w-full">
+      <PixelBorder
+        size="xs"
+        background="bg-page group-focus-within/pixel:bg-card"
+        className="w-full"
+      >
         <BaseCombobox.Input
           placeholder={placeholder}
           disabled={disabled}
           className={`
-            pixel-rounded-xs
             w-full h-8
             px-3 py-1.5
             font-sans text-sm
             text-main
-            bg-page
+            bg-transparent
             placeholder:text-mute
-            focus:bg-card
             disabled:opacity-50 disabled:cursor-not-allowed
             focus-visible:outline-none
             ${className}
           `.trim()}
         />
-      </div>
+      </PixelBorder>
       <BaseCombobox.Trigger
         className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer z-10"
       >
@@ -191,7 +193,8 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
       >
         <PixelBorder
           size="xs"
-          className={`w-full bg-card ${className}`.trim()}
+          background="bg-card"
+          className={`w-full ${className}`.trim()}
           shadow="2px 2px 0 var(--color-ink)"
         >
           <BaseCombobox.List className="max-h-48 overflow-y-auto py-1">

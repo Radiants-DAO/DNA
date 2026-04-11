@@ -107,7 +107,8 @@ export function PreviewCardContent({
         >
           <PixelBorder
             size="xs"
-            className={`bg-card ${className}`.trim()}
+            background="bg-card"
+            className={className}
             shadow="2px 2px 0 var(--color-ink)"
           >
             <div className="p-4">

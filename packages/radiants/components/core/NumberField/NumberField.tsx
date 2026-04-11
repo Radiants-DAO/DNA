@@ -4,6 +4,7 @@ import React from 'react';
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field';
 import { cva } from 'class-variance-authority';
 import { Plus, Minus } from '../../../icons/generated';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -174,9 +175,11 @@ function Decrement({ children, className = '' }: DecrementProps): React.ReactNod
  */
 function Group({ children, className = '' }: GroupProps): React.ReactNode {
   return (
-    <BaseNumberField.Group className={`flex items-center pixel-rounded-xs ${className}`.trim()}>
-      {children}
-    </BaseNumberField.Group>
+    <PixelBorder size="xs" className={className}>
+      <BaseNumberField.Group className="flex items-center">
+        {children}
+      </BaseNumberField.Group>
+    </PixelBorder>
   );
 }
 

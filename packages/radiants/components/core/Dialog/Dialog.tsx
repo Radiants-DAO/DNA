@@ -118,10 +118,13 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
             group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
           `.trim()}
         >
-          <PixelBorder size="sm" shadow="4px 4px 0 var(--color-ink)">
-            <div className={`bg-page ${className}`.trim()}>
-              {children}
-            </div>
+          <PixelBorder
+            size="sm"
+            background="bg-page"
+            className={className}
+            shadow="4px 4px 0 var(--color-ink)"
+          >
+            {children}
           </PixelBorder>
         </div>
       </BaseDialog.Popup>

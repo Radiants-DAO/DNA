@@ -3,6 +3,7 @@
 import { useId } from 'react';
 import { cva } from 'class-variance-authority';
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -32,7 +33,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center pixel-rounded-xs cursor-pointer transition-[background-color,border-color] duration-150',
+  'group relative flex items-center cursor-pointer transition-[background-color,border-color] duration-150',
   {
     variants: {
       size: {
@@ -104,7 +105,7 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb pixel-rounded-xs pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
+    'pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
     'shadow-none',
@@ -123,22 +124,31 @@ export function Switch({
     <div data-rdna="switch" className={`inline-flex items-center gap-2 ${className}`}>
       {labelPosition === 'left' && labelEl}
 
-      <BaseSwitch.Root
-        checked={checked}
-        onCheckedChange={(newChecked) => onChange(newChecked)}
-        disabled={disabled}
-        name={name}
-        required={required}
-        readOnly={readOnly}
-        id={switchId}
-        className={trackClasses}
-        data-slot="switch-track"
-        data-variant="switch"
-        data-checked={checked ? '' : undefined}
-        data-size={size}
-      >
-        <BaseSwitch.Thumb className={thumbClasses} data-slot="switch-thumb" />
-      </BaseSwitch.Root>
+      <PixelBorder size="xs" className="inline-block">
+        <BaseSwitch.Root
+          checked={checked}
+          onCheckedChange={(newChecked) => onChange(newChecked)}
+          disabled={disabled}
+          name={name}
+          required={required}
+          readOnly={readOnly}
+          id={switchId}
+          className={trackClasses}
+          data-slot="switch-track"
+          data-variant="switch"
+          data-checked={checked ? '' : undefined}
+          data-size={size}
+        >
+          <BaseSwitch.Thumb
+            data-slot="switch-thumb"
+            render={(props) => (
+              <PixelBorder size="xs" className={thumbClasses}>
+                <span {...props} className="absolute inset-0 switch-thumb" />
+              </PixelBorder>
+            )}
+          />
+        </BaseSwitch.Root>
+      </PixelBorder>
 
       {labelPosition === 'right' && labelEl}
     </div>

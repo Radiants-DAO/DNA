@@ -50,12 +50,16 @@ describe('Switch', () => {
   });
 
   test('preserves data-variant="switch"', () => {
-    render(<Switch checked={false} onChange={() => {}} />);
+    const { container } = render(<Switch checked={false} onChange={() => {}} />);
     const el = document.querySelector('[data-variant="switch"]');
     expect(el).toBeInTheDocument();
     const classTokens = el?.className.split(/\s+/) ?? [];
-    expect(el?.className).toContain('pixel-rounded-xs');
+    expect(classTokens).not.toContain('pixel-rounded-xs');
     expect(classTokens).not.toContain('rounded-xs');
+    // PixelBorder renders four 4x4 corner SVGs around the track AND thumb (8 total).
+    expect(
+      container.querySelectorAll('svg[viewBox="0 0 4 4"]').length,
+    ).toBeGreaterThanOrEqual(4);
   });
 
   test('renders with different sizes', () => {
@@ -68,12 +72,12 @@ describe('Switch', () => {
     expect(document.querySelector('[data-size="lg"]')).toBeInTheDocument();
   });
 
-  test('track variants keep dynamic fill colors in CSS while using pixel-rounded borders', () => {
+  test('track variants keep dynamic fill colors in CSS without legacy pixel-rounded utility', () => {
     const classes = switchTrackVariants({
       checked: true,
     });
 
-    expect(classes).toMatch(/\bpixel-rounded-xs\b/);
+    expect(classes).not.toMatch(/\bpixel-rounded-xs\b/);
     expect(classes).not.toMatch(/\bbg-accent\b/);
     expect(classes).not.toMatch(/\bbg-inv\b/);
   });

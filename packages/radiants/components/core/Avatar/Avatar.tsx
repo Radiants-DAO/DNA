@@ -2,6 +2,7 @@
 
 import { Avatar as BaseAvatar } from '@base-ui/react/avatar';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // CVA Variants
@@ -19,7 +20,7 @@ const avatarVariants = cva(
       },
       shape: {
         circle: 'rounded-full border border-line',
-        square: 'pixel-rounded-xs',
+        square: '',
       },
     },
     defaultVariants: {
@@ -59,9 +60,13 @@ export function Avatar({
   shape = 'circle',
   className = '',
 }: AvatarProps) {
-  return (
+  const root = (
     <BaseAvatar.Root
-      className={avatarVariants({ size, shape, className })}
+      className={avatarVariants({
+        size,
+        shape,
+        className: shape === 'square' ? '' : className,
+      })}
       data-rdna="avatar"
       data-slot="avatar"
       data-size={size}
@@ -81,6 +86,16 @@ export function Avatar({
       </BaseAvatar.Fallback>
     </BaseAvatar.Root>
   );
+
+  if (shape === 'square') {
+    return (
+      <PixelBorder size="xs" className={`inline-block ${className}`.trim()}>
+        {root}
+      </PixelBorder>
+    );
+  }
+
+  return root;
 }
 
 export default Avatar;

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -36,8 +37,12 @@ const scrollbarBase = [
 const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
 const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
-const thumbClasses =
-  'w-full pixel-rounded-xs bg-line/40 hover:bg-line transition-colors cursor-pointer';
+// The thumb is wrapped in a <PixelBorder> via the `render` prop below. The
+// `group/pixel` on the wrapper lets the bg layer flip on hover, while the
+// inner div keeps base-ui's forwarded ref + inline height/width style so the
+// scrollbar positioning math still works.
+const thumbWrapperClasses = 'w-full cursor-pointer';
+const thumbBgClasses = 'bg-line/40 group-hover/pixel:bg-line transition-colors';
 
 // ============================================================================
 // Sub-components
@@ -66,7 +71,13 @@ function VerticalScrollbar(): React.ReactNode {
       orientation="vertical"
       className={scrollbarVertical}
     >
-      <BaseScrollArea.Thumb className={thumbClasses} />
+      <BaseScrollArea.Thumb
+        render={(props) => (
+          <PixelBorder size="xs" background={thumbBgClasses} className={thumbWrapperClasses}>
+            <div {...props} />
+          </PixelBorder>
+        )}
+      />
     </BaseScrollArea.Scrollbar>
   );
 }
@@ -77,7 +88,13 @@ function HorizontalScrollbar(): React.ReactNode {
       orientation="horizontal"
       className={scrollbarHorizontal}
     >
-      <BaseScrollArea.Thumb className={thumbClasses} />
+      <BaseScrollArea.Thumb
+        render={(props) => (
+          <PixelBorder size="xs" background={thumbBgClasses} className={thumbWrapperClasses}>
+            <div {...props} />
+          </PixelBorder>
+        )}
+      />
     </BaseScrollArea.Scrollbar>
   );
 }

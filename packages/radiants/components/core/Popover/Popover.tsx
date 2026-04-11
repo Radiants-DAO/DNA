@@ -126,7 +126,8 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
         >
           <PixelBorder
             size="sm"
-            className={`bg-page ${className}`.trim()}
+            background="bg-page"
+            className={className}
             shadow="2px 2px 0 var(--color-ink)"
           >
             <div className="p-4">

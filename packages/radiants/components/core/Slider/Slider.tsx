@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Slider as BaseSlider } from '@base-ui/react/slider';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -69,18 +70,17 @@ export function Slider({
   const { hTrack, vTrack, thumb } = sizeClasses[size];
   const vertical = orientation === 'vertical';
 
-  // Track classes swap width/height depending on orientation
+  // Track classes swap width/height depending on orientation. Track bg now
+  // lives on the PixelBorder background layer (clipped to the staircase), so
+  // the track element itself is transparent.
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible pixel-rounded-xs bg-page ${vTrack}`
-    : `slider-track relative w-full overflow-visible pixel-rounded-xs bg-page ${hTrack}`;
+    ? `slider-track relative h-full overflow-visible ${vTrack}`
+    : `slider-track relative w-full overflow-visible ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
     ? { position: 'absolute', width: 'auto', left: 0, right: 0 }
     : { position: 'absolute', height: 'auto', top: 0, bottom: 0 };
-
-  // Thumb hover: accent background with fast transition
-  const thumbHoverClasses = 'hover:bg-accent transition-colors duration-fast';
 
   return (
     <div data-rdna="slider" className={[
@@ -117,24 +117,45 @@ export function Slider({
             disabled ? 'pointer-events-none' : 'cursor-pointer',
           ].filter(Boolean).join(' ')}
         >
-          <BaseSlider.Track
-            className={trackClasses}
-            data-slot="slider-track"
+          <PixelBorder
+            size="xs"
+            background="bg-page"
+            className={vertical ? 'h-full' : 'w-full'}
           >
-            <BaseSlider.Indicator
-              className="z-[1] bg-accent pointer-events-none"
-              style={indicatorStyle}
-            />
-            <BaseSlider.Thumb
-              className={[
-                'absolute z-[2] overflow-visible border-none outline-none',
-                thumb,
-                `bg-page pixel-rounded-xs switch-thumb ${thumbHoverClasses}`,
-                'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
-              ].filter(Boolean).join(' ')}
-              data-slot="slider-thumb"
-            />
-          </BaseSlider.Track>
+            <BaseSlider.Track
+              className={trackClasses}
+              data-slot="slider-track"
+            >
+              <BaseSlider.Indicator
+                className="z-[0] bg-accent pointer-events-none"
+                style={indicatorStyle}
+              />
+              <BaseSlider.Thumb
+                data-slot="slider-thumb"
+                render={(thumbProps) => {
+                  const { style: thumbStyle, className: _cn, ...restThumbProps } = thumbProps;
+                  return (
+                    <PixelBorder
+                      size="xs"
+                      background="bg-page group-hover/pixel:bg-accent transition-colors duration-fast"
+                      className={[thumb].filter(Boolean).join(' ')}
+                      style={thumbStyle}
+                    >
+                      <div
+                        {...restThumbProps}
+                        data-slot="slider-thumb"
+                        className={[
+                          'block w-full h-full border-none outline-none',
+                          'switch-thumb',
+                          'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
+                        ].join(' ')}
+                      />
+                    </PixelBorder>
+                  );
+                }}
+              />
+            </BaseSlider.Track>
+          </PixelBorder>
         </BaseSlider.Control>
       </BaseSlider.Root>
     </div>

@@ -8,7 +8,12 @@ describe('CountdownTimer', () => {
     );
 
     expect(container.querySelector('[data-rdna="countdowntimer"]')).toBeInTheDocument();
+    // Outer shell: PixelBorder size="lg" → four corner SVGs with viewBox 0 0 12 12.
     expect(container.querySelectorAll('svg[viewBox="0 0 12 12"]')).toHaveLength(4);
-    expect(container.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
+    // Each of the three visible segments (hrs/min/sec) gets its own PixelBorder
+    // size="sm" wrapper → 4 corner SVGs per segment × 3 segments = 12.
+    expect(container.querySelectorAll('svg[viewBox="0 0 6 6"]')).toHaveLength(12);
+    // Legacy pixel-rounded-* classes are gone.
+    expect(container.querySelector('.pixel-rounded-sm')).not.toBeInTheDocument();
   });
 });

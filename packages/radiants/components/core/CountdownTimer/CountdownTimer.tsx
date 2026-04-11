@@ -82,11 +82,36 @@ const segmentVariants = cva('flex flex-col items-center', {
     variant: {
       default: 'min-w-[3rem]',
       compact: 'min-w-[2rem]',
-      large: 'min-w-[4rem] bg-depth pixel-rounded-sm px-3 py-2',
+      large: 'min-w-[4rem] bg-depth px-3 py-2',
     },
   },
   defaultVariants: { variant: 'default' },
 });
+
+/**
+ * Segment — renders a single time cell (value + unit). For the `large`
+ * variant, the cell is wrapped in a PixelBorder so it gets hand-drawn
+ * pixel-art corners around its depth background.
+ */
+function Segment({
+  variant,
+  children,
+}: {
+  variant: CountdownVariant;
+  children: React.ReactNode;
+}) {
+  const inner = (
+    <div className={segmentVariants({ variant })}>{children}</div>
+  );
+  if (variant === 'large') {
+    return (
+      <PixelBorder size="sm" className="inline-block">
+        {inner}
+      </PixelBorder>
+    );
+  }
+  return inner;
+}
 
 const COUNTDOWN_BORDER_SIZE: Record<CountdownVariant, PixelBorderSize> = {
   default: 'lg',
@@ -251,27 +276,27 @@ export function CountdownTimer({
         <div className={timerVariants({ variant })}>
           {showDays && startRemaining.days > 0 && (
             <>
-              <div className={segmentVariants({ variant })}>
+              <Segment variant={variant}>
                 <span className={valueVariants({ variant })}>{startRemaining.days}</span>
                 <span className={unitVariants({ variant })}>days</span>
-              </div>
+              </Segment>
               <span className={separatorVariants({ variant })}>:</span>
             </>
           )}
-          <div className={segmentVariants({ variant })}>
+          <Segment variant={variant}>
             <span className={valueVariants({ variant })}>{padZero(startRemaining.hours)}</span>
             <span className={unitVariants({ variant })}>hrs</span>
-          </div>
+          </Segment>
           <span className={separatorVariants({ variant })}>:</span>
-          <div className={segmentVariants({ variant })}>
+          <Segment variant={variant}>
             <span className={valueVariants({ variant })}>{padZero(startRemaining.minutes)}</span>
             <span className={unitVariants({ variant })}>min</span>
-          </div>
+          </Segment>
           <span className={separatorVariants({ variant })}>:</span>
-          <div className={segmentVariants({ variant })}>
+          <Segment variant={variant}>
             <span className={valueVariants({ variant })}>{padZero(startRemaining.seconds)}</span>
             <span className={unitVariants({ variant })}>sec</span>
-          </div>
+          </Segment>
         </div>
       </div>
     );
@@ -284,27 +309,27 @@ export function CountdownTimer({
       <div className={timerVariants({ variant })}>
         {showDays && timeRemaining.days > 0 && (
           <>
-            <div className={segmentVariants({ variant })}>
+            <Segment variant={variant}>
               <span className={valueVariants({ variant })}>{timeRemaining.days}</span>
               <span className={unitVariants({ variant })}>days</span>
-            </div>
+            </Segment>
             <span className={separatorVariants({ variant })}>:</span>
           </>
         )}
-        <div className={segmentVariants({ variant })}>
+        <Segment variant={variant}>
           <span className={valueVariants({ variant })}>{padZero(timeRemaining.hours)}</span>
           <span className={unitVariants({ variant })}>hrs</span>
-        </div>
+        </Segment>
         <span className={separatorVariants({ variant })}>:</span>
-        <div className={segmentVariants({ variant })}>
+        <Segment variant={variant}>
           <span className={valueVariants({ variant })}>{padZero(timeRemaining.minutes)}</span>
           <span className={unitVariants({ variant })}>min</span>
-        </div>
+        </Segment>
         <span className={separatorVariants({ variant })}>:</span>
-        <div className={segmentVariants({ variant })}>
+        <Segment variant={variant}>
           <span className={valueVariants({ variant })}>{padZero(timeRemaining.seconds)}</span>
           <span className={unitVariants({ variant })}>sec</span>
-        </div>
+        </Segment>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import { Toolbar as BaseToolbar } from '@base-ui/react/toolbar';
+import { PixelBorder } from '../PixelBorder/PixelBorder';
 
 // ============================================================================
 // Types
@@ -62,7 +63,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm pixel-rounded-sm px-0.5 py-0.5`,
+  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm px-0.5 py-0.5`,
   {
     variants: {
       orientation: {
@@ -92,7 +93,7 @@ const toolbarButtonVariants = cva(
   {
     variants: {
       variant: {
-        ghost: 'pixel-rounded-xs',
+        ghost: '',
         flat: '',
       },
     },
@@ -120,7 +121,7 @@ const toolbarSeparatorVariants = cva(
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    cursor-pointer select-none no-underline
-   bg-transparent text-flip pixel-rounded-xs
+   bg-transparent text-flip
    transition-[background-color,color] duration-150 ease-out
    focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4`
@@ -145,21 +146,23 @@ function ToolbarRoot({
   const rootClasses = toolbarRootVariants({
     orientation,
     disabled,
-    className,
+    className: '',
   });
 
   return (
     <ToolbarOrientationContext.Provider value={orientation}>
-      <BaseToolbar.Root
-        orientation={orientation}
-        disabled={disabled}
-        className={rootClasses}
-        data-rdna="toolbar"
-        data-slot="toolbar"
-        data-orientation={orientation}
-      >
-        {children}
-      </BaseToolbar.Root>
+      <PixelBorder size="sm" className={`inline-block ${className}`.trim()}>
+        <BaseToolbar.Root
+          orientation={orientation}
+          disabled={disabled}
+          className={rootClasses}
+          data-rdna="toolbar"
+          data-slot="toolbar"
+          data-orientation={orientation}
+        >
+          {children}
+        </BaseToolbar.Root>
+      </PixelBorder>
     </ToolbarOrientationContext.Provider>
   );
 }
@@ -174,17 +177,19 @@ function ToolbarButton({
   const classes = toolbarButtonVariants({ className });
 
   return (
-    <BaseToolbar.Button
-      disabled={disabled}
-      className={classes}
-      onClick={onClick}
-      aria-label={ariaLabel}
-      data-slot="button-face"
-      data-quiet
-      data-color="accent"
-    >
-      {children}
-    </BaseToolbar.Button>
+    <PixelBorder size="xs" className="inline-block">
+      <BaseToolbar.Button
+        disabled={disabled}
+        className={classes}
+        onClick={onClick}
+        aria-label={ariaLabel}
+        data-slot="button-face"
+        data-quiet
+        data-color="accent"
+      >
+        {children}
+      </BaseToolbar.Button>
+    </PixelBorder>
   );
 }
 
@@ -209,14 +214,16 @@ function ToolbarLink({
   const classes = toolbarLinkVariants({ className });
 
   return (
-    <BaseToolbar.Link
-      href={href}
-      target={target}
-      className={classes}
-      data-slot="toolbar-link"
-    >
-      {children}
-    </BaseToolbar.Link>
+    <PixelBorder size="xs" className="inline-block">
+      <BaseToolbar.Link
+        href={href}
+        target={target}
+        className={classes}
+        data-slot="toolbar-link"
+      >
+        {children}
+      </BaseToolbar.Link>
+    </PixelBorder>
   );
 }
 

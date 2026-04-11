@@ -144,15 +144,14 @@ function Trigger({
   chevron,
 }: TriggerProps): ReactNode {
   const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
-  const wrapperClassName = [
-    'pixel-rounded-xs--wrapper',
-    fullWidth ? 'w-full' : '',
-    error ? 'pixel-border-danger' : '',
-  ].filter(Boolean).join(' ');
 
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
-      <div className={wrapperClassName}>
+      <PixelBorder
+        size="xs"
+        className={fullWidth ? 'w-full' : ''}
+        color={error ? 'var(--color-danger)' : undefined}
+      >
         <BaseSelect.Trigger
           disabled={disabled}
           data-variant="select"
@@ -170,7 +169,7 @@ function Trigger({
               <button
                 {...props}
                 type="button"
-                className={`pixel-rounded-xs ${classes}`.trim()}
+                className={classes}
                 data-slot="select-trigger"
                 data-variant="select"
                 data-size={size}
@@ -192,7 +191,7 @@ function Trigger({
             );
           }}
         />
-      </div>
+      </PixelBorder>
     </div>
   );
 }
@@ -204,7 +203,8 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         <BaseSelect.Popup className="z-50">
           <PixelBorder
             size="xs"
-            className={`bg-page ${className}`.trim()}
+            background="bg-page"
+            className={className}
             shadow="2px 2px 0 var(--color-ink)"
           >
             <div className="py-1">

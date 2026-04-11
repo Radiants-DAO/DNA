@@ -3,6 +3,7 @@ export {
   PixelBorderEdges,
   PIXEL_BORDER_RADII,
   clampPixelCornerRadii,
+  pixelCornerClipPath,
 } from './PixelBorder';
 export type {
   PixelBorderProps,

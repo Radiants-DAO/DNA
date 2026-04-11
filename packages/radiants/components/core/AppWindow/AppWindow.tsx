@@ -540,7 +540,7 @@ function AppWindowIsland({
       );
 
     return (
-      <PixelBorder size="sm" className={`${sizeClass} min-h-0 ${bgClassName} ${className}`.trim()}>
+      <PixelBorder size="sm" background={bgClassName} className={`${sizeClass} min-h-0 ${className}`.trim()}>
         {inner}
       </PixelBorder>
     );

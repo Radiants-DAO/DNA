@@ -148,27 +148,28 @@ function Item({ children, className = '' }: NavigationMenuItemProps) {
  */
 function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
   return (
-    <BaseNavigationMenu.Trigger
-      data-slot="button-face"
-      data-quiet
-      data-color="accent"
-      className={`
-        flex items-center gap-1
-        px-3 py-2
-        font-sans text-sm
-        pixel-rounded-xs
-        cursor-pointer
-        focus-visible:outline-none
-        ${className}
-      `.trim()}
-    >
-      {children}
-      <BaseNavigationMenu.Icon
-        className="transition-transform duration-150 ease-out data-[popup-open]:rotate-180"
+    <PixelBorder size="xs">
+      <BaseNavigationMenu.Trigger
+        data-slot="button-face"
+        data-quiet
+        data-color="accent"
+        className={`
+          flex items-center gap-1
+          px-3 py-2
+          font-sans text-sm
+          cursor-pointer
+          focus-visible:outline-none
+          ${className}
+        `.trim()}
       >
-        <DefaultChevron />
-      </BaseNavigationMenu.Icon>
-    </BaseNavigationMenu.Trigger>
+        {children}
+        <BaseNavigationMenu.Icon
+          className="transition-transform duration-150 ease-out data-[popup-open]:rotate-180"
+        >
+          <DefaultChevron />
+        </BaseNavigationMenu.Icon>
+      </BaseNavigationMenu.Trigger>
+    </PixelBorder>
   );
 }
 
@@ -195,24 +196,25 @@ function Content({ children, className = '' }: NavigationMenuContentProps) {
  */
 function Link({ children, href, active = false, className = '' }: NavigationMenuLinkProps) {
   return (
-    <BaseNavigationMenu.Link
-      href={href}
-      active={active}
-      data-slot="button-face"
-      data-quiet
-      data-color="accent"
-      data-state={active ? 'selected' : 'default'}
-      className={`
-        block
-        px-3 py-2
-        font-sans text-sm
-        pixel-rounded-xs
-        focus-visible:outline-none
-        ${className}
-      `.trim()}
-    >
-      {children}
-    </BaseNavigationMenu.Link>
+    <PixelBorder size="xs" className="inline-block">
+      <BaseNavigationMenu.Link
+        href={href}
+        active={active}
+        data-slot="button-face"
+        data-quiet
+        data-color="accent"
+        data-state={active ? 'selected' : 'default'}
+        className={`
+          block
+          px-3 py-2
+          font-sans text-sm
+          focus-visible:outline-none
+          ${className}
+        `.trim()}
+      >
+        {children}
+      </BaseNavigationMenu.Link>
+    </PixelBorder>
   );
 }
 
@@ -233,7 +235,8 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
         >
           <PixelBorder
             size="xs"
-            className={`bg-card ${className}`.trim()}
+            background="bg-card"
+            className={className}
             shadow="2px 2px 0 var(--color-ink)"
           >
             <BaseNavigationMenu.Viewport />

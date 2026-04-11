@@ -76,19 +76,16 @@ interface MenubarLabelProps {
  */
 function Root({ children, className = '', modal = false, orientation = 'horizontal' }: MenubarRootProps) {
   return (
-    <BaseMenubar
-      data-rdna="menubar"
-      modal={modal}
-      orientation={orientation}
-      className={`
-        flex items-center
-        bg-inv
-        pixel-rounded-xs
-        ${className}
-      `.trim()}
-    >
-      {children}
-    </BaseMenubar>
+    <PixelBorder size="xs" className={className}>
+      <BaseMenubar
+        data-rdna="menubar"
+        modal={modal}
+        orientation={orientation}
+        className="flex items-center bg-inv"
+      >
+        {children}
+      </BaseMenubar>
+    </PixelBorder>
   );
 }
 
@@ -144,7 +141,8 @@ function Content({ children, className = '' }: MenubarContentProps) {
         >
           <PixelBorder
             size="xs"
-            className={`bg-card ${className}`.trim()}
+            background="bg-card"
+            className={className}
             shadow="2px 2px 0 var(--color-ink)"
           >
             <div className="py-1">

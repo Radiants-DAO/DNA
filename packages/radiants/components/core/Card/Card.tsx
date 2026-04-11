@@ -74,13 +74,9 @@ export function Card({
     <PixelBorder
       size={CARD_BORDER_SIZE[rounded]}
       shadow={variant === 'raised' ? '2px 2px 0 var(--color-ink)' : undefined}
+      className={className}
     >
-      <div
-        className={className}
-        data-rdna="card"
-        data-slot="card"
-        data-variant={variant}
-      >
+      <div data-rdna="card" data-slot="card" data-variant={variant}>
         {children}
       </div>
     </PixelBorder>

@@ -5,6 +5,7 @@ import { cva } from 'class-variance-authority';
 import { ToggleGroup as BaseToggleGroup } from '@base-ui/react/toggle-group';
 import { Toggle } from '../Toggle/Toggle';
 import type { ToggleMode, ToggleTone, ToggleSize, ToggleRounded } from '../Toggle/Toggle';
+import { PixelBorder } from '../PixelBorder';
 
 // ============================================================================
 // Types
@@ -65,7 +66,7 @@ interface ToggleGroupProps {
 // ============================================================================
 
 const toggleGroupRootVariants = cva(
-  'inline-flex pixel-rounded-xs',
+  'inline-flex',
   {
     variants: {
       orientation: {
@@ -206,20 +207,22 @@ function ToggleGroupRoot({
 
   return (
     <ToggleGroupContext.Provider value={contextValue}>
-      <BaseToggleGroup
-        multiple={multiple}
-        value={value}
-        defaultValue={defaultValue}
-        onValueChange={(newValue) => onValueChange?.(newValue)}
-        disabled={disabled}
-        orientation={orientation}
-        className={rootClasses}
-        data-rdna="togglegroup"
-        data-slot="toggle-group"
-        data-orientation={orientation}
-      >
-        {separated}
-      </BaseToggleGroup>
+      <PixelBorder size="xs" className="inline-block">
+        <BaseToggleGroup
+          multiple={multiple}
+          value={value}
+          defaultValue={defaultValue}
+          onValueChange={(newValue) => onValueChange?.(newValue)}
+          disabled={disabled}
+          orientation={orientation}
+          className={rootClasses}
+          data-rdna="togglegroup"
+          data-slot="toggle-group"
+          data-orientation={orientation}
+        >
+          {separated}
+        </BaseToggleGroup>
+      </PixelBorder>
     </ToggleGroupContext.Provider>
   );
 }

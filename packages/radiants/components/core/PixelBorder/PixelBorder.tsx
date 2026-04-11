@@ -455,8 +455,10 @@ export function PixelBorder({
         </>
       ) : (
         /* Wrapped mode: legacy compat — children are clipped by a polygon
-           clip-path on their parent div, matching the staircase exactly. */
-        <div className="overflow-hidden" style={{ clipPath }}>
+           clip-path on their parent div, matching the staircase exactly.
+           `flex` on the clipper eliminates line-box overhead that would
+           otherwise pad the wrapper around inline-flex children. */
+        <div className="overflow-hidden flex" style={{ clipPath }}>
           {children}
         </div>
       )}

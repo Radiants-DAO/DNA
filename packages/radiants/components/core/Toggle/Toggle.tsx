@@ -3,6 +3,7 @@
 import React from 'react';
 import { Toggle as BaseToggle } from '@base-ui/react/toggle';
 import { buttonRootVariants, buttonFaceVariants } from '../Button/Button';
+import { PixelBorder, type PixelBorderSize } from '../PixelBorder/PixelBorder';
 import { Icon } from '../../../icons/Icon';
 
 // ============================================================================
@@ -13,6 +14,19 @@ export type ToggleMode = 'solid' | 'flat' | 'pattern';
 export type ToggleTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
 export type ToggleSize = 'sm' | 'md' | 'lg';
 export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
+
+/**
+ * Maps the Toggle `rounded` variant to the matching PixelBorder size preset.
+ * `none` collapses to `null` — a sentinel meaning "skip the wrap entirely".
+ */
+const TOGGLE_ROUNDED_TO_PIXEL_SIZE: Record<ToggleRounded, PixelBorderSize | null> = {
+  xs: 'xs',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl',
+  none: null,
+};
 
 interface ToggleProps {
   // ── Toggle-specific ──────────────────────────────────────────────────────
@@ -103,9 +117,13 @@ export function Toggle({
       ? ''
       : 'justify-start';
 
+  // Modes without pixel-corner borders (flat / pattern) force `none`.
+  const effectiveRounded: ToggleRounded =
+    mode === 'flat' || mode === 'pattern' ? 'none' : rounded;
+
   const faceClasses = buttonFaceVariants({
     mode,
-    rounded,
+    rounded: effectiveRounded,
     size,
     compact,
     iconOnly,
@@ -113,6 +131,11 @@ export function Toggle({
     fullWidth,
     className: `${justifyClass} ${className}`.trim(),
   });
+
+  // When the toggle has pixel-art corners, wrap the face span in a
+  // <PixelBorder>. The map collapses `none` to `null`, in which case the
+  // face renders bare — matching Button's behaviour.
+  const pixelBorderSize = TOGGLE_ROUNDED_TO_PIXEL_SIZE[effectiveRounded];
 
   // Content construction — mirrors Button
   let content: React.ReactNode;
@@ -140,6 +163,34 @@ export function Toggle({
       aria-label={ariaLabel}
       render={(toggleProps, state) => {
         const dataState = state.pressed ? 'selected' : 'default';
+        const faceSpan = (
+          <span
+            className={faceClasses}
+            data-slot="button-face"
+            data-mode={mode}
+            data-color={tone}
+            data-state={dataState}
+            data-size={size}
+            {...(iconOnly ? { 'data-icon-only': '' } : {})}
+            {...(flush ? { 'data-flush': '' } : {})}
+            {...(quiet ? { 'data-quiet': '' } : {})}
+          >
+            {content}
+          </span>
+        );
+
+        const face =
+          pixelBorderSize !== null ? (
+            <PixelBorder
+              size={pixelBorderSize}
+              className={fullWidth ? 'w-full inline-flex' : 'inline-flex'}
+            >
+              {faceSpan}
+            </PixelBorder>
+          ) : (
+            faceSpan
+          );
+
         return (
           <button
             {...toggleProps}
@@ -151,19 +202,7 @@ export function Toggle({
             data-state={dataState}
             {...(quiet ? { 'data-quiet': '' } : {})}
           >
-            <span
-              className={faceClasses}
-              data-slot="button-face"
-              data-mode={mode}
-              data-color={tone}
-              data-state={dataState}
-              data-size={size}
-              {...(iconOnly ? { 'data-icon-only': '' } : {})}
-              {...(flush ? { 'data-flush': '' } : {})}
-              {...(quiet ? { 'data-quiet': '' } : {})}
-            >
-              {content}
-            </span>
+            {face}
           </button>
         );
       }}
