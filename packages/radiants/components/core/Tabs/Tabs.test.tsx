@@ -132,11 +132,13 @@ describe('Tabs', () => {
     const { container } = render(<TestTabs />);
     const list = container.querySelector('[data-slot="tab-list"]');
     expect(list).toBeInTheDocument();
-    // Layered-mode wrapper: list's parent has a bg-card sibling with a polygon clip-path.
-    const listWrapper = list?.parentElement;
-    const bgLayer = listWrapper?.querySelector('.bg-card') as HTMLElement | null;
-    expect(bgLayer).toBeInTheDocument();
-    expect(bgLayer?.style.clipPath).toContain('polygon(');
+    // Single-mode clipper: list sits inside an overflow-hidden div whose
+    // `bg-card` background prop is concatenated onto it and whose polygon
+    // clip-path matches the staircase exactly.
+    const clipper = list?.closest('.overflow-hidden') as HTMLElement | null;
+    expect(clipper).not.toBeNull();
+    expect(clipper).toHaveClass('bg-card');
+    expect(clipper?.style.clipPath).toContain('polygon(');
     // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
     expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
   });

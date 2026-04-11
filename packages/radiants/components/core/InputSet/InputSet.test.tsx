@@ -29,7 +29,7 @@ describe('InputSet', () => {
     expect(container.querySelector('[data-rdna="input-set"]')).toBeInTheDocument();
   });
 
-  test('wraps the fieldset shell in a PixelBorder (xs radius, layered mode)', () => {
+  test('wraps the fieldset shell in a PixelBorder (xs radius)', () => {
     const { container } = render(
       <InputSet.Root>
         <InputSet.Legend>Styled</InputSet.Legend>
@@ -45,15 +45,15 @@ describe('InputSet', () => {
     expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
     // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
     expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
-    // Layered mode: a clipped bg sibling (transparent) is still rendered with
-    // polygon clip-path — the focus ring on the fieldset can escape it.
-    const bgLayer = container.querySelector('.bg-transparent') as HTMLElement | null;
-    expect(bgLayer).toBeInTheDocument();
-    expect(bgLayer?.style.clipPath).toContain('polygon(');
-    // The fieldset itself must NOT sit inside an overflow-hidden clipper —
-    // layered mode leaves content unclipped so the focus-within outline is
-    // free to render outside the element box.
-    expect(fieldset?.closest('.overflow-hidden')).toBeNull();
+    // Single-mode clipper: the fieldset sits inside an overflow-hidden div
+    // whose `bg-transparent` background prop is concatenated onto it and
+    // whose polygon clip-path matches the staircase exactly. The focus ring
+    // is now rendered as a wrapper-level SVG overlay, so the fieldset can
+    // safely live inside the clip without losing its focus indication.
+    const clipper = fieldset?.closest('.overflow-hidden') as HTMLElement | null;
+    expect(clipper).not.toBeNull();
+    expect(clipper).toHaveClass('bg-transparent');
+    expect(clipper?.style.clipPath).toContain('polygon(');
   });
 
   test('disabled sets data-disabled on fieldset', () => {
