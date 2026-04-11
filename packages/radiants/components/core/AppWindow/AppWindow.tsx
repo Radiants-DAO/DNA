@@ -8,7 +8,12 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
-import { PixelBorder, PixelBorderEdges } from '../PixelBorder';
+import { PixelBorder, PixelBorderEdges, pixelCornerClipPath, PIXEL_BORDER_RADII } from '../PixelBorder';
+
+const APP_WINDOW_CLIP_PATH = (() => {
+  const r = PIXEL_BORDER_RADII.md;
+  return pixelCornerClipPath({ tl: r, tr: r, bl: r, br: r });
+})();
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
@@ -992,7 +997,6 @@ function AppWindow({
           maxWidth: effectiveMax.width,
           maxHeight: effectiveMax.height,
           zIndex,
-          background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
           filter: 'drop-shadow(4px 4px 0 var(--color-ink))',
         }}
         onPointerDown={handleFocus}
@@ -1002,11 +1006,24 @@ function AppWindow({
         data-resizable={resizable}
         data-focused={focused || undefined}
       >
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
+            clipPath: APP_WINDOW_CLIP_PATH,
+            zIndex: -1,
+          }}
+        />
         <PixelBorderEdges size="md" />
         {!focused && (
           <div
             className="absolute inset-0 z-20 pointer-events-none"
-            style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
+            style={{
+              backgroundImage: 'var(--pat-diagonal-dots)',
+              backgroundRepeat: 'repeat',
+              clipPath: APP_WINDOW_CLIP_PATH,
+            }}
           />
         )}
 

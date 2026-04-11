@@ -456,9 +456,12 @@ export function PixelBorder({
       ) : (
         /* Wrapped mode: legacy compat — children are clipped by a polygon
            clip-path on their parent div, matching the staircase exactly.
-           `flex` on the clipper eliminates line-box overhead that would
-           otherwise pad the wrapper around inline-flex children. */
-        <div className="overflow-hidden flex" style={{ clipPath }}>
+           `grid` on the clipper eliminates the line-box overhead that
+           inline-flex children would otherwise add, stretches a single
+           block child to fill the wrapper (so Card's inner div fills
+           width), and still sizes the clipper to content so wrappers
+           with no explicit dimensions hug their children tightly. */
+        <div className="overflow-hidden grid h-full w-full" style={{ clipPath }}>
           {children}
         </div>
       )}
