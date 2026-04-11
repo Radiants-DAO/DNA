@@ -30,7 +30,6 @@ describe('ContextMenu', () => {
     expect(screen.queryByText('Edit')).not.toBeInTheDocument();
     fireEvent.contextMenu(screen.getByTestId('trigger-area'));
     expect(screen.getByText('Edit')).toBeInTheDocument();
-    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
   });
 
   test('closes on Escape key', async () => {

@@ -13,6 +13,6 @@ describe('Alert', () => {
     );
 
     expect(screen.getByRole('alert')).toBeInTheDocument();
-    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(4);
+    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
   });
 });

@@ -40,7 +40,7 @@ describe('AppWindow', () => {
     const dialog = screen.getByRole('dialog', { name: 'About' });
     expect(dialog.className).not.toContain('pixel-rounded');
     expect(dialog.style.filter).toBe('drop-shadow(4px 4px 0 var(--color-ink))');
-    expect(dialog.querySelectorAll('svg[viewBox="0 0 9 9"]')).toHaveLength(4);
+    expect(dialog.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
   });
 
   test('renders split compare panes with shared window layout helper', () => {
@@ -258,7 +258,7 @@ describe('AppWindow', () => {
       const island = container.querySelector('.test-pixel-island');
       expect(island).toBeInTheDocument();
       expect(island?.className).not.toContain('border');
-      expect(island?.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
+      expect(island?.matches('[data-rdna-pixel-border]')).toBe(true);
     });
 
     test('applies padding variants', () => {

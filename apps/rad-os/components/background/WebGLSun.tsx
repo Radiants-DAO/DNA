@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
-import { usePreferencesStore } from '@/store';
+import { useRef, useEffect, useEffectEvent } from 'react';
+import { useRadOSStore } from '@/store';
 
 // ============================================================================
 // Constants
@@ -258,31 +258,54 @@ interface WebGLSunProps {
 export function WebGLSun({ className = '' }: WebGLSunProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
-  const darkModeRef = useRef(false);
-  const reduceMotionRef = useRef(false);
+  const darkModeRef = useRef(useRadOSStore.getState().darkMode);
+  const reduceMotionRef = useRef(useRadOSStore.getState().reduceMotion);
   const renderRef = useRef<((time: number) => void) | null>(null);
-  const { darkMode, reduceMotion } = usePreferencesStore();
+  const motionQueryRef = useRef<MediaQueryList | null>(null);
 
-  // Keep ref in sync so the render loop reads the latest value
-  darkModeRef.current = darkMode;
+  const resumeAnimationIfNeeded = useEffectEvent(() => {
+    if (!reduceMotionRef.current && animationRef.current === null && renderRef.current) {
+      animationRef.current = requestAnimationFrame(renderRef.current);
+    }
+  });
 
   // Sync reduced-motion preference (OS-level + app-level)
   useEffect(() => {
     const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionQueryRef.current = mql;
     const update = () => {
-      reduceMotionRef.current = reduceMotion || mql.matches;
+      const nextReduceMotion = useRadOSStore.getState().reduceMotion || mql.matches;
+      const wasReducedMotion = reduceMotionRef.current;
+      reduceMotionRef.current = nextReduceMotion;
+      if (wasReducedMotion && !nextReduceMotion) {
+        resumeAnimationIfNeeded();
+      }
     };
     update();
     mql.addEventListener('change', update);
-    return () => mql.removeEventListener('change', update);
-  }, [reduceMotion]);
+    return () => {
+      motionQueryRef.current = null;
+      mql.removeEventListener('change', update);
+    };
+  }, []);
 
-  // Resume animation when reduced-motion is turned off
+  // Avoid rerendering the live WebGL canvas when preferences change.
   useEffect(() => {
-    if (!reduceMotionRef.current && animationRef.current === null && renderRef.current) {
-      animationRef.current = requestAnimationFrame(renderRef.current);
-    }
-  }, [reduceMotion]);
+    return useRadOSStore.subscribe((state, prevState) => {
+      if (state.darkMode !== prevState.darkMode) {
+        darkModeRef.current = state.darkMode;
+      }
+
+      if (state.reduceMotion !== prevState.reduceMotion) {
+        const nextReduceMotion = state.reduceMotion || motionQueryRef.current?.matches || false;
+        const wasReducedMotion = reduceMotionRef.current;
+        reduceMotionRef.current = nextReduceMotion;
+        if (wasReducedMotion && !nextReduceMotion) {
+          resumeAnimationIfNeeded();
+        }
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -334,9 +357,9 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     let sunOffsetY = 0;
 
     // Smoothed color values (start at light mode)
-    let curLight = [...LIGHT_COLORS.light];
-    let curDark = [...LIGHT_COLORS.dark];
-    let curGlow = [...LIGHT_COLORS.sunGlow];
+    const curLight = [...LIGHT_COLORS.light];
+    const curDark = [...LIGHT_COLORS.dark];
+    const curGlow = [...LIGHT_COLORS.sunGlow];
     let curDarkModeVal = 0;
 
     // Mouse event handler

@@ -40,7 +40,60 @@
 .pixel-rounded-sm:focus-visible,
 .pixel-rounded-md:focus-visible,
 .pixel-rounded-lg:focus-visible,
-.pixel-rounded-xl:focus-visible {
+.pixel-rounded-xl:focus-visible,
+.pixel-rounded-full:focus-visible {
   outline: 2px solid var(--color-focus, var(--color-accent));
   outline-offset: 2px;
+}
+
+/* ============================================================================
+   Pixel-rounded-full — 20x20 pixel circle (scaled 2x from classic 10x10)
+   Fixed-size utility intended for 20x20 controls (e.g. Radio).
+   Uses a layered approach: outer span = line color (border), inner child
+   (.pixel-rounded-full__inner) = fill color, inset 1px with its own 18x18
+   circle clip-path.
+   ============================================================================ */
+.pixel-rounded-full {
+  position: relative;
+  background: var(--color-line);
+  color: var(--color-card);
+  clip-path: polygon(
+    6px 0, 14px 0,
+    14px 2px, 18px 2px,
+    18px 6px, 20px 6px,
+    20px 14px,
+    18px 14px, 18px 18px,
+    14px 18px, 14px 20px,
+    6px 20px,
+    6px 18px, 2px 18px,
+    2px 14px, 0 14px,
+    0 6px,
+    2px 6px, 2px 2px,
+    6px 2px
+  );
+}
+
+.pixel-rounded-full[data-checked] {
+  color: var(--color-accent);
+}
+
+.pixel-rounded-full__inner {
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  background: currentColor;
+  clip-path: polygon(
+    4px 0, 14px 0,
+    14px 2px, 16px 2px,
+    16px 4px, 18px 4px,
+    18px 14px,
+    16px 14px, 16px 16px,
+    14px 16px, 14px 18px,
+    4px 18px,
+    4px 16px, 2px 16px,
+    2px 14px, 0 14px,
+    0 4px,
+    2px 4px, 2px 2px,
+    4px 2px
+  );
 }

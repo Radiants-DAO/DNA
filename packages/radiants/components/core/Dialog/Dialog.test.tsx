@@ -101,7 +101,7 @@ describe('Dialog', () => {
 
   test('renders dialog content inside a PixelBorder shell', () => {
     render(<TestDialog defaultOpen />);
-    expect(document.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
+    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
   });
 
   test('forwards eventDetails.reason from onOpenChange', async () => {

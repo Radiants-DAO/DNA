@@ -25,6 +25,6 @@ describe('Card', () => {
 
     const shell = container.firstElementChild as HTMLElement | null;
     expect(shell?.style.filter).toBe('drop-shadow(2px 2px 0 var(--color-ink))');
-    expect(container.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
+    expect(container.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
   });
 });

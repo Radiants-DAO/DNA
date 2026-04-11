@@ -242,28 +242,24 @@ export function Radio({
       inputRef={ref}
       id={id}
       disabled={disabled}
-      render={(props, state) => (
+      render={(props) => (
         <span
           {...props}
           className={`
-            w-5 h-5
-            border border-line
-            rounded-full
+            relative w-5 h-5
+            pixel-rounded-full
             flex items-center justify-center
             transition-colors
-            focus-visible:outline-none focus-visible:shadow-focused
+            focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
             cursor-pointer
-            ${state.checked
-              ? 'bg-accent'
-              : 'bg-page bg-card'
-            }
             ${className}
           `}
         />
       )}
     >
-      <BaseRadio.Indicator className="flex items-center justify-center">
-        <div className="w-2 h-2 bg-accent-inv rounded-full" />
+      <span className="pixel-rounded-full__inner" />
+      <BaseRadio.Indicator className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-2 h-2 bg-accent-inv" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>
   );
