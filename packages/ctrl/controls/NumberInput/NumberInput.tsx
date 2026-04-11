@@ -30,10 +30,12 @@ export interface NumberInputProps {
   readOnly?: boolean;
   /** ClassName for the outer cell (e.g. "flex-1" inside a PropertyRow) */
   className?: string;
-  /** Optional leading content (e.g. a "W"/"H"/"MIN"/"MAX" label) */
+  /** Optional leading content (e.g. a "W"/"H" label) */
   prefix?: ReactNode;
-  /** Optional trailing content (e.g. a unit dropdown) */
+  /** Optional trailing content rendered outside the input box (e.g. a unit dropdown, separated by a 1px gap) */
   suffix?: ReactNode;
+  /** Optional trailing content rendered inside the input box after the value (e.g. a "MIN"/"MAX" label) */
+  innerSuffix?: ReactNode;
   /** Horizontal scrub sensitivity in pixels per step (default 2) */
   pixelSensitivity?: number;
   /** Optional format for the displayed value */
@@ -62,6 +64,7 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
     className = '',
     prefix,
     suffix,
+    innerSuffix,
     pixelSensitivity = 2,
     format,
     id,
@@ -87,19 +90,18 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
           {...props}
           ref={ref}
           data-rdna="ctrl-number-input"
-          className={['flex items-center bg-black font-mono min-w-0 self-stretch', className].filter(Boolean).join(' ')}
-          style={{ minHeight: 24 }}
+          className={['flex items-center font-mono min-w-0 self-stretch', className].filter(Boolean).join(' ')}
+          style={{ minHeight: 24, gap: 1 }}
         >
           <NumberField.ScrubArea
-            direction="horizontal"
+            direction="vertical"
             pixelSensitivity={pixelSensitivity}
             render={(props) => (
               <span
                 {...props}
-                className="flex flex-1 items-center self-stretch min-w-0"
+                className="flex flex-1 items-center self-stretch min-w-0 bg-black"
                 style={{
-                  cursor: disabled ? 'default' : 'ew-resize',
-                  paddingInline: 4,
+                  cursor: disabled ? 'default' : 'ns-resize',
                   gap: 4,
                   touchAction: 'none',
                 }}
@@ -115,20 +117,16 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
                         fontSize: 10,
                         lineHeight: 'round(up, 100%, 1px)',
                         textAlign: 'left',
-                        cursor: disabled ? 'default' : 'text',
+                        paddingLeft: 4,
+                        cursor: disabled ? 'default' : 'ns-resize',
                         ...(active
                           ? { color: 'var(--color-main)', textShadow: GLOW }
                           : {}),
                       }}
-                      onPointerDown={(e) => {
-                        // Let the input receive pointer events so the user can
-                        // click to place the caret. The ScrubArea still handles
-                        // drags that start on the surrounding padding / prefix.
-                        e.stopPropagation();
-                      }}
                     />
                   )}
                 />
+                {innerSuffix}
               </span>
             )}
           />

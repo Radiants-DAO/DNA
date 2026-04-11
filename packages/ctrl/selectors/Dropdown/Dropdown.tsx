@@ -48,17 +48,23 @@ export interface DropdownProps {
   popupFullWidth?: boolean;
 }
 
-/** Full glow — accent 0.5px + accent 3px + main (cream) 10px. Used for selected/active/title. */
-const GLOW =
-  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-main) 0 0 10px';
-
-/** Hover glow — accent 0.5px + accent 3px only (no cream bloom). */
-const GLOW_HOVER = 'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px';
+/**
+ * Portal-safe glows — used inside the popup, which teleports outside the
+ * `.dark` theme scope. Semantic tokens like `--color-main` resolve to the
+ * light-theme ink value in that context, so the popup must use brand
+ * primitives directly.
+ */
+const GLOW_PORTAL =
+  'var(--color-sun-yellow) 0 0 0.5px, var(--color-sun-yellow) 0 0 3px, var(--color-cream) 0 0 10px';
+const GLOW_HOVER_PORTAL =
+  'var(--color-sun-yellow) 0 0 0.5px, var(--color-sun-yellow) 0 0 3px';
 
 /**
  * Popup frame — pure black base, with a 25% cream overlay applied via
  * `background-image`. The black ensures the popup is fully opaque even over
  * transparent surfaces; the cream overlay gives it the subtle washed tone.
+ * `margin: -1` pulls the popup 1px in every direction so it bleeds 1px past
+ * its anchor (covering the 1px outline gap of the parent cell).
  */
 const POPUP_FRAME: React.CSSProperties = {
   backgroundColor: '#000',
@@ -66,6 +72,7 @@ const POPUP_FRAME: React.CSSProperties = {
     'linear-gradient(oklch(0.9780 0.0295 94.34 / 0.25), oklch(0.9780 0.0295 94.34 / 0.25))',
   padding: 1,
   gap: 1,
+  margin: -1,
   boxShadow:
     '0 2px 4px 0 oklch(0 0 0 / 1), 0 4px 12px 0 oklch(0 0 0 / 1), 0 0 0 1px oklch(0.9780 0.0295 94.34 / 0.0625)',
   fontSynthesis: 'none',
@@ -110,6 +117,13 @@ export function Dropdown({
             className={[
               'flex items-center justify-between bg-black font-mono cursor-pointer self-stretch',
               'focus-visible:outline-none',
+              // Hover: accent yellow + yellow glow — higher specificity than `active` classes below
+              'hover:text-[var(--color-accent)]',
+              'hover:[text-shadow:var(--color-accent)_0_0_0.5px,var(--color-accent)_0_0_3px]',
+              // Active (user-adjusted): cream + full glow
+              active && 'text-[var(--color-main)]',
+              active &&
+                '[text-shadow:var(--color-accent)_0_0_0.5px,var(--color-accent)_0_0_3px,var(--color-main)_0_0_10px]',
               className,
             ]
               .filter(Boolean)
@@ -120,11 +134,7 @@ export function Dropdown({
             {!hideLabel && (
               <span
                 className="shrink-0"
-                style={{
-                  fontSize: 10,
-                  lineHeight: 'round(up, 100%, 1px)',
-                  ...(active ? { color: 'var(--color-main)', textShadow: GLOW } : {}),
-                }}
+                style={{ fontSize: 10, lineHeight: 'round(up, 100%, 1px)' }}
               >
                 {currentLabel}
               </span>
@@ -149,7 +159,7 @@ export function Dropdown({
         <BaseSelect.Positioner
           className="z-50"
           side="bottom"
-          sideOffset={1}
+          sideOffset={0}
           align={align}
           anchor={anchor ?? undefined}
           alignItemWithTrigger={anchor ? false : undefined}
@@ -160,7 +170,7 @@ export function Dropdown({
               data-rdna="ctrl-dropdown-popup"
               style={{
                 ...POPUP_FRAME,
-                ...(popupFullWidth ? { width: 'var(--anchor-width)' } : {}),
+                ...(popupFullWidth ? { width: 'calc(var(--anchor-width) + 2px)' } : {}),
               }}
             >
               {options.map((option) => (
@@ -173,16 +183,16 @@ export function Dropdown({
                     paddingInline: 4,
                     backgroundColor: state.selected ? ITEM_BG_SELECTED : ITEM_BG_UNSELECTED,
                     color: state.disabled
-                      ? 'color-mix(in oklch, var(--color-main) 25%, transparent)'
+                      ? 'color-mix(in oklch, var(--color-cream) 25%, transparent)'
                       : state.selected
-                      ? 'var(--color-main)'
+                      ? 'var(--color-cream)'
                       : state.highlighted
-                      ? 'var(--color-accent)'
-                      : 'color-mix(in oklch, var(--color-main) 50%, transparent)',
+                      ? 'var(--color-sun-yellow)'
+                      : 'color-mix(in oklch, var(--color-cream) 50%, transparent)',
                     textShadow: state.selected
-                      ? GLOW
+                      ? GLOW_PORTAL
                       : state.highlighted && !state.disabled
-                      ? GLOW_HOVER
+                      ? GLOW_HOVER_PORTAL
                       : 'none',
                   })}
                 >

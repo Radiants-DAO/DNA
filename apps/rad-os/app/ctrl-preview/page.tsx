@@ -418,7 +418,7 @@ export default function CtrlPreview() {
                   {/* Box-Model Visualizer — W/H rows stack above the margin layer */}
                   <div className="flex flex-col flex-1 min-w-0" style={{ backgroundColor: BOX.outline, padding: 1, gap: 1 }}>
                     {/* W row */}
-                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 32 }}>
+                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 28 }}>
                       <LabelCell label="W" />
                       {KEYWORD_UNITS.has(wUnit) ? (
                         <KeywordCell
@@ -450,7 +450,6 @@ export default function CtrlPreview() {
                               onValueChange={setWUnit}
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
-                              hideCaret
                               anchor={wCellRef}
                               popupFullWidth
                             />
@@ -462,18 +461,18 @@ export default function CtrlPreview() {
                         onValueChange={setWMin}
                         placeholder="-"
                         className="flex-1"
-                        suffix={<SuffixLabel text="MIN" />}
+                        innerSuffix={<SuffixLabel text="MIN" />}
                       />
                       <NumberInput
                         value={wMax}
                         onValueChange={setWMax}
                         placeholder="-"
                         className="flex-1"
-                        suffix={<SuffixLabel text="MAX" />}
+                        innerSuffix={<SuffixLabel text="MAX" />}
                       />
                     </div>
                     {/* H row */}
-                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 32 }}>
+                    <div className="flex self-stretch gap-[1px] min-w-0" style={{ height: 28 }}>
                       <LabelCell label="H" />
                       {KEYWORD_UNITS.has(hUnit) ? (
                         <KeywordCell
@@ -505,7 +504,6 @@ export default function CtrlPreview() {
                               onValueChange={setHUnit}
                               options={MAIN_UNIT_OPTIONS}
                               className="shrink-0"
-                              hideCaret
                               anchor={hCellRef}
                               popupFullWidth
                             />
@@ -517,14 +515,14 @@ export default function CtrlPreview() {
                         onValueChange={setHMin}
                         placeholder="-"
                         className="flex-1"
-                        suffix={<SuffixLabel text="MIN" />}
+                        innerSuffix={<SuffixLabel text="MIN" />}
                       />
                       <NumberInput
                         value={hMax}
                         onValueChange={setHMax}
                         placeholder="-"
                         className="flex-1"
-                        suffix={<SuffixLabel text="MAX" />}
+                        innerSuffix={<SuffixLabel text="MAX" />}
                       />
                     </div>
                     {/* Margin layer */}

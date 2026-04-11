@@ -17,6 +17,16 @@ import { resolve, extname, basename, dirname } from 'node:path';
 
 const TARGET = 32;
 
+/**
+ * RDNA brand palette for radiant PFPs. Every non-transparent pixel is snapped
+ * to the nearest of these by RGB distance.
+ */
+const RDNA_PALETTE = {
+  ink: '#0f0e0c',
+  cream: '#fef8e2',
+  'sun-yellow': '#fce184',
+};
+
 function parseArgs(argv) {
   const args = {};
   for (let i = 2; i < argv.length; i++) {
@@ -33,11 +43,37 @@ function toHex(r, g, b) {
   return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
 }
 
-/** Snap each channel to the nearest multiple of `step`. Collapses Figma antialiasing edges. */
-function snap(v, step) {
-  const half = step >> 1;
-  const out = Math.min(255, Math.round((v + half) / step) * step - half);
-  return Math.max(0, Math.min(255, out));
+function hexToRgb(hex) {
+  const h = hex.startsWith('#') ? hex.slice(1) : hex;
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
+
+function buildPaletteRgb(palette) {
+  return Object.values(palette).map((hex) => ({
+    hex: hex.toLowerCase(),
+    rgb: hexToRgb(hex),
+  }));
+}
+
+/** Return the palette entry whose RGB is closest to (r,g,b) by Euclidean distance. */
+function nearestPaletteHex(r, g, b, paletteRgb) {
+  let bestHex = paletteRgb[0].hex;
+  let bestDist = Infinity;
+  for (const { hex, rgb } of paletteRgb) {
+    const dr = r - rgb[0];
+    const dg = g - rgb[1];
+    const db = b - rgb[2];
+    const d = dr * dr + dg * dg + db * db;
+    if (d < bestDist) {
+      bestDist = d;
+      bestHex = hex;
+    }
+  }
+  return bestHex;
 }
 
 function slugify(name) {
@@ -47,7 +83,7 @@ function slugify(name) {
     .replace(/^-+|-+$/g, '');
 }
 
-async function convertFile(file, srcDir, quantizeStep) {
+async function convertFile(file, srcDir, paletteRgb) {
   const { data, info } = await sharp(resolve(srcDir, file))
     .ensureAlpha()
     .resize(TARGET, TARGET, { kernel: 'nearest' })
@@ -66,14 +102,8 @@ async function convertFile(file, srcDir, quantizeStep) {
       const a = data[i + 3];
       if (a < 128) {
         row[x] = '';
-      } else if (quantizeStep > 1) {
-        row[x] = toHex(
-          snap(data[i], quantizeStep),
-          snap(data[i + 1], quantizeStep),
-          snap(data[i + 2], quantizeStep),
-        );
       } else {
-        row[x] = toHex(data[i], data[i + 1], data[i + 2]);
+        row[x] = nearestPaletteHex(data[i], data[i + 1], data[i + 2], paletteRgb);
       }
     }
     pixels.push(row);
@@ -87,11 +117,12 @@ async function main() {
   const args = parseArgs(process.argv);
   const src = args.src;
   const outArg = args.out ?? 'public/templates/radiants.json';
-  const quantizeStep = args.quantize ? parseInt(args.quantize, 10) : 32;
   if (!src) {
     console.error('Missing --src <dir>');
     process.exit(2);
   }
+
+  const paletteRgb = buildPaletteRgb(RDNA_PALETTE);
 
   const files = (await readdir(src))
     .filter((f) => extname(f).toLowerCase() === '.png')
@@ -102,7 +133,7 @@ async function main() {
   let skipped = 0;
   for (const file of files) {
     try {
-      const t = await convertFile(file, src, quantizeStep);
+      const t = await convertFile(file, src, paletteRgb);
       if (seen.has(t.id)) {
         let n = 2;
         while (seen.has(`${t.id}-${n}`)) n++;
@@ -120,6 +151,7 @@ async function main() {
     version: 1,
     width: TARGET,
     height: TARGET,
+    palette: RDNA_PALETTE,
     generatedAt: new Date().toISOString(),
     source: basename(src),
     templates,
