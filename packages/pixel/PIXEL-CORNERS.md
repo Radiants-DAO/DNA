@@ -22,13 +22,15 @@ TL (source)    TR (mirrorH)    BL (mirrorV)    BR (mirrorHV)
 
 Five sizes ship in the `CORNER_SETS` registry, matching the existing `pixel-rounded-*` CSS classes:
 
-| Size | Grid | Radius | Use case |
-|------|------|--------|----------|
-| `xs` | 2×2 | 2px | Badges, checkboxes, small inline elements |
-| `sm` | 5×5 | 4px | Buttons, inputs, cards |
-| `md` | 9×9 | 6px | Dialogs, popovers, dropdown menus |
-| `lg` | 12×12 | 8px | App windows, large panels |
-| `xl` | 19×19 | 16px | Hero sections, splash screens |
+| Size | Grid | Bresenham R | CSS `border-radius` | Use case |
+|------|------|-------------|---------------------|----------|
+| `xs` | 2×2 | 1 | `3px` | Badges, checkboxes, small inline elements |
+| `sm` | 5×5 | 4 | `6px` | Buttons, inputs, cards |
+| `md` | 9×9 | 8 | `10px` | Dialogs, popovers, dropdown menus |
+| `lg` | 12×12 | 11 | `13px` | App windows, large panels |
+| `xl` | 19×19 | 18 | `20px` | Hero sections, splash screens |
+
+> **Border-radius rule:** The CSS `border-radius` must be **grid size + 1px** (e.g. 9×9 → `10px`). The PixelCorner SVGs are positioned at `-1px` offset to overlap the container's CSS border, so the radius needs to be 1px larger than the grid to be fully covered by the pixel staircase.
 
 ### Visual Reference
 

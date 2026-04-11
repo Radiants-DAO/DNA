@@ -8,6 +8,7 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
+import { PixelBorder, PixelBorderEdges } from '../PixelBorder';
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
@@ -116,7 +117,7 @@ export interface AppWindowIslandProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   bgClassName?: string;
   noScroll?: boolean;
-  /** Corner style. 'standard' = CSS rounded + border (default). 'pixel' = pixel-rounded-sm clip-path (no border). 'none' = no corners or border. */
+  /** Corner style. 'standard' = CSS rounded + border (default). 'pixel' = PixelBorder SVG wrapper (no CSS border). 'none' = no corners or border. */
   corners?: 'standard' | 'pixel' | 'none';
   width?: string;
   className?: string;
@@ -522,7 +523,28 @@ function AppWindowIsland({
 }: AppWindowIslandProps) {
   const sizeClass = width ? `shrink-0 ${width}` : 'flex-1 min-w-0';
   const paddingClass = PADDING_MAP[padding];
-  const cornerClass = corners === 'pixel' ? 'pixel-rounded-sm' : corners === 'none' ? '' : 'border border-line rounded';
+  const cornerClass = corners === 'none' ? '' : 'border border-line rounded';
+
+  if (corners === 'pixel') {
+    const inner = noScroll
+      ? <div className={`h-full ${paddingClass}`.trim()}>{children}</div>
+      : (
+        <ScrollArea.Root
+          className="h-full"
+          style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
+        >
+          <ScrollArea.Viewport className="h-full overflow-x-hidden">
+            {paddingClass ? <div className={paddingClass}>{children}</div> : children}
+          </ScrollArea.Viewport>
+        </ScrollArea.Root>
+      );
+
+    return (
+      <PixelBorder size="sm" className={`${sizeClass} min-h-0 ${bgClassName} ${className}`.trim()}>
+        {inner}
+      </PixelBorder>
+    );
+  }
 
   if (noScroll) {
     return (
@@ -880,7 +902,7 @@ function AppWindow({
               quiet
               size="sm"
               onClick={onClose}
-              className="w-11 h-11 flex items-center justify-center hover:bg-hover active:bg-active pixel-rounded-sm -mr-2"
+              className="w-11 h-11 flex items-center justify-center hover:bg-hover active:bg-active rounded -mr-2"
               aria-label={`Close ${title}`}
             >
               <Icon name="close" size={16} className="text-main" />
@@ -959,11 +981,10 @@ function AppWindow({
         role="dialog"
         aria-labelledby={`window-title-${id}`}
         className={`
-          absolute pointer-events-auto pixel-rounded-md flex flex-col p-0
+          absolute pointer-events-auto flex flex-col p-0
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}
         `.trim()}
         style={{
-          position: 'absolute',
           width: effectiveSize?.width ?? 'fit-content',
           height: effectiveSize?.height ?? 'fit-content',
           minWidth: minSize.width,
@@ -972,7 +993,7 @@ function AppWindow({
           maxHeight: effectiveMax.height,
           zIndex,
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
-          boxShadow: 'var(--shadow-floating)',
+          filter: 'drop-shadow(4px 4px 0 var(--color-ink))',
         }}
         onPointerDown={handleFocus}
         onClick={handleFocus}
@@ -981,6 +1002,7 @@ function AppWindow({
         data-resizable={resizable}
         data-focused={focused || undefined}
       >
+        <PixelBorderEdges size="md" />
         {!focused && (
           <div
             className="absolute inset-0 z-20 pointer-events-none"

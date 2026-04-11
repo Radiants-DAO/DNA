@@ -2,11 +2,11 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
 
-**Goal:** Replace CSS mask patterns and clip-path pixel corners with a single canvas-based engine powered by 1-bit bitstrings. 16px icon migration deferred (most SVGs aren't pixel-grid-aligned; prototype with 1-5 hand-picked icons).
+**Goal:** Replace CSS mask patterns and clip-path pixel corners with a single bitstring-based rendering engine. Patterns stay canvas-driven; corner and border primitives use SVG rectangles generated from the same 1-bit geometry. 16px icon migration deferred (most SVGs aren't pixel-grid-aligned; prototype with 1-5 hand-picked icons).
 
 **Worktree:** `/Users/rivermassey/Desktop/dev/DNA-pixel-art` (branch: `feat/pixel-art-system`)
 
-**Architecture:** Standalone `@rdna/pixel` package provides bitstring parsing, canvas rendering, bit-flip transitions, and corner overlay logic. `@rdna/radiants` consumes it for Pattern, PixelCorner, and PixelTransition components. All pixel art assets (patterns, corner shapes) stored as human-readable bitstrings.
+**Architecture:** Standalone `@rdna/pixel` package provides bitstring parsing, canvas rendering, SVG rect extraction, bit-flip transitions, and corner/border geometry. `@rdna/radiants` consumes it for Pattern, PixelCorner, PixelBorder, and PixelTransition components. All pixel art assets (patterns, corner shapes) are stored as human-readable bitstrings.
 
 **Tech Stack:** TypeScript, Canvas API, React 19, Vitest, pnpm workspaces
 
@@ -28,7 +28,7 @@ This plan incorporates fixes from architectural review (2026-03-31):
 10. **ESLint references fixed** — config is `eslint/index.mjs`, not `configs/recommended.mjs`. Test files and `contract.mjs` included.
 11. **Barrel exports** — explicit task to update `components/core/index.ts`.
 12. **Phase 5 (16px icons) removed** — most SVGs not pixel-grid-aligned. Prototype with 1-5 hand-picked icons only.
-13. **Small-element threshold** — elements with xs corners on components under 48px use standard `rounded-*` instead of PixelCorner (4 canvases for 2×2 pixels is wasteful).
+13. **Small-element threshold** — elements with xs corners on components under 48px use standard `rounded-*` instead of PixelBorder or PixelCorner wrappers (extra SVG wrappers for 2×2 pixels are wasteful).
 
 ---
 
@@ -1651,12 +1651,14 @@ git commit -m "feat(PixelCorner): canvas overlay component replacing clip-path c
 
 ---
 
-### Task 5.3: Migrate AppWindow from clip-path to PixelCorner
+### Task 5.3: Migrate AppWindow from clip-path to PixelBorder
 
 **Files:**
 - Modify: `packages/radiants/components/core/AppWindow/AppWindow.tsx`
 
 This is the highest-value migration — AppWindow is the primary consumer with the most clip-path pain (position override hacks, shadow restrictions).
+
+Implementation update (2026-04-10): the branch moved from a corner-only `PixelCorner` overlay to a `PixelBorder` / `PixelBorderEdges` architecture. Continue phase 5 using that architecture so the migration stays on one primitive.
 
 **Step 1: Read the current AppWindow implementation**
 
@@ -1669,10 +1671,14 @@ Read `packages/radiants/components/core/AppWindow/AppWindow.tsx`, specifically:
 
 In the main window container (line ~996):
 - Remove `pixel-rounded-md` from className
-- Add `rounded-md` (standard CSS border-radius as the base)
-- Add `<PixelCorner size="md" />` as a child
+- Remove the old CSS border/shadow assumptions from the clipped path
+- Add `<PixelBorderEdges size="md" />` as a child on the absolute window shell
 - Remove the inline `style={{ position: 'absolute' }}` override (no longer needed — `position: absolute` now works naturally)
-- Replace `pixel-shadow-*` with standard `shadow-*` classes (since `box-shadow` now works)
+- Replace the clipped `box-shadow` path with `filter: drop-shadow(...)` on the shell
+
+In `AppWindow.Island`:
+- Replace `pixel-rounded-sm` islands with `<PixelBorder size="sm">...</PixelBorder>`
+- Let `PixelBorder` own the clipping wrapper; do not add a second CSS border
 
 **Step 3: Verify visually**
 
@@ -1683,7 +1689,7 @@ Open RadOS, check that windows have pixel corners, can be dragged, and have shad
 
 ```bash
 git add packages/radiants/components/core/AppWindow/AppWindow.tsx
-git commit -m "refactor(AppWindow): migrate from clip-path to PixelCorner overlay"
+git commit -m "refactor(AppWindow): migrate from clip-path to PixelBorder"
 ```
 
 ---
@@ -1746,27 +1752,39 @@ git commit -m "refactor(AppWindow): migrate from clip-path to PixelCorner overla
 
 `pixel-shadow-*` classes are defined in `pixel-corners.css` (which gets deleted in cleanup). All consumers must migrate to standard `shadow-*` or `drop-shadow-*` BEFORE deletion. Grep for `pixel-shadow-` across all `.tsx` files and migrate each to the appropriate standard shadow class.
 
-**Note on `overflow-hidden` conflict:** `UsageGuide.tsx` line 26 uses `pixel-rounded-sm overflow-hidden` together. Under the overlay system, `overflow-hidden` on the parent would clip the corner canvases. Either remove `overflow-hidden` or add `overflow-visible` on the PixelCorner container.
+**Note on wrapper ownership:** `PixelBorder` owns the clipping wrapper internally. Do not stack another outer border/overflow wrapper around it unless you intend to clip the SVG edge fragments too. For shells that cannot be wrapped, use `PixelBorderEdges`.
 
-**Note on small elements:** Elements with xs corners on components under 48px (Badge, Checkbox, Switch, Slider thumb) should use standard `rounded-xs` or `rounded-sm` instead of PixelCorner — 4 canvases for 2×2 pixels is disproportionate overhead.
+**Note on small elements:** Elements with xs corners on components under 48px (Badge, Checkbox, Switch, Slider thumb) should use standard `rounded-xs` or `rounded-sm` instead of `PixelBorder` — a wrapper plus 4 SVG corners is disproportionate overhead.
 
 **Migration pattern for each file:**
 
-For components that are wrappers (Card, Dialog, etc.) where PixelCorner makes sense as a child:
+For components that are wrappers (Card, Dialog, etc.) where `PixelBorder` can own the shell:
 ```tsx
 // Before:
 <div className="pixel-rounded-sm bg-card ...">
 
 // After:
-<div className="relative rounded-sm border border-line bg-card ...">
-  <PixelCorner size="sm" cornerBg="var(--color-page)" />
+<PixelBorder size="sm" className="bg-card ..." shadow="2px 2px 0 var(--color-ink)">
+  <div className="p-4">...</div>
+</PixelBorder>
 ```
 
-For small inline elements (Badge, Checkbox, etc.) where 4 extra canvases per instance is wasteful, consider whether the element needs pixel corners at all or can use standard `rounded-*`.
+For already-positioned shells that cannot be wrapped:
+```tsx
+<div className="relative ...">
+  <PixelBorderEdges size="md" />
+  {children}
+</div>
+```
+
+For small inline elements (Badge, Checkbox, etc.) where an extra wrapper is wasteful, use standard `rounded-*`.
 
 **Step 1: Migrate Batch 1 (core components)**
 
-Work through each file, replacing `pixel-rounded-*` → `rounded-* + <PixelCorner>`.
+Work through each file, replacing `pixel-rounded-*` with either:
+- `PixelBorder` for wrapper/shell components
+- `PixelBorderEdges` for already-positioned containers
+- standard `rounded-*` for small inline elements
 
 **Step 2: Run lint + dev server to verify**
 
@@ -1775,11 +1793,11 @@ Run: `cd /Users/rivermassey/Desktop/dev/DNA-pixel-art && pnpm lint && pnpm dev`
 **Step 3: Commit per batch**
 
 ```bash
-git commit -m "refactor(core): migrate Button, Card, Badge, Tabs, Dialog to PixelCorner"
-git commit -m "refactor(forms): migrate Input, Select, Switch, Checkbox, Slider to PixelCorner"
-git commit -m "refactor(menus): migrate Menubar, NavigationMenu, ContextMenu, Popover to PixelCorner"
-git commit -m "refactor(misc): migrate Avatar, Collapsible, ToggleGroup, Meter to PixelCorner"
-git commit -m "refactor(rad-os): migrate app-level pixel-rounded consumers to PixelCorner"
+git commit -m "refactor(core): migrate Button, Card, Badge, Tabs, Dialog to PixelBorder"
+git commit -m "refactor(forms): migrate Input, Select, Switch, Checkbox, Slider to PixelBorder"
+git commit -m "refactor(menus): migrate Menubar, NavigationMenu, ContextMenu, Popover to PixelBorder"
+git commit -m "refactor(misc): migrate Avatar, Collapsible, ToggleGroup, Meter to PixelBorder"
+git commit -m "refactor(rad-os): migrate app-level pixel-rounded consumers to PixelBorder"
 ```
 
 ---
@@ -1912,7 +1930,7 @@ git commit -m "feat(PixelTransition): animated bit-flip morph component"
 
 **Files to delete:**
 - `packages/radiants/patterns.css` — replaced by canvas renderer
-- `packages/radiants/pixel-corners.generated.css` — replaced by PixelCorner overlay
+- `packages/radiants/pixel-corners.generated.css` — replaced by PixelBorder / PixelCorner SVG primitives
 - `packages/radiants/pixel-corners.css` — manual utilities no longer needed
 - `packages/radiants/pattern-shadows.css` — to be rewritten (see note)
 - `packages/radiants/scripts/generate-pixel-corners.mjs`
@@ -2001,8 +2019,10 @@ git commit -m "chore(eslint): remove no-clipped-shadow, no-pixel-border, no-patt
 
 **Files to modify:**
 - `packages/radiants/test/pixel-corners-generator.test.ts` — delete (tests the old generator)
-- `apps/rad-os/test/AppWindow.test.tsx` (line 243) — update selector from `pixel-rounded-md` to new classes
-- `apps/rad-os/test/Input.test.tsx` (lines 12-13) — update pixel-rounded-xs assertions
+- `packages/radiants/components/core/AppWindow/AppWindow.test.tsx` — update pixel-rounded selectors to the new `PixelBorder` / `PixelBorderEdges` path
+- `packages/radiants/components/core/PixelCorner/PixelCorner.test.tsx` — cover the inner mask path while `PixelCorner` remains public
+- `packages/radiants/components/core/PixelBorder/PixelBorder.test.tsx` — add smoke tests for the new wrapper primitive
+- `packages/radiants/components/core/Input/Input.test.tsx` — update pixel-rounded-xs assertions once the input migration lands
 
 **Step 1: Delete obsolete test**
 
@@ -2012,7 +2032,7 @@ rm packages/radiants/test/pixel-corners-generator.test.ts
 
 **Step 2: Update remaining test assertions**
 
-Search for `pixel-rounded` in test files and update class name assertions to match the new `rounded-*` + `PixelCorner` pattern.
+Search for `pixel-rounded` in test files and update assertions to match the new `PixelBorder` / `PixelBorderEdges` path or the chosen `rounded-*` fallback for small elements.
 
 **Step 3: Run full test suite**
 
@@ -2031,12 +2051,13 @@ git commit -m "test: update tests for canvas pixel art system, remove clip-path 
 ### Task 7.4: Update barrel exports
 
 **Files:**
-- Modify: `packages/radiants/components/core/index.ts` — add exports for PixelCorner, PixelTransition
+- Modify: `packages/radiants/components/core/index.ts` — add exports for PixelCorner, PixelBorder, PixelTransition
 
 **Step 1: Add exports**
 
 ```ts
 export { PixelCorner, type PixelCornerProps } from './PixelCorner';
+export { PixelBorder, PixelBorderEdges, type PixelBorderProps, type PixelBorderSize } from './PixelBorder';
 export { PixelTransition, type PixelTransitionProps } from './PixelTransition';
 ```
 
@@ -2044,7 +2065,7 @@ export { PixelTransition, type PixelTransitionProps } from './PixelTransition';
 
 ```bash
 git add packages/radiants/components/core/index.ts
-git commit -m "chore: export PixelCorner and PixelTransition from core barrel"
+git commit -m "chore: export PixelCorner, PixelBorder, and PixelTransition from core barrel"
 ```
 
 ---
@@ -2055,8 +2076,9 @@ git commit -m "chore: export PixelCorner and PixelTransition from core barrel"
 - Modify: `packages/radiants/DESIGN.md` — update Border Radius section, Pattern section
 
 Update the documentation to reflect:
-- Pixel corners are now canvas overlays, not clip-path
-- `border-*`, `box-shadow`, `overflow-hidden` are all allowed on pixel-cornered elements
+- Pixel corners are now SVG rect primitives generated from bitstrings, not clip-path
+- wrapper components use `PixelBorder`; corner-only use cases use `PixelCorner`
+- `box-shadow` is replaced by `filter: drop-shadow()` on pixel shells
 - Pattern rendering is now canvas-based
 - New `@rdna/pixel` package is the engine
 - Remove all clip-path-related rules and warnings

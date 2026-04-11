@@ -48,18 +48,20 @@ describe('PixelCorner', () => {
     expect(svgs.length).toBe(0);
   });
 
-  it('renders cover and border rects in each SVG', () => {
+  it('renders both cover and border rects for sizes that include interior cover pixels', () => {
     const { container } = render(
       <div style={{ position: 'relative' }}>
-        <PixelCorner size="xs" />
+        <PixelCorner size="sm" />
       </div>,
     );
     const svgs = container.querySelectorAll('svg');
-    // xs is 2×2 with cover bits '1110' (3 pixels) and border bits '0001' (1 pixel)
-    // After mirroring, each corner should have 3 cover + 1 border = 4 rects
     for (const svg of svgs) {
-      const rects = svg.querySelectorAll('rect');
-      expect(rects.length).toBe(4); // 3 cover + 1 border
+      const rects = Array.from(svg.querySelectorAll('rect'));
+      const coverRects = rects.filter((r) => r.getAttribute('fill') === 'var(--color-page)');
+      const borderRects = rects.filter((r) => r.getAttribute('fill') === 'var(--color-line)');
+
+      expect(coverRects.length).toBeGreaterThan(0);
+      expect(borderRects.length).toBeGreaterThan(0);
     }
   });
 
@@ -78,7 +80,7 @@ describe('PixelCorner', () => {
   it('applies custom colors', () => {
     const { container } = render(
       <div style={{ position: 'relative' }}>
-        <PixelCorner size="xs" cornerBg="red" borderColor="blue" />
+        <PixelCorner size="sm" cornerBg="red" borderColor="blue" />
       </div>,
     );
     const svg = container.querySelector('svg')!;
@@ -95,5 +97,18 @@ describe('PixelCorner', () => {
       (r) => r.getAttribute('fill') === 'blue',
     );
     expect(borderRects.length).toBeGreaterThan(0);
+  });
+
+  it('renders inner mask rects when innerBg is provided', () => {
+    const { container } = render(
+      <div style={{ position: 'relative' }}>
+        <PixelCorner size="xs" innerBg="green" />
+      </div>,
+    );
+    const svg = container.querySelector('svg')!;
+    const rects = Array.from(svg.querySelectorAll('rect'));
+    const innerRects = rects.filter((r) => r.getAttribute('fill') === 'green');
+
+    expect(innerRects.length).toBeGreaterThan(0);
   });
 });

@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import {
   getCornerSet,
   mirrorForCorner,
@@ -40,6 +38,14 @@ export interface PixelCornerProps {
    */
   pixelSize?: number;
   /**
+   * Inner fill color painted inside the arc to mask the container's
+   * CSS border at the corners. Set to the element's own background
+   * color so the staircase border cleanly replaces the CSS border.
+   *
+   * When omitted, the interior is transparent (no inner mask).
+   */
+  innerBg?: string;
+  /**
    * Which corners to render. Omit corners that are flush
    * against a container edge (e.g. top corners of a bottom sheet).
    * @default all four
@@ -60,7 +66,8 @@ export interface PixelCornerProps {
  *
  * @example
  * ```tsx
- * <div className="relative rounded-md border border-line">
+ * // border-radius = grid size + 1px (9×9 md → 10px)
+ * <div className="relative rounded-[10px] border border-line overflow-hidden">
  *   <PixelCorner size="md" />
  *   {children}
  * </div>
@@ -70,6 +77,7 @@ export function PixelCorner({
   size,
   cornerBg = 'var(--color-page)',
   borderColor = 'var(--color-line)',
+  innerBg,
   pixelSize = 1,
   corners = ALL_CORNERS,
 }: PixelCornerProps) {
@@ -92,6 +100,21 @@ export function PixelCorner({
           ? listFilledRects(borderGrid, pixelSize)
           : [];
 
+        // Inner mask: pixels inside the arc (complement of cover + border).
+        // Covers the container's CSS border at corners so only the
+        // staircase border is visible.
+        let innerRects: { x: number; y: number; width: number; height: number }[] = [];
+        if (innerBg && borderGrid) {
+          const innerBits = coverGrid.bits
+            .split('')
+            .map((bit, i) =>
+              bit === '0' && borderGrid.bits[i] === '0' ? '1' : '0',
+            )
+            .join('');
+          const innerGrid = { ...coverGrid, bits: innerBits, name: `inner-${pos}` };
+          innerRects = listFilledRects(innerGrid, pixelSize);
+        }
+
         const cssSize = coverGrid.width * pixelSize;
 
         return (
@@ -103,13 +126,24 @@ export function PixelCorner({
             viewBox={`0 0 ${cssSize} ${cssSize}`}
             style={{
               position: 'absolute',
-              [pos === 'tl' || pos === 'tr' ? 'top' : 'bottom']: 0,
-              [pos === 'tl' || pos === 'bl' ? 'left' : 'right']: 0,
+              [pos === 'tl' || pos === 'tr' ? 'top' : 'bottom']: -1,
+              [pos === 'tl' || pos === 'bl' ? 'left' : 'right']: -1,
               pointerEvents: 'none',
               zIndex: 1,
               overflow: 'visible',
             }}
           >
+            {/* Inner mask — covers container CSS border inside the arc */}
+            {innerRects.map((r) => (
+              <rect
+                key={`i-${r.x}-${r.y}`}
+                x={r.x}
+                y={r.y}
+                width={r.width}
+                height={r.height}
+                fill={innerBg}
+              />
+            ))}
             {/* Cover layer — hides smooth CSS border-radius */}
             {coverRects.map((r) => (
               <rect

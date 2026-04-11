@@ -30,6 +30,19 @@ describe('AppWindow', () => {
     expect(screen.getByText('Body content')).toBeInTheDocument();
   });
 
+  test('renders windowed presentation with PixelBorder edges and drop-shadow', () => {
+    render(
+      <AppWindow id="about" title="About">
+        <AppWindowBody>Body content</AppWindowBody>
+      </AppWindow>,
+    );
+
+    const dialog = screen.getByRole('dialog', { name: 'About' });
+    expect(dialog.className).not.toContain('pixel-rounded');
+    expect(dialog.style.filter).toBe('drop-shadow(4px 4px 0 var(--color-ink))');
+    expect(dialog.querySelectorAll('svg[viewBox="0 0 9 9"]')).toHaveLength(4);
+  });
+
   test('renders split compare panes with shared window layout helper', () => {
     render(
       <AppWindow id="lab" title="Control Surface Lab">
@@ -231,18 +244,21 @@ describe('AppWindow', () => {
       expect(island?.className).not.toContain('pixel-rounded');
     });
 
-    test('renders with pixel corners when corners="pixel"', () => {
-      render(
+    test('renders with PixelBorder wrapper when corners="pixel"', () => {
+      const { container } = render(
         <AppWindow id="test" title="Test" contentPadding={false}>
           <AppWindow.Content>
-            <AppWindow.Island corners="pixel">Pixel content</AppWindow.Island>
+            <AppWindow.Island corners="pixel" noScroll className="test-pixel-island">
+              Pixel content
+            </AppWindow.Island>
           </AppWindow.Content>
         </AppWindow>,
       );
 
-      const island = screen.getByText('Pixel content').closest('[class*="pixel-rounded-sm"]');
+      const island = container.querySelector('.test-pixel-island');
       expect(island).toBeInTheDocument();
-      expect(island?.className).not.toContain('border-line');
+      expect(island?.className).not.toContain('border');
+      expect(island?.querySelectorAll('svg[viewBox="0 0 5 5"]')).toHaveLength(4);
     });
 
     test('applies padding variants', () => {
