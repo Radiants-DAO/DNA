@@ -97,7 +97,7 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
  */
 function Menu({ children }: MenubarMenuProps) {
   return (
-    <BaseMenu.Root modal={false}>
+    <BaseMenu.Root>
       {children}
     </BaseMenu.Root>
   );
