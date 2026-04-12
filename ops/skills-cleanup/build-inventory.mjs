@@ -78,8 +78,10 @@ try {
   const npxOut = execSync('npx -y skills list 2>&1', { encoding: 'utf8', timeout: 30000 });
   fs.writeFileSync(path.join(REPO, 'ops/skills-cleanup/npx-managed.txt'), npxOut);
   const ids = new Set();
-  for (const line of npxOut.split('\n')) {
-    const m = line.replace(/\x1b\[[0-9;]*m/g, '').match(/^\s*[•*-]?\s*([a-zA-Z0-9._:-]+)\s*$/);
+  for (const rawLine of npxOut.split('\n')) {
+    const line = rawLine.replace(/\x1b\[[0-9;]*m/g, '');
+    if (!line.trim() || line.startsWith(' ') || /Project Skills|User Skills|Agents:/.test(line)) continue;
+    const m = line.match(/^([a-zA-Z0-9._:-]+)\s+[~/]/);
     if (m && m[1].length > 1) ids.add(m[1]);
   }
   for (const row of inventory) {
