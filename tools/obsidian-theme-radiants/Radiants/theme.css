@@ -1,0 +1,674 @@
+/* =============================================================================
+   Radiants — Obsidian Theme
+   A port of the DNA / Radiants design system.
+   Light "Sun Mode":  cream page, ink text, sun-yellow accents, sharp pixel shadows
+   Dark  "Moon Mode": ink page, cream text, warm phosphor glow halos
+   Respects system color scheme (enable "Adapt to system" in Appearance).
+   ============================================================================= */
+
+/* ============================================
+   FONTS
+   Mondwest = note content (body, headings, inline title)
+   PixelCode = interface, code blocks, monospace
+   ============================================ */
+
+@font-face {
+  font-family: "Mondwest";
+  src: url("fonts/Mondwest.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mondwest";
+  src: url("fonts/Mondwest-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PixelCode";
+  src: url("fonts/PixelCode-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PixelCode";
+  src: url("fonts/PixelCode.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PixelCode";
+  src: url("fonts/PixelCode-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   BRAND PRIMITIVES + TYPOGRAPHY
+   Shared between light and dark
+   ============================================ */
+
+body {
+  /* ----- Brand colors (from @rdna/radiants tokens.css) ----- */
+  --rad-cream:          oklch(0.9780 0.0295 94.34);
+  --rad-ink:            oklch(0.1641 0.0044 84.59);
+  --rad-pure-black:     oklch(0 0 0);
+  --rad-pure-white:     oklch(1 0 0);
+  --rad-sun-yellow:     oklch(0.9126 0.1170 93.68);
+  --rad-sky-blue:       oklch(0.7701 0.0527 236.81);
+  --rad-sky-blue-dark:  oklch(0.47 0.08 237);
+  --rad-sunset-fuzz:    oklch(0.8546 0.1039 68.93);
+  --rad-sun-red:        oklch(0.7429 0.1568 21.43);
+  --rad-mint:           oklch(0.9312 0.0702 142.51);
+
+  /* ----- Font stacks ----- */
+  --rad-font-content:   "Mondwest", Georgia, "Times New Roman", serif;
+  --rad-font-interface: "PixelCode", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --rad-font-mono:      "PixelCode", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --font-text-theme:      var(--rad-font-content);
+  --font-interface-theme: var(--rad-font-interface);
+  --font-monospace-theme: var(--rad-font-mono);
+
+  /* Heading fonts — Mondwest throughout for note content */
+  --h1-font: var(--rad-font-content);
+  --h2-font: var(--rad-font-content);
+  --h3-font: var(--rad-font-content);
+  --h4-font: var(--rad-font-content);
+  --h5-font: var(--rad-font-content);
+  --h6-font: var(--rad-font-content);
+
+  /* Inline title (filename at top of note) */
+  --inline-title-font:   var(--rad-font-content);
+  --inline-title-size:   2.25rem;
+  --inline-title-weight: 700;
+
+  /* Heading scale */
+  --h1-size:   2.25rem;
+  --h2-size:   1.75rem;
+  --h3-size:   1.375rem;
+  --h4-size:   1.125rem;
+  --h5-size:   1rem;
+  --h6-size:   0.875rem;
+  --h1-weight: 700;
+  --h2-weight: 700;
+  --h3-weight: 700;
+  --h4-weight: 600;
+  --h5-weight: 600;
+  --h6-weight: 600;
+  --h1-line-height: 1.2;
+  --h2-line-height: 1.25;
+  --h3-line-height: 1.3;
+
+  /* Body */
+  --font-text-size: 17px;
+  --line-height-normal: 1.6;
+  --line-height-tight:  1.3;
+
+  /* Interface sizing — PixelCode runs small */
+  --font-ui-smaller: 12px;
+  --font-ui-small:   13px;
+  --font-ui-medium:  14px;
+  --font-ui-larger:  18px;
+
+  /* ----- Radius (pixel aesthetic = minimal rounding) ----- */
+  --radius-s:       2px;
+  --radius-m:       4px;
+  --radius-l:       6px;
+  --radius-xl:      8px;
+  --modal-radius:   4px;
+  --popover-radius: 4px;
+  --input-radius:   3px;
+  --button-radius:  3px;
+  --tab-radius:     4px;
+  --tab-radius-active: 4px;
+}
+
+/* ============================================
+   LIGHT MODE — "Sun Mode"
+   ============================================ */
+
+.theme-light {
+  /* Backgrounds */
+  --background-primary:        var(--rad-cream);
+  --background-primary-alt:    var(--rad-cream);
+  --background-secondary:      var(--rad-cream);
+  --background-secondary-alt:  oklch(0.95 0.033 94);
+
+  --background-modifier-hover:         oklch(0.9126 0.1170 93.68 / 0.35);
+  --background-modifier-active-hover:  oklch(0.9126 0.1170 93.68 / 0.55);
+  --background-modifier-border:        oklch(0.1641 0.0044 84.59 / 0.18);
+  --background-modifier-border-hover:  oklch(0.1641 0.0044 84.59 / 0.35);
+  --background-modifier-border-focus:  var(--rad-sun-yellow);
+  --background-modifier-form-field:    var(--rad-pure-white);
+  --background-modifier-form-field-highlighted: var(--rad-cream);
+  --background-modifier-box-shadow:    oklch(0.1641 0.0044 84.59 / 0.35);
+  --background-modifier-cover:         oklch(0.1641 0.0044 84.59 / 0.4);
+  --background-modifier-success:       var(--rad-mint);
+  --background-modifier-error:         oklch(0.7429 0.1568 21.43 / 0.3);
+  --background-modifier-error-rgb:     255, 127, 127;
+  --background-modifier-error-hover:   oklch(0.7429 0.1568 21.43 / 0.5);
+  --background-modifier-message:       oklch(0.9126 0.1170 93.68 / 0.3);
+
+  /* Text */
+  --text-normal:       var(--rad-ink);
+  --text-muted:        oklch(0.1641 0.0044 84.59 / 0.75);
+  --text-faint:        oklch(0.1641 0.0044 84.59 / 0.5);
+  --text-on-accent:    var(--rad-ink);
+  --text-error:        var(--rad-sun-red);
+  --text-success:      oklch(0.5 0.14 142);
+  --text-warning:      oklch(0.55 0.14 68);
+  --text-highlight-bg:        oklch(0.9126 0.1170 93.68 / 0.5);
+  --text-highlight-bg-active: var(--rad-sun-yellow);
+  --text-selection:    oklch(0.9126 0.1170 93.68 / 0.55);
+  --text-accent:       var(--rad-sky-blue-dark);
+  --text-accent-hover: oklch(0.42 0.08 237);
+
+  /* Interactive */
+  --interactive-normal:       var(--rad-cream);
+  --interactive-hover:        var(--rad-sun-yellow);
+  --interactive-accent:       var(--rad-sun-yellow);
+  --interactive-accent-hover: oklch(0.88 0.13 93);
+  --interactive-success:      var(--rad-mint);
+
+  /* Links */
+  --link-color:            var(--rad-sky-blue-dark);
+  --link-color-hover:      oklch(0.42 0.08 237);
+  --link-unresolved-color: var(--rad-sun-red);
+  --link-external-color:   var(--rad-sky-blue-dark);
+
+  /* Tags */
+  --tag-background:       oklch(0.9126 0.1170 93.68 / 0.45);
+  --tag-background-hover: var(--rad-sun-yellow);
+  --tag-color:            var(--rad-ink);
+  --tag-color-hover:      var(--rad-ink);
+  --tag-border-color:     var(--rad-ink);
+  --tag-border-color-hover: var(--rad-ink);
+
+  /* Blockquote */
+  --blockquote-border-color:     var(--rad-sun-yellow);
+  --blockquote-background-color: oklch(0.9126 0.1170 93.68 / 0.15);
+
+  /* Code */
+  --code-background: oklch(0.1641 0.0044 84.59 / 0.06);
+  --code-normal:     var(--rad-ink);
+  --code-keyword:    var(--rad-sky-blue-dark);
+  --code-string:     oklch(0.5 0.14 142);
+  --code-function:   oklch(0.55 0.16 21);
+  --code-comment:    oklch(0.1641 0.0044 84.59 / 0.55);
+  --code-property:   oklch(0.55 0.14 68);
+  --code-value:      oklch(0.5 0.14 142);
+
+  /* Divider / hr */
+  --hr-color:     var(--rad-ink);
+  --hr-thickness: 2px;
+  --divider-color:       oklch(0.1641 0.0044 84.59 / 0.18);
+  --divider-color-hover: var(--rad-ink);
+
+  /* Checkbox */
+  --checkbox-color:        var(--rad-sun-yellow);
+  --checkbox-color-hover:  var(--rad-sun-yellow);
+  --checkbox-border-color: var(--rad-ink);
+  --checkbox-border-color-hover: var(--rad-ink);
+  --checkbox-marker-color: var(--rad-ink);
+
+  /* Chrome: titlebar, ribbon, tabs */
+  --titlebar-background:           var(--rad-sun-yellow);
+  --titlebar-background-focused:   var(--rad-sun-yellow);
+  --titlebar-text-color:           var(--rad-ink);
+  --titlebar-text-color-focused:   var(--rad-ink);
+  --titlebar-text-color-highlighted: var(--rad-ink);
+  --titlebar-border-color:         var(--rad-ink);
+
+  --ribbon-background:           var(--rad-cream);
+  --ribbon-background-collapsed: var(--rad-cream);
+
+  --tab-background-active:             var(--rad-cream);
+  --tab-text-color-focused-active:     var(--rad-ink);
+  --tab-text-color-focused-active-current: var(--rad-ink);
+  --tab-outline-color:                 oklch(0.1641 0.0044 84.59 / 0.18);
+
+  /* Nav */
+  --nav-item-color-active:      var(--rad-ink);
+  --nav-item-background-active: oklch(0.9126 0.1170 93.68 / 0.4);
+  --nav-item-color-hover:       var(--rad-ink);
+  --nav-item-background-hover:  oklch(0.9126 0.1170 93.68 / 0.2);
+  --nav-collapse-icon-color:    oklch(0.1641 0.0044 84.59 / 0.55);
+
+  /* Graph */
+  --graph-node:         var(--rad-ink);
+  --graph-node-tag:     var(--rad-sky-blue-dark);
+  --graph-node-attachment: var(--rad-sunset-fuzz);
+  --graph-node-unresolved: oklch(0.1641 0.0044 84.59 / 0.4);
+  --graph-node-focused: var(--rad-sun-yellow);
+  --graph-line:         oklch(0.1641 0.0044 84.59 / 0.3);
+
+  /* Table */
+  --table-header-background: oklch(0.9126 0.1170 93.68 / 0.3);
+  --table-row-alt-background: oklch(0.9126 0.1170 93.68 / 0.08);
+  --table-border-color:       oklch(0.1641 0.0044 84.59 / 0.2);
+}
+
+/* ============================================
+   DARK MODE — "Moon Mode"
+   ============================================ */
+
+.theme-dark {
+  /* Backgrounds */
+  --background-primary:        var(--rad-ink);
+  --background-primary-alt:    var(--rad-pure-black);
+  --background-secondary:      oklch(0.22 0.01 84.59);
+  --background-secondary-alt:  var(--rad-pure-black);
+
+  --background-modifier-hover:         oklch(0.9126 0.1170 93.68 / 0.10);
+  --background-modifier-active-hover:  oklch(0.9126 0.1170 93.68 / 0.18);
+  --background-modifier-border:        oklch(0.9780 0.0295 94.34 / 0.12);
+  --background-modifier-border-hover:  oklch(0.9780 0.0295 94.34 / 0.3);
+  --background-modifier-border-focus:  var(--rad-sun-yellow);
+  --background-modifier-form-field:    oklch(0.22 0.01 84.59);
+  --background-modifier-form-field-highlighted: oklch(0.26 0.015 84);
+  --background-modifier-box-shadow:    oklch(0 0 0 / 0.6);
+  --background-modifier-cover:         oklch(0 0 0 / 0.7);
+  --background-modifier-success:       oklch(0.9312 0.0702 142.51 / 0.25);
+  --background-modifier-error:         oklch(0.7429 0.1568 21.43 / 0.3);
+  --background-modifier-error-rgb:     255, 127, 127;
+  --background-modifier-error-hover:   oklch(0.7429 0.1568 21.43 / 0.45);
+  --background-modifier-message:       oklch(0.9126 0.1170 93.68 / 0.1);
+
+  /* Text */
+  --text-normal:       var(--rad-cream);
+  --text-muted:        oklch(0.9780 0.0295 94.34 / 0.75);
+  --text-faint:        oklch(0.9780 0.0295 94.34 / 0.5);
+  --text-on-accent:    var(--rad-ink);
+  --text-error:        var(--rad-sun-red);
+  --text-success:      var(--rad-mint);
+  --text-warning:      var(--rad-sun-yellow);
+  --text-highlight-bg:        oklch(0.9126 0.1170 93.68 / 0.3);
+  --text-highlight-bg-active: oklch(0.9126 0.1170 93.68 / 0.5);
+  --text-selection:    oklch(0.9126 0.1170 93.68 / 0.25);
+  --text-accent:       var(--rad-sky-blue);
+  --text-accent-hover: oklch(0.82 0.06 236);
+
+  /* Interactive */
+  --interactive-normal:       oklch(0.22 0.01 84.59);
+  --interactive-hover:        oklch(0.9126 0.1170 93.68 / 0.15);
+  --interactive-accent:       var(--rad-sun-yellow);
+  --interactive-accent-hover: oklch(0.88 0.13 93);
+  --interactive-success:      var(--rad-mint);
+
+  /* Links */
+  --link-color:            var(--rad-sky-blue);
+  --link-color-hover:      oklch(0.82 0.06 236);
+  --link-unresolved-color: var(--rad-sun-red);
+  --link-external-color:   var(--rad-sky-blue);
+
+  /* Tags */
+  --tag-background:         oklch(0.9126 0.1170 93.68 / 0.18);
+  --tag-background-hover:   oklch(0.9126 0.1170 93.68 / 0.35);
+  --tag-color:              var(--rad-sun-yellow);
+  --tag-color-hover:        var(--rad-sun-yellow);
+  --tag-border-color:       oklch(0.9126 0.1170 93.68 / 0.4);
+  --tag-border-color-hover: oklch(0.9126 0.1170 93.68 / 0.6);
+
+  /* Blockquote */
+  --blockquote-border-color:     var(--rad-sun-yellow);
+  --blockquote-background-color: oklch(0.9126 0.1170 93.68 / 0.06);
+
+  /* Code */
+  --code-background: oklch(0.9780 0.0295 94.34 / 0.06);
+  --code-normal:     var(--rad-cream);
+  --code-keyword:    var(--rad-sky-blue);
+  --code-string:     var(--rad-mint);
+  --code-function:   var(--rad-sunset-fuzz);
+  --code-comment:    oklch(0.9780 0.0295 94.34 / 0.5);
+  --code-property:   var(--rad-sunset-fuzz);
+  --code-value:      var(--rad-mint);
+
+  /* Divider / hr */
+  --hr-color:     oklch(0.9780 0.0295 94.34 / 0.25);
+  --hr-thickness: 2px;
+  --divider-color:       oklch(0.9780 0.0295 94.34 / 0.12);
+  --divider-color-hover: oklch(0.9780 0.0295 94.34 / 0.4);
+
+  /* Checkbox */
+  --checkbox-color:        var(--rad-sun-yellow);
+  --checkbox-color-hover:  var(--rad-sun-yellow);
+  --checkbox-border-color: oklch(0.9780 0.0295 94.34 / 0.5);
+  --checkbox-border-color-hover: var(--rad-sun-yellow);
+  --checkbox-marker-color: var(--rad-ink);
+
+  /* Chrome */
+  --titlebar-background:           var(--rad-ink);
+  --titlebar-background-focused:   var(--rad-pure-black);
+  --titlebar-text-color:           var(--rad-cream);
+  --titlebar-text-color-focused:   var(--rad-pure-white);
+  --titlebar-text-color-highlighted: var(--rad-sun-yellow);
+  --titlebar-border-color:         oklch(0.9780 0.0295 94.34 / 0.12);
+
+  --ribbon-background:           var(--rad-ink);
+  --ribbon-background-collapsed: var(--rad-ink);
+
+  --tab-background-active:             var(--rad-ink);
+  --tab-text-color-focused-active:     var(--rad-pure-white);
+  --tab-text-color-focused-active-current: var(--rad-pure-white);
+  --tab-outline-color:                 oklch(0.9780 0.0295 94.34 / 0.15);
+
+  /* Nav */
+  --nav-item-color-active:      var(--rad-sun-yellow);
+  --nav-item-background-active: oklch(0.9126 0.1170 93.68 / 0.15);
+  --nav-item-color-hover:       var(--rad-pure-white);
+  --nav-item-background-hover:  oklch(0.9126 0.1170 93.68 / 0.08);
+  --nav-collapse-icon-color:    oklch(0.9780 0.0295 94.34 / 0.5);
+
+  /* Graph */
+  --graph-node:            var(--rad-cream);
+  --graph-node-tag:        var(--rad-sky-blue);
+  --graph-node-attachment: var(--rad-sunset-fuzz);
+  --graph-node-unresolved: oklch(0.9780 0.0295 94.34 / 0.3);
+  --graph-node-focused:    var(--rad-sun-yellow);
+  --graph-line:            oklch(0.9780 0.0295 94.34 / 0.2);
+
+  /* Table */
+  --table-header-background:  oklch(0.9126 0.1170 93.68 / 0.1);
+  --table-row-alt-background: oklch(0.9780 0.0295 94.34 / 0.03);
+  --table-border-color:       oklch(0.9780 0.0295 94.34 / 0.15);
+}
+
+/* ============================================
+   GLOBAL ELEMENT STYLING
+   ============================================ */
+
+/* Code blocks render at 300 weight in dark mode (PixelCode Light
+   compensates for the perceived weight gain on dark backgrounds). */
+.theme-dark code,
+.theme-dark pre,
+.theme-dark .cm-line .cm-inline-code {
+  font-weight: 300;
+}
+
+/* Reading view: warm phosphor halo on all text — the Radiants dark-mode
+   signature. Inherits down the tree via text-shadow. */
+.theme-dark .markdown-preview-view,
+.theme-dark .markdown-source-view,
+.theme-dark .inline-title,
+.theme-dark .view-header-title,
+.theme-dark .nav-file-title,
+.theme-dark .nav-folder-title {
+  text-shadow:
+    0 0 10px oklch(0.9126 0.1170 93.68 / 0.25),
+    0 0 40px oklch(0.9126 0.1170 93.68 / 0.08);
+}
+
+/* Inline title — filename at top of the note */
+.inline-title {
+  letter-spacing: 0.01em;
+}
+
+/* Headings — tighter letter-spacing reads better in Mondwest */
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-source-view.mod-cm6 .cm-header {
+  letter-spacing: -0.005em;
+}
+
+/* Body copy — comfortable reading rhythm */
+.markdown-preview-view {
+  line-height: var(--line-height-normal);
+}
+
+/* Code — keep ligatures off for pixel-crisp rendering */
+code,
+pre,
+.cm-editor {
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* ============================================
+   BUTTONS — retro pixel shadow in light, phosphor glow in dark
+   ============================================ */
+
+.theme-light button:not(.clickable-icon):not(.tab-header-inner-close-button),
+.theme-light .mod-cta,
+.theme-light input[type="button"],
+.theme-light input[type="submit"] {
+  border: 1px solid var(--rad-ink);
+  box-shadow: 2px 2px 0 0 var(--rad-ink);
+  transition:
+    transform 100ms cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 100ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.theme-light button:not(.clickable-icon):not(.tab-header-inner-close-button):hover,
+.theme-light .mod-cta:hover,
+.theme-light input[type="button"]:hover,
+.theme-light input[type="submit"]:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 0 var(--rad-ink);
+}
+
+.theme-light button:not(.clickable-icon):not(.tab-header-inner-close-button):active,
+.theme-light .mod-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 0 var(--rad-ink);
+}
+
+.theme-dark button:not(.clickable-icon):not(.tab-header-inner-close-button):hover,
+.theme-dark .mod-cta:hover {
+  box-shadow:
+    0 0 0 1px oklch(0.9126 0.1170 93.68 / 0.4),
+    0 0 12px 2px oklch(0.9126 0.1170 93.68 / 0.25);
+}
+
+/* ============================================
+   FORMS & INPUTS
+   ============================================ */
+
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select,
+.dropdown {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--input-radius);
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus,
+.dropdown:focus {
+  border-color: var(--rad-sun-yellow);
+  box-shadow: 0 0 0 2px oklch(0.9126 0.1170 93.68 / 0.35);
+  outline: none;
+}
+
+/* ============================================
+   SCROLLBARS
+   ============================================ */
+
+.theme-light ::-webkit-scrollbar-thumb {
+  background: oklch(0.1641 0.0044 84.59 / 0.25);
+  border-radius: 0;
+}
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.1641 0.0044 84.59 / 0.45);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.9780 0.0295 94.34 / 0.2);
+  border-radius: 0;
+}
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.9780 0.0295 94.34 / 0.4);
+}
+
+/* ============================================
+   STATUS BAR
+   ============================================ */
+
+.status-bar {
+  border-top: 1px solid var(--background-modifier-border);
+  font-family: var(--rad-font-interface);
+  font-size: var(--font-ui-smaller);
+}
+
+/* ============================================
+   CALLOUTS — mapped to the Radiants status palette
+   ============================================ */
+
+.callout[data-callout="note"],
+.callout[data-callout="info"],
+.callout[data-callout="abstract"],
+.callout[data-callout="summary"] {
+  --callout-color: 149, 186, 210;   /* sky-blue */
+}
+
+.callout[data-callout="warning"],
+.callout[data-callout="caution"],
+.callout[data-callout="attention"] {
+  --callout-color: 252, 225, 132;   /* sun-yellow */
+}
+
+.callout[data-callout="danger"],
+.callout[data-callout="error"],
+.callout[data-callout="bug"],
+.callout[data-callout="failure"],
+.callout[data-callout="fail"],
+.callout[data-callout="missing"] {
+  --callout-color: 255, 127, 127;   /* sun-red */
+}
+
+.callout[data-callout="success"],
+.callout[data-callout="tip"],
+.callout[data-callout="hint"],
+.callout[data-callout="important"],
+.callout[data-callout="done"],
+.callout[data-callout="check"] {
+  --callout-color: 206, 245, 202;   /* mint */
+}
+
+.callout[data-callout="example"],
+.callout[data-callout="quote"],
+.callout[data-callout="cite"] {
+  --callout-color: 252, 195, 131;   /* sunset-fuzz */
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.markdown-preview-view table,
+.markdown-source-view table {
+  border-collapse: collapse;
+  border: 1px solid var(--table-border-color);
+}
+
+.markdown-preview-view th {
+  background-color: var(--table-header-background);
+  font-weight: 700;
+  border-bottom: 2px solid var(--rad-ink);
+}
+
+.markdown-preview-view tr:nth-child(even) {
+  background-color: var(--table-row-alt-background);
+}
+
+.theme-dark .markdown-preview-view th {
+  border-bottom-color: var(--rad-sun-yellow);
+}
+
+/* ============================================
+   TAGS — pill-style with Radiants border
+   ============================================ */
+
+.tag,
+a.tag {
+  border: 1px solid var(--tag-border-color);
+  padding: 1px 8px;
+  border-radius: var(--radius-s);
+  font-family: var(--rad-font-interface);
+  font-size: 0.85em;
+  text-decoration: none;
+}
+
+/* ============================================
+   BLOCKQUOTE — thick sun-yellow left bar
+   ============================================ */
+
+.markdown-preview-view blockquote,
+.markdown-source-view blockquote {
+  border-left: 4px solid var(--blockquote-border-color);
+  background-color: var(--blockquote-background-color);
+  padding: 0.5em 1em;
+  font-style: italic;
+}
+
+/* ============================================
+   CHECKBOX — crisp pixel style
+   ============================================ */
+
+input[type="checkbox"] {
+  border-radius: 2px;
+}
+
+/* ============================================
+   MODAL / MENU / SUGGESTION surfaces
+   ============================================ */
+
+.modal,
+.suggestion-container,
+.menu,
+.tooltip {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--modal-radius);
+}
+
+.theme-light .modal,
+.theme-light .suggestion-container,
+.theme-light .menu {
+  box-shadow: 4px 4px 0 0 var(--rad-ink);
+}
+
+.theme-dark .modal,
+.theme-dark .suggestion-container,
+.theme-dark .menu {
+  box-shadow:
+    0 0 0 1px oklch(0.9780 0.0295 94.34 / 0.15),
+    0 8px 24px oklch(0 0 0 / 0.6),
+    0 0 24px oklch(0.9126 0.1170 93.68 / 0.08);
+}
+
+/* Suggested item selection uses the full sun-yellow */
+.suggestion-item.is-selected {
+  background-color: var(--rad-sun-yellow);
+  color: var(--rad-ink);
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+
+::selection {
+  background-color: var(--text-selection);
+  color: var(--rad-ink);
+}
+
+.theme-dark ::selection {
+  color: var(--rad-cream);
+}
