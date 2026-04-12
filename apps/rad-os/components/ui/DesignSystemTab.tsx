@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, type ComponentType } from 'react';
+import { startTransition, useEffect, useMemo, useRef, useState, type ComponentType, type RefObject } from 'react';
 import {
   registry,
   CATEGORIES,
@@ -13,24 +13,100 @@ import {
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
 import { Button, Input, PixelBorder } from '@rdna/radiants/components/core';
 
+const CARD_INTERSECTION_ROOT_MARGIN = '240px 0px';
+const DEFAULT_INITIAL_INTERACTIVE_CARDS = 6;
+
+function useDeferredContent(
+  shouldDefer: boolean,
+  rootRef: RefObject<HTMLElement | null>,
+) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isReady, setIsReady] = useState(() => !shouldDefer);
+
+  useEffect(() => {
+    if (!shouldDefer || isReady) return;
+
+    const node = containerRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      const frame = window.requestAnimationFrame(() => {
+        setIsReady(true);
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        startTransition(() => {
+          setIsReady(true);
+        });
+        observer.disconnect();
+      },
+      {
+        root: rootRef.current,
+        rootMargin: CARD_INTERSECTION_ROOT_MARGIN,
+      },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isReady, rootRef, shouldDefer]);
+
+  return { containerRef, isReady };
+}
+
+function DeferredSectionPlaceholder({
+  label,
+  minHeightClass,
+}: {
+  label: string;
+  minHeightClass: string;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-center border border-dashed border-rule bg-depth/40 px-3 py-4 ${minHeightClass}`}
+    >
+      <span className="font-mono text-[10px] uppercase tracking-wide text-mute">
+        {label}
+      </span>
+    </div>
+  );
+}
+
 // ============================================================================
 // Showcase Card
 // ============================================================================
 
-function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
+function ComponentShowcaseCard({
+  entry,
+  scrollRootRef,
+  eager,
+}: {
+  entry: RegistryEntry;
+  scrollRootRef: RefObject<HTMLDivElement | null>;
+  eager: boolean;
+}) {
   const Component = entry.component as ComponentType<Record<string, unknown>> | undefined;
   const { props, remountKey, setPropValue, resetProps } = useShowcaseProps(entry);
   const [forcedState, setForcedState] = useState<'default' | ForcedState>('default');
   const availableStates = ['default', ...getPreviewStateNames(entry.states)] as const;
   const { wrapperState, propOverrides } = resolvePreviewState(forcedState, entry.states);
   const renderProps = { ...props, ...propOverrides };
+  const hasPreview = entry.renderMode !== 'description-only';
   const hasControllableProps =
     Object.keys(entry.props).length > 0 &&
     !(entry.renderMode === 'custom' && entry.controlledProps?.length === 0);
+  const { containerRef, isReady } = useDeferredContent(
+    !eager && (hasPreview || hasControllableProps),
+    scrollRootRef,
+  );
 
   return (
     <PixelBorder size="sm" className="pixel-shadow-resting">
-      <div className="bg-page p-4 flex flex-col gap-3">
+      <div
+        ref={containerRef}
+        className="bg-page p-4 flex flex-col gap-3"
+      >
         {/* Header */}
         <div className="flex items-center gap-2">
           <h3 className="text-base font-heading font-bold text-main">
@@ -47,25 +123,31 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
         <p className="text-base text-sub">{entry.description}</p>
 
         {/* Demo Area */}
-        {entry.renderMode === 'description-only' ? null : (
+        {!hasPreview ? null : (
           <div className="border-t border-rule pt-3">
             <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
-            <div data-force-state={wrapperState} key={remountKey}>
-              {entry.Demo ? (
-                <entry.Demo {...renderProps} />
-              ) : Component ? (
-                <Component {...renderProps} />
-              ) : null}
-            </div>
+            {isReady ? (
+              <div data-force-state={wrapperState} key={remountKey}>
+                {entry.Demo ? (
+                  <entry.Demo {...renderProps} />
+                ) : Component ? (
+                  <Component {...renderProps} />
+                ) : null}
+              </div>
+            ) : (
+              <DeferredSectionPlaceholder
+                label="Preview mounts on scroll"
+                minHeightClass="min-h-24"
+              />
+            )}
           </div>
         )}
 
         {/* Forced state strip */}
         {entry.states && entry.states.length > 0 && (
-          <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
+            <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
             {availableStates.map((s) => (
               <PixelBorder key={s} size="xs" className="inline-block">
-                {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:forced-state-chip-requires-inline-button owner:design-system expires:2026-12-31 issue:DNA-001 */}
                 <button
                   type="button"
                   onClick={() => setForcedState(s)}
@@ -85,14 +167,21 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
         {/* Prop controls */}
         {hasControllableProps && (
           <div className="border-t border-rule pt-2">
-            <PropControls
-              props={entry.props}
-              values={props}
-              onChange={setPropValue}
-              onReset={resetProps}
-              controlledProps={entry.controlledProps}
-              renderMode={entry.renderMode}
-            />
+            {isReady ? (
+              <PropControls
+                props={entry.props}
+                values={props}
+                onChange={setPropValue}
+                onReset={resetProps}
+                controlledProps={entry.controlledProps}
+                renderMode={entry.renderMode}
+              />
+            ) : (
+              <DeferredSectionPlaceholder
+                label="Controls mount on scroll"
+                minHeightClass="min-h-16"
+              />
+            )}
           </div>
         )}
       </div>
@@ -108,13 +197,16 @@ interface DesignSystemTabProps {
   searchQuery?: string;
   activeCategory?: ComponentCategory | 'all';
   hideControls?: boolean;
+  initialInteractiveCards?: number;
 }
 
 export function DesignSystemTab({
   searchQuery: propSearchQuery = '',
   activeCategory: propCategory,
   hideControls = false,
+  initialInteractiveCards = DEFAULT_INITIAL_INTERACTIVE_CARDS,
 }: DesignSystemTabProps) {
+  const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const [localCategory, setLocalCategory] = useState<ComponentCategory | 'all'>('all');
   const [localSearch, setLocalSearch] = useState('');
 
@@ -153,8 +245,10 @@ export function DesignSystemTab({
     return groups;
   }, [filtered]);
 
+  let showcaseIndex = 0;
+
   return (
-    <div className="h-full overflow-auto">
+    <div ref={scrollRootRef} className="h-full overflow-auto">
       <div className="flex flex-col gap-4 p-5">
       {!hideControls && (
         <>
@@ -203,11 +297,20 @@ export function DesignSystemTab({
               <h2 className="text-main leading-tight">{group.label}</h2>
             </div>
             <div className="columns-1 @3xl:columns-2 @7xl:columns-3 gap-3">
-              {group.entries.map((entry) => (
-                <div key={entry.name} className="break-inside-avoid mb-3">
-                  <ComponentShowcaseCard entry={entry} />
-                </div>
-              ))}
+              {group.entries.map((entry) => {
+                const eager = showcaseIndex < initialInteractiveCards;
+                showcaseIndex += 1;
+
+                return (
+                  <div key={entry.name} className="break-inside-avoid mb-3">
+                    <ComponentShowcaseCard
+                      entry={entry}
+                      scrollRootRef={scrollRootRef}
+                      eager={eager}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
