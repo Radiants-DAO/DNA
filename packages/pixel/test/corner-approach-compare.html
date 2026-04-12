@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Corner Approaches — Performance Comparison</title>
+<style>
+  :root {
+    --color-page: #FEF8E2;
+    --color-line: #0F0E0C;
+    --color-card: #FEF8E2;
+    --color-accent: #E8C840;
+    --grid: 19;
+    --grid-px: 19px;
+    --radius-px: 20px; /* grid + 1 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--color-page);
+    color: var(--color-line);
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-bottom: 2rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .approach {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .approach h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .approach .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+  }
+
+  .tag.green { background: #d4edda; color: #155724; }
+  .tag.yellow { background: #fff3cd; color: #856404; }
+  .tag.red { background: #f8d7da; color: #721c24; }
+
+  .card-wrapper {
+    background: #f5edd5;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+  }
+
+  /* Shared card style — each approach overrides corners */
+  .demo-card {
+    width: 220px;
+    height: 120px;
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    position: relative;
+  }
+
+  .meta {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    opacity: 0.7;
+  }
+
+  .meta strong { opacity: 1; }
+
+  .dom-count {
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dom-count .num {
+    font-size: 1.4rem;
+    display: block;
+  }
+
+  .pros-cons {
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+
+  .pros-cons .pro::before { content: '✓ '; color: #155724; font-weight: bold; }
+  .pros-cons .con::before { content: '✗ '; color: #721c24; font-weight: bold; }
+
+  /* ================================================================
+     1. Current: Individual <rect> elements
+     ================================================================ */
+  .card-rects {
+    border-radius: var(--radius-px);
+  }
+
+  /* ================================================================
+     2. bitsToPath: Single <path> per layer
+     ================================================================ */
+  .card-path {
+    border-radius: var(--radius-px);
+  }
+
+  /* ================================================================
+     3. CSS mask-image (zero DOM)
+     ================================================================ */
+  .card-mask {
+    border: none; /* we draw border via ::after */
+    border-radius: var(--radius-px);
+  }
+
+  .card-mask::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    z-index: 1;
+    background-color: var(--color-page);
+    mask-image:
+      var(--pc-xl-cover-tl),
+      var(--pc-xl-cover-tr),
+      var(--pc-xl-cover-bl),
+      var(--pc-xl-cover-br);
+    -webkit-mask-image:
+      var(--pc-xl-cover-tl),
+      var(--pc-xl-cover-tr),
+      var(--pc-xl-cover-bl),
+      var(--pc-xl-cover-br);
+    mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    mask-size: var(--grid-px) var(--grid-px);
+    -webkit-mask-size: var(--grid-px) var(--grid-px);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-composite: add;
+    -webkit-mask-composite: source-over;
+  }
+
+  .card-mask::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    z-index: 2;
+    background-color: var(--color-line);
+    mask-image:
+      var(--pc-xl-border-tl),
+      var(--pc-xl-border-tr),
+      var(--pc-xl-border-bl),
+      var(--pc-xl-border-br);
+    -webkit-mask-image:
+      var(--pc-xl-border-tl),
+      var(--pc-xl-border-tr),
+      var(--pc-xl-border-bl),
+      var(--pc-xl-border-br);
+    mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    mask-size: var(--grid-px) var(--grid-px);
+    -webkit-mask-size: var(--grid-px) var(--grid-px);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-composite: add;
+    -webkit-mask-composite: source-over;
+  }
+
+  /* ================================================================
+     4. CSS border-image (9-slice)
+     ================================================================ */
+  .card-border-image {
+    border: 19px solid transparent;
+    border-radius: 0; /* suppressed by border-image anyway */
+    /* border-image-source set by JS (needs baked colors) */
+    border-image-slice: 19;
+    border-image-width: 19px;
+    border-image-repeat: stretch;
+    /* adjust card size to compensate for thick border */
+    width: 220px;
+    height: 120px;
+  }
+
+  /* ================================================================
+     5. Old CSS clip-path
+     ================================================================ */
+  .card-clip {
+    border: none;
+    /* clip-path set by JS */
+  }
+
+  /* ================================================================
+     Stress test section
+     ================================================================ */
+  .stress-section {
+    margin-top: 3rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 2rem;
+  }
+
+  .stress-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stress-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .stress-controls label {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .stress-controls select, .stress-controls button {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .stress-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 100px;
+    padding: 1rem;
+    background: #f5edd5;
+    border-radius: 8px;
+  }
+
+  .stress-card {
+    width: 48px;
+    height: 32px;
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    position: relative;
+    border-radius: var(--radius-px);
+    font-size: 0;
+  }
+
+  .stress-results {
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body>
+
+<h1>Pixel Corner Approaches</h1>
+<p class="subtitle">XL corners (radius 18, 19×19 grid) — same visual, different DOM cost</p>
+
+<div class="grid" id="approaches"></div>
+
+<div class="stress-section">
+  <h2>Stress Test</h2>
+  <p class="meta" style="margin-bottom: 0.75rem">Render N elements with pixel corners. Measures DOM node count + render time.</p>
+  <div class="stress-controls">
+    <label>Approach:</label>
+    <select id="stress-approach">
+      <option value="rects">1. SVG rects (current)</option>
+      <option value="path">2. SVG path (union)</option>
+      <option value="mask">3. CSS mask-image</option>
+      <option value="border-image">4. CSS border-image</option>
+      <option value="clip-path">5. CSS clip-path</option>
+    </select>
+    <label>Count:</label>
+    <select id="stress-count">
+      <option value="50">50</option>
+      <option value="100" selected>100</option>
+      <option value="200">200</option>
+      <option value="500">500</option>
+    </select>
+    <button onclick="runStress()">Run</button>
+    <button onclick="clearStress()">Clear</button>
+  </div>
+  <div id="stress-results" class="stress-results"></div>
+  <div id="stress-grid" class="stress-grid"></div>
+</div>
+
+<script>
+// ============================================================
+// Bitstring data from @rdna/pixel generateCorner(18)
+// ============================================================
+const GRID = 19;
+const COVER_BITS = '1111111111111100000111111111110000000011111111100000000001111111100000000000111111100000000000011111100000000000001111100000000000000111100000000000000011100000000000000001100000000000000000110000000000000000010000000000000000001000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+const BORDER_BITS = '0000000000000011111000000000001110000000000000011000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000001000000000000000001000000000000000000100000000000000000010000000000000000010000000000000000001000000000000000000100000000000000000010000000000000000001000000000000000000';
+
+// ============================================================
+// Core utilities
+// ============================================================
+function mirrorH(bits, w, h) {
+  let out = '';
+  for (let y = 0; y < h; y++) {
+    for (let x = w - 1; x >= 0; x--) out += bits[y * w + x];
+  }
+  return out;
+}
+
+function mirrorV(bits, w, h) {
+  let out = '';
+  for (let y = h - 1; y >= 0; y--) {
+    out += bits.slice(y * w, (y + 1) * w);
+  }
+  return out;
+}
+
+function mirrorHV(bits, w, h) { return mirrorH(mirrorV(bits, w, h), w, h); }
+
+// ============================================================
+// bitsToPath — run-length encode + vertical merge
+// ============================================================
+function bitsToPath(bits, w, h) {
+  const runs = [];
+  for (let y = 0; y < h; y++) {
+    let x = 0;
+    while (x < w) {
+      if (bits[y * w + x] === '1') {
+        const start = x;
+        while (x < w && bits[y * w + x] === '1') x++;
+        runs.push({ x: start, y, w: x - start, h: 1 });
+      } else {
+        x++;
+      }
+    }
+  }
+  // Vertical merge
+  for (let i = 0; i < runs.length; i++) {
+    if (!runs[i]) continue;
+    for (let j = i + 1; j < runs.length; j++) {
+      if (!runs[j]) continue;
+      if (runs[j].x === runs[i].x &&
+          runs[j].w === runs[i].w &&
+          runs[j].y === runs[i].y + runs[i].h) {
+        runs[i].h += runs[j].h;
+        runs[j] = null;
+      }
+    }
+  }
+  return runs.filter(Boolean)
+    .map(r => `M${r.x},${r.y}h${r.w}v${r.h}h${-r.w}Z`)
+    .join('');
+}
+
+// ============================================================
+// Pre-compute all corner paths
+// ============================================================
+const coverTL = bitsToPath(COVER_BITS, GRID, GRID);
+const coverTR = bitsToPath(mirrorH(COVER_BITS, GRID, GRID), GRID, GRID);
+const coverBL = bitsToPath(mirrorV(COVER_BITS, GRID, GRID), GRID, GRID);
+const coverBR = bitsToPath(mirrorHV(COVER_BITS, GRID, GRID), GRID, GRID);
+
+const borderTL = bitsToPath(BORDER_BITS, GRID, GRID);
+const borderTR = bitsToPath(mirrorH(BORDER_BITS, GRID, GRID), GRID, GRID);
+const borderBL = bitsToPath(mirrorV(BORDER_BITS, GRID, GRID), GRID, GRID);
+const borderBR = bitsToPath(mirrorHV(BORDER_BITS, GRID, GRID), GRID, GRID);
+
+// ============================================================
+// listFilledRects (current approach)
+// ============================================================
+function listFilledRects(bits, w, h) {
+  const rects = [];
+  for (let i = 0; i < bits.length; i++) {
+    if (bits[i] === '1') {
+      rects.push({ x: i % w, y: Math.floor(i / w), w: 1, h: 1 });
+    }
+  }
+  return rects;
+}
+
+// ============================================================
+// Mask SVG data URIs
+// ============================================================
+function maskURI(pathD, transform) {
+  const t = transform ? ` transform="${transform}"` : '';
+  return `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${GRID}' height='${GRID}'><path fill='white'${t} d='${pathD}'/></svg>`
+  )}")`;
+}
+
+// TL = source path, others use SVG transform to flip
+const maskCoverTL = maskURI(coverTL);
+const maskCoverTR = maskURI(coverTL, `translate(${GRID},0) scale(-1,1)`);
+const maskCoverBL = maskURI(coverTL, `translate(0,${GRID}) scale(1,-1)`);
+const maskCoverBR = maskURI(coverTL, `translate(${GRID},${GRID}) scale(-1,-1)`);
+
+const maskBorderTL = maskURI(borderTL);
+const maskBorderTR = maskURI(borderTL, `translate(${GRID},0) scale(-1,1)`);
+const maskBorderBL = maskURI(borderTL, `translate(0,${GRID}) scale(1,-1)`);
+const maskBorderBR = maskURI(borderTL, `translate(${GRID},${GRID}) scale(-1,-1)`);
+
+// Set CSS custom properties for mask approach
+const root = document.documentElement;
+root.style.setProperty('--pc-xl-cover-tl', maskCoverTL);
+root.style.setProperty('--pc-xl-cover-tr', maskCoverTR);
+root.style.setProperty('--pc-xl-cover-bl', maskCoverBL);
+root.style.setProperty('--pc-xl-cover-br', maskCoverBR);
+root.style.setProperty('--pc-xl-border-tl', maskBorderTL);
+root.style.setProperty('--pc-xl-border-tr', maskBorderTR);
+root.style.setProperty('--pc-xl-border-bl', maskBorderBL);
+root.style.setProperty('--pc-xl-border-br', maskBorderBR);
+
+// ============================================================
+// Border-image 9-slice SVG (baked colors)
+// ============================================================
+function makeBorderImageSVG() {
+  // Frame SVG: corners at each corner, 1px edges, transparent center
+  // Image size: GRID*2 + 2 (1px gap in center for stretching)
+  const S = GRID * 2 + 2;
+  const pageBg = '#FEF8E2';
+  const lineColor = '#0F0E0C';
+
+  let paths = '';
+
+  // TL cover + border
+  paths += `<path fill="${pageBg}" d="${coverTL}"/>`;
+  paths += `<path fill="${lineColor}" d="${borderTL}"/>`;
+
+  // TR cover + border (translated to right edge)
+  const trOff = GRID + 2;
+  paths += `<path fill="${pageBg}" transform="translate(${trOff},0)" d="${coverTR}"/>`;
+  paths += `<path fill="${lineColor}" transform="translate(${trOff},0)" d="${borderTR}"/>`;
+
+  // BL cover + border
+  const blOff = GRID + 2;
+  paths += `<path fill="${pageBg}" transform="translate(0,${blOff})" d="${coverBL}"/>`;
+  paths += `<path fill="${lineColor}" transform="translate(0,${blOff})" d="${borderBL}"/>`;
+
+  // BR cover + border
+  paths += `<path fill="${pageBg}" transform="translate(${trOff},${blOff})" d="${coverBR}"/>`;
+  paths += `<path fill="${lineColor}" transform="translate(${trOff},${blOff})" d="${borderBR}"/>`;
+
+  // Edge segments: 1px lines connecting corners
+  // Top edge: y=0, x from GRID to GRID+2
+  paths += `<rect fill="${lineColor}" x="${GRID}" y="0" width="2" height="1"/>`;
+  // Bottom edge
+  paths += `<rect fill="${lineColor}" x="${GRID}" y="${S - 1}" width="2" height="1"/>`;
+  // Left edge
+  paths += `<rect fill="${lineColor}" x="0" y="${GRID}" width="1" height="2"/>`;
+  // Right edge
+  paths += `<rect fill="${lineColor}" x="${S - 1}" y="${GRID}" width="1" height="2"/>`;
+
+  return `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${S}' height='${S}'>${paths}</svg>`
+  )}`;
+}
+
+const borderImageSrc = makeBorderImageSVG();
+
+// ============================================================
+// Clip-path polygon from bitstrings (trace outer contour)
+// ============================================================
+function bitsToClipPolygon(bits, w, h) {
+  // Find the boundary of the FILLED region's complement
+  // (the cover bits define what's OUTSIDE the rounded shape)
+  // The "content" region is where cover=0 and border=0
+  // We want to clip TO the content+border region
+  // Simpler: combine cover bits → the complement is the visible shape
+  // Trace the outline of the non-cover region
+
+  // For a working prototype, generate polygon from the border arc
+  // Walk the border pixels to get the staircase vertices
+  const points = [];
+
+  // Collect border pixel coordinates per row
+  const rows = [];
+  for (let y = 0; y < h; y++) {
+    const cols = [];
+    for (let x = 0; x < w; x++) {
+      if (bits[y * w + x] === '1') cols.push(x);
+    }
+    if (cols.length) rows.push({ y, min: Math.min(...cols), max: Math.max(...cols) });
+  }
+
+  // Walk down the left edge (min col), then up the right edge (max col + 1)
+  // to form a closed polygon. This traces the staircase.
+  const left = [], right = [];
+  for (const r of rows) {
+    left.push(`${r.min}px ${r.y}px`);
+    left.push(`${r.min}px ${r.y + 1}px`);
+    right.push(`${r.max + 1}px ${r.y}px`);
+    right.push(`${r.max + 1}px ${r.y + 1}px`);
+  }
+
+  return `polygon(${[...left, ...right.reverse()].join(', ')})`;
+}
+
+// Full-shape clip-path: combine all 4 corners into one polygon
+// For simplicity, use the known XL polygon from pixel-corners.config
+function makeFullClipPath() {
+  // Generate from bitstrings: the visible shape boundary
+  // Cover = outside pixels. Border = edge pixels. Content = inside.
+  // The clip should include border + content (exclude cover).
+
+  // Find rightmost non-cover column per row for TL quadrant
+  const boundary = [];
+  for (let y = 0; y < GRID; y++) {
+    let rightmost = -1;
+    for (let x = GRID - 1; x >= 0; x--) {
+      if (COVER_BITS[y * GRID + x] === '0') { rightmost = x; break; }
+    }
+    boundary.push(rightmost);
+  }
+
+  // Build polygon for full shape (4 quadrants mirrored)
+  // Only need TL boundary, mirror for other 3
+  // Top-left quadrant: boundary[y] is the leftmost visible x
+  // Going clockwise: top edge (TL→TR) → right edge (TR→BR) → bottom (BR→BL) → left (BL→TL)
+
+  // TL boundary: for each row, the first non-cover column
+  const tlBound = [];
+  for (let y = 0; y < GRID; y++) {
+    let first = GRID;
+    for (let x = 0; x < GRID; x++) {
+      if (COVER_BITS[y * GRID + x] === '0') { first = x; break; }
+    }
+    tlBound.push(first);
+  }
+
+  // Build staircase points going DOWN the left edge of TL quadrant
+  const pts = [];
+  let prevX = tlBound[0];
+  pts.push([prevX, 0]);
+  for (let y = 1; y < GRID; y++) {
+    if (tlBound[y] !== prevX) {
+      pts.push([prevX, y]);
+      pts.push([tlBound[y], y]);
+      prevX = tlBound[y];
+    }
+  }
+  pts.push([prevX, GRID]);
+
+  // Full shape width/height placeholder (we'll use percentages for flexibility)
+  // For a fixed-size demo, use pixel coords with mirroring
+  const W = 220, H = 120; // match card size
+
+  // TL left edge (going down)
+  const leftEdge = pts.map(([x, y]) => `${x}px ${y}px`);
+  // BL left edge (mirror V — going up from bottom)
+  const blEdge = pts.slice().reverse().map(([x, y]) => `${x}px ${H - y}px`);
+  // TR right edge (mirror H — going down)
+  const trEdge = pts.map(([x, y]) => `${W - x}px ${y}px`);
+  // BR right edge (mirror HV — going up from bottom)
+  const brEdge = pts.slice().reverse().map(([x, y]) => `${W - x}px ${H - y}px`);
+
+  // Clockwise: TL top→down, BL down→bottom, BR bottom→up, TR up→top
+  const all = [...leftEdge, ...blEdge.slice(1), ...brEdge.slice(1), ...trEdge.slice(1).reverse()];
+  return `polygon(${all.join(', ')})`;
+}
+
+// ============================================================
+// Render approaches
+// ============================================================
+const container = document.getElementById('approaches');
+
+function countNodes(el) {
+  // Count all descendant nodes (elements only)
+  return el.querySelectorAll('*').length;
+}
+
+// Helper: create SVG corner overlay (for approaches 1 & 2)
+function createCornerSVG(pos, coverContent, borderContent) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', GRID);
+  svg.setAttribute('height', GRID);
+  svg.setAttribute('viewBox', `0 0 ${GRID} ${GRID}`);
+  svg.setAttribute('aria-hidden', 'true');
+  svg.style.cssText = `position:absolute;pointer-events:none;z-index:1;overflow:visible;${
+    pos === 'tl' || pos === 'tr' ? 'top:-1px;' : 'bottom:-1px;'
+  }${pos === 'tl' || pos === 'bl' ? 'left:-1px;' : 'right:-1px;'}`;
+  svg.innerHTML = coverContent + borderContent;
+  return svg;
+}
+
+// --- Approach 1: Current (individual <rect> per pixel) ---
+function renderRects(parent) {
+  const positions = ['tl', 'tr', 'bl', 'br'];
+  const mirrors = {
+    tl: [COVER_BITS, BORDER_BITS],
+    tr: [mirrorH(COVER_BITS, GRID, GRID), mirrorH(BORDER_BITS, GRID, GRID)],
+    bl: [mirrorV(COVER_BITS, GRID, GRID), mirrorV(BORDER_BITS, GRID, GRID)],
+    br: [mirrorHV(COVER_BITS, GRID, GRID), mirrorHV(BORDER_BITS, GRID, GRID)],
+  };
+
+  for (const pos of positions) {
+    const [cBits, bBits] = mirrors[pos];
+    const cRects = listFilledRects(cBits, GRID, GRID);
+    const bRects = listFilledRects(bBits, GRID, GRID);
+
+    let cover = '', border = '';
+    for (const r of cRects) {
+      cover += `<rect x="${r.x}" y="${r.y}" width="1" height="1" fill="var(--color-page)"/>`;
+    }
+    for (const r of bRects) {
+      border += `<rect x="${r.x}" y="${r.y}" width="1" height="1" fill="var(--color-line)"/>`;
+    }
+
+    parent.appendChild(createCornerSVG(pos, cover, border));
+  }
+}
+
+// --- Approach 2: Union <path> ---
+function renderPaths(parent) {
+  const corners = [
+    ['tl', coverTL, borderTL],
+    ['tr', coverTR, borderTR],
+    ['bl', coverBL, borderBL],
+    ['br', coverBR, borderBR],
+  ];
+
+  for (const [pos, cPath, bPath] of corners) {
+    parent.appendChild(createCornerSVG(pos,
+      `<path fill="var(--color-page)" d="${cPath}"/>`,
+      `<path fill="var(--color-line)" d="${bPath}"/>`
+    ));
+  }
+}
+
+// --- Approach 3: CSS mask (rendered via class) ---
+// Already handled by CSS — just needs the class
+
+// --- Approach 4: border-image ---
+function renderBorderImage(card) {
+  card.style.borderImageSource = `url("${borderImageSrc}")`;
+}
+
+// --- Approach 5: clip-path ---
+function renderClipPath(card) {
+  card.style.clipPath = makeFullClipPath();
+}
+
+// ============================================================
+// Build the comparison grid
+// ============================================================
+const approaches = [
+  {
+    id: 'rects',
+    title: '1. SVG <rect> per pixel',
+    tag: ['red', 'CURRENT'],
+    render(card) { renderRects(card); },
+    pros: ['CSS var() for colors', 'Theme/dark mode safe'],
+    cons: ['~400 DOM nodes per element', 'Heavy at scale — laggy UI tab'],
+  },
+  {
+    id: 'path',
+    title: '2. SVG <path> union',
+    tag: ['yellow', 'PROPOSED'],
+    render(card) { renderPaths(card); },
+    pros: ['CSS var() for colors', '~8 DOM nodes per element', 'Same visual fidelity'],
+    cons: ['Still real DOM nodes (SVG elements)'],
+  },
+  {
+    id: 'mask',
+    title: '3. CSS mask-image',
+    tag: ['green', 'NOVEL'],
+    cardClass: 'card-mask',
+    render() { /* CSS handles it */ },
+    pros: ['0 DOM nodes (pseudo-elements)', 'CSS var() for colors', 'Dark mode safe', 'box-shadow/overflow work'],
+    cons: ['Claims ::before + ::after', 'webkit prefix needed'],
+  },
+  {
+    id: 'border-image',
+    title: '4. CSS border-image (9-slice)',
+    tag: ['yellow', '9-SLICE'],
+    render(card) { renderBorderImage(card); },
+    pros: ['0 DOM nodes, 0 pseudo-elements', 'Native 9-slice corner handling', 'Auto edge stretching'],
+    cons: ['Colors baked in data URI', 'No CSS var() — breaks theming', 'Suppresses border-radius'],
+  },
+  {
+    id: 'clip-path',
+    title: '5. CSS clip-path (old)',
+    tag: ['red', 'LEGACY'],
+    render(card) { renderClipPath(card); },
+    pros: ['0 DOM nodes', 'Fast rendering'],
+    cons: ['Blocks box-shadow', 'Blocks border (needs ::after)', 'Blocks overflow:hidden'],
+  },
+];
+
+for (const a of approaches) {
+  const section = document.createElement('div');
+  section.className = 'approach';
+
+  const card = document.createElement('div');
+  card.className = `demo-card ${a.cardClass || `card-${a.id}`}`;
+  card.textContent = 'Pixel Corners';
+  card.dataset.approach = a.id;
+
+  a.render(card);
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'card-wrapper';
+  wrapper.appendChild(card);
+
+  // Count nodes AFTER render
+  requestAnimationFrame(() => {
+    const count = countNodes(card);
+    const countEl = section.querySelector('.dom-count .num');
+    if (countEl) countEl.textContent = count;
+  });
+
+  section.innerHTML = `
+    <h2>${a.title} <span class="tag ${a.tag[0]}">${a.tag[1]}</span></h2>
+  `;
+  section.appendChild(wrapper);
+  section.innerHTML += `
+    <div class="dom-count">DOM nodes inside card: <span class="num">…</span></div>
+    <div class="pros-cons">
+      ${a.pros.map(p => `<div class="pro">${p}</div>`).join('')}
+      ${a.cons.map(c => `<div class="con">${c}</div>`).join('')}
+    </div>
+  `;
+
+  container.appendChild(section);
+}
+
+// Fix: re-render cards since innerHTML clobbered them
+container.innerHTML = '';
+for (const a of approaches) {
+  const section = document.createElement('div');
+  section.className = 'approach';
+
+  const h2 = document.createElement('h2');
+  h2.innerHTML = `${a.title} <span class="tag ${a.tag[0]}">${a.tag[1]}</span>`;
+  section.appendChild(h2);
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'card-wrapper';
+  const card = document.createElement('div');
+  card.className = `demo-card ${a.cardClass || ''}`;
+  card.style.borderRadius = (a.id === 'border-image' || a.id === 'clip-path') ? '' : '20px';
+  if (a.id !== 'border-image') card.style.border = '1px solid var(--color-line)';
+  card.textContent = 'Pixel Corners';
+  a.render(card);
+  wrapper.appendChild(card);
+  section.appendChild(wrapper);
+
+  const domCount = document.createElement('div');
+  domCount.className = 'dom-count';
+  const num = countNodes(card);
+  domCount.innerHTML = `DOM nodes: <span class="num">${num}</span>`;
+  section.appendChild(domCount);
+
+  const pc = document.createElement('div');
+  pc.className = 'pros-cons';
+  pc.innerHTML =
+    a.pros.map(p => `<div class="pro">${p}</div>`).join('') +
+    a.cons.map(c => `<div class="con">${c}</div>`).join('');
+  section.appendChild(pc);
+
+  container.appendChild(section);
+}
+
+// ============================================================
+// Stress test
+// ============================================================
+function runStress() {
+  const approach = document.getElementById('stress-approach').value;
+  const count = parseInt(document.getElementById('stress-count').value);
+  const grid = document.getElementById('stress-grid');
+  const results = document.getElementById('stress-results');
+
+  grid.innerHTML = '';
+  results.textContent = 'Rendering…';
+
+  requestAnimationFrame(() => {
+    const t0 = performance.now();
+
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement('div');
+      card.className = 'stress-card';
+
+      if (approach === 'rects') {
+        renderRects(card);
+      } else if (approach === 'path') {
+        renderPaths(card);
+      } else if (approach === 'mask') {
+        card.classList.add('card-mask');
+        card.style.border = 'none';
+      } else if (approach === 'border-image') {
+        card.style.border = '19px solid transparent';
+        card.style.borderRadius = '0';
+        renderBorderImage(card);
+      } else if (approach === 'clip-path') {
+        card.style.border = 'none';
+        card.style.width = '48px';
+        card.style.height = '32px';
+        card.style.clipPath = makeFullClipPath().replace(/220/g, '48').replace(/120/g, '32');
+      }
+
+      fragment.appendChild(card);
+    }
+
+    grid.appendChild(fragment);
+
+    requestAnimationFrame(() => {
+      const t1 = performance.now();
+      const totalNodes = grid.querySelectorAll('*').length;
+      results.innerHTML = `
+        <strong>${count} elements</strong> ×
+        <strong>${approach}</strong>:
+        ${totalNodes.toLocaleString()} total DOM nodes,
+        render time: ${(t1 - t0).toFixed(1)}ms
+      `;
+    });
+  });
+}
+
+function clearStress() {
+  document.getElementById('stress-grid').innerHTML = '';
+  document.getElementById('stress-results').textContent = '';
+}
+</script>
+
+</body>
+</html>
