@@ -1,0 +1,562 @@
+[
+  {
+    "id": ".system:skill-creator",
+    "source_kind": "bundled-app",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Pre-installed system skill from Codex/.system dir. References openai/skills registry."
+  },
+  {
+    "id": ".system:skill-installer",
+    "source_kind": "bundled-app",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Pre-installed system skill. Install scripts reference github.com/openai/skills curated list."
+  },
+  {
+    "id": "collab-canvas",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "References Collaborator desktop app RPC/canvas. No frontmatter name/desc. Project-specific."
+  },
+  {
+    "id": "compound-knowledge",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic solution-documentation workflow. Installed ~2026-01-30. No source markers. Possibly curated."
+  },
+  {
+    "id": "finishing-a-development-branch",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic git workflow skill. Modified 2026-02-25 from ~Jan-29 install. No source markers."
+  },
+  {
+    "id": "frontend-slides",
+    "source_kind": "github-url",
+    "source_url": "https://github.com/zarazhangrui/frontend-slides",
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Has .git dir. Remote origin: github.com/zarazhangrui/frontend-slides. Cloned directly."
+  },
+  {
+    "id": "helius",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared docs/examples/resources/templates structure."
+  },
+  {
+    "id": "metaplex",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared docs/examples/resources/templates structure."
+  },
+  {
+    "id": "op-checkpoint",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "op- prefix. Git stash/temp-commit workflow for this project. No external source markers."
+  },
+  {
+    "id": "op-deploy",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "op- prefix. Vercel/localhost deploy workflow tailored to this monorepo."
+  },
+  {
+    "id": "op-status",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "op- prefix. Session progress tracker with file persistence for this project."
+  },
+  {
+    "id": "op-team",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "op- prefix. Parallel agent spawner with persona system. Project-specific."
+  },
+  {
+    "id": "p-brand-import",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). Description truncated to '>'. Paper-specific workflow."
+  },
+  {
+    "id": "p-code-import",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). Description truncated to '>'. Paper-specific workflow."
+  },
+  {
+    "id": "p-component-import",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). Description truncated to '>'. Paper-specific workflow."
+  },
+  {
+    "id": "p-content",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). Social graphics generation. Description truncated to '>'."
+  },
+  {
+    "id": "p-design-doc",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). DESIGN.md generator. Description truncated to '>'."
+  },
+  {
+    "id": "p-figma-to-paper",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "p- prefix (Paper MCP). Figma-to-Paper import bridge. Description truncated to '>'."
+  },
+  {
+    "id": "pinocchio-development",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared structure + scripts/ dir."
+  },
+  {
+    "id": "playground-ops",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "DNA Playground CLI workflow skill. Description truncated to '>'. Project-specific."
+  },
+  {
+    "id": "playground-qa",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "Playground component registry validator. References DNA design system schema format."
+  },
+  {
+    "id": "playground-start",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "Playground polling loop starter. Description truncated to '>'. Project-specific."
+  },
+  {
+    "id": "pretext",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "Guide for @chenglou/pretext library. Written from library docs. No external source."
+  },
+  {
+    "id": "pretext-editorial-patterns",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "Advanced pretext patterns. 33KB, written from library demo source. No external source."
+  },
+  {
+    "id": "qc-debug",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "qc- prefix. Systematic debugging with triage. Description truncated to '>'."
+  },
+  {
+    "id": "qc-qa",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "qc- prefix. Three-pass RDNA/DNA design system linter. Project-specific token checks."
+  },
+  {
+    "id": "qc-visual",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "qc- prefix. Browser-based visual QA. Description truncated to '>'."
+  },
+  {
+    "id": "receiving-code-review",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic code review workflow. Installed 2026-01-29 batch. No source markers."
+  },
+  {
+    "id": "requesting-code-review",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic code review workflow. Has code-reviewer.md companion. Jan-29 batch, modified Feb-25."
+  },
+  {
+    "id": "skill-creator",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Apache-licensed. Has agents/, eval-viewer/, scripts/. Installed 2026-03-05. Likely official."
+  },
+  {
+    "id": "solana-agent-kit",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared docs/examples/resources/templates structure."
+  },
+  {
+    "id": "solana-anchor-claude-skill",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. SKILL.md only (no companion dirs)."
+  },
+  {
+    "id": "solana-dev-skill",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27. Multiple root .md files (unique structure in batch)."
+  },
+  {
+    "id": "solana-kit",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared docs/examples/resources/templates structure."
+  },
+  {
+    "id": "solana-kit-migration",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared structure + scripts/ dir."
+  },
+  {
+    "id": "surfpool",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Shared docs/examples/resources/templates structure."
+  },
+  {
+    "id": "tailwind-v4-shadcn",
+    "source_kind": "github-url",
+    "source_url": "https://github.com/jezweb/claude-skills",
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": ".claude-plugin/plugin.json → author: Jeremy Dawes, repo: jezweb/claude-skills. Jan 29 batch."
+  },
+  {
+    "id": "test-driven-development",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic TDD workflow. Installed 2026-01-29 batch. Has testing-anti-patterns.md companion."
+  },
+  {
+    "id": "vercel-composition-patterns",
+    "source_kind": "frontmatter",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Frontmatter: metadata.author=vercel, license=MIT. Installed 2026-01-29 batch."
+  },
+  {
+    "id": "vercel-react-best-practices",
+    "source_kind": "frontmatter",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Frontmatter: metadata.author=vercel, license=MIT, version=1.0.0. Jan 29 batch."
+  },
+  {
+    "id": "vercel-react-native-skills",
+    "source_kind": "frontmatter",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Frontmatter: metadata.author=vercel, license=MIT. Installed 2026-01-29 batch."
+  },
+  {
+    "id": "verification-before-completion",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Generic verification workflow. Installed 2026-01-29 batch. No source markers."
+  },
+  {
+    "id": "voice-to-content",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "Transcribe+Typefully workflow. Description truncated to '>'. References Typefully MCP."
+  },
+  {
+    "id": "vulnhunter",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Solana batch install 2026-02-27T16:07. Security-focused. Same dir structure as Solana set."
+  },
+  {
+    "id": "web-design-guidelines",
+    "source_kind": "frontmatter",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Frontmatter: metadata.author=vercel, version=1.0.0. Installed 2026-01-29 batch."
+  },
+  {
+    "id": "wf-brainstorm",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "wf- prefix. Feature brainstorm workflow. Created 2026-02-26."
+  },
+  {
+    "id": "wf-execute",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "wf- prefix. Plan execution workflow with review checkpoints. Created 2026-02-26."
+  },
+  {
+    "id": "wf-plan",
+    "source_kind": "user-authored",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": true,
+    "notes": "wf- prefix. Implementation planning workflow. Created 2026-02-26."
+  },
+  {
+    "id": "zustand-state-management",
+    "source_kind": "github-url",
+    "source_url": "https://github.com/jezweb/claude-skills",
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": ".claude-plugin/plugin.json → author: Jeremy Dawes, repo: jezweb/claude-skills. Jan 29 batch."
+  },
+  {
+    "id": "zz-code-recon",
+    "source_kind": "unknown",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Security audit skill. Solana batch install 2026-02-27T16:07. Trail of Bits methodology."
+  },
+  {
+    "id": "apply-design-system",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Project-level Figma skill. Same timestamp as npx-managed batch (2026-03-31T18:43:51)."
+  },
+  {
+    "id": "audit-design-system",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Figma MCP design-system audit skill. Project-level."
+  },
+  {
+    "id": "augment-multi-agent-figma",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Figma+Augment parallel agent guide. Same timestamp as Figma batch. metadata.mcp-server=figma."
+  },
+  {
+    "id": "cc-figma-component",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Generates Figma component sets from component contracts."
+  },
+  {
+    "id": "cc-figma-tokens",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Syncs token definitions to Figma variable collections."
+  },
+  {
+    "id": "edit-figma-design",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Create/update Figma designs from text descriptions."
+  },
+  {
+    "id": "figma-code-connect-components",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Connects Figma design components to code components."
+  },
+  {
+    "id": "figma-create-design-system-rules",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Generates project-specific Figma-to-code design system rules."
+  },
+  {
+    "id": "figma-create-new-file",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Creates new blank Figma files."
+  },
+  {
+    "id": "figma-generate-design",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Full-page Figma screen generation from design systems."
+  },
+  {
+    "id": "figma-generate-library",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Multi-phase Figma design system library builder."
+  },
+  {
+    "id": "figma-implement-design",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Figma-to-code translation with visual fidelity."
+  },
+  {
+    "id": "figma-use",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "Figma Plugin API prerequisite skill. Same timestamp as npx-managed Figma batch."
+  },
+  {
+    "id": "fix-design-system-finding",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Targeted fix for design-system integration drift in Figma."
+  },
+  {
+    "id": "rad-spacing",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Figma hierarchical spacing using Gestalt proximity."
+  },
+  {
+    "id": "sync-figma-token",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Bidirectional code↔Figma token sync with drift reporting."
+  },
+  {
+    "id": "typography",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Project-agents scope. Has references/ dir with 7 topic files."
+  },
+  {
+    "id": "typography-audit",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Project-agents scope. Has rules/ dir."
+  },
+  {
+    "id": "typography-scale",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Project-agents scope. Modular type scale generator."
+  },
+  {
+    "id": "web-typography",
+    "source_kind": "npx-lock",
+    "source_url": null,
+    "install_command": null,
+    "user_authored_candidate": false,
+    "notes": "managed_by_npx=true. Project-agents scope. Has references/ dir with 5 topic files."
+  }
+]
