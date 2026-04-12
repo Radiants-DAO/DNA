@@ -1,0 +1,8 @@
+{
+  "name": "Radiants",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "author": "DNA / Radiants",
+  "authorUrl": "https://github.com/",
+  "description": "A port of the DNA / Radiants design system. Warm cream and ink, sun-yellow accents, pixel shadows in light mode and phosphor glow in dark. Respects system color scheme."
+}
