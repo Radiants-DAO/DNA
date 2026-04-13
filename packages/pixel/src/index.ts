@@ -33,3 +33,5 @@ export { generateCorner } from './generate.js';
 export { generatePixelCornerBorder } from './corner-border.js';
 export type { ImportOptions, ImportReport } from './import.js';
 export type { PatternEntry, PatternName } from './patterns.js';
+export { bitsToMergedRects, bitsToPath, bitsToMaskURI } from './path.js';
+export type { MergedRect } from './path.js';
