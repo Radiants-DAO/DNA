@@ -221,10 +221,10 @@ function emitAfterMask(className, suffix, gridSize) {
   lines.push(indent(2, '100% 0,'));      // TR corner
   lines.push(indent(2, '0 100%,'));      // BL corner
   lines.push(indent(2, '100% 100%,'));   // BR corner
-  lines.push(indent(2, `${csz} 0,`));   // top edge (offset from left by corner width)
-  lines.push(indent(2, `calc(100% - var(--card-border-width, 1px)) ${csz},`)); // right edge
-  lines.push(indent(2, `${csz} calc(100% - var(--card-border-width, 1px)),`)); // bottom edge
-  lines.push(indent(2, `0 ${csz};`));   // left edge
+  lines.push(indent(2, `${csz} 0,`));   // top edge
+  lines.push(indent(2, `100% ${csz},`));  // right edge
+  lines.push(indent(2, `${csz} 100%,`)); // bottom edge
+  lines.push(indent(2, `0 ${csz};`));    // left edge
 
   lines.push(indent(1, 'mask-size:'));
   lines.push(indent(2, `${csz} ${csz},`));   // TL
@@ -256,8 +256,8 @@ function emitAfterMask(className, suffix, gridSize) {
   lines.push(indent(2, '0 100%,'));
   lines.push(indent(2, '100% 100%,'));
   lines.push(indent(2, `${csz} 0,`));
-  lines.push(indent(2, `calc(100% - var(--card-border-width, 1px)) ${csz},`));
-  lines.push(indent(2, `${csz} calc(100% - var(--card-border-width, 1px)),`));
+  lines.push(indent(2, `100% ${csz},`));
+  lines.push(indent(2, `${csz} 100%,`));
   lines.push(indent(2, `0 ${csz};`));
 
   lines.push(indent(1, '-webkit-mask-size:'));

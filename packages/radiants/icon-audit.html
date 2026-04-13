@@ -882,7 +882,14 @@ function renderStats() {
 }
 
 function renderNav() {
+  const allMc = I24.filter(n => !!m24to16[n]).length;
+  const allPct = Math.round((allMc / I24.length) * 100);
   let h = '<div class="nav-label">Categories</div>';
+  h += `<div class="nav-item ${curCat === 'all' ? 'on' : ''}" onclick="setCat('all')" style="font-weight:700">
+    <span>all</span>
+    <div class="pbar"><div class="pfill" style="width:${allPct}%"></div></div>
+    <span class="n">${allMc}/${I24.length}</span>
+  </div>`;
   for (const c of catList) {
     const icons = cats[c];
     const mc = icons.filter(n => !!m24to16[n]).length;
@@ -898,18 +905,23 @@ function renderNav() {
 
 function setCat(c) { curCat = c; sel24 = null; sel16 = null; render(); }
 
+function getIconsForCat() {
+  if (curCat === 'all') return I24;
+  return cats[curCat] || [];
+}
+
 function renderCatBar() {
   const bar = document.getElementById('catbar');
   if (!curCat) { bar.innerHTML = '<h2>Select a category</h2>'; return; }
-  const icons = cats[curCat];
+  const icons = getIconsForCat();
   const mc = icons.filter(n => !!m24to16[n]).length;
   const dc = icons.filter(n => dels.has(n)).length;
-  bar.innerHTML = `<h2>${curCat}</h2><span class="inf"><b>${mc}</b>/${icons.length} mapped${dc ? ' &middot; <b style="color:var(--red)">'+dc+'</b> delete' : ''}</span>`;
+  bar.innerHTML = `<h2>${curCat === 'all' ? 'All Icons' : curCat}</h2><span class="inf"><b>${mc}</b>/${icons.length} mapped${dc ? ' &middot; <b style="color:var(--red)">'+dc+'</b> delete' : ''}</span>`;
 }
 
 function shortN(name) {
-  if (!curCat) return name;
-  // Strip known prefixes for readability
+  if (!curCat || curCat === 'all') return name;
+  // Strip known prefixes for readability when in a specific category
   for (const prefixes of Object.values(CAT_MAP)) {
     for (const p of prefixes) {
       if (name.startsWith(p + '-')) return name.slice(p.length + 1);
@@ -923,7 +935,7 @@ function renderCol24() {
   const el = document.getElementById('list24');
   const ct = document.getElementById('ct-24');
   if (!curCat) { el.innerHTML = '<div style="padding:20px;color:var(--muted);text-align:center">Pick a category</div>'; ct.textContent = ''; return; }
-  let icons = cats[curCat];
+  let icons = getIconsForCat();
   if (q24) { const q = q24.toLowerCase(); icons = icons.filter(n => n.toLowerCase().includes(q)); }
   ct.textContent = icons.length;
 

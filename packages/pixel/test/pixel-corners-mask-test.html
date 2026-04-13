@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Corners — Mask System Visual Test</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pixel-scale: 1;
+    --card-border-width: 1px;
+    --color-line: #0F0E0C;
+    --card-bg-opacity: 1;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    padding-bottom: 80px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+    padding: 12px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .controls label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .controls select, .controls input[type="range"] {
+    font-size: 13px;
+  }
+  .controls input[type="range"] { width: 90px; }
+  .controls .val { font-variant-numeric: tabular-nums; min-width: 2.5em; }
+
+  /* ── Sections ── */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+  }
+  .section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #222;
+    padding-bottom: 4px;
+  }
+  .section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+  }
+
+  /* ── Gallery grid ── */
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .gallery-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .gallery-cell .label {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .gallery-cell .sublabel {
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+  }
+
+  /* ── Dot-grid wrapper (reveals corner clipping) ── */
+  .dot-grid-wrap {
+    background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
+    background-size: 8px 8px;
+    padding: 4px;
+    display: inline-block;
+  }
+  .bg-black .dot-grid-wrap {
+    background-image: radial-gradient(circle, #555 1px, transparent 1px);
+  }
+
+  /* ── Card base ── */
+  .pc-card {
+    position: relative;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #222;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: antialiased;
+  }
+  .pc-card-bg {
+    background-color: rgb(0 128 0 / var(--card-bg-opacity));
+  }
+
+  /* ── Background modes ── */
+  body.bg-dot-grid  { background-image: radial-gradient(circle, #ddd 1px, transparent 1px); background-size: 12px 12px; background-color: #f8f8f8; }
+  body.bg-black     { background: #111; color: #eee; }
+  body.bg-cream     { background: #FEF8E2; }
+  body.bg-checker   { background-image: repeating-conic-gradient(#e0e0e0 0% 25%, #fff 0% 50%); background-size: 16px 16px; }
+
+  body.bg-black .controls { background: #222; border-color: #444; color: #ddd; }
+  body.bg-black .section h2 { border-color: #888; color: #eee; }
+
+  /* ── Scale comparison ── */
+  .scale-row { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
+  .scale-item { text-align: center; }
+  .scale-item .scale-label { font-size: 11px; color: #888; margin-top: 6px; }
+
+  /* ── Shadow demo ── */
+  .shadow-row { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+  .shadow-item { text-align: center; }
+  .shadow-item .shadow-label { font-size: 11px; color: #888; margin-top: 8px; }
+  .shadow-wrapper {
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.35));
+  }
+
+  /* ── Stress test ── */
+  .stress-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .stress-grid .pc-card {
+    width: 40px;
+    height: 30px;
+    font-size: 8px;
+  }
+  .stress-stats {
+    font-size: 13px;
+    margin-top: 8px;
+    color: #666;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Drop shadow select helpers ── */
+  .shadow-soft   { filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.25)); }
+  .shadow-strong { filter: drop-shadow(3px 4px 6px rgba(0,0,0,0.5)); }
+  .shadow-pixel  { filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.6)); }
+
+  .box-shadow-soft        { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .box-shadow-strong      { box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .box-shadow-inset-soft  { box-shadow: inset 0 1px 4px rgba(0,0,0,0.15); }
+  .box-shadow-inset-strong{ box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); }
+</style>
+</head>
+<body class="bg-dot-grid">
+
+<!-- ═══════════ Controls ═══════════ -->
+<div class="controls" id="controls">
+  <label>
+    Border width:
+    <input type="range" id="ctrl-border" min="0" max="4" step="1" value="1">
+    <span class="val" id="val-border">1px</span>
+  </label>
+  <label>
+    Border color:
+    <input type="color" id="ctrl-color" value="#0F0E0C">
+  </label>
+  <label>
+    Pixel scale:
+    <select id="ctrl-scale">
+      <option value="1" selected>1x</option>
+      <option value="2">2x</option>
+      <option value="4">4x</option>
+    </select>
+  </label>
+  <label>
+    Card BG opacity:
+    <input type="range" id="ctrl-opacity" min="0" max="100" step="1" value="100">
+    <span class="val" id="val-opacity">100%</span>
+  </label>
+  <label>
+    Outer BG:
+    <select id="ctrl-bg">
+      <option value="bg-dot-grid" selected>Dot grid</option>
+      <option value="bg-black">Black</option>
+      <option value="bg-cream">Cream</option>
+      <option value="bg-checker">Checkerboard</option>
+    </select>
+  </label>
+  <label>
+    Drop shadow:
+    <select id="ctrl-drop-shadow">
+      <option value="none" selected>None</option>
+      <option value="shadow-soft">Soft</option>
+      <option value="shadow-strong">Strong</option>
+      <option value="shadow-pixel">Pixel 1px</option>
+    </select>
+  </label>
+  <label>
+    Shadow mode:
+    <select id="ctrl-shadow-mode">
+      <option value="direct" selected>Direct (clipped by mask)</option>
+      <option value="wrapper">Wrapper (survives mask)</option>
+    </select>
+  </label>
+  <label>
+    Box shadow:
+    <select id="ctrl-box-shadow">
+      <option value="none" selected>None</option>
+      <option value="box-shadow-soft">Soft</option>
+      <option value="box-shadow-strong">Strong</option>
+      <option value="box-shadow-inset-soft">Inset soft</option>
+      <option value="box-shadow-inset-strong">Inset strong</option>
+    </select>
+  </label>
+  <label>
+    Inner shadow (bevel):
+    <select id="ctrl-bevel">
+      <option value="none" selected>None</option>
+      <option value="subtle">Subtle bevel</option>
+      <option value="strong">Strong bevel</option>
+    </select>
+  </label>
+</div>
+
+<!-- ═══════════ Title ═══════════ -->
+<div class="section">
+  <h2>Pixel Corners — Mask System Visual Test</h2>
+  <p style="font-size:14px;color:#666;margin-bottom:4px;">
+    Standalone visual validation of the <code>mask-image</code> pixel corner system.
+    All SVG data URIs are generated at runtime via Bresenham midpoint circle.
+  </p>
+</div>
+
+<!-- ═══════════ 1. Size Gallery ═══════════ -->
+<div class="section" id="gallery-section">
+  <h2>Size Gallery</h2>
+  <div class="gallery" id="gallery"></div>
+</div>
+
+<!-- ═══════════ 2. Scale Comparison ═══════════ -->
+<div class="section" id="scale-section">
+  <h2>Scale Comparison (size 8)</h2>
+  <div class="scale-row" id="scale-row"></div>
+</div>
+
+<!-- ═══════════ 3. Shadow Demo ═══════════ -->
+<div class="section" id="shadow-section">
+  <h2>Shadow Demo (size 12)</h2>
+  <div class="shadow-row" id="shadow-row"></div>
+</div>
+
+<!-- ═══════════ 4. Stress Test ═══════════ -->
+<div class="section" id="stress-section">
+  <h2>Stress Test (100 elements, pixel-rounded-12)</h2>
+  <div class="stress-grid" id="stress-grid"></div>
+  <div class="stress-stats" id="stress-stats"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   Core algorithms — inlined from @rdna/pixel
+   ════════════════════════════════════════════════════════════ */
+
+function generateCorner(radius) {
+  const N = radius + 1;
+  const points = [];
+  let x = radius, y = 0, d = 1 - radius;
+  while (x >= y) {
+    points.push([radius - x, radius - y]);
+    points.push([radius - y, radius - x]);
+    y++;
+    if (d <= 0) { d += 2 * y + 1; }
+    else { x--; d += 2 * (y - x) + 1; }
+  }
+
+  // Group by row, sort, smooth octant seam
+  const rowBuckets = new Map();
+  for (const [col, row] of points) {
+    if (col < 0 || col >= N || row < 0 || row >= N) continue;
+    const bucket = rowBuckets.get(row) ?? [];
+    bucket.push(col);
+    rowBuckets.set(row, bucket);
+  }
+  const sortedRows = [...rowBuckets.entries()]
+    .map(([row, cols]) => ({ row, cols: [...new Set(cols)].sort((a, b) => a - b) }))
+    .sort((a, b) => a.row - b.row);
+
+  let reachedSinglePixel = false;
+  let prevCount = Infinity;
+  for (const entry of sortedRows) {
+    if (reachedSinglePixel && entry.cols.length > 1) entry.cols = [entry.cols[0]];
+    else if (entry.cols.length > prevCount) entry.cols = [entry.cols[0]];
+    if (entry.cols.length === 1) reachedSinglePixel = true;
+    prevCount = entry.cols.length;
+  }
+
+  const coverBits = new Array(N * N).fill('0');
+  const borderBits = new Array(N * N).fill('0');
+
+  for (let row = 0; row < N; row++) {
+    const entry = sortedRows.find(e => e.row === row);
+    if (!entry || entry.cols.length === 0) {
+      for (let col = 0; col < N; col++) coverBits[row * N + col] = '1';
+      continue;
+    }
+    const leftmostArc = entry.cols[0];
+    for (let col = 0; col < leftmostArc; col++) coverBits[row * N + col] = '1';
+    for (const col of entry.cols) borderBits[row * N + col] = '1';
+  }
+
+  return {
+    gridSize: N,
+    coverBits: coverBits.join(''),
+    borderBits: borderBits.join(''),
+  };
+}
+
+function bitsToMergedRects(bits, w, h) {
+  const runs = [];
+  for (let y = 0; y < h; y++) {
+    let x = 0;
+    while (x < w) {
+      if (bits[y * w + x] === '1') {
+        const start = x;
+        while (x < w && bits[y * w + x] === '1') x++;
+        runs.push({ x: start, y, w: x - start, h: 1 });
+      } else { x++; }
+    }
+  }
+  for (let i = 0; i < runs.length; i++) {
+    if (!runs[i]) continue;
+    for (let j = i + 1; j < runs.length; j++) {
+      if (!runs[j]) continue;
+      if (runs[j].x === runs[i].x && runs[j].w === runs[i].w && runs[j].y === runs[i].y + runs[i].h) {
+        runs[i].h += runs[j].h;
+        runs[j] = null;
+      }
+    }
+  }
+  return runs.filter(Boolean);
+}
+
+function bitsToPath(bits, w, h) {
+  return bitsToMergedRects(bits, w, h)
+    .map(r => `M${r.x},${r.y}h${r.w}v${r.h}h${-r.w}Z`).join('');
+}
+
+function maskURI(pathD, gridSize, transform) {
+  const t = transform ? ` transform="${transform}"` : '';
+  return `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${gridSize}' height='${gridSize}'><path fill='white'${t} d='${pathD}'/></svg>`
+  )}")`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Size config
+   ════════════════════════════════════════════════════════════ */
+
+// { label suffix, grid size (= suffix number), radius to pass to generateCorner }
+// "full" uses grid 20 (radius 19) to match pixel-corners.generated.css
+const SIZES = [
+  { name: '2',    grid: 2,  radius: 1  },
+  { name: '4',    grid: 4,  radius: 3  },
+  { name: '6',    grid: 6,  radius: 5  },
+  { name: '8',    grid: 8,  radius: 7  },
+  { name: '12',   grid: 12, radius: 11 },
+  { name: '16',   grid: 16, radius: 15 },
+  { name: '20',   grid: 20, radius: 19 },
+  { name: '24',   grid: 24, radius: 23 },
+  { name: '32',   grid: 32, radius: 31 },
+  { name: '40',   grid: 40, radius: 39 },
+  { name: '48',   grid: 48, radius: 47 },
+  { name: '64',   grid: 64, radius: 63 },
+  { name: 'full', grid: 20, radius: 19 },
+];
+
+const CARD_DIMS = {
+  '2':  [80, 60],   '4':  [80, 60],   '6':  [80, 60],   '8':  [80, 60],
+  '12': [160, 100], '16': [160, 100], '20': [160, 100],
+  '24': [220, 140], '32': [220, 140],
+  '40': [300, 180], '48': [300, 180], '64': [300, 180],
+  'full': [40, 40],
+};
+
+/* ════════════════════════════════════════════════════════════
+   Mask application
+   ════════════════════════════════════════════════════════════ */
+
+// Pre-compute corner data for all grid sizes
+const cornerCache = {};
+function getCorner(grid, radius) {
+  const key = `${grid}-${radius}`;
+  if (!cornerCache[key]) cornerCache[key] = generateCorner(radius);
+  return cornerCache[key];
+}
+
+function setMaskCustomProps(el, prefix, grid, radius) {
+  const corner = getCorner(grid, radius);
+  const N = corner.gridSize;
+  const coverPath = bitsToPath(corner.coverBits, N, N);
+  const borderPath = bitsToPath(corner.borderBits, N, N);
+
+  el.style.setProperty(`${prefix}-cover-tl`, maskURI(coverPath, N));
+  el.style.setProperty(`${prefix}-cover-tr`, maskURI(coverPath, N, `translate(${N},0) scale(-1,1)`));
+  el.style.setProperty(`${prefix}-cover-bl`, maskURI(coverPath, N, `translate(0,${N}) scale(1,-1)`));
+  el.style.setProperty(`${prefix}-cover-br`, maskURI(coverPath, N, `translate(${N},${N}) scale(-1,-1)`));
+  el.style.setProperty(`${prefix}-border-tl`, maskURI(borderPath, N));
+  el.style.setProperty(`${prefix}-border-tr`, maskURI(borderPath, N, `translate(${N},0) scale(-1,1)`));
+  el.style.setProperty(`${prefix}-border-bl`, maskURI(borderPath, N, `translate(0,${N}) scale(1,-1)`));
+  el.style.setProperty(`${prefix}-border-br`, maskURI(borderPath, N, `translate(${N},${N}) scale(-1,-1)`));
+}
+
+function applyMaskToCard(card, sizeObj) {
+  const { grid } = sizeObj;
+  const prefix = `--pc-${sizeObj.name}`;
+
+  setMaskCustomProps(card, prefix, grid, sizeObj.radius);
+
+  const sizeCalc = `calc(${grid}px * var(--pixel-scale, 1))`;
+
+  // Standard (Firefox)
+  card.style.maskImage = [
+    'linear-gradient(white, white)',
+    `var(${prefix}-cover-tl)`,
+    `var(${prefix}-cover-tr)`,
+    `var(${prefix}-cover-bl)`,
+    `var(${prefix}-cover-br)`,
+  ].join(', ');
+  card.style.maskPosition = '0 0, 0 0, 100% 0, 0 100%, 100% 100%';
+  card.style.maskSize = [
+    '100% 100%',
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+  ].join(', ');
+  card.style.maskRepeat = 'no-repeat';
+  card.style.maskComposite = 'subtract';
+
+  // WebKit (Chrome/Safari) — reversed layer order
+  card.style.webkitMaskImage = [
+    `var(${prefix}-cover-tl)`,
+    `var(${prefix}-cover-tr)`,
+    `var(${prefix}-cover-bl)`,
+    `var(${prefix}-cover-br)`,
+    'linear-gradient(white, white)',
+  ].join(', ');
+  card.style.webkitMaskPosition = '0 0, 100% 0, 0 100%, 100% 100%, 0 0';
+  card.style.webkitMaskSize = [
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+    `${sizeCalc} ${sizeCalc}`,
+    '100% 100%',
+  ].join(', ');
+  card.style.webkitMaskRepeat = 'no-repeat';
+  card.style.webkitMaskComposite = [
+    'destination-out',
+    'destination-out',
+    'destination-out',
+    'destination-out',
+    'source-over',
+  ].join(', ');
+}
+
+/* ════════════════════════════════════════════════════════════
+   ::after border CSS (generated as <style> rules)
+   ════════════════════════════════════════════════════════════ */
+
+function generateAfterCSS(sizeObj) {
+  const { grid, name } = sizeObj;
+  const prefix = `--pc-${name}`;
+  const s = `calc(${grid} * var(--pixel-scale, 1) * 1px)`;
+  const edgeW = `calc(100% - (${grid} * var(--pixel-scale, 1) * 2px))`;
+  const edgeH = edgeW;
+  const bw = `var(--card-border-width, 1px)`;
+
+  return `.pc-after-${name}::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-color: var(--color-line);
+  mask-image:
+    var(${prefix}-border-tl),
+    var(${prefix}-border-tr),
+    var(${prefix}-border-bl),
+    var(${prefix}-border-br),
+    linear-gradient(white,white),
+    linear-gradient(white,white),
+    linear-gradient(white,white),
+    linear-gradient(white,white);
+  mask-position:
+    0 0,
+    100% 0,
+    0 100%,
+    100% 100%,
+    ${s} 0,
+    100% ${s},
+    ${s} 100%,
+    0 ${s};
+  mask-size:
+    ${s} ${s},
+    ${s} ${s},
+    ${s} ${s},
+    ${s} ${s},
+    ${edgeW} ${bw},
+    ${bw} ${edgeH},
+    ${edgeW} ${bw},
+    ${bw} ${edgeH};
+  mask-repeat: no-repeat;
+  mask-composite: add;
+  -webkit-mask-image:
+    var(${prefix}-border-tl),
+    var(${prefix}-border-tr),
+    var(${prefix}-border-bl),
+    var(${prefix}-border-br),
+    linear-gradient(white,white),
+    linear-gradient(white,white),
+    linear-gradient(white,white),
+    linear-gradient(white,white);
+  -webkit-mask-position:
+    0 0,
+    100% 0,
+    0 100%,
+    100% 100%,
+    ${s} 0,
+    100% ${s},
+    ${s} 100%,
+    0 ${s};
+  -webkit-mask-size:
+    ${s} ${s},
+    ${s} ${s},
+    ${s} ${s},
+    ${s} ${s},
+    ${edgeW} ${bw},
+    ${bw} ${edgeH},
+    ${edgeW} ${bw},
+    ${bw} ${edgeH};
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite:
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over;
+}`;
+}
+
+// Inject all ::after rules
+const styleEl = document.createElement('style');
+styleEl.textContent = SIZES.map(s => generateAfterCSS(s)).join('\n\n');
+document.head.appendChild(styleEl);
+
+/* ════════════════════════════════════════════════════════════
+   Card factory
+   ════════════════════════════════════════════════════════════ */
+
+function createCard(sizeObj, width, height, content, extraClasses) {
+  const card = document.createElement('div');
+  card.className = `pc-card pc-card-bg pc-after-${sizeObj.name}` + (extraClasses ? ' ' + extraClasses : '');
+  card.style.width = width + 'px';
+  card.style.height = height + 'px';
+  card.textContent = content || 'Content';
+  applyMaskToCard(card, sizeObj);
+  return card;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. Size Gallery
+   ════════════════════════════════════════════════════════════ */
+
+const gallery = document.getElementById('gallery');
+
+for (const sizeObj of SIZES) {
+  const [w, h] = CARD_DIMS[sizeObj.name];
+  const cell = document.createElement('div');
+  cell.className = 'gallery-cell';
+
+  const label = document.createElement('div');
+  label.className = 'label';
+  label.textContent = `pixel-rounded-${sizeObj.name}`;
+
+  const sublabel = document.createElement('div');
+  sublabel.className = 'sublabel';
+  sublabel.textContent = `${sizeObj.grid}x${sizeObj.grid} grid`;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'dot-grid-wrap';
+
+  const card = createCard(sizeObj, w, h, sizeObj.name === 'full' ? '' : 'Content');
+
+  const afterCount = document.createElement('div');
+  afterCount.className = 'sublabel';
+  afterCount.textContent = `DOM: 0 (card) + 1 (::after)`;
+
+  wrap.appendChild(card);
+  cell.appendChild(label);
+  cell.appendChild(sublabel);
+  cell.appendChild(wrap);
+  cell.appendChild(afterCount);
+  gallery.appendChild(cell);
+}
+
+/* ════════════════════════════════════════════════════════════
+   2. Scale Comparison
+   ════════════════════════════════════════════════════════════ */
+
+const scaleRow = document.getElementById('scale-row');
+const size8 = SIZES.find(s => s.name === '8');
+
+for (const scale of [1, 2, 4]) {
+  const item = document.createElement('div');
+  item.className = 'scale-item';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'dot-grid-wrap';
+  wrap.style.setProperty('--pixel-scale', scale);
+
+  const card = createCard(size8, 120, 80, `${scale}x`);
+  card.style.setProperty('--pixel-scale', scale);
+  wrap.appendChild(card);
+
+  const lbl = document.createElement('div');
+  lbl.className = 'scale-label';
+  lbl.textContent = `--pixel-scale: ${scale}`;
+
+  item.appendChild(wrap);
+  item.appendChild(lbl);
+  scaleRow.appendChild(item);
+}
+
+/* ════════════════════════════════════════════════════════════
+   3. Shadow Demo
+   ════════════════════════════════════════════════════════════ */
+
+const shadowRow = document.getElementById('shadow-row');
+const size12 = SIZES.find(s => s.name === '12');
+
+// a) No shadow
+{
+  const item = document.createElement('div');
+  item.className = 'shadow-item';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'dot-grid-wrap';
+  const card = createCard(size12, 180, 110, 'No shadow');
+  wrap.appendChild(card);
+
+  const lbl = document.createElement('div');
+  lbl.className = 'shadow-label';
+  lbl.textContent = 'No shadow (no wrapper needed)';
+
+  item.appendChild(wrap);
+  item.appendChild(lbl);
+  shadowRow.appendChild(item);
+}
+
+// b) Drop shadow via wrapper
+{
+  const item = document.createElement('div');
+  item.className = 'shadow-item';
+
+  const outerWrap = document.createElement('div');
+  outerWrap.className = 'dot-grid-wrap';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'shadow-wrapper';
+  wrapper.style.display = 'inline-block';
+  const card = createCard(size12, 180, 110, 'Drop shadow');
+  wrapper.appendChild(card);
+  outerWrap.appendChild(wrapper);
+
+  const lbl = document.createElement('div');
+  lbl.className = 'shadow-label';
+  lbl.textContent = 'Drop shadow via wrapper (survives mask)';
+
+  item.appendChild(outerWrap);
+  item.appendChild(lbl);
+  shadowRow.appendChild(item);
+}
+
+// c) Inner shadow (bevel) via ::after filter
+{
+  const item = document.createElement('div');
+  item.className = 'shadow-item';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'dot-grid-wrap';
+  const card = createCard(size12, 180, 110, 'Inner bevel');
+  card.dataset.bevelDemo = 'true';
+  wrap.appendChild(card);
+
+  // Inject a bevel style specifically for this card via an extra class
+  const bevelStyle = document.createElement('style');
+  bevelStyle.textContent = `
+    .bevel-demo-card::after {
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.5)) drop-shadow(0 -1px 0 rgba(0,0,0,0.15));
+    }
+  `;
+  document.head.appendChild(bevelStyle);
+  card.classList.add('bevel-demo-card');
+
+  const lbl = document.createElement('div');
+  lbl.className = 'shadow-label';
+  lbl.textContent = 'Inner shadow (bevel) via ::after filter';
+
+  item.appendChild(wrap);
+  item.appendChild(lbl);
+  shadowRow.appendChild(item);
+}
+
+/* ════════════════════════════════════════════════════════════
+   4. Stress Test
+   ════════════════════════════════════════════════════════════ */
+
+const stressGrid = document.getElementById('stress-grid');
+const stressStats = document.getElementById('stress-stats');
+
+const t0 = performance.now();
+for (let i = 0; i < 100; i++) {
+  const card = createCard(size12, 40, 30, '');
+  stressGrid.appendChild(card);
+}
+const t1 = performance.now();
+
+const totalDom = stressGrid.querySelectorAll('.pc-card').length;
+stressStats.textContent = `Rendered ${totalDom} cards in ${(t1 - t0).toFixed(1)}ms | DOM nodes: ${totalDom} cards + ${totalDom} ::after pseudo-elements`;
+
+/* ════════════════════════════════════════════════════════════
+   Controls wiring
+   ════════════════════════════════════════════════════════════ */
+
+const allCards = () => document.querySelectorAll('.pc-card');
+
+// Border width
+document.getElementById('ctrl-border').addEventListener('input', e => {
+  const v = e.target.value;
+  document.getElementById('val-border').textContent = v + 'px';
+  document.documentElement.style.setProperty('--card-border-width', v + 'px');
+});
+
+// Border color
+document.getElementById('ctrl-color').addEventListener('input', e => {
+  document.documentElement.style.setProperty('--color-line', e.target.value);
+});
+
+// Pixel scale
+document.getElementById('ctrl-scale').addEventListener('change', e => {
+  document.documentElement.style.setProperty('--pixel-scale', e.target.value);
+});
+
+// Card BG opacity
+document.getElementById('ctrl-opacity').addEventListener('input', e => {
+  const v = e.target.value;
+  document.getElementById('val-opacity').textContent = v + '%';
+  document.documentElement.style.setProperty('--card-bg-opacity', v / 100);
+});
+
+// Outer BG
+document.getElementById('ctrl-bg').addEventListener('change', e => {
+  document.body.classList.remove('bg-dot-grid', 'bg-black', 'bg-cream', 'bg-checker');
+  document.body.classList.add(e.target.value);
+});
+
+// Drop shadow
+const dropShadowClasses = ['shadow-soft', 'shadow-strong', 'shadow-pixel'];
+document.getElementById('ctrl-drop-shadow').addEventListener('change', e => {
+  const mode = document.getElementById('ctrl-shadow-mode').value;
+  allCards().forEach(card => {
+    // Remove old shadow classes from card and its parent wrapper
+    dropShadowClasses.forEach(c => {
+      card.classList.remove(c);
+      if (card.parentElement) card.parentElement.classList.remove(c);
+    });
+
+    if (e.target.value === 'none') return;
+
+    if (mode === 'direct') {
+      card.classList.add(e.target.value);
+    } else {
+      // wrapper mode: ensure parent is a wrapper
+      let wrapper = card.parentElement;
+      if (wrapper && !wrapper.classList.contains('shadow-wrapper-dynamic')) {
+        // Don't create wrappers for cards already in shadow demo wrappers
+        // Just apply to whatever parent exists
+      }
+      if (wrapper) wrapper.classList.add(e.target.value);
+    }
+  });
+});
+
+// Shadow mode
+document.getElementById('ctrl-shadow-mode').addEventListener('change', () => {
+  // Re-trigger drop shadow application
+  document.getElementById('ctrl-drop-shadow').dispatchEvent(new Event('change'));
+});
+
+// Box shadow
+const boxShadowClasses = ['box-shadow-soft', 'box-shadow-strong', 'box-shadow-inset-soft', 'box-shadow-inset-strong'];
+document.getElementById('ctrl-box-shadow').addEventListener('change', e => {
+  allCards().forEach(card => {
+    boxShadowClasses.forEach(c => card.classList.remove(c));
+    if (e.target.value !== 'none') card.classList.add(e.target.value);
+  });
+});
+
+// Bevel
+document.getElementById('ctrl-bevel').addEventListener('change', e => {
+  // Inject or update bevel style
+  let bevelGlobal = document.getElementById('bevel-global-style');
+  if (!bevelGlobal) {
+    bevelGlobal = document.createElement('style');
+    bevelGlobal.id = 'bevel-global-style';
+    document.head.appendChild(bevelGlobal);
+  }
+
+  if (e.target.value === 'none') {
+    bevelGlobal.textContent = '';
+  } else if (e.target.value === 'subtle') {
+    bevelGlobal.textContent = `.pc-card::after {
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)) drop-shadow(0 -1px 0 rgba(0,0,0,0.1));
+    }`;
+  } else if (e.target.value === 'strong') {
+    bevelGlobal.textContent = `.pc-card::after {
+      filter: drop-shadow(0 2px 0 rgba(255,255,255,0.6)) drop-shadow(0 -2px 0 rgba(0,0,0,0.25));
+    }`;
+  }
+});
+
+</script>
+</body>
+</html>
