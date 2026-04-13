@@ -89,6 +89,11 @@ function cornerSize(gridSize) {
   return `calc(${gridSize} * var(--pixel-scale, 1) * 1px)`;
 }
 
+/** Border width = 1 pixel, scaled by --pixel-scale. */
+function borderWidth() {
+  return `calc(1px * var(--pixel-scale, 1))`;
+}
+
 // ---------------------------------------------------------------------------
 // CSS custom properties (:root block)
 // ---------------------------------------------------------------------------
@@ -231,10 +236,11 @@ function emitAfterMask(className, suffix, gridSize) {
   lines.push(indent(2, `${csz} ${csz},`));   // TR
   lines.push(indent(2, `${csz} ${csz},`));   // BL
   lines.push(indent(2, `${csz} ${csz},`));   // BR
-  lines.push(indent(2, `${ew} var(--card-border-width, 1px),`));   // top strip
-  lines.push(indent(2, `var(--card-border-width, 1px) ${ew},`));   // right strip
-  lines.push(indent(2, `${ew} var(--card-border-width, 1px),`));   // bottom strip
-  lines.push(indent(2, `var(--card-border-width, 1px) ${ew};`));   // left strip
+  const bw = borderWidth();
+  lines.push(indent(2, `${ew} ${bw},`));   // top strip
+  lines.push(indent(2, `${bw} ${ew},`));   // right strip
+  lines.push(indent(2, `${ew} ${bw},`));   // bottom strip
+  lines.push(indent(2, `${bw} ${ew};`));   // left strip
 
   lines.push(indent(1, 'mask-repeat: no-repeat;'));
   lines.push(indent(1, 'mask-composite: add;'));
@@ -265,10 +271,10 @@ function emitAfterMask(className, suffix, gridSize) {
   lines.push(indent(2, `${csz} ${csz},`));
   lines.push(indent(2, `${csz} ${csz},`));
   lines.push(indent(2, `${csz} ${csz},`));
-  lines.push(indent(2, `${ew} var(--card-border-width, 1px),`));
-  lines.push(indent(2, `var(--card-border-width, 1px) ${ew},`));
-  lines.push(indent(2, `${ew} var(--card-border-width, 1px),`));
-  lines.push(indent(2, `var(--card-border-width, 1px) ${ew};`));
+  lines.push(indent(2, `${ew} ${bw},`));
+  lines.push(indent(2, `${bw} ${ew},`));
+  lines.push(indent(2, `${ew} ${bw},`));
+  lines.push(indent(2, `${bw} ${ew};`));
 
   lines.push(indent(1, '-webkit-mask-repeat: no-repeat;'));
   lines.push(indent(1, '-webkit-mask-composite:'));

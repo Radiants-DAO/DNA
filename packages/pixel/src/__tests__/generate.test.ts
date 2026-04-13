@@ -56,16 +56,27 @@ describe('generateCorner', () => {
     }
   });
 
-  it('border pixel count per row never increases going downward', () => {
-    for (let r = 1; r <= 20; r++) {
+  it('border staircase is 8-connected (no gaps between adjacent rows)', () => {
+    for (let r = 1; r <= 64; r++) {
       const set = generateCorner(r);
       const N = r + 1;
-      let prevCount = Infinity;
+      let prevCols: number[] | null = null;
+
       for (let row = 0; row < N; row++) {
-        const rowBits = set.border!.bits.slice(row * N, (row + 1) * N);
-        const count = rowBits.split('').filter((b) => b === '1').length;
-        expect(count).toBeLessThanOrEqual(prevCount);
-        prevCount = count;
+        const cols: number[] = [];
+        for (let col = 0; col < N; col++) {
+          if (set.border!.bits[row * N + col] === '1') cols.push(col);
+        }
+        if (cols.length === 0) { prevCols = null; continue; }
+
+        if (prevCols !== null) {
+          const prevSet = new Set(prevCols);
+          const connected = cols.some(
+            (c) => prevSet.has(c - 1) || prevSet.has(c) || prevSet.has(c + 1),
+          );
+          expect(connected).toBe(true);
+        }
+        prevCols = cols;
       }
     }
   });

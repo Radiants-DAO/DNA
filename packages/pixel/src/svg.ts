@@ -8,6 +8,15 @@ export interface PixelRect {
   height: number;
 }
 
+/**
+ * @deprecated Use `bitsToMergedRects` from `@rdna/pixel` instead.
+ * This function emits one rect per filled bit with no merging,
+ * producing ~400 DOM nodes for typical corner grids.
+ * `bitsToMergedRects` produces far fewer merged rectangles.
+ *
+ * Retained for `Pattern` component (small 8×8 tiled grids where
+ * per-cell rects are acceptable).
+ */
 export function listFilledRects(
   grid: PixelGrid,
   pixelSize = 1,

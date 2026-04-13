@@ -6,6 +6,9 @@ import { useRef, useState } from 'react';
 const SIZES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 'full'] as const;
 type Size = (typeof SIZES)[number];
 
+/** Numeric sizes only, ascending — used for discrete clamping. */
+const NUMERIC_SIZES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64] as const;
+
 /** Suggested card dimensions keyed by pixel-corner size. */
 function defaultCardSize(size: Size): { w: number; h: number } {
   if (size === 'full') return { w: 32, h: 32 };
@@ -13,6 +16,30 @@ function defaultCardSize(size: Size): { w: number; h: number } {
   if (size <= 20) return { w: 180, h: 120 };
   if (size <= 32) return { w: 240, h: 160 };
   return { w: 320, h: 200 };
+}
+
+/**
+ * Clamp a pixel-corner size to fit the element dimensions.
+ *
+ * Returns the largest size from the numeric scale where
+ * `2 × gridSize × pixelScale ≤ min(width, height)`.
+ * If no size fits, returns the smallest available (2).
+ * "full" maps to 20 for clamping purposes.
+ */
+function clampCornerSize(
+  requested: Size,
+  width: number,
+  height: number,
+  scale: number,
+): number {
+  const gridSize = requested === 'full' ? 20 : requested;
+  const maxGrid = Math.floor(Math.min(width, height) / (2 * scale));
+  if (gridSize <= maxGrid) return gridSize;
+  // Step down to the largest size that fits
+  for (let i = NUMERIC_SIZES.length - 1; i >= 0; i--) {
+    if (NUMERIC_SIZES[i] <= maxGrid) return NUMERIC_SIZES[i];
+  }
+  return NUMERIC_SIZES[0];
 }
 
 const SHADOW_OPTIONS = [
@@ -25,7 +52,6 @@ const SHADOW_OPTIONS = [
 export default function PixelCornersPreview() {
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
-  const [borderWidth, setBorderWidth] = useState(1);
   const [borderColor, setBorderColor] = useState('#1a1a19');
   const [pixelScale, setPixelScale] = useState(1);
   const [bgOpacity, setBgOpacity] = useState(25);
@@ -57,7 +83,6 @@ export default function PixelCornersPreview() {
         style={
           {
             '--pixel-scale': pixelScale,
-            '--card-border-width': `${borderWidth}px`,
             '--color-line': borderColor,
           } as React.CSSProperties
         }
@@ -106,20 +131,6 @@ export default function PixelCornersPreview() {
               <span className="w-16 text-right text-xs opacity-60">
                 {boxHeight === 0 ? 'auto' : `${boxHeight}px`}
               </span>
-            </label>
-
-            {/* Border width */}
-            <label className="flex items-center gap-3 text-sm">
-              <span className="w-28 shrink-0">Border width</span>
-              <input
-                type="range"
-                min={0}
-                max={4}
-                value={borderWidth}
-                onChange={(e) => setBorderWidth(Number(e.target.value))}
-                className="flex-1"
-              />
-              <span className="w-16 text-right text-xs opacity-60">{borderWidth}px</span>
             </label>
 
             {/* Border color */}
@@ -209,12 +220,19 @@ export default function PixelCornersPreview() {
             {SIZES.map((size) => {
               const w = cardW(size);
               const h = cardH(size);
+              const effectiveGrid = clampCornerSize(size, w, h, pixelScale);
+              const effectiveClass =
+                size === 'full' && effectiveGrid === 20
+                  ? 'pixel-rounded-full'
+                  : `pixel-rounded-${effectiveGrid}`;
+              const wasClamped =
+                effectiveGrid !== (size === 'full' ? 20 : size);
               const label = `pixel-rounded-${size}`;
               const dims = size === 'full' ? '20x20 circle' : `${size}x${size}`;
 
               const card = (
                 <div
-                  className={`${className(size)} flex flex-col items-center justify-center gap-1`}
+                  className={`${effectiveClass} flex flex-col items-center justify-center gap-1`}
                   style={{
                     width: w,
                     height: h,
@@ -223,6 +241,11 @@ export default function PixelCornersPreview() {
                 >
                   <span className="text-xs font-mono opacity-80">{label}</span>
                   <span className="text-xs opacity-50">{dims}</span>
+                  {wasClamped && (
+                    <span className="text-xs opacity-70 text-amber-600">
+                      → clamped to {effectiveGrid}
+                    </span>
+                  )}
                 </div>
               );
 

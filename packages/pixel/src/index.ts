@@ -18,6 +18,7 @@ export {
 } from './core.js';
 
 export { paintGrid, paintTiledGrid, createGridCanvas } from './renderer.js';
+/** @deprecated Use `bitsToMergedRects` / `bitsToPath` from `./path.js` instead. */
 export { listFilledRects } from './svg.js';
 export { svgToGrid } from './import.js';
 export {

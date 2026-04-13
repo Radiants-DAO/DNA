@@ -1039,6 +1039,7 @@ function shortN(name) {
 function renderCol24() {
   const el = document.getElementById('list24');
   const ct = document.getElementById('ct-24');
+  el.classList.toggle('grid-mode', view24 === 'grid');
   if (!curCat) { el.innerHTML = '<div style="padding:20px;color:var(--muted);text-align:center">Pick a category</div>'; ct.textContent = ''; return; }
   let icons = getIconsForCat();
   if (q24) { const q = q24.toLowerCase(); icons = icons.filter(n => n.toLowerCase().includes(q)); }
@@ -1046,13 +1047,15 @@ function renderCol24() {
 
   const mapped = icons.filter(n => n in m24to16);
   const unmapped = icons.filter(n => !(n in m24to16));
+  const isGrid = view24 === 'grid';
 
   let h = '';
   if (mapped.length) {
     h += '<div class="section-label">Mapped</div>';
     for (const n of mapped) {
       const n16 = m24to16[n]; const d = dels.has(n);
-      h += `<div class="row paired ${d ? 'del' : ''}">
+      const ttl = `${shortN(n)} → ${n16}`;
+      h += `<div class="row paired ${d ? 'del' : ''}" title="${ttl}">
         <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
         <div class="rthumb s24"><img src="${B24}${n}.svg"></div>
         <div class="rname" title="${n}">${shortN(n)}</div>
@@ -1061,6 +1064,7 @@ function renderCol24() {
           <span class="rpair-name">${n16}</span>
         </div>
         <button class="xbtn" onclick="event.stopPropagation();unmap24('${n}')">x</button>
+        ${isGrid ? `<div class="gpair"><img src="${B16}${n16}.svg"></div>` : ''}
       </div>`;
     }
   }
@@ -1068,7 +1072,7 @@ function renderCol24() {
     h += '<div class="section-label">Unmapped</div>';
     for (const n of unmapped) {
       const s = sel24 === n; const d = dels.has(n);
-      h += `<div class="row ${s?'sel':''} ${d?'del':''}" onclick="click24('${n}')">
+      h += `<div class="row ${s?'sel':''} ${d?'del':''}" onclick="click24('${n}')" title="${shortN(n)}">
         <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
         <div class="rthumb s24"><img src="${B24}${n}.svg"></div>
         <div class="rname" title="${n}">${shortN(n)}</div>
@@ -1082,6 +1086,7 @@ function renderCol24() {
 function renderCol16() {
   const el = document.getElementById('list16');
   const ct = document.getElementById('ct-16');
+  el.classList.toggle('grid-mode', view16 === 'grid');
   let icons = [...I16];
   if (q16) { const q = q16.toLowerCase(); icons = icons.filter(n => n.toLowerCase().includes(q)); }
 
@@ -1096,6 +1101,7 @@ function renderCol16() {
 
   const unusedCount = I16.filter(n => !is16Used(n) && !dels.has(n)).length;
   ct.textContent = `${unusedCount} unused`;
+  const isGrid = view16 === 'grid';
 
   let h = '';
   let prevUsed = null;
@@ -1110,12 +1116,13 @@ function renderCol16() {
       prevUsed = used;
     }
 
-    h += `<div class="row ${s?'sel':''} ${d?'del':''}" onclick="click16('${n}')">
+    h += `<div class="row ${s?'sel':''} ${d?'del':''}" onclick="click16('${n}')" title="${n}${c > 0 ? ' (×'+c+')' : ''}">
       <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
       <div class="rthumb s16"><img src="${B16}${n}.svg"></div>
       <div class="rname" title="${n}">${n}</div>
       ${c > 0 ? `<span class="badge badge-map">\u00d7${c}</span>` : ''}
       ${s ? '<span class="badge badge-sel">SEL</span>' : ''}
+      ${isGrid && c > 0 ? `<span class="gbadge">\u00d7${c}</span>` : ''}
     </div>`;
   }
   el.innerHTML = h;

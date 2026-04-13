@@ -61,6 +61,31 @@ export function generateCorner(radius: number): PixelCornerSet {
     prevCount = entry.cols.length;
   }
 
+  // Ensure 8-connectivity: when the leftmost border pixel jumps by
+  // more than 1 column between adjacent rows, insert bridge pixels.
+  // This fixes gaps at the octant seam for larger radii where the
+  // smoothing pass strips multi-pixel rows down to 1 pixel.
+  for (let i = 1; i < sortedRows.length; i++) {
+    const prev = sortedRows[i - 1];
+    const curr = sortedRows[i];
+    if (prev.row + 1 !== curr.row) continue; // non-adjacent rows
+
+    const prevLeft = prev.cols[0];
+    const currLeft = curr.cols[0];
+    const gap = prevLeft - currLeft; // positive = staircase moving left (downward)
+
+    if (gap > 1) {
+      // Bridge: add one pixel per missing column on the current row
+      // e.g., prev=30, curr=27 → add 28,29 to curr
+      for (let col = currLeft + 1; col < prevLeft; col++) {
+        if (!curr.cols.includes(col)) {
+          curr.cols.push(col);
+        }
+      }
+      curr.cols.sort((a, b) => a - b);
+    }
+  }
+
   // Build grids
   const coverBits: string[] = new Array(N * N).fill('0');
   const borderBits: string[] = new Array(N * N).fill('0');
