@@ -8,7 +8,7 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
-import { PixelBorder, PixelBorderEdges, pixelCornerClipPath, PIXEL_BORDER_RADII } from '../PixelBorder';
+import { PixelBorderEdges, pixelCornerClipPath, PIXEL_BORDER_RADII } from '../PixelBorder';
 
 const APP_WINDOW_CLIP_PATH = (() => {
   const r = PIXEL_BORDER_RADII.md;
@@ -545,9 +545,9 @@ function AppWindowIsland({
       );
 
     return (
-      <PixelBorder size="sm" background={bgClassName} className={`${sizeClass} min-h-0 ${className}`.trim()}>
+      <div className={`pixel-rounded-sm ${bgClassName} ${sizeClass} min-h-0 ${className}`.trim()}>
         {inner}
-      </PixelBorder>
+      </div>
     );
   }
 

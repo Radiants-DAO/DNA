@@ -3,7 +3,7 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import { Toolbar as BaseToolbar } from '@base-ui/react/toolbar';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -151,18 +151,16 @@ function ToolbarRoot({
 
   return (
     <ToolbarOrientationContext.Provider value={orientation}>
-      <PixelBorder size="sm" className={`inline-block ${className}`.trim()}>
-        <BaseToolbar.Root
-          orientation={orientation}
-          disabled={disabled}
-          className={rootClasses}
-          data-rdna="toolbar"
-          data-slot="toolbar"
-          data-orientation={orientation}
-        >
-          {children}
-        </BaseToolbar.Root>
-      </PixelBorder>
+      <BaseToolbar.Root
+        orientation={orientation}
+        disabled={disabled}
+        className={`pixel-rounded-sm inline-block ${className} ${rootClasses}`.trim()}
+        data-rdna="toolbar"
+        data-slot="toolbar"
+        data-orientation={orientation}
+      >
+        {children}
+      </BaseToolbar.Root>
     </ToolbarOrientationContext.Provider>
   );
 }
@@ -177,19 +175,17 @@ function ToolbarButton({
   const classes = toolbarButtonVariants({ className });
 
   return (
-    <PixelBorder size="xs" className="inline-block">
-      <BaseToolbar.Button
-        disabled={disabled}
-        className={classes}
-        onClick={onClick}
-        aria-label={ariaLabel}
-        data-slot="button-face"
-        data-quiet
-        data-color="accent"
-      >
-        {children}
-      </BaseToolbar.Button>
-    </PixelBorder>
+    <BaseToolbar.Button
+      disabled={disabled}
+      className={`pixel-rounded-xs inline-block ${classes}`.trim()}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      data-slot="button-face"
+      data-quiet
+      data-color="accent"
+    >
+      {children}
+    </BaseToolbar.Button>
   );
 }
 
@@ -214,16 +210,14 @@ function ToolbarLink({
   const classes = toolbarLinkVariants({ className });
 
   return (
-    <PixelBorder size="xs" className="inline-block">
-      <BaseToolbar.Link
-        href={href}
-        target={target}
-        className={classes}
-        data-slot="toolbar-link"
-      >
-        {children}
-      </BaseToolbar.Link>
-    </PixelBorder>
+    <BaseToolbar.Link
+      href={href}
+      target={target}
+      className={`pixel-rounded-xs inline-block ${classes}`.trim()}
+      data-slot="toolbar-link"
+    >
+      {children}
+    </BaseToolbar.Link>
   );
 }
 

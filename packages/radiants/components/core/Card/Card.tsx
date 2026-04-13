@@ -3,7 +3,7 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 
-import { PixelBorder, type PixelBorderSize } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -12,10 +12,10 @@ import { PixelBorder, type PixelBorderSize } from '../PixelBorder';
 type CardVariant = 'default' | 'inverted' | 'raised';
 type CardRounded = 'sm' | 'md' | 'lg';
 
-const CARD_BORDER_SIZE: Record<CardRounded, PixelBorderSize> = {
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
+const CARD_PIXEL_CLASS: Record<CardRounded, string> = {
+  sm: 'pixel-rounded-sm',
+  md: 'pixel-rounded-md',
+  lg: 'pixel-rounded-lg',
 };
 
 interface CardProps {
@@ -70,16 +70,16 @@ export function Card({
   children,
   className = '',
 }: CardProps) {
+  const shadowClass = variant === 'raised' ? 'pixel-shadow-raised' : '';
   return (
-    <PixelBorder
-      size={CARD_BORDER_SIZE[rounded]}
-      shadow={variant === 'raised' ? '2px 2px 0 var(--color-ink)' : undefined}
-      className={className}
+    <div
+      data-rdna="card"
+      data-slot="card"
+      data-variant={variant}
+      className={`${CARD_PIXEL_CLASS[rounded]} ${shadowClass} ${className}`.trim()}
     >
-      <div data-rdna="card" data-slot="card" data-variant={variant}>
-        {children}
-      </div>
-    </PixelBorder>
+      {children}
+    </div>
   );
 }
 

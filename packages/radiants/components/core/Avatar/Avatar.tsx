@@ -2,7 +2,7 @@
 
 import { Avatar as BaseAvatar } from '@base-ui/react/avatar';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // CVA Variants
@@ -89,9 +89,9 @@ export function Avatar({
 
   if (shape === 'square') {
     return (
-      <PixelBorder size="xs" className={`inline-block ${className}`.trim()}>
+      <div className={`pixel-rounded-xs inline-block ${className}`.trim()}>
         {root}
-      </PixelBorder>
+      </div>
     );
   }
 

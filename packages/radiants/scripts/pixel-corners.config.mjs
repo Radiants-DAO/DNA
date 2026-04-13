@@ -1,4 +1,4 @@
-import { generateCorner } from '@rdna/pixel';
+import { generateCorner, generateShape } from '@rdna/pixel';
 
 /**
  * Numeric pixel-corner scale.
@@ -6,10 +6,24 @@ import { generateCorner } from '@rdna/pixel';
  * Each entry maps a class suffix to a grid size.
  * Bresenham radius = gridSize - 1.
  *
+ * The `shape` field is optional — defaults to 'circle' (Bresenham arc).
+ * Set it to any registered shape name to use a different corner geometry:
+ *   'circle' | 'chamfer' | 'notch' | 'scallop' | 'crenellation' | 'sawtooth' | 'octagon'
+ *
  * The old t-shirt sizes (xs, sm, md, lg, xl) are kept as deprecated
  * backward-compat aliases — they generate from their original radii.
  */
 
+/** @typedef {'circle' | 'chamfer' | 'notch' | 'scallop' | 'crenellation' | 'sawtooth' | 'octagon'} CornerShapeName */
+
+/**
+ * @typedef {Object} SizeEntry
+ * @property {string} suffix - CSS class suffix (e.g. '8', 'chamfer-8')
+ * @property {number} gridSize - N×N grid dimension
+ * @property {CornerShapeName} [shape] - Corner shape (default: 'circle')
+ */
+
+/** @type {SizeEntry[]} */
 export const NUMERIC_SIZES = [
   { suffix: '2', gridSize: 2 },
   { suffix: '4', gridSize: 4 },
@@ -41,15 +55,63 @@ export const LEGACY_ALIASES = [
 ];
 
 /**
- * Generate a corner set for a given grid size.
+ * Alternate shape sizes — non-circle shapes at selected grid sizes.
+ *
+ * Each entry generates a class like `.pixel-chamfer-8`, `.pixel-notch-12`, etc.
+ * The shape field is required here (no default to 'circle').
+ *
+ * @type {SizeEntry[]}
+ */
+export const SHAPE_SIZES = [
+  // Chamfer (45° bevel)
+  { suffix: 'chamfer-4', gridSize: 4, shape: 'chamfer' },
+  { suffix: 'chamfer-6', gridSize: 6, shape: 'chamfer' },
+  { suffix: 'chamfer-8', gridSize: 8, shape: 'chamfer' },
+  { suffix: 'chamfer-12', gridSize: 12, shape: 'chamfer' },
+  { suffix: 'chamfer-16', gridSize: 16, shape: 'chamfer' },
+
+  // Notch (stepped rectangular cutout)
+  { suffix: 'notch-4', gridSize: 4, shape: 'notch' },
+  { suffix: 'notch-8', gridSize: 8, shape: 'notch' },
+  { suffix: 'notch-12', gridSize: 12, shape: 'notch' },
+  { suffix: 'notch-16', gridSize: 16, shape: 'notch' },
+
+  // Scallop (concave arc)
+  { suffix: 'scallop-6', gridSize: 6, shape: 'scallop' },
+  { suffix: 'scallop-8', gridSize: 8, shape: 'scallop' },
+  { suffix: 'scallop-12', gridSize: 12, shape: 'scallop' },
+  { suffix: 'scallop-16', gridSize: 16, shape: 'scallop' },
+
+  // Octagon (flat-diag-flat)
+  { suffix: 'octagon-6', gridSize: 6, shape: 'octagon' },
+  { suffix: 'octagon-8', gridSize: 8, shape: 'octagon' },
+  { suffix: 'octagon-12', gridSize: 12, shape: 'octagon' },
+  { suffix: 'octagon-16', gridSize: 16, shape: 'octagon' },
+
+  // Sawtooth (zigzag)
+  { suffix: 'sawtooth-6', gridSize: 6, shape: 'sawtooth' },
+  { suffix: 'sawtooth-8', gridSize: 8, shape: 'sawtooth' },
+  { suffix: 'sawtooth-12', gridSize: 12, shape: 'sawtooth' },
+
+  // Crenellation (battlements)
+  { suffix: 'crenellation-8', gridSize: 8, shape: 'crenellation' },
+  { suffix: 'crenellation-12', gridSize: 12, shape: 'crenellation' },
+  { suffix: 'crenellation-16', gridSize: 16, shape: 'crenellation' },
+];
+
+/**
+ * Generate a corner set for a given grid size and shape.
  * @param {number} gridSize
+ * @param {CornerShapeName} [shape='circle']
  * @returns {{ gridSize: number, radius: number, cornerSet: import('@rdna/pixel').PixelCornerSet }}
  */
-export function generateSizeData(gridSize) {
+export function generateSizeData(gridSize, shape = 'circle') {
   const radius = gridSize - 1;
   return {
     gridSize,
     radius,
-    cornerSet: generateCorner(radius),
+    cornerSet: shape === 'circle'
+      ? generateCorner(radius)
+      : generateShape(shape, gridSize),
   };
 }

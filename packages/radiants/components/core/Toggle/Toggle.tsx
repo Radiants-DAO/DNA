@@ -3,7 +3,7 @@
 import React from 'react';
 import { Toggle as BaseToggle } from '@base-ui/react/toggle';
 import { buttonRootVariants, buttonFaceVariants } from '../Button/Button';
-import { PixelBorder, type PixelBorderSize } from '../PixelBorder/PixelBorder';
+
 import { Icon } from '../../../icons/Icon';
 
 // ============================================================================
@@ -16,15 +16,15 @@ export type ToggleSize = 'sm' | 'md' | 'lg';
 export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 /**
- * Maps the Toggle `rounded` variant to the matching PixelBorder size preset.
- * `none` collapses to `null` — a sentinel meaning "skip the wrap entirely".
+ * Maps the Toggle `rounded` variant to the matching pixel-rounded CSS class.
+ * `none` collapses to `null` — a sentinel meaning "no pixel corners".
  */
-const TOGGLE_ROUNDED_TO_PIXEL_SIZE: Record<ToggleRounded, PixelBorderSize | null> = {
-  xs: 'xs',
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-  xl: 'xl',
+const TOGGLE_ROUNDED_TO_PIXEL_CLASS: Record<ToggleRounded, string | null> = {
+  xs: 'pixel-rounded-xs',
+  sm: 'pixel-rounded-sm',
+  md: 'pixel-rounded-md',
+  lg: 'pixel-rounded-lg',
+  xl: 'pixel-rounded-xl',
   none: null,
 };
 
@@ -132,10 +132,9 @@ export function Toggle({
     className: `${justifyClass} ${className}`.trim(),
   });
 
-  // When the toggle has pixel-art corners, wrap the face span in a
-  // <PixelBorder>. The map collapses `none` to `null`, in which case the
-  // face renders bare — matching Button's behaviour.
-  const pixelBorderSize = TOGGLE_ROUNDED_TO_PIXEL_SIZE[effectiveRounded];
+  // When the toggle has pixel-art corners, apply the CSS pixel-rounded class.
+  // The map collapses `none` to `null`, in which case no pixel corners are applied.
+  const pixelClass = TOGGLE_ROUNDED_TO_PIXEL_CLASS[effectiveRounded];
 
   // Content construction — mirrors Button
   let content: React.ReactNode;
@@ -163,9 +162,9 @@ export function Toggle({
       aria-label={ariaLabel}
       render={(toggleProps, state) => {
         const dataState = state.pressed ? 'selected' : 'default';
-        const faceSpan = (
+        const face = (
           <span
-            className={faceClasses}
+            className={`${pixelClass ? `${pixelClass} ${fullWidth ? 'w-full' : ''} inline-flex` : ''} ${faceClasses}`.trim()}
             data-slot="button-face"
             data-mode={mode}
             data-color={tone}
@@ -178,18 +177,6 @@ export function Toggle({
             {content}
           </span>
         );
-
-        const face =
-          pixelBorderSize !== null ? (
-            <PixelBorder
-              size={pixelBorderSize}
-              className={fullWidth ? 'w-full inline-flex' : 'inline-flex'}
-            >
-              {faceSpan}
-            </PixelBorder>
-          ) : (
-            faceSpan
-          );
 
         return (
           <button

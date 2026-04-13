@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cva } from 'class-variance-authority';
-import { PixelBorder, type PixelBorderSize } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -105,18 +105,18 @@ function Segment({
   );
   if (variant === 'large') {
     return (
-      <PixelBorder size="sm" className="inline-block">
+      <div className="pixel-rounded-sm inline-block">
         {inner}
-      </PixelBorder>
+      </div>
     );
   }
   return inner;
 }
 
-const COUNTDOWN_BORDER_SIZE: Record<CountdownVariant, PixelBorderSize> = {
-  default: 'lg',
-  compact: 'sm',
-  large: 'lg',
+const COUNTDOWN_PIXEL_CLASS: Record<CountdownVariant, string> = {
+  default: 'pixel-rounded-lg',
+  compact: 'pixel-rounded-sm',
+  large: 'pixel-rounded-lg',
 };
 
 const valueVariants = cva('font-heading text-main tabular-nums', {
@@ -246,13 +246,9 @@ export function CountdownTimer({
   }, [endTime, startTime, onComplete]);
 
   const wrap = (node: React.ReactElement) => (
-    <PixelBorder
-      size={COUNTDOWN_BORDER_SIZE[variant]}
-      shadow={variant === 'large' ? '2px 2px 0 var(--color-ink)' : undefined}
-      className={className}
-    >
+    <div className={`${COUNTDOWN_PIXEL_CLASS[variant]} ${variant === 'large' ? 'pixel-shadow-raised' : ''} ${className}`.trim()}>
       {node}
-    </PixelBorder>
+    </div>
   );
 
   // Render ended state

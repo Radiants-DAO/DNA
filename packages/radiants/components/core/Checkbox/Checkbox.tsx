@@ -4,7 +4,7 @@ import React, { createContext, use } from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -148,22 +148,18 @@ export function Checkbox({
         render={(props, state) => {
           const isOn = state.checked || state.indeterminate;
           return (
-            <PixelBorder
-              size="xs"
-              background={isOn ? 'bg-accent' : 'bg-card'}
-              className="inline-block"
-            >
-              <span
-                {...props}
-                className="
-                  relative w-5 h-5
-                  flex items-center justify-center
-                  cursor-pointer bg-transparent
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
-                  focus-visible:outline-offset-1
-                "
-              />
-            </PixelBorder>
+            <span
+              {...props}
+              className={`
+                pixel-rounded-xs inline-block
+                ${isOn ? 'bg-accent' : 'bg-card'}
+                relative w-5 h-5
+                flex items-center justify-center
+                cursor-pointer
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
+                focus-visible:outline-offset-1
+              `}
+            />
           );
         }}
       >
@@ -257,7 +253,6 @@ export function Radio({
         />
       )}
     >
-      <span className="pixel-rounded-full__inner" />
       <BaseRadio.Indicator className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-2 h-2 bg-accent-inv" />
       </BaseRadio.Indicator>

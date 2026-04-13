@@ -42,6 +42,10 @@
     "./patterns": {
       "types": "./dist/patterns.d.ts",
       "import": "./dist/patterns.js"
+    },
+    "./shapes": {
+      "types": "./dist/shapes.d.ts",
+      "import": "./dist/shapes.js"
     }
   },
   "scripts": {

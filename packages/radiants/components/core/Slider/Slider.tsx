@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Slider as BaseSlider } from '@base-ui/react/slider';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -117,11 +117,7 @@ export function Slider({
             disabled ? 'pointer-events-none' : 'cursor-pointer',
           ].filter(Boolean).join(' ')}
         >
-          <PixelBorder
-            size="xs"
-            background="bg-page"
-            className={vertical ? 'h-full' : 'w-full'}
-          >
+          <div className={`pixel-rounded-xs bg-page ${vertical ? 'h-full' : 'w-full'}`}>
             <BaseSlider.Track
               className={trackClasses}
               data-slot="slider-track"
@@ -135,10 +131,8 @@ export function Slider({
                 render={(thumbProps) => {
                   const { style: thumbStyle, className: _cn, ...restThumbProps } = thumbProps;
                   return (
-                    <PixelBorder
-                      size="xs"
-                      background="bg-page group-hover/pixel:bg-accent transition-colors duration-fast"
-                      className={[thumb].filter(Boolean).join(' ')}
+                    <div
+                      className={`pixel-rounded-xs group/pixel bg-page hover:bg-accent transition-colors ${[thumb].filter(Boolean).join(' ')}`.trim()}
                       style={thumbStyle}
                     >
                       <div
@@ -150,12 +144,12 @@ export function Slider({
                           'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
                         ].join(' ')}
                       />
-                    </PixelBorder>
+                    </div>
                   );
                 }}
               />
             </BaseSlider.Track>
-          </PixelBorder>
+          </div>
         </BaseSlider.Control>
       </BaseSlider.Root>
     </div>

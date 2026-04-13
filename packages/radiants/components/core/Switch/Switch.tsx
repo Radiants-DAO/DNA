@@ -3,7 +3,7 @@
 import { useId } from 'react';
 import { cva } from 'class-variance-authority';
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -124,31 +124,29 @@ export function Switch({
     <div data-rdna="switch" className={`inline-flex items-center gap-2 ${className}`}>
       {labelPosition === 'left' && labelEl}
 
-      <PixelBorder size="xs" className="inline-block">
-        <BaseSwitch.Root
-          checked={checked}
-          onCheckedChange={(newChecked) => onChange(newChecked)}
-          disabled={disabled}
-          name={name}
-          required={required}
-          readOnly={readOnly}
-          id={switchId}
-          className={trackClasses}
-          data-slot="switch-track"
-          data-variant="switch"
-          data-checked={checked ? '' : undefined}
-          data-size={size}
-        >
-          <BaseSwitch.Thumb
-            data-slot="switch-thumb"
-            render={(props) => (
-              <PixelBorder size="xs" className={thumbClasses}>
-                <span {...props} className="absolute inset-0 switch-thumb" />
-              </PixelBorder>
-            )}
-          />
-        </BaseSwitch.Root>
-      </PixelBorder>
+      <BaseSwitch.Root
+        checked={checked}
+        onCheckedChange={(newChecked) => onChange(newChecked)}
+        disabled={disabled}
+        name={name}
+        required={required}
+        readOnly={readOnly}
+        id={switchId}
+        className={`pixel-rounded-xs inline-block ${trackClasses}`.trim()}
+        data-slot="switch-track"
+        data-variant="switch"
+        data-checked={checked ? '' : undefined}
+        data-size={size}
+      >
+        <BaseSwitch.Thumb
+          data-slot="switch-thumb"
+          render={(props) => (
+            <div className={`pixel-rounded-xs ${thumbClasses}`.trim()}>
+              <span {...props} className="absolute inset-0 switch-thumb" />
+            </div>
+          )}
+        />
+      </BaseSwitch.Root>
 
       {labelPosition === 'right' && labelEl}
     </div>

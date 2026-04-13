@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { PreviewCard as BasePreviewCard } from '@base-ui/react/preview-card';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -105,16 +105,11 @@ export function PreviewCardContent({
           `.trim()}
           data-variant="preview-card"
         >
-          <PixelBorder
-            size="xs"
-            background="bg-card"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
             <div className="p-4">
               {children}
             </div>
-          </PixelBorder>
+          </div>
         </BasePreviewCard.Popup>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>

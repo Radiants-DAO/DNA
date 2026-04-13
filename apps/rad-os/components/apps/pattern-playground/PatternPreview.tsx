@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useCallback, useState } from 'react';
-import { Pattern, PixelBorder } from '@rdna/radiants/components/core';
+import { Pattern } from '@rdna/radiants/components/core';
 import type { PatternPlaygroundState } from './types';
 
 interface PatternPreviewProps {
@@ -67,7 +67,7 @@ function MouseFollowerPanel({
   return (
     <div className="flex flex-col gap-2 flex-1 min-w-0">
       <span className="font-heading text-xs text-mute uppercase tracking-wide">{label}</span>
-      <PixelBorder size="sm" className="h-full">
+      <div className="pixel-rounded-sm h-full">
         <div
           ref={panelRef}
           className={panelClasses}
@@ -85,11 +85,9 @@ function MouseFollowerPanel({
             scale={state.scale}
             style={{ position: 'absolute', inset: 0 }}
           />
-          <PixelBorder size="xs" className="absolute bottom-2 left-2 z-10">
-            <span className={labelInnerClasses}>{label}</span>
-          </PixelBorder>
+          <span className={`pixel-rounded-xs absolute bottom-2 left-2 z-10 ${labelInnerClasses}`}>{label}</span>
         </div>
-      </PixelBorder>
+      </div>
     </div>
   );
 }

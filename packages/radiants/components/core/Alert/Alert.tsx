@@ -5,7 +5,7 @@ import { cva } from 'class-variance-authority';
 import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '../../../icons/generated';
 import { Button } from '../Button/Button';
 import { createCompoundContext } from '../../shared/createCompoundContext';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -132,17 +132,11 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
 function Root({ variant = 'default', children, className = '' }: AlertRootProps): React.ReactElement {
   return (
     <AlertVariantContext value={variant}>
-      <PixelBorder
-        size="xs"
-        shadow="2px 2px 0 var(--color-ink)"
-        className={className}
-      >
-        <div role="alert" data-rdna="alert" data-variant={variant} className={alertVariants({ variant })}>
-          <div className="flex items-start gap-3">
-            {children}
-          </div>
+      <div role="alert" data-rdna="alert" data-variant={variant} className={alertVariants({ variant, className: `pixel-rounded-xs pixel-shadow-raised ${className}`.trim() })}>
+        <div className="flex items-start gap-3">
+          {children}
         </div>
-      </PixelBorder>
+      </div>
     </AlertVariantContext>
   );
 }

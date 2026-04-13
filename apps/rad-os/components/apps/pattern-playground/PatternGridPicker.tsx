@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pattern, PixelBorder } from '@rdna/radiants/components/core';
+import { Pattern } from '@rdna/radiants/components/core';
 import {
   PATTERN_GROUPS,
   getPatternsByGroup,
@@ -44,10 +44,9 @@ export function PatternGridPicker({ selected, onSelect, color }: PatternGridPick
             {!isCollapsed && (
               <div className="grid grid-cols-6 gap-1 mt-1">
                 {entries.map((entry) => (
-                  <PixelBorder
+                  <div
                     key={entry.name}
-                    size="xs"
-                    className={`aspect-square transition-shadow duration-fast ${
+                    className={`pixel-rounded-xs aspect-square transition-shadow duration-fast ${
                       selected === entry.name ? 'pixel-shadow-raised ring-1 ring-accent' : 'hover:pixel-shadow-surface'
                     }`}
                   >
@@ -65,7 +64,7 @@ export function PatternGridPicker({ selected, onSelect, color }: PatternGridPick
                         style={{ position: 'absolute', inset: 0 }}
                       />
                     </button>
-                  </PixelBorder>
+                  </div>
                 ))}
               </div>
             )}

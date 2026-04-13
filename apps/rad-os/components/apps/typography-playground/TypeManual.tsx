@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tooltip, Button, PixelBorder } from '@rdna/radiants/components/core';
+import { Tooltip, Button } from '@rdna/radiants/components/core';
 import { type FontEntry, FONTS, TYPE_SCALE, ELEMENT_STYLES } from './typography-data';
 
 // -- Shared copy helper --
@@ -59,7 +59,7 @@ function FontCard({ font, index }: { font: FontEntry; index: number }) {
   const DIGITS = '0123456789';
 
   return (
-    <PixelBorder size="sm">
+    <div className="pixel-rounded-sm">
       <div>
         {/* Header */}
         <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
@@ -146,7 +146,7 @@ function FontCard({ font, index }: { font: FontEntry; index: number }) {
           </div>
         )}
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
@@ -189,7 +189,7 @@ export function TypeManual() {
             </div>
             <span className="font-mono text-xs text-mute shrink-0">typography.css</span>
           </div>
-          <PixelBorder size="sm">
+          <div className="pixel-rounded-sm">
             <div>
               {/* Column headers */}
               <div className="flex items-center gap-3 px-4 py-2 bg-inv">
@@ -217,7 +217,7 @@ export function TypeManual() {
                 ))}
               </div>
             </div>
-          </PixelBorder>
+          </div>
         </section>
 
       </div>
@@ -251,11 +251,9 @@ export function TypeManual() {
               ))}
             </div>
             <div className="p-2 bg-depth text-xs text-mute leading-relaxed mt-2">
-              <PixelBorder size="sm" className="inline-block mr-1 align-middle">
-                <span className="block font-heading text-xs text-flip bg-inv px-1 py-0.5 uppercase tracking-tight">
-                  Clamp
-                </span>
-              </PixelBorder>
+              <span className="pixel-rounded-sm inline-block mr-1 align-middle block font-heading text-xs text-flip bg-inv px-1 py-0.5 uppercase tracking-tight">
+                Clamp
+              </span>
               Body: <code className="text-xs">clamp(1rem, 1vw, 1.125rem)</code>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { NavigationMenu as BaseNavigationMenu } from '@base-ui/react/navigation-menu';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -148,28 +148,27 @@ function Item({ children, className = '' }: NavigationMenuItemProps) {
  */
 function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
   return (
-    <PixelBorder size="xs">
-      <BaseNavigationMenu.Trigger
-        data-slot="button-face"
-        data-quiet
-        data-color="accent"
-        className={`
-          flex items-center gap-1
-          px-3 py-2
-          font-sans text-sm
-          cursor-pointer
-          focus-visible:outline-none
-          ${className}
-        `.trim()}
+    <BaseNavigationMenu.Trigger
+      data-slot="button-face"
+      data-quiet
+      data-color="accent"
+      className={`
+        pixel-rounded-xs
+        flex items-center gap-1
+        px-3 py-2
+        font-sans text-sm
+        cursor-pointer
+        focus-visible:outline-none
+        ${className}
+      `.trim()}
+    >
+      {children}
+      <BaseNavigationMenu.Icon
+        className="transition-transform duration-150 ease-out data-[popup-open]:rotate-180"
       >
-        {children}
-        <BaseNavigationMenu.Icon
-          className="transition-transform duration-150 ease-out data-[popup-open]:rotate-180"
-        >
-          <DefaultChevron />
-        </BaseNavigationMenu.Icon>
-      </BaseNavigationMenu.Trigger>
-    </PixelBorder>
+        <DefaultChevron />
+      </BaseNavigationMenu.Icon>
+    </BaseNavigationMenu.Trigger>
   );
 }
 
@@ -196,25 +195,24 @@ function Content({ children, className = '' }: NavigationMenuContentProps) {
  */
 function Link({ children, href, active = false, className = '' }: NavigationMenuLinkProps) {
   return (
-    <PixelBorder size="xs" className="inline-block">
-      <BaseNavigationMenu.Link
-        href={href}
-        active={active}
-        data-slot="button-face"
-        data-quiet
-        data-color="accent"
-        data-state={active ? 'selected' : 'default'}
-        className={`
-          block
-          px-3 py-2
-          font-sans text-sm
-          focus-visible:outline-none
-          ${className}
-        `.trim()}
-      >
-        {children}
-      </BaseNavigationMenu.Link>
-    </PixelBorder>
+    <BaseNavigationMenu.Link
+      href={href}
+      active={active}
+      data-slot="button-face"
+      data-quiet
+      data-color="accent"
+      data-state={active ? 'selected' : 'default'}
+      className={`
+        pixel-rounded-xs inline-block
+        block
+        px-3 py-2
+        font-sans text-sm
+        focus-visible:outline-none
+        ${className}
+      `.trim()}
+    >
+      {children}
+    </BaseNavigationMenu.Link>
   );
 }
 
@@ -233,14 +231,9 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
           `.trim()}
         >
-          <PixelBorder
-            size="xs"
-            background="bg-card"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
             <BaseNavigationMenu.Viewport />
-          </PixelBorder>
+          </div>
         </BaseNavigationMenu.Popup>
       </BaseNavigationMenu.Positioner>
     </BaseNavigationMenu.Portal>

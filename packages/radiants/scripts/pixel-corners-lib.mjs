@@ -1,8 +1,9 @@
-import { generateCorner, bitsToPath, bitsToMaskURI } from '@rdna/pixel';
+import { generateCorner, generateShape, bitsToPath, bitsToMaskURI } from '@rdna/pixel';
 import {
   NUMERIC_SIZES,
   FULL_SIZE,
   LEGACY_ALIASES,
+  SHAPE_SIZES,
   generateSizeData,
 } from './pixel-corners.config.mjs';
 
@@ -49,10 +50,13 @@ function buildBorderURIs(borderPathD, gridSize) {
 
 /**
  * Compute all mask data for a single pixel-corner size.
+ * @param {number} gridSize
+ * @param {string} [shape='circle'] - Corner shape name.
  */
-function computeSizeMaskData(gridSize) {
-  const radius = gridSize - 1;
-  const cornerSet = generateCorner(radius);
+function computeSizeMaskData(gridSize, shape = 'circle') {
+  const cornerSet = shape === 'circle'
+    ? generateCorner(gridSize - 1)
+    : generateShape(shape, gridSize);
   const { width, height, bits: coverBits } = cornerSet.tl;
   const borderBits = cornerSet.border.bits;
 
@@ -61,7 +65,8 @@ function computeSizeMaskData(gridSize) {
 
   return {
     gridSize,
-    radius,
+    radius: gridSize - 1,
+    shape,
     coverPathD,
     borderPathD,
     coverURIs: buildCoverURIs(coverPathD, gridSize),
@@ -320,10 +325,10 @@ function emitLegacyAlias(legacySuffix, data) {
 export function renderPixelCornersGeneratedCss() {
   const blocks = [GENERATED_FILE_BANNER];
 
-  // 1. Compute mask data for all numeric sizes
-  const numericEntries = NUMERIC_SIZES.map(({ suffix, gridSize }) => ({
+  // 1. Compute mask data for all numeric sizes (circle shape)
+  const numericEntries = NUMERIC_SIZES.map(({ suffix, gridSize, shape }) => ({
     suffix,
-    data: computeSizeMaskData(gridSize),
+    data: computeSizeMaskData(gridSize, shape),
   }));
 
   // 2. Compute mask data for pixel-rounded-full (same as 20)
@@ -338,6 +343,12 @@ export function renderPixelCornersGeneratedCss() {
     data: computeSizeMaskData(radius + 1),
   }));
 
+  // 4. Compute mask data for alternate shape sizes
+  const shapeEntries = SHAPE_SIZES.map(({ suffix, gridSize, shape }) => ({
+    suffix,
+    data: computeSizeMaskData(gridSize, shape),
+  }));
+
   // Determine which legacy entries need their own custom properties
   // (those whose gridSize doesn't match any numeric size).
   const numericGridSizes = new Set(NUMERIC_SIZES.map((s) => s.gridSize));
@@ -348,38 +359,40 @@ export function renderPixelCornersGeneratedCss() {
     ({ data }) => !numericGridSizes.has(data.gridSize),
   );
 
-  // 4. Emit :root custom properties
+  // 5. Emit :root custom properties
   blocks.push(emitCustomProperties([
     ...numericEntries,
     fullEntry,
     ...legacyEntriesNeedingProps,
+    ...shapeEntries,
   ]));
 
-  // 5. All class names for shared base
+  // 6. All class names for shared base
   const allClassNames = [
     ...numericEntries.map(({ suffix }) => `.pixel-rounded-${suffix}`),
     `.pixel-rounded-${FULL_SIZE.suffix}`,
     ...legacyEntries.map(({ suffix }) => `.pixel-rounded-${suffix}`),
+    ...shapeEntries.map(({ suffix }) => `.pixel-${suffix}`),
   ];
   // Deduplicate (e.g. if a legacy suffix matches a numeric one)
   const uniqueClassNames = [...new Set(allClassNames)];
   blocks.push(emitSharedBase(uniqueClassNames));
 
-  // 6. Per-size host clipping + ::after rules (numeric)
+  // 7. Per-size host clipping + ::after rules (numeric circle shapes)
   for (const { suffix, data } of numericEntries) {
     const className = `.pixel-rounded-${suffix}`;
     blocks.push(emitHostMask(className, suffix, data.gridSize));
     blocks.push(emitAfterMask(className, suffix, data.gridSize));
   }
 
-  // 7. pixel-rounded-full
+  // 8. pixel-rounded-full
   {
     const className = `.pixel-rounded-${FULL_SIZE.suffix}`;
     blocks.push(emitHostMask(className, FULL_SIZE.suffix, fullEntry.data.gridSize));
     blocks.push(emitAfterMask(className, FULL_SIZE.suffix, fullEntry.data.gridSize));
   }
 
-  // 8. Legacy aliases
+  // 9. Legacy aliases
   blocks.push('/* ============================================================================');
   blocks.push('   Deprecated t-shirt aliases — migrate to numeric scale');
   blocks.push('   xs→2, sm→(no exact match), md→(no exact match), lg→12, xl→(no exact match)');
@@ -404,6 +417,21 @@ export function renderPixelCornersGeneratedCss() {
     } else {
       // Unique grid size — uses its own custom properties
       blocks.push(emitLegacyAlias(suffix, data));
+    }
+  }
+
+  // 10. Alternate shape sizes
+  if (shapeEntries.length > 0) {
+    blocks.push('/* ============================================================================');
+    blocks.push('   Alternate corner shapes — chamfer, notch, scallop, octagon, sawtooth, etc.');
+    blocks.push('   Classes: .pixel-{shape}-{size} (e.g. .pixel-chamfer-8)');
+    blocks.push('   ============================================================================ */');
+
+    for (const { suffix, data } of shapeEntries) {
+      const className = `.pixel-${suffix}`;
+      blocks.push(`/* .pixel-${suffix} — ${data.shape} shape, ${data.gridSize}×${data.gridSize} grid */`);
+      blocks.push(emitHostMask(className, suffix, data.gridSize));
+      blocks.push(emitAfterMask(className, suffix, data.gridSize));
     }
   }
 

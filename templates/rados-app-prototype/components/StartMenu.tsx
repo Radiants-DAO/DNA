@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { getStartMenuSections } from '../lib/catalog';
-import { Button, Separator, PixelBorder } from '@rdna/radiants/components/core';
+import { Button, Separator } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 
 interface StartMenuProps {
@@ -75,7 +75,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       ref={menuRef}
       className="absolute bottom-full left-0 mb-2 z-10 w-72"
     >
-      <PixelBorder size="sm" className="pixel-shadow-floating">
+      <div className="pixel-rounded-sm pixel-shadow-floating">
         <div className="flex flex-row bg-page">
           {/* Left sidebar — branding strip */}
           <div
@@ -103,7 +103,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             </div>
           </div>
         </div>
-      </PixelBorder>
+      </div>
     </div>
   );
 }

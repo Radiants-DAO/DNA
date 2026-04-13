@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Fieldset as BaseFieldset } from '@base-ui/react/fieldset';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -34,15 +34,13 @@ interface LegendProps {
  */
 function Root({ children, className = '', disabled }: RootProps): React.ReactNode {
   return (
-    <PixelBorder size="xs" background="bg-transparent" className={className}>
-      <BaseFieldset.Root
-        data-rdna="input-set"
-        disabled={disabled}
-        className="p-4 transition-shadow duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-focus"
-      >
-        {children}
-      </BaseFieldset.Root>
-    </PixelBorder>
+    <BaseFieldset.Root
+      data-rdna="input-set"
+      disabled={disabled}
+      className={`pixel-rounded-xs bg-transparent p-4 transition-shadow duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-focus ${className}`.trim()}
+    >
+      {children}
+    </BaseFieldset.Root>
   );
 }
 

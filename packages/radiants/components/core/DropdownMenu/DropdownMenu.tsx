@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -126,16 +126,11 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
           `.trim()}
         >
-          <PixelBorder
-            size="sm"
-            background="bg-page"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-sm bg-page pixel-shadow-raised ${className}`.trim()}>
             <div className="py-1">
             {children}
             </div>
-          </PixelBorder>
+          </div>
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>

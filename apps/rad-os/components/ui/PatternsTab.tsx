@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Pattern, PixelBorder } from '@rdna/radiants/components/core';
+import { Pattern } from '@rdna/radiants/components/core';
 import {
   patternRegistry,
   PATTERN_GROUPS,
@@ -52,7 +52,7 @@ function PatternCard({
   }, [entry.name, color, scale, bg]);
 
   return (
-    <PixelBorder size="xs" className="aspect-square">
+    <div className="pixel-rounded-xs aspect-square">
       {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:pattern-card-uses-full-tile-click-target owner:design-system expires:2026-12-31 issue:DNA-001 */}
       <button
         type="button"
@@ -70,7 +70,7 @@ function PatternCard({
 
         {/* Hover badge */}
         <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-fast">
-          <PixelBorder size="xs">
+          <div className="pixel-rounded-xs">
             <div className="bg-inv text-flip px-2 py-1">
               <span className="font-heading text-xs block truncate">
                 {copied ? 'Copied!' : entry.name}
@@ -79,10 +79,10 @@ function PatternCard({
                 {entry.fill}%
               </span>
             </div>
-          </PixelBorder>
+          </div>
         </div>
       </button>
-    </PixelBorder>
+    </div>
   );
 }
 
@@ -109,7 +109,7 @@ export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
         <div className="flex gap-1.5 overflow-x-auto pb-1">
           {densityEntries.map((entry) => (
             <div key={entry.name} className="flex flex-col items-center gap-1 shrink-0">
-              <PixelBorder size="xs" className="w-12 h-12">
+              <div className="pixel-rounded-xs w-12 h-12">
                 <Pattern
                   pat={entry.name}
                   color={color}
@@ -117,7 +117,7 @@ export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
                   scale={scale}
                   style={{ width: '100%', height: '100%' }}
                 />
-              </PixelBorder>
+              </div>
               <span className="font-mono text-xs text-mute text-center leading-tight">
                 {entry.fill}%
               </span>
@@ -160,7 +160,7 @@ export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
           <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-2">
             {TWO_TONE_DEMOS.map((demo) => (
               <div key={demo.label} className="space-y-1">
-                <PixelBorder size="xs" className="h-20">
+                <div className="pixel-rounded-xs h-20">
                   <Pattern
                     pat={demo.pat}
                     color={demo.color}
@@ -168,7 +168,7 @@ export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
                     scale={scale}
                     style={{ width: '100%', height: '100%' }}
                   />
-                </PixelBorder>
+                </div>
                 <span className="font-mono text-xs text-mute block">{demo.label}</span>
               </div>
             ))}
@@ -181,14 +181,14 @@ export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
           <div className="flex gap-2 flex-wrap">
             {([2, 3, 4] as const).map((s) => (
               <div key={s} className="space-y-1">
-                <PixelBorder size="xs" className="w-20 h-20">
+                <div className="pixel-rounded-xs w-20 h-20">
                   <Pattern
                     pat="checkerboard"
                     color={color}
                     scale={s}
                     style={{ width: '100%', height: '100%' }}
                   />
-                </PixelBorder>
+                </div>
                 <span className="font-mono text-xs text-mute block text-center">{s}x</span>
               </div>
             ))}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // CVA Variants
@@ -56,20 +56,14 @@ export function Badge({
   className = '',
 }: BadgeProps) {
   return (
-    <PixelBorder
-      size="xs"
-      shadow="2px 2px 0 var(--color-ink)"
-      className="inline-block"
+    <span
+      className={badgeVariants({ variant, size, className: `pixel-rounded-xs pixel-shadow-raised inline-block ${className}`.trim() })}
+      data-rdna="badge"
+      data-slot="badge"
+      data-variant={variant}
     >
-      <span
-        className={badgeVariants({ variant, size, className })}
-        data-rdna="badge"
-        data-slot="badge"
-        data-variant={variant}
-      >
-        {children}
-      </span>
-    </PixelBorder>
+      {children}
+    </span>
   );
 }
 

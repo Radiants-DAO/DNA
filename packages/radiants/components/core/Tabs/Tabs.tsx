@@ -5,6 +5,7 @@ import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
 import { PixelBorder } from '../PixelBorder/PixelBorder';
+// PixelBorder is still needed for chrome mode tabs (per-corner radii + edge flags).
 
 // ============================================================================
 // Types
@@ -152,11 +153,7 @@ function DotPill({ className = '' }: { className?: string }) {
   const tabValues = tabValuesRef.current;
 
   return (
-    <PixelBorder
-      size="sm"
-      background="bg-main"
-      className={`w-fit ${className}`.trim()}
-    >
+    <div className={`pixel-rounded-sm bg-main w-fit ${className}`.trim()}>
       <div className="flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1">
         {tabValues.map((val) => {
           const isActive = activeTab === val;
@@ -175,7 +172,7 @@ function DotPill({ className = '' }: { className?: string }) {
           );
         })}
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
@@ -263,15 +260,13 @@ function List({ children, className = '' }: TabsListProps) {
   if (mode === 'capsule') {
     return (
       <div className="shrink-0 flex items-center justify-center p-2">
-        <PixelBorder size="xs" background="bg-card">
-          <BaseTabs.List
-            activateOnFocus
-            data-slot="tab-list"
-            className={listClasses}
-          >
-            {children}
-          </BaseTabs.List>
-        </PixelBorder>
+        <BaseTabs.List
+          activateOnFocus
+          data-slot="tab-list"
+          className={`pixel-rounded-xs bg-card ${listClasses}`.trim()}
+        >
+          {children}
+        </BaseTabs.List>
       </div>
     );
   }
@@ -396,7 +391,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
           );
         }
 
-        return <PixelBorder size="xs">{buttonEl}</PixelBorder>;
+        return <div className="pixel-rounded-xs">{buttonEl}</div>;
       }}
     />
   );

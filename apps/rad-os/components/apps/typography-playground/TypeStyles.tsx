@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tooltip, PixelBorder } from '@rdna/radiants/components/core';
+import { Tooltip } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Embedded CSS sources -- extracted from the actual source files
@@ -358,7 +358,7 @@ function CodeBlock({ filename, source, description }: CodeBlockProps) {
   };
 
   return (
-    <PixelBorder size="sm">
+    <div className="pixel-rounded-sm">
       <div>
         {/* Header */}
         <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
@@ -404,7 +404,7 @@ function CodeBlock({ filename, source, description }: CodeBlockProps) {
           </table>
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 

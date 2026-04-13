@@ -2,7 +2,7 @@
 
 import { Meter as BaseMeter } from '@base-ui/react/meter';
 import { cva } from 'class-variance-authority';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -121,14 +121,14 @@ export function Meter({
   return (
     <BaseMeter.Root data-rdna="meter" value={value} min={min} max={max}>
       <div className={`w-full ${className}`}>
-        <PixelBorder size="xs" background="bg-page" className="w-full">
+        <div className="pixel-rounded-xs bg-page w-full">
           <BaseMeter.Track className={trackVariants()}>
             <BaseMeter.Indicator
               className={`${indicatorVariants({ status })} border-r border-line -mr-px`}
               style={{ width: `${percentage}%` }}
             />
           </BaseMeter.Track>
-        </PixelBorder>
+        </div>
       </div>
     </BaseMeter.Root>
   );

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Popover as BasePopover } from '@base-ui/react/popover';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -124,16 +124,11 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
           `.trim()}
           data-variant="popover"
         >
-          <PixelBorder
-            size="sm"
-            background="bg-page"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-sm bg-page pixel-shadow-raised ${className}`.trim()}>
             <div className="p-4">
             {children}
             </div>
-          </PixelBorder>
+          </div>
         </BasePopover.Popup>
       </BasePopover.Positioner>
     </BasePopover.Portal>

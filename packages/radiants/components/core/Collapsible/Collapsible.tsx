@@ -3,7 +3,7 @@
 import React from 'react';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
 import { ChevronDown } from '../../../icons/generated';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -78,32 +78,31 @@ function Root({
  */
 function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
   return (
-    <PixelBorder size="xs" className="w-full">
-      <BaseCollapsible.Trigger
-        className={`
-          group
-          w-full flex items-center justify-between
-          px-4 py-3
-          font-sans text-sm uppercase tracking-tight leading-none
-          transition-colors
-          cursor-pointer
-          focus-visible:outline-none
-          disabled:opacity-50 disabled:cursor-not-allowed
-          ${className}
-        `.trim()}
-        data-slot="button-face"
-        data-quiet
-        data-color="accent"
+    <BaseCollapsible.Trigger
+      className={`
+        pixel-rounded-xs
+        group
+        w-full flex items-center justify-between
+        px-4 py-3
+        font-sans text-sm uppercase tracking-tight leading-none
+        transition-colors
+        cursor-pointer
+        focus-visible:outline-none
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${className}
+      `.trim()}
+      data-slot="button-face"
+      data-quiet
+      data-color="accent"
+    >
+      <span>{children}</span>
+      <span
+        className="select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
+        aria-hidden="true"
       >
-        <span>{children}</span>
-        <span
-          className="select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
-          aria-hidden="true"
-        >
-          <ChevronDown size={14} />
-        </span>
-      </BaseCollapsible.Trigger>
-    </PixelBorder>
+        <ChevronDown size={14} />
+      </span>
+    </BaseCollapsible.Trigger>
   );
 }
 
@@ -122,11 +121,9 @@ function Content({ children, className = '' }: ContentProps): React.ReactNode {
         ${className}
       `.trim()}
     >
-      <PixelBorder size="xs">
-        <div className="px-4 py-3 font-sans text-main bg-card">
-          {children}
-        </div>
-      </PixelBorder>
+      <div className="pixel-rounded-xs px-4 py-3 font-sans text-main bg-card">
+        {children}
+      </div>
     </BaseCollapsible.Panel>
   );
 }

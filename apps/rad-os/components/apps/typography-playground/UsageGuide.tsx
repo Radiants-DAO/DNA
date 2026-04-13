@@ -1,5 +1,4 @@
 'use client';
-import { PixelBorder } from '@rdna/radiants/components/core';
 import {
   type TypographyRule,
   USAGE_SECTIONS,
@@ -16,32 +15,9 @@ const SECTION_ID_TO_CATEGORY: Record<string, string> = {
   mixing: 'Mixing',
 };
 
-// -- Rendered example card for a single do/don't rule --
-
-// type-manual-copy.ts is a frozen docs-data file that still references the
-// legacy `pixel-rounded-*` utility class in a single example string. Rather
-// than touching that file, intercept the className here: strip the legacy
-// class and, if present, opt into wrapping the rendered example in a
-// PixelBorder so the visual effect (pixel-art rounded corners) is preserved.
-const PIXEL_ROUNDED_RE = /\bpixel-rounded-(xs|sm|md|lg|xl)\b/;
-
-function stripPixelRounded(
-  className?: string,
-): { className: string; size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null } {
-  if (!className) return { className: '', size: null };
-  const match = className.match(PIXEL_ROUNDED_RE);
-  const size = (match?.[1] ?? null) as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null;
-  return {
-    className: className.replace(PIXEL_ROUNDED_RE, '').replace(/\s+/g, ' ').trim(),
-    size,
-  };
-}
-
 function RuleCard({ rule }: { rule: TypographyRule }) {
   const isDo = rule.type === 'do';
-  const { className: exampleClass, size: exampleBorderSize } = stripPixelRounded(
-    rule.example.className,
-  );
+  const exampleClass = rule.example.className ?? '';
 
   const exampleInner = (
     <span
@@ -52,38 +28,36 @@ function RuleCard({ rule }: { rule: TypographyRule }) {
     </span>
   );
 
+  // Override --color-line on this element so the ::after pseudo-border
+  // picks up the translucent success/danger color instead of the default.
+  const borderOverride = isDo
+    ? 'color-mix(in oklch, var(--color-success) 40%, transparent)'
+    : 'color-mix(in oklch, var(--color-danger) 40%, transparent)';
+
   return (
-    <PixelBorder
-      size="sm"
-      color={isDo ? 'color-mix(in oklch, var(--color-success) 40%, transparent)' : 'color-mix(in oklch, var(--color-danger) 40%, transparent)'}
+    <div
+      className="pixel-rounded-sm"
+      style={{ '--color-line': borderOverride } as React.CSSProperties}
     >
       <div className="flex flex-col">
         {/* Rendered example area */}
         <div className="px-4 py-5 bg-depth min-h-[72px] flex items-center">
-          {exampleBorderSize ? (
-            <PixelBorder size={exampleBorderSize} className="inline-block">
-              {exampleInner}
-            </PixelBorder>
-          ) : (
-            exampleInner
-          )}
+          {exampleInner}
         </div>
 
         {/* Label + reason */}
         <div className="px-3 py-2.5 space-y-1 border-t border-rule bg-page">
           <div className="flex items-center gap-2">
             {/* Indicator */}
-            <PixelBorder size="sm" className="inline-block shrink-0">
-              <span
-                className={`block font-joystix text-xs uppercase tracking-tight px-1.5 py-0.5 ${
-                  isDo
-                    ? 'bg-success/15 text-success'
-                    : 'bg-danger/15 text-danger'
-                }`}
-              >
-                {isDo ? 'DO' : "DON'T"}
-              </span>
-            </PixelBorder>
+            <span
+              className={`pixel-rounded-sm inline-block shrink-0 block font-joystix text-xs uppercase tracking-tight px-1.5 py-0.5 ${
+                isDo
+                  ? 'bg-success/15 text-success'
+                  : 'bg-danger/15 text-danger'
+              }`}
+            >
+              {isDo ? 'DO' : "DON'T"}
+            </span>
             <span className="font-mondwest text-sm text-main leading-tight">
               {rule.label}
             </span>
@@ -93,7 +67,7 @@ function RuleCard({ rule }: { rule: TypographyRule }) {
           </p>
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 

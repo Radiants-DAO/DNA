@@ -11,7 +11,7 @@ import {
   useShowcaseProps,
 } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
-import { Button, Input, PixelBorder } from '@rdna/radiants/components/core';
+import { Button, Input } from '@rdna/radiants/components/core';
 
 const CARD_INTERSECTION_ROOT_MARGIN = '240px 0px';
 const DEFAULT_INITIAL_INTERACTIVE_CARDS = 6;
@@ -102,7 +102,7 @@ function ComponentShowcaseCard({
   );
 
   return (
-    <PixelBorder size="sm" className="pixel-shadow-resting">
+    <div className="pixel-rounded-sm pixel-shadow-resting">
       <div
         ref={containerRef}
         className="bg-page p-4 flex flex-col gap-3"
@@ -112,11 +112,9 @@ function ComponentShowcaseCard({
           <h3 className="text-base font-heading font-bold text-main">
             {entry.name}
           </h3>
-          <PixelBorder size="xs" className="inline-block">
-            <span className="block text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
-              {entry.category}
-            </span>
-          </PixelBorder>
+          <span className="pixel-rounded-xs inline-block block text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
+            {entry.category}
+          </span>
         </div>
 
         {/* Description */}
@@ -147,19 +145,18 @@ function ComponentShowcaseCard({
         {entry.states && entry.states.length > 0 && (
             <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
             {availableStates.map((s) => (
-              <PixelBorder key={s} size="xs" className="inline-block">
-                <button
-                  type="button"
-                  onClick={() => setForcedState(s)}
-                  className={`cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
-                    forcedState === s
-                      ? 'bg-main text-page'
-                      : 'bg-depth text-sub hover:text-main'
-                  }`}
-                >
-                  {s}
-                </button>
-              </PixelBorder>
+              <button
+                key={s}
+                type="button"
+                onClick={() => setForcedState(s)}
+                className={`pixel-rounded-xs inline-block cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
+                  forcedState === s
+                    ? 'bg-main text-page'
+                    : 'bg-depth text-sub hover:text-main'
+                }`}
+              >
+                {s}
+              </button>
             ))}
           </div>
         )}
@@ -185,7 +182,7 @@ function ComponentShowcaseCard({
           </div>
         )}
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 

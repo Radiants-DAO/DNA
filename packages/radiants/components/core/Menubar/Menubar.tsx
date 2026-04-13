@@ -3,7 +3,7 @@
 import React from 'react';
 import { Menubar as BaseMenubar } from '@base-ui/react/menubar';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -76,16 +76,14 @@ interface MenubarLabelProps {
  */
 function Root({ children, className = '', modal = false, orientation = 'horizontal' }: MenubarRootProps) {
   return (
-    <PixelBorder size="xs" className={className}>
-      <BaseMenubar
-        data-rdna="menubar"
-        modal={modal}
-        orientation={orientation}
-        className="flex items-center bg-inv"
-      >
-        {children}
-      </BaseMenubar>
-    </PixelBorder>
+    <BaseMenubar
+      data-rdna="menubar"
+      modal={modal}
+      orientation={orientation}
+      className={`pixel-rounded-xs flex items-center bg-inv ${className}`.trim()}
+    >
+      {children}
+    </BaseMenubar>
   );
 }
 
@@ -139,16 +137,11 @@ function Content({ children, className = '' }: MenubarContentProps) {
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
           `.trim()}
         >
-          <PixelBorder
-            size="xs"
-            background="bg-card"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
             <div className="py-1">
             {children}
             </div>
-          </PixelBorder>
+          </div>
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>

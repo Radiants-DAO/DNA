@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { AppWindow, Button, Switch, Tooltip, Input, PixelBorder } from '@rdna/radiants/components/core';
+import { AppWindow, Button, Switch, Tooltip, Input } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
   Icon,
@@ -222,7 +222,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <PixelBorder size="xs">
+    <div className="pixel-rounded-xs">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
@@ -243,14 +243,14 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
           </Tooltip>
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
 function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
-    <PixelBorder size="sm" className="pixel-shadow-raised h-full">
+    <div className="pixel-rounded-sm pixel-shadow-raised h-full">
       <div className="h-full flex flex-col">
         {/* Swatch */}
         {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
@@ -264,11 +264,11 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
               {String(index + 1).padStart(2, '0')}
             </span>
             {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-            <PixelBorder size="sm" className="inline-block">
+            <div className="pixel-rounded-sm inline-block">
               <span className="block font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream">
                 {color.role}
               </span>
-            </PixelBorder>
+            </div>
           </div>
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
           <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
@@ -289,14 +289,14 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
           </div>
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
 function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
-    <PixelBorder size="sm" className="pixel-shadow-raised">
+    <div className="pixel-rounded-sm pixel-shadow-raised">
       <div>
         {/* Swatch */}
         {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
@@ -310,11 +310,11 @@ function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0
               {String(index + 1).padStart(2, '0')}
             </span>
             {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-            <PixelBorder size="sm" className="inline-block">
+            <div className="pixel-rounded-sm inline-block">
               <span className="block font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream">
                 {color.role}
               </span>
-            </PixelBorder>
+            </div>
           </div>
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
           <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
@@ -332,7 +332,7 @@ function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0
           </div>
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
@@ -385,7 +385,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category, index }: { category: SemanticCategory; index: number }) {
   return (
-    <PixelBorder size="sm">
+    <div className="pixel-rounded-sm">
       <div>
         {/* Header */}
         <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
@@ -412,7 +412,7 @@ function SemanticCategoryCard({ category, index }: { category: SemanticCategory;
           ))}
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 
@@ -453,23 +453,23 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <PixelBorder size="sm">
+    <div className="pixel-rounded-sm">
       <div className="bg-page p-2">
         <Button size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
           <span className="truncate">{sref.code}</span>
         </Button>
         <div className="grid grid-cols-2 gap-2">
           {sref.images.map((src, i) => (
-            <PixelBorder key={i} size="sm" className="aspect-square">
+            <div key={i} className="pixel-rounded-sm aspect-square">
               <div className="bg-rule relative w-full h-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
               </div>
-            </PixelBorder>
+            </div>
           ))}
         </div>
       </div>
-    </PixelBorder>
+    </div>
   );
 }
 

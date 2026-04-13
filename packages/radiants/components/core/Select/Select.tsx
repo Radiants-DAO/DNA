@@ -3,7 +3,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { cva } from 'class-variance-authority';
-import { PixelBorder } from '../PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -147,51 +147,45 @@ function Trigger({
 
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
-      <PixelBorder
-        size="xs"
-        className={fullWidth ? 'w-full' : ''}
-        color={error ? 'var(--color-danger)' : undefined}
-      >
-        <BaseSelect.Trigger
-          disabled={disabled}
-          data-variant="select"
-          data-size={size}
-          render={(props) => {
-            const isOpen = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
-            const classes = selectTriggerVariants({
-              size,
-              error,
-              open: isOpen,
-              className,
-            });
+      <BaseSelect.Trigger
+        disabled={disabled}
+        data-variant="select"
+        data-size={size}
+        render={(props) => {
+          const isOpen = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
+          const classes = selectTriggerVariants({
+            size,
+            error,
+            open: isOpen,
+            className: `pixel-rounded-xs ${fullWidth ? 'w-full' : ''} ${error ? 'pixel-border-danger' : ''} ${className}`.trim(),
+          });
 
-            return (
-              <button
-                {...props}
-                type="button"
-                className={classes}
-                data-slot="select-trigger"
-                data-variant="select"
-                data-size={size}
-                data-open={isOpen ? 'true' : 'false'}
-                data-state={isOpen ? 'open' : 'closed'}
-                data-invalid={error ? 'true' : 'false'}
-              >
-                {children ?? (
-                  <BaseSelect.Value
-                    placeholder={placeholder}
-                    className="text-main data-[placeholder]:text-mute"
-                  />
-                )}
-                <span className="flex-1 h-px bg-line opacity-30" />
-                <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
-                  {chevron || <DefaultChevron size={chevronSize} />}
-                </span>
-              </button>
-            );
-          }}
-        />
-      </PixelBorder>
+          return (
+            <button
+              {...props}
+              type="button"
+              className={classes}
+              data-slot="select-trigger"
+              data-variant="select"
+              data-size={size}
+              data-open={isOpen ? 'true' : 'false'}
+              data-state={isOpen ? 'open' : 'closed'}
+              data-invalid={error ? 'true' : 'false'}
+            >
+              {children ?? (
+                <BaseSelect.Value
+                  placeholder={placeholder}
+                  className="text-main data-[placeholder]:text-mute"
+                />
+              )}
+              <span className="flex-1 h-px bg-line opacity-30" />
+              <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
+                {chevron || <DefaultChevron size={chevronSize} />}
+              </span>
+            </button>
+          );
+        }}
+      />
     </div>
   );
 }
@@ -201,16 +195,11 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
     <BaseSelect.Portal>
       <BaseSelect.Positioner className="z-50">
         <BaseSelect.Popup className="z-50">
-          <PixelBorder
-            size="xs"
-            background="bg-page"
-            className={className}
-            shadow="2px 2px 0 var(--color-ink)"
-          >
+          <div className={`pixel-rounded-xs bg-page pixel-shadow-raised ${className}`.trim()}>
             <div className="py-1">
             {children}
             </div>
-          </PixelBorder>
+          </div>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>

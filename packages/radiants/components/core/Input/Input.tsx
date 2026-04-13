@@ -3,7 +3,7 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField } from '@base-ui/react/field';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -127,7 +127,7 @@ export const inputVariants = cva(
 );
 
 const INPUT_BACKGROUND =
-  'bg-page group-focus-within/pixel:bg-card';
+  'bg-page focus-within:bg-card';
 
 const INPUT_DISABLED_WRAPPER =
   'has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed';
@@ -267,14 +267,9 @@ function InputControl({
   );
 
   const wrappedInput = (
-    <PixelBorder
-      size="xs"
-      background={INPUT_BACKGROUND}
-      className={`${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER}`.trim()}
-      color={showStandaloneError ? 'var(--color-danger)' : undefined}
-    >
+    <div className={`pixel-rounded-xs ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
       {inputWithRef}
-    </PixelBorder>
+    </div>
   );
 
   if (hasIcon) {
@@ -330,14 +325,9 @@ export function TextArea({
   );
 
   return (
-    <PixelBorder
-      size="xs"
-      background={INPUT_BACKGROUND}
-      className={`${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER}`.trim()}
-      color={showStandaloneError ? 'var(--color-danger)' : undefined}
-    >
+    <div className={`pixel-rounded-xs ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
       {textareaEl}
-    </PixelBorder>
+    </div>
   );
 }
 

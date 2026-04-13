@@ -54,7 +54,14 @@
 .pixel-rounded-sm:focus-visible,
 .pixel-rounded-md:focus-visible,
 .pixel-rounded-lg:focus-visible,
-.pixel-rounded-xl:focus-visible {
+.pixel-rounded-xl:focus-visible,
+/* alternate corner shapes */
+[class*="pixel-chamfer-"]:focus-visible,
+[class*="pixel-notch-"]:focus-visible,
+[class*="pixel-scallop-"]:focus-visible,
+[class*="pixel-octagon-"]:focus-visible,
+[class*="pixel-sawtooth-"]:focus-visible,
+[class*="pixel-crenellation-"]:focus-visible {
   outline: 2px solid var(--color-focus, var(--color-accent));
   outline-offset: 2px;
 }

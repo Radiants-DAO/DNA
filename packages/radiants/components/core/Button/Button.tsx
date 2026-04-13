@@ -4,7 +4,7 @@ import React from 'react';
 import { Button as BaseButton } from '@base-ui/react/button';
 import { cva } from 'class-variance-authority';
 import { Icon } from '../../../icons/Icon';
-import { PixelBorder, type PixelBorderSize } from '../PixelBorder/PixelBorder';
+
 
 // ============================================================================
 // Types
@@ -16,15 +16,15 @@ type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 /**
- * Maps the Button `rounded` variant to the matching PixelBorder size preset.
- * `none` collapses to `null` — a sentinel meaning "skip the wrap entirely".
+ * Maps the Button `rounded` variant to the matching pixel-rounded CSS class.
+ * `none` collapses to `null` — a sentinel meaning "no pixel corners".
  */
-const BUTTON_ROUNDED_TO_PIXEL_SIZE: Record<ButtonRounded, PixelBorderSize | null> = {
-  xs: 'xs',
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-  xl: 'xl',
+const BUTTON_ROUNDED_TO_PIXEL_CLASS: Record<ButtonRounded, string | null> = {
+  xs: 'pixel-rounded-xs',
+  sm: 'pixel-rounded-sm',
+  md: 'pixel-rounded-md',
+  lg: 'pixel-rounded-lg',
+  xl: 'pixel-rounded-xl',
   none: null,
 };
 
@@ -102,7 +102,7 @@ export const buttonFaceVariants = cva(
         text: 'no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit] normal-case !h-auto !p-0',
         pattern: '',
       },
-      // Geometry is now handled by the `<PixelBorder>` wrapper (see
+      // Geometry is now handled by the `pixel-rounded-*` CSS class (see
       // Button render body). This variant stays in the cva signature so
       // compound variants that key on `rounded` keep type-checking, but it
       // no longer contributes classes to the face element.
@@ -215,12 +215,9 @@ export function Button({
     className: `${justifyClass} ${className}`.trim(),
   });
 
-  // When the button has pixel-art corners, wrap the face span in a
-  // <PixelBorder>. The map collapses `none` to `null`, in which case the
-  // face renders bare. The face's pseudo-element overlays
-  // (::before / ::after) stay within the wrapped clipper so they still
-  // mask to the staircase polygon — matching the legacy behaviour.
-  const pixelBorderSize = BUTTON_ROUNDED_TO_PIXEL_SIZE[effectiveRounded];
+  // When the button has pixel-art corners, apply the CSS pixel-rounded class.
+  // The map collapses `none` to `null`, in which case no pixel corners are applied.
+  const pixelClass = BUTTON_ROUNDED_TO_PIXEL_CLASS[effectiveRounded];
 
   // Content based on mode
   let content: React.ReactNode;
@@ -239,9 +236,9 @@ export function Button({
     );
   }
 
-  const faceSpan = (
+  const face = (
     <span
-      className={faceClasses}
+      className={`${pixelClass ? `${pixelClass} ${fullWidth ? 'w-full' : ''} inline-flex` : ''} ${faceClasses}`.trim()}
       data-slot="button-face"
       data-variant={mode}
       data-mode={mode}
@@ -255,18 +252,6 @@ export function Button({
       {content}
     </span>
   );
-
-  const face =
-    pixelBorderSize !== null ? (
-      <PixelBorder
-        size={pixelBorderSize}
-        className={fullWidth ? 'w-full inline-flex' : 'inline-flex'}
-      >
-        {faceSpan}
-      </PixelBorder>
-    ) : (
-      faceSpan
-    );
 
   if ('href' in elementProps && typeof elementProps.href === 'string') {
     const { href, target, ...anchorProps } = elementProps;
