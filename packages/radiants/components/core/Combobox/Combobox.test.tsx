@@ -26,19 +26,11 @@ function TestCombobox({
 
 describe('Combobox', () => {
   test('renders input', () => {
-    const { container } = render(<TestCombobox />);
+    render(<TestCombobox />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    // PixelBorder renders four corner SVGs (xs = 4x4 viewBox) around the input.
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
-    // Layered mode: bg-page sibling layer with polygon clip-path.
-    const bgLayer = container.querySelector('.bg-page') as HTMLElement | null;
-    expect(bgLayer).toBeInTheDocument();
-    expect(bgLayer?.style.clipPath).toContain('polygon(');
-    // Trigger class should not carry legacy pixel-rounded utility.
-    const classTokens = screen.getByRole('combobox').className.split(/\s+/);
-    expect(classTokens).not.toContain('pixel-rounded-xs');
-    // Legacy PixelCorner overlay (2x2 viewBox) must not be present.
-    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
+    const input = screen.getByRole('combobox');
+    expect(input).toHaveClass('pixel-rounded-xs');
+    expect(input).toHaveClass('bg-page');
   });
 
   test('Combobox.Status is exported in namespace', () => {
@@ -50,8 +42,6 @@ describe('Combobox', () => {
     render(<TestCombobox />);
     await user.click(screen.getByRole('combobox'));
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
-    // Legacy overlay must not appear anywhere.
-    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(0);
   });
 
   test('forwards onOpenChange', async () => {

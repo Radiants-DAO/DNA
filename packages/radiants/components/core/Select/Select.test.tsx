@@ -38,15 +38,9 @@ function TestSelectDisabledOption() {
 
 describe('Select', () => {
   test('trigger renders with placeholder text', () => {
-    const { container } = render(<TestSelect />);
+    render(<TestSelect />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    // PixelBorder renders four corner SVGs (xs = 4x4 viewBox) around the trigger.
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
-    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
-    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
-    // Trigger class should no longer carry legacy pixel-rounded utility.
-    const classTokens = screen.getByRole('combobox').className.split(/\s+/);
-    expect(classTokens).not.toContain('pixel-rounded-xs');
+    expect(screen.getByRole('combobox')).toHaveClass('pixel-rounded-xs');
   });
 
   test('opens popup when trigger is clicked', async () => {
@@ -57,8 +51,6 @@ describe('Select', () => {
     await user.click(trigger);
 
     expect(await screen.findByRole('listbox')).toBeInTheDocument();
-    // Legacy overlay must not appear anywhere.
-    expect(document.querySelectorAll('svg[viewBox="0 0 2 2"]')).toHaveLength(0);
   });
 
   test('trigger has aria-expanded that updates on open/close', async () => {

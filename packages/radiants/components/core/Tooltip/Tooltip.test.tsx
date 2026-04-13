@@ -17,8 +17,8 @@ describe('Tooltip', () => {
     await user.hover(screen.getByText('Hover me'));
     const tooltip = screen.getByRole('tooltip');
     expect(tooltip).toHaveTextContent('Helpful tip');
-    // PixelBorder is rendered inside the tooltip popup.
-    expect(baseElement.querySelectorAll('svg[viewBox="0 0 4 4"]').length).toBeGreaterThanOrEqual(1);
+    expect(tooltip.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(tooltip.querySelector('.bg-inv')).toBeInTheDocument();
 
     await user.unhover(screen.getByText('Hover me'));
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();

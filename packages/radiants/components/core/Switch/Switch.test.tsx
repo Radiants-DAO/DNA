@@ -53,13 +53,8 @@ describe('Switch', () => {
     const { container } = render(<Switch checked={false} onChange={() => {}} />);
     const el = document.querySelector('[data-variant="switch"]');
     expect(el).toBeInTheDocument();
-    const classTokens = el?.className.split(/\s+/) ?? [];
-    expect(classTokens).not.toContain('pixel-rounded-xs');
-    expect(classTokens).not.toContain('rounded-xs');
-    // PixelBorder renders four 4x4 corner SVGs around the track AND thumb (8 total).
-    expect(
-      container.querySelectorAll('svg[viewBox="0 0 4 4"]').length,
-    ).toBeGreaterThanOrEqual(4);
+    expect(el).toHaveClass('pixel-rounded-xs');
+    expect(container.querySelector('[data-slot="switch-thumb"]')?.parentElement).toHaveClass('pixel-rounded-xs');
   });
 
   test('renders with different sizes', () => {

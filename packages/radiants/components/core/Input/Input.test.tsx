@@ -9,14 +9,9 @@ describe('Input', () => {
     expect(input).toBeInTheDocument();
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('data-rdna', 'input');
-    // PixelBorder renders four corner SVGs with viewBox matching the xs radius (4).
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
-    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
-    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
-    // Layered mode: a clipped bg layer (bg-page) sibling of the input.
-    const bgLayer = container.querySelector('.bg-page') as HTMLElement | null;
-    expect(bgLayer).toBeInTheDocument();
-    expect(bgLayer?.style.clipPath).toContain('polygon(');
+    const shell = container.firstElementChild as HTMLElement | null;
+    expect(shell).toHaveClass('pixel-rounded-xs');
+    expect(shell).toHaveClass('bg-page');
   });
 
   test('size variants apply correct data-size', () => {
@@ -29,11 +24,9 @@ describe('Input', () => {
 
   test('standalone error colors the PixelBorder staircase with the danger token', () => {
     const { container } = render(<Input placeholder="err" error />);
-    const cornerPaths = container.querySelectorAll('svg[aria-hidden="true"] path');
-    expect(cornerPaths.length).toBeGreaterThan(0);
-    cornerPaths.forEach((path) => {
-      expect(path.getAttribute('fill')).toBe('var(--color-danger)');
-    });
+    const shell = container.firstElementChild as HTMLElement | null;
+    expect(shell).toHaveClass('pixel-border-danger');
+    expect(screen.getByPlaceholderText('err')).toHaveAttribute('data-rdna', 'input');
   });
 
   test('standalone renders correctly without Root', () => {
@@ -96,11 +89,10 @@ describe('Input', () => {
         <Input placeholder="test" error />
       </Input.Root>
     );
-    const cornerPaths = container.querySelectorAll('svg[aria-hidden="true"] path');
-    expect(cornerPaths.length).toBeGreaterThan(0);
-    cornerPaths.forEach((path) => {
-      expect(path.getAttribute('fill')).toBe('var(--color-line)');
-    });
+    const field = container.querySelector('[data-rdna="input-field"]');
+    expect(field).toBeInTheDocument();
+    expect(field).not.toHaveClass('pixel-border-danger');
+    expect(screen.getByPlaceholderText('test')).toHaveAttribute('data-rdna', 'input');
   });
 
   test('disabled propagation from Root', () => {

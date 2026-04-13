@@ -22,27 +22,18 @@ function TestNavigationMenu() {
 }
 
 describe('NavigationMenu', () => {
-  test('wraps triggers and links in PixelBorder (xs radius)', () => {
+  test('renders triggers and links with the pixel-rounded xs shell', () => {
     const { container } = render(<TestNavigationMenu />);
 
     const trigger = screen.getByText('Products').closest('button');
     const link = screen.getByRole('link', { name: 'About' });
-    const triggerTokens = trigger?.className.split(/\s+/) ?? [];
-    const linkTokens = link.className.split(/\s+/);
 
-    expect(triggerTokens).not.toContain('pixel-rounded-xs');
-    expect(triggerTokens).not.toContain('rounded-xs');
-    expect(linkTokens).not.toContain('pixel-rounded-xs');
-    expect(linkTokens).not.toContain('rounded-xs');
-
-    // Trigger and Link are each wrapped in a PixelBorder (xs = radius 4).
-    // Expect at least 8 corner SVGs (4 per wrapped element).
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]').length).toBeGreaterThanOrEqual(8);
-    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
-    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
+    expect(trigger).toHaveClass('pixel-rounded-xs');
+    expect(link).toHaveClass('pixel-rounded-xs');
+    expect(container.querySelector('[data-rdna="navigationmenu"]')).toBeInTheDocument();
   });
 
-  test('renders viewport content inside a PixelBorder shell', async () => {
+  test('renders viewport content with the rounded popup shell classes', async () => {
     const user = userEvent.setup();
     render(<TestNavigationMenu />);
 
@@ -50,9 +41,7 @@ describe('NavigationMenu', () => {
     await waitFor(() => {
       expect(screen.getByText('Flyout content')).toBeInTheDocument();
     });
-    // Viewport is wrapped in PixelBorder size="xs" (radius 4).
-    expect(document.querySelectorAll('svg[viewBox="0 0 4 4"]').length).toBeGreaterThanOrEqual(4);
-    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
-    expect(document.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
+    expect(screen.getByText('Flyout content').closest('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(screen.getByText('Flyout content').closest('.pixel-shadow-raised')).toBeInTheDocument();
   });
 });

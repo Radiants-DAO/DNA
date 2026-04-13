@@ -99,9 +99,11 @@ describe('Dialog', () => {
     expect(screen.getByText('Test description')).toBeInTheDocument();
   });
 
-  test('renders dialog content inside a PixelBorder shell', () => {
+  test('renders dialog content with the current popup shell classes', () => {
     render(<TestDialog defaultOpen />);
-    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
+    expect(dialog.querySelector('.pixel-shadow-floating')).toBeInTheDocument();
   });
 
   test('forwards eventDetails.reason from onOpenChange', async () => {

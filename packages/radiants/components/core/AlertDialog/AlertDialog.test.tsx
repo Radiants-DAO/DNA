@@ -70,8 +70,12 @@ describe('AlertDialog', () => {
     expect(actionsRef.current?.close).toBeTypeOf('function');
   });
 
-  test('renders alert dialog content inside a PixelBorder shell', () => {
+  test('renders alert dialog content with the current popup shell classes', () => {
     render(<TestAlertDialog defaultOpen />);
-    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
+
+    const dialog = screen.getByRole('alertdialog');
+    expect(dialog).toBeInTheDocument();
+    expect(dialog.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
+    expect(dialog.querySelector('.pixel-shadow-floating')).toBeInTheDocument();
   });
 });

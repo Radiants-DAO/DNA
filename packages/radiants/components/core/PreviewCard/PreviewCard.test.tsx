@@ -28,7 +28,7 @@ describe('PreviewCard', () => {
     expect(PreviewCard).toBeDefined();
   });
 
-  test('renders preview content inside a PixelBorder shell when open', () => {
+  test('renders preview content with the rounded popup shell classes when open', () => {
     render(
       <PreviewCard defaultOpen>
         <PreviewCardTrigger asChild>
@@ -39,6 +39,9 @@ describe('PreviewCard', () => {
     );
 
     expect(screen.getByText('Preview content')).toBeInTheDocument();
-    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
+    const popup = screen.getByText('Preview content').closest('[data-rdna="previewcard"]');
+    expect(popup).toBeInTheDocument();
+    expect(popup?.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(popup?.querySelector('.pixel-shadow-raised')).toBeInTheDocument();
   });
 });

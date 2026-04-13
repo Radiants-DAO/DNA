@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { Alert } from './Alert';
 
 describe('Alert', () => {
-  test('renders alert content inside a PixelBorder shell', () => {
+  test('renders alert content with the current rounded shell classes', () => {
     render(
       <Alert.Root variant="info">
         <Alert.Content>
@@ -12,7 +12,10 @@ describe('Alert', () => {
       </Alert.Root>,
     );
 
-    expect(screen.getByRole('alert')).toBeInTheDocument();
-    expect(document.querySelector('[data-rdna-pixel-border]')).toBeInTheDocument();
+    const alert = screen.getByRole('alert');
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveAttribute('data-variant', 'info');
+    expect(alert).toHaveClass('pixel-rounded-xs');
+    expect(alert).toHaveClass('pixel-shadow-raised');
   });
 });

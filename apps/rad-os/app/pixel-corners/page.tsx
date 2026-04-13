@@ -148,16 +148,16 @@ export default function PixelCornersPreview() {
             {/* Pixel scale */}
             <label className="flex items-center gap-3 text-sm">
               <span className="w-28 shrink-0">Pixel scale</span>
-              {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-for-preview-tool owner:design-system expires:2027-01-01 issue:DNA-preview */}
-              <select
+              <input
+                type="range"
+                min={0.5}
+                max={6}
+                step={0.5}
                 value={pixelScale}
                 onChange={(e) => setPixelScale(Number(e.target.value))}
-                className="bg-page text-main px-2 py-1"
-              >
-                <option value={1}>1x</option>
-                <option value={2}>2x</option>
-                <option value={4}>4x</option>
-              </select>
+                className="flex-1"
+              />
+              <span className="w-16 text-right text-xs opacity-60">{pixelScale}x</span>
             </label>
 
             {/* Background opacity */}

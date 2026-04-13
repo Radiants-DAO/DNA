@@ -23,15 +23,8 @@ describe('Slider', () => {
   test('renders with slider role', async () => {
     const { container } = render(<Slider value={50} onChange={() => {}} min={0} max={100} />);
     expect(await getSlider()).toBeInTheDocument();
-    // Track shell should no longer carry the legacy pixel-rounded utility.
-    const trackClasses = container.querySelector('[data-slot="slider-track"]')?.className ?? '';
-    expect(trackClasses).not.toContain('pixel-rounded-xs');
-    const thumbClasses = container.querySelector('[data-slot="slider-thumb"]')?.className ?? '';
-    expect(thumbClasses).not.toContain('pixel-rounded-xs');
-    // PixelBorder renders corner SVGs (xs = 4x4 viewBox) for both track and thumb (at least 8).
-    expect(
-      container.querySelectorAll('svg[viewBox="0 0 4 4"]').length,
-    ).toBeGreaterThanOrEqual(4);
+    expect(container.querySelector('[data-slot="slider-track"]')?.parentElement).toHaveClass('pixel-rounded-xs');
+    expect(container.querySelector('[data-slot="slider-thumb"]')?.parentElement).toHaveClass('pixel-rounded-xs');
   });
 
   test('renders with label and value display', async () => {

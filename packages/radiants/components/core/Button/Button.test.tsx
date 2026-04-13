@@ -54,53 +54,39 @@ describe('Button', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  test('wraps the button face in a PixelBorder with xs corners by default', () => {
-    const { container } = render(<Button>Rounded</Button>);
+  test('applies the default xs pixel-rounded class to the button face', () => {
+    render(<Button>Rounded</Button>);
     const face = screen.getByText('Rounded').closest('[data-slot="button-face"]');
-    const classTokens = face?.className.split(/\s+/) ?? [];
 
-    // Legacy pixel-rounded class is gone from the face span itself.
-    expect(classTokens).not.toContain('pixel-rounded-xs');
-    expect(classTokens).not.toContain('rounded-xs');
-
-    // PixelBorder size="xs" renders four corner SVGs with viewBox 0 0 4 4.
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
-    // Face is inside the PixelBorder wrapped-mode clipper.
-    expect(face?.closest('.overflow-hidden')).toBeInTheDocument();
+    expect(face).toHaveClass('pixel-rounded-xs');
+    expect(face).toHaveAttribute('data-variant', 'solid');
+    expect(face).toHaveAttribute('data-state', 'default');
   });
 
-  test('size variants render size-matched pixel corners', () => {
-    const cases: Array<{ rounded: 'xs' | 'sm' | 'md' | 'lg' | 'xl'; size: number }> = [
-      { rounded: 'xs', size: 4 },
-      { rounded: 'sm', size: 6 },
-      { rounded: 'md', size: 8 },
-      { rounded: 'lg', size: 12 },
-      { rounded: 'xl', size: 20 },
+  test('rounded variants map to the matching pixel-rounded classes', () => {
+    const cases: Array<{ rounded: 'xs' | 'sm' | 'md' | 'lg' | 'xl'; className: string }> = [
+      { rounded: 'xs', className: 'pixel-rounded-xs' },
+      { rounded: 'sm', className: 'pixel-rounded-sm' },
+      { rounded: 'md', className: 'pixel-rounded-md' },
+      { rounded: 'lg', className: 'pixel-rounded-lg' },
+      { rounded: 'xl', className: 'pixel-rounded-xl' },
     ];
 
-    for (const { rounded, size } of cases) {
-      const { container, unmount } = render(<Button rounded={rounded}>R-{rounded}</Button>);
-      expect(
-        container.querySelectorAll(`svg[viewBox="0 0 ${size} ${size}"]`),
-      ).toHaveLength(4);
-      unmount();
+    for (const { rounded, className } of cases) {
+      render(<Button rounded={rounded}>R-{rounded}</Button>);
+      expect(screen.getByText(`R-${rounded}`).closest('[data-slot="button-face"]')).toHaveClass(className);
     }
   });
 
-  test('rounded="none" skips the PixelBorder wrap entirely', () => {
-    const { container } = render(
-      <Button rounded="none">Square</Button>,
-    );
-    // No corner SVGs of any preset radius are rendered.
-    for (const r of [4, 6, 8, 12, 20]) {
-      expect(container.querySelectorAll(`svg[viewBox="0 0 ${r} ${r}"]`)).toHaveLength(0);
-    }
+  test('rounded="none" removes the pixel-rounded class from the face', () => {
+    render(<Button rounded="none">Square</Button>);
+    const face = screen.getByText('Square').closest('[data-slot="button-face"]');
+    expect(face?.className).not.toMatch(/\bpixel-rounded-/);
   });
 
-  test('mode="text" forces rounded="none" and skips the PixelBorder wrap', () => {
-    const { container } = render(<Button mode="text">Go</Button>);
-    for (const r of [4, 6, 8, 12, 20]) {
-      expect(container.querySelectorAll(`svg[viewBox="0 0 ${r} ${r}"]`)).toHaveLength(0);
-    }
+  test('mode="text" forces rounded="none" on the face', () => {
+    render(<Button mode="text">Go</Button>);
+    const face = screen.getByText('Go').closest('[data-slot="button-face"]');
+    expect(face?.className).not.toMatch(/\bpixel-rounded-/);
   });
 });

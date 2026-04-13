@@ -19,10 +19,7 @@ describe('NumberField', () => {
   test('renders with numeric input', () => {
     const { container } = render(<TestNumberField defaultValue={5} />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    // PixelBorder renders four corner SVGs with viewBox matching the xs radius (4).
-    expect(container.querySelectorAll('svg[viewBox="0 0 4 4"]')).toHaveLength(4);
-    // Legacy PixelCorner overlay (2×2 viewBox) must not be present.
-    expect(container.querySelector('svg[viewBox="0 0 2 2"]')).not.toBeInTheDocument();
+    expect(container.querySelector('[data-slot="group"], [data-rdna="numberfield"] .pixel-rounded-xs')).toBeInTheDocument();
   });
 
   test('forwards readOnly to the input', () => {
