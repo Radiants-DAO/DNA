@@ -52,7 +52,5 @@ export type {
   PixelBorderEdgesFlags,
 } from './PixelBorder';
 export { generatePixelCornerBorder } from '@rdna/pixel';
-export { PixelCorner } from './PixelCorner';
-export type { PixelCornerProps } from './PixelCorner';
 export { Icon } from './Icon/Icon';
 export type { IconSet } from './Icon/Icon';

@@ -36,3 +36,13 @@ export type { ImportOptions, ImportReport } from './import.js';
 export type { PatternEntry, PatternName } from './patterns.js';
 export { bitsToMergedRects, bitsToPath, bitsToMaskURI } from './path.js';
 export type { MergedRect } from './path.js';
+export {
+  SHAPE_REGISTRY,
+  generateShape,
+  registerShape,
+  listShapes,
+} from './shapes.js';
+export type {
+  CornerShapeGenerator,
+  CornerShapeName,
+} from './shapes.js';
