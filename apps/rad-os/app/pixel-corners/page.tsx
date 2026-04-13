@@ -1,133 +1,360 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { PixelBorder, generatePixelCornerBorder } from '@rdna/radiants/components/core';
+import { useRef, useState } from 'react';
 
-const PRESETS = [4, 6, 8, 12, 16, 20, 32, 48, 64] as const;
+/** Every numeric size in the generated CSS, plus the special `full` circle. */
+const SIZES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 'full'] as const;
+type Size = (typeof SIZES)[number];
+
+/** Suggested card dimensions keyed by pixel-corner size. */
+function defaultCardSize(size: Size): { w: number; h: number } {
+  if (size === 'full') return { w: 32, h: 32 };
+  if (size <= 8) return { w: 100, h: 70 };
+  if (size <= 20) return { w: 180, h: 120 };
+  if (size <= 32) return { w: 240, h: 160 };
+  return { w: 320, h: 200 };
+}
+
+const SHADOW_OPTIONS = [
+  { label: 'None', value: 'none' },
+  { label: 'Drop-shadow soft', value: 'drop-shadow(0 2px 4px rgb(0 0 0 / 0.15))' },
+  { label: 'Drop-shadow strong', value: 'drop-shadow(0 4px 8px rgb(0 0 0 / 0.35))' },
+  { label: 'pixel-shadow-resting', value: 'pixel-shadow' },
+] as const;
 
 export default function PixelCornersPreview() {
-  const [radius, setRadius] = useState(20);
-  const [boxWidth, setBoxWidth] = useState(240);
-  const [boxHeight, setBoxHeight] = useState(160);
+  const [boxWidth, setBoxWidth] = useState(0);
+  const [boxHeight, setBoxHeight] = useState(0);
+  const [borderWidth, setBorderWidth] = useState(1);
+  const [borderColor, setBorderColor] = useState('#1a1a19');
+  const [pixelScale, setPixelScale] = useState(1);
+  const [bgOpacity, setBgOpacity] = useState(25);
+  const [shadow, setShadow] = useState('none');
+  const [highlightedSize, setHighlightedSize] = useState<Size | null>(null);
 
-  const cells = useMemo(() => generatePixelCornerBorder(radius), [radius]);
+  const sizeRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const scrollToSize = (size: Size) => {
+    setHighlightedSize(size);
+    const el = sizeRefs.current[String(size)];
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => setHighlightedSize(null), 1500);
+  };
+
+  /** Resolve card width/height — 0 means "use default per size" */
+  const cardW = (size: Size) => (boxWidth > 0 ? boxWidth : defaultCardSize(size).w);
+  const cardH = (size: Size) => (boxHeight > 0 ? boxHeight : defaultCardSize(size).h);
+
+  const className = (size: Size) => `pixel-rounded-${size}`;
+
+  const usePixelShadow = shadow === 'pixel-shadow';
+  const filterStyle = shadow !== 'none' && !usePixelShadow ? shadow : undefined;
 
   return (
     <main className="min-h-screen bg-page text-main p-8">
-      <div className="max-w-[48rem] mx-auto flex flex-col gap-8">
+      <div
+        className="max-w-[64rem] mx-auto flex flex-col gap-10"
+        style={
+          {
+            '--pixel-scale': pixelScale,
+            '--card-border-width': `${borderWidth}px`,
+            '--color-line': borderColor,
+          } as React.CSSProperties
+        }
+      >
+        {/* Header */}
         <header>
-          <h1 className="font-display text-3xl">Pixel Corner Live Preview</h1>
+          <h1 className="font-display text-3xl">Pixel Corners Preview</h1>
           <p className="text-sm opacity-70 mt-2">
-            Live-generated from <code>generatePixelCornerBorder(R)</code>.
-            Every corner is diagonally symmetric, derived from cell-center
-            rasterization of a circle of radius R.
+            CSS-only pixel corners via <code>mask-image</code>. No SVG component needed — just apply{' '}
+            <code>pixel-rounded-N</code> classes.
           </p>
         </header>
 
-        <section className="flex flex-col gap-4">
-          <label className="flex items-center gap-4 text-sm">
-            <span className="w-20">Radius</span>
-            <input
-              type="range"
-              min={1}
-              max={100}
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-              className="flex-1"
-            />
-            <input
-              type="number"
-              min={1}
-              max={1000}
-              value={radius}
-              onChange={(e) => setRadius(Math.max(1, Number(e.target.value) || 1))}
-              className="w-20 px-2 py-1 bg-page text-main border border-line text-right"
-            />
-            <span className="w-16 text-xs opacity-60">px</span>
-          </label>
+        {/* Controls */}
+        <section className="flex flex-col gap-4 p-4 bg-inv/5">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Controls</h2>
 
-          <label className="flex items-center gap-4 text-sm">
-            <span className="w-20">Width</span>
-            <input
-              type="range"
-              min={50}
-              max={600}
-              value={boxWidth}
-              onChange={(e) => setBoxWidth(Number(e.target.value))}
-              className="flex-1"
-            />
-            <span className="w-20 text-right">{boxWidth}px</span>
-          </label>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* Box width */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Box width</span>
+              <input
+                type="range"
+                min={0}
+                max={400}
+                value={boxWidth}
+                onChange={(e) => setBoxWidth(Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="w-16 text-right text-xs opacity-60">
+                {boxWidth === 0 ? 'auto' : `${boxWidth}px`}
+              </span>
+            </label>
 
-          <label className="flex items-center gap-4 text-sm">
-            <span className="w-20">Height</span>
-            <input
-              type="range"
-              min={50}
-              max={400}
-              value={boxHeight}
-              onChange={(e) => setBoxHeight(Number(e.target.value))}
-              className="flex-1"
-            />
-            <span className="w-20 text-right">{boxHeight}px</span>
-          </label>
-        </section>
+            {/* Box height */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Box height</span>
+              <input
+                type="range"
+                min={0}
+                max={300}
+                value={boxHeight}
+                onChange={(e) => setBoxHeight(Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="w-16 text-right text-xs opacity-60">
+                {boxHeight === 0 ? 'auto' : `${boxHeight}px`}
+              </span>
+            </label>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-sm uppercase tracking-wider opacity-60">Preview</h2>
-          <div className="p-8 bg-inv/5 flex items-center justify-center min-h-[24rem]">
-            <PixelBorder
-              radius={radius}
-              style={{ width: boxWidth, height: boxHeight }}
-            >
-              <div
-                className="w-full h-full flex items-center justify-center text-xs"
-                style={{ width: boxWidth, height: boxHeight }}
+            {/* Border width */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Border width</span>
+              <input
+                type="range"
+                min={0}
+                max={4}
+                value={borderWidth}
+                onChange={(e) => setBorderWidth(Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="w-16 text-right text-xs opacity-60">{borderWidth}px</span>
+            </label>
+
+            {/* Border color */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Border color</span>
+              <input
+                type="color"
+                value={borderColor}
+                onChange={(e) => setBorderColor(e.target.value)}
+                className="w-8 h-8 cursor-pointer"
+              />
+              <span className="text-xs opacity-60">{borderColor}</span>
+            </label>
+
+            {/* Pixel scale */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Pixel scale</span>
+              {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-for-preview-tool owner:design-system expires:2027-01-01 issue:DNA-preview */}
+              <select
+                value={pixelScale}
+                onChange={(e) => setPixelScale(Number(e.target.value))}
+                className="bg-page text-main px-2 py-1"
               >
-                {radius}px radius · {cells.length} border cells
-              </div>
-            </PixelBorder>
+                <option value={1}>1x</option>
+                <option value={2}>2x</option>
+                <option value={4}>4x</option>
+              </select>
+            </label>
+
+            {/* Background opacity */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">BG opacity</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={bgOpacity}
+                onChange={(e) => setBgOpacity(Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="w-16 text-right text-xs opacity-60">{bgOpacity}%</span>
+            </label>
+
+            {/* Shadow */}
+            <label className="flex items-center gap-3 text-sm">
+              <span className="w-28 shrink-0">Shadow</span>
+              {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-for-preview-tool owner:design-system expires:2027-01-01 issue:DNA-preview */}
+              <select
+                value={shadow}
+                onChange={(e) => setShadow(e.target.value)}
+                className="bg-page text-main px-2 py-1"
+              >
+                {SHADOW_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
         </section>
 
+        {/* Presets — jump-to-size buttons */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm uppercase tracking-wider opacity-60">Zoom (8×)</h2>
-          <div className="p-4 bg-inv/5 flex items-center justify-center">
-            <svg
-              width={radius * 8}
-              height={radius * 8}
-              viewBox={`0 0 ${radius} ${radius}`}
-              style={{ imageRendering: 'pixelated' }}
-            >
-              <rect width={radius} height={radius} fill="var(--color-inv)" opacity={0.08} />
-              {cells.map(([x, y]: [number, number]) => (
-                <rect
-                  key={`${x}-${y}`}
-                  x={x}
-                  y={y}
-                  width={1}
-                  height={1}
-                  fill="var(--color-main)"
-                />
-              ))}
-            </svg>
-          </div>
-        </section>
-
-        <section className="flex flex-col gap-3">
-          <h2 className="text-sm uppercase tracking-wider opacity-60">Presets</h2>
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Jump to Size</h2>
           <div className="flex gap-2 flex-wrap">
-            {PRESETS.map((r) => (
+            {SIZES.map((size) => (
+              // eslint-disable-next-line rdna/prefer-rdna-components -- reason:preset-buttons-in-preview-tool owner:design-system expires:2027-01-01 issue:DNA-preview
               <button
-                key={r}
-                onClick={() => setRadius(r)}
-                className={`px-3 py-1 border text-sm ${
-                  radius === r ? 'bg-main text-page' : 'border-line'
+                key={size}
+                onClick={() => scrollToSize(size)}
+                className={`px-3 py-1 text-sm transition-colors ${
+                  highlightedSize === size ? 'bg-main text-page' : 'bg-inv/10 hover:bg-inv/20'
                 }`}
               >
-                {r}px
+                {size === 'full' ? 'full' : size}
               </button>
             ))}
+          </div>
+        </section>
+
+        {/* Size Gallery */}
+        <section className="flex flex-col gap-6">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Size Gallery</h2>
+
+          <div className="flex flex-wrap gap-6 items-end">
+            {SIZES.map((size) => {
+              const w = cardW(size);
+              const h = cardH(size);
+              const label = `pixel-rounded-${size}`;
+              const dims = size === 'full' ? '20x20 circle' : `${size}x${size}`;
+
+              const card = (
+                <div
+                  className={`${className(size)} flex flex-col items-center justify-center gap-1`}
+                  style={{
+                    width: w,
+                    height: h,
+                    background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                  }}
+                >
+                  <span className="text-xs font-mono opacity-80">{label}</span>
+                  <span className="text-xs opacity-50">{dims}</span>
+                </div>
+              );
+
+              return (
+                <div
+                  key={size}
+                  ref={(el) => {
+                    sizeRefs.current[String(size)] = el;
+                  }}
+                  className={`flex flex-col items-center gap-2 transition-all ${
+                    highlightedSize === size ? 'ring-2 ring-accent p-2' : ''
+                  }`}
+                >
+                  {/* Shadow wrapper pattern */}
+                  {filterStyle ? (
+                    <div style={{ filter: filterStyle }}>{card}</div>
+                  ) : usePixelShadow ? (
+                    <div className="pixel-shadow-resting">{card}</div>
+                  ) : (
+                    card
+                  )}
+                  <span className="text-xs opacity-40">{w}x{h}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Scale Comparison */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Scale Comparison</h2>
+          <p className="text-sm opacity-50">
+            <code>pixel-rounded-8</code> at 1x, 2x, and 4x <code>--pixel-scale</code>
+          </p>
+
+          <div className="flex flex-wrap gap-8 items-end">
+            {[1, 2, 4].map((scale) => (
+              <div key={scale} className="flex flex-col items-center gap-2">
+                <div
+                  className="pixel-rounded-8 flex items-center justify-center"
+                  style={
+                    {
+                      '--pixel-scale': scale,
+                      width: 180,
+                      height: 120,
+                      background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <span className="text-xs font-mono opacity-80">{scale}x</span>
+                </div>
+                <span className="text-xs opacity-40">--pixel-scale: {scale}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Shadow Wrapper Demo */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Shadow Wrapper Demo</h2>
+          <p className="text-sm opacity-50">
+            <code>mask-image</code> clips <code>box-shadow</code>. Use a wrapper{' '}
+            <code>div</code> with <code>filter: drop-shadow()</code>, or the{' '}
+            <code>pixel-shadow-*</code> utility classes.
+          </p>
+
+          <div className="flex flex-wrap gap-8 items-end">
+            {/* No shadow */}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className="pixel-rounded-12 flex items-center justify-center"
+                style={{
+                  width: 200,
+                  height: 120,
+                  background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                }}
+              >
+                <span className="text-xs font-mono opacity-80">No shadow</span>
+              </div>
+              <span className="text-xs opacity-40">plain</span>
+            </div>
+
+            {/* Drop shadow via wrapper */}
+            <div className="flex flex-col items-center gap-2">
+              <div style={{ filter: 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.25))' }}>
+                <div
+                  className="pixel-rounded-12 flex items-center justify-center"
+                  style={{
+                    width: 200,
+                    height: 120,
+                    background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                  }}
+                >
+                  <span className="text-xs font-mono opacity-80">drop-shadow</span>
+                </div>
+              </div>
+              <span className="text-xs opacity-40">filter wrapper</span>
+            </div>
+
+            {/* pixel-shadow-resting */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="pixel-shadow-resting">
+                <div
+                  className="pixel-rounded-12 flex items-center justify-center"
+                  style={{
+                    width: 200,
+                    height: 120,
+                    background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                  }}
+                >
+                  <span className="text-xs font-mono opacity-80">pixel-shadow-resting</span>
+                </div>
+              </div>
+              <span className="text-xs opacity-40">pixel-shadow utility</span>
+            </div>
+
+            {/* pixel-shadow-floating */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="pixel-shadow-floating">
+                <div
+                  className="pixel-rounded-12 flex items-center justify-center"
+                  style={{
+                    width: 200,
+                    height: 120,
+                    background: `rgb(0 128 80 / ${bgOpacity / 100})`,
+                  }}
+                >
+                  <span className="text-xs font-mono opacity-80">pixel-shadow-floating</span>
+                </div>
+              </div>
+              <span className="text-xs opacity-40">pixel-shadow-floating</span>
+            </div>
           </div>
         </section>
       </div>

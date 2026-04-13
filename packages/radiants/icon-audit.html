@@ -204,6 +204,67 @@
     position: absolute; top: -2px; left: 1px;
   }
 
+  /* ── Grid view ── */
+  .col-list.grid-mode {
+    display: flex; flex-wrap: wrap; gap: 3px; align-content: flex-start;
+    padding: 6px;
+  }
+  .col-list.grid-mode .section-label {
+    width: 100%; flex-shrink: 0;
+  }
+  .col-list.grid-mode .row {
+    width: 42px; height: 42px; padding: 0; margin: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; flex-direction: column; gap: 0;
+  }
+  .col-list.grid-mode .row .del-cb {
+    position: absolute; top: 1px; right: 1px; width: 10px; height: 10px;
+    opacity: 0; z-index: 2;
+  }
+  .col-list.grid-mode .row:hover .del-cb { opacity: 1; }
+  .col-list.grid-mode .row .del-cb:checked { opacity: 1; }
+  .col-list.grid-mode .row .rthumb { width: 28px; height: 28px; background: none; }
+  .col-list.grid-mode .row .rname { display: none; }
+  .col-list.grid-mode .row .rpair { display: none; }
+  .col-list.grid-mode .row .xbtn { display: none; }
+  .col-list.grid-mode .row .badge { display: none; }
+  .col-list.grid-mode .row.paired { border-left: none; border-bottom: 2px solid var(--green); }
+  .col-list.grid-mode .row.sel { border-color: var(--accent); }
+  /* Tooltip on hover in grid mode */
+  .col-list.grid-mode .row::after {
+    content: attr(title); display: none; position: absolute;
+    bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: var(--page-up3); border: 1px solid var(--line-bold); color: var(--main);
+    padding: 2px 6px; font-size: 9px; white-space: nowrap; z-index: 50;
+    pointer-events: none; margin-bottom: 3px; max-width: 200px;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .col-list.grid-mode .row:hover::after { display: block; }
+  /* Grid badge for count */
+  .col-list.grid-mode .row .gbadge {
+    position: absolute; bottom: 1px; right: 1px;
+    font-size: 7px; padding: 0 2px; background: var(--green-15); color: var(--green);
+    line-height: 1.3;
+  }
+  /* Pair indicator dot in grid */
+  .col-list.grid-mode .row .gpair {
+    position: absolute; bottom: 2px; left: 2px;
+    width: 8px; height: 8px; border-radius: 1px; overflow: hidden;
+  }
+  .col-list.grid-mode .row .gpair img {
+    width: 8px; height: 8px;
+    filter: invert(1) brightness(0.95) sepia(0.12) saturate(0.25) hue-rotate(10deg);
+    image-rendering: pixelated;
+  }
+
+  .view-toggle {
+    font-family: 'PixelCode', monospace; font-size: 9px;
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    padding: 1px 5px; cursor: pointer; margin-left: 4px;
+  }
+  .view-toggle:hover { color: var(--main); border-color: var(--line-bold); }
+  .view-toggle.on { color: var(--accent); border-color: var(--accent); }
+
   .hint {
     padding: 6px 10px; background: var(--accent-15); border: 1px solid var(--accent-25);
     font-size: 10px; color: var(--accent); text-align: center;
@@ -255,6 +316,8 @@
       <div class="col" id="col-l">
         <div class="col-head">
           <span class="label">24PX</span>
+          <button class="view-toggle" id="vt24-list" onclick="setView24('list')">=</button>
+          <button class="view-toggle" id="vt24-grid" onclick="setView24('grid')">#</button>
           <span class="ct" id="ct-24"></span>
         </div>
         <input class="col-search" id="q24" placeholder="Search 24px...">
@@ -264,6 +327,8 @@
       <div class="col" id="col-r">
         <div class="col-head">
           <span class="label">16PX</span>
+          <button class="view-toggle" id="vt16-list" onclick="setView16('list')">=</button>
+          <button class="view-toggle" id="vt16-grid" onclick="setView16('grid')">#</button>
           <span class="ct" id="ct-16"></span>
         </div>
         <input class="col-search" id="q16" placeholder="Search 16px...">
@@ -780,36 +845,79 @@ const B16 = 'assets/icons/16px/';
 const B24 = 'assets/icons/24px/';
 const SK = 'rdna-icon-mapper-state';
 
-let m16to24 = {}, m24to16 = {};
+// m24to16: primary map — many 24px can point to same 16px
+let m24to16 = {};
 let dels = new Set();
 let sel24 = null, sel16 = null;
 let curCat = null;
 let q24 = '', q16 = '';
+let view24 = 'list', view16 = 'list';
 let undo = [];
 
+function setView24(v) { view24 = v; renderCol24(); updateViewToggles(); }
+function setView16(v) { view16 = v; renderCol16(); updateViewToggles(); }
+function updateViewToggles() {
+  document.getElementById('vt24-list').classList.toggle('on', view24 === 'list');
+  document.getElementById('vt24-grid').classList.toggle('on', view24 === 'grid');
+  document.getElementById('vt16-list').classList.toggle('on', view16 === 'list');
+  document.getElementById('vt16-grid').classList.toggle('on', view16 === 'grid');
+}
+
+// Helper: get all 24px icons mapped to a given 16px icon
+function get24sFor16(n16) {
+  const out = [];
+  for (const [k24, v16] of Object.entries(m24to16)) {
+    if (v16 === n16) out.push(k24);
+  }
+  return out;
+}
+// Helper: how many 24px icons map to this 16px
+function countFor16(n16) {
+  let c = 0;
+  for (const v of Object.values(m24to16)) { if (v === n16) c++; }
+  return c;
+}
+// Helper: is this 16px used at all
+function is16Used(n16) {
+  for (const v of Object.values(m24to16)) { if (v === n16) return true; }
+  return false;
+}
+
 function snap() {
-  undo.push({ m: {...m16to24}, d: new Set(dels) });
+  undo.push({ m: {...m24to16}, d: new Set(dels) });
   if (undo.length > 60) undo.shift();
 }
 function doUndo() {
   if (!undo.length) return;
   const s = undo.pop();
-  m16to24 = s.m; dels = s.d;
-  rebuildReverse(); persist(); render();
+  m24to16 = s.m; dels = s.d;
+  persist(); render();
 }
-function rebuildReverse() {
-  m24to16 = {};
-  for (const [k, v] of Object.entries(m16to24)) {
-    if (!m24to16[v]) m24to16[v] = k;
-  }
-}
-function persist() { localStorage.setItem(SK, JSON.stringify({ map16to24: m16to24, deletions: [...dels] })); }
+function persist() { localStorage.setItem(SK, JSON.stringify({ map24to16: m24to16, deletions: [...dels] })); }
 function load() {
   const s = localStorage.getItem(SK);
   if (s) {
-    try { const d = JSON.parse(s); m16to24 = d.map16to24 || {}; dels = new Set(d.deletions || []); rebuildReverse(); return; } catch(e) {}
+    try {
+      const d = JSON.parse(s);
+      // New format: map24to16 is primary
+      if (d.map24to16) {
+        m24to16 = d.map24to16;
+      } else if (d.map16to24) {
+        // Migrate old 1:1 format: invert {n16:n24} → {n24:n16}
+        m24to16 = {};
+        for (const [n16, n24] of Object.entries(d.map16to24)) {
+          m24to16[n24] = n16;
+        }
+      }
+      dels = new Set(d.deletions || []);
+      return;
+    } catch(e) {}
   }
-  m16to24 = {...INIT_MAP}; rebuildReverse();
+  // Load from initial map (invert INIT_MAP)
+  m24to16 = {};
+  for (const [n16, n24] of Object.entries(INIT_MAP)) {
+    m24to16[n24] = n16;
+  }
 }
 function reset() {
   if (!confirm('Reset all mappings to original state?')) return;
@@ -822,29 +930,25 @@ function reset() {
 
 function mapPair(n16, n24) {
   snap();
-  if (m16to24[n16]) delete m24to16[m16to24[n16]];
-  if (m24to16[n24]) delete m16to24[m24to16[n24]];
-  m16to24[n16] = n24; m24to16[n24] = n16;
-  sel24 = null; sel16 = null;
+  m24to16[n24] = n16;
+  // Keep sel16 active so user can keep clicking 24px icons
+  sel24 = null;
   persist(); render();
 }
 function unmap24(n24) {
-  const n16 = m24to16[n24]; if (!n16) return;
-  snap(); delete m16to24[n16]; delete m24to16[n24];
+  snap(); delete m24to16[n24];
   persist(); render();
 }
 function toggleDel(n) { snap(); dels.has(n) ? dels.delete(n) : dels.add(n); persist(); render(); }
 
 function click24(n24) {
-  // If a 16px is selected, map immediately
   if (sel16) { mapPair(sel16, n24); return; }
   sel24 = sel24 === n24 ? null : n24;
   sel16 = null;
   render();
 }
 function click16(n16) {
-  // If a 24px is selected, map immediately
-  if (sel24) { mapPair(n16, sel24); return; }
+  if (sel24) { mapPair(n16, sel24); sel24 = null; render(); return; }
   sel16 = sel16 === n16 ? null : n16;
   sel24 = null;
   render();
@@ -855,7 +959,7 @@ function click16(n16) {
 // ══════════════════════════════════════════
 
 function render() {
-  renderNav(); renderCatBar(); renderCol24(); renderCol16(); renderStats();
+  renderNav(); renderCatBar(); renderCol24(); renderCol16(); renderStats(); updateViewToggles();
   const h24 = document.getElementById('hint24');
   const h16 = document.getElementById('hint16');
   if (sel24) {
@@ -870,19 +974,20 @@ function render() {
 }
 
 function renderStats() {
-  const mapped = Object.keys(m16to24).length;
+  const mapped24 = Object.keys(m24to16).length;
+  const used16 = new Set(Object.values(m24to16)).size;
   const um24 = I24.filter(n => !m24to16[n] && !dels.has(n)).length;
-  const um16 = I16.filter(n => !m16to24[n] && !dels.has(n)).length;
+  const um16 = I16.filter(n => !is16Used(n) && !dels.has(n)).length;
   const dc = dels.size;
   document.getElementById('stats').innerHTML =
-    `<span><b class="g">${mapped}</b> mapped</span>` +
+    `<span><b class="g">${mapped24}</b> pairs (<b class="g">${used16}</b> unique 16px)</span>` +
     `<span><b class="r">${um24}</b> 24px free</span>` +
-    `<span><b class="o">${um16}</b> 16px free</span>` +
+    `<span><b class="o">${um16}</b> 16px unused</span>` +
     (dc ? `<span><b class="r">${dc}</b> delete</span>` : '');
 }
 
 function renderNav() {
-  const allMc = I24.filter(n => !!m24to16[n]).length;
+  const allMc = I24.filter(n => n in m24to16).length;
   const allPct = Math.round((allMc / I24.length) * 100);
   let h = '<div class="nav-label">Categories</div>';
   h += `<div class="nav-item ${curCat === 'all' ? 'on' : ''}" onclick="setCat('all')" style="font-weight:700">
@@ -892,7 +997,7 @@ function renderNav() {
   </div>`;
   for (const c of catList) {
     const icons = cats[c];
-    const mc = icons.filter(n => !!m24to16[n]).length;
+    const mc = icons.filter(n => n in m24to16).length;
     const pct = Math.round((mc / icons.length) * 100);
     h += `<div class="nav-item ${curCat === c ? 'on' : ''}" onclick="setCat('${c}')">
       <span>${c}</span>
@@ -939,8 +1044,8 @@ function renderCol24() {
   if (q24) { const q = q24.toLowerCase(); icons = icons.filter(n => n.toLowerCase().includes(q)); }
   ct.textContent = icons.length;
 
-  const mapped = icons.filter(n => !!m24to16[n]);
-  const unmapped = icons.filter(n => !m24to16[n]);
+  const mapped = icons.filter(n => n in m24to16);
+  const unmapped = icons.filter(n => !(n in m24to16));
 
   let h = '';
   if (mapped.length) {
@@ -980,44 +1085,38 @@ function renderCol16() {
   let icons = [...I16];
   if (q16) { const q = q16.toLowerCase(); icons = icons.filter(n => n.toLowerCase().includes(q)); }
 
-  // Sort: unmapped first
+  // Sort: unused first, then by usage count ascending, then alpha
   icons.sort((a, b) => {
-    const am = !!m16to24[a], bm = !!m16to24[b];
-    if (am !== bm) return am ? 1 : -1;
+    const ca = countFor16(a), cb = countFor16(b);
+    if (ca === 0 && cb > 0) return -1;
+    if (ca > 0 && cb === 0) return 1;
+    if (ca !== cb) return ca - cb;
     return a.localeCompare(b);
   });
 
-  const unmappedCount = I16.filter(n => !m16to24[n] && !dels.has(n)).length;
-  ct.textContent = `${unmappedCount} free`;
+  const unusedCount = I16.filter(n => !is16Used(n) && !dels.has(n)).length;
+  ct.textContent = `${unusedCount} unused`;
 
   let h = '';
-  let prevMapped = null;
+  let prevUsed = null;
   for (const n of icons) {
-    const isMapped = !!m16to24[n];
+    const c = countFor16(n);
+    const used = c > 0;
     const d = dels.has(n);
     const s = sel16 === n;
 
-    // Section labels
-    if (prevMapped === null || prevMapped !== isMapped) {
-      h += `<div class="section-label">${isMapped ? 'Mapped' : 'Available'}</div>`;
-      prevMapped = isMapped;
+    if (prevUsed === null || prevUsed !== used) {
+      h += `<div class="section-label">${used ? 'In Use' : 'Available'}</div>`;
+      prevUsed = used;
     }
 
-    if (isMapped && !q16) {
-      h += `<div class="row paired ${d?'del':''}" style="opacity:0.4">
-        <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
-        <div class="rthumb s16"><img src="${B16}${n}.svg"></div>
-        <div class="rname" title="${n}">${n}</div>
-        <span class="rpair-name" style="font-size:8px;color:var(--muted)">${m16to24[n].split('-').slice(-2).join('-')}</span>
-      </div>`;
-    } else {
-      h += `<div class="row ${s?'sel':''} ${d?'del':''} ${isMapped && !s ? 'dim' : ''}" onclick="click16('${n}')">
-        <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
-        <div class="rthumb s16"><img src="${B16}${n}.svg"></div>
-        <div class="rname" title="${n}">${n}</div>
-        ${s ? '<span class="badge badge-sel">SEL</span>' : ''}
-      </div>`;
-    }
+    h += `<div class="row ${s?'sel':''} ${d?'del':''}" onclick="click16('${n}')">
+      <input type="checkbox" class="del-cb" ${d?'checked':''} onclick="event.stopPropagation();toggleDel('${n}')" title="Delete">
+      <div class="rthumb s16"><img src="${B16}${n}.svg"></div>
+      <div class="rname" title="${n}">${n}</div>
+      ${c > 0 ? `<span class="badge badge-map">\u00d7${c}</span>` : ''}
+      ${s ? '<span class="badge badge-sel">SEL</span>' : ''}
+    </div>`;
   }
   el.innerHTML = h;
 }
@@ -1027,12 +1126,31 @@ function renderCol16() {
 // ══════════════════════════════════════════
 
 function doExport() {
-  const entries = Object.entries(m16to24).sort((a, b) => a[0].localeCompare(b[0]));
+  const entries = Object.entries(m24to16).sort((a, b) => a[0].localeCompare(b[0]));
+  const used16 = new Set(Object.values(m24to16));
+
+  // Build grouped view: {n16: [n24, ...]}
+  const grouped = {};
+  for (const [n24, n16] of entries) {
+    if (!grouped[n16]) grouped[n16] = [];
+    grouped[n16].push(n24);
+  }
+
   let out = `// RDNA Icon Size Map — exported ${new Date().toISOString().slice(0,10)}\n`;
-  out += `// Mapped: ${entries.length}  |  Deleted: ${dels.size}\n\n`;
-  out += `export const ICON_16_TO_24: Record<string, string> = {\n`;
-  for (const [k, v] of entries) out += `  '${k}': '${v}',\n`;
-  out += `};\n`;
+  out += `// Pairs: ${entries.length}  |  Unique 16px: ${used16.size}  |  Deleted: ${dels.size}\n\n`;
+
+  // 24px → 16px map (primary)
+  out += `export const ICON_24_TO_16: Record<string, string> = {\n`;
+  for (const [k24, v16] of entries) out += `  '${k24}': '${v16}',\n`;
+  out += `};\n\n`;
+
+  // Grouped by 16px (for reference)
+  out += `// ── Grouped by 16px icon ──\n`;
+  for (const n16 of Object.keys(grouped).sort()) {
+    const list = grouped[n16].sort();
+    out += `// ${n16} (${list.length}): ${list.join(', ')}\n`;
+  }
+
   if (dels.size) {
     const d16 = [...dels].filter(n => I16.includes(n)).sort();
     const d24 = [...dels].filter(n => I24.includes(n)).sort();
