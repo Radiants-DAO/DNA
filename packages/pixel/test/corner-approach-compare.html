@@ -6,13 +6,14 @@
 <title>Pixel Corner Approaches — Performance Comparison</title>
 <style>
   :root {
-    --color-page: #FEF8E2;
+    --color-page: #ffffff;
     --color-line: #0F0E0C;
     --color-card: #FEF8E2;
     --color-accent: #E8C840;
     --grid: 19;
-    --grid-px: 19px;
-    --radius-px: 20px; /* grid + 1 */
+    --grid-px: 20px;
+    --radius-px: 21px; /* grid + 1 */
+    --card-border-width: 1px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -133,44 +134,82 @@
   }
 
   /* ================================================================
-     3. CSS mask-image (zero DOM)
+     3. CSS mask-image (host clip, zero added DOM)
      ================================================================ */
   .card-mask {
-    border: none; /* we draw border via ::after */
+    border: none !important;
     border-radius: var(--radius-px);
-  }
-
-  .card-mask::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    pointer-events: none;
-    z-index: 1;
-    background-color: var(--color-page);
     mask-image:
+      linear-gradient(white, white),
       var(--pc-xl-cover-tl),
       var(--pc-xl-cover-tr),
       var(--pc-xl-cover-bl),
       var(--pc-xl-cover-br);
+    mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
+    mask-size:
+      100% 100%,
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px);
+    mask-repeat: no-repeat;
+    mask-composite: subtract, add, add, add, add;
     -webkit-mask-image:
       var(--pc-xl-cover-tl),
       var(--pc-xl-cover-tr),
       var(--pc-xl-cover-bl),
-      var(--pc-xl-cover-br);
-    mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
-    -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
-    mask-size: var(--grid-px) var(--grid-px);
-    -webkit-mask-size: var(--grid-px) var(--grid-px);
-    mask-repeat: no-repeat;
+      var(--pc-xl-cover-br),
+      linear-gradient(white, white);
+    -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
+    -webkit-mask-size:
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      100% 100%;
     -webkit-mask-repeat: no-repeat;
-    mask-composite: add;
-    -webkit-mask-composite: source-over;
+    -webkit-mask-composite:
+      destination-out,
+      destination-out,
+      destination-out,
+      destination-out,
+      source-over;
   }
 
-  .card-mask::after {
+  .card-mask-gradient {
+    border: none !important;
+    border-radius: var(--radius-px);
+    mask-image:
+      linear-gradient(white, white),
+      var(--pc-xl-cover-grad-images);
+    mask-position:
+      0 0,
+      var(--pc-xl-cover-grad-positions);
+    mask-size:
+      100% 100%,
+      var(--pc-xl-cover-grad-sizes);
+    mask-repeat: no-repeat;
+    mask-composite: subtract, var(--pc-xl-cover-grad-composites);
+    -webkit-mask-image:
+      var(--pc-xl-cover-grad-images),
+      linear-gradient(white, white);
+    -webkit-mask-position:
+      var(--pc-xl-cover-grad-positions),
+      0 0;
+    -webkit-mask-size:
+      var(--pc-xl-cover-grad-sizes),
+      100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite:
+      var(--pc-xl-cover-grad-webkit-composites),
+      source-over;
+  }
+
+  .card-mask::after,
+  .card-clip::after {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: 0;
     pointer-events: none;
     z-index: 2;
     background-color: var(--color-line);
@@ -178,42 +217,124 @@
       var(--pc-xl-border-tl),
       var(--pc-xl-border-tr),
       var(--pc-xl-border-bl),
-      var(--pc-xl-border-br);
+      var(--pc-xl-border-br),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white);
     -webkit-mask-image:
       var(--pc-xl-border-tl),
       var(--pc-xl-border-tr),
       var(--pc-xl-border-bl),
-      var(--pc-xl-border-br);
-    mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
-    -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
-    mask-size: var(--grid-px) var(--grid-px);
-    -webkit-mask-size: var(--grid-px) var(--grid-px);
+      var(--pc-xl-border-br),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white);
+    mask-position:
+      0 0,
+      100% 0,
+      0 100%,
+      100% 100%,
+      50% 0,
+      100% 50%,
+      50% 100%,
+      0 50%;
+    -webkit-mask-position:
+      0 0,
+      100% 0,
+      0 100%,
+      100% 100%,
+      50% 0,
+      100% 50%,
+      50% 100%,
+      0 50%;
+    mask-size:
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2)),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2));
+    -webkit-mask-size:
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      var(--grid-px) var(--grid-px),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2)),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2));
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
-    mask-composite: add;
-    -webkit-mask-composite: source-over;
+    mask-composite: add, add, add, add, add, add, add, add;
+    -webkit-mask-composite:
+      source-over,
+      source-over,
+      source-over,
+      source-over,
+      source-over,
+      source-over,
+      source-over,
+      source-over;
+  }
+
+  .card-mask-gradient::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-color: var(--color-line);
+    mask-image:
+      var(--pc-xl-border-grad-images),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white);
+    -webkit-mask-image:
+      var(--pc-xl-border-grad-images),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white),
+      linear-gradient(white, white);
+    mask-position:
+      var(--pc-xl-border-grad-positions),
+      50% 0,
+      100% 50%,
+      50% 100%,
+      0 50%;
+    -webkit-mask-position:
+      var(--pc-xl-border-grad-positions),
+      50% 0,
+      100% 50%,
+      50% 100%,
+      0 50%;
+    mask-size:
+      var(--pc-xl-border-grad-sizes),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2)),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2));
+    -webkit-mask-size:
+      var(--pc-xl-border-grad-sizes),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2)),
+      calc(100% - (var(--grid-px) * 2)) var(--card-border-width),
+      var(--card-border-width) calc(100% - (var(--grid-px) * 2));
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-composite: var(--pc-xl-border-grad-composites), add, add, add, add;
+    -webkit-mask-composite: var(--pc-xl-border-grad-source-over), source-over, source-over, source-over, source-over;
   }
 
   /* ================================================================
-     4. CSS border-image (9-slice)
-     ================================================================ */
-  .card-border-image {
-    border: 19px solid transparent;
-    border-radius: 0; /* suppressed by border-image anyway */
-    /* border-image-source set by JS (needs baked colors) */
-    border-image-slice: 19;
-    border-image-width: 19px;
-    border-image-repeat: stretch;
-    /* adjust card size to compensate for thick border */
-    width: 220px;
-    height: 120px;
-  }
-
-  /* ================================================================
-     5. Old CSS clip-path
+     4. Old CSS clip-path
      ================================================================ */
   .card-clip {
-    border: none;
+    border: none !important;
     /* clip-path set by JS */
   }
 
@@ -269,6 +390,59 @@
     font-size: 0;
   }
 
+  /* ================================================================
+     Controls panel
+     ================================================================ */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .control-row label {
+    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  .control-row .val {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    min-width: 1.5em;
+    display: inline-block;
+    text-align: right;
+  }
+
+  .control-row input[type="range"] {
+    width: 120px;
+  }
+
+  .control-row input[type="color"] {
+    width: 32px;
+    height: 22px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .control-row select {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
   .stress-results {
     font-size: 0.8rem;
     margin-top: 0.75rem;
@@ -279,7 +453,61 @@
 <body>
 
 <h1>Pixel Corner Approaches</h1>
-<p class="subtitle">XL corners (radius 18, 19×19 grid) — same visual, different DOM cost</p>
+<p class="subtitle">20×20 canonical pixel circle — compare SVG overlays vs host clipping with SVG mask assets vs host clipping with pure CSS gradient runs</p>
+
+<div class="controls" id="controls">
+  <div class="control-row">
+    <label>Border Radius <span class="val" id="val-radius">21</span>px</label>
+    <input type="range" id="ctrl-radius" min="0" max="40" value="21" step="1">
+  </div>
+  <div class="control-row">
+    <label>Border Color</label>
+    <input type="color" id="ctrl-border-color" value="#0F0E0C">
+  </div>
+  <div class="control-row">
+    <label>Border Width <span class="val" id="val-border-width">1</span>px</label>
+    <input type="range" id="ctrl-border-width" min="0" max="4" value="1" step="1">
+  </div>
+  <div class="control-row">
+    <label>Card BG Opacity <span class="val" id="val-bg-opacity">25</span>%</label>
+    <input type="range" id="ctrl-bg-opacity" min="0" max="100" value="25" step="5">
+  </div>
+  <div class="control-row">
+    <label>Box Shadow</label>
+    <select id="ctrl-box-shadow">
+      <option value="none">none</option>
+      <option value="0 2px 8px rgba(0,0,0,0.15)">outside — soft</option>
+      <option value="0 4px 16px rgba(0,0,0,0.25)">outside — strong</option>
+      <option value="inset 0 2px 8px rgba(0,0,0,0.15)">inset — soft</option>
+      <option value="inset 0 4px 16px rgba(0,0,0,0.25)">inset — strong</option>
+    </select>
+  </div>
+  <div class="control-row">
+    <label>Drop Shadow (filter)</label>
+    <select id="ctrl-drop-shadow">
+      <option value="none">none</option>
+      <option value="drop-shadow(0 2px 4px rgba(0,0,0,0.15))">soft</option>
+      <option value="drop-shadow(0 4px 8px rgba(0,0,0,0.25))">strong</option>
+      <option value="drop-shadow(0 1px 0px rgba(0,0,0,1))">pixel — 1px</option>
+    </select>
+  </div>
+  <div class="control-row">
+    <label>Shadow Mode</label>
+    <select id="ctrl-shadow-mode">
+      <option value="direct">direct (on card — clipped by mask)</option>
+      <option value="wrapper">wrapper (on parent — survives mask)</option>
+    </select>
+  </div>
+  <div class="control-row">
+    <label>Outer BG</label>
+    <select id="ctrl-outer-bg">
+      <option value="dot-grid">dot grid (white)</option>
+      <option value="black">black</option>
+      <option value="cream">#FEF8E2 (cream)</option>
+      <option value="checkerboard">checkerboard</option>
+    </select>
+  </div>
+</div>
 
 <div class="grid" id="approaches"></div>
 
@@ -291,8 +519,8 @@
     <select id="stress-approach">
       <option value="rects">1. SVG rects (current)</option>
       <option value="path">2. SVG path (union)</option>
-      <option value="mask">3. CSS mask-image</option>
-      <option value="border-image">4. CSS border-image</option>
+      <option value="mask">3. CSS mask-image (SVG assets)</option>
+      <option value="mask-gradient">4. CSS mask-image (pure gradients)</option>
       <option value="clip-path">5. CSS clip-path</option>
     </select>
     <label>Count:</label>
@@ -311,11 +539,53 @@
 
 <script>
 // ============================================================
-// Bitstring data from @rdna/pixel generateCorner(18)
+// Bitstring data — canonical 20×20 pixel circle (from Figma SVG)
 // ============================================================
-const GRID = 19;
-const COVER_BITS = '1111111111111100000111111111110000000011111111100000000001111111100000000000111111100000000000011111100000000000001111100000000000000111100000000000000011100000000000000001100000000000000000110000000000000000010000000000000000001000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
-const BORDER_BITS = '0000000000000011111000000000001110000000000000011000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000010000000000000000001000000000000000001000000000000000000100000000000000000010000000000000000010000000000000000001000000000000000000100000000000000000010000000000000000001000000000000000000';
+const GRID = 20;
+// Cover: everything LEFT of the border arc (bg-colored, hides smooth radius)
+const COVER_BITS =
+  '11111111111111110000' + // row 0:  x=0-15
+  '11111111111100000000' + // row 1:  x=0-11
+  '11111111110000000000' + // row 2:  x=0-9
+  '11111111100000000000' + // row 3:  x=0-8
+  '11111110000000000000' + // row 4:  x=0-6
+  '11111100000000000000' + // row 5:  x=0-5
+  '11111000000000000000' + // row 6:  x=0-4
+  '11110000000000000000' + // row 7:  x=0-3
+  '11110000000000000000' + // row 8:  x=0-3
+  '11100000000000000000' + // row 9:  x=0-2
+  '11000000000000000000' + // row 10: x=0-1
+  '11000000000000000000' + // row 11: x=0-1
+  '10000000000000000000' + // row 12: x=0
+  '10000000000000000000' + // row 13: x=0
+  '10000000000000000000' + // row 14: x=0
+  '10000000000000000000' + // row 15: x=0
+  '00000000000000000000' + // row 16
+  '00000000000000000000' + // row 17
+  '00000000000000000000' + // row 18
+  '00000000000000000000';  // row 19
+// Border: the staircase arc pixels (drawn in line color)
+const BORDER_BITS =
+  '00000000000000001111' + // row 0:  x=16-19
+  '00000000000011110000' + // row 1:  x=12-15
+  '00000000001100000000' + // row 2:  x=10-11
+  '00000000010000000000' + // row 3:  x=9
+  '00000001100000000000' + // row 4:  x=7-8
+  '00000010000000000000' + // row 5:  x=6
+  '00000100000000000000' + // row 6:  x=5
+  '00001000000000000000' + // row 7:  x=4
+  '00001000000000000000' + // row 8:  x=4
+  '00010000000000000000' + // row 9:  x=3
+  '00100000000000000000' + // row 10: x=2
+  '00100000000000000000' + // row 11: x=2
+  '01000000000000000000' + // row 12: x=1
+  '01000000000000000000' + // row 13: x=1
+  '01000000000000000000' + // row 14: x=1
+  '01000000000000000000' + // row 15: x=1
+  '10000000000000000000' + // row 16: x=0
+  '10000000000000000000' + // row 17: x=0
+  '10000000000000000000' + // row 18: x=0
+  '10000000000000000000';  // row 19: x=0
 
 // ============================================================
 // Core utilities
@@ -373,6 +643,37 @@ function bitsToPath(bits, w, h) {
     .join('');
 }
 
+function bitsToMergedRects(bits, w, h) {
+  const runs = [];
+  for (let y = 0; y < h; y++) {
+    let x = 0;
+    while (x < w) {
+      if (bits[y * w + x] === '1') {
+        const start = x;
+        while (x < w && bits[y * w + x] === '1') x++;
+        runs.push({ x: start, y, w: x - start, h: 1 });
+      } else {
+        x++;
+      }
+    }
+  }
+
+  for (let i = 0; i < runs.length; i++) {
+    if (!runs[i]) continue;
+    for (let j = i + 1; j < runs.length; j++) {
+      if (!runs[j]) continue;
+      if (runs[j].x === runs[i].x &&
+          runs[j].w === runs[i].w &&
+          runs[j].y === runs[i].y + runs[i].h) {
+        runs[i].h += runs[j].h;
+        runs[j] = null;
+      }
+    }
+  }
+
+  return runs.filter(Boolean);
+}
+
 // ============================================================
 // Pre-compute all corner paths
 // ============================================================
@@ -385,6 +686,9 @@ const borderTL = bitsToPath(BORDER_BITS, GRID, GRID);
 const borderTR = bitsToPath(mirrorH(BORDER_BITS, GRID, GRID), GRID, GRID);
 const borderBL = bitsToPath(mirrorV(BORDER_BITS, GRID, GRID), GRID, GRID);
 const borderBR = bitsToPath(mirrorHV(BORDER_BITS, GRID, GRID), GRID, GRID);
+
+const coverRects = bitsToMergedRects(COVER_BITS, GRID, GRID);
+const borderRects = bitsToMergedRects(BORDER_BITS, GRID, GRID);
 
 // ============================================================
 // listFilledRects (current approach)
@@ -431,52 +735,50 @@ root.style.setProperty('--pc-xl-border-tr', maskBorderTR);
 root.style.setProperty('--pc-xl-border-bl', maskBorderBL);
 root.style.setProperty('--pc-xl-border-br', maskBorderBR);
 
-// ============================================================
-// Border-image 9-slice SVG (baked colors)
-// ============================================================
-function makeBorderImageSVG() {
-  // Frame SVG: corners at each corner, 1px edges, transparent center
-  // Image size: GRID*2 + 2 (1px gap in center for stretching)
-  const S = GRID * 2 + 2;
-  const pageBg = '#FEF8E2';
-  const lineColor = '#0F0E0C';
+function rectsToGradientMaskVars(rects) {
+  const images = [];
+  const positions = [];
+  const sizes = [];
 
-  let paths = '';
+  for (const rect of rects) {
+    const corners = [
+      `${rect.x}px ${rect.y}px`,
+      `calc(100% - ${rect.x + rect.w}px) ${rect.y}px`,
+      `${rect.x}px calc(100% - ${rect.y + rect.h}px)`,
+      `calc(100% - ${rect.x + rect.w}px) calc(100% - ${rect.y + rect.h}px)`,
+    ];
 
-  // TL cover + border
-  paths += `<path fill="${pageBg}" d="${coverTL}"/>`;
-  paths += `<path fill="${lineColor}" d="${borderTL}"/>`;
+    for (const pos of corners) {
+      images.push('linear-gradient(white, white)');
+      positions.push(pos);
+      sizes.push(`${rect.w}px ${rect.h}px`);
+    }
+  }
 
-  // TR cover + border (translated to right edge)
-  const trOff = GRID + 2;
-  paths += `<path fill="${pageBg}" transform="translate(${trOff},0)" d="${coverTR}"/>`;
-  paths += `<path fill="${lineColor}" transform="translate(${trOff},0)" d="${borderTR}"/>`;
-
-  // BL cover + border
-  const blOff = GRID + 2;
-  paths += `<path fill="${pageBg}" transform="translate(0,${blOff})" d="${coverBL}"/>`;
-  paths += `<path fill="${lineColor}" transform="translate(0,${blOff})" d="${borderBL}"/>`;
-
-  // BR cover + border
-  paths += `<path fill="${pageBg}" transform="translate(${trOff},${blOff})" d="${coverBR}"/>`;
-  paths += `<path fill="${lineColor}" transform="translate(${trOff},${blOff})" d="${borderBR}"/>`;
-
-  // Edge segments: 1px lines connecting corners
-  // Top edge: y=0, x from GRID to GRID+2
-  paths += `<rect fill="${lineColor}" x="${GRID}" y="0" width="2" height="1"/>`;
-  // Bottom edge
-  paths += `<rect fill="${lineColor}" x="${GRID}" y="${S - 1}" width="2" height="1"/>`;
-  // Left edge
-  paths += `<rect fill="${lineColor}" x="0" y="${GRID}" width="1" height="2"/>`;
-  // Right edge
-  paths += `<rect fill="${lineColor}" x="${S - 1}" y="${GRID}" width="1" height="2"/>`;
-
-  return `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${S}' height='${S}'>${paths}</svg>`
-  )}`;
+  return {
+    images: images.join(', '),
+    positions: positions.join(', '),
+    sizes: sizes.join(', '),
+    composites: new Array(images.length).fill('add').join(', '),
+    webkitDestinationOut: new Array(images.length).fill('destination-out').join(', '),
+    webkitSourceOver: new Array(images.length).fill('source-over').join(', '),
+  };
 }
 
-const borderImageSrc = makeBorderImageSVG();
+const coverGradientMask = rectsToGradientMaskVars(coverRects);
+const borderGradientMask = rectsToGradientMaskVars(borderRects);
+
+root.style.setProperty('--pc-xl-cover-grad-images', coverGradientMask.images);
+root.style.setProperty('--pc-xl-cover-grad-positions', coverGradientMask.positions);
+root.style.setProperty('--pc-xl-cover-grad-sizes', coverGradientMask.sizes);
+root.style.setProperty('--pc-xl-cover-grad-composites', coverGradientMask.composites);
+root.style.setProperty('--pc-xl-cover-grad-webkit-composites', coverGradientMask.webkitDestinationOut);
+
+root.style.setProperty('--pc-xl-border-grad-images', borderGradientMask.images);
+root.style.setProperty('--pc-xl-border-grad-positions', borderGradientMask.positions);
+root.style.setProperty('--pc-xl-border-grad-sizes', borderGradientMask.sizes);
+root.style.setProperty('--pc-xl-border-grad-composites', borderGradientMask.composites);
+root.style.setProperty('--pc-xl-border-grad-source-over', borderGradientMask.webkitSourceOver);
 
 // ============================================================
 // Clip-path polygon from bitstrings (trace outer contour)
@@ -618,15 +920,12 @@ function renderRects(parent) {
     const cRects = listFilledRects(cBits, GRID, GRID);
     const bRects = listFilledRects(bBits, GRID, GRID);
 
-    let cover = '', border = '';
-    for (const r of cRects) {
-      cover += `<rect x="${r.x}" y="${r.y}" width="1" height="1" fill="var(--color-page)"/>`;
-    }
+    let border = '';
     for (const r of bRects) {
       border += `<rect x="${r.x}" y="${r.y}" width="1" height="1" fill="var(--color-line)"/>`;
     }
 
-    parent.appendChild(createCornerSVG(pos, cover, border));
+    parent.appendChild(createCornerSVG(pos, '', border));
   }
 }
 
@@ -641,21 +940,16 @@ function renderPaths(parent) {
 
   for (const [pos, cPath, bPath] of corners) {
     parent.appendChild(createCornerSVG(pos,
-      `<path fill="var(--color-page)" d="${cPath}"/>`,
+      '',
       `<path fill="var(--color-line)" d="${bPath}"/>`
     ));
   }
 }
 
 // --- Approach 3: CSS mask (rendered via class) ---
-// Already handled by CSS — just needs the class
+// Host-level clipping handled by CSS mask; ::after draws the full border ring.
 
-// --- Approach 4: border-image ---
-function renderBorderImage(card) {
-  card.style.borderImageSource = `url("${borderImageSrc}")`;
-}
-
-// --- Approach 5: clip-path ---
+// --- Approach 4: clip-path ---
 function renderClipPath(card) {
   card.style.clipPath = makeFullClipPath();
 }
@@ -682,28 +976,30 @@ const approaches = [
   },
   {
     id: 'mask',
-    title: '3. CSS mask-image',
+    title: '3. CSS mask-image (inverse clip)',
     tag: ['green', 'NOVEL'],
     cardClass: 'card-mask',
     render() { /* CSS handles it */ },
-    pros: ['0 DOM nodes (pseudo-elements)', 'CSS var() for colors', 'Dark mode safe', 'box-shadow/overflow work'],
-    cons: ['Claims ::before + ::after', 'webkit prefix needed'],
+    pros: ['0 added DOM nodes', 'Clips bg + children to staircase', 'No cover-layer bg dependency'],
+    cons: ['Clips box-shadow to shape', 'Needs separate border overlay', 'Safari needs -webkit mask composite'],
   },
   {
-    id: 'border-image',
-    title: '4. CSS border-image (9-slice)',
-    tag: ['yellow', '9-SLICE'],
-    render(card) { renderBorderImage(card); },
-    pros: ['0 DOM nodes, 0 pseudo-elements', 'Native 9-slice corner handling', 'Auto edge stretching'],
-    cons: ['Colors baked in data URI', 'No CSS var() — breaks theming', 'Suppresses border-radius'],
+    id: 'mask-gradient',
+    title: '4. CSS mask-image (pure gradients)',
+    tag: ['yellow', 'EXPERIMENT'],
+    cardClass: 'card-mask-gradient',
+    render() { /* CSS handles it */ },
+    pros: ['0 added DOM nodes', 'No SVG or data URIs', 'Generated directly from merged bitstring rects'],
+    cons: ['Many mask layers', 'Likely heavier paint/compositing', 'Still clips box-shadow to shape'],
   },
   {
     id: 'clip-path',
     title: '5. CSS clip-path (old)',
     tag: ['red', 'LEGACY'],
+    cardClass: 'card-clip',
     render(card) { renderClipPath(card); },
-    pros: ['0 DOM nodes', 'Fast rendering'],
-    cons: ['Blocks box-shadow', 'Blocks border (needs ::after)', 'Blocks overflow:hidden'],
+    pros: ['0 added DOM nodes', 'Clips bg + children to staircase', 'Fast geometry'],
+    cons: ['Clips box-shadow', 'Needs separate border overlay', 'Harder to parametrize by bitmaps'],
   },
 ];
 
@@ -756,13 +1052,50 @@ for (const a of approaches) {
 
   const wrapper = document.createElement('div');
   wrapper.className = 'card-wrapper';
+
+  // Outer card: no border-radius, gold bg, red inset outline
+  const outer = document.createElement('div');
+  outer.className = 'demo-card';
+  outer.style.cssText = `
+    width: 260px; height: 160px; position: relative;
+    background: white;
+    background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
+    background-size: 8px 8px;
+    border-radius: 0;
+    border: none;
+    outline: 1px solid red;
+    outline-offset: -1px;
+    display: flex; align-items: stretch; justify-content: stretch;
+    padding: 20px;
+  `;
+
+  // Inner card: same size, pixel corner technique applied, red inset outline
   const card = document.createElement('div');
   card.className = `demo-card ${a.cardClass || ''}`;
-  card.style.borderRadius = (a.id === 'border-image' || a.id === 'clip-path') ? '' : '20px';
-  if (a.id !== 'border-image') card.style.border = '1px solid var(--color-line)';
+  card.style.cssText = `
+    width: 100%; height: 100%; position: relative;
+    background: rgb(0 128 0 / 0.25);
+    outline: 1px solid red;
+    outline-offset: -1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 500;
+  `;
+  card.style.borderRadius = (a.id === 'clip-path') ? '' : '21px';
+  card.style.border = (a.id === 'mask' || a.id === 'mask-gradient' || a.id === 'clip-path')
+    ? 'none'
+    : '1px solid var(--color-line)';
   card.textContent = 'Pixel Corners';
   a.render(card);
-  wrapper.appendChild(card);
+
+  // Shadow wrapper sits between outer and card.
+  // In "wrapper" shadow mode, the filter goes here instead of on the card,
+  // so the drop-shadow survives the card's mask clipping.
+  const shadowWrap = document.createElement('div');
+  shadowWrap.className = 'shadow-wrapper';
+  shadowWrap.style.cssText = 'width:100%;height:100%;';
+  shadowWrap.appendChild(card);
+  outer.appendChild(shadowWrap);
+  wrapper.appendChild(outer);
   section.appendChild(wrapper);
 
   const domCount = document.createElement('div');
@@ -808,11 +1141,11 @@ function runStress() {
       } else if (approach === 'mask') {
         card.classList.add('card-mask');
         card.style.border = 'none';
-      } else if (approach === 'border-image') {
-        card.style.border = '19px solid transparent';
-        card.style.borderRadius = '0';
-        renderBorderImage(card);
+      } else if (approach === 'mask-gradient') {
+        card.classList.add('card-mask-gradient');
+        card.style.border = 'none';
       } else if (approach === 'clip-path') {
+        card.classList.add('card-clip');
         card.style.border = 'none';
         card.style.width = '48px';
         card.style.height = '32px';
@@ -841,6 +1174,128 @@ function clearStress() {
   document.getElementById('stress-grid').innerHTML = '';
   document.getElementById('stress-results').textContent = '';
 }
+
+// ============================================================
+// Controls — update all cards as a group
+// ============================================================
+function setupControls() {
+  const allCards = () => document.querySelectorAll('#approaches .demo-card:not([style*="dot-grid"])');
+  const allOuters = () => document.querySelectorAll('#approaches .demo-card + .demo-card, #approaches > .approach .card-wrapper > div:first-child');
+
+  function getInnerCards() {
+    return document.querySelectorAll('#approaches .shadow-wrapper > div');
+  }
+  function getOuterCards() {
+    return document.querySelectorAll('#approaches .card-wrapper > div:first-child');
+  }
+  function getShadowWrappers() {
+    return document.querySelectorAll('#approaches .shadow-wrapper');
+  }
+
+  // Border radius
+  const radiusCtrl = document.getElementById('ctrl-radius');
+  const radiusVal = document.getElementById('val-radius');
+  radiusCtrl.addEventListener('input', () => {
+    radiusVal.textContent = radiusCtrl.value;
+    getInnerCards().forEach(card => {
+      // skip clip-path approach (no border-radius)
+      if (!card.style.clipPath) {
+        card.style.borderRadius = radiusCtrl.value + 'px';
+      }
+    });
+  });
+
+  // Border color
+  const borderColorCtrl = document.getElementById('ctrl-border-color');
+  borderColorCtrl.addEventListener('input', () => {
+    document.documentElement.style.setProperty('--color-line', borderColorCtrl.value);
+  });
+
+  // Border width
+  const borderWidthCtrl = document.getElementById('ctrl-border-width');
+  const borderWidthVal = document.getElementById('val-border-width');
+  borderWidthCtrl.addEventListener('input', () => {
+    borderWidthVal.textContent = borderWidthCtrl.value;
+    document.documentElement.style.setProperty('--card-border-width', borderWidthCtrl.value + 'px');
+    getInnerCards().forEach(card => {
+      if (!card.style.clipPath) {
+        card.style.borderWidth = borderWidthCtrl.value + 'px';
+      }
+    });
+  });
+
+  // Card BG opacity
+  const bgOpacityCtrl = document.getElementById('ctrl-bg-opacity');
+  const bgOpacityVal = document.getElementById('val-bg-opacity');
+  bgOpacityCtrl.addEventListener('input', () => {
+    bgOpacityVal.textContent = bgOpacityCtrl.value;
+    const alpha = bgOpacityCtrl.value / 100;
+    getInnerCards().forEach(card => {
+      card.style.background = `rgb(0 128 0 / ${alpha})`;
+    });
+  });
+
+  // Box shadow
+  const boxShadowCtrl = document.getElementById('ctrl-box-shadow');
+  boxShadowCtrl.addEventListener('change', () => {
+    getInnerCards().forEach(card => {
+      card.style.boxShadow = boxShadowCtrl.value;
+    });
+  });
+
+  // Drop shadow (filter) + shadow mode
+  const dropShadowCtrl = document.getElementById('ctrl-drop-shadow');
+  const shadowModeCtrl = document.getElementById('ctrl-shadow-mode');
+
+  function applyDropShadow() {
+    const val = dropShadowCtrl.value === 'none' ? '' : dropShadowCtrl.value;
+    const mode = shadowModeCtrl.value;
+
+    if (mode === 'wrapper') {
+      // Filter on wrapper (survives mask on card)
+      getInnerCards().forEach(card => { card.style.filter = ''; });
+      getShadowWrappers().forEach(wrap => { wrap.style.filter = val; });
+    } else {
+      // Filter directly on card (gets clipped by mask)
+      getShadowWrappers().forEach(wrap => { wrap.style.filter = ''; });
+      getInnerCards().forEach(card => { card.style.filter = val; });
+    }
+  }
+
+  dropShadowCtrl.addEventListener('change', applyDropShadow);
+  shadowModeCtrl.addEventListener('change', applyDropShadow);
+
+  // Outer BG
+  const outerBgCtrl = document.getElementById('ctrl-outer-bg');
+  outerBgCtrl.addEventListener('change', () => {
+    const v = outerBgCtrl.value;
+    getOuterCards().forEach(outer => {
+      switch (v) {
+        case 'dot-grid':
+          outer.style.background = 'white';
+          outer.style.backgroundImage = 'radial-gradient(circle, #ccc 1px, transparent 1px)';
+          outer.style.backgroundSize = '8px 8px';
+          break;
+        case 'black':
+          outer.style.background = '#000';
+          outer.style.backgroundImage = '';
+          break;
+        case 'cream':
+          outer.style.background = '#FEF8E2';
+          outer.style.backgroundImage = '';
+          break;
+        case 'checkerboard':
+          outer.style.background = '#fff';
+          outer.style.backgroundImage = 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+          outer.style.backgroundSize = '16px 16px';
+          outer.style.backgroundPosition = '0 0, 8px 8px';
+          break;
+      }
+    });
+  });
+}
+
+setupControls();
 </script>
 
 </body>
