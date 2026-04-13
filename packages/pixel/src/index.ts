@@ -46,3 +46,5 @@ export type {
   CornerShapeGenerator,
   CornerShapeName,
 } from './shapes.js';
+export { px } from './px.js';
+export type { PxProps, PxConfig, PxOptions, Corner } from './px.js';

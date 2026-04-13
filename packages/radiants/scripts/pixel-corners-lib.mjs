@@ -297,6 +297,144 @@ function emitAfterMask(className, suffix, gridSize) {
 }
 
 // ---------------------------------------------------------------------------
+// Variable-driven base rule for px() TS helper
+// ---------------------------------------------------------------------------
+
+function emitPixelCornerBase() {
+  const bw = borderWidth();
+  const lines = [];
+
+  // --- Host element mask (.pixel-corner) ---
+  lines.push('.pixel-corner {');
+  lines.push(indent(1, 'position: relative;'));
+  lines.push(indent(1, 'border-radius: 0;'));
+  lines.push('');
+  lines.push(indent(1, '/* Standard (Firefox) — 5 layers: base rect + 4 corner covers (subtract) */'));
+  lines.push(indent(1, 'mask-image:'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'var(--px-tl-cover, none),'));
+  lines.push(indent(2, 'var(--px-tr-cover, none),'));
+  lines.push(indent(2, 'var(--px-bl-cover, none),'));
+  lines.push(indent(2, 'var(--px-br-cover, none);'));
+  lines.push(indent(1, 'mask-size:'));
+  lines.push(indent(2, '100% 100%,'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) var(--px-tl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-tr-s, 0px) var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) var(--px-bl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-br-s, 0px) var(--px-br-s, 0px);'));
+  lines.push(indent(1, 'mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;'));
+  lines.push(indent(1, 'mask-repeat: no-repeat;'));
+  lines.push(indent(1, 'mask-composite: subtract;'));
+  lines.push('');
+  lines.push(indent(1, '/* WebKit (Chrome/Safari) — reversed layer order, destination-out */'));
+  lines.push(indent(1, '-webkit-mask-image:'));
+  lines.push(indent(2, 'var(--px-tl-cover, none),'));
+  lines.push(indent(2, 'var(--px-tr-cover, none),'));
+  lines.push(indent(2, 'var(--px-bl-cover, none),'));
+  lines.push(indent(2, 'var(--px-br-cover, none),'));
+  lines.push(indent(2, 'linear-gradient(white, white);'));
+  lines.push(indent(1, '-webkit-mask-size:'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) var(--px-tl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-tr-s, 0px) var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) var(--px-bl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-br-s, 0px) var(--px-br-s, 0px),'));
+  lines.push(indent(2, '100% 100%;'));
+  lines.push(indent(1, '-webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;'));
+  lines.push(indent(1, '-webkit-mask-repeat: no-repeat;'));
+  lines.push(indent(1, '-webkit-mask-composite:'));
+  lines.push(indent(2, 'destination-out,'));
+  lines.push(indent(2, 'destination-out,'));
+  lines.push(indent(2, 'destination-out,'));
+  lines.push(indent(2, 'destination-out,'));
+  lines.push(indent(2, 'source-over;'));
+  lines.push('}');
+
+  lines.push('');
+
+  // --- Border ring (.pixel-corner::after) ---
+  lines.push('.pixel-corner::after {');
+  lines.push(indent(1, "content: '';"));
+  lines.push(indent(1, 'position: absolute;'));
+  lines.push(indent(1, 'inset: 0;'));
+  lines.push(indent(1, 'pointer-events: none;'));
+  lines.push(indent(1, 'z-index: 2;'));
+  lines.push(indent(1, 'background-color: var(--color-line);'));
+  lines.push('');
+  lines.push(indent(1, '/* Standard (Firefox) — 8 layers: 4 corner borders + 4 edge strips */'));
+  lines.push(indent(1, 'mask-image:'));
+  lines.push(indent(2, 'var(--px-tl-border, none),'));
+  lines.push(indent(2, 'var(--px-tr-border, none),'));
+  lines.push(indent(2, 'var(--px-bl-border, none),'));
+  lines.push(indent(2, 'var(--px-br-border, none),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white);'));
+  lines.push(indent(1, 'mask-size:'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) var(--px-tl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-tr-s, 0px) var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) var(--px-bl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-br-s, 0px) var(--px-br-s, 0px),'));
+  lines.push(indent(2, `calc(100% - var(--px-tl-s, 0px) - var(--px-tr-s, 0px)) calc(${bw} * var(--px-et, 1)),`));
+  lines.push(indent(2, `calc(${bw} * var(--px-er, 1)) calc(100% - var(--px-tr-s, 0px) - var(--px-br-s, 0px)),`));
+  lines.push(indent(2, `calc(100% - var(--px-bl-s, 0px) - var(--px-br-s, 0px)) calc(${bw} * var(--px-eb, 1)),`));
+  lines.push(indent(2, `calc(${bw} * var(--px-el, 1)) calc(100% - var(--px-tl-s, 0px) - var(--px-bl-s, 0px));`));
+  lines.push(indent(1, 'mask-position:'));
+  lines.push(indent(2, '0 0,'));
+  lines.push(indent(2, '100% 0,'));
+  lines.push(indent(2, '0 100%,'));
+  lines.push(indent(2, '100% 100%,'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) 0,'));
+  lines.push(indent(2, '100% var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) 100%,'));
+  lines.push(indent(2, '0 var(--px-tl-s, 0px);'));
+  lines.push(indent(1, 'mask-repeat: no-repeat;'));
+  lines.push(indent(1, 'mask-composite: add;'));
+  lines.push('');
+  lines.push(indent(1, '/* WebKit (Chrome/Safari) — same order, all additive */'));
+  lines.push(indent(1, '-webkit-mask-image:'));
+  lines.push(indent(2, 'var(--px-tl-border, none),'));
+  lines.push(indent(2, 'var(--px-tr-border, none),'));
+  lines.push(indent(2, 'var(--px-bl-border, none),'));
+  lines.push(indent(2, 'var(--px-br-border, none),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white),'));
+  lines.push(indent(2, 'linear-gradient(white, white);'));
+  lines.push(indent(1, '-webkit-mask-size:'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) var(--px-tl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-tr-s, 0px) var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) var(--px-bl-s, 0px),'));
+  lines.push(indent(2, 'var(--px-br-s, 0px) var(--px-br-s, 0px),'));
+  lines.push(indent(2, `calc(100% - var(--px-tl-s, 0px) - var(--px-tr-s, 0px)) calc(${bw} * var(--px-et, 1)),`));
+  lines.push(indent(2, `calc(${bw} * var(--px-er, 1)) calc(100% - var(--px-tr-s, 0px) - var(--px-br-s, 0px)),`));
+  lines.push(indent(2, `calc(100% - var(--px-bl-s, 0px) - var(--px-br-s, 0px)) calc(${bw} * var(--px-eb, 1)),`));
+  lines.push(indent(2, `calc(${bw} * var(--px-el, 1)) calc(100% - var(--px-tl-s, 0px) - var(--px-bl-s, 0px));`));
+  lines.push(indent(1, '-webkit-mask-position:'));
+  lines.push(indent(2, '0 0,'));
+  lines.push(indent(2, '100% 0,'));
+  lines.push(indent(2, '0 100%,'));
+  lines.push(indent(2, '100% 100%,'));
+  lines.push(indent(2, 'var(--px-tl-s, 0px) 0,'));
+  lines.push(indent(2, '100% var(--px-tr-s, 0px),'));
+  lines.push(indent(2, 'var(--px-bl-s, 0px) 100%,'));
+  lines.push(indent(2, '0 var(--px-tl-s, 0px);'));
+  lines.push(indent(1, '-webkit-mask-repeat: no-repeat;'));
+  lines.push(indent(1, '-webkit-mask-composite:'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over,'));
+  lines.push(indent(2, 'source-over;'));
+  lines.push('}');
+
+  return lines.join('\n');
+}
+
+// ---------------------------------------------------------------------------
 // Legacy alias emitter
 // ---------------------------------------------------------------------------
 
