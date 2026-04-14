@@ -184,7 +184,18 @@ function DropCapBox({
       onMouseLeave={stopCycle}
     >
       <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-accent)' }} />
-      {patIdx !== null && <div className="rdna-pat" style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--color-ink)', maskSize: maskSz, WebkitMaskSize: maskSz, ['--_pat' as string]: `var(${PAT_TOKENS[patIdx]})` }} />}
+      {patIdx !== null && (
+        <div
+          className="rdna-pat"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            ['--_pat' as string]: `var(${PAT_TOKENS[patIdx]})`,
+            ['--pat-color' as string]: 'var(--color-ink)',
+            ['--pat-mask-size' as string]: `${maskSz} ${maskSz}`,
+          }}
+        />
+      )}
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: s * -2 }}>
         <span style={{ position: 'relative', ...textStyle, fontFamily: "var(--font-blackletter-shadow)", color: 'var(--color-accent)' }}>{letter}</span>
         <span style={{ position: 'absolute', ...textStyle }}>{letter}</span>
@@ -722,8 +733,8 @@ export function GoodNewsApp({ windowId }: AppProps) {
   return (
     <AppWindow.Content layout="bleed">
     <div className="h-full relative">
-      <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }} />
-      <div className="absolute top-1 left-0 right-0 h-1 z-10" style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }} />
+      <div className="absolute top-0 left-0 right-0 h-1 z-10 rdna-pat rdna-pat--diagonal-dots" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
+      <div className="absolute top-1 left-0 right-0 h-1 z-10 rdna-pat rdna-pat--spray-grid" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
       <div ref={containerRef} className="bg-card h-full overflow-y-auto border-t border-ink">
 
       {/* ================================================================

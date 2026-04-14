@@ -1014,10 +1014,9 @@ function AppWindow({
         />
         {!focused && (
           <div
-            className="absolute inset-0 z-20 pointer-events-none"
+            className="absolute inset-0 z-20 pointer-events-none rdna-pat rdna-pat--diagonal-dots"
             style={{
-              backgroundImage: 'var(--pat-diagonal-dots)',
-              backgroundRepeat: 'repeat',
+              ['--pat-color' as string]: 'var(--color-ink)',
             }}
           />
         )}

@@ -18,6 +18,7 @@ export {
 } from './core.js';
 
 export { paintGrid, paintTiledGrid, createGridCanvas } from './renderer.js';
+export { buildMaskAsset, maskHostStyle } from './mask.js';
 /** @deprecated Use `bitsToMergedRects` / `bitsToPath` from `./path.js` instead. */
 export { listFilledRects } from './svg.js';
 export { svgToGrid } from './import.js';
@@ -36,6 +37,7 @@ export type { ImportOptions, ImportReport } from './import.js';
 export type { PatternEntry, PatternName } from './patterns.js';
 export { bitsToMergedRects, bitsToPath, bitsToMaskURI } from './path.js';
 export type { MergedRect } from './path.js';
+export type { MaskAsset, MaskHostStyle, MaskHostStyleOptions } from './mask.js';
 export {
   SHAPE_REGISTRY,
   generateShape,

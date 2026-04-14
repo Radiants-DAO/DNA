@@ -1,157 +1,151 @@
-/* =============================================================================
-   @rdna/radiants — System 6 Dither Patterns (51 patterns)
-   Mask-image technique for full color control via --pat-color
-   ============================================================================= */
+/* AUTO-GENERATED FILE. DO NOT EDIT.
+   Source: scripts/generate-pattern-css.ts + patterns/registry.ts
+   Run: node --experimental-strip-types scripts/generate-pattern-css.ts
+*/
 
 @theme {
-  /* ─── Group 1: Structural ─── */
-  --pat-solid: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNkYGD4z4AHMDEQAMNDAQAMUwEPUQw8hQAAAABJRU5ErkJggg==);
-  --pat-empty: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgGAUMDAwMAAEIAAEoUqMqAAAAAElFTkSuQmCC);
-  --pat-checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4zwABuGi8kv8ZhoUJAEGoH+HiZxhOAAAAAElFTkSuQmCC);
-  --pat-checkerboard-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNggID/+Oj/BBQNAxMAQagf4Tb3rGwAAAAASUVORK5CYII=);
-  --pat-pinstripe-v: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4zwABWGkmBgJgeCgAAOSNBAsgg3PSAAAAAElFTkSuQmCC);
-  --pat-pinstripe-v-wide: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4z4AKUPhMDATA8FAAAP5XAg3OgldtAAAAAElFTkSuQmCC);
-  --pat-pinstripe-h: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNkYGD4z0AJYBwWJgAAhTYEAXHt+N4AAAAASUVORK5CYII=);
-  --pat-pinstripe-h-wide: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNkYGD4zzCwgHEQuAEAhR8CATitXwQAAAAASUVORK5CYII=);
+  /* ─── Group: Structural ─── */
+  --pat-solid: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v8h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-empty: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D''%2F%3E%3C%2Fsvg%3E");
+  --pat-checkerboard: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h1v1h-1ZM4%2C0h1v1h-1ZM6%2C0h1v1h-1ZM1%2C1h1v1h-1ZM3%2C1h1v1h-1ZM5%2C1h1v1h-1ZM7%2C1h1v1h-1ZM0%2C2h1v1h-1ZM2%2C2h1v1h-1ZM4%2C2h1v1h-1ZM6%2C2h1v1h-1ZM1%2C3h1v1h-1ZM3%2C3h1v1h-1ZM5%2C3h1v1h-1ZM7%2C3h1v1h-1ZM0%2C4h1v1h-1ZM2%2C4h1v1h-1ZM4%2C4h1v1h-1ZM6%2C4h1v1h-1ZM1%2C5h1v1h-1ZM3%2C5h1v1h-1ZM5%2C5h1v1h-1ZM7%2C5h1v1h-1ZM0%2C6h1v1h-1ZM2%2C6h1v1h-1ZM4%2C6h1v1h-1ZM6%2C6h1v1h-1ZM1%2C7h1v1h-1ZM3%2C7h1v1h-1ZM5%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-checkerboard-alt: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM3%2C0h1v1h-1ZM5%2C0h1v1h-1ZM7%2C0h1v1h-1ZM0%2C1h1v1h-1ZM2%2C1h1v1h-1ZM4%2C1h1v1h-1ZM6%2C1h1v1h-1ZM1%2C2h1v1h-1ZM3%2C2h1v1h-1ZM5%2C2h1v1h-1ZM7%2C2h1v1h-1ZM0%2C3h1v1h-1ZM2%2C3h1v1h-1ZM4%2C3h1v1h-1ZM6%2C3h1v1h-1ZM1%2C4h1v1h-1ZM3%2C4h1v1h-1ZM5%2C4h1v1h-1ZM7%2C4h1v1h-1ZM0%2C5h1v1h-1ZM2%2C5h1v1h-1ZM4%2C5h1v1h-1ZM6%2C5h1v1h-1ZM1%2C6h1v1h-1ZM3%2C6h1v1h-1ZM5%2C6h1v1h-1ZM7%2C6h1v1h-1ZM0%2C7h1v1h-1ZM2%2C7h1v1h-1ZM4%2C7h1v1h-1ZM6%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-pinstripe-v: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v8h-1ZM2%2C0h1v8h-1ZM4%2C0h1v8h-1ZM6%2C0h1v8h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-pinstripe-v-wide: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v8h-1ZM4%2C0h1v8h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-pinstripe-h: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C2h8v1h-8ZM0%2C4h8v1h-8ZM0%2C6h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-pinstripe-h-wide: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C4h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Group 2: Diagonal ─── */
-  --pat-diagonal: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgwA/+jxBJABEwB/mW9TEDAAAAAElFTkSuQmCC);
-  --pat-diagonal-dots: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGklEQVR42mNgYGD4z4AK0Pk4Jf4TlBgyJgAAQTgP8evn9rwAAAAASUVORK5CYII=);
-  --pat-diagonal-right: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFUlEQVR42mNgQAX/8fFpJMkwCNwAACFYD/FXGo9YAAAAAElFTkSuQmCC);
+  /* ─── Group: Diagonal ─── */
+  --pat-diagonal: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M7%2C0h1v1h-1ZM6%2C1h1v1h-1ZM5%2C2h1v1h-1ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM2%2C5h1v1h-1ZM1%2C6h1v1h-1ZM0%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-diagonal-dots: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM4%2C0h1v1h-1ZM2%2C1h1v1h-1ZM6%2C1h1v1h-1ZM0%2C2h1v1h-1ZM4%2C2h1v1h-1ZM2%2C3h1v1h-1ZM6%2C3h1v1h-1ZM0%2C4h1v1h-1ZM4%2C4h1v1h-1ZM2%2C5h1v1h-1ZM6%2C5h1v1h-1ZM0%2C6h1v1h-1ZM4%2C6h1v1h-1ZM2%2C7h1v1h-1ZM6%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-diagonal-right: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M3%2C0h1v1h-1ZM7%2C0h1v1h-1ZM2%2C1h1v1h-1ZM6%2C1h1v1h-1ZM1%2C2h1v1h-1ZM5%2C2h1v1h-1ZM0%2C3h1v1h-1ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM7%2C4h1v1h-1ZM2%2C5h1v1h-1ZM6%2C5h1v1h-1ZM1%2C6h1v1h-1ZM5%2C6h1v1h-1ZM0%2C7h1v1h-1ZM4%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Group 3: Grid & Lattice ─── */
-  --pat-grid: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHElEQVR42mNkYGD4z0AA/MfHZyKkm6ACxkHgBgDqdQYFBnEb3gAAAABJRU5ErkJggg==);
-  --pat-brick: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNkYGD4z0AA4FXAREg3QQWMxLgBr5sodwMAuZgEB1fV0UgAAAAASUVORK5CYII=);
-  --pat-shelf: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNkYGD4z0AA4FXAREj3kFAAAOyiAgycCb74AAAAAElFTkSuQmCC);
-  --pat-columns: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNgYGD4zwABuGjCYOibAABIPw/xnxzKCwAAAABJRU5ErkJggg==);
-  --pat-stagger: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNggID/DKgAnY9T4j/DsDABAAF4D/G4l/ShAAAAAElFTkSuQmCC);
+  /* ─── Group: Grid & Lattice ─── */
+  --pat-grid: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C1h1v3h-1ZM4%2C1h1v3h-1ZM0%2C4h8v1h-8ZM0%2C5h1v3h-1ZM4%2C5h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-brick: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C1h1v3h-1ZM0%2C4h8v1h-8ZM4%2C5h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-shelf: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C1h1v7h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-columns: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h1v1h-1ZM4%2C0h1v1h-1ZM6%2C0h1v1h-1ZM0%2C2h1v1h-1ZM2%2C2h1v1h-1ZM4%2C2h1v1h-1ZM6%2C2h1v1h-1ZM0%2C4h1v1h-1ZM2%2C4h1v1h-1ZM4%2C4h1v1h-1ZM6%2C4h1v1h-1ZM0%2C6h1v1h-1ZM2%2C6h1v1h-1ZM4%2C6h1v1h-1ZM6%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-stagger: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM5%2C0h1v1h-1ZM3%2C1h1v1h-1ZM7%2C1h1v1h-1ZM1%2C2h1v1h-1ZM5%2C2h1v1h-1ZM3%2C3h1v1h-1ZM7%2C3h1v1h-1ZM1%2C4h1v1h-1ZM5%2C4h1v1h-1ZM3%2C5h1v1h-1ZM7%2C5h1v1h-1ZM1%2C6h1v1h-1ZM5%2C6h1v1h-1ZM3%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Group 4: Figurative ─── */
-  --pat-diamond: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHklEQVR42mNgIAP8J0byPzGS/4mR/E+0CUS5AasvAPpiD/H/aeIyAAAAAElFTkSuQmCC);
-  --pat-confetti: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAOElEQVR42pWOMQ4AMAgCT+P/v2yHLmjoUCa9EACguWq5ETaebSB4qwHSwJFSAsKl10elr0m3XM0HWEkOA9PRWlAAAAAASUVORK5CYII=);
-  --pat-weave: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAN0lEQVR42mNkYGD4z4AJGGEMJmQOkiQ2TRiC/5GN+o9m0n9kK3BKYnPDfyxuIt4NGF5kYGD4DwAfKA0F1XsFbAAAAABJRU5ErkJggg==);
-  --pat-brick-diagonal: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJElEQVR42mNgwAT/kTlMOCT/MxDSicz/j0sHTByXJFHgP+WSAK99C/fRfFhaAAAAAElFTkSuQmCC);
-  --pat-brick-diagonal-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVR42mNkwA3+YzCwSWIT+I/PyP8MRACSFBJWxERIBQB9Kwr5BNbq7QAAAABJRU5ErkJggg==);
-  --pat-caret: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKElEQVR42mNgYGD4z4Ad/MfJQeYz4lDEiC72nxTjCYmjKmIipIKgAgBPWAr8Fy+cLQAAAABJRU5ErkJggg==);
-  --pat-trellis: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNggID/+Gh0QawApyQTAwHAhMMkvNaS5iaCbgAAS8QM+mGaqqkAAAAASUVORK5CYII=);
-  --pat-arch: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNgQID/DHjAf3yK/uPjMzEQAJQrIMvRKIoAduUH/8zwIOYAAAAASUVORK5CYII=);
-  --pat-cross: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJUlEQVR42mNgYGD4z4AK0PlYJf/jk8TK/4/PRJLcQJTD/pNkEgDVlQ3zIUcSEAAAAABJRU5ErkJggg==);
-  --pat-sawtooth: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALUlEQVR42o2OyQ0AMAjDTPff2XxRJY68EzsAMuRxTEcxllKstPOHf2112DgFSPA2CQAb4l9LAAAAAElFTkSuQmCC);
-  --pat-chevron: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNgQAX/GfAAoiT/Y1P8Hx/NSMhoit1EWBIAQa4M9YY33XcAAAAASUVORK5CYII=);
-  --pat-basket: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNkYGD4z8DAwAilSQeMhExgImQCCw5TiTeBcgUAgpsEDlPs4P4AAAAASUVORK5CYII=);
-  --pat-tweed: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALklEQVR42mNkgID/DAjAiMZH5aDx/7MwYAdwRUwMBAAjqW74jy7JgsOhDES7AQBAzwwFokuQKgAAAABJRU5ErkJggg==);
+  /* ─── Group: Figurative ─── */
+  --pat-diamond: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M4%2C1h1v1h-1ZM3%2C2h1v1h-1ZM5%2C2h1v1h-1ZM2%2C3h1v1h-1ZM4%2C3h1v1h-1ZM6%2C3h1v1h-1ZM1%2C4h1v1h-1ZM3%2C4h1v1h-1ZM5%2C4h1v1h-1ZM7%2C4h1v1h-1ZM2%2C5h1v1h-1ZM4%2C5h1v1h-1ZM6%2C5h1v1h-1ZM3%2C6h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-confetti: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h2v2h-2ZM7%2C0h1v1h-1ZM6%2C2h2v2h-2ZM3%2C3h2v2h-2ZM0%2C4h2v2h-2ZM4%2C6h2v2h-2ZM0%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-weave: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h5v1h-5ZM1%2C1h3v1h-3ZM5%2C1h1v1h-1ZM2%2C2h1v1h-1ZM6%2C2h1v1h-1ZM1%2C3h1v1h-1ZM5%2C3h3v1h-3ZM0%2C4h1v1h-1ZM4%2C4h4v1h-4ZM3%2C5h1v1h-1ZM5%2C5h3v1h-3ZM2%2C6h1v1h-1ZM6%2C6h1v1h-1ZM1%2C7h3v1h-3ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-brick-diagonal: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M4%2C0h1v1h-1ZM3%2C1h3v1h-3ZM2%2C2h1v1h-1ZM6%2C2h1v1h-1ZM0%2C3h2v1h-2ZM7%2C3h1v1h-1ZM0%2C4h1v1h-1ZM7%2C5h1v1h-1ZM6%2C6h1v1h-1ZM5%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-brick-diagonal-alt: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M6%2C0h2v1h-2ZM0%2C1h1v1h-1ZM5%2C1h1v1h-1ZM1%2C2h1v1h-1ZM4%2C2h1v1h-1ZM2%2C3h2v1h-2ZM4%2C4h2v1h-2ZM6%2C5h1v1h-1ZM7%2C6h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-caret: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM6%2C0h1v1h-1ZM1%2C1h1v1h-1ZM5%2C1h1v1h-1ZM2%2C2h3v1h-3ZM7%2C2h1v1h-1ZM1%2C3h1v1h-1ZM5%2C3h1v1h-1ZM0%2C4h1v1h-1ZM6%2C4h1v1h-1ZM7%2C5h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-trellis: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM3%2C0h1v1h-1ZM5%2C0h1v1h-1ZM7%2C0h1v1h-1ZM0%2C1h1v1h-1ZM2%2C1h1v1h-1ZM1%2C2h1v3h-1ZM3%2C4h1v1h-1ZM5%2C4h1v1h-1ZM7%2C4h1v1h-1ZM4%2C5h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-arch: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M2%2C0h1v1h-1ZM1%2C1h1v1h-1ZM3%2C1h1v1h-1ZM0%2C2h1v4h-1ZM4%2C2h1v4h-1ZM5%2C6h1v1h-1ZM7%2C6h1v1h-1ZM6%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-cross: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM4%2C0h1v1h-1ZM3%2C1h1v1h-1ZM5%2C1h1v1h-1ZM2%2C2h1v1h-1ZM6%2C2h1v1h-1ZM1%2C3h1v1h-1ZM7%2C3h1v1h-1ZM0%2C4h1v1h-1ZM4%2C4h1v1h-1ZM0%2C6h1v1h-1ZM2%2C6h1v1h-1ZM4%2C6h1v1h-1ZM6%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-sawtooth: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v2h-1ZM1%2C2h1v1h-1ZM7%2C2h1v1h-1ZM2%2C3h5v1h-5ZM4%2C4h1v2h-1ZM3%2C6h1v1h-1ZM5%2C6h1v1h-1ZM0%2C7h3v1h-3ZM6%2C7h2v1h-2Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-chevron: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M3%2C0h1v1h-1ZM2%2C1h1v1h-1ZM1%2C2h1v1h-1ZM3%2C2h1v1h-1ZM5%2C2h1v1h-1ZM0%2C3h1v1h-1ZM2%2C3h1v1h-1ZM4%2C3h1v1h-1ZM6%2C3h1v1h-1ZM0%2C4h8v1h-8ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-basket: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h6v1h-6ZM0%2C2h1v6h-1ZM2%2C2h6v2h-6ZM2%2C4h2v4h-2Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-tweed: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h3v1h-3ZM5%2C0h3v1h-3ZM0%2C1h1v3h-1ZM4%2C1h1v1h-1ZM7%2C1h1v1h-1ZM4%2C2h4v2h-4ZM1%2C4h3v1h-3ZM5%2C4h3v1h-3ZM0%2C5h1v1h-1ZM3%2C5h2v1h-2ZM0%2C6h5v2h-5Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Group 5: Scatter / Stipple ─── */
-  --pat-dust: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgYGD4zzAKAAQTAQCUZZylAAAAAElFTkSuQmCC);
-  --pat-mist: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAE0lEQVR42mNgYGD4zzD4AL3dBABzowH/x1JpygAAAABJRU5ErkJggg==);
-  --pat-scatter: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNggID/DNQG/+mgg3omAgBS0gP9yeXaQQAAAABJRU5ErkJggg==);
-  --pat-scatter-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNgYGD4z0Bt8J8OOqhrIgBiwgP9iZM4jgAAAABJRU5ErkJggg==);
-  --pat-scatter-pair: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAEklEQVR42mNgoDv4T4A/IG4AACvrA/0l0V9SAAAAAElFTkSuQmCC);
-  --pat-rain: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVR42mNgYGD4z0AEoJ4iksB/2khiAAB7twX7nV7SGAAAAABJRU5ErkJggg==);
-  --pat-rain-cluster: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAF0lEQVR42mNggID/DHjAf2IUUR/Q080AvXUF+3lEFOEAAAAASUVORK5CYII=);
-  --pat-spray: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVR42mNgYGD4z0ACoEwxSbrxavpPseNQNAAAETAH+a271I0AAAAASUVORK5CYII=);
-  --pat-spray-grid: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVR42mNgYGD4z4AK0PnEA/JNGmg3AACknAf59hefuwAAAABJRU5ErkJggg==);
-  --pat-spray-mixed: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVR42mNgYGD4zwABuGjCgHiVxJrwn2ITSAMAy4MH+Yj5W54AAAAASUVORK5CYII=);
+  /* ─── Group: Scatter / Stipple ─── */
+  --pat-dust: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-mist: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM4%2C4h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-scatter: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM5%2C2h1v1h-1ZM1%2C4h1v1h-1ZM5%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-scatter-alt: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM4%2C2h1v1h-1ZM0%2C4h1v1h-1ZM4%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-scatter-pair: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M3%2C3h1v1h-1ZM7%2C3h1v1h-1ZM3%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-rain: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM1%2C1h1v1h-1ZM2%2C2h1v1h-1ZM6%2C4h1v1h-1ZM5%2C5h1v1h-1ZM4%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-rain-cluster: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM0%2C1h1v1h-1ZM2%2C1h1v1h-1ZM5%2C4h1v1h-1ZM4%2C5h1v1h-1ZM6%2C5h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-spray: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM3%2C1h1v1h-1ZM6%2C2h1v1h-1ZM2%2C3h1v1h-1ZM7%2C4h1v1h-1ZM4%2C5h1v1h-1ZM1%2C6h1v1h-1ZM5%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-spray-grid: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM4%2C0h1v1h-1ZM2%2C2h1v1h-1ZM6%2C2h1v1h-1ZM0%2C4h1v1h-1ZM4%2C4h1v1h-1ZM2%2C6h1v1h-1ZM6%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-spray-mixed: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h1v1h-1ZM4%2C0h1v1h-1ZM6%2C0h1v1h-1ZM0%2C2h1v1h-1ZM0%2C4h1v1h-1ZM4%2C4h1v1h-1ZM0%2C6h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Group 6: Heavy Fill ─── */
-  --pat-fill-75: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNkYGD4zwABjEhsOJ8RysGQgHGY0ExgQOcPCRMAWLMRB3VCvrIAAAAASUVORK5CYII=);
-  --pat-fill-75-rows: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNggID/uGhGJA5eMLRNAAAIrRPxMRRQ7AAAAABJRU5ErkJggg==);
-  --pat-fill-75-sweep: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJklEQVR42mNkYGD4z4AAjOh8JnySDAwM/5nwScIYDPisYRoEbgAAMDwQDFCSg0IAAAAASUVORK5CYII=);
-  --pat-fill-75-offset: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJUlEQVR42mNkYGD4z8DAwAilYQDOZ4IK/EeSQOEz4ZKA8YeECQAcwxEPZwWSewAAAABJRU5ErkJggg==);
-  --pat-fill-75-inv: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHklEQVR42mNkgID/DAjAiMxnQuIwoilmxCY4NE0AAG2QEAnqYbX3AAAAAElFTkSuQmCC);
-  --pat-fill-75-bars: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAF0lEQVR42mNkYGD4z0AE+I+LZhwWJgAAfp8T8dviMZgAAAAASUVORK5CYII=);
-  --pat-fill-81: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYGD4z4AHMDEwMDCiiTGiK/iPJoHCRxeEif3HyhkgNwAAuEwKDYIjdBgAAAAASUVORK5CYII=);
-  --pat-fill-88: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYGD4zwABjEhsOB9dEAMwQVUyoOlENYaQCVh1wvh0cAMA6zgHDcHAn/gAAAAASUVORK5CYII=);
-  --pat-fill-88-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJElEQVR42mNkgID/DAjAiMxnRJPEAExoOhnQ+USZgFUnHd0AAPcZBg1M396MAAAAAElFTkSuQmCC);
-  --pat-fill-94: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVR42mNkYGD4z4AHMGERYySk4D+6AkZCVgy0GwBs4gQQU2pyDQAAAABJRU5ErkJggg==);
-  --pat-fill-94-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVR42mNkgID/DDgAEz5JmAJ0wEhIwX90BYyErKCxGwDn5gUObBB64AAAAABJRU5ErkJggg==);
-  --pat-fill-97: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVR42mNkgID/DDgAEz5JmAIGqitgJKTgP3XdAAA5pAMO+u7iUgAAAABJRU5ErkJggg==);
+  /* ─── Group: Heavy Fill ─── */
+  --pat-fill-75: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h2v1h-2ZM3%2C0h3v1h-3ZM7%2C0h1v1h-1ZM1%2C1h3v1h-3ZM5%2C1h3v1h-3ZM0%2C2h2v1h-2ZM3%2C2h3v1h-3ZM7%2C2h1v1h-1ZM1%2C3h3v1h-3ZM5%2C3h3v1h-3ZM0%2C4h2v1h-2ZM3%2C4h3v1h-3ZM7%2C4h1v1h-1ZM1%2C5h3v1h-3ZM5%2C5h3v1h-3ZM0%2C6h2v1h-2ZM3%2C6h3v1h-3ZM7%2C6h1v1h-1ZM1%2C7h3v1h-3ZM5%2C7h3v1h-3Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-75-rows: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h1v1h-1ZM3%2C0h1v1h-1ZM5%2C0h1v1h-1ZM7%2C0h1v1h-1ZM0%2C1h8v1h-8ZM1%2C2h1v1h-1ZM3%2C2h1v1h-1ZM5%2C2h1v1h-1ZM7%2C2h1v1h-1ZM0%2C3h8v1h-8ZM1%2C4h1v1h-1ZM3%2C4h1v1h-1ZM5%2C4h1v1h-1ZM7%2C4h1v1h-1ZM0%2C5h8v1h-8ZM1%2C6h1v1h-1ZM3%2C6h1v1h-1ZM5%2C6h1v1h-1ZM7%2C6h1v1h-1ZM0%2C7h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-75-sweep: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h3v1h-3ZM4%2C0h3v1h-3ZM0%2C1h2v1h-2ZM3%2C1h3v1h-3ZM7%2C1h1v1h-1ZM0%2C2h1v1h-1ZM2%2C2h3v1h-3ZM6%2C2h2v1h-2ZM1%2C3h3v1h-3ZM5%2C3h3v1h-3ZM0%2C4h3v1h-3ZM4%2C4h3v1h-3ZM0%2C5h2v1h-2ZM3%2C5h3v1h-3ZM7%2C5h1v1h-1ZM0%2C6h1v1h-1ZM2%2C6h3v1h-3ZM6%2C6h2v1h-2ZM1%2C7h3v1h-3ZM5%2C7h3v1h-3Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-75-offset: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h1v1h-1ZM2%2C0h3v1h-3ZM6%2C0h2v1h-2ZM0%2C1h3v1h-3ZM4%2C1h3v1h-3ZM0%2C2h1v1h-1ZM2%2C2h3v1h-3ZM6%2C2h2v1h-2ZM0%2C3h3v1h-3ZM4%2C3h3v1h-3ZM0%2C4h1v1h-1ZM2%2C4h3v1h-3ZM6%2C4h2v1h-2ZM0%2C5h3v1h-3ZM4%2C5h3v1h-3ZM0%2C6h1v1h-1ZM2%2C6h3v1h-3ZM6%2C6h2v1h-2ZM0%2C7h3v1h-3ZM4%2C7h3v1h-3Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-75-inv: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h3v1h-3ZM5%2C0h3v1h-3ZM0%2C1h2v1h-2ZM3%2C1h3v1h-3ZM7%2C1h1v1h-1ZM1%2C2h3v1h-3ZM5%2C2h3v1h-3ZM0%2C3h2v1h-2ZM3%2C3h3v1h-3ZM7%2C3h1v1h-1ZM1%2C4h3v1h-3ZM5%2C4h3v1h-3ZM0%2C5h2v1h-2ZM3%2C5h3v1h-3ZM7%2C5h1v1h-1ZM1%2C6h3v1h-3ZM5%2C6h3v1h-3ZM0%2C7h2v1h-2ZM3%2C7h3v1h-3ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-75-bars: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM1%2C1h1v1h-1ZM3%2C1h1v1h-1ZM5%2C1h1v1h-1ZM7%2C1h1v1h-1ZM0%2C2h8v1h-8ZM1%2C3h1v1h-1ZM3%2C3h1v1h-1ZM5%2C3h1v1h-1ZM7%2C3h1v1h-1ZM0%2C4h8v1h-8ZM1%2C5h1v1h-1ZM3%2C5h1v1h-1ZM5%2C5h1v1h-1ZM7%2C5h1v1h-1ZM0%2C6h8v1h-8ZM1%2C7h1v1h-1ZM3%2C7h1v1h-1ZM5%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-81: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM1%2C1h3v1h-3ZM5%2C1h3v1h-3ZM0%2C2h2v1h-2ZM3%2C2h3v1h-3ZM7%2C2h1v1h-1ZM1%2C3h3v1h-3ZM5%2C3h3v1h-3ZM0%2C4h8v1h-8ZM1%2C5h3v1h-3ZM5%2C5h3v1h-3ZM0%2C6h2v1h-2ZM3%2C6h3v1h-3ZM7%2C6h1v1h-1ZM1%2C7h3v1h-3ZM5%2C7h3v1h-3Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-88: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h2v1h-2ZM3%2C0h3v1h-3ZM7%2C0h1v1h-1ZM0%2C1h8v1h-8ZM1%2C2h3v1h-3ZM5%2C2h3v1h-3ZM0%2C3h8v1h-8ZM0%2C4h2v1h-2ZM3%2C4h3v1h-3ZM7%2C4h1v1h-1ZM0%2C5h8v1h-8ZM1%2C6h3v1h-3ZM5%2C6h3v1h-3ZM0%2C7h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-88-alt: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h3v1h-3ZM5%2C0h3v1h-3ZM0%2C1h8v1h-8ZM0%2C2h2v1h-2ZM3%2C2h3v1h-3ZM7%2C2h1v1h-1ZM0%2C3h8v1h-8ZM1%2C4h3v1h-3ZM5%2C4h3v1h-3ZM0%2C5h8v1h-8ZM0%2C6h2v1h-2ZM3%2C6h3v1h-3ZM7%2C6h1v1h-1ZM0%2C7h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-94: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h8v1h-8ZM0%2C1h4v1h-4ZM5%2C1h3v1h-3ZM0%2C2h8v1h-8ZM1%2C3h7v1h-7ZM0%2C4h8v1h-8ZM0%2C5h4v1h-4ZM5%2C5h3v1h-3ZM0%2C6h8v1h-8ZM1%2C7h7v1h-7Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-94-alt: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h7v1h-7ZM0%2C1h8v1h-8ZM0%2C2h4v1h-4ZM5%2C2h3v1h-3ZM0%2C3h8v1h-8ZM1%2C4h7v1h-7ZM0%2C5h8v1h-8ZM0%2C6h4v1h-4ZM5%2C6h3v1h-3ZM0%2C7h8v1h-8Z'%2F%3E%3C%2Fsvg%3E");
+  --pat-fill-97: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'white'%20d%3D'M1%2C0h7v1h-7ZM0%2C1h8v3h-8ZM0%2C4h4v1h-4ZM5%2C4h3v1h-3ZM0%2C5h8v3h-8Z'%2F%3E%3C%2Fsvg%3E");
 
-  /* ─── Shadow pattern color ─── */
   --color-shadow-pat: var(--color-ink);
 }
 
-/* =============================================================================
-   Mask-image base class
-   ============================================================================= */
-
 .rdna-pat {
+  position: relative;
+  background-color: var(--pat-bg, transparent);
+}
+
+.rdna-pat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--pat-fill, var(--pat-color, var(--color-main)));
   -webkit-mask-image: var(--_pat);
   mask-image: var(--_pat);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  -webkit-mask-size: var(--pat-mask-size, calc(8px * var(--pixel-scale, 1) * var(--pat-scale, 1)) calc(8px * var(--pixel-scale, 1) * var(--pat-scale, 1)));
+  mask-size: var(--pat-mask-size, calc(8px * var(--pixel-scale, 1) * var(--pat-scale, 1)) calc(8px * var(--pixel-scale, 1) * var(--pat-scale, 1)));
+  -webkit-mask-repeat: var(--pat-repeat, repeat);
+  mask-repeat: var(--pat-repeat, repeat);
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-  background-color: var(--pat-color, var(--color-main));
 }
 
-/* ─── Group 1: Structural ─── */
-.rdna-pat--solid              { --_pat: var(--pat-solid); }
-.rdna-pat--empty              { --_pat: var(--pat-empty); }
-.rdna-pat--checkerboard       { --_pat: var(--pat-checkerboard); }
-.rdna-pat--checkerboard-alt   { --_pat: var(--pat-checkerboard-alt); }
-.rdna-pat--pinstripe-v        { --_pat: var(--pat-pinstripe-v); }
-.rdna-pat--pinstripe-v-wide   { --_pat: var(--pat-pinstripe-v-wide); }
-.rdna-pat--pinstripe-h        { --_pat: var(--pat-pinstripe-h); }
-.rdna-pat--pinstripe-h-wide   { --_pat: var(--pat-pinstripe-h-wide); }
-
-/* ─── Group 2: Diagonal ─── */
-.rdna-pat--diagonal           { --_pat: var(--pat-diagonal); }
-.rdna-pat--diagonal-dots      { --_pat: var(--pat-diagonal-dots); }
-.rdna-pat--diagonal-right     { --_pat: var(--pat-diagonal-right); }
-
-/* ─── Group 3: Grid & Lattice ─── */
-.rdna-pat--grid               { --_pat: var(--pat-grid); }
-.rdna-pat--brick              { --_pat: var(--pat-brick); }
-.rdna-pat--shelf              { --_pat: var(--pat-shelf); }
-.rdna-pat--columns            { --_pat: var(--pat-columns); }
-.rdna-pat--stagger            { --_pat: var(--pat-stagger); }
-
-/* ─── Group 4: Figurative ─── */
-.rdna-pat--diamond            { --_pat: var(--pat-diamond); }
-.rdna-pat--confetti           { --_pat: var(--pat-confetti); }
-.rdna-pat--weave              { --_pat: var(--pat-weave); }
-.rdna-pat--brick-diagonal     { --_pat: var(--pat-brick-diagonal); }
+.rdna-pat--solid { --_pat: var(--pat-solid); }
+.rdna-pat--empty { --_pat: var(--pat-empty); }
+.rdna-pat--checkerboard { --_pat: var(--pat-checkerboard); }
+.rdna-pat--checkerboard-alt { --_pat: var(--pat-checkerboard-alt); }
+.rdna-pat--pinstripe-v { --_pat: var(--pat-pinstripe-v); }
+.rdna-pat--pinstripe-v-wide { --_pat: var(--pat-pinstripe-v-wide); }
+.rdna-pat--pinstripe-h { --_pat: var(--pat-pinstripe-h); }
+.rdna-pat--pinstripe-h-wide { --_pat: var(--pat-pinstripe-h-wide); }
+.rdna-pat--diagonal { --_pat: var(--pat-diagonal); }
+.rdna-pat--diagonal-dots { --_pat: var(--pat-diagonal-dots); }
+.rdna-pat--diagonal-right { --_pat: var(--pat-diagonal-right); }
+.rdna-pat--grid { --_pat: var(--pat-grid); }
+.rdna-pat--brick { --_pat: var(--pat-brick); }
+.rdna-pat--shelf { --_pat: var(--pat-shelf); }
+.rdna-pat--columns { --_pat: var(--pat-columns); }
+.rdna-pat--stagger { --_pat: var(--pat-stagger); }
+.rdna-pat--diamond { --_pat: var(--pat-diamond); }
+.rdna-pat--confetti { --_pat: var(--pat-confetti); }
+.rdna-pat--weave { --_pat: var(--pat-weave); }
+.rdna-pat--brick-diagonal { --_pat: var(--pat-brick-diagonal); }
 .rdna-pat--brick-diagonal-alt { --_pat: var(--pat-brick-diagonal-alt); }
-.rdna-pat--caret              { --_pat: var(--pat-caret); }
-.rdna-pat--trellis            { --_pat: var(--pat-trellis); }
-.rdna-pat--arch               { --_pat: var(--pat-arch); }
-.rdna-pat--cross              { --_pat: var(--pat-cross); }
-.rdna-pat--sawtooth           { --_pat: var(--pat-sawtooth); }
-.rdna-pat--chevron            { --_pat: var(--pat-chevron); }
-.rdna-pat--basket             { --_pat: var(--pat-basket); }
-.rdna-pat--tweed              { --_pat: var(--pat-tweed); }
+.rdna-pat--caret { --_pat: var(--pat-caret); }
+.rdna-pat--trellis { --_pat: var(--pat-trellis); }
+.rdna-pat--arch { --_pat: var(--pat-arch); }
+.rdna-pat--cross { --_pat: var(--pat-cross); }
+.rdna-pat--sawtooth { --_pat: var(--pat-sawtooth); }
+.rdna-pat--chevron { --_pat: var(--pat-chevron); }
+.rdna-pat--basket { --_pat: var(--pat-basket); }
+.rdna-pat--tweed { --_pat: var(--pat-tweed); }
+.rdna-pat--dust { --_pat: var(--pat-dust); }
+.rdna-pat--mist { --_pat: var(--pat-mist); }
+.rdna-pat--scatter { --_pat: var(--pat-scatter); }
+.rdna-pat--scatter-alt { --_pat: var(--pat-scatter-alt); }
+.rdna-pat--scatter-pair { --_pat: var(--pat-scatter-pair); }
+.rdna-pat--rain { --_pat: var(--pat-rain); }
+.rdna-pat--rain-cluster { --_pat: var(--pat-rain-cluster); }
+.rdna-pat--spray { --_pat: var(--pat-spray); }
+.rdna-pat--spray-grid { --_pat: var(--pat-spray-grid); }
+.rdna-pat--spray-mixed { --_pat: var(--pat-spray-mixed); }
+.rdna-pat--fill-75 { --_pat: var(--pat-fill-75); }
+.rdna-pat--fill-75-rows { --_pat: var(--pat-fill-75-rows); }
+.rdna-pat--fill-75-sweep { --_pat: var(--pat-fill-75-sweep); }
+.rdna-pat--fill-75-offset { --_pat: var(--pat-fill-75-offset); }
+.rdna-pat--fill-75-inv { --_pat: var(--pat-fill-75-inv); }
+.rdna-pat--fill-75-bars { --_pat: var(--pat-fill-75-bars); }
+.rdna-pat--fill-81 { --_pat: var(--pat-fill-81); }
+.rdna-pat--fill-88 { --_pat: var(--pat-fill-88); }
+.rdna-pat--fill-88-alt { --_pat: var(--pat-fill-88-alt); }
+.rdna-pat--fill-94 { --_pat: var(--pat-fill-94); }
+.rdna-pat--fill-94-alt { --_pat: var(--pat-fill-94-alt); }
+.rdna-pat--fill-97 { --_pat: var(--pat-fill-97); }
 
-/* ─── Group 5: Scatter / Stipple ─── */
-.rdna-pat--dust               { --_pat: var(--pat-dust); }
-.rdna-pat--mist               { --_pat: var(--pat-mist); }
-.rdna-pat--scatter            { --_pat: var(--pat-scatter); }
-.rdna-pat--scatter-alt        { --_pat: var(--pat-scatter-alt); }
-.rdna-pat--scatter-pair       { --_pat: var(--pat-scatter-pair); }
-.rdna-pat--rain               { --_pat: var(--pat-rain); }
-.rdna-pat--rain-cluster       { --_pat: var(--pat-rain-cluster); }
-.rdna-pat--spray              { --_pat: var(--pat-spray); }
-.rdna-pat--spray-grid         { --_pat: var(--pat-spray-grid); }
-.rdna-pat--spray-mixed        { --_pat: var(--pat-spray-mixed); }
-
-/* ─── Group 6: Heavy Fill ─── */
-.rdna-pat--fill-75            { --_pat: var(--pat-fill-75); }
-.rdna-pat--fill-75-rows       { --_pat: var(--pat-fill-75-rows); }
-.rdna-pat--fill-75-sweep      { --_pat: var(--pat-fill-75-sweep); }
-.rdna-pat--fill-75-offset     { --_pat: var(--pat-fill-75-offset); }
-.rdna-pat--fill-75-inv        { --_pat: var(--pat-fill-75-inv); }
-.rdna-pat--fill-75-bars       { --_pat: var(--pat-fill-75-bars); }
-.rdna-pat--fill-81            { --_pat: var(--pat-fill-81); }
-.rdna-pat--fill-88            { --_pat: var(--pat-fill-88); }
-.rdna-pat--fill-88-alt        { --_pat: var(--pat-fill-88-alt); }
-.rdna-pat--fill-94            { --_pat: var(--pat-fill-94); }
-.rdna-pat--fill-94-alt        { --_pat: var(--pat-fill-94-alt); }
-.rdna-pat--fill-97            { --_pat: var(--pat-fill-97); }
-
-/* ─── Scale modifiers ─── */
-.rdna-pat--2x { -webkit-mask-size: 16px 16px; mask-size: 16px 16px; }
-.rdna-pat--3x { -webkit-mask-size: 24px 24px; mask-size: 24px 24px; }
-.rdna-pat--4x { -webkit-mask-size: 32px 32px; mask-size: 32px 32px; }
+.rdna-pat--2x { --pat-scale: 2; }
+.rdna-pat--3x { --pat-scale: 3; }
+.rdna-pat--4x { --pat-scale: 4; }

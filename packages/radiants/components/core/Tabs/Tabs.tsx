@@ -366,10 +366,9 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             {/* Chrome inactive: pattern overlay */}
             {mode === 'chrome' && !isActive && (
               <span
-                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out"
+                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out rdna-pat rdna-pat--spray-grid"
                 style={{
-                  backgroundImage: 'var(--pat-spray-grid)',
-                  backgroundRepeat: 'repeat',
+                  ['--pat-color' as string]: 'currentColor',
                 }}
               />
             )}

@@ -1275,8 +1275,7 @@
 }
 
 .dark .rdna-pat {
-  background-color: transparent;
-  background-image: radial-gradient(
+  --pat-fill: radial-gradient(
     var(--pat-glow-shape) var(--pat-glow-radius) at var(--mouse-x) var(--mouse-y),
     var(--pat-glow-color) 0%,
     var(--pat-glow-mid) var(--pat-glow-mid-stop),
@@ -1287,7 +1286,7 @@
 /* Click/active burst — brighter + wider radius */
 .dark [data-pat-active] .rdna-pat,
 .dark .rdna-pat.rdna-pat--active {
-  background-image: radial-gradient(
+  --pat-fill: radial-gradient(
     var(--pat-glow-shape) calc(var(--pat-glow-radius) * 1.5) at var(--mouse-x) var(--mouse-y),
     var(--color-sun-yellow) 0%,
     oklch(0.75 0.08 85) 30%,
@@ -1297,6 +1296,5 @@
 
 /* Escape hatch: flat color patterns that shouldn't glow */
 .dark .rdna-pat--no-glow {
-  background-image: none;
-  background-color: var(--pat-color, var(--color-main));
+  --pat-fill: var(--pat-color, var(--color-main));
 }

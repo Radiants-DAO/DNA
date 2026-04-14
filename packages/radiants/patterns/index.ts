@@ -6,7 +6,7 @@ import { patternRegistry } from './registry';
 
 /** Lookup helpers */
 export const getPatternByName = (name: string) =>
-  patternRegistry.find(p => p.name === name);
+  patternRegistry.find((pattern) => pattern.name === name || pattern.legacyName === name);
 
 export const getPatternsByGroup = (group: PatternGroup) =>
   patternRegistry.filter(p => p.group === group);

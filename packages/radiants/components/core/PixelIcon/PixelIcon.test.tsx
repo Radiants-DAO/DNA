@@ -1,0 +1,81 @@
+import { render } from '@testing-library/react';
+
+import { getPixelIcon } from '../../../pixel-icons/registry';
+import { PixelIcon } from './PixelIcon';
+
+const sampleGrid = {
+  name: 'sample-16',
+  width: 16,
+  height: 16,
+  bits:
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000011110000' +
+    '0000000011110000' +
+    '0000000011110000' +
+    '0000000011110000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000' +
+    '0000000000000000',
+} as const;
+
+describe('PixelIcon', () => {
+  test('renders a single host CSS mask from a supplied PixelGrid', () => {
+    const { container } = render(<PixelIcon grid={sampleGrid} />);
+
+    const host = container.firstElementChild as HTMLElement | null;
+    expect(host).toBeInTheDocument();
+    expect(host?.tagName).toBe('SPAN');
+    expect(host?.querySelector('svg')).toBeNull();
+    expect(host?.style.maskImage || host?.style.webkitMaskImage).toContain('data:image/svg+xml');
+    expect(host?.style.maskRepeat).toBe('no-repeat');
+    expect(host?.style.backgroundColor).toBe('currentcolor');
+  });
+
+  test('resolves a named icon from the registry seed set', () => {
+    const registryEntry = getPixelIcon('caret');
+
+    expect(registryEntry).toBeDefined();
+    expect(registryEntry?.name).toBe('caret');
+
+    const { container } = render(<PixelIcon name="caret" />);
+    const host = container.firstElementChild as HTMLElement | null;
+
+    expect(host).toBeInTheDocument();
+    expect(host?.style.maskImage || host?.style.webkitMaskImage).toContain('data:image/svg+xml');
+  });
+
+  test('inherits color through currentColor', () => {
+    const { container } = render(
+      <PixelIcon
+        grid={sampleGrid}
+        style={{ color: 'rgb(12, 34, 56)' }}
+      />,
+    );
+
+    const host = container.firstElementChild as HTMLElement | null;
+    expect(host?.style.color).toBe('rgb(12, 34, 56)');
+    expect(host?.style.backgroundColor).toBe('currentcolor');
+  });
+
+  test('honors explicit size and scale props', () => {
+    const { container: scaled } = render(<PixelIcon grid={sampleGrid} scale={2} />);
+    const scaledHost = scaled.firstElementChild as HTMLElement | null;
+
+    expect(scaledHost?.style.width).toBe('32px');
+    expect(scaledHost?.style.height).toBe('32px');
+
+    const { container: sized } = render(<PixelIcon grid={sampleGrid} size={40} />);
+    const sizedHost = sized.firstElementChild as HTMLElement | null;
+
+    expect(sizedHost?.style.width).toBe('40px');
+    expect(sizedHost?.style.height).toBe('40px');
+  });
+});

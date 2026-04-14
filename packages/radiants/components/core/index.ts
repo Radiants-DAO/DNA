@@ -39,6 +39,10 @@ export { NavigationMenu } from './NavigationMenu/NavigationMenu';
 export { Combobox, useComboboxFilter } from './Combobox/Combobox';
 export { Pattern } from './Pattern/Pattern';
 export type { PatternProps } from './Pattern/Pattern';
+export { PixelIcon } from './PixelIcon/PixelIcon';
+export type { PixelIconProps } from './PixelIcon/PixelIcon';
+export { PixelTransition } from './PixelTransition/PixelTransition';
+export type { PixelTransitionProps } from './PixelTransition/PixelTransition';
 export {
   PixelBorder,
   PixelBorderEdges,

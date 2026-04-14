@@ -415,7 +415,7 @@ def main():
 
     # ── Row 8: Hearts ──
     ry, cols = ROW_DEFS[8]
-    max_y_hearts = ROW9_UPPER_Y - 1
+    max_y_hearts = 239  # Heart row band ends at y=239; palette starts at y=248
     for hi, ci in enumerate(cols):
         if hi >= len(HEART_EMOJIS):
             break

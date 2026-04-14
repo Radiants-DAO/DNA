@@ -64,12 +64,12 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
         {/* Pattern shadow strips */}
         <div className="relative shrink-0">
           <div
-            className="absolute top-0 left-0 right-0 h-1 z-10"
-            style={{ backgroundImage: 'var(--pat-diagonal-dots)', backgroundRepeat: 'repeat' }}
+            className="absolute top-0 left-0 right-0 h-1 z-10 rdna-pat rdna-pat--diagonal-dots"
+            style={{ ['--pat-color' as string]: 'var(--color-ink)' }}
           />
           <div
-            className="absolute top-1 left-0 right-0 h-1 z-10"
-            style={{ backgroundImage: 'var(--pat-spray-grid)', backgroundRepeat: 'repeat' }}
+            className="absolute top-1 left-0 right-0 h-1 z-10 rdna-pat rdna-pat--spray-grid"
+            style={{ ['--pat-color' as string]: 'var(--color-ink)' }}
           />
         </div>
 

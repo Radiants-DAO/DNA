@@ -1,18 +1,6 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-type PatternName =
-  | "solid" | "empty" | "checkerboard" | "checkerboard-alt"
-  | "pinstripe-v" | "pinstripe-v-wide" | "pinstripe-h" | "pinstripe-h-wide"
-  | "diagonal" | "diagonal-dots" | "diagonal-right"
-  | "grid" | "brick" | "shelf" | "columns" | "stagger" | "diamond"
-  | "confetti" | "weave" | "brick-diagonal" | "brick-diagonal-alt"
-  | "caret" | "trellis" | "arch" | "cross" | "sawtooth" | "chevron"
-  | "basket" | "tweed" | "dust" | "mist"
-  | "scatter" | "scatter-alt" | "scatter-pair"
-  | "rain" | "rain-cluster" | "spray" | "spray-grid" | "spray-mixed"
-  | "fill-75" | "fill-75-rows" | "fill-75-sweep" | "fill-75-offset"
-  | "fill-75-inv" | "fill-75-bars"
-  | "fill-81" | "fill-88" | "fill-88-alt" | "fill-94" | "fill-94-alt" | "fill-97";
+import type { PatternName } from "../../../patterns";
 
 interface PatternProps {
   pat?: PatternName;
@@ -25,7 +13,7 @@ interface PatternProps {
 export const PatternMeta = defineComponentMeta<PatternProps>()({
   name: "Pattern",
   description:
-    "Renders a recolorable 8x8 pixel pattern from the System 6 library. Uses inline SVG so colors, backgrounds, and theme changes stay live without CSS masks.",
+    "Renders a recolorable pixel pattern from the System 6 library using mask-image tokens on a single host element. Children render directly inside the host above the art layer.",
   props: {
     pat: {
       type: "enum",
@@ -62,11 +50,11 @@ export const PatternMeta = defineComponentMeta<PatternProps>()({
     tiled: {
       type: "boolean",
       default: true,
-      description: "If true, tile the pattern to fill the host. If false, render a single 8x8 tile.",
+      description: "If true, tile the pattern to fill the host. If false, render a single 8x8 tile without repeating.",
     },
   },
   slots: {
-    children: { description: "Content rendered above the pattern art" },
+    children: { description: "Content rendered directly inside the host above the masked art layer" },
   },
   examples: [
     { name: "Basic checkerboard", code: '<Pattern pat="checkerboard" className="w-20 h-20" />' },

@@ -13,8 +13,8 @@ export interface PatternEntry {
   group: PatternGroup;
   /** Fill density 0–100 (exact bit count / 64 pixels) */
   fill: number;
-  /** Original 8-byte hex string: "AA 55 AA 55 AA 55 AA 55" */
-  hex: string;
+  /** Original 64-bit grid bitstring. */
+  bits: string;
   /** CSS custom property name: "--pat-checkerboard" */
   token: string;
   /** Original System 6 name before renaming */

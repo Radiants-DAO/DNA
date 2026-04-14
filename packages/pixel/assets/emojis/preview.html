@@ -2,58 +2,25 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>RDNA Emoji Preview</title>
+<title>RDNA Emoji Set</title>
 <style>
-  body { 
-    background: #FEF8E2; 
-    font-family: monospace; 
-    padding: 2rem;
-    margin: 0;
-  }
-  h1 { color: #0f0e0c; font-size: 1rem; margin-bottom: 1rem; }
-  .grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: end;
-  }
-  .cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-  .cell img {
-    width: 32px;
-    height: auto;
-    image-rendering: pixelated;
-  }
-  .cell span {
-    font-size: 8px;
-    color: #0f0e0c80;
-  }
-  .palette {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 1.5rem;
-  }
-  .swatch {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #0f0e0c20;
-  }
-  .swatch-label {
-    font-size: 8px;
-    color: #0f0e0c80;
-    text-align: center;
-  }
-  .dark { background: #0f0e0c; padding: 2rem; margin-top: 2rem; border-radius: 8px; }
-  .dark h2 { color: #fef8e2; font-size: 0.8rem; margin-bottom: 1rem; }
-  .dark .grid { gap: 8px; }
+  body { background: #FEF8E2; font-family: monospace; padding: 2rem; margin: 0; }
+  h1 { color: #0f0e0c; font-size: 1rem; margin-bottom: 0.5rem; }
+  h2 { color: #0f0e0c80; font-size: 0.75rem; margin: 1.5rem 0 0.5rem; }
+  .palette { display: flex; gap: 4px; margin-bottom: 1.5rem; }
+  .swatch { width: 32px; height: 32px; border: 1px solid #0f0e0c20; }
+  .swatch-label { font-size: 7px; color: #0f0e0c80; text-align: center; }
+  .grid { display: flex; flex-wrap: wrap; gap: 6px; align-items: end; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .cell img { width: 32px; height: auto; image-rendering: pixelated; }
+  .cell span { font-size: 7px; color: #0f0e0c60; max-width: 48px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .section { margin-bottom: 2rem; }
+  .dark { background: #0f0e0c; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; }
+  .dark h2 { color: #fef8e2; }
 </style>
 </head>
 <body>
-<h1>RDNA Emoji Set — Vectorized + Recolored (147 emojis)</h1>
+<h1>RDNA Pixel Emoji Set — 149 emojis</h1>
 <div class="palette">
   <div><div class="swatch" style="background:#0f0e0c"></div><div class="swatch-label">ink</div></div>
   <div><div class="swatch" style="background:#fef8e2"></div><div class="swatch-label">cream</div></div>
@@ -65,183 +32,340 @@
   <div><div class="swatch" style="background:#cef5ca"></div><div class="swatch-label">mint</div></div>
   <div><div class="swatch" style="background:#ffffff"></div><div class="swatch-label">pure-white</div></div>
 </div>
-<div class="grid">
-  <div class="cell"><img src="emoji-r00-c00.svg" alt="r00-c00"><span>r00-c00</span></div>
-  <div class="cell"><img src="emoji-r00-c01.svg" alt="r00-c01"><span>r00-c01</span></div>
-  <div class="cell"><img src="emoji-r00-c02.svg" alt="r00-c02"><span>r00-c02</span></div>
-  <div class="cell"><img src="emoji-r00-c03.svg" alt="r00-c03"><span>r00-c03</span></div>
-  <div class="cell"><img src="emoji-r00-c04.svg" alt="r00-c04"><span>r00-c04</span></div>
-  <div class="cell"><img src="emoji-r00-c05.svg" alt="r00-c05"><span>r00-c05</span></div>
-  <div class="cell"><img src="emoji-r00-c06.svg" alt="r00-c06"><span>r00-c06</span></div>
-  <div class="cell"><img src="emoji-r00-c07.svg" alt="r00-c07"><span>r00-c07</span></div>
-  <div class="cell"><img src="emoji-r00-c08.svg" alt="r00-c08"><span>r00-c08</span></div>
-  <div class="cell"><img src="emoji-r00-c09.svg" alt="r00-c09"><span>r00-c09</span></div>
-  <div class="cell"><img src="emoji-r00-c10.svg" alt="r00-c10"><span>r00-c10</span></div>
-  <div class="cell"><img src="emoji-r00-c11.svg" alt="r00-c11"><span>r00-c11</span></div>
-  <div class="cell"><img src="emoji-r00-c12.svg" alt="r00-c12"><span>r00-c12</span></div>
-  <div class="cell"><img src="emoji-r00-c13.svg" alt="r00-c13"><span>r00-c13</span></div>
-  <div class="cell"><img src="emoji-r00-c14.svg" alt="r00-c14"><span>r00-c14</span></div>
-  <div class="cell"><img src="emoji-r00-c15.svg" alt="r00-c15"><span>r00-c15</span></div>
-  <div class="cell"><img src="emoji-r01-c00.svg" alt="r01-c00"><span>r01-c00</span></div>
-  <div class="cell"><img src="emoji-r01-c01.svg" alt="r01-c01"><span>r01-c01</span></div>
-  <div class="cell"><img src="emoji-r01-c02.svg" alt="r01-c02"><span>r01-c02</span></div>
-  <div class="cell"><img src="emoji-r01-c03.svg" alt="r01-c03"><span>r01-c03</span></div>
-  <div class="cell"><img src="emoji-r01-c04.svg" alt="r01-c04"><span>r01-c04</span></div>
-  <div class="cell"><img src="emoji-r01-c05.svg" alt="r01-c05"><span>r01-c05</span></div>
-  <div class="cell"><img src="emoji-r01-c06.svg" alt="r01-c06"><span>r01-c06</span></div>
-  <div class="cell"><img src="emoji-r01-c07.svg" alt="r01-c07"><span>r01-c07</span></div>
-  <div class="cell"><img src="emoji-r01-c08.svg" alt="r01-c08"><span>r01-c08</span></div>
-  <div class="cell"><img src="emoji-r01-c09.svg" alt="r01-c09"><span>r01-c09</span></div>
-  <div class="cell"><img src="emoji-r01-c10.svg" alt="r01-c10"><span>r01-c10</span></div>
-  <div class="cell"><img src="emoji-r01-c11.svg" alt="r01-c11"><span>r01-c11</span></div>
-  <div class="cell"><img src="emoji-r01-c12.svg" alt="r01-c12"><span>r01-c12</span></div>
-  <div class="cell"><img src="emoji-r01-c13.svg" alt="r01-c13"><span>r01-c13</span></div>
-  <div class="cell"><img src="emoji-r01-c14.svg" alt="r01-c14"><span>r01-c14</span></div>
-  <div class="cell"><img src="emoji-r01-c15.svg" alt="r01-c15"><span>r01-c15</span></div>
-  <div class="cell"><img src="emoji-r02-c00.svg" alt="r02-c00"><span>r02-c00</span></div>
-  <div class="cell"><img src="emoji-r02-c01.svg" alt="r02-c01"><span>r02-c01</span></div>
-  <div class="cell"><img src="emoji-r02-c02.svg" alt="r02-c02"><span>r02-c02</span></div>
-  <div class="cell"><img src="emoji-r02-c03.svg" alt="r02-c03"><span>r02-c03</span></div>
-  <div class="cell"><img src="emoji-r02-c04.svg" alt="r02-c04"><span>r02-c04</span></div>
-  <div class="cell"><img src="emoji-r02-c05.svg" alt="r02-c05"><span>r02-c05</span></div>
-  <div class="cell"><img src="emoji-r02-c06.svg" alt="r02-c06"><span>r02-c06</span></div>
-  <div class="cell"><img src="emoji-r02-c07.svg" alt="r02-c07"><span>r02-c07</span></div>
-  <div class="cell"><img src="emoji-r02-c08.svg" alt="r02-c08"><span>r02-c08</span></div>
-  <div class="cell"><img src="emoji-r02-c09.svg" alt="r02-c09"><span>r02-c09</span></div>
-  <div class="cell"><img src="emoji-r02-c10.svg" alt="r02-c10"><span>r02-c10</span></div>
-  <div class="cell"><img src="emoji-r02-c11.svg" alt="r02-c11"><span>r02-c11</span></div>
-  <div class="cell"><img src="emoji-r02-c12.svg" alt="r02-c12"><span>r02-c12</span></div>
-  <div class="cell"><img src="emoji-r02-c13.svg" alt="r02-c13"><span>r02-c13</span></div>
-  <div class="cell"><img src="emoji-r02-c14.svg" alt="r02-c14"><span>r02-c14</span></div>
-  <div class="cell"><img src="emoji-r02-c15.svg" alt="r02-c15"><span>r02-c15</span></div>
-  <div class="cell"><img src="emoji-r03-c00.svg" alt="r03-c00"><span>r03-c00</span></div>
-  <div class="cell"><img src="emoji-r03-c01.svg" alt="r03-c01"><span>r03-c01</span></div>
-  <div class="cell"><img src="emoji-r03-c02.svg" alt="r03-c02"><span>r03-c02</span></div>
-  <div class="cell"><img src="emoji-r03-c03.svg" alt="r03-c03"><span>r03-c03</span></div>
-  <div class="cell"><img src="emoji-r03-c04.svg" alt="r03-c04"><span>r03-c04</span></div>
-  <div class="cell"><img src="emoji-r03-c05.svg" alt="r03-c05"><span>r03-c05</span></div>
-  <div class="cell"><img src="emoji-r03-c06.svg" alt="r03-c06"><span>r03-c06</span></div>
-  <div class="cell"><img src="emoji-r03-c07.svg" alt="r03-c07"><span>r03-c07</span></div>
-  <div class="cell"><img src="emoji-r03-c08.svg" alt="r03-c08"><span>r03-c08</span></div>
-  <div class="cell"><img src="emoji-r03-c09.svg" alt="r03-c09"><span>r03-c09</span></div>
-  <div class="cell"><img src="emoji-r03-c10.svg" alt="r03-c10"><span>r03-c10</span></div>
-  <div class="cell"><img src="emoji-r03-c11.svg" alt="r03-c11"><span>r03-c11</span></div>
-  <div class="cell"><img src="emoji-r03-c12.svg" alt="r03-c12"><span>r03-c12</span></div>
-  <div class="cell"><img src="emoji-r03-c13.svg" alt="r03-c13"><span>r03-c13</span></div>
-  <div class="cell"><img src="emoji-r03-c14.svg" alt="r03-c14"><span>r03-c14</span></div>
-  <div class="cell"><img src="emoji-r03-c15.svg" alt="r03-c15"><span>r03-c15</span></div>
-  <div class="cell"><img src="emoji-r04-c00.svg" alt="r04-c00"><span>r04-c00</span></div>
-  <div class="cell"><img src="emoji-r04-c01.svg" alt="r04-c01"><span>r04-c01</span></div>
-  <div class="cell"><img src="emoji-r04-c02.svg" alt="r04-c02"><span>r04-c02</span></div>
-  <div class="cell"><img src="emoji-r04-c03.svg" alt="r04-c03"><span>r04-c03</span></div>
-  <div class="cell"><img src="emoji-r04-c04.svg" alt="r04-c04"><span>r04-c04</span></div>
-  <div class="cell"><img src="emoji-r04-c05.svg" alt="r04-c05"><span>r04-c05</span></div>
-  <div class="cell"><img src="emoji-r04-c06.svg" alt="r04-c06"><span>r04-c06</span></div>
-  <div class="cell"><img src="emoji-r04-c07.svg" alt="r04-c07"><span>r04-c07</span></div>
-  <div class="cell"><img src="emoji-r04-c08.svg" alt="r04-c08"><span>r04-c08</span></div>
-  <div class="cell"><img src="emoji-r04-c09.svg" alt="r04-c09"><span>r04-c09</span></div>
-  <div class="cell"><img src="emoji-r04-c13.svg" alt="r04-c13"><span>r04-c13</span></div>
-  <div class="cell"><img src="emoji-r04-c14.svg" alt="r04-c14"><span>r04-c14</span></div>
-  <div class="cell"><img src="emoji-r04-c15.svg" alt="r04-c15"><span>r04-c15</span></div>
-  <div class="cell"><img src="emoji-r04-c16.svg" alt="r04-c16"><span>r04-c16</span></div>
-  <div class="cell"><img src="emoji-r05-c00.svg" alt="r05-c00"><span>r05-c00</span></div>
-  <div class="cell"><img src="emoji-r05-c01.svg" alt="r05-c01"><span>r05-c01</span></div>
-  <div class="cell"><img src="emoji-r05-c02.svg" alt="r05-c02"><span>r05-c02</span></div>
-  <div class="cell"><img src="emoji-r05-c03.svg" alt="r05-c03"><span>r05-c03</span></div>
-  <div class="cell"><img src="emoji-r05-c04.svg" alt="r05-c04"><span>r05-c04</span></div>
-  <div class="cell"><img src="emoji-r05-c05.svg" alt="r05-c05"><span>r05-c05</span></div>
-  <div class="cell"><img src="emoji-r05-c06.svg" alt="r05-c06"><span>r05-c06</span></div>
-  <div class="cell"><img src="emoji-r05-c07.svg" alt="r05-c07"><span>r05-c07</span></div>
-  <div class="cell"><img src="emoji-r05-c08.svg" alt="r05-c08"><span>r05-c08</span></div>
-  <div class="cell"><img src="emoji-r05-c09.svg" alt="r05-c09"><span>r05-c09</span></div>
-  <div class="cell"><img src="emoji-r05-c10.svg" alt="r05-c10"><span>r05-c10</span></div>
-  <div class="cell"><img src="emoji-r05-c11.svg" alt="r05-c11"><span>r05-c11</span></div>
-  <div class="cell"><img src="emoji-r05-c12.svg" alt="r05-c12"><span>r05-c12</span></div>
-  <div class="cell"><img src="emoji-r05-c13.svg" alt="r05-c13"><span>r05-c13</span></div>
-  <div class="cell"><img src="emoji-r05-c14.svg" alt="r05-c14"><span>r05-c14</span></div>
-  <div class="cell"><img src="emoji-r05-c15.svg" alt="r05-c15"><span>r05-c15</span></div>
-  <div class="cell"><img src="emoji-r06-c00.svg" alt="r06-c00"><span>r06-c00</span></div>
-  <div class="cell"><img src="emoji-r06-c01.svg" alt="r06-c01"><span>r06-c01</span></div>
-  <div class="cell"><img src="emoji-r06-c02.svg" alt="r06-c02"><span>r06-c02</span></div>
-  <div class="cell"><img src="emoji-r06-c03.svg" alt="r06-c03"><span>r06-c03</span></div>
-  <div class="cell"><img src="emoji-r06-c04.svg" alt="r06-c04"><span>r06-c04</span></div>
-  <div class="cell"><img src="emoji-r06-c05.svg" alt="r06-c05"><span>r06-c05</span></div>
-  <div class="cell"><img src="emoji-r06-c06.svg" alt="r06-c06"><span>r06-c06</span></div>
-  <div class="cell"><img src="emoji-r06-c07.svg" alt="r06-c07"><span>r06-c07</span></div>
-  <div class="cell"><img src="emoji-r06-c08.svg" alt="r06-c08"><span>r06-c08</span></div>
-  <div class="cell"><img src="emoji-r06-c09.svg" alt="r06-c09"><span>r06-c09</span></div>
-  <div class="cell"><img src="emoji-r06-c10.svg" alt="r06-c10"><span>r06-c10</span></div>
-  <div class="cell"><img src="emoji-r07-c00.svg" alt="r07-c00"><span>r07-c00</span></div>
-  <div class="cell"><img src="emoji-r07-c01.svg" alt="r07-c01"><span>r07-c01</span></div>
-  <div class="cell"><img src="emoji-r07-c02.svg" alt="r07-c02"><span>r07-c02</span></div>
-  <div class="cell"><img src="emoji-r07-c03.svg" alt="r07-c03"><span>r07-c03</span></div>
-  <div class="cell"><img src="emoji-r07-c04.svg" alt="r07-c04"><span>r07-c04</span></div>
-  <div class="cell"><img src="emoji-r07-c05.svg" alt="r07-c05"><span>r07-c05</span></div>
-  <div class="cell"><img src="emoji-r07-c06.svg" alt="r07-c06"><span>r07-c06</span></div>
-  <div class="cell"><img src="emoji-r07-c07.svg" alt="r07-c07"><span>r07-c07</span></div>
-  <div class="cell"><img src="emoji-r07-c08.svg" alt="r07-c08"><span>r07-c08</span></div>
-  <div class="cell"><img src="emoji-r07-c09.svg" alt="r07-c09"><span>r07-c09</span></div>
-  <div class="cell"><img src="emoji-r07-c10.svg" alt="r07-c10"><span>r07-c10</span></div>
-  <div class="cell"><img src="emoji-r07-c11.svg" alt="r07-c11"><span>r07-c11</span></div>
-  <div class="cell"><img src="emoji-r07-c12.svg" alt="r07-c12"><span>r07-c12</span></div>
-  <div class="cell"><img src="emoji-r07-c13.svg" alt="r07-c13"><span>r07-c13</span></div>
-  <div class="cell"><img src="emoji-r08-c00.svg" alt="r08-c00"><span>r08-c00</span></div>
-  <div class="cell"><img src="emoji-r08-c01.svg" alt="r08-c01"><span>r08-c01</span></div>
-  <div class="cell"><img src="emoji-r08-c02.svg" alt="r08-c02"><span>r08-c02</span></div>
-  <div class="cell"><img src="emoji-r08-c03.svg" alt="r08-c03"><span>r08-c03</span></div>
-  <div class="cell"><img src="emoji-r08-c04.svg" alt="r08-c04"><span>r08-c04</span></div>
-  <div class="cell"><img src="emoji-r08-c05.svg" alt="r08-c05"><span>r08-c05</span></div>
-  <div class="cell"><img src="emoji-r08-c06.svg" alt="r08-c06"><span>r08-c06</span></div>
-  <div class="cell"><img src="emoji-r08-c07.svg" alt="r08-c07"><span>r08-c07</span></div>
-  <div class="cell"><img src="emoji-r08-c08.svg" alt="r08-c08"><span>r08-c08</span></div>
-  <div class="cell"><img src="emoji-r08-c09.svg" alt="r08-c09"><span>r08-c09</span></div>
-  <div class="cell"><img src="emoji-r08-c10.svg" alt="r08-c10"><span>r08-c10</span></div>
-  <div class="cell"><img src="emoji-r08-c11.svg" alt="r08-c11"><span>r08-c11</span></div>
-  <div class="cell"><img src="emoji-r08-c12.svg" alt="r08-c12"><span>r08-c12</span></div>
-  <div class="cell"><img src="emoji-r09-c00.svg" alt="r09-c00"><span>r09-c00</span></div>
-  <div class="cell"><img src="emoji-r09-c01.svg" alt="r09-c01"><span>r09-c01</span></div>
-  <div class="cell"><img src="emoji-r09-c02.svg" alt="r09-c02"><span>r09-c02</span></div>
-  <div class="cell"><img src="emoji-r09-c03.svg" alt="r09-c03"><span>r09-c03</span></div>
-  <div class="cell"><img src="emoji-r09-c04.svg" alt="r09-c04"><span>r09-c04</span></div>
-  <div class="cell"><img src="emoji-r09-c05.svg" alt="r09-c05"><span>r09-c05</span></div>
-  <div class="cell"><img src="emoji-r09-c06.svg" alt="r09-c06"><span>r09-c06</span></div>
-  <div class="cell"><img src="emoji-r09-c07.svg" alt="r09-c07"><span>r09-c07</span></div>
-  <div class="cell"><img src="emoji-r09-c08.svg" alt="r09-c08"><span>r09-c08</span></div>
-  <div class="cell"><img src="emoji-r09-c09.svg" alt="r09-c09"><span>r09-c09</span></div>
-  <div class="cell"><img src="emoji-r09-c10.svg" alt="r09-c10"><span>r09-c10</span></div>
-</div>
-<div class="dark"><h2>On dark background</h2><div class="grid">
-  <div class="cell"><img src="emoji-r00-c00.svg"></div>
-  <div class="cell"><img src="emoji-r00-c01.svg"></div>
-  <div class="cell"><img src="emoji-r00-c02.svg"></div>
-  <div class="cell"><img src="emoji-r00-c03.svg"></div>
-  <div class="cell"><img src="emoji-r00-c04.svg"></div>
-  <div class="cell"><img src="emoji-r00-c05.svg"></div>
-  <div class="cell"><img src="emoji-r00-c06.svg"></div>
-  <div class="cell"><img src="emoji-r00-c07.svg"></div>
-  <div class="cell"><img src="emoji-r00-c08.svg"></div>
-  <div class="cell"><img src="emoji-r00-c09.svg"></div>
-  <div class="cell"><img src="emoji-r00-c10.svg"></div>
-  <div class="cell"><img src="emoji-r00-c11.svg"></div>
-  <div class="cell"><img src="emoji-r00-c12.svg"></div>
-  <div class="cell"><img src="emoji-r00-c13.svg"></div>
-  <div class="cell"><img src="emoji-r00-c14.svg"></div>
-  <div class="cell"><img src="emoji-r00-c15.svg"></div>
-  <div class="cell"><img src="emoji-r01-c00.svg"></div>
-  <div class="cell"><img src="emoji-r01-c01.svg"></div>
-  <div class="cell"><img src="emoji-r01-c02.svg"></div>
-  <div class="cell"><img src="emoji-r01-c03.svg"></div>
-  <div class="cell"><img src="emoji-r01-c04.svg"></div>
-  <div class="cell"><img src="emoji-r01-c05.svg"></div>
-  <div class="cell"><img src="emoji-r01-c06.svg"></div>
-  <div class="cell"><img src="emoji-r01-c07.svg"></div>
-  <div class="cell"><img src="emoji-r01-c08.svg"></div>
-  <div class="cell"><img src="emoji-r01-c09.svg"></div>
-  <div class="cell"><img src="emoji-r01-c10.svg"></div>
-  <div class="cell"><img src="emoji-r01-c11.svg"></div>
-  <div class="cell"><img src="emoji-r01-c12.svg"></div>
-  <div class="cell"><img src="emoji-r01-c13.svg"></div>
-  <div class="cell"><img src="emoji-r01-c14.svg"></div>
-  <div class="cell"><img src="emoji-r01-c15.svg"></div>
+<div class="section"><h2>Named Export (named/)</h2><div class="grid">
+  <div class="cell"><img src="named/alien-monster.svg" alt="alien-monster"><span>alien-monster</span></div>
+  <div class="cell"><img src="named/alien.svg" alt="alien"><span>alien</span></div>
+  <div class="cell"><img src="named/angry-face-with-horns.svg" alt="angry-face-with-horns"><span>angry-face-with-horns</span></div>
+  <div class="cell"><img src="named/angry-face.svg" alt="angry-face"><span>angry-face</span></div>
+  <div class="cell"><img src="named/anguished-face.svg" alt="anguished-face"><span>anguished-face</span></div>
+  <div class="cell"><img src="named/anxious-face-with-sweat.svg" alt="anxious-face-with-sweat"><span>anxious-face-with-sweat</span></div>
+  <div class="cell"><img src="named/astonished-face.svg" alt="astonished-face"><span>astonished-face</span></div>
+  <div class="cell"><img src="named/beaming-face-with-smiling-eyes.svg" alt="beaming-face-with-smiling-eyes"><span>beaming-face-with-smiling-eyes</span></div>
+  <div class="cell"><img src="named/bear.svg" alt="bear"><span>bear</span></div>
+  <div class="cell"><img src="named/black-heart.svg" alt="black-heart"><span>black-heart</span></div>
+  <div class="cell"><img src="named/blue-heart.svg" alt="blue-heart"><span>blue-heart</span></div>
+  <div class="cell"><img src="named/broken-heart.svg" alt="broken-heart"><span>broken-heart</span></div>
+  <div class="cell"><img src="named/brown-heart.svg" alt="brown-heart"><span>brown-heart</span></div>
+  <div class="cell"><img src="named/cat-face.svg" alt="cat-face"><span>cat-face</span></div>
+  <div class="cell"><img src="named/cat-with-tears-of-joy.svg" alt="cat-with-tears-of-joy"><span>cat-with-tears-of-joy</span></div>
+  <div class="cell"><img src="named/cat-with-wry-smile.svg" alt="cat-with-wry-smile"><span>cat-with-wry-smile</span></div>
+  <div class="cell"><img src="named/clown-face.svg" alt="clown-face"><span>clown-face</span></div>
+  <div class="cell"><img src="named/club-suit.svg" alt="club-suit"><span>club-suit</span></div>
+  <div class="cell"><img src="named/cold-face.svg" alt="cold-face"><span>cold-face</span></div>
+  <div class="cell"><img src="named/confounded-face.svg" alt="confounded-face"><span>confounded-face</span></div>
+  <div class="cell"><img src="named/confused-face.svg" alt="confused-face"><span>confused-face</span></div>
+  <div class="cell"><img src="named/cowboy-hat-face.svg" alt="cowboy-hat-face"><span>cowboy-hat-face</span></div>
+  <div class="cell"><img src="named/crying-cat.svg" alt="crying-cat"><span>crying-cat</span></div>
+  <div class="cell"><img src="named/crying-face.svg" alt="crying-face"><span>crying-face</span></div>
+  <div class="cell"><img src="named/diamond-suit.svg" alt="diamond-suit"><span>diamond-suit</span></div>
+  <div class="cell"><img src="named/disappointed-face.svg" alt="disappointed-face"><span>disappointed-face</span></div>
+  <div class="cell"><img src="named/disguised-face.svg" alt="disguised-face"><span>disguised-face</span></div>
+  <div class="cell"><img src="named/dog-face.svg" alt="dog-face"><span>dog-face</span></div>
+  <div class="cell"><img src="named/downcast-face-with-sweat.svg" alt="downcast-face-with-sweat"><span>downcast-face-with-sweat</span></div>
+  <div class="cell"><img src="named/drooling-face.svg" alt="drooling-face"><span>drooling-face</span></div>
+  <div class="cell"><img src="named/exploding-head.svg" alt="exploding-head"><span>exploding-head</span></div>
+  <div class="cell"><img src="named/expressionless-face.svg" alt="expressionless-face"><span>expressionless-face</span></div>
+  <div class="cell"><img src="named/face-blowing-a-kiss.svg" alt="face-blowing-a-kiss"><span>face-blowing-a-kiss</span></div>
+  <div class="cell"><img src="named/face-savoring-food.svg" alt="face-savoring-food"><span>face-savoring-food</span></div>
+  <div class="cell"><img src="named/face-screaming-in-fear.svg" alt="face-screaming-in-fear"><span>face-screaming-in-fear</span></div>
+  <div class="cell"><img src="named/face-vomiting.svg" alt="face-vomiting"><span>face-vomiting</span></div>
+  <div class="cell"><img src="named/face-with-crossed-out-eyes.svg" alt="face-with-crossed-out-eyes"><span>face-with-crossed-out-eyes</span></div>
+  <div class="cell"><img src="named/face-with-hand-over-mouth.svg" alt="face-with-hand-over-mouth"><span>face-with-hand-over-mouth</span></div>
+  <div class="cell"><img src="named/face-with-head-bandage.svg" alt="face-with-head-bandage"><span>face-with-head-bandage</span></div>
+  <div class="cell"><img src="named/face-with-medical-mask.svg" alt="face-with-medical-mask"><span>face-with-medical-mask</span></div>
+  <div class="cell"><img src="named/face-with-monocle.svg" alt="face-with-monocle"><span>face-with-monocle</span></div>
+  <div class="cell"><img src="named/face-with-open-mouth.svg" alt="face-with-open-mouth"><span>face-with-open-mouth</span></div>
+  <div class="cell"><img src="named/face-with-raised-eyebrow.svg" alt="face-with-raised-eyebrow"><span>face-with-raised-eyebrow</span></div>
+  <div class="cell"><img src="named/face-with-rolling-eyes.svg" alt="face-with-rolling-eyes"><span>face-with-rolling-eyes</span></div>
+  <div class="cell"><img src="named/face-with-steam-from-nose.svg" alt="face-with-steam-from-nose"><span>face-with-steam-from-nose</span></div>
+  <div class="cell"><img src="named/face-with-symbols-on-mouth.svg" alt="face-with-symbols-on-mouth"><span>face-with-symbols-on-mouth</span></div>
+  <div class="cell"><img src="named/face-with-tears-of-joy.svg" alt="face-with-tears-of-joy"><span>face-with-tears-of-joy</span></div>
+  <div class="cell"><img src="named/face-with-thermometer.svg" alt="face-with-thermometer"><span>face-with-thermometer</span></div>
+  <div class="cell"><img src="named/face-with-tongue.svg" alt="face-with-tongue"><span>face-with-tongue</span></div>
+  <div class="cell"><img src="named/face-without-mouth.svg" alt="face-without-mouth"><span>face-without-mouth</span></div>
+  <div class="cell"><img src="named/fearful-face.svg" alt="fearful-face"><span>fearful-face</span></div>
+  <div class="cell"><img src="named/flag-afghanistan.svg" alt="flag-afghanistan"><span>flag-afghanistan</span></div>
+  <div class="cell"><img src="named/flag-brazil.svg" alt="flag-brazil"><span>flag-brazil</span></div>
+  <div class="cell"><img src="named/flag-france.svg" alt="flag-france"><span>flag-france</span></div>
+  <div class="cell"><img src="named/flag-germany.svg" alt="flag-germany"><span>flag-germany</span></div>
+  <div class="cell"><img src="named/flag-italy.svg" alt="flag-italy"><span>flag-italy</span></div>
+  <div class="cell"><img src="named/flag-japan.svg" alt="flag-japan"><span>flag-japan</span></div>
+  <div class="cell"><img src="named/flag-portugal.svg" alt="flag-portugal"><span>flag-portugal</span></div>
+  <div class="cell"><img src="named/flag-romania.svg" alt="flag-romania"><span>flag-romania</span></div>
+  <div class="cell"><img src="named/flag-south-africa.svg" alt="flag-south-africa"><span>flag-south-africa</span></div>
+  <div class="cell"><img src="named/flag-south-korea.svg" alt="flag-south-korea"><span>flag-south-korea</span></div>
+  <div class="cell"><img src="named/flag-sweden.svg" alt="flag-sweden"><span>flag-sweden</span></div>
+  <div class="cell"><img src="named/flag-united-states.svg" alt="flag-united-states"><span>flag-united-states</span></div>
+  <div class="cell"><img src="named/flushed-face.svg" alt="flushed-face"><span>flushed-face</span></div>
+  <div class="cell"><img src="named/fox.svg" alt="fox"><span>fox</span></div>
+  <div class="cell"><img src="named/frowning-face-with-open-mouth.svg" alt="frowning-face-with-open-mouth"><span>frowning-face-with-open-mouth</span></div>
+  <div class="cell"><img src="named/frowning-face.svg" alt="frowning-face"><span>frowning-face</span></div>
+  <div class="cell"><img src="named/ghost.svg" alt="ghost"><span>ghost</span></div>
+  <div class="cell"><img src="named/goblin.svg" alt="goblin"><span>goblin</span></div>
+  <div class="cell"><img src="named/green-heart.svg" alt="green-heart"><span>green-heart</span></div>
+  <div class="cell"><img src="named/grey-heart.svg" alt="grey-heart"><span>grey-heart</span></div>
+  <div class="cell"><img src="named/grimacing-face.svg" alt="grimacing-face"><span>grimacing-face</span></div>
+  <div class="cell"><img src="named/grinning-cat-with-smiling-eyes.svg" alt="grinning-cat-with-smiling-eyes"><span>grinning-cat-with-smiling-eyes</span></div>
+  <div class="cell"><img src="named/grinning-cat.svg" alt="grinning-cat"><span>grinning-cat</span></div>
+  <div class="cell"><img src="named/grinning-face-with-big-eyes.svg" alt="grinning-face-with-big-eyes"><span>grinning-face-with-big-eyes</span></div>
+  <div class="cell"><img src="named/grinning-face-with-smiling-eyes.svg" alt="grinning-face-with-smiling-eyes"><span>grinning-face-with-smiling-eyes</span></div>
+  <div class="cell"><img src="named/grinning-face.svg" alt="grinning-face"><span>grinning-face</span></div>
+  <div class="cell"><img src="named/grinning-squinting-face.svg" alt="grinning-squinting-face"><span>grinning-squinting-face</span></div>
+  <div class="cell"><img src="named/hamster.svg" alt="hamster"><span>hamster</span></div>
+  <div class="cell"><img src="named/hear-no-evil-monkey.svg" alt="hear-no-evil-monkey"><span>hear-no-evil-monkey</span></div>
+  <div class="cell"><img src="named/heart-suit.svg" alt="heart-suit"><span>heart-suit</span></div>
+  <div class="cell"><img src="named/hot-face.svg" alt="hot-face"><span>hot-face</span></div>
+  <div class="cell"><img src="named/hugging-face.svg" alt="hugging-face"><span>hugging-face</span></div>
+  <div class="cell"><img src="named/hushed-face.svg" alt="hushed-face"><span>hushed-face</span></div>
+  <div class="cell"><img src="named/kissing-cat.svg" alt="kissing-cat"><span>kissing-cat</span></div>
+  <div class="cell"><img src="named/kissing-face-with-closed-eyes.svg" alt="kissing-face-with-closed-eyes"><span>kissing-face-with-closed-eyes</span></div>
+  <div class="cell"><img src="named/kissing-face.svg" alt="kissing-face"><span>kissing-face</span></div>
+  <div class="cell"><img src="named/light-blue-heart.svg" alt="light-blue-heart"><span>light-blue-heart</span></div>
+  <div class="cell"><img src="named/loudly-crying-face.svg" alt="loudly-crying-face"><span>loudly-crying-face</span></div>
+  <div class="cell"><img src="named/lying-face.svg" alt="lying-face"><span>lying-face</span></div>
+  <div class="cell"><img src="named/money-mouth-face.svg" alt="money-mouth-face"><span>money-mouth-face</span></div>
+  <div class="cell"><img src="named/mouse-face.svg" alt="mouse-face"><span>mouse-face</span></div>
+  <div class="cell"><img src="named/nauseated-face.svg" alt="nauseated-face"><span>nauseated-face</span></div>
+  <div class="cell"><img src="named/nerd-face.svg" alt="nerd-face"><span>nerd-face</span></div>
+  <div class="cell"><img src="named/neutral-face.svg" alt="neutral-face"><span>neutral-face</span></div>
+  <div class="cell"><img src="named/ogre.svg" alt="ogre"><span>ogre</span></div>
+  <div class="cell"><img src="named/orange-heart.svg" alt="orange-heart"><span>orange-heart</span></div>
+  <div class="cell"><img src="named/partying-face.svg" alt="partying-face"><span>partying-face</span></div>
+  <div class="cell"><img src="named/pensive-face.svg" alt="pensive-face"><span>pensive-face</span></div>
+  <div class="cell"><img src="named/persevering-face.svg" alt="persevering-face"><span>persevering-face</span></div>
+  <div class="cell"><img src="named/pile-of-poo.svg" alt="pile-of-poo"><span>pile-of-poo</span></div>
+  <div class="cell"><img src="named/pink-heart.svg" alt="pink-heart"><span>pink-heart</span></div>
+  <div class="cell"><img src="named/pleading-face.svg" alt="pleading-face"><span>pleading-face</span></div>
+  <div class="cell"><img src="named/pouting-cat.svg" alt="pouting-cat"><span>pouting-cat</span></div>
+  <div class="cell"><img src="named/pouting-face.svg" alt="pouting-face"><span>pouting-face</span></div>
+  <div class="cell"><img src="named/purple-heart.svg" alt="purple-heart"><span>purple-heart</span></div>
+  <div class="cell"><img src="named/rabbit-face.svg" alt="rabbit-face"><span>rabbit-face</span></div>
+  <div class="cell"><img src="named/red-heart.svg" alt="red-heart"><span>red-heart</span></div>
+  <div class="cell"><img src="named/relieved-face.svg" alt="relieved-face"><span>relieved-face</span></div>
+  <div class="cell"><img src="named/robot.svg" alt="robot"><span>robot</span></div>
+  <div class="cell"><img src="named/rolling-on-the-floor-laughing.svg" alt="rolling-on-the-floor-laughing"><span>rolling-on-the-floor-laughing</span></div>
+  <div class="cell"><img src="named/sad-but-relieved-face.svg" alt="sad-but-relieved-face"><span>sad-but-relieved-face</span></div>
+  <div class="cell"><img src="named/see-no-evil-monkey.svg" alt="see-no-evil-monkey"><span>see-no-evil-monkey</span></div>
+  <div class="cell"><img src="named/shushing-face.svg" alt="shushing-face"><span>shushing-face</span></div>
+  <div class="cell"><img src="named/skull-and-crossbones.svg" alt="skull-and-crossbones"><span>skull-and-crossbones</span></div>
+  <div class="cell"><img src="named/skull.svg" alt="skull"><span>skull</span></div>
+  <div class="cell"><img src="named/sleeping-face.svg" alt="sleeping-face"><span>sleeping-face</span></div>
+  <div class="cell"><img src="named/sleepy-face.svg" alt="sleepy-face"><span>sleepy-face</span></div>
+  <div class="cell"><img src="named/slightly-frowning-face.svg" alt="slightly-frowning-face"><span>slightly-frowning-face</span></div>
+  <div class="cell"><img src="named/slightly-smiling-face.svg" alt="slightly-smiling-face"><span>slightly-smiling-face</span></div>
+  <div class="cell"><img src="named/smiling-cat-with-heart-eyes.svg" alt="smiling-cat-with-heart-eyes"><span>smiling-cat-with-heart-eyes</span></div>
+  <div class="cell"><img src="named/smiling-face-with-halo.svg" alt="smiling-face-with-halo"><span>smiling-face-with-halo</span></div>
+  <div class="cell"><img src="named/smiling-face-with-heart-eyes.svg" alt="smiling-face-with-heart-eyes"><span>smiling-face-with-heart-eyes</span></div>
+  <div class="cell"><img src="named/smiling-face-with-hearts.svg" alt="smiling-face-with-hearts"><span>smiling-face-with-hearts</span></div>
+  <div class="cell"><img src="named/smiling-face-with-horns.svg" alt="smiling-face-with-horns"><span>smiling-face-with-horns</span></div>
+  <div class="cell"><img src="named/smiling-face-with-smiling-eyes.svg" alt="smiling-face-with-smiling-eyes"><span>smiling-face-with-smiling-eyes</span></div>
+  <div class="cell"><img src="named/smiling-face-with-sunglasses.svg" alt="smiling-face-with-sunglasses"><span>smiling-face-with-sunglasses</span></div>
+  <div class="cell"><img src="named/smiling-face.svg" alt="smiling-face"><span>smiling-face</span></div>
+  <div class="cell"><img src="named/smirking-face.svg" alt="smirking-face"><span>smirking-face</span></div>
+  <div class="cell"><img src="named/sneezing-face.svg" alt="sneezing-face"><span>sneezing-face</span></div>
+  <div class="cell"><img src="named/spade-suit.svg" alt="spade-suit"><span>spade-suit</span></div>
+  <div class="cell"><img src="named/speak-no-evil-monkey.svg" alt="speak-no-evil-monkey"><span>speak-no-evil-monkey</span></div>
+  <div class="cell"><img src="named/squinting-face-with-tongue.svg" alt="squinting-face-with-tongue"><span>squinting-face-with-tongue</span></div>
+  <div class="cell"><img src="named/star-struck.svg" alt="star-struck"><span>star-struck</span></div>
+  <div class="cell"><img src="named/thinking-face.svg" alt="thinking-face"><span>thinking-face</span></div>
+  <div class="cell"><img src="named/tired-face.svg" alt="tired-face"><span>tired-face</span></div>
+  <div class="cell"><img src="named/unamused-face.svg" alt="unamused-face"><span>unamused-face</span></div>
+  <div class="cell"><img src="named/upside-down-face.svg" alt="upside-down-face"><span>upside-down-face</span></div>
+  <div class="cell"><img src="named/weary-cat.svg" alt="weary-cat"><span>weary-cat</span></div>
+  <div class="cell"><img src="named/weary-face.svg" alt="weary-face"><span>weary-face</span></div>
+  <div class="cell"><img src="named/white-heart.svg" alt="white-heart"><span>white-heart</span></div>
+  <div class="cell"><img src="named/winking-face-with-tongue.svg" alt="winking-face-with-tongue"><span>winking-face-with-tongue</span></div>
+  <div class="cell"><img src="named/winking-face.svg" alt="winking-face"><span>winking-face</span></div>
+  <div class="cell"><img src="named/woozy-face.svg" alt="woozy-face"><span>woozy-face</span></div>
+  <div class="cell"><img src="named/worried-face.svg" alt="worried-face"><span>worried-face</span></div>
+  <div class="cell"><img src="named/yawning-face.svg" alt="yawning-face"><span>yawning-face</span></div>
+  <div class="cell"><img src="named/yellow-heart.svg" alt="yellow-heart"><span>yellow-heart</span></div>
+  <div class="cell"><img src="named/zany-face.svg" alt="zany-face"><span>zany-face</span></div>
+  <div class="cell"><img src="named/zipper-mouth-face.svg" alt="zipper-mouth-face"><span>zipper-mouth-face</span></div>
+</div></div>
+<div class="section"><h2>Unicode Export (unicode/)</h2><div class="grid">
+  <div class="cell"><img src="unicode/1f1e6-1f1eb.svg" alt="1f1e6-1f1eb"><span>1f1e6-1f1eb</span></div>
+  <div class="cell"><img src="unicode/1f1e7-1f1f7.svg" alt="1f1e7-1f1f7"><span>1f1e7-1f1f7</span></div>
+  <div class="cell"><img src="unicode/1f1e9-1f1ea.svg" alt="1f1e9-1f1ea"><span>1f1e9-1f1ea</span></div>
+  <div class="cell"><img src="unicode/1f1eb-1f1f7.svg" alt="1f1eb-1f1f7"><span>1f1eb-1f1f7</span></div>
+  <div class="cell"><img src="unicode/1f1ee-1f1f9.svg" alt="1f1ee-1f1f9"><span>1f1ee-1f1f9</span></div>
+  <div class="cell"><img src="unicode/1f1ef-1f1f5.svg" alt="1f1ef-1f1f5"><span>1f1ef-1f1f5</span></div>
+  <div class="cell"><img src="unicode/1f1f0-1f1f7.svg" alt="1f1f0-1f1f7"><span>1f1f0-1f1f7</span></div>
+  <div class="cell"><img src="unicode/1f1f5-1f1f9.svg" alt="1f1f5-1f1f9"><span>1f1f5-1f1f9</span></div>
+  <div class="cell"><img src="unicode/1f1f7-1f1f4.svg" alt="1f1f7-1f1f4"><span>1f1f7-1f1f4</span></div>
+  <div class="cell"><img src="unicode/1f1f8-1f1ea.svg" alt="1f1f8-1f1ea"><span>1f1f8-1f1ea</span></div>
+  <div class="cell"><img src="unicode/1f1fa-1f1f8.svg" alt="1f1fa-1f1f8"><span>1f1fa-1f1f8</span></div>
+  <div class="cell"><img src="unicode/1f1ff-1f1e6.svg" alt="1f1ff-1f1e6"><span>1f1ff-1f1e6</span></div>
+  <div class="cell"><img src="unicode/1f42d.svg" alt="1f42d"><span>1f42d</span></div>
+  <div class="cell"><img src="unicode/1f430.svg" alt="1f430"><span>1f430</span></div>
+  <div class="cell"><img src="unicode/1f431.svg" alt="1f431"><span>1f431</span></div>
+  <div class="cell"><img src="unicode/1f436.svg" alt="1f436"><span>1f436</span></div>
+  <div class="cell"><img src="unicode/1f439.svg" alt="1f439"><span>1f439</span></div>
+  <div class="cell"><img src="unicode/1f43b.svg" alt="1f43b"><span>1f43b</span></div>
+  <div class="cell"><img src="unicode/1f479.svg" alt="1f479"><span>1f479</span></div>
+  <div class="cell"><img src="unicode/1f47a.svg" alt="1f47a"><span>1f47a</span></div>
+  <div class="cell"><img src="unicode/1f47b.svg" alt="1f47b"><span>1f47b</span></div>
+  <div class="cell"><img src="unicode/1f47d.svg" alt="1f47d"><span>1f47d</span></div>
+  <div class="cell"><img src="unicode/1f47e.svg" alt="1f47e"><span>1f47e</span></div>
+  <div class="cell"><img src="unicode/1f47f.svg" alt="1f47f"><span>1f47f</span></div>
+  <div class="cell"><img src="unicode/1f480.svg" alt="1f480"><span>1f480</span></div>
+  <div class="cell"><img src="unicode/1f494.svg" alt="1f494"><span>1f494</span></div>
+  <div class="cell"><img src="unicode/1f499.svg" alt="1f499"><span>1f499</span></div>
+  <div class="cell"><img src="unicode/1f49a.svg" alt="1f49a"><span>1f49a</span></div>
+  <div class="cell"><img src="unicode/1f49b.svg" alt="1f49b"><span>1f49b</span></div>
+  <div class="cell"><img src="unicode/1f49c.svg" alt="1f49c"><span>1f49c</span></div>
+  <div class="cell"><img src="unicode/1f4a9.svg" alt="1f4a9"><span>1f4a9</span></div>
+  <div class="cell"><img src="unicode/1f5a4.svg" alt="1f5a4"><span>1f5a4</span></div>
+  <div class="cell"><img src="unicode/1f600.svg" alt="1f600"><span>1f600</span></div>
+  <div class="cell"><img src="unicode/1f601.svg" alt="1f601"><span>1f601</span></div>
+  <div class="cell"><img src="unicode/1f602.svg" alt="1f602"><span>1f602</span></div>
+  <div class="cell"><img src="unicode/1f603.svg" alt="1f603"><span>1f603</span></div>
+  <div class="cell"><img src="unicode/1f604.svg" alt="1f604"><span>1f604</span></div>
+  <div class="cell"><img src="unicode/1f606.svg" alt="1f606"><span>1f606</span></div>
+  <div class="cell"><img src="unicode/1f607.svg" alt="1f607"><span>1f607</span></div>
+  <div class="cell"><img src="unicode/1f608.svg" alt="1f608"><span>1f608</span></div>
+  <div class="cell"><img src="unicode/1f609.svg" alt="1f609"><span>1f609</span></div>
+  <div class="cell"><img src="unicode/1f60a.svg" alt="1f60a"><span>1f60a</span></div>
+  <div class="cell"><img src="unicode/1f60b.svg" alt="1f60b"><span>1f60b</span></div>
+  <div class="cell"><img src="unicode/1f60c.svg" alt="1f60c"><span>1f60c</span></div>
+  <div class="cell"><img src="unicode/1f60d.svg" alt="1f60d"><span>1f60d</span></div>
+  <div class="cell"><img src="unicode/1f60e.svg" alt="1f60e"><span>1f60e</span></div>
+  <div class="cell"><img src="unicode/1f60f.svg" alt="1f60f"><span>1f60f</span></div>
+  <div class="cell"><img src="unicode/1f610.svg" alt="1f610"><span>1f610</span></div>
+  <div class="cell"><img src="unicode/1f611.svg" alt="1f611"><span>1f611</span></div>
+  <div class="cell"><img src="unicode/1f612.svg" alt="1f612"><span>1f612</span></div>
+  <div class="cell"><img src="unicode/1f613.svg" alt="1f613"><span>1f613</span></div>
+  <div class="cell"><img src="unicode/1f614.svg" alt="1f614"><span>1f614</span></div>
+  <div class="cell"><img src="unicode/1f615.svg" alt="1f615"><span>1f615</span></div>
+  <div class="cell"><img src="unicode/1f616.svg" alt="1f616"><span>1f616</span></div>
+  <div class="cell"><img src="unicode/1f617.svg" alt="1f617"><span>1f617</span></div>
+  <div class="cell"><img src="unicode/1f618.svg" alt="1f618"><span>1f618</span></div>
+  <div class="cell"><img src="unicode/1f61a.svg" alt="1f61a"><span>1f61a</span></div>
+  <div class="cell"><img src="unicode/1f61b.svg" alt="1f61b"><span>1f61b</span></div>
+  <div class="cell"><img src="unicode/1f61c.svg" alt="1f61c"><span>1f61c</span></div>
+  <div class="cell"><img src="unicode/1f61d.svg" alt="1f61d"><span>1f61d</span></div>
+  <div class="cell"><img src="unicode/1f61e.svg" alt="1f61e"><span>1f61e</span></div>
+  <div class="cell"><img src="unicode/1f61f.svg" alt="1f61f"><span>1f61f</span></div>
+  <div class="cell"><img src="unicode/1f620.svg" alt="1f620"><span>1f620</span></div>
+  <div class="cell"><img src="unicode/1f621.svg" alt="1f621"><span>1f621</span></div>
+  <div class="cell"><img src="unicode/1f622.svg" alt="1f622"><span>1f622</span></div>
+  <div class="cell"><img src="unicode/1f623.svg" alt="1f623"><span>1f623</span></div>
+  <div class="cell"><img src="unicode/1f624.svg" alt="1f624"><span>1f624</span></div>
+  <div class="cell"><img src="unicode/1f625.svg" alt="1f625"><span>1f625</span></div>
+  <div class="cell"><img src="unicode/1f626.svg" alt="1f626"><span>1f626</span></div>
+  <div class="cell"><img src="unicode/1f627.svg" alt="1f627"><span>1f627</span></div>
+  <div class="cell"><img src="unicode/1f628.svg" alt="1f628"><span>1f628</span></div>
+  <div class="cell"><img src="unicode/1f629.svg" alt="1f629"><span>1f629</span></div>
+  <div class="cell"><img src="unicode/1f62a.svg" alt="1f62a"><span>1f62a</span></div>
+  <div class="cell"><img src="unicode/1f62b.svg" alt="1f62b"><span>1f62b</span></div>
+  <div class="cell"><img src="unicode/1f62c.svg" alt="1f62c"><span>1f62c</span></div>
+  <div class="cell"><img src="unicode/1f62d.svg" alt="1f62d"><span>1f62d</span></div>
+  <div class="cell"><img src="unicode/1f62e.svg" alt="1f62e"><span>1f62e</span></div>
+  <div class="cell"><img src="unicode/1f62f.svg" alt="1f62f"><span>1f62f</span></div>
+  <div class="cell"><img src="unicode/1f630.svg" alt="1f630"><span>1f630</span></div>
+  <div class="cell"><img src="unicode/1f631.svg" alt="1f631"><span>1f631</span></div>
+  <div class="cell"><img src="unicode/1f632.svg" alt="1f632"><span>1f632</span></div>
+  <div class="cell"><img src="unicode/1f633.svg" alt="1f633"><span>1f633</span></div>
+  <div class="cell"><img src="unicode/1f634.svg" alt="1f634"><span>1f634</span></div>
+  <div class="cell"><img src="unicode/1f635.svg" alt="1f635"><span>1f635</span></div>
+  <div class="cell"><img src="unicode/1f636.svg" alt="1f636"><span>1f636</span></div>
+  <div class="cell"><img src="unicode/1f637.svg" alt="1f637"><span>1f637</span></div>
+  <div class="cell"><img src="unicode/1f638.svg" alt="1f638"><span>1f638</span></div>
+  <div class="cell"><img src="unicode/1f639.svg" alt="1f639"><span>1f639</span></div>
+  <div class="cell"><img src="unicode/1f63a.svg" alt="1f63a"><span>1f63a</span></div>
+  <div class="cell"><img src="unicode/1f63b.svg" alt="1f63b"><span>1f63b</span></div>
+  <div class="cell"><img src="unicode/1f63c.svg" alt="1f63c"><span>1f63c</span></div>
+  <div class="cell"><img src="unicode/1f63d.svg" alt="1f63d"><span>1f63d</span></div>
+  <div class="cell"><img src="unicode/1f63e.svg" alt="1f63e"><span>1f63e</span></div>
+  <div class="cell"><img src="unicode/1f63f.svg" alt="1f63f"><span>1f63f</span></div>
+  <div class="cell"><img src="unicode/1f640.svg" alt="1f640"><span>1f640</span></div>
+  <div class="cell"><img src="unicode/1f641.svg" alt="1f641"><span>1f641</span></div>
+  <div class="cell"><img src="unicode/1f642.svg" alt="1f642"><span>1f642</span></div>
+  <div class="cell"><img src="unicode/1f643.svg" alt="1f643"><span>1f643</span></div>
+  <div class="cell"><img src="unicode/1f644.svg" alt="1f644"><span>1f644</span></div>
+  <div class="cell"><img src="unicode/1f648.svg" alt="1f648"><span>1f648</span></div>
+  <div class="cell"><img src="unicode/1f649.svg" alt="1f649"><span>1f649</span></div>
+  <div class="cell"><img src="unicode/1f64a.svg" alt="1f64a"><span>1f64a</span></div>
+  <div class="cell"><img src="unicode/1f90d.svg" alt="1f90d"><span>1f90d</span></div>
+  <div class="cell"><img src="unicode/1f90e.svg" alt="1f90e"><span>1f90e</span></div>
+  <div class="cell"><img src="unicode/1f910.svg" alt="1f910"><span>1f910</span></div>
+  <div class="cell"><img src="unicode/1f911.svg" alt="1f911"><span>1f911</span></div>
+  <div class="cell"><img src="unicode/1f912.svg" alt="1f912"><span>1f912</span></div>
+  <div class="cell"><img src="unicode/1f913.svg" alt="1f913"><span>1f913</span></div>
+  <div class="cell"><img src="unicode/1f914.svg" alt="1f914"><span>1f914</span></div>
+  <div class="cell"><img src="unicode/1f915.svg" alt="1f915"><span>1f915</span></div>
+  <div class="cell"><img src="unicode/1f916.svg" alt="1f916"><span>1f916</span></div>
+  <div class="cell"><img src="unicode/1f917.svg" alt="1f917"><span>1f917</span></div>
+  <div class="cell"><img src="unicode/1f920.svg" alt="1f920"><span>1f920</span></div>
+  <div class="cell"><img src="unicode/1f921.svg" alt="1f921"><span>1f921</span></div>
+  <div class="cell"><img src="unicode/1f922.svg" alt="1f922"><span>1f922</span></div>
+  <div class="cell"><img src="unicode/1f923.svg" alt="1f923"><span>1f923</span></div>
+  <div class="cell"><img src="unicode/1f924.svg" alt="1f924"><span>1f924</span></div>
+  <div class="cell"><img src="unicode/1f925.svg" alt="1f925"><span>1f925</span></div>
+  <div class="cell"><img src="unicode/1f927.svg" alt="1f927"><span>1f927</span></div>
+  <div class="cell"><img src="unicode/1f928.svg" alt="1f928"><span>1f928</span></div>
+  <div class="cell"><img src="unicode/1f929.svg" alt="1f929"><span>1f929</span></div>
+  <div class="cell"><img src="unicode/1f92a.svg" alt="1f92a"><span>1f92a</span></div>
+  <div class="cell"><img src="unicode/1f92b.svg" alt="1f92b"><span>1f92b</span></div>
+  <div class="cell"><img src="unicode/1f92c.svg" alt="1f92c"><span>1f92c</span></div>
+  <div class="cell"><img src="unicode/1f92d.svg" alt="1f92d"><span>1f92d</span></div>
+  <div class="cell"><img src="unicode/1f92e.svg" alt="1f92e"><span>1f92e</span></div>
+  <div class="cell"><img src="unicode/1f92f.svg" alt="1f92f"><span>1f92f</span></div>
+  <div class="cell"><img src="unicode/1f970.svg" alt="1f970"><span>1f970</span></div>
+  <div class="cell"><img src="unicode/1f971.svg" alt="1f971"><span>1f971</span></div>
+  <div class="cell"><img src="unicode/1f973.svg" alt="1f973"><span>1f973</span></div>
+  <div class="cell"><img src="unicode/1f974.svg" alt="1f974"><span>1f974</span></div>
+  <div class="cell"><img src="unicode/1f975.svg" alt="1f975"><span>1f975</span></div>
+  <div class="cell"><img src="unicode/1f976.svg" alt="1f976"><span>1f976</span></div>
+  <div class="cell"><img src="unicode/1f978.svg" alt="1f978"><span>1f978</span></div>
+  <div class="cell"><img src="unicode/1f97a.svg" alt="1f97a"><span>1f97a</span></div>
+  <div class="cell"><img src="unicode/1f98a.svg" alt="1f98a"><span>1f98a</span></div>
+  <div class="cell"><img src="unicode/1f9d0.svg" alt="1f9d0"><span>1f9d0</span></div>
+  <div class="cell"><img src="unicode/1f9e1.svg" alt="1f9e1"><span>1f9e1</span></div>
+  <div class="cell"><img src="unicode/1fa75.svg" alt="1fa75"><span>1fa75</span></div>
+  <div class="cell"><img src="unicode/1fa76.svg" alt="1fa76"><span>1fa76</span></div>
+  <div class="cell"><img src="unicode/1fa77.svg" alt="1fa77"><span>1fa77</span></div>
+  <div class="cell"><img src="unicode/2620.svg" alt="2620"><span>2620</span></div>
+  <div class="cell"><img src="unicode/2639.svg" alt="2639"><span>2639</span></div>
+  <div class="cell"><img src="unicode/263a.svg" alt="263a"><span>263a</span></div>
+  <div class="cell"><img src="unicode/2660.svg" alt="2660"><span>2660</span></div>
+  <div class="cell"><img src="unicode/2663.svg" alt="2663"><span>2663</span></div>
+  <div class="cell"><img src="unicode/2665.svg" alt="2665"><span>2665</span></div>
+  <div class="cell"><img src="unicode/2666.svg" alt="2666"><span>2666</span></div>
+  <div class="cell"><img src="unicode/2764.svg" alt="2764"><span>2764</span></div>
+</div></div>
+<div class="dark"><h2>On dark background (sample)</h2><div class="grid">
+  <div class="cell"><img src="named/alien-monster.svg"></div>
+  <div class="cell"><img src="named/alien.svg"></div>
+  <div class="cell"><img src="named/angry-face-with-horns.svg"></div>
+  <div class="cell"><img src="named/angry-face.svg"></div>
+  <div class="cell"><img src="named/anguished-face.svg"></div>
+  <div class="cell"><img src="named/anxious-face-with-sweat.svg"></div>
+  <div class="cell"><img src="named/astonished-face.svg"></div>
+  <div class="cell"><img src="named/beaming-face-with-smiling-eyes.svg"></div>
+  <div class="cell"><img src="named/bear.svg"></div>
+  <div class="cell"><img src="named/black-heart.svg"></div>
+  <div class="cell"><img src="named/blue-heart.svg"></div>
+  <div class="cell"><img src="named/broken-heart.svg"></div>
+  <div class="cell"><img src="named/brown-heart.svg"></div>
+  <div class="cell"><img src="named/cat-face.svg"></div>
+  <div class="cell"><img src="named/cat-with-tears-of-joy.svg"></div>
+  <div class="cell"><img src="named/cat-with-wry-smile.svg"></div>
+  <div class="cell"><img src="named/clown-face.svg"></div>
+  <div class="cell"><img src="named/club-suit.svg"></div>
+  <div class="cell"><img src="named/cold-face.svg"></div>
+  <div class="cell"><img src="named/confounded-face.svg"></div>
+  <div class="cell"><img src="named/confused-face.svg"></div>
+  <div class="cell"><img src="named/cowboy-hat-face.svg"></div>
+  <div class="cell"><img src="named/crying-cat.svg"></div>
+  <div class="cell"><img src="named/crying-face.svg"></div>
+  <div class="cell"><img src="named/diamond-suit.svg"></div>
+  <div class="cell"><img src="named/disappointed-face.svg"></div>
+  <div class="cell"><img src="named/disguised-face.svg"></div>
+  <div class="cell"><img src="named/dog-face.svg"></div>
+  <div class="cell"><img src="named/downcast-face-with-sweat.svg"></div>
+  <div class="cell"><img src="named/drooling-face.svg"></div>
+  <div class="cell"><img src="named/exploding-head.svg"></div>
+  <div class="cell"><img src="named/expressionless-face.svg"></div>
 </div></div>
 </body></html>
