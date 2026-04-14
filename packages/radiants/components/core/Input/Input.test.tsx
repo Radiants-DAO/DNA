@@ -3,7 +3,7 @@ import { Input, TextArea } from './Input';
 
 describe('Input', () => {
   // ── Standalone mode ──────────────────────────────────────────────────
-  test('standalone renders <input> wrapped by PixelBorder', () => {
+  test('standalone renders <input> with pixel-rounded shell', () => {
     const { container } = render(<Input placeholder="Search..." />);
     const input = screen.getByPlaceholderText('Search...');
     expect(input).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('Input', () => {
     expect(screen.getByPlaceholderText('lg')).toHaveAttribute('data-size', 'lg');
   });
 
-  test('standalone error colors the PixelBorder staircase with the danger token', () => {
+  test('standalone error applies the pixel-border-danger class', () => {
     const { container } = render(<Input placeholder="err" error />);
     const shell = container.firstElementChild as HTMLElement | null;
     expect(shell).toHaveClass('pixel-border-danger');
@@ -82,7 +82,7 @@ describe('Input', () => {
     expect(screen.getByText('Password is required.')).toBeInTheDocument();
   });
 
-  test('inside Root: error prop on Input is ignored (PixelBorder stays on default line color)', () => {
+  test('inside Root: error prop on Input is ignored (pixel border stays on default line color)', () => {
     const { container } = render(
       <Input.Root>
         <Input.Label>Test</Input.Label>

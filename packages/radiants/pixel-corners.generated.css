@@ -108,14 +108,22 @@
   --pc-full-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'20'%20height%3D'20'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(20%2C0)%20scale(-1%2C1)%22%20d%3D'M15%2C0h5v1h-5ZM12%2C1h3v1h-3ZM10%2C2h2v1h-2ZM8%2C3h2v1h-2ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v2h-1ZM2%2C10h1v2h-1ZM1%2C12h1v3h-1ZM0%2C15h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-full-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'20'%20height%3D'20'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C20)%20scale(1%2C-1)%22%20d%3D'M15%2C0h5v1h-5ZM12%2C1h3v1h-3ZM10%2C2h2v1h-2ZM8%2C3h2v1h-2ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v2h-1ZM2%2C10h1v2h-1ZM1%2C12h1v3h-1ZM0%2C15h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-full-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'20'%20height%3D'20'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(20%2C20)%20scale(-1%2C-1)%22%20d%3D'M15%2C0h5v1h-5ZM12%2C1h3v1h-3ZM10%2C2h2v1h-2ZM8%2C3h2v1h-2ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v2h-1ZM2%2C10h1v2h-1ZM1%2C12h1v3h-1ZM0%2C15h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C5)%20scale(1%2C-1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C5)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C0)%20scale(-1%2C1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C5)%20scale(1%2C-1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-sm-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C5)%20scale(-1%2C-1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C5)%20scale(1%2C-1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C5)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h2v1h-2ZM0%2C1h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C0)%20scale(-1%2C1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C5)%20scale(1%2C-1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xs-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'5'%20height%3D'5'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(5%2C5)%20scale(-1%2C-1)%22%20d%3D'M2%2C0h3v1h-3ZM1%2C1h1v1h-1ZM0%2C2h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h4v1h-4ZM0%2C1h2v1h-2ZM0%2C2h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(7%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h4v1h-4ZM0%2C1h2v1h-2ZM0%2C2h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C7)%20scale(1%2C-1)%22%20d%3D'M0%2C0h4v1h-4ZM0%2C1h2v1h-2ZM0%2C2h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(7%2C7)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h4v1h-4ZM0%2C1h2v1h-2ZM0%2C2h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20d%3D'M4%2C0h3v1h-3ZM2%2C1h2v1h-2ZM1%2C2h1v2h-1ZM0%2C4h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(7%2C0)%20scale(-1%2C1)%22%20d%3D'M4%2C0h3v1h-3ZM2%2C1h2v1h-2ZM1%2C2h1v2h-1ZM0%2C4h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C7)%20scale(1%2C-1)%22%20d%3D'M4%2C0h3v1h-3ZM2%2C1h2v1h-2ZM1%2C2h1v2h-1ZM0%2C4h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-sm-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'7'%20height%3D'7'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(7%2C7)%20scale(-1%2C-1)%22%20d%3D'M4%2C0h3v1h-3ZM2%2C1h2v1h-2ZM1%2C2h1v2h-1ZM0%2C4h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-md-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h6v1h-6ZM0%2C1h4v1h-4ZM0%2C2h3v1h-3ZM0%2C3h2v1h-2ZM0%2C4h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-md-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(9%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h6v1h-6ZM0%2C1h4v1h-4ZM0%2C2h3v1h-3ZM0%2C3h2v1h-2ZM0%2C4h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-md-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C9)%20scale(1%2C-1)%22%20d%3D'M0%2C0h6v1h-6ZM0%2C1h4v1h-4ZM0%2C2h3v1h-3ZM0%2C3h2v1h-2ZM0%2C4h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
@@ -124,14 +132,22 @@
   --pc-md-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(9%2C0)%20scale(-1%2C1)%22%20d%3D'M6%2C0h3v1h-3ZM4%2C1h2v1h-2ZM3%2C2h1v1h-1ZM2%2C3h1v1h-1ZM1%2C4h1v2h-1ZM0%2C6h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-md-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C9)%20scale(1%2C-1)%22%20d%3D'M6%2C0h3v1h-3ZM4%2C1h2v1h-2ZM3%2C2h1v1h-1ZM2%2C3h1v1h-1ZM1%2C4h1v2h-1ZM0%2C6h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-md-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'9'%20height%3D'9'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(9%2C9)%20scale(-1%2C-1)%22%20d%3D'M6%2C0h3v1h-3ZM4%2C1h2v1h-2ZM3%2C2h1v1h-1ZM2%2C3h1v1h-1ZM1%2C4h1v2h-1ZM0%2C6h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h14v1h-14ZM0%2C1h11v1h-11ZM0%2C2h9v1h-9ZM0%2C3h8v1h-8ZM0%2C4h7v1h-7ZM0%2C5h6v1h-6ZM0%2C6h5v1h-5ZM0%2C7h4v1h-4ZM0%2C8h3v1h-3ZM0%2C9h2v2h-2ZM0%2C11h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(19%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h14v1h-14ZM0%2C1h11v1h-11ZM0%2C2h9v1h-9ZM0%2C3h8v1h-8ZM0%2C4h7v1h-7ZM0%2C5h6v1h-6ZM0%2C6h5v1h-5ZM0%2C7h4v1h-4ZM0%2C8h3v1h-3ZM0%2C9h2v2h-2ZM0%2C11h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C19)%20scale(1%2C-1)%22%20d%3D'M0%2C0h14v1h-14ZM0%2C1h11v1h-11ZM0%2C2h9v1h-9ZM0%2C3h8v1h-8ZM0%2C4h7v1h-7ZM0%2C5h6v1h-6ZM0%2C6h5v1h-5ZM0%2C7h4v1h-4ZM0%2C8h3v1h-3ZM0%2C9h2v2h-2ZM0%2C11h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(19%2C19)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h14v1h-14ZM0%2C1h11v1h-11ZM0%2C2h9v1h-9ZM0%2C3h8v1h-8ZM0%2C4h7v1h-7ZM0%2C5h6v1h-6ZM0%2C6h5v1h-5ZM0%2C7h4v1h-4ZM0%2C8h3v1h-3ZM0%2C9h2v2h-2ZM0%2C11h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20d%3D'M14%2C0h5v1h-5ZM11%2C1h3v1h-3ZM9%2C2h2v1h-2ZM8%2C3h1v1h-1ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v1h-1ZM2%2C9h1v2h-1ZM1%2C11h1v3h-1ZM0%2C14h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(19%2C0)%20scale(-1%2C1)%22%20d%3D'M14%2C0h5v1h-5ZM11%2C1h3v1h-3ZM9%2C2h2v1h-2ZM8%2C3h1v1h-1ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v1h-1ZM2%2C9h1v2h-1ZM1%2C11h1v3h-1ZM0%2C14h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C19)%20scale(1%2C-1)%22%20d%3D'M14%2C0h5v1h-5ZM11%2C1h3v1h-3ZM9%2C2h2v1h-2ZM8%2C3h1v1h-1ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v1h-1ZM2%2C9h1v2h-1ZM1%2C11h1v3h-1ZM0%2C14h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
-  --pc-xl-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'19'%20height%3D'19'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(19%2C19)%20scale(-1%2C-1)%22%20d%3D'M14%2C0h5v1h-5ZM11%2C1h3v1h-3ZM9%2C2h2v1h-2ZM8%2C3h1v1h-1ZM7%2C4h1v1h-1ZM6%2C5h1v1h-1ZM5%2C6h1v1h-1ZM4%2C7h1v1h-1ZM3%2C8h1v1h-1ZM2%2C9h1v2h-1ZM1%2C11h1v3h-1ZM0%2C14h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h9v1h-9ZM0%2C1h7v1h-7ZM0%2C2h5v1h-5ZM0%2C3h4v1h-4ZM0%2C4h3v1h-3ZM0%2C5h2v2h-2ZM0%2C7h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(13%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h9v1h-9ZM0%2C1h7v1h-7ZM0%2C2h5v1h-5ZM0%2C3h4v1h-4ZM0%2C4h3v1h-3ZM0%2C5h2v2h-2ZM0%2C7h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C13)%20scale(1%2C-1)%22%20d%3D'M0%2C0h9v1h-9ZM0%2C1h7v1h-7ZM0%2C2h5v1h-5ZM0%2C3h4v1h-4ZM0%2C4h3v1h-3ZM0%2C5h2v2h-2ZM0%2C7h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(13%2C13)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h9v1h-9ZM0%2C1h7v1h-7ZM0%2C2h5v1h-5ZM0%2C3h4v1h-4ZM0%2C4h3v1h-3ZM0%2C5h2v2h-2ZM0%2C7h1v2h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20d%3D'M9%2C0h4v1h-4ZM7%2C1h2v1h-2ZM5%2C2h2v1h-2ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM2%2C5h1v2h-1ZM1%2C7h1v2h-1ZM0%2C9h1v4h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(13%2C0)%20scale(-1%2C1)%22%20d%3D'M9%2C0h4v1h-4ZM7%2C1h2v1h-2ZM5%2C2h2v1h-2ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM2%2C5h1v2h-1ZM1%2C7h1v2h-1ZM0%2C9h1v4h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C13)%20scale(1%2C-1)%22%20d%3D'M9%2C0h4v1h-4ZM7%2C1h2v1h-2ZM5%2C2h2v1h-2ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM2%2C5h1v2h-1ZM1%2C7h1v2h-1ZM0%2C9h1v4h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-lg-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'13'%20height%3D'13'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(13%2C13)%20scale(-1%2C-1)%22%20d%3D'M9%2C0h4v1h-4ZM7%2C1h2v1h-2ZM5%2C2h2v1h-2ZM4%2C3h1v1h-1ZM3%2C4h1v1h-1ZM2%2C5h1v2h-1ZM1%2C7h1v2h-1ZM0%2C9h1v4h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h16v1h-16ZM0%2C1h13v1h-13ZM0%2C2h11v1h-11ZM0%2C3h9v1h-9ZM0%2C4h8v1h-8ZM0%2C5h7v1h-7ZM0%2C6h6v1h-6ZM0%2C7h5v1h-5ZM0%2C8h4v1h-4ZM0%2C9h3v2h-3ZM0%2C11h2v2h-2ZM0%2C13h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(21%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h16v1h-16ZM0%2C1h13v1h-13ZM0%2C2h11v1h-11ZM0%2C3h9v1h-9ZM0%2C4h8v1h-8ZM0%2C5h7v1h-7ZM0%2C6h6v1h-6ZM0%2C7h5v1h-5ZM0%2C8h4v1h-4ZM0%2C9h3v2h-3ZM0%2C11h2v2h-2ZM0%2C13h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C21)%20scale(1%2C-1)%22%20d%3D'M0%2C0h16v1h-16ZM0%2C1h13v1h-13ZM0%2C2h11v1h-11ZM0%2C3h9v1h-9ZM0%2C4h8v1h-8ZM0%2C5h7v1h-7ZM0%2C6h6v1h-6ZM0%2C7h5v1h-5ZM0%2C8h4v1h-4ZM0%2C9h3v2h-3ZM0%2C11h2v2h-2ZM0%2C13h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-cover-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(21%2C21)%20scale(-1%2C-1)%22%20d%3D'M0%2C0h16v1h-16ZM0%2C1h13v1h-13ZM0%2C2h11v1h-11ZM0%2C3h9v1h-9ZM0%2C4h8v1h-8ZM0%2C5h7v1h-7ZM0%2C6h6v1h-6ZM0%2C7h5v1h-5ZM0%2C8h4v1h-4ZM0%2C9h3v2h-3ZM0%2C11h2v2h-2ZM0%2C13h1v3h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-border-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20d%3D'M16%2C0h5v1h-5ZM13%2C1h3v1h-3ZM11%2C2h2v1h-2ZM9%2C3h2v1h-2ZM8%2C4h1v1h-1ZM7%2C5h1v1h-1ZM6%2C6h1v1h-1ZM5%2C7h1v1h-1ZM4%2C8h1v1h-1ZM3%2C9h1v2h-1ZM2%2C11h1v2h-1ZM1%2C13h1v3h-1ZM0%2C16h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(21%2C0)%20scale(-1%2C1)%22%20d%3D'M16%2C0h5v1h-5ZM13%2C1h3v1h-3ZM11%2C2h2v1h-2ZM9%2C3h2v1h-2ZM8%2C4h1v1h-1ZM7%2C5h1v1h-1ZM6%2C6h1v1h-1ZM5%2C7h1v1h-1ZM4%2C8h1v1h-1ZM3%2C9h1v2h-1ZM2%2C11h1v2h-1ZM1%2C13h1v3h-1ZM0%2C16h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C21)%20scale(1%2C-1)%22%20d%3D'M16%2C0h5v1h-5ZM13%2C1h3v1h-3ZM11%2C2h2v1h-2ZM9%2C3h2v1h-2ZM8%2C4h1v1h-1ZM7%2C5h1v1h-1ZM6%2C6h1v1h-1ZM5%2C7h1v1h-1ZM4%2C8h1v1h-1ZM3%2C9h1v2h-1ZM2%2C11h1v2h-1ZM1%2C13h1v3h-1ZM0%2C16h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
+  --pc-xl-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'21'%20height%3D'21'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(21%2C21)%20scale(-1%2C-1)%22%20d%3D'M16%2C0h5v1h-5ZM13%2C1h3v1h-3ZM11%2C2h2v1h-2ZM9%2C3h2v1h-2ZM8%2C4h1v1h-1ZM7%2C5h1v1h-1ZM6%2C6h1v1h-1ZM5%2C7h1v1h-1ZM4%2C8h1v1h-1ZM3%2C9h1v2h-1ZM2%2C11h1v2h-1ZM1%2C13h1v3h-1ZM0%2C16h1v5h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-chamfer-4-cover-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'4'%20height%3D'4'%3E%3Cpath%20fill%3D'white'%20d%3D'M0%2C0h3v1h-3ZM0%2C1h2v1h-2ZM0%2C2h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-chamfer-4-cover-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'4'%20height%3D'4'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(4%2C0)%20scale(-1%2C1)%22%20d%3D'M0%2C0h3v1h-3ZM0%2C1h2v1h-2ZM0%2C2h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-chamfer-4-cover-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'4'%20height%3D'4'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C4)%20scale(1%2C-1)%22%20d%3D'M0%2C0h3v1h-3ZM0%2C1h2v1h-2ZM0%2C2h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
@@ -316,6 +332,153 @@
   --pc-crenellation-16-border-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'16'%20height%3D'16'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(16%2C0)%20scale(-1%2C1)%22%20d%3D'M4%2C0h4v1h-4ZM12%2C0h4v1h-4ZM4%2C1h1v7h-1ZM7%2C1h1v7h-1ZM12%2C1h1v7h-1ZM0%2C8h4v1h-4ZM8%2C8h4v1h-4ZM0%2C9h1v7h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-crenellation-16-border-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'16'%20height%3D'16'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(0%2C16)%20scale(1%2C-1)%22%20d%3D'M4%2C0h4v1h-4ZM12%2C0h4v1h-4ZM4%2C1h1v7h-1ZM7%2C1h1v7h-1ZM12%2C1h1v7h-1ZM0%2C8h4v1h-4ZM8%2C8h4v1h-4ZM0%2C9h1v7h-1Z'%2F%3E%3C%2Fsvg%3E");
   --pc-crenellation-16-border-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'16'%20height%3D'16'%3E%3Cpath%20fill%3D'white'%20transform%3D%22translate(16%2C16)%20scale(-1%2C-1)%22%20d%3D'M4%2C0h4v1h-4ZM12%2C0h4v1h-4ZM4%2C1h1v7h-1ZM7%2C1h1v7h-1ZM12%2C1h1v7h-1ZM0%2C8h4v1h-4ZM8%2C8h4v1h-4ZM0%2C9h1v7h-1Z'%2F%3E%3C%2Fsvg%3E");
+}
+
+/* ============================================================================
+
+   .pixel-corner — variable-driven base for px() TS helper
+
+   ============================================================================ */
+
+.pixel-corner {
+  position: relative;
+  border-radius: 0;
+
+  /* Reset all px vars so nested .pixel-corner elements never inherit masks from ancestors. */
+  --px-tl-cover: none;
+  --px-tr-cover: none;
+  --px-bl-cover: none;
+  --px-br-cover: none;
+  --px-tl-border: none;
+  --px-tr-border: none;
+  --px-bl-border: none;
+  --px-br-border: none;
+  --px-tl-s: 0px;
+  --px-tr-s: 0px;
+  --px-bl-s: 0px;
+  --px-br-s: 0px;
+  --px-et: 1;
+  --px-er: 1;
+  --px-eb: 1;
+  --px-el: 1;
+
+  /* Standard (Firefox) — 5 layers: base rect + 4 corner covers (subtract) */
+  mask-image:
+    linear-gradient(white, white),
+    var(--px-tl-cover, none),
+    var(--px-tr-cover, none),
+    var(--px-bl-cover, none),
+    var(--px-br-cover, none);
+  mask-size:
+    100% 100%,
+    var(--px-tl-s, 0px) var(--px-tl-s, 0px),
+    var(--px-tr-s, 0px) var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) var(--px-bl-s, 0px),
+    var(--px-br-s, 0px) var(--px-br-s, 0px);
+  mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
+  mask-repeat: no-repeat;
+  mask-composite: subtract;
+
+  /* WebKit (Chrome/Safari) — reversed layer order, destination-out */
+  -webkit-mask-image:
+    var(--px-tl-cover, none),
+    var(--px-tr-cover, none),
+    var(--px-bl-cover, none),
+    var(--px-br-cover, none),
+    linear-gradient(white, white);
+  -webkit-mask-size:
+    var(--px-tl-s, 0px) var(--px-tl-s, 0px),
+    var(--px-tr-s, 0px) var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) var(--px-bl-s, 0px),
+    var(--px-br-s, 0px) var(--px-br-s, 0px),
+    100% 100%;
+  -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite:
+    destination-out,
+    destination-out,
+    destination-out,
+    destination-out,
+    source-over;
+}
+
+.pixel-corner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-color: var(--color-line);
+
+  /* Standard (Firefox) — 8 layers: 4 corner borders + 4 edge strips */
+  mask-image:
+    var(--px-tl-border, none),
+    var(--px-tr-border, none),
+    var(--px-bl-border, none),
+    var(--px-br-border, none),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white);
+  mask-size:
+    var(--px-tl-s, 0px) var(--px-tl-s, 0px),
+    var(--px-tr-s, 0px) var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) var(--px-bl-s, 0px),
+    var(--px-br-s, 0px) var(--px-br-s, 0px),
+    calc(100% - var(--px-tl-s, 0px) - var(--px-tr-s, 0px)) calc(calc(1px * var(--pixel-scale, 1)) * var(--px-et, 1)),
+    calc(calc(1px * var(--pixel-scale, 1)) * var(--px-er, 1)) calc(100% - var(--px-tr-s, 0px) - var(--px-br-s, 0px)),
+    calc(100% - var(--px-bl-s, 0px) - var(--px-br-s, 0px)) calc(calc(1px * var(--pixel-scale, 1)) * var(--px-eb, 1)),
+    calc(calc(1px * var(--pixel-scale, 1)) * var(--px-el, 1)) calc(100% - var(--px-tl-s, 0px) - var(--px-bl-s, 0px));
+  mask-position:
+    0 0,
+    100% 0,
+    0 100%,
+    100% 100%,
+    var(--px-tl-s, 0px) 0,
+    100% var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) 100%,
+    0 var(--px-tl-s, 0px);
+  mask-repeat: no-repeat;
+  mask-composite: add;
+
+  /* WebKit (Chrome/Safari) — same order, all additive */
+  -webkit-mask-image:
+    var(--px-tl-border, none),
+    var(--px-tr-border, none),
+    var(--px-bl-border, none),
+    var(--px-br-border, none),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white),
+    linear-gradient(white, white);
+  -webkit-mask-size:
+    var(--px-tl-s, 0px) var(--px-tl-s, 0px),
+    var(--px-tr-s, 0px) var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) var(--px-bl-s, 0px),
+    var(--px-br-s, 0px) var(--px-br-s, 0px),
+    calc(100% - var(--px-tl-s, 0px) - var(--px-tr-s, 0px)) calc(calc(1px * var(--pixel-scale, 1)) * var(--px-et, 1)),
+    calc(calc(1px * var(--pixel-scale, 1)) * var(--px-er, 1)) calc(100% - var(--px-tr-s, 0px) - var(--px-br-s, 0px)),
+    calc(100% - var(--px-bl-s, 0px) - var(--px-br-s, 0px)) calc(calc(1px * var(--pixel-scale, 1)) * var(--px-eb, 1)),
+    calc(calc(1px * var(--pixel-scale, 1)) * var(--px-el, 1)) calc(100% - var(--px-tl-s, 0px) - var(--px-bl-s, 0px));
+  -webkit-mask-position:
+    0 0,
+    100% 0,
+    0 100%,
+    100% 100%,
+    var(--px-tl-s, 0px) 0,
+    100% var(--px-tr-s, 0px),
+    var(--px-bl-s, 0px) 100%,
+    0 var(--px-tl-s, 0px);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite:
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over,
+    source-over;
 }
 
 /* Shared base — position: relative for ::after, mask handles corners */
@@ -1841,36 +2004,35 @@
 
    ============================================================================ */
 
-/* DEPRECATED: .pixel-rounded-xs — same geometry as pixel-rounded-2 */
-
+/* DEPRECATED: .pixel-rounded-xs — migrate to numeric scale */
 .pixel-rounded-xs {
   mask-image:
     linear-gradient(white, white),
-    var(--pc-2-cover-tl),
-    var(--pc-2-cover-tr),
-    var(--pc-2-cover-bl),
-    var(--pc-2-cover-br);
+    var(--pc-xs-cover-tl),
+    var(--pc-xs-cover-tr),
+    var(--pc-xs-cover-bl),
+    var(--pc-xs-cover-br);
   mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
   mask-size:
     100% 100%,
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1));
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1));
   mask-repeat: no-repeat;
   mask-composite: subtract;
   -webkit-mask-image:
-    var(--pc-2-cover-tl),
-    var(--pc-2-cover-tr),
-    var(--pc-2-cover-bl),
-    var(--pc-2-cover-br),
+    var(--pc-xs-cover-tl),
+    var(--pc-xs-cover-tr),
+    var(--pc-xs-cover-bl),
+    var(--pc-xs-cover-br),
     linear-gradient(white, white);
   -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
   -webkit-mask-size:
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
-    calc(2px * var(--pixel-scale, 1)) calc(2px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
     100% 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
@@ -1889,10 +2051,10 @@
   z-index: 2;
   background-color: var(--color-line);
   mask-image:
-    var(--pc-2-border-tl),
-    var(--pc-2-border-tr),
-    var(--pc-2-border-bl),
-    var(--pc-2-border-br),
+    var(--pc-xs-border-tl),
+    var(--pc-xs-border-tr),
+    var(--pc-xs-border-bl),
+    var(--pc-xs-border-br),
     linear-gradient(white, white),
     linear-gradient(white, white),
     linear-gradient(white, white),
@@ -1902,26 +2064,26 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(2 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(2 * var(--pixel-scale, 1) * 1px);
+    calc(5 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(5 * var(--pixel-scale, 1) * 1px);
   mask-size:
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (2 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (2 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (2 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (2 * var(--pixel-scale, 1) * 2px));
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px));
   mask-repeat: no-repeat;
   mask-composite: add;
   -webkit-mask-image:
-    var(--pc-2-border-tl),
-    var(--pc-2-border-tr),
-    var(--pc-2-border-bl),
-    var(--pc-2-border-br),
+    var(--pc-xs-border-tl),
+    var(--pc-xs-border-tr),
+    var(--pc-xs-border-bl),
+    var(--pc-xs-border-br),
     linear-gradient(white, white),
     linear-gradient(white, white),
     linear-gradient(white, white),
@@ -1931,19 +2093,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(2 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(2 * var(--pixel-scale, 1) * 1px);
+    calc(5 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(5 * var(--pixel-scale, 1) * 1px);
   -webkit-mask-size:
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(2 * var(--pixel-scale, 1) * 1px) calc(2 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (2 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (2 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (2 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (2 * var(--pixel-scale, 1) * 2px));
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px));
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
     source-over,
@@ -1967,10 +2129,10 @@
   mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
   mask-size:
     100% 100%,
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1));
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1));
   mask-repeat: no-repeat;
   mask-composite: subtract;
   -webkit-mask-image:
@@ -1981,10 +2143,10 @@
     linear-gradient(white, white);
   -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
   -webkit-mask-size:
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
-    calc(5px * var(--pixel-scale, 1)) calc(5px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
+    calc(7px * var(--pixel-scale, 1)) calc(7px * var(--pixel-scale, 1)),
     100% 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
@@ -2016,19 +2178,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(5 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(5 * var(--pixel-scale, 1) * 1px);
+    calc(7 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(7 * var(--pixel-scale, 1) * 1px);
   mask-size:
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px));
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (7 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (7 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (7 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (7 * var(--pixel-scale, 1) * 2px));
   mask-repeat: no-repeat;
   mask-composite: add;
   -webkit-mask-image:
@@ -2045,19 +2207,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(5 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(5 * var(--pixel-scale, 1) * 1px);
+    calc(7 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(7 * var(--pixel-scale, 1) * 1px);
   -webkit-mask-size:
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(5 * var(--pixel-scale, 1) * 1px) calc(5 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (5 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (5 * var(--pixel-scale, 1) * 2px));
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(7 * var(--pixel-scale, 1) * 1px) calc(7 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (7 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (7 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (7 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (7 * var(--pixel-scale, 1) * 2px));
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
     source-over,
@@ -2184,36 +2346,35 @@
     source-over;
 }
 
-/* DEPRECATED: .pixel-rounded-lg — same geometry as pixel-rounded-12 */
-
+/* DEPRECATED: .pixel-rounded-lg — migrate to numeric scale */
 .pixel-rounded-lg {
   mask-image:
     linear-gradient(white, white),
-    var(--pc-12-cover-tl),
-    var(--pc-12-cover-tr),
-    var(--pc-12-cover-bl),
-    var(--pc-12-cover-br);
+    var(--pc-lg-cover-tl),
+    var(--pc-lg-cover-tr),
+    var(--pc-lg-cover-bl),
+    var(--pc-lg-cover-br);
   mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
   mask-size:
     100% 100%,
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1));
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1));
   mask-repeat: no-repeat;
   mask-composite: subtract;
   -webkit-mask-image:
-    var(--pc-12-cover-tl),
-    var(--pc-12-cover-tr),
-    var(--pc-12-cover-bl),
-    var(--pc-12-cover-br),
+    var(--pc-lg-cover-tl),
+    var(--pc-lg-cover-tr),
+    var(--pc-lg-cover-bl),
+    var(--pc-lg-cover-br),
     linear-gradient(white, white);
   -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
   -webkit-mask-size:
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
-    calc(12px * var(--pixel-scale, 1)) calc(12px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
+    calc(13px * var(--pixel-scale, 1)) calc(13px * var(--pixel-scale, 1)),
     100% 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
@@ -2232,10 +2393,10 @@
   z-index: 2;
   background-color: var(--color-line);
   mask-image:
-    var(--pc-12-border-tl),
-    var(--pc-12-border-tr),
-    var(--pc-12-border-bl),
-    var(--pc-12-border-br),
+    var(--pc-lg-border-tl),
+    var(--pc-lg-border-tr),
+    var(--pc-lg-border-bl),
+    var(--pc-lg-border-br),
     linear-gradient(white, white),
     linear-gradient(white, white),
     linear-gradient(white, white),
@@ -2245,26 +2406,26 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(12 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(12 * var(--pixel-scale, 1) * 1px);
+    calc(13 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(13 * var(--pixel-scale, 1) * 1px);
   mask-size:
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (12 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (12 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (12 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (12 * var(--pixel-scale, 1) * 2px));
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (13 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (13 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (13 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (13 * var(--pixel-scale, 1) * 2px));
   mask-repeat: no-repeat;
   mask-composite: add;
   -webkit-mask-image:
-    var(--pc-12-border-tl),
-    var(--pc-12-border-tr),
-    var(--pc-12-border-bl),
-    var(--pc-12-border-br),
+    var(--pc-lg-border-tl),
+    var(--pc-lg-border-tr),
+    var(--pc-lg-border-bl),
+    var(--pc-lg-border-br),
     linear-gradient(white, white),
     linear-gradient(white, white),
     linear-gradient(white, white),
@@ -2274,19 +2435,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(12 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(12 * var(--pixel-scale, 1) * 1px);
+    calc(13 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(13 * var(--pixel-scale, 1) * 1px);
   -webkit-mask-size:
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(12 * var(--pixel-scale, 1) * 1px) calc(12 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (12 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (12 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (12 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (12 * var(--pixel-scale, 1) * 2px));
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(13 * var(--pixel-scale, 1) * 1px) calc(13 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (13 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (13 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (13 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (13 * var(--pixel-scale, 1) * 2px));
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
     source-over,
@@ -2310,10 +2471,10 @@
   mask-position: 0 0, 0 0, 100% 0, 0 100%, 100% 100%;
   mask-size:
     100% 100%,
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1));
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1));
   mask-repeat: no-repeat;
   mask-composite: subtract;
   -webkit-mask-image:
@@ -2324,10 +2485,10 @@
     linear-gradient(white, white);
   -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%, 0 0;
   -webkit-mask-size:
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
-    calc(19px * var(--pixel-scale, 1)) calc(19px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
+    calc(21px * var(--pixel-scale, 1)) calc(21px * var(--pixel-scale, 1)),
     100% 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
@@ -2359,19 +2520,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(19 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(19 * var(--pixel-scale, 1) * 1px);
+    calc(21 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(21 * var(--pixel-scale, 1) * 1px);
   mask-size:
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (19 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (19 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (19 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (19 * var(--pixel-scale, 1) * 2px));
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (21 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (21 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (21 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (21 * var(--pixel-scale, 1) * 2px));
   mask-repeat: no-repeat;
   mask-composite: add;
   -webkit-mask-image:
@@ -2388,19 +2549,19 @@
     100% 0,
     0 100%,
     100% 100%,
-    calc(19 * var(--pixel-scale, 1) * 1px) 0,
-    100% calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) 100%,
-    0 calc(19 * var(--pixel-scale, 1) * 1px);
+    calc(21 * var(--pixel-scale, 1) * 1px) 0,
+    100% calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) 100%,
+    0 calc(21 * var(--pixel-scale, 1) * 1px);
   -webkit-mask-size:
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(19 * var(--pixel-scale, 1) * 1px) calc(19 * var(--pixel-scale, 1) * 1px),
-    calc(100% - (19 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (19 * var(--pixel-scale, 1) * 2px)),
-    calc(100% - (19 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
-    calc(1px * var(--pixel-scale, 1)) calc(100% - (19 * var(--pixel-scale, 1) * 2px));
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(21 * var(--pixel-scale, 1) * 1px) calc(21 * var(--pixel-scale, 1) * 1px),
+    calc(100% - (21 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (21 * var(--pixel-scale, 1) * 2px)),
+    calc(100% - (21 * var(--pixel-scale, 1) * 2px)) calc(1px * var(--pixel-scale, 1)),
+    calc(1px * var(--pixel-scale, 1)) calc(100% - (21 * var(--pixel-scale, 1) * 2px));
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite:
     source-over,

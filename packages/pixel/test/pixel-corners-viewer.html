@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pixel Corners Viewer</title>
+<link rel="stylesheet" href="../../radiants/pixel-corners.generated.css" />
+<style>
+  :root {
+    --pixel-scale: 1;
+    --color-line: #1a1a19;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f1e8;
+    color: #1a1a19;
+    padding: 2rem;
+    line-height: 1.4;
+  }
+  h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.1rem; margin-bottom: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+  p.subtitle { font-size: 0.85rem; opacity: 0.6; margin-bottom: 2rem; }
+
+  /* Controls */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;
+    padding: 1rem; background: rgba(0,0,0,0.05); margin-bottom: 2rem;
+  }
+  .controls label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+  .controls input[type="range"] { width: 120px; }
+  .controls input[type="color"] { width: 2rem; height: 2rem; border: none; cursor: pointer; }
+  .value { font-size: 0.75rem; opacity: 0.6; min-width: 3rem; text-align: right; }
+
+  /* Sections */
+  section { margin-bottom: 3rem; }
+
+  /* Gallery grid */
+  .gallery {
+    display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: end;
+  }
+  .card-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem;
+    background: rgba(0, 128, 80, 0.25);
+  }
+  .card .label { font-size: 0.7rem; font-family: monospace; opacity: 0.8; }
+  .card .dims { font-size: 0.65rem; opacity: 0.5; }
+  .card-wrap .size-label { font-size: 0.65rem; opacity: 0.4; }
+
+  /* Shape section cards — slightly larger for visibility */
+  .shape-card { width: 140px; height: 100px; }
+  .shape-card-lg { width: 200px; height: 130px; }
+
+  /* Scale comparison */
+  .scale-row { display: flex; flex-wrap: wrap; gap: 2rem; align-items: end; }
+  .scale-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .scale-item .label { font-size: 0.7rem; opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<h1>Pixel Corners Viewer</h1>
+<p class="subtitle">
+  All corner shapes and sizes from <code>pixel-corners.generated.css</code>.
+  No build step needed &mdash; open this file directly in a browser.
+</p>
+
+<!-- Controls -->
+<div class="controls">
+  <label>
+    Pixel scale
+    <input type="range" id="scaleSlider" min="0.5" max="6" step="0.5" value="1" />
+    <span class="value" id="scaleValue">1x</span>
+  </label>
+  <label>
+    Border color
+    <input type="color" id="colorPicker" value="#1a1a19" />
+    <span class="value" id="colorValue">#1a1a19</span>
+  </label>
+  <label>
+    BG opacity
+    <input type="range" id="opacitySlider" min="0" max="100" value="25" />
+    <span class="value" id="opacityValue">25%</span>
+  </label>
+</div>
+
+<!-- ============================================ -->
+<!-- CIRCLE SIZES -->
+<!-- ============================================ -->
+<section>
+  <h2>Circle (pixel-rounded-N)</h2>
+  <div class="gallery" id="circleGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- CHAMFER -->
+<!-- ============================================ -->
+<section>
+  <h2>Chamfer (pixel-chamfer-N)</h2>
+  <div class="gallery" id="chamferGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- NOTCH -->
+<!-- ============================================ -->
+<section>
+  <h2>Notch (pixel-notch-N)</h2>
+  <div class="gallery" id="notchGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCALLOP -->
+<!-- ============================================ -->
+<section>
+  <h2>Scallop (pixel-scallop-N)</h2>
+  <div class="gallery" id="scallopGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- OCTAGON -->
+<!-- ============================================ -->
+<section>
+  <h2>Octagon (pixel-octagon-N)</h2>
+  <div class="gallery" id="octagonGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- SAWTOOTH -->
+<!-- ============================================ -->
+<section>
+  <h2>Sawtooth (pixel-sawtooth-N)</h2>
+  <div class="gallery" id="sawtoothGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- CRENELLATION -->
+<!-- ============================================ -->
+<section>
+  <h2>Crenellation (pixel-crenellation-N)</h2>
+  <div class="gallery" id="crenellationGallery"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCALE COMPARISON -->
+<!-- ============================================ -->
+<section>
+  <h2>Scale Comparison &mdash; pixel-rounded-8</h2>
+  <div class="scale-row">
+    <div class="scale-item">
+      <div class="pixel-rounded-8 card" style="--pixel-scale:1; width:160px; height:100px;">
+        <span class="label">1x</span>
+      </div>
+      <span class="label">--pixel-scale: 1</span>
+    </div>
+    <div class="scale-item">
+      <div class="pixel-rounded-8 card" style="--pixel-scale:2; width:160px; height:100px;">
+        <span class="label">2x</span>
+      </div>
+      <span class="label">--pixel-scale: 2</span>
+    </div>
+    <div class="scale-item">
+      <div class="pixel-rounded-8 card" style="--pixel-scale:4; width:160px; height:100px;">
+        <span class="label">4x</span>
+      </div>
+      <span class="label">--pixel-scale: 4</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SHAPE COMPARISON AT SAME SIZE -->
+<!-- ============================================ -->
+<section>
+  <h2>Shape Comparison &mdash; all shapes at grid 12</h2>
+  <div class="gallery">
+    <div class="card-wrap">
+      <div class="pixel-rounded-12 card shape-card-lg"><span class="label">circle</span></div>
+      <span class="size-label">pixel-rounded-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-chamfer-12 card shape-card-lg"><span class="label">chamfer</span></div>
+      <span class="size-label">pixel-chamfer-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-notch-12 card shape-card-lg"><span class="label">notch</span></div>
+      <span class="size-label">pixel-notch-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-scallop-12 card shape-card-lg"><span class="label">scallop</span></div>
+      <span class="size-label">pixel-scallop-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-octagon-12 card shape-card-lg"><span class="label">octagon</span></div>
+      <span class="size-label">pixel-octagon-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-sawtooth-12 card shape-card-lg"><span class="label">sawtooth</span></div>
+      <span class="size-label">pixel-sawtooth-12</span>
+    </div>
+    <div class="card-wrap">
+      <div class="pixel-crenellation-12 card shape-card-lg"><span class="label">crenellation</span></div>
+      <span class="size-label">pixel-crenellation-12</span>
+    </div>
+  </div>
+</section>
+
+<script>
+// --- Shape data ---
+const CIRCLES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 'full'];
+const SHAPES = {
+  chamfer:      [4, 6, 8, 12, 16],
+  notch:        [4, 8, 12, 16],
+  scallop:      [6, 8, 12, 16],
+  octagon:      [6, 8, 12, 16],
+  sawtooth:     [6, 8, 12],
+  crenellation: [8, 12, 16],
+};
+
+function cardSize(size) {
+  if (size === 'full') return { w: 32, h: 32 };
+  if (size <= 8)  return { w: 100, h: 70 };
+  if (size <= 20) return { w: 160, h: 110 };
+  if (size <= 32) return { w: 220, h: 140 };
+  return { w: 280, h: 180 };
+}
+
+function makeCard(className, label, size) {
+  const { w, h } = typeof size === 'number' ? cardSize(size) : cardSize(size === 'full' ? 'full' : 8);
+  const wrap = document.createElement('div');
+  wrap.className = 'card-wrap';
+  wrap.innerHTML = `
+    <div class="${className} card" style="width:${w}px; height:${h}px;">
+      <span class="label">${label}</span>
+      <span class="dims">${typeof size === 'number' ? size + 'x' + size : '20x20 circle'}</span>
+    </div>
+    <span class="size-label">${w}x${h}</span>
+  `;
+  return wrap;
+}
+
+// Populate circle gallery
+const circleGallery = document.getElementById('circleGallery');
+for (const s of CIRCLES) {
+  const cls = s === 'full' ? 'pixel-rounded-full' : `pixel-rounded-${s}`;
+  circleGallery.appendChild(makeCard(cls, cls, s));
+}
+
+// Populate shape galleries
+for (const [shape, sizes] of Object.entries(SHAPES)) {
+  const gallery = document.getElementById(`${shape}Gallery`);
+  for (const s of sizes) {
+    const cls = `pixel-${shape}-${s}`;
+    gallery.appendChild(makeCard(cls, cls, s));
+  }
+}
+
+// --- Controls ---
+const scaleSlider   = document.getElementById('scaleSlider');
+const scaleValue    = document.getElementById('scaleValue');
+const colorPicker   = document.getElementById('colorPicker');
+const colorValue    = document.getElementById('colorValue');
+const opacitySlider = document.getElementById('opacitySlider');
+const opacityValue  = document.getElementById('opacityValue');
+
+scaleSlider.addEventListener('input', () => {
+  const v = scaleSlider.value;
+  scaleValue.textContent = v + 'x';
+  document.documentElement.style.setProperty('--pixel-scale', v);
+});
+
+colorPicker.addEventListener('input', () => {
+  const v = colorPicker.value;
+  colorValue.textContent = v;
+  document.documentElement.style.setProperty('--color-line', v);
+});
+
+opacitySlider.addEventListener('input', () => {
+  const v = opacitySlider.value;
+  opacityValue.textContent = v + '%';
+  document.querySelectorAll('.card').forEach(el => {
+    el.style.background = `rgba(0, 128, 80, ${v / 100})`;
+  });
+});
+</script>
+</body>
+</html>

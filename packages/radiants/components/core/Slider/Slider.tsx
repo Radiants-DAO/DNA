@@ -71,8 +71,8 @@ export function Slider({
   const vertical = orientation === 'vertical';
 
   // Track classes swap width/height depending on orientation. Track bg now
-  // lives on the PixelBorder background layer (clipped to the staircase), so
-  // the track element itself is transparent.
+  // lives on the pixel-rounded mask-image layer (clipped to the staircase),
+  // so the track element itself is transparent.
   const trackClasses = vertical
     ? `slider-track relative h-full overflow-visible ${vTrack}`
     : `slider-track relative w-full overflow-visible ${hTrack}`;

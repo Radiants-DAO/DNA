@@ -8,12 +8,9 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
-import { PixelBorderEdges, pixelCornerClipPath, PIXEL_BORDER_RADII } from '../PixelBorder';
+import { px } from '@rdna/pixel';
 
-const APP_WINDOW_CLIP_PATH = (() => {
-  const r = PIXEL_BORDER_RADII.md;
-  return pixelCornerClipPath({ tl: r, tr: r, bl: r, br: r });
-})();
+const APP_WINDOW_PX = px(8);
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
@@ -122,7 +119,7 @@ export interface AppWindowIslandProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   bgClassName?: string;
   noScroll?: boolean;
-  /** Corner style. 'standard' = CSS rounded + border (default). 'pixel' = PixelBorder SVG wrapper (no CSS border). 'none' = no corners or border. */
+  /** Corner style. 'standard' = CSS rounded + border (default). 'pixel' = pixel-corner mask + border (no CSS border). 'none' = no corners or border. */
   corners?: 'standard' | 'pixel' | 'none';
   width?: string;
   className?: string;
@@ -987,9 +984,10 @@ function AppWindow({
         aria-labelledby={`window-title-${id}`}
         className={`
           absolute pointer-events-auto flex flex-col p-0
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${APP_WINDOW_PX.className} ${className}
         `.trim()}
         style={{
+          ...APP_WINDOW_PX.style,
           width: effectiveSize?.width ?? 'fit-content',
           height: effectiveSize?.height ?? 'fit-content',
           minWidth: minSize.width,
@@ -1011,18 +1009,15 @@ function AppWindow({
           className="absolute inset-0 pointer-events-none"
           style={{
             background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
-            clipPath: APP_WINDOW_CLIP_PATH,
             zIndex: -1,
           }}
         />
-        <PixelBorderEdges size="md" />
         {!focused && (
           <div
             className="absolute inset-0 z-20 pointer-events-none"
             style={{
               backgroundImage: 'var(--pat-diagonal-dots)',
               backgroundRepeat: 'repeat',
-              clipPath: APP_WINDOW_CLIP_PATH,
             }}
           />
         )}

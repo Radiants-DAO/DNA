@@ -105,11 +105,12 @@
   }
 
   /* ============================================
-     TEXT GLOW - Warm phosphor halo on all text
-     Inherits down the tree via text-shadow
+     TEXT GLOW - Warm phosphor halo token
+     Applied selectively to sparse heading/chrome text.
+     Dense body text stays unglowed for readability and paint cost.
      ============================================ */
 
-  text-shadow:
+  --rdna-text-glow:
     0 0 10px var(--glow-sun-yellow-subtle),
     0 0 40px oklch(0.9126 0.1170 93.68 / 0.08);
 
@@ -203,6 +204,26 @@
     0 0 12px var(--glow-sun-yellow),
     0 0 24px var(--glow-sun-yellow),
     0 0 36px var(--glow-sun-yellow-subtle);
+}
+
+/* Sparse heading/chrome text keeps the phosphor treatment in dark mode.
+   Body copy, paragraphs, code, and dense tabloid/editorial text do not. */
+.dark :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label,
+  .font-heading,
+  .font-joystix,
+  [data-slot="button-face"],
+  [data-slot="tab-trigger"],
+  [data-slot="toolbar-link"],
+  [data-slot="badge"]
+) {
+  text-shadow: var(--rdna-text-glow);
 }
 
 /* =============================================================================

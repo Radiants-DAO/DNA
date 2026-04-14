@@ -55,6 +55,8 @@
 .pixel-rounded-md:focus-visible,
 .pixel-rounded-lg:focus-visible,
 .pixel-rounded-xl:focus-visible,
+/* variable-driven base */
+.pixel-corner:focus-visible,
 /* alternate corner shapes */
 [class*="pixel-chamfer-"]:focus-visible,
 [class*="pixel-notch-"]:focus-visible,

@@ -58,7 +58,6 @@ vi.mock('@rdna/radiants/components/core', () => ({
       placeholder={placeholder}
     />
   ),
-  PixelBorder: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('@rdna/radiants/registry', () => ({

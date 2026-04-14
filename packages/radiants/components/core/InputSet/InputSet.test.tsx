@@ -29,7 +29,7 @@ describe('InputSet', () => {
     expect(container.querySelector('[data-rdna="input-set"]')).toBeInTheDocument();
   });
 
-  test('wraps the fieldset shell in a PixelBorder (xs radius)', () => {
+  test('applies the pixel-rounded-xs class to the fieldset shell', () => {
     const { container } = render(
       <InputSet.Root>
         <InputSet.Legend>Styled</InputSet.Legend>

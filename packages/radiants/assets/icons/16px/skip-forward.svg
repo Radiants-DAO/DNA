@@ -1,5 +1,5 @@
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="skip-forward 1">
-<path id="Vector" d="M4 3.5H6V4.5H7V5.5H8V6.5H9V7.5H10V8.5H9V9.5H8V10.5H7V11.5H6V12.5H4V3.5ZM10 3.5H12V12.5H10V8.5H11V7.5H10V3.5Z" fill="black"/>
+<path id="Vector" d="M4 3H6V4H7V5H8V6H9V7H10V8H9V9H8V10H7V11H6V12H4V3ZM10 3H12V12H10V8H11V7H10V3Z" fill="black"/>
 </g>
 </svg>

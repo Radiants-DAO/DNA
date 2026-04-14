@@ -4,8 +4,7 @@ import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
-import { PixelBorder } from '../PixelBorder/PixelBorder';
-// PixelBorder is still needed for chrome mode tabs (per-corner radii + edge flags).
+import { px } from '@rdna/pixel';
 
 // ============================================================================
 // Types
@@ -326,10 +325,9 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
 
         // Chrome mode: active sits flush with card bg; inactive is raised with a
         // pattern overlay and lifts on hover. The bg flip lives on the
-        // PixelBorder background layer (clipped to the staircase) so the fill
-        // never spills past the pixel corners. The button itself stays
-        // transparent and keeps the `group` class for the pattern-overlay
-        // hover selector.
+        // px() masked wrapper so the fill never spills past the pixel
+        // corners. The button itself stays transparent and keeps the `group`
+        // class for the pattern-overlay hover selector.
         const chromeBackground = mode === 'chrome'
           ? isActive
             ? 'bg-card'
@@ -379,15 +377,14 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
         );
 
         if (mode === 'chrome') {
+          const pxProps = px(6, 6, 0, 0, { edges: [1, 1, 0, 1] });
           return (
-            <PixelBorder
-              radius={{ tl: 'sm', tr: 'sm', bl: 0, br: 0 }}
-              edges={{ bottom: false }}
-              background={chromeBackground}
-              className={chromeWrapperClasses}
+            <div
+              className={`${pxProps.className} ${chromeBackground ?? ''} ${chromeWrapperClasses ?? ''}`.trim()}
+              style={pxProps.style as React.CSSProperties}
             >
               {buttonEl}
-            </PixelBorder>
+            </div>
           );
         }
 

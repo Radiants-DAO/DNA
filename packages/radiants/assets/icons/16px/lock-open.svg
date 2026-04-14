@@ -1,5 +1,5 @@
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="lock-open 1">
-<path id="Vector" d="M3 8.5H13V13.5H12V14.5H4V13.5H3V8.5ZM7 10.5V12.5H9V11.5H10V10.5H7ZM5 2.5H6V1.5H10V2.5H11V4.5H10V3.5H9V2.5H7V3.5H6V7.5H5V2.5Z" fill="black"/>
+<path id="Vector" d="M3 8H13V13H12V14H4V13H3V8ZM7 10V12H9V11H10V10H7ZM5 2H6V1H10V2H11V4H10V3H9V2H7V3H6V7H5V2Z" fill="black"/>
 </g>
 </svg>

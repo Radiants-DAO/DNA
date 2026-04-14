@@ -309,6 +309,24 @@ function emitPixelCornerBase() {
   lines.push(indent(1, 'position: relative;'));
   lines.push(indent(1, 'border-radius: 0;'));
   lines.push('');
+  lines.push(indent(1, '/* Reset all px vars so nested .pixel-corner elements never inherit masks from ancestors. */'));
+  lines.push(indent(1, '--px-tl-cover: none;'));
+  lines.push(indent(1, '--px-tr-cover: none;'));
+  lines.push(indent(1, '--px-bl-cover: none;'));
+  lines.push(indent(1, '--px-br-cover: none;'));
+  lines.push(indent(1, '--px-tl-border: none;'));
+  lines.push(indent(1, '--px-tr-border: none;'));
+  lines.push(indent(1, '--px-bl-border: none;'));
+  lines.push(indent(1, '--px-br-border: none;'));
+  lines.push(indent(1, '--px-tl-s: 0px;'));
+  lines.push(indent(1, '--px-tr-s: 0px;'));
+  lines.push(indent(1, '--px-bl-s: 0px;'));
+  lines.push(indent(1, '--px-br-s: 0px;'));
+  lines.push(indent(1, '--px-et: 1;'));
+  lines.push(indent(1, '--px-er: 1;'));
+  lines.push(indent(1, '--px-eb: 1;'));
+  lines.push(indent(1, '--px-el: 1;'));
+  lines.push('');
   lines.push(indent(1, '/* Standard (Firefox) — 5 layers: base rect + 4 corner covers (subtract) */'));
   lines.push(indent(1, 'mask-image:'));
   lines.push(indent(2, 'linear-gradient(white, white),'));
@@ -504,6 +522,12 @@ export function renderPixelCornersGeneratedCss() {
     ...legacyEntriesNeedingProps,
     ...shapeEntries,
   ]));
+
+  // 5.5. Variable-driven base rule for px() helper
+  blocks.push('/* ============================================================================');
+  blocks.push('   .pixel-corner — variable-driven base for px() TS helper');
+  blocks.push('   ============================================================================ */');
+  blocks.push(emitPixelCornerBase());
 
   // 6. All class names for shared base
   const allClassNames = [

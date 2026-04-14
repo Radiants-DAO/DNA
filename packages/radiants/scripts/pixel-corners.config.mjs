@@ -47,11 +47,11 @@ export const FULL_SIZE = { suffix: 'full', gridSize: 20 };
  * These generate from the ORIGINAL radii, not mapped to the new numeric scale.
  */
 export const LEGACY_ALIASES = [
-  { suffix: 'xs', radius: 1 },   // grid 2
-  { suffix: 'sm', radius: 4 },   // grid 5
-  { suffix: 'md', radius: 8 },   // grid 9
-  { suffix: 'lg', radius: 11 },  // grid 12
-  { suffix: 'xl', radius: 18 },  // grid 19
+  { suffix: 'xs', radius: 4 },   // grid 5  — matches PIXEL_BORDER_RADII.xs
+  { suffix: 'sm', radius: 6 },   // grid 7  — matches PIXEL_BORDER_RADII.sm
+  { suffix: 'md', radius: 8 },   // grid 9  — matches PIXEL_BORDER_RADII.md
+  { suffix: 'lg', radius: 12 },  // grid 13 — matches PIXEL_BORDER_RADII.lg
+  { suffix: 'xl', radius: 20 },  // grid 21 — matches PIXEL_BORDER_RADII.xl
 ];
 
 /**

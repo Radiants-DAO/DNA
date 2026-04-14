@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
-import { PIXEL_BORDER_RADII, pixelCornerClipPath } from '../PixelBorder/PixelBorder';
+import { px } from '@rdna/pixel';
 
 // ============================================================================
 // Types
@@ -37,19 +37,14 @@ const scrollbarBase = [
 const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
 const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
-// Apply the pixel-corner clip-path directly to base-ui's Thumb element so its
-// forwarded ref, event handlers, and inline positioning (transform/height)
-// stay on the real thumb root. Wrapping the Thumb in <PixelBorder> breaks the
-// positioning — PixelBorder doesn't forward those props.
-const THUMB_RADIUS = PIXEL_BORDER_RADII.xs;
-const THUMB_CLIP_PATH = pixelCornerClipPath({
-  tl: THUMB_RADIUS,
-  tr: THUMB_RADIUS,
-  bl: THUMB_RADIUS,
-  br: THUMB_RADIUS,
-});
-const thumbClasses = 'w-full bg-line/40 hover:bg-line transition-colors cursor-pointer';
-const thumbStyle: React.CSSProperties = { clipPath: THUMB_CLIP_PATH };
+// Apply pixel corners directly to base-ui's Thumb element so its forwarded
+// ref, event handlers, and inline positioning (transform/height) stay on the
+// real thumb root. Wrapping the Thumb in <PixelBorder> breaks the positioning
+// — PixelBorder doesn't forward those props.
+// PIXEL_BORDER_RADII.xs was 4 — use px(4) which applies mask-image corners.
+const thumbPixel = px(4);
+const thumbClasses = `w-full bg-line/40 hover:bg-line transition-colors cursor-pointer ${thumbPixel.className}`;
+const thumbStyle: React.CSSProperties = { ...thumbPixel.style };
 
 // ============================================================================
 // Sub-components

@@ -90,7 +90,7 @@ const segmentVariants = cva('flex flex-col items-center', {
 
 /**
  * Segment — renders a single time cell (value + unit). For the `large`
- * variant, the cell is wrapped in a PixelBorder so it gets hand-drawn
+ * variant, the cell uses pixel-rounded-* classes for hand-drawn
  * pixel-art corners around its depth background.
  */
 function Segment({

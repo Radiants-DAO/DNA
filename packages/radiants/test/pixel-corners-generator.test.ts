@@ -87,6 +87,28 @@ describe('generator contract', () => {
     expect(css).toContain('-cover-tl');
     expect(css).toContain('-border-tl');
   });
+
+  it('resets variable-driven px props to neutral defaults to avoid inherited masks', async () => {
+    const { renderPixelCornersGeneratedCss } = await import('../scripts/pixel-corners-lib.mjs');
+
+    const css = renderPixelCornersGeneratedCss();
+    expect(css).toContain('--px-tl-cover: none;');
+    expect(css).toContain('--px-tr-cover: none;');
+    expect(css).toContain('--px-bl-cover: none;');
+    expect(css).toContain('--px-br-cover: none;');
+    expect(css).toContain('--px-tl-border: none;');
+    expect(css).toContain('--px-tr-border: none;');
+    expect(css).toContain('--px-bl-border: none;');
+    expect(css).toContain('--px-br-border: none;');
+    expect(css).toContain('--px-tl-s: 0px;');
+    expect(css).toContain('--px-tr-s: 0px;');
+    expect(css).toContain('--px-bl-s: 0px;');
+    expect(css).toContain('--px-br-s: 0px;');
+    expect(css).toContain('--px-et: 1;');
+    expect(css).toContain('--px-er: 1;');
+    expect(css).toContain('--px-eb: 1;');
+    expect(css).toContain('--px-el: 1;');
+  });
 });
 
 describe('config exports', () => {
@@ -111,6 +133,38 @@ describe('config exports', () => {
     expect(suffixes).toContain('md');
     expect(suffixes).toContain('lg');
     expect(suffixes).toContain('xl');
+  });
+
+  it('legacy aliases match original PixelBorder radii', async () => {
+    const { LEGACY_ALIASES } = await import('../scripts/pixel-corners.config.mjs');
+
+    // These MUST match PIXEL_BORDER_RADII from PixelBorder.tsx
+    // xs=4, sm=6, md=8, lg=12, xl=20
+    const expected: Record<string, number> = {
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 12,
+      xl: 20,
+    };
+
+    for (const alias of LEGACY_ALIASES) {
+      expect(alias.radius).toBe(expected[alias.suffix]);
+    }
+  });
+
+  it('legacy alias CSS uses correct grid sizes from original PixelBorder radii', async () => {
+    const { renderPixelCornersGeneratedCss } = await import('../scripts/pixel-corners-lib.mjs');
+    const css = renderPixelCornersGeneratedCss();
+
+    // Each alias should reference custom properties with its correct grid size
+    // xs=radius 4 → grid 5, sm=radius 6 → grid 7, etc.
+    // The grid size appears in mask-size calc: calc(Npx * var(--pixel-scale, 1))
+    expect(css).toContain('.pixel-rounded-xs');
+    expect(css).toContain('.pixel-rounded-sm');
+    expect(css).toContain('.pixel-rounded-md');
+    expect(css).toContain('.pixel-rounded-lg');
+    expect(css).toContain('.pixel-rounded-xl');
   });
 
   it('generateSizeData returns a corner set with cover and border grids', async () => {

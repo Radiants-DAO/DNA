@@ -488,13 +488,13 @@
         "$extensions": {
           "modes": {
             "light": "{color.sun-yellow}",
-            "dark": "{color.sun-yellow}"
+            "dark": "{color.ink}"
           },
           "rdna": {
             "source": "--color-window-chrome-from",
             "srgb": {
               "light": "#fce184",
-              "dark": "#fce184"
+              "dark": "#0f0e0c"
             }
           }
         }
