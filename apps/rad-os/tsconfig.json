@@ -23,6 +23,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
+      "@rdna/ctrl": ["../../packages/ctrl"],
+      "@rdna/ctrl/*": ["../../packages/ctrl/*"],
       "@rdna/radiants": ["../../packages/radiants"],
       "@rdna/radiants/*": ["../../packages/radiants/*"]
     }

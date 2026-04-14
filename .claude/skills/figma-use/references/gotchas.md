@@ -220,3 +220,5 @@ Re-discover by traversal from a stable frame after detaching.
 ## Sections don't auto-resize to fit content
 
 Always explicitly resize after adding content.
+
+⠀

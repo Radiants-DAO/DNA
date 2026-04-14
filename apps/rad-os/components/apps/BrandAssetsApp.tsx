@@ -212,9 +212,8 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
     if (logo.variant === 'radsun')   return <RadSunLogo className="w-[40%] h-auto" color={logo.logoColor} />;
     return (
       <RadMarkIcon
-        size={88}
         // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001
-        className={logo.logoColor === 'cream' ? 'text-cream' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-ink'}
+        className={`w-[88px] h-[88px] ${logo.logoColor === 'cream' ? 'text-cream' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-ink'}`}
       />
     );
   };
@@ -222,7 +221,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="pixel-rounded-xs">
+    <div className="pixel-rounded-xs h-full">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
@@ -539,7 +538,7 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
               </div>
             )}
 
-            <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className="flex-1 min-h-0">
 
             {/* Logos */}
             {activeTab === 'logos' && (
@@ -610,7 +609,7 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
             {/* Fonts */}
             {activeTab === 'fonts' && (
               <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0 overflow-auto">
+                <div className="flex-1 min-h-0">
                   <TypographyPlayground activeSubTab={typoSubTab} />
                 </div>
               </div>
@@ -619,7 +618,7 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
             {/* Components */}
             {activeTab === 'components' && (
               <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0 overflow-auto @container">
+                <div className="flex-1 min-h-0 @container">
                   <DesignSystemTab
                     searchQuery={componentSearch}
                     activeCategory={componentCategory}

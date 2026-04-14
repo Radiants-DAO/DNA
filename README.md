@@ -233,7 +233,7 @@ In this repo, the local Figma skills already expect that layout:
 | Components | Copy-on-import (like shadcn) |
 | Color modes | Light + Dark only (v1) |
 | Motion | CSS-first, ease-out only, max 300ms |
-| Icons | Lucide base (24x24 grid, 2px stroke) |
+| Icons | Custom dual-size sets: 16px pixel-art + 24px detailed |
 
 ## Documentation
 

@@ -90,7 +90,7 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
 
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
-        <div>
+        <div className="relative">
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}

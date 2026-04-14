@@ -17,9 +17,6 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 **Apps:**
 - `rad-os` — Next.js 16 desktop-OS UI with draggable window system (7 registered apps)
 
-**Tools:**
-- `playground` — Next.js component playground + agent workflow surface
-
 ## Architecture
 
 ### Core Concepts
@@ -67,7 +64,7 @@ All themes must define these minimum tokens:
 | Components | Copy-on-import, not installed as dependencies |
 | Color modes | Light + Dark only (v1) |
 | Motion | CSS-first, ease-out only, max 300ms |
-| Icons | Lucide base (24x24 grid, 2px stroke) |
+| Icons | Custom dual-size sets: 16px pixel-art + 24px detailed |
 
 ## Styling Rules
 
@@ -97,12 +94,13 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-clipped-shadow` | `shadow-*` tokens on pixel-cornered elements (use `pixel-shadow-*`) |
 | `rdna/no-pixel-border` | `border-*` on pixel-cornered elements (use `::after` pseudo-border) |
 | `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
+| `rdna/no-arbitrary-icon-size` | Icon size not 16 or 24, or removed `iconSet` prop |
 
 ### Configs
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**`, `tools/playground/**` | 10 shared RDNA rules at `warn` |
+| `recommended` | `apps/rad-os/**` | 14 shared RDNA rules at `warn` |
 | `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
 | `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
@@ -129,48 +127,6 @@ pnpm dev                    # Turbo dev (all workspaces)
 pnpm build                  # Turbo build
 pnpm lint                   # Turbo lint
 pnpm lint:design-system     # RDNA ESLint rules only
-```
-
-## Playground Work Signals
-
-When the playground is running (`localhost:3004`), **work-start signals fire automatically** via a PreToolUse hook (`.claude/hooks/playground-work-signal.sh`) whenever you edit a file inside a component directory. No manual action needed for work-start.
-
-After you finish modifying a component, signal completion manually:
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-end <component-id>
-```
-
-Component IDs are **lowercase** — the registry uses `name.toLowerCase()` (e.g. `toggle`, `dialog`, `dropdownmenu`).
-
-To clear all active signals at once:
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-end
-```
-
-The hook fails silently if the playground is not running, so it never blocks editing.
-
-### Annotation Injection
-
-When the playground is running, pending annotations for the component you're editing are **automatically printed** via a PreToolUse hook (`.claude/hooks/playground-annotation-inject.sh`). You'll see output like:
-
-```
-[playground] 2 pending annotation(s) on "button":
-  [fix/P1] Border radius should use radius-sm token, not hardcoded 4px
-  [change/-] Consider warmer hover state for the brand refresh
-```
-
-Address these annotations in your work. When done, resolve them:
-
-```bash
-node tools/playground/bin/rdna-playground.mjs resolve <annotation-id> "Fixed with radius-sm"
-```
-
-Or dismiss if not applicable:
-
-```bash
-node tools/playground/bin/rdna-playground.mjs dismiss <annotation-id> "Not applicable to this variant"
 ```
 
 ## Specification
@@ -262,7 +218,6 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 |-----------|-----------|
 | `/radiants` | `packages/radiants/` |
 | `/rad-os` | `apps/rad-os/` |
-| `/playground` | `tools/playground/` |
 
 ## Context Preservation Rules
 

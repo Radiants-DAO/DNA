@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "id": "broadsheet-demo",
+  "title": "City Desk Ships The Shared Renderer",
+  "slug": "city-desk-ships-the-shared-renderer",
+  "primitive": "broadsheet",
+  "preview": {
+    "windowWidth": 960,
+    "windowHeight": 720,
+    "density": "comfortable"
+  },
+  "assets": {
+    "hero": "/assets/images/Cowboy-Profile-from-Midjourney_1.avif"
+  },
+  "primitiveSettings": {
+    "primitive": "broadsheet",
+    "columns": 3,
+    "masthead": "RadOS Extra",
+    "heroWrap": "leftSide"
+  }
+}

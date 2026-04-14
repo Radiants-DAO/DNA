@@ -48,14 +48,16 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: (e: React.
       key={item.id}
       type="button"
       quiet
-      size="sm"
+      fullWidth
+      rounded="none"
+      size="lg"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
+      className="gap-3"
     >
-      <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
+      <span className="w-5 h-5 flex items-center justify-center shrink-0">
         {item.icon}
       </span>
-      <span className="flex-1 font-joystix text-sm text-main uppercase">
+      <span className="flex-1 font-joystix text-sm uppercase text-left">
         {item.label}
       </span>
     </Button>
@@ -123,11 +125,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       <div className="pixel-rounded-sm pixel-shadow-floating">
         <div className="flex flex-row bg-page">
       {/* Left sidebar — Win95 branding strip */}
-      <div
-        className="w-10 bg-inv flex items-end justify-start pb-3 shrink-0"
-        style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-      >
-        <WordmarkLogo className="h-3 w-auto" color="cream" />
+      <div className="w-10 bg-inv flex items-end justify-center pb-3 shrink-0">
+        <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+          <WordmarkLogo className="h-3 w-auto" color="cream" />
+        </div>
       </div>
 
       {/* Right column — menu content */}
@@ -174,13 +175,15 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   quiet
-                  size="sm"
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
+                  fullWidth
+                  rounded="none"
+                  size="lg"
+                  className="gap-3"
                 >
-                  <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
+                  <span className="w-5 h-5 flex items-center justify-center shrink-0">
                     {link.icon}
               </span>
-              <span className="flex-1 font-joystix text-sm text-main uppercase">
+              <span className="flex-1 font-joystix text-sm uppercase text-left">
                 {link.label}
               </span>
             </Button>

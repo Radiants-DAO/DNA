@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "id": "editorial-demo",
+  "title": "The Future Of Text Layout",
+  "slug": "the-future-of-text-layout",
+  "primitive": "editorial",
+  "preview": {
+    "windowWidth": 720,
+    "windowHeight": 900,
+    "density": "comfortable"
+  },
+  "assets": {
+    "hero": "/assets/images/Modern-Cowboy-with-Bandana.png"
+  },
+  "primitiveSettings": {
+    "primitive": "editorial",
+    "dropCap": true,
+    "pullquote": true,
+    "columnCount": 1
+  }
+}

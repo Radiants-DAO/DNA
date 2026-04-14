@@ -8,8 +8,8 @@ import type { IconProps as SvgIconProps, IconSet } from './types';
 interface IconProps {
   /** Icon name (filename without .svg extension) */
   name: string;
-  /** Render size: 16 (default) or 24. Prefer `large` for 24px icons. */
-  size?: IconSet;
+  /** Render size in CSS pixels. Generated assets come from the 16px or 24px sets. */
+  size?: number;
   /** When true, renders at 24px (1.5rem) using the 24px icon set. Default: 16px (1rem). */
   large?: boolean;
   /** Additional CSS classes for styling (use text-* for color) */
@@ -91,7 +91,7 @@ function IconComponent({
   const [LoadedIcon, setLoadedIcon] = useState<LoadedIcon | null>(null);
   const [fetchedSvg, setFetchedSvg] = useState<string | null>(null);
 
-  const requestedSet: IconSet = size === 24 ? 24 : 16;
+  const requestedSet: IconSet = size >= 20 ? 24 : 16;
   const { resolvedName, resolvedSet } = resolveIconRequest(name, requestedSet);
   const normalizedBasePath = normalizeBasePath(basePath);
   const shouldFetchFromBasePath = normalizedBasePath !== DEFAULT_ICON_BASE_PATH;

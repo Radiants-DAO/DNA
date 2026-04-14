@@ -5,7 +5,7 @@ describe('app catalog selectors', () => {
   it('keeps start menu projections derived from catalog data', () => {
     const sections = getStartMenuSections();
     expect(sections.apps.map((app) => app.id)).toContain('brand');
-    expect(sections.web3.map((app) => app.id)).toContain('studio');
+    expect(sections.web3).toEqual([]);
   });
 
   it('allows launcher copy to differ from window copy explicitly', () => {

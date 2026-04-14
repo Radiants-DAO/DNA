@@ -12,6 +12,18 @@
 
 **Brainstorm:** `docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md`
 
+## Status Update — 2026-04-03
+
+The foundation described here has already been carried forward into the authoring/runtime layer.
+
+Current state:
+
+- Scratchpad is the active pretext authoring surface
+- The shared primitive set is `editorial`, `broadsheet`, and `book`
+- GoodNews and Manifesto have already been folded into shared primitive extraction work
+
+This means references below that describe Manifesto as "next" or treat Scratchpad authoring as future work are stale.
+
 ---
 
 ## Design decisions from plan review
@@ -843,4 +855,4 @@ After Phase 1, the state is:
 | typography.css still exists | typography.css still exists (deleted in Phase 2) |
 | No generator pipeline | `pnpm tokens:generate` in turbo pipeline |
 
-**Next:** Phase 2 plan — migrate apps one-by-one to pretext reflow, starting with ManifestoApp.
+**Next:** Continue migrating remaining RadOS text surfaces on top of the existing authoring/runtime foundation, rather than treating Manifesto or Scratchpad as future milestones.

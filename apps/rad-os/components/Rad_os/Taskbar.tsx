@@ -21,7 +21,7 @@ function VolumeControl() {
           mode="text"
           size="md"
           iconOnly
-          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} large />}
+          icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} />}
           aria-label={`Volume: ${volume}%`}
         />
       </PopoverTrigger>
@@ -52,7 +52,7 @@ function DarkModeToggle() {
 
   return (
     <Tooltip content={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} position="top">
-      <span aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+      <span className="inline-flex items-center" aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
         <Switch
           checked={darkMode}
           onChange={() => toggleDarkMode()}
@@ -91,7 +91,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="twitter" large />}
+            icon={<Icon name="twitter" />}
             onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Twitter"
           />
@@ -102,7 +102,7 @@ export function Taskbar({ className: _className = '' }: { className?: string }) 
             quiet
             size="md"
             iconOnly
-            icon={<Icon name="discord" large />}
+            icon={<Icon name="discord" />}
             onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
             aria-label="Discord"
           />

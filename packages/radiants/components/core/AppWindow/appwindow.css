@@ -1,0 +1,78 @@
+/* AppWindow structural skeleton */
+
+[data-aw="window"] {
+  @apply pointer-events-auto flex flex-col p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus;
+}
+
+[data-aw="window"][data-presentation="window"] {
+  @apply absolute;
+}
+
+[data-aw="window"][data-presentation="fullscreen"],
+[data-aw="window"][data-presentation="mobile"] {
+  @apply fixed inset-0 border border-line overflow-hidden;
+}
+
+[data-aw="titlebar"] {
+  @apply flex items-center gap-3 pl-1 pr-2 py-1.5 h-fit select-none;
+}
+
+[data-aw="titlebar"][data-draggable="true"] {
+  @apply cursor-move;
+}
+
+[data-aw="toolbar"] {
+  @apply shrink-0 px-3 py-2 border-b border-ink bg-card flex items-center gap-3;
+}
+
+[data-aw="stage"] {
+  @apply flex flex-col flex-1 min-h-0 px-1.5 pb-1.5;
+}
+
+[data-aw="stage"][data-content-padding="true"] {
+  @apply pb-2;
+}
+
+[data-aw="stage"][data-layout="bleed"] {
+  @apply p-0;
+}
+
+[data-aw="layout"] {
+  @apply flex-1 min-h-0;
+}
+
+[data-aw="layout"][data-layout="single"] {
+  @apply flex flex-col;
+}
+
+[data-aw="layout"][data-layout="split"] {
+  @apply flex gap-1.5;
+}
+
+[data-aw="layout"][data-layout="sidebar"] {
+  @apply flex gap-1.5;
+}
+
+[data-aw="layout"][data-layout="bleed"] {
+  @apply h-full flex flex-col;
+}
+
+[data-aw="island"] {
+  @apply relative min-h-0;
+}
+
+[data-aw="island-scroll"] {
+  @apply absolute inset-0 overflow-hidden;
+}
+
+[data-aw="island-pad"] {
+  @apply flex flex-col min-h-full;
+}
+
+[data-aw="island-pad"][data-fill="true"] {
+  @apply absolute inset-0 min-h-0 flex flex-col;
+}
+
+[data-aw="banner"] {
+  @apply shrink-0;
+}

@@ -89,16 +89,11 @@
   "states": [
     {
       "name": "hover",
-      "type": "pseudo"
-    },
-    {
-      "name": "selected",
-      "type": "data",
-      "attribute": "data-state"
+      "driver": "wrapper"
     },
     {
       "name": "focus",
-      "type": "pseudo"
+      "driver": "wrapper"
     }
   ],
   "variants": [],
@@ -121,25 +116,18 @@
     }
   ],
   "tokens": {
-    "misc": {
-      "background.0": "c",
-      "background.1": "a",
-      "background.2": "r",
-      "background.3": "d",
-      "border.0": "l",
-      "border.1": "i",
-      "border.2": "n",
-      "border.3": "e",
-      "text.0": "m",
-      "text.1": "a",
-      "text.2": "i",
-      "text.3": "n"
+    "color": {
+      "base.background": "card",
+      "base.border": "line",
+      "base.text": "main"
     }
   },
   "tokenBindings": {
-    "background": "card",
-    "border": "line",
-    "text": "main"
+    "base": {
+      "background": "card",
+      "border": "line",
+      "text": "main"
+    }
   },
   "replaces": [],
   "pixelCorners": false,

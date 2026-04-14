@@ -245,14 +245,14 @@ graph TB
         INVERT["InvertModeProvider.tsx<br/>InvertOverlay.tsx"]
     end
 
-    subgraph APP_COMPONENTS["components/apps/ — 6 Catalog Apps"]
+    subgraph APP_COMPONENTS["components/apps/ — Catalog Apps"]
         ABOUT["AboutApp.tsx"]
         BRAND["BrandAssetsApp.tsx"]
         LINKS["LinksApp.tsx"]
         MANIFESTO["ManifestoApp.tsx"]
-        STUDIO["RadiantsStudioApp.tsx"]
+        STUDIO["StudioApp.tsx<br/>+ studio/ (pixel art editor)"]
         RADIO["RadRadioApp.tsx<br/>+ rad-radio/ambient.tsx"]
-        TYPE_PG["typography-playground/<br/>(sub-component of Studio)"]
+        TYPE_PG["typography-playground/"]
     end
 
     subgraph STATE["store/ — Zustand"]

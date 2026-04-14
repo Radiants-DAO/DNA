@@ -1,0 +1,62 @@
+/* =============================================================================
+   @rdna/ctrl — Control Surface Tokens
+   Thin semantic layer over RDNA tokens for control primitives.
+
+   Static values go in @theme. Semantic aliases need BOTH:
+   1. A placeholder in @theme (so Tailwind generates utility classes)
+   2. A runtime override in :root, .dark (so var() resolves per color mode)
+   ============================================================================= */
+
+@import '@rdna/radiants/tokens';
+
+/* ── Token registration (Tailwind utility generation) ───────────────────── */
+@theme {
+  /* Static — real values, no var() chains */
+  --ctrl-cell-bg: oklch(0 0 0 / 0.8);
+  --ctrl-cell-gap: 1px;
+  --ctrl-row-height: 1.5rem;
+  --ctrl-track: oklch(0 0 0 / 0.6);
+  --ctrl-disabled-opacity: 0.4;
+  --ctrl-size-sm: 2rem;
+  --ctrl-size-md: 3rem;
+  --ctrl-size-lg: 4rem;
+
+  /* Placeholders — overridden at runtime below, but must exist here
+     for Tailwind to generate text-ctrl-*, bg-ctrl-*, border-ctrl-* */
+  --ctrl-fill: transparent;
+  --ctrl-thumb: transparent;
+  --ctrl-label: transparent;
+  --ctrl-value: transparent;
+  --ctrl-text-active: transparent;
+  --ctrl-border-active: transparent;
+  --ctrl-border-inactive: transparent;
+  --ctrl-rule: transparent;
+  --ctrl-grid-line: transparent;
+  --ctrl-grid-dot: transparent;
+  --ctrl-meter-low: transparent;
+  --ctrl-meter-mid: transparent;
+  --ctrl-meter-high: transparent;
+  --ctrl-glow: transparent;
+  --ctrl-hover: transparent;
+  --ctrl-active: transparent;
+}
+
+/* ── Runtime values — var() resolved per color mode ─────────────────────── */
+:root, .dark {
+  --ctrl-fill: var(--color-accent);
+  --ctrl-thumb: var(--color-page);
+  --ctrl-label: color-mix(in oklch, var(--color-main) 50%, transparent);
+  --ctrl-value: var(--color-main);
+  --ctrl-text-active: var(--color-accent);
+  --ctrl-border-active: var(--color-accent);
+  --ctrl-border-inactive: var(--color-rule);
+  --ctrl-rule: var(--color-rule);
+  --ctrl-grid-line: var(--color-rule);
+  --ctrl-grid-dot: color-mix(in oklch, var(--color-main) 50%, transparent);
+  --ctrl-meter-low: var(--color-success);
+  --ctrl-meter-mid: var(--color-accent);
+  --ctrl-meter-high: var(--color-danger);
+  --ctrl-glow: var(--color-accent);
+  --ctrl-hover: var(--color-accent);
+  --ctrl-active: var(--color-inv);
+}

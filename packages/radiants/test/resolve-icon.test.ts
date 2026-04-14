@@ -35,4 +35,19 @@ describe('resolve-icon', () => {
       resolvedSet: 16,
     });
   });
+
+  it('resolves 24-only icons that have no size-map entry', async () => {
+    const { getIconImporter, resolveIconRequest } = await import('../icons/resolve-icon');
+
+    // interface-essential-eraser exists only in the 24 set (no 16 counterpart,
+    // no entry in ICON_16_TO_24 / ICON_24_TO_16). It must still resolve to 24.
+    expect(resolveIconRequest('interface-essential-eraser', 24)).toEqual({
+      resolvedName: 'interface-essential-eraser',
+      resolvedSet: 24,
+    });
+    const importer = getIconImporter('interface-essential-eraser', 24);
+    expect(importer).toBeTypeOf('function');
+    const module = await importer?.();
+    expect(typeof module?.default).toBe('function');
+  });
 });

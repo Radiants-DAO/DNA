@@ -73,6 +73,21 @@ describe('AppWindow', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  test('uses the shared structural shell for mobile presentation', () => {
+    const { container } = render(
+      <AppWindow id="about" title="About" presentation="mobile" onClose={() => {}}>
+        <AppWindow.Content>
+          <AppWindow.Island>Mobile content</AppWindow.Island>
+        </AppWindow.Content>
+      </AppWindow>,
+    );
+
+    expect(container.querySelector('[data-aw="window"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-aw="titlebar"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-aw="stage"]')).toBeInTheDocument();
+    expect(container.querySelector('header')).not.toBeInTheDocument();
+  });
+
   test('renders action button links as real anchors', () => {
     render(
       <AppWindow
@@ -227,6 +242,29 @@ describe('AppWindow', () => {
   });
 
   describe('Island', () => {
+    test('renders structural data-aw nodes with absolute-fill scroll ownership', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island padding="sm">Island content</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(container.querySelector('[data-aw="window"]')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="titlebar"]')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="stage"]')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="layout"][data-layout="single"]')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="island"]')).toBeInTheDocument();
+
+      const scrollRoot = container.querySelector('[data-aw="island-scroll"]');
+      expect(scrollRoot).toBeInTheDocument();
+      const island = container.querySelector('[data-aw="island"]');
+      const islandPad = container.querySelector('[data-aw="island-pad"]');
+      expect(islandPad).toBeInTheDocument();
+      expect(island?.className).toContain('min-h-0');
+    });
+
     test('renders with standard corners (rounded + border) and bg-card by default', () => {
       render(
         <AppWindow id="test" title="Test" contentPadding={false}>
@@ -307,7 +345,7 @@ describe('AppWindow', () => {
 
   describe('Banner', () => {
     test('renders edge-to-edge content above islands', () => {
-      render(
+      const { container } = render(
         <AppWindow id="test" title="Test" contentPadding={false}>
           <AppWindow.Content>
             <AppWindow.Banner>Hero image</AppWindow.Banner>
@@ -318,7 +356,7 @@ describe('AppWindow', () => {
 
       expect(screen.getByText('Hero image')).toBeInTheDocument();
       expect(screen.getByText('Below banner')).toBeInTheDocument();
-      const banner = screen.getByText('Hero image').closest('[class*="shrink-0"]');
+      const banner = container.querySelector('[data-aw="banner"]');
       expect(banner).toBeInTheDocument();
       expect(banner?.className).not.toContain('pixel-rounded');
       expect(banner?.className).not.toContain('bg-card');
@@ -326,6 +364,25 @@ describe('AppWindow', () => {
   });
 
   describe('Content layouts', () => {
+    test('warns in development when AppWindow.Content is nested inside AppWindow.Content', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content>
+            <AppWindow.Island noScroll>
+              <AppWindow.Content>
+                <div>Nested content</div>
+              </AppWindow.Content>
+            </AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('AppWindow.Content'));
+      warn.mockRestore();
+    });
+
     test('single layout adds gutters around island', () => {
       const { container } = render(
         <AppWindow id="test" title="Test" contentPadding={false}>
@@ -336,8 +393,8 @@ describe('AppWindow', () => {
       );
 
       expect(screen.getByText('Single content')).toBeInTheDocument();
-      expect(container.querySelector('.px-1\\.5')).toBeInTheDocument();
-      expect(container.querySelector('.pb-1\\.5')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="stage"][data-layout="single"]')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="layout"][data-layout="single"]')).toBeInTheDocument();
     });
 
     test('split layout renders two islands side by side', () => {
@@ -352,7 +409,7 @@ describe('AppWindow', () => {
 
       expect(screen.getByText('Left')).toBeInTheDocument();
       expect(screen.getByText('Right')).toBeInTheDocument();
-      expect(container.querySelector('.gap-1\\.5')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="layout"][data-layout="split"]')).toBeInTheDocument();
     });
 
     test('sidebar layout renders fixed-width + flexible islands', () => {
@@ -413,7 +470,7 @@ describe('AppWindow', () => {
       );
 
       expect(screen.getByText('Default')).toBeInTheDocument();
-      expect(container.querySelector('.px-1\\.5')).toBeInTheDocument();
+      expect(container.querySelector('[data-aw="layout"][data-layout="single"]')).toBeInTheDocument();
     });
   });
 });

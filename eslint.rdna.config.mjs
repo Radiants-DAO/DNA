@@ -41,6 +41,7 @@ export default [
       '**/.next/**',
       '**/.turbo/**',
       '**/generated/**',
+      'apps/rad-os/lib/dotting/**',
     ],
   },
   {
@@ -62,7 +63,6 @@ export default [
   {
     files: [
       'apps/rad-os/**/*.{ts,tsx}',
-      'tools/playground/**/*.{ts,tsx}',
     ],
     plugins: {
       ...compatibilityPlugins,
@@ -96,11 +96,37 @@ export default [
       'rdna/no-viewport-breakpoints-in-window-layout': 'warn',
     },
   },
-  // Radiants component internals + playground iterations — no wrapper rule + style authority check
+  // Ctrl package — control surface primitives (same rules as radiants internals)
+  {
+    files: [
+      'packages/ctrl/**/*.{ts,tsx}',
+    ],
+    plugins: {
+      ...compatibilityPlugins,
+      ...unusedImportsPlugin,
+      rdna,
+    },
+    rules: {
+      ...rdna.configs.internals.rules,
+      'rdna/require-exception-metadata': 'error',
+      'rdna/no-broad-rdna-disables': 'error',
+      'rdna/no-mixed-style-authority': 'error',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+  // Radiants component internals — no wrapper rule + style authority check
   {
     files: [
       'packages/radiants/components/core/**/*.{ts,tsx}',
-      'tools/playground/app/playground/iterations/**/*.{ts,tsx}',
     ],
     plugins: {
       ...compatibilityPlugins,

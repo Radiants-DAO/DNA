@@ -182,12 +182,40 @@ Launch blocker. Ground-up rework, not incremental patches.
 
 ## T3 — App Content & Functionality
 
-### RadiantsStudioApp — Full Refactor
+### StudioApp — Creative Hub
 
-* [ ] Fix pixel art canvas (touch support, fluid sizing, RDNA color tokens instead of hardcoded hex)
-* [ ] Wire NEXT button to actual functionality
-* [ ] Voting/submission system completion
-* [ ] `[explore]` Full scope TBD
+Studio is the authoring surface for every bespoke RDNA visual asset — pixel art, pixel corners, patterns, icons — plus a community gallery for sharing and voting. Ported from `sandbox/studio` as phase 1 (free-form editor); phases 2–4 extend it into the broader hub.
+
+**Phase 1 — Pixel Art Editor** ✅
+
+* [x] Port from `sandbox/studio` to `apps/rad-os/components/apps/studio`
+* [x] Vendor Dotting canvas engine (`apps/rad-os/lib/dotting/`)
+* [x] Register in app catalog as `id: 'studio'`
+* [x] Fix icon resolver for 24-only icons (patched `packages/radiants/icons/resolve-icon.ts`)
+
+**Phase 2 — Asset Editors** (depends on `feat/pixel-art-system` landing)
+
+* [ ] Pixel corner editor — author corner bitstrings via canvas, export to `PixelCorner` SVG component (Bresenham generator work lives on `feat/pixel-art-system`)
+* [ ] Pattern editor — author pattern tiles, export to pattern metadata format
+* [ ] Icon editor — author 16px / 24px icons directly into the rad-os icon set
+* [ ] Decide: single unified editor with a mode selector, OR separate editor windows per asset type? `[explore]`
+* [ ] Shared canvas toolkit (different default grid sizes, different export flows) between editors
+
+**Phase 3 — Community Gallery**
+
+* [ ] Gallery view — inside Studio window (tab?) or a separate `gallery` catalog entry? `[explore]`
+* [ ] Submission flow — save artwork + metadata (title, author, asset type)
+* [ ] Voting / favoriting — storage decision needed: local Zustand, Supabase, file-based? `[explore]`
+* [ ] Feed / curation logic
+* [ ] Moderation model — trust-based or reviewed? `[explore]`
+
+**Phase 4 — Polish**
+
+* [ ] Touch support audit — Dotting has `isPanZoomable={true}` so pan may already work; draw-on-touch is the unknown
+* [ ] Grid stroke color — currently hardcoded `#0f0e0c20` in `CanvasArea.tsx`; derive from theme at runtime so the grid stays visible in dark mode
+* [ ] Mobile layout (depends on T2 mobile rebuild)
+* [ ] Export scale options (1×/2×/4×)
+* [ ] Keyboard shortcuts
 
 ### RadRadio — Refactor
 
