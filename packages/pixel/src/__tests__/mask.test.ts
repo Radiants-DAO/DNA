@@ -14,6 +14,19 @@ describe('buildMaskAsset', () => {
       maskHeight: 2,
     });
   });
+
+  it('preserves non-square grid dimensions in the mask asset', () => {
+    const grid = pixel.bitsToGrid('spark-rect', 3, 2, '111001');
+    const asset = pixel.buildMaskAsset(grid);
+    const decoded = decodeURIComponent(
+      asset.maskImage.replace(/^url\("data:image\/svg\+xml,/, '').replace(/"\)$/, ''),
+    );
+
+    expect(asset.maskWidth).toBe(3);
+    expect(asset.maskHeight).toBe(2);
+    expect(decoded).toContain("width='3'");
+    expect(decoded).toContain("height='2'");
+  });
 });
 
 describe('maskHostStyle', () => {

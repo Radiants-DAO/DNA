@@ -79,6 +79,7 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   background: var(--pat-fill, var(--pat-color, var(--color-main)));
   -webkit-mask-image: var(--_pat);
@@ -92,6 +93,11 @@
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+}
+
+.rdna-pat > * {
+  position: relative;
+  z-index: 1;
 }
 
 .rdna-pat--solid { --_pat: var(--pat-solid); }

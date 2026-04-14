@@ -90,6 +90,18 @@ describe('bitsToMaskURI', () => {
     expect(decoded).toContain("height='8'");
   });
 
+  it('supports rectangular SVG viewports', () => {
+    const pathD = 'M0,0h3v2h-3Z';
+    const uri = bitsToMaskURI(pathD, 3, 2);
+    const decoded = decodeURIComponent(
+      uri.replace(/^url\("data:image\/svg\+xml,/, '').replace(/"\)$/, ''),
+    );
+
+    expect(decoded).toContain("width='3'");
+    expect(decoded).toContain("height='2'");
+    expect(decoded).toContain(`d='${pathD}'`);
+  });
+
   it('includes transform attribute when provided', () => {
     const pathD = 'M0,0h2v2h-2Z';
     const uri = bitsToMaskURI(pathD, 8, 'scale(-1,1) translate(-8,0)');

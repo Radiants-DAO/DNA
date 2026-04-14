@@ -156,8 +156,11 @@
 
    ============================================================================ */
 
-.pixel-corner {
+.pixel-corner:not(.absolute, .fixed, .sticky) {
   position: relative;
+}
+
+.pixel-corner {
   border-radius: 0;
 
   /* Reset all px vars so nested .pixel-corner elements never inherit masks from ancestors. */

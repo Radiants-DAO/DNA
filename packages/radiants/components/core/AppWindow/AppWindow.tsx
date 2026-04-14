@@ -750,8 +750,9 @@ function AppWindow({
   }, [defaultPosition, defaultSize, open]);
 
   const handleFocus = useCallback(() => {
+    if (focused) return;
     onFocus?.();
-  }, [onFocus]);
+  }, [focused, onFocus]);
 
   const handleDragStop = useCallback(
     (_event: DraggableEvent, data: DraggableData) => {
@@ -782,9 +783,9 @@ function AppWindow({
         positionY: effectivePosition.y,
       });
 
-      onFocus?.();
+      handleFocus();
     },
-    [effectivePosition.x, effectivePosition.y, onFocus],
+    [effectivePosition.x, effectivePosition.y, handleFocus],
   );
 
   useEffect(() => {
@@ -933,6 +934,7 @@ function AppWindow({
     shellStyle.boxShadow = 'var(--shadow-floating)';
   }
 
+<<<<<<< Updated upstream
   const shell = (
     <div
       ref={nodeRef}

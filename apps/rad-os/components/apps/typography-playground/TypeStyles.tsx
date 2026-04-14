@@ -144,19 +144,19 @@ const TYPOGRAPHY_CSS = `@layer base {
      ============================================ */
 
   code {
-    @apply text-xs font-mono font-normal leading-normal text-main bg-depth px-1 py-0.5 rounded-sm;
+    @apply text-xs font-mono font-normal leading-normal text-main bg-depth px-1 py-0.5;
   }
 
   .dark code {
-    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-page px-2 py-1 rounded-sm border border-line;
+    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-page px-2 py-1 border border-line;
   }
 
   pre {
-    @apply text-sm font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 rounded-sm overflow-x-auto;
+    @apply text-sm font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 overflow-x-auto;
   }
 
   kbd {
-    @apply text-sm font-mono font-normal leading-normal text-flip bg-inv px-1 py-0.5 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-flip bg-inv px-1 py-0.5;
   }
 
   /* ============================================

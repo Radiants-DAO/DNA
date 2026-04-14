@@ -43,9 +43,9 @@ export const cardVariants = cva(
   {
     variants: {
       rounded: {
-        sm: 'rounded-sm',
-        md: 'rounded-md',
-        lg: 'rounded-lg',
+        sm: 'pixel-rounded-sm',
+        md: 'pixel-rounded-md',
+        lg: 'pixel-rounded-lg',
       },
     },
     defaultVariants: {

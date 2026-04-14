@@ -12,7 +12,11 @@ const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
 */`;
 
 function renderEntry(entry: (typeof pixelIconSource)[number]) {
-  const maskImage = bitsToMaskURI(bitsToPath(entry.bits, entry.width, entry.height), entry.width);
+  const maskImage = bitsToMaskURI(
+    bitsToPath(entry.bits, entry.width, entry.height),
+    entry.width,
+    entry.height,
+  );
 
   return `  {
     name: ${JSON.stringify(entry.name)},

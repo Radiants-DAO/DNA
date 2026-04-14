@@ -304,8 +304,12 @@ function emitPixelCornerBase() {
   const lines = [];
 
   // --- Host element mask (.pixel-corner) ---
-  lines.push('.pixel-corner {');
+  lines.push('/* Only add position:relative when element is not already positioned */');
+  lines.push('.pixel-corner:not(.absolute, .fixed, .sticky) {');
   lines.push(indent(1, 'position: relative;'));
+  lines.push('}');
+  lines.push('');
+  lines.push('.pixel-corner {');
   lines.push(indent(1, 'border-radius: 0;'));
   lines.push('');
   lines.push(indent(1, '/* Reset all px vars so nested .pixel-corner elements never inherit masks from ancestors. */'));

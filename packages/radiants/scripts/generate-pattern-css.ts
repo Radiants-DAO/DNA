@@ -66,6 +66,7 @@ export function renderPatternCss() {
   lines.push(indent(1, "content: '';"));
   lines.push(indent(1, 'position: absolute;'));
   lines.push(indent(1, 'inset: 0;'));
+  lines.push(indent(1, 'z-index: 0;'));
   lines.push(indent(1, 'pointer-events: none;'));
   lines.push(indent(1, 'background: var(--pat-fill, var(--pat-color, var(--color-main)));'));
   lines.push(indent(1, '-webkit-mask-image: var(--_pat);'));
@@ -79,6 +80,11 @@ export function renderPatternCss() {
   lines.push(indent(1, 'image-rendering: pixelated;'));
   lines.push(indent(1, 'image-rendering: -moz-crisp-edges;'));
   lines.push(indent(1, 'image-rendering: crisp-edges;'));
+  lines.push('}');
+  lines.push('');
+  lines.push('.rdna-pat > * {');
+  lines.push(indent(1, 'position: relative;'));
+  lines.push(indent(1, 'z-index: 1;'));
   lines.push('}');
   lines.push('');
 

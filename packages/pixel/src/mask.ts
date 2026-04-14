@@ -33,7 +33,7 @@ export function buildMaskAsset(grid: PixelGrid): MaskAsset {
   const pathD = bitsToPath(grid.bits, grid.width, grid.height);
 
   return {
-    maskImage: bitsToMaskURI(pathD, grid.width),
+    maskImage: bitsToMaskURI(pathD, grid.width, grid.height),
     maskWidth: grid.width,
     maskHeight: grid.height,
   };

@@ -66,6 +66,7 @@
     "contract/",
     "registry/",
     "patterns/",
+    "pixel-icons/",
     "meta/"
   ],
   "repository": {

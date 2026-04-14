@@ -108,10 +108,10 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
 // Each direction uses full literal class strings so Tailwind detects them at build time.
 const directionStyles: Record<DrawerDirection, string> = {
-  bottom: 'inset-x-0 bottom-0 w-full max-h-[85vh] rounded-t-sm translate-y-0 data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full',
-  top:    'inset-x-0 top-0 w-full max-h-[85vh] rounded-b-sm translate-y-0 data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full',
-  left:   'inset-y-0 left-0 h-full w-80 max-w-[90vw] rounded-r-sm translate-x-0 data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full',
-  right:  'inset-y-0 right-0 h-full w-80 max-w-[90vw] rounded-l-sm translate-x-0 data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full',
+  bottom: 'inset-x-0 bottom-0 w-full max-h-[85vh] pixel-rounded-sm translate-y-0 data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full',
+  top:    'inset-x-0 top-0 w-full max-h-[85vh] pixel-rounded-sm translate-y-0 data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full',
+  left:   'inset-y-0 left-0 h-full w-80 max-w-[90vw] pixel-rounded-sm translate-x-0 data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full',
+  right:  'inset-y-0 right-0 h-full w-80 max-w-[90vw] pixel-rounded-sm translate-x-0 data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full',
 };
 
 // Drag handle position styles per direction

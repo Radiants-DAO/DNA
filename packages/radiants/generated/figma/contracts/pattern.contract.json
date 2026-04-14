@@ -1,7 +1,7 @@
 {
   "id": "pattern",
   "name": "Pattern",
-  "description": "Renders a recolorable 8x8 pixel pattern from the System 6 library. Uses inline SVG so colors, backgrounds, and theme changes stay live without CSS masks.",
+  "description": "Renders a recolorable pixel pattern from the System 6 library using mask-image tokens on a single host element. Children render directly inside the host above the art layer.",
   "sourcePath": "packages/radiants/components/core/Pattern/Pattern.tsx",
   "schemaPath": "packages/radiants/components/core/Pattern/Pattern.schema.json",
   "importPath": "@rdna/radiants/components/core",
@@ -96,12 +96,12 @@
     "tiled": {
       "type": "boolean",
       "default": true,
-      "description": "If true, tile the pattern to fill the host. If false, render a single 8x8 tile."
+      "description": "If true, tile the pattern to fill the host. If false, render a single 8x8 tile without repeating."
     }
   },
   "slots": {
     "children": {
-      "description": "Content rendered above the pattern art"
+      "description": "Content rendered directly inside the host above the masked art layer"
     }
   },
   "subcomponents": [],

@@ -35,5 +35,7 @@ describe('generate-pattern-css', () => {
     expect(css).toContain('background: var(--pat-fill, var(--pat-color, var(--color-main)))');
     expect(css).toContain('mask-image');
     expect(css).toContain('mask-repeat');
+    expect(css).toContain('.rdna-pat > *');
+    expect(css).toContain('z-index: 1;');
   });
 });

@@ -214,7 +214,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   ContextMenu: {
     component: ContextMenu,
     Demo: () => (
-      <ContextMenu className="flex items-center justify-center rounded-md border border-dashed border-line p-8">
+      <ContextMenu className="flex items-center justify-center pixel-rounded-md p-8">
         <span className="text-sm text-mute">Right-click this area</span>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => {}}>Edit</ContextMenuItem>
@@ -524,7 +524,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   ScrollArea: {
     component: ScrollArea,
     Demo: () => (
-      <ScrollArea.Root className="h-48 w-full max-w-[20rem] border border-line rounded-xs">
+      <ScrollArea.Root className="h-48 w-full max-w-[20rem] pixel-rounded-xs">
         <div className="p-4 space-y-4">
           {Array.from({ length: 12 }, (_, i) => (
             <p key={i} className="text-sm text-main">

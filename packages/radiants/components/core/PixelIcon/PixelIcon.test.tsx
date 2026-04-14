@@ -26,6 +26,17 @@ const sampleGrid = {
     '0000000000000000',
 } as const;
 
+const rectangularGrid = {
+  name: 'sample-rect',
+  width: 6,
+  height: 4,
+  bits:
+    '111000' +
+    '111000' +
+    '000111' +
+    '000111',
+} as const;
+
 describe('PixelIcon', () => {
   test('renders a single host CSS mask from a supplied PixelGrid', () => {
     const { container } = render(<PixelIcon grid={sampleGrid} />);
@@ -77,5 +88,19 @@ describe('PixelIcon', () => {
 
     expect(sizedHost?.style.width).toBe('40px');
     expect(sizedHost?.style.height).toBe('40px');
+  });
+
+  test('preserves rectangular grid aspect ratio when size is not overridden', () => {
+    const { container } = render(<PixelIcon grid={rectangularGrid} scale={2} />);
+    const host = container.firstElementChild as HTMLElement | null;
+    const maskImage = host?.style.maskImage || host?.style.webkitMaskImage || '';
+    const decoded = decodeURIComponent(
+      maskImage.replace(/^url\("data:image\/svg\+xml,/, '').replace(/"\)$/, ''),
+    );
+
+    expect(host?.style.width).toBe('12px');
+    expect(host?.style.height).toBe('8px');
+    expect(decoded).toContain("width='6'");
+    expect(decoded).toContain("height='4'");
   });
 });

@@ -208,17 +208,29 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
   },
 
   focusWindow: (id) => {
-    const { windows, nextZIndex } = get();
-    const window = windows.find((w) => w.id === id);
+    set((state) => {
+      const targetWindow = state.windows.find((window) => window.id === id);
 
-    if (window && window.isOpen) {
-      set({
-        windows: windows.map((w) =>
-          w.id === id ? { ...w, zIndex: nextZIndex } : w
+      if (!targetWindow?.isOpen) {
+        return state;
+      }
+
+      const topZIndex = state.windows.reduce(
+        (max, window) => (window.isOpen ? Math.max(max, window.zIndex) : max),
+        0,
+      );
+
+      if (targetWindow.zIndex === topZIndex) {
+        return state;
+      }
+
+      return {
+        windows: state.windows.map((window) =>
+          window.id === id ? { ...window, zIndex: state.nextZIndex } : window,
         ),
-        nextZIndex: nextZIndex + 1,
-      });
-    }
+        nextZIndex: state.nextZIndex + 1,
+      };
+    });
   },
 
   toggleFullscreen: (id) => {

@@ -351,7 +351,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
     >
       {/* Sun Mode swatch */}
       <span
-        className="w-5 h-5 rounded-sm shrink-0 border border-rule"
+        className="w-5 h-5 pixel-rounded-sm shrink-0"
         style={{ backgroundColor: token.lightHex }}
         title={`Sun Mode: ${token.lightHex}`}
       />
@@ -373,7 +373,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
       {/* Moon Mode swatch */}
       <span
-        className="w-5 h-5 rounded-sm shrink-0 border border-rule overflow-hidden"
+        className="w-5 h-5 pixel-rounded-sm shrink-0"
         title={`Moon Mode: ${token.darkHex}`}
       >
         <span className="block w-full h-full" style={{ backgroundColor: token.darkHex }} />

@@ -59,4 +59,17 @@ describe('windows slice launch policy', () => {
     expect(store.getState().getWindow('music')?.isWidget).toBe(false);
     expect(store.getState().getWindow('music-2')?.isWidget).toBe(true);
   });
+
+  it('does not bump z-index when focusing the already-top window', () => {
+    const store = createStore();
+    store.getState().openWindow('music');
+
+    const { nextZIndex } = store.getState();
+    const zIndex = store.getState().getWindow('music')?.zIndex;
+
+    store.getState().focusWindow('music');
+
+    expect(store.getState().nextZIndex).toBe(nextZIndex);
+    expect(store.getState().getWindow('music')?.zIndex).toBe(zIndex);
+  });
 });

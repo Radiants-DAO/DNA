@@ -43,6 +43,19 @@ describe('AppWindow', () => {
     expect(dialog.querySelectorAll('[data-resize-handle]')).toHaveLength(8);
   });
 
+  test('renders an unfocused overlay without relying on rdna-pat masks', () => {
+    const { container } = render(
+      <AppWindow id="about" title="About" focused={false}>
+        <AppWindowBody>Body content</AppWindowBody>
+      </AppWindow>,
+    );
+
+    const overlay = container.querySelector('[data-unfocused-overlay]');
+    expect(overlay).toBeInTheDocument();
+    expect(overlay?.getAttribute('style')).toContain('radial-gradient');
+    expect(overlay).not.toHaveClass('rdna-pat');
+  });
+
   test('renders split compare panes with shared window layout helper', () => {
     render(
       <AppWindow id="lab" title="Control Surface Lab">
@@ -73,6 +86,7 @@ describe('AppWindow', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+<<<<<<< Updated upstream
   test('uses the shared structural shell for mobile presentation', () => {
     const { container } = render(
       <AppWindow id="about" title="About" presentation="mobile" onClose={() => {}}>
@@ -86,6 +100,21 @@ describe('AppWindow', () => {
     expect(container.querySelector('[data-aw="titlebar"]')).toBeInTheDocument();
     expect(container.querySelector('[data-aw="stage"]')).toBeInTheDocument();
     expect(container.querySelector('header')).not.toBeInTheDocument();
+=======
+  test('fires fullscreen focus once per click interaction', async () => {
+    const user = userEvent.setup();
+    const onFocus = vi.fn();
+
+    render(
+      <AppWindow id="about" title="About" presentation="fullscreen" onFocus={onFocus}>
+        <div>Fullscreen content</div>
+      </AppWindow>,
+    );
+
+    await user.click(screen.getByRole('dialog', { name: 'About' }));
+
+    expect(onFocus).toHaveBeenCalledTimes(1);
+>>>>>>> Stashed changes
   });
 
   test('renders action button links as real anchors', () => {

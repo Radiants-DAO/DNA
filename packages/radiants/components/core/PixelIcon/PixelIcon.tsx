@@ -32,7 +32,7 @@ function toCssSize(value: number | string): string {
 }
 
 function createMaskImage(grid: PixelGrid): string {
-  return bitsToMaskURI(bitsToPath(grid.bits, grid.width, grid.height), grid.width);
+  return bitsToMaskURI(bitsToPath(grid.bits, grid.width, grid.height), grid.width, grid.height);
 }
 
 export function PixelIcon({
@@ -52,12 +52,13 @@ export function PixelIcon({
     return null;
   }
 
-  const resolvedSize = size ?? `${icon.width * scale}px`;
+  const resolvedWidth = size ?? `${icon.width * scale}px`;
+  const resolvedHeight = size ?? `${icon.height * scale}px`;
   const maskImage = 'maskImage' in icon ? icon.maskImage : createMaskImage(icon);
   const hostStyle: CSSProperties = {
     ...style,
-    width: toCssSize(resolvedSize),
-    height: toCssSize(resolvedSize),
+    width: toCssSize(resolvedWidth),
+    height: toCssSize(resolvedHeight),
     display: 'inline-block',
     backgroundColor: 'currentColor',
     WebkitMaskImage: maskImage,

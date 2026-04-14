@@ -340,7 +340,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         iconOnly
         size={size}
         onClick={onPlayPause}
-        className="rounded-l-sm border border-line"
+        className="pixel-rounded-sm"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -366,7 +366,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         rounded="none"
         size={size}
         onClick={onNext}
-        className="rounded-r-sm border-y border-r border-line"
+        className="pixel-rounded-sm"
         aria-label="Next track"
       >
         <NextIcon />
@@ -383,7 +383,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
             rounded="none"
             size={size}
             onClick={onQueue}
-            className="rounded-sm border border-line"
+            className="pixel-rounded-sm"
             aria-label="Add to queue"
           >
             <Icon name="queue" />
@@ -418,7 +418,7 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
           size={compact ? 'md' : 'lg'}
           rounded="none"
           icon={<ChevronDownIcon />}
-          className="rounded-sm border border-line"
+          className="pixel-rounded-sm"
         >
           {currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}
         </Button>
