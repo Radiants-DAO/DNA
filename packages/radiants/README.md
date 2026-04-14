@@ -157,23 +157,22 @@ This package includes:
 
 ## Pixel Corners
 
-Pixel-corner geometry (`clip-path: polygon()` staircase shapes) is generated from config, not handwritten.
+Pixel corners use **CSS `mask-image`** (via `pixel-rounded-*` classes) and the `px()` API from `@rdna/pixel` for staircase-shaped masks. The `PixelBorder` component provides SVG-based staircase borders.
 
-**Files:**
-- `scripts/pixel-corners.config.mjs` — profiles (point arrays) and variant definitions
+**Key files:**
+- `scripts/pixel-corners.config.mjs` — profiles and variant definitions
 - `scripts/pixel-corners-lib.mjs` — generator library
 - `scripts/generate-pixel-corners.mjs` — CLI that writes `pixel-corners.generated.css`
-- `pixel-corners.css` — shell file: imports generated CSS, contains manual utilities (shadows, focus rings, border overrides)
+- `pixel-corners.css` — imports generated CSS, manual utilities (shadows, focus rings)
 - `pixel-corners.generated.css` — checked-in generated artifact (do not edit by hand)
+- `components/core/PixelBorder/` — SVG staircase border component
 
 **Regenerate after config changes:**
 ```bash
 pnpm --filter @rdna/radiants generate:pixel-corners
 ```
 
-**Adding a new profile:** Define TL corner points in the config (verify with the [Pixel Corners Calculator](https://pixelcorners.lukeb.co.uk/)), add `innerPoints` for the 1px-inset border boundary, then add a variant referencing the profile. The generator mirrors TL to TR/BR/BL automatically.
-
-**V1 boundaries:** Per-corner composition is supported (any combination of profiles per corner slot). Runtime size-aware pixel corners (`rounded-full` as a pixel staircase) are not supported — `rounded-full` remains smooth CSS `border-radius`.
+**Pixel corners are opt-in.** Standard `rounded-*` classes remain plain Tailwind border-radius. Use `pixel-rounded-xs/sm/md/lg/xl` to apply pixel staircase masks. Wrap in `<PixelBorder>` when visible staircase borders are needed.
 
 ## Internal Primitive Engine
 

@@ -121,6 +121,7 @@ def detect_grid(img):
         row_bands.append((band_start, h - 1))
 
     # For each row band, find column blocks
+    # cells: (x, y, row_idx, col_idx, max_y) — max_y is the row band end
     cells = []
     for row_idx, (ry_start, ry_end) in enumerate(row_bands):
         col_blocks = []
@@ -140,41 +141,48 @@ def detect_grid(img):
         for col_idx, (cx_start, cx_end) in enumerate(col_blocks):
             block_w = cx_end - cx_start + 1
             if block_w >= 14 and block_w <= 20:
-                # Single emoji
-                cells.append((cx_start, ry_start, row_idx, col_idx))
+                cells.append((cx_start, ry_start, row_idx, col_idx, ry_end))
             elif block_w > 20:
-                # Multiple emojis merged — split at 24px pitch
                 n_emojis = round(block_w / 24)
                 if n_emojis < 1:
                     n_emojis = 1
                 pitch = block_w / n_emojis
                 for i in range(n_emojis):
                     ex = cx_start + round(i * pitch)
-                    cells.append((ex, ry_start, row_idx, col_idx + i))
+                    cells.append((ex, ry_start, row_idx, col_idx + i, ry_end))
 
     return cells
 
 
 # ── SVG Generation ──────────────────────────────────────────────────────
 
-def extract_emoji(img, x, y, size=16):
-    """Extract a size×size pixel grid, return list of (px, py, rdna_name, hex)."""
+def extract_emoji(img, x, y, width=16, max_y=None):
+    """Extract pixels within width × (auto-detected height), bounded by max_y.
+    Returns (pixels, actual_height) where pixels is list of (px, py, rdna_name, hex)."""
+    w_img, h_img = img.size
+    y_limit = min(y + 24, h_img)  # scan up to 24px down
+    if max_y is not None:
+        y_limit = min(y_limit, max_y + 1)
+
     pixels = []
-    for py in range(size):
-        for px in range(size):
+    actual_height = 0
+    for py in range(y_limit - y):
+        for px in range(width):
             ix, iy = x + px, y + py
-            if ix >= img.size[0] or iy >= img.size[1]:
+            if ix >= w_img or iy >= h_img:
                 continue
             p = img.getpixel((ix, iy))
             if p[3] > 128:
                 rgb = (p[0], p[1], p[2])
                 name, hex_color = nearest_rdna(rgb)
                 pixels.append((px, py, name, hex_color))
-    return pixels
+                actual_height = max(actual_height, py + 1)
+
+    return pixels, max(actual_height, 16)
 
 
-def pixels_to_svg(pixels, size=16, scale=1):
-    """Convert pixel list to SVG string with horizontal run-length merging."""
+def pixels_to_svg(pixels, width=16, height=16, scale=1):
+    """Convert pixel list to SVG string with horizontal + vertical run-length merging."""
     if not pixels:
         return None
 
@@ -189,7 +197,6 @@ def pixels_to_svg(pixels, size=16, scale=1):
     rects = []
     for (py, hex_color), x_positions in rows.items():
         x_positions.sort()
-        # Merge consecutive x positions
         runs = []
         run_start = x_positions[0]
         run_end = x_positions[0]
@@ -207,13 +214,11 @@ def pixels_to_svg(pixels, size=16, scale=1):
             rects.append((rs, py, w, 1, hex_color))
 
     # Further merge: vertically adjacent rects with same x, w, color
-    # Sort by (color, x, w, y)
     rects.sort(key=lambda r: (r[4], r[0], r[2], r[1]))
     merged = []
     i = 0
     while i < len(rects):
         x, y, w, h, c = rects[i]
-        # Look ahead for vertically adjacent same-shape rects
         while i + 1 < len(rects):
             nx, ny, nw, nh, nc = rects[i + 1]
             if nc == c and nx == x and nw == w and ny == y + h:
@@ -225,10 +230,9 @@ def pixels_to_svg(pixels, size=16, scale=1):
         i += 1
 
     # Build SVG
-    vb_size = size * scale
     lines = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
-        f'width="{vb_size}" height="{vb_size}" shape-rendering="crispEdges">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" '
+        f'width="{width * scale}" height="{height * scale}" shape-rendering="crispEdges">',
     ]
 
     # Group rects by color for cleaner SVG
@@ -275,12 +279,12 @@ def main():
     count = 0
     color_usage = {}
 
-    for x, y, row_idx, col_idx in cells:
-        pixels = extract_emoji(img, x, y, 16)
+    for x, y, row_idx, col_idx, max_y in cells:
+        pixels, actual_h = extract_emoji(img, x, y, width=16, max_y=max_y)
         if not is_empty_emoji(pixels):
             continue
 
-        svg = pixels_to_svg(pixels, 16, scale=1)
+        svg = pixels_to_svg(pixels, width=16, height=actual_h, scale=1)
         if svg is None:
             continue
 

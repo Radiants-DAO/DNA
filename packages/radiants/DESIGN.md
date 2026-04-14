@@ -600,52 +600,42 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 
 ### Border Radius — Pixel Corners
 
-RDNA uses **pixel-staircase corners** instead of smooth CSS `border-radius`. Geometry is generated from `scripts/pixel-corners.config.mjs` into `pixel-corners.generated.css` (do not edit by hand). Manual utilities (shadows, focus rings, border overrides) live in `pixel-corners.css`. Regenerate after config changes: `pnpm --filter @rdna/radiants generate:pixel-corners`. New profiles can be verified with the [Pixel Corners Calculator](https://pixelcorners.lukeb.co.uk/).
+RDNA uses **pixel-staircase corners** instead of smooth CSS `border-radius`. The system uses CSS `mask-image` (via `pixel-rounded-*` classes) and the `px()` API from `@rdna/pixel` to generate staircase masks at build time. The `PixelBorder` component wraps elements that need pixel corners with SVG-based borders.
 
 #### How It Works
 
-Every element with `rounded-xs`, `rounded-sm`, `rounded-md`, or `rounded-lg` gets:
+Pixel corners use **CSS `mask-image`** to clip elements to a staircase shape. Apply a `pixel-rounded-*` class to opt in:
 
-1. **`clip-path: polygon()`** — the pixelated staircase shape (replaces `border-radius`)
-2. **`::after` pseudo-element** — a 1px border ring drawn with `background: var(--color-line)` and its own clip-path
-3. **`border: 1px solid transparent`** — structural spacing only, MUST stay transparent
-4. **`position: relative`** — required for the `::after` overlay
+1. **`mask-image`** — a generated CSS mask that clips the element to the pixelated staircase shape
+2. **`PixelBorder` component** — wraps elements that need visible pixel-staircase borders (SVG path overlay)
+3. **`pixel-shadow-*` utilities** — `filter: drop-shadow()` for shadows on masked elements
 
-| Token | Pixel Radius | Mapped Size | Use |
-|-------|-------------|-------------|-----|
-| `rounded-xs` | 2px staircase | `pixel-rounded-xs` | Buttons, inputs, badges, checkboxes |
-| `rounded-sm` | 4px staircase | `pixel-rounded-sm` | Tabs, toasts |
-| `rounded-md` | 8px staircase | `pixel-rounded-lg` | Cards, windows, dialogs |
-| `rounded-lg` | 16px staircase | `pixel-rounded-xl` | Large panels |
-| `rounded-full` | Unchanged | — | Switch tracks, radio buttons (no pixel corners) |
+| Class | Radius | Use |
+|-------|--------|-----|
+| `pixel-rounded-xs` | 4px staircase | Buttons, inputs, badges, checkboxes |
+| `pixel-rounded-sm` | 6px staircase | Tabs, toasts |
+| `pixel-rounded-md` | 8px staircase | Cards, menus |
+| `pixel-rounded-lg` | 12px staircase | Windows, dialogs |
+| `pixel-rounded-xl` | 20px staircase | Large panels |
+| `rounded-full` | Unchanged | Switch tracks, radio buttons (no pixel corners) |
 
-**V1 boundaries:** The generator supports per-corner composition (any combination of profiles per corner slot, e.g. `tl: 'sm', tr: 'square'`) and edge masking (e.g. `edges.right: false` to suppress the border on one side). Runtime size-aware pixel corners (`rounded-full` as a pixel staircase, auto-pill shapes) are **not supported in V1** — `rounded-full` remains smooth CSS `border-radius`. This is a separate research track requiring runtime measurement or SVG-based rendering.
+**Pixel corners are opt-in.** Standard `rounded-*` classes remain plain Tailwind border-radius with no clip-path or mask side effects.
 
-**`position: relative` interaction:** Pixel-cornered elements get `position: relative` (required for the `::after` border pseudo-element). Consumers that need `absolute` or `fixed` positioning (e.g. AppWindow) MUST override with an inline style: `style={{ position: 'absolute' }}`.
+**PixelBorder component:** For elements that need visible staircase borders (not just masked corners), wrap them in `<PixelBorder size="sm">`. The component renders an SVG border path and supports per-corner radii via the `radius` prop and background clipping via the `background` prop.
 
 #### Critical Rules
 
-**MUST NOT set `border-color` on pixel-cornered elements.** The `::after` pseudo-element is the single source of visible borders. Setting `border-color` causes double borders (CSS border + `::after` border both visible).
+**MUST NOT set `border-*` on pixel-cornered elements.** The `PixelBorder` component or `::after` pseudo-element handles visible borders. Setting `border-color` causes double borders.
 
 ```tsx
-// DO: Let ::after handle the border
-<div className="rounded-xs bg-page">...</div>
+// DO: Use PixelBorder for borders
+<PixelBorder size="sm" background="bg-page">...</PixelBorder>
 
-// DON'T: Double border — CSS border + ::after both fire
-<div className="rounded-xs border border-line bg-page">...</div>
+// DON'T: CSS border on pixel-cornered elements
+<div className="pixel-rounded-sm border border-line bg-page">...</div>
 ```
 
-To change the `::after` border color (e.g. error/danger state), override the `::after` background:
-
-```css
-[data-slot="my-element"][data-invalid="true"]::after {
-  background: var(--color-danger);
-}
-```
-
-The utility class `.pixel-border-danger` is provided for this common case.
-
-**MUST NOT use `box-shadow` for external shadows on pixel-cornered elements.** `clip-path` clips `box-shadow`. Use `filter: drop-shadow()` via the `pixel-shadow-*` utilities instead. Inset `box-shadow` (bevels) works fine inside clip-path.
+**MUST NOT use `box-shadow` for external shadows on pixel-cornered elements.** `mask-image` clips `box-shadow`. Use `filter: drop-shadow()` via the `pixel-shadow-*` utilities instead.
 
 | Utility | Sun Mode | Moon Mode |
 |---------|----------|-----------|

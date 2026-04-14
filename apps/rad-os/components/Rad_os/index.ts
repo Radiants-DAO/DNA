@@ -3,7 +3,6 @@ export { AppWindow } from './AppWindow';
 export { WindowTitleBar } from './WindowTitleBar';
 
 // Layout Primitives
-export { WindowContent } from './WindowContent';
 export { WindowTabs } from './WindowTabs';
 export { WindowSidebar } from './WindowSidebar';
 
