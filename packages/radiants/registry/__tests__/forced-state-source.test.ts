@@ -31,7 +31,11 @@ describe("forced state style source of truth", () => {
     };
 
     expect(packageJson.exports).not.toHaveProperty("./registry/forced-states.css");
-    expect(readRepoFile("tools/playground/app/globals.css")).not.toContain("registry/forced-states.css");
+    // playground was ejected; its globals.css no longer exists
+    const playgroundGlobalsPath = resolve(repoRoot, "tools/playground/app/globals.css");
+    if (existsSync(playgroundGlobalsPath)) {
+      expect(readFileSync(playgroundGlobalsPath, "utf8")).not.toContain("registry/forced-states.css");
+    }
     expect(readRepoFile("apps/rad-os/app/globals.css")).not.toContain("registry/forced-states.css");
     expect(
       existsSync(resolve(repoRoot, "packages/radiants/registry/forced-states.css")),
