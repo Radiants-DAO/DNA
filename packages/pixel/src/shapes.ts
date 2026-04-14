@@ -25,10 +25,8 @@ export type CornerShapeGenerator = (gridSize: number) => PixelCornerSet;
 export type CornerShapeName =
   | 'circle'
   | 'chamfer'
-  | 'notch'
   | 'scallop'
   | 'crenellation'
-  | 'sawtooth'
   | 'octagon';
 
 // ---------------------------------------------------------------------------
@@ -106,70 +104,6 @@ function generateChamfer(gridSize: number): PixelCornerSet {
   }
 
   return makeGrids('chamfer', N, coverBits, borderBits);
-}
-
-// ---------------------------------------------------------------------------
-// notch — stepped rectangular cutout
-//
-// Removes a rectangular notch from the TL corner. The notch is a square
-// of size floor(N/2) × floor(N/2). The border traces the inside edge
-// of the notch (bottom edge + right edge of the cutout).
-//
-// Example (N=8, notch=4):
-//   CCCCBBBB    C=cover, B=border, .=interior
-//   CCCCB...
-//   CCCCB...
-//   CCCCB...
-//   BBBB....
-//   ........
-//   ........
-//   ........
-// ---------------------------------------------------------------------------
-
-function generateNotch(gridSize: number): PixelCornerSet {
-  assertValidGridSize(gridSize, 'notch');
-  const N = gridSize;
-  const notchSize = Math.floor(N / 2);
-  const coverBits = new Array(N * N).fill('0');
-  const borderBits = new Array(N * N).fill('0');
-
-  // Cover: the notch rectangle (rows 0..notchSize-1, cols 0..notchSize-1)
-  for (let row = 0; row < notchSize; row++) {
-    for (let col = 0; col < notchSize; col++) {
-      coverBits[row * N + col] = '1';
-    }
-  }
-
-  // Border: right edge of the notch (rows 0..notchSize-1 at col notchSize)
-  // But the top-right corner pixel of the notch is shared, so start from row 0.
-  for (let row = 0; row < notchSize; row++) {
-    borderBits[row * N + notchSize] = '1';
-  }
-
-  // Border: bottom edge of the notch (row notchSize, cols 0..notchSize)
-  for (let col = 0; col <= notchSize; col++) {
-    borderBits[notchSize * N + col] = '1';
-  }
-
-  // The corner pixel at (notchSize, notchSize) is already set by the bottom edge.
-  // Remove it from border — the intersection pixel is drawn once.
-  // Actually, it's fine — both loops set it to '1', and that's correct.
-  // But we need to make sure cover and border don't overlap:
-  // Cover is rows 0..notchSize-1, cols 0..notchSize-1.
-  // Border right edge is rows 0..notchSize-1 at col=notchSize — no overlap.
-  // Border bottom edge is row=notchSize, cols 0..notchSize — no overlap.
-
-  // Also add the top border row (row 0, cols notchSize..N-1)
-  for (let col = notchSize; col < N; col++) {
-    borderBits[0 * N + col] = '1';
-  }
-
-  // And the left border column (rows notchSize..N-1, col 0)
-  for (let row = notchSize; row < N; row++) {
-    borderBits[row * N + 0] = '1';
-  }
-
-  return makeGrids('notch', N, coverBits, borderBits);
 }
 
 // ---------------------------------------------------------------------------
@@ -324,93 +258,23 @@ function generateCrenellation(gridSize: number): PixelCornerSet {
 }
 
 // ---------------------------------------------------------------------------
-// sawtooth — zigzag teeth along the diagonal
+// octagon — horizontal flat, 45° diagonal, vertical flat
 //
-// Creates a sawtooth pattern: right-angled triangular teeth along the
-// diagonal from TL to BR. Each tooth is a right triangle with legs
-// of size `toothSize`.
+// The TL corner of an octagon clips a triangle whose hypotenuse has
+// three segments: a horizontal run along the top edge, a 45° diagonal,
+// and a vertical run down the left edge.
 //
-// For a TL corner, the sawtooth creates a stepped diagonal where each
-// step is a small right triangle (chamfer + step back).
-// ---------------------------------------------------------------------------
-
-function generateSawtooth(gridSize: number): PixelCornerSet {
-  assertValidGridSize(gridSize, 'sawtooth');
-  const N = gridSize;
-  const coverBits = new Array(N * N).fill('0');
-  const borderBits = new Array(N * N).fill('0');
-
-  // Tooth size: how many pixels each sawtooth tooth spans
-  const toothSize = Math.max(2, Math.floor(N / 3));
-
-  // For each row, determine the rightmost cover column.
-  // The sawtooth creates a pattern where the edge zigzags:
-  // within each tooth of height `toothSize`, the edge goes from
-  // (startCol) to (startCol - toothSize) diagonally, then jumps
-  // back to (startCol - toothSize) for the next tooth.
-  for (let row = 0; row < N; row++) {
-    // Which tooth are we in?
-    const toothIndex = Math.floor(row / toothSize);
-    const rowInTooth = row % toothSize;
-
-    // Each tooth starts at column: N - 1 - (toothIndex * toothSize)
-    // and the diagonal goes left by rowInTooth
-    const edgeCol = N - 1 - (toothIndex * toothSize) - rowInTooth;
-
-    if (edgeCol < 0) {
-      // Past the last tooth — no cover on this row
-      continue;
-    }
-
-    // Cover: everything to the left of the edge
-    for (let col = 0; col < edgeCol; col++) {
-      coverBits[row * N + col] = '1';
-    }
-
-    // Border: the edge pixel
-    if (edgeCol < N) {
-      borderBits[row * N + edgeCol] = '1';
-    }
-  }
-
-  return makeGrids('sawtooth', N, coverBits, borderBits);
-}
-
-// ---------------------------------------------------------------------------
-// octagon — equal horizontal, vertical, and diagonal cuts
+// Segment lengths: flatLen = max(1, floor(N/3)), diagLen = N - 2*flatLen.
 //
-// An octagonal corner removes a triangle from the TL corner, but with
-// equal-length horizontal and vertical runs connected by a 45° diagonal.
+// The border column per row steps like this:
+//   Rows 0..(flatLen-1):            col = N - flatLen  (vertical edge for horiz flat)
+//   Rows flatLen..(flatLen+diagLen-1): col steps left by 1 per row (diagonal)
+//   Rows (flatLen+diagLen)..(N-1):  col = flatLen - 1 - (row - flatLen - diagLen)
+//                                   stepping down to col 0 (horiz edge for vert flat)
 //
-// The cut has 3 segments:
-//   1. Horizontal run along the top (length h)
-//   2. Diagonal at 45° (length d pixels)
-//   3. Vertical run down the left (length h)
-//
-// Where h = floor(N/3) and d = N - 2*h.
-//
-// Example (N=9, h=3, d=3):
-//   CCCCCCCBB   row 0: 7 cover, border at col 7-8 (horiz run end)
-//   CCCCCCCB.   row 1: 7 cover, border at col 7
-//   CCCCCCCB.   row 2: 7 cover, border at col 7
-//   CCCCCCB..   row 3: 6 cover, border at col 6 (diagonal)
-//   CCCCCB...   row 4: 5 cover, border at col 5 (diagonal)
-//   CCCCB....   row 5: 4 cover, border at col 4 (diagonal)
-//   BBB......   row 6: border at cols 0-2 (vert run start)
-//   .B.......   row 7: border at col 1
-//   .B.......   row 8: border at col 1
-//
-// Wait, that's not right. Let me think about this as a TL corner octagon.
-// For the TL corner, we clip a shape that creates an octagonal profile.
-//
-// The border traces: vertical run down from (0, h) to (0, N-1),
-// then a diagonal from (0, h) up-right to (h, 0),
-// then a horizontal run from (h, 0) to (N-1, 0).
-//
-// Actually, simpler: the cut shape for the TL corner of an octagon is
-// a triangle with a flattened hypotenuse:
-//   - Top-left portion is cover
-//   - The edge goes: horizontal segment at top, diagonal, vertical segment at left
+// The last segment previously jumped to col=0, leaving a gap between
+// the diagonal's endpoint and the vertical flat. Fix: the vertical flat
+// border steps down 1 column per row from the diagonal's last column.
 // ---------------------------------------------------------------------------
 
 function generateOctagon(gridSize: number): PixelCornerSet {
@@ -419,33 +283,28 @@ function generateOctagon(gridSize: number): PixelCornerSet {
   const coverBits = new Array(N * N).fill('0');
   const borderBits = new Array(N * N).fill('0');
 
-  // The flat segments at the top and left, plus diagonal between them.
   const flatLen = Math.max(1, Math.floor(N / 3));
   const diagLen = N - 2 * flatLen;
 
-  // Build the edge profile: for each row, where is the border column?
-  // Row 0..flatLen-1: horizontal flat at top. Border col = N - 1 - row
-  //   No wait — for an octagon TL corner, it's like a chamfer but with
-  //   flat segments at both ends of the diagonal.
-  //
-  // The profile from top-right to bottom-left:
-  //   Rows 0..(flatLen-1):    border at col (N - flatLen)  [horizontal segment]
-  //   Rows flatLen..(flatLen+diagLen-1): border at col (N - flatLen - 1 - (row - flatLen))  [diagonal]
-  //   Rows (flatLen+diagLen)..(N-1): border at col 0  [vertical segment]
+  // The diagonal ends at this column:
+  const diagEndCol = N - flatLen - diagLen;
+  // = N - flatLen - (N - 2*flatLen) = flatLen
 
   for (let row = 0; row < N; row++) {
     let borderCol: number;
 
     if (row < flatLen) {
-      // Horizontal flat segment at top
+      // Horizontal flat: border is a vertical edge at constant column
       borderCol = N - flatLen;
     } else if (row < flatLen + diagLen) {
-      // Diagonal segment
+      // Diagonal: steps left by 1 per row
       const diagProgress = row - flatLen;
       borderCol = N - flatLen - 1 - diagProgress;
     } else {
-      // Vertical flat segment at left
-      borderCol = 0;
+      // Vertical flat: border is a horizontal edge at constant column
+      // The diagonal ended at col = diagEndCol = flatLen.
+      // The vertical flat continues from there, holding at the same column.
+      borderCol = diagEndCol;
     }
 
     // Cover: everything to the left of border
@@ -467,10 +326,8 @@ function generateOctagon(gridSize: number): PixelCornerSet {
 export const SHAPE_REGISTRY: Record<CornerShapeName, CornerShapeGenerator> = {
   circle: generateCircle,
   chamfer: generateChamfer,
-  notch: generateNotch,
   scallop: generateScallop,
   crenellation: generateCrenellation,
-  sawtooth: generateSawtooth,
   octagon: generateOctagon,
 };
 

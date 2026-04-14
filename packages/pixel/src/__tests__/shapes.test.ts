@@ -11,10 +11,8 @@ import { validateGrid } from '../core.js';
 const ALL_SHAPES: CornerShapeName[] = [
   'circle',
   'chamfer',
-  'notch',
   'scallop',
   'crenellation',
-  'sawtooth',
   'octagon',
 ];
 
@@ -158,20 +156,6 @@ describe('chamfer shape', () => {
   });
 });
 
-describe('notch shape', () => {
-  it('cover fills a rectangular region', () => {
-    const N = 8;
-    const notchSize = Math.floor(N / 2);
-    const set = generateShape('notch', N);
-
-    for (let row = 0; row < notchSize; row++) {
-      for (let col = 0; col < notchSize; col++) {
-        expect(set.tl.bits[row * N + col]).toBe('1');
-      }
-    }
-  });
-});
-
 describe('octagon shape', () => {
   it('has exactly one border pixel per row', () => {
     for (const gridSize of [6, 8, 12, 16]) {
@@ -205,7 +189,8 @@ describe('octagon shape', () => {
     // All should be the same column
     expect(new Set(topBorderCols).size).toBe(1);
 
-    // Bottom flat segment: border col should be 0
+    // Bottom flat segment: border col should be constant at flatLen
+    // (the diagonal ends at col = flatLen, and the vertical flat holds there)
     const botBorderCols: number[] = [];
     for (let row = flatLen + (N - 2 * flatLen); row < N; row++) {
       for (let col = 0; col < N; col++) {
@@ -216,7 +201,7 @@ describe('octagon shape', () => {
       }
     }
     expect(new Set(botBorderCols).size).toBe(1);
-    expect(botBorderCols[0]).toBe(0);
+    expect(botBorderCols[0]).toBe(flatLen);
   });
 });
 
@@ -234,30 +219,6 @@ describe('scallop shape', () => {
     // Bottom-right corner should be interior
     expect(set.tl.bits[N * N - 1]).toBe('0');
     expect(set.border!.bits[N * N - 1]).toBe('0');
-  });
-});
-
-describe('sawtooth shape', () => {
-  it('border column decreases within each tooth', () => {
-    const N = 12;
-    const set = generateShape('sawtooth', N);
-    const toothSize = Math.max(2, Math.floor(N / 3));
-
-    // Within the first tooth, border should move leftward
-    const borderCols: number[] = [];
-    for (let row = 0; row < Math.min(toothSize, N); row++) {
-      for (let col = N - 1; col >= 0; col--) {
-        if (set.border!.bits[row * N + col] === '1') {
-          borderCols.push(col);
-          break;
-        }
-      }
-    }
-
-    // Each border col should be <= the previous (moving left or staying)
-    for (let i = 1; i < borderCols.length; i++) {
-      expect(borderCols[i]).toBeLessThanOrEqual(borderCols[i - 1]);
-    }
   });
 });
 

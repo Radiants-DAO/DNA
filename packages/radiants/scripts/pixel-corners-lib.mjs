@@ -3,7 +3,6 @@ import {
   NUMERIC_SIZES,
   FULL_SIZE,
   LEGACY_ALIASES,
-  SHAPE_SIZES,
   generateSizeData,
 } from './pixel-corners.config.mjs';
 
@@ -499,12 +498,6 @@ export function renderPixelCornersGeneratedCss() {
     data: computeSizeMaskData(radius + 1),
   }));
 
-  // 4. Compute mask data for alternate shape sizes
-  const shapeEntries = SHAPE_SIZES.map(({ suffix, gridSize, shape }) => ({
-    suffix,
-    data: computeSizeMaskData(gridSize, shape),
-  }));
-
   // Determine which legacy entries need their own custom properties
   // (those whose gridSize doesn't match any numeric size).
   const numericGridSizes = new Set(NUMERIC_SIZES.map((s) => s.gridSize));
@@ -520,7 +513,6 @@ export function renderPixelCornersGeneratedCss() {
     ...numericEntries,
     fullEntry,
     ...legacyEntriesNeedingProps,
-    ...shapeEntries,
   ]));
 
   // 5.5. Variable-driven base rule for px() helper
@@ -534,7 +526,6 @@ export function renderPixelCornersGeneratedCss() {
     ...numericEntries.map(({ suffix }) => `.pixel-rounded-${suffix}`),
     `.pixel-rounded-${FULL_SIZE.suffix}`,
     ...legacyEntries.map(({ suffix }) => `.pixel-rounded-${suffix}`),
-    ...shapeEntries.map(({ suffix }) => `.pixel-${suffix}`),
   ];
   // Deduplicate (e.g. if a legacy suffix matches a numeric one)
   const uniqueClassNames = [...new Set(allClassNames)];
@@ -579,21 +570,6 @@ export function renderPixelCornersGeneratedCss() {
     } else {
       // Unique grid size — uses its own custom properties
       blocks.push(emitLegacyAlias(suffix, data));
-    }
-  }
-
-  // 10. Alternate shape sizes
-  if (shapeEntries.length > 0) {
-    blocks.push('/* ============================================================================');
-    blocks.push('   Alternate corner shapes — chamfer, notch, scallop, octagon, sawtooth, etc.');
-    blocks.push('   Classes: .pixel-{shape}-{size} (e.g. .pixel-chamfer-8)');
-    blocks.push('   ============================================================================ */');
-
-    for (const { suffix, data } of shapeEntries) {
-      const className = `.pixel-${suffix}`;
-      blocks.push(`/* .pixel-${suffix} — ${data.shape} shape, ${data.gridSize}×${data.gridSize} grid */`);
-      blocks.push(emitHostMask(className, suffix, data.gridSize));
-      blocks.push(emitAfterMask(className, suffix, data.gridSize));
     }
   }
 

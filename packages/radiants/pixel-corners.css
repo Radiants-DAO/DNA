@@ -57,12 +57,10 @@
 .pixel-rounded-xl:focus-visible,
 /* variable-driven base */
 .pixel-corner:focus-visible,
-/* alternate corner shapes */
+/* alternate corner shapes (runtime-only via px() API) */
 [class*="pixel-chamfer-"]:focus-visible,
-[class*="pixel-notch-"]:focus-visible,
 [class*="pixel-scallop-"]:focus-visible,
 [class*="pixel-octagon-"]:focus-visible,
-[class*="pixel-sawtooth-"]:focus-visible,
 [class*="pixel-crenellation-"]:focus-visible {
   outline: 2px solid var(--color-focus, var(--color-accent));
   outline-offset: 2px;

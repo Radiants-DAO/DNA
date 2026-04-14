@@ -96,51 +96,21 @@
 </section>
 
 <!-- ============================================ -->
-<!-- CHAMFER -->
+<!-- ALTERNATE SHAPES (runtime-only) -->
 <!-- ============================================ -->
 <section>
-  <h2>Chamfer (pixel-chamfer-N)</h2>
-  <div class="gallery" id="chamferGallery"></div>
-</section>
+  <h2>Alternate Shapes</h2>
+  <p class="subtitle" style="margin-bottom:1rem;">
+    Shapes (chamfer, scallop, octagon, crenellation) are <strong>runtime-only</strong>
+    via the <code>px()</code> API &mdash; no pregenerated CSS. Use them in React/TS:
+  </p>
+  <pre style="background:rgba(0,0,0,0.05); padding:1rem; font-size:0.8rem; margin-bottom:1rem; overflow-x:auto;">// Uniform chamfer corners
+&lt;div {...px('chamfer', 8)} /&gt;
 
-<!-- ============================================ -->
-<!-- NOTCH -->
-<!-- ============================================ -->
-<section>
-  <h2>Notch (pixel-notch-N)</h2>
-  <div class="gallery" id="notchGallery"></div>
-</section>
+// Per-corner: chamfer top, circle bottom
+&lt;div {...px({ radius: [['chamfer',8], ['chamfer',8], 8, 8] })} /&gt;
 
-<!-- ============================================ -->
-<!-- SCALLOP -->
-<!-- ============================================ -->
-<section>
-  <h2>Scallop (pixel-scallop-N)</h2>
-  <div class="gallery" id="scallopGallery"></div>
-</section>
-
-<!-- ============================================ -->
-<!-- OCTAGON -->
-<!-- ============================================ -->
-<section>
-  <h2>Octagon (pixel-octagon-N)</h2>
-  <div class="gallery" id="octagonGallery"></div>
-</section>
-
-<!-- ============================================ -->
-<!-- SAWTOOTH -->
-<!-- ============================================ -->
-<section>
-  <h2>Sawtooth (pixel-sawtooth-N)</h2>
-  <div class="gallery" id="sawtoothGallery"></div>
-</section>
-
-<!-- ============================================ -->
-<!-- CRENELLATION -->
-<!-- ============================================ -->
-<section>
-  <h2>Crenellation (pixel-crenellation-N)</h2>
-  <div class="gallery" id="crenellationGallery"></div>
+// Available shapes: circle, chamfer, scallop, octagon, crenellation</pre>
 </section>
 
 <!-- ============================================ -->
@@ -174,50 +144,11 @@
 <!-- SHAPE COMPARISON AT SAME SIZE -->
 <!-- ============================================ -->
 <section>
-  <h2>Shape Comparison &mdash; all shapes at grid 12</h2>
-  <div class="gallery">
-    <div class="card-wrap">
-      <div class="pixel-rounded-12 card shape-card-lg"><span class="label">circle</span></div>
-      <span class="size-label">pixel-rounded-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-chamfer-12 card shape-card-lg"><span class="label">chamfer</span></div>
-      <span class="size-label">pixel-chamfer-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-notch-12 card shape-card-lg"><span class="label">notch</span></div>
-      <span class="size-label">pixel-notch-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-scallop-12 card shape-card-lg"><span class="label">scallop</span></div>
-      <span class="size-label">pixel-scallop-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-octagon-12 card shape-card-lg"><span class="label">octagon</span></div>
-      <span class="size-label">pixel-octagon-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-sawtooth-12 card shape-card-lg"><span class="label">sawtooth</span></div>
-      <span class="size-label">pixel-sawtooth-12</span>
-    </div>
-    <div class="card-wrap">
-      <div class="pixel-crenellation-12 card shape-card-lg"><span class="label">crenellation</span></div>
-      <span class="size-label">pixel-crenellation-12</span>
-    </div>
-  </div>
 </section>
 
 <script>
-// --- Shape data ---
+// --- Size data ---
 const CIRCLES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 'full'];
-const SHAPES = {
-  chamfer:      [4, 6, 8, 12, 16],
-  notch:        [4, 8, 12, 16],
-  scallop:      [6, 8, 12, 16],
-  octagon:      [6, 8, 12, 16],
-  sawtooth:     [6, 8, 12],
-  crenellation: [8, 12, 16],
-};
 
 function cardSize(size) {
   if (size === 'full') return { w: 32, h: 32 };
@@ -248,14 +179,6 @@ for (const s of CIRCLES) {
   circleGallery.appendChild(makeCard(cls, cls, s));
 }
 
-// Populate shape galleries
-for (const [shape, sizes] of Object.entries(SHAPES)) {
-  const gallery = document.getElementById(`${shape}Gallery`);
-  for (const s of sizes) {
-    const cls = `pixel-${shape}-${s}`;
-    gallery.appendChild(makeCard(cls, cls, s));
-  }
-}
 
 // --- Controls ---
 const scaleSlider   = document.getElementById('scaleSlider');

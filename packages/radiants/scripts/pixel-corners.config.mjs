@@ -14,7 +14,7 @@ import { generateCorner, generateShape } from '@rdna/pixel';
  * backward-compat aliases — they generate from their original radii.
  */
 
-/** @typedef {'circle' | 'chamfer' | 'notch' | 'scallop' | 'crenellation' | 'sawtooth' | 'octagon'} CornerShapeName */
+/** @typedef {'circle' | 'chamfer' | 'scallop' | 'crenellation' | 'octagon'} CornerShapeName */
 
 /**
  * @typedef {Object} SizeEntry
@@ -52,51 +52,6 @@ export const LEGACY_ALIASES = [
   { suffix: 'md', radius: 8 },   // grid 9  — matches PIXEL_BORDER_RADII.md
   { suffix: 'lg', radius: 12 },  // grid 13 — matches PIXEL_BORDER_RADII.lg
   { suffix: 'xl', radius: 20 },  // grid 21 — matches PIXEL_BORDER_RADII.xl
-];
-
-/**
- * Alternate shape sizes — non-circle shapes at selected grid sizes.
- *
- * Each entry generates a class like `.pixel-chamfer-8`, `.pixel-notch-12`, etc.
- * The shape field is required here (no default to 'circle').
- *
- * @type {SizeEntry[]}
- */
-export const SHAPE_SIZES = [
-  // Chamfer (45° bevel)
-  { suffix: 'chamfer-4', gridSize: 4, shape: 'chamfer' },
-  { suffix: 'chamfer-6', gridSize: 6, shape: 'chamfer' },
-  { suffix: 'chamfer-8', gridSize: 8, shape: 'chamfer' },
-  { suffix: 'chamfer-12', gridSize: 12, shape: 'chamfer' },
-  { suffix: 'chamfer-16', gridSize: 16, shape: 'chamfer' },
-
-  // Notch (stepped rectangular cutout)
-  { suffix: 'notch-4', gridSize: 4, shape: 'notch' },
-  { suffix: 'notch-8', gridSize: 8, shape: 'notch' },
-  { suffix: 'notch-12', gridSize: 12, shape: 'notch' },
-  { suffix: 'notch-16', gridSize: 16, shape: 'notch' },
-
-  // Scallop (concave arc)
-  { suffix: 'scallop-6', gridSize: 6, shape: 'scallop' },
-  { suffix: 'scallop-8', gridSize: 8, shape: 'scallop' },
-  { suffix: 'scallop-12', gridSize: 12, shape: 'scallop' },
-  { suffix: 'scallop-16', gridSize: 16, shape: 'scallop' },
-
-  // Octagon (flat-diag-flat)
-  { suffix: 'octagon-6', gridSize: 6, shape: 'octagon' },
-  { suffix: 'octagon-8', gridSize: 8, shape: 'octagon' },
-  { suffix: 'octagon-12', gridSize: 12, shape: 'octagon' },
-  { suffix: 'octagon-16', gridSize: 16, shape: 'octagon' },
-
-  // Sawtooth (zigzag)
-  { suffix: 'sawtooth-6', gridSize: 6, shape: 'sawtooth' },
-  { suffix: 'sawtooth-8', gridSize: 8, shape: 'sawtooth' },
-  { suffix: 'sawtooth-12', gridSize: 12, shape: 'sawtooth' },
-
-  // Crenellation (battlements)
-  { suffix: 'crenellation-8', gridSize: 8, shape: 'crenellation' },
-  { suffix: 'crenellation-12', gridSize: 12, shape: 'crenellation' },
-  { suffix: 'crenellation-16', gridSize: 16, shape: 'crenellation' },
 ];
 
 /**
