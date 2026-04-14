@@ -71,8 +71,6 @@ export default function PixelCornersPreview() {
   const cardW = (size: Size) => (boxWidth > 0 ? boxWidth : defaultCardSize(size).w);
   const cardH = (size: Size) => (boxHeight > 0 ? boxHeight : defaultCardSize(size).h);
 
-  const className = (size: Size) => `pixel-rounded-${size}`;
-
   const usePixelShadow = shadow === 'pixel-shadow';
   const filterStyle = shadow !== 'none' && !usePixelShadow ? shadow : undefined;
 

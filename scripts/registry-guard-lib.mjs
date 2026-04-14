@@ -35,7 +35,7 @@ export function getRegistryPlan(mode, changedPaths = []) {
       return shouldRunRegistryGuard(changedPaths)
         ? {
             run: true,
-            command: ["pnpm", "registry:check:fast"],
+            command: ["pnpm", "registry:generate"],
             reason: "staged_registry_changes",
           }
         : {
@@ -52,19 +52,19 @@ export function getRegistryPlan(mode, changedPaths = []) {
     case "pre-build":
       return {
         run: true,
-        command: ["pnpm", "registry:check:full"],
+        command: ["pnpm", "registry:generate"],
         reason: "build_start",
       };
     case "pre-push":
       return {
         run: true,
-        command: ["pnpm", "registry:check:full"],
+        command: ["pnpm", "registry:generate"],
         reason: "push_gate",
       };
     case "ci":
       return {
         run: true,
-        command: ["pnpm", "registry:check:full"],
+        command: ["pnpm", "registry:generate"],
         reason: "ci_gate",
       };
     case "post-checkout":

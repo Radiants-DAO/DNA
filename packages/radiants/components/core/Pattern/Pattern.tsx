@@ -53,7 +53,7 @@ export function Pattern({
         '--pat-repeat': tiled ? 'repeat' : 'no-repeat',
         '--pat-scale': scale,
         ...style,
-      }}
+      } as React.CSSProperties}
       {...rest}
     >
       {children}

@@ -54,7 +54,7 @@ export function PixelIcon({
 
   const resolvedWidth = size ?? `${icon.width * scale}px`;
   const resolvedHeight = size ?? `${icon.height * scale}px`;
-  const maskImage = 'maskImage' in icon ? icon.maskImage : createMaskImage(icon);
+  const maskImage = 'maskImage' in icon ? (icon.maskImage as string) : createMaskImage(icon);
   const hostStyle: CSSProperties = {
     ...style,
     width: toCssSize(resolvedWidth),

@@ -7,9 +7,6 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 import { Separator } from '../Separator/Separator';
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
-import { px } from '@rdna/pixel';
-
-const APP_WINDOW_PX = px(8);
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
