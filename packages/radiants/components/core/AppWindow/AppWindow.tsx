@@ -934,7 +934,6 @@ function AppWindow({
     shellStyle.boxShadow = 'var(--shadow-floating)';
   }
 
-<<<<<<< Updated upstream
   const shell = (
     <div
       ref={nodeRef}

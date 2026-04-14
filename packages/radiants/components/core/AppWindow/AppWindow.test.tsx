@@ -86,7 +86,6 @@ describe('AppWindow', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-<<<<<<< Updated upstream
   test('uses the shared structural shell for mobile presentation', () => {
     const { container } = render(
       <AppWindow id="about" title="About" presentation="mobile" onClose={() => {}}>
@@ -100,7 +99,8 @@ describe('AppWindow', () => {
     expect(container.querySelector('[data-aw="titlebar"]')).toBeInTheDocument();
     expect(container.querySelector('[data-aw="stage"]')).toBeInTheDocument();
     expect(container.querySelector('header')).not.toBeInTheDocument();
-=======
+  });
+
   test('fires fullscreen focus once per click interaction', async () => {
     const user = userEvent.setup();
     const onFocus = vi.fn();
@@ -114,7 +114,6 @@ describe('AppWindow', () => {
     await user.click(screen.getByRole('dialog', { name: 'About' }));
 
     expect(onFocus).toHaveBeenCalledTimes(1);
->>>>>>> Stashed changes
   });
 
   test('renders action button links as real anchors', () => {
