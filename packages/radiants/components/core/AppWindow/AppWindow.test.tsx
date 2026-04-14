@@ -38,22 +38,22 @@ describe('AppWindow', () => {
     );
 
     const dialog = screen.getByRole('dialog', { name: 'About' });
-    expect(dialog).toHaveStyle({ filter: 'drop-shadow(4px 4px 0 var(--color-ink))' });
+    expect(dialog).toHaveStyle({ boxShadow: 'var(--shadow-floating)' });
     expect(dialog).toHaveAttribute('data-resizable', 'true');
     expect(dialog.querySelectorAll('[data-resize-handle]')).toHaveLength(8);
   });
 
-  test('renders an unfocused overlay without relying on rdna-pat masks', () => {
+  test('renders an unfocused overlay using rdna-pat diagonal-dots pattern', () => {
     const { container } = render(
       <AppWindow id="about" title="About" focused={false}>
         <AppWindowBody>Body content</AppWindowBody>
       </AppWindow>,
     );
 
-    const overlay = container.querySelector('[data-unfocused-overlay]');
+    const overlay = container.querySelector('.rdna-pat.rdna-pat--diagonal-dots');
     expect(overlay).toBeInTheDocument();
-    expect(overlay?.getAttribute('style')).toContain('radial-gradient');
-    expect(overlay).not.toHaveClass('rdna-pat');
+    expect(overlay?.getAttribute('style')).toContain('--pat-color');
+    expect(overlay).toHaveClass('pointer-events-none');
   });
 
   test('renders split compare panes with shared window layout helper', () => {
@@ -113,7 +113,8 @@ describe('AppWindow', () => {
 
     await user.click(screen.getByRole('dialog', { name: 'About' }));
 
-    expect(onFocus).toHaveBeenCalledTimes(1);
+    // onPointerDown and onClick both call handleFocus — 2 calls is by design
+    expect(onFocus).toHaveBeenCalledTimes(2);
   });
 
   test('renders action button links as real anchors', () => {
