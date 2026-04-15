@@ -29,12 +29,12 @@ interface ButtonStripProps {
 }
 
 const itemVariants = cva(
-  'flex items-center justify-center font-mono outline-none transition-all duration-fast bg-ctrl-cell-bg',
+  'flex items-center justify-center font-mono outline-none transition-all duration-fast',
   {
     variants: {
       size: {
         sm: 'min-w-5 min-h-5 px-1 text-[0.5625rem]',
-        md: 'min-w-6 min-h-[--ctrl-row-height] px-1.5 text-[0.625rem]',
+        md: 'min-w-6 min-h-[30px] px-1.5 text-[0.625rem]',
         lg: 'min-w-7 min-h-7 px-2 text-xs',
       },
     },
@@ -82,7 +82,7 @@ export function ButtonStrip({
 
       <div
         role={mode === 'radio' ? 'radiogroup' : 'group'}
-        className="inline-flex gap-[--ctrl-cell-gap] border border-ctrl-border-inactive"
+        className="inline-flex gap-[--ctrl-cell-gap]"
       >
         {options.map((opt) => {
           const isActive = selected.includes(opt.value);
@@ -100,10 +100,10 @@ export function ButtonStrip({
                 'uppercase tracking-wider',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
                 isActive
-                  ? 'text-ctrl-text-active'
-                  : 'text-ctrl-label hover:text-ctrl-value',
+                  ? 'bg-ctrl-fill text-ctrl-active'
+                  : 'bg-ctrl-cell-bg text-ctrl-label hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
-              style={isActive ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
+              style={isActive ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
             >
               {opt.icon ?? opt.label ?? opt.value}
             </button>

@@ -15,6 +15,7 @@ export const FaderMeta = defineComponentMeta<ContinuousControlProps>()({
     size: { type: "enum", values: ["sm", "md", "lg"], default: "md", description: "Height preset" },
     showValue: { type: "boolean", default: false, description: "Display value below the fader" },
     formatValue: { type: "function", description: "Custom value formatter" },
+    ticks: { type: "number", description: "Number of evenly spaced tick marks along the track" },
   },
   slots: {},
   tokenBindings: {

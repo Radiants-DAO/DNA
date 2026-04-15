@@ -84,11 +84,12 @@ export function SegmentedControl({
                 'flex items-center justify-center gap-1 transition-all duration-fast outline-none',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
                 'bg-ctrl-cell-bg',
+                'flex-1',
                 isActive
-                  ? 'text-ctrl-text-active border-t border-l border-r border-ctrl-border-active'
-                  : 'text-ctrl-label border-t border-l border-r border-transparent hover:text-ctrl-value',
+                  ? 'text-ctrl-text-active border-b-2 border-ctrl-border-active'
+                  : 'text-ctrl-label border-b-2 border-transparent hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
-              style={isActive ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
+              style={isActive ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
             >
               {opt.icon}
               {opt.label}

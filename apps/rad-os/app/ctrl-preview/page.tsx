@@ -359,6 +359,15 @@ const RADIAL_OPTIONS = [
   { value: 'w', label: 'W' },
 ];
 
+const RADIAL_OPTIONS_FULL = [
+  { value: 'select', label: 'SELECT' },
+  { value: 'move', label: 'MOVE' },
+  { value: 'rotate', label: 'ROTATE' },
+  { value: 'scale', label: 'SCALE' },
+  { value: 'extrude', label: 'EXTRUDE' },
+  { value: 'delete', label: 'DELETE' },
+];
+
 const CHIP_OPTIONS = ['Alpha', 'Beta', 'Gamma', 'Delta'];
 
 const SPARKLINE_DATA = [10, 25, 18, 42, 35, 60, 55, 48, 72, 65, 80, 70];
@@ -473,6 +482,7 @@ export default function CtrlPreview() {
     Array.from({ length: 4 }, () => Array.from({ length: 16 }, () => false))
   );
   const [radialVal, setRadialVal] = useState('n');
+  const [radialFullVal, setRadialFullVal] = useState('select');
 
   // ── Layout demo state ──
   const [treeExpanded, setTreeExpanded] = useState(true);
