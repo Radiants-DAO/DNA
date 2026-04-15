@@ -79,7 +79,7 @@ describe('Switch', () => {
 
   test('forwards name, required, and readOnly to the switch element', () => {
     render(<Switch checked={true} onChange={vi.fn()} name="enabled" required readOnly />);
-    const switchEl = screen.getByRole('switch');
+    const _switchEl = screen.getByRole('switch');
     // Base UI Switch renders a hidden input for form submission with the name
     const hiddenInput = document.querySelector('input[name="enabled"]');
     expect(hiddenInput).toBeInTheDocument();

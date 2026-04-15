@@ -145,7 +145,7 @@ describe('Select', () => {
   });
 
   test('submits Select value via FormData when name prop is set', async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
     function SelectForm() {
       const { state, actions } = useSelectState({ defaultValue: 'banana' });
       return (

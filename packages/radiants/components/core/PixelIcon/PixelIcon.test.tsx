@@ -67,6 +67,7 @@ describe('PixelIcon', () => {
     const { container } = render(
       <PixelIcon
         grid={sampleGrid}
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:test-fixture-value owner:design-system expires:2027-01-01 issue:DNA-999
         style={{ color: 'rgb(12, 34, 56)' }}
       />,
     );

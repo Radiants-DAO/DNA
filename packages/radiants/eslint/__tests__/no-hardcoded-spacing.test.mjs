@@ -27,6 +27,22 @@ describe('rdna/no-hardcoded-spacing', () => {
         { code: '<div className="text-[1.5rem]" />' },
         // Arbitrary non-spacing brackets
         { code: '<div className="grid-cols-[1fr_2fr]" />' },
+        // Percentage-based arbitrary spacing — allowed (responsive)
+        { code: '<div className="mx-[5%]" />' },
+        { code: '<div className="p-[8%]" />' },
+        { code: '<div className="m-[6%]" />' },
+        // Rem-based arbitrary spacing — allowed (scalable)
+        { code: '<div className="mt-[1.5rem]" />' },
+        { code: '<div className="p-[2rem]" />' },
+        { code: '<div className="gap-[1rem]" />' },
+        // CSS math functions — allowed (responsive)
+        { code: '<div className="p-[clamp(1rem,2vw,2rem)]" />' },
+        { code: '<div className="gap-[calc(1rem+4px)]" />' },
+        { code: '<div className="m-[min(2rem,5%)]" />' },
+        { code: '<div className="p-[max(1rem,16px)]" />' },
+        // With Tailwind modifier prefixes — still allowed
+        { code: '<div className="hover:p-[2rem]" />' },
+        { code: '<div className="dark:gap-[5%]" />' },
       ],
       invalid: [
         // Arbitrary spacing in className
@@ -36,14 +52,6 @@ describe('rdna/no-hardcoded-spacing', () => {
         },
         {
           code: '<div className="gap-[13px]" />',
-          errors: [{ messageId: 'arbitrarySpacing' }],
-        },
-        {
-          code: '<div className="mx-[5%]" />',
-          errors: [{ messageId: 'arbitrarySpacing' }],
-        },
-        {
-          code: '<div className="mt-[1.5rem]" />',
           errors: [{ messageId: 'arbitrarySpacing' }],
         },
         {

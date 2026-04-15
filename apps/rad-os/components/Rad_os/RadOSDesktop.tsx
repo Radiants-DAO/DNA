@@ -1,5 +1,6 @@
 'use client';
 import { Desktop } from './Desktop';
+import { CommandPalette } from './CommandPalette';
 import { InvertModeProvider } from './InvertModeProvider';
 import { ToastProvider } from '@rdna/radiants/components/core';
 import { Agentation } from 'agentation';
@@ -21,6 +22,7 @@ export function RadOSDesktop() {
     <ToastProvider>
       <InvertModeProvider>
         <Desktop />
+        <CommandPalette />
         <Agentation />
       </InvertModeProvider>
     </ToastProvider>

@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import {
   PixelBorder,
-  PixelBorderEdges,
   clampPixelCornerRadii,
   PIXEL_BORDER_RADII,
 } from './PixelBorder';

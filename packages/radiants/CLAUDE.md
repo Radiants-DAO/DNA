@@ -43,7 +43,12 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
   - `rdna/no-raw-radius` — ban raw radius values and arbitrary rounded classes
   - `rdna/no-raw-shadow` — ban raw shadow values and arbitrary shadow classes
   - `rdna/no-clipped-shadow` — ban `shadow-*` on pixel-cornered elements (use `pixel-shadow-*`)
+  - `rdna/no-pixel-border` — ban `border-*` and `overflow-hidden` on pixel-cornered elements (use `::after` pseudo-border)
   - `rdna/no-hardcoded-motion` — ban raw duration/easing values
+  - `rdna/no-raw-line-height` — ban arbitrary line-height values in style props (use `var(--leading-*)`)
+  - `rdna/no-raw-font-family` — ban hardcoded font-family in style props
+  - `rdna/no-pattern-color-override` — ban hardcoded colors on pattern-mode elements
+  - `rdna/no-arbitrary-icon-size` — restrict Icon `size` to 16 or 24; ban removed `iconSet` prop
 
 Repo-local review rules stay in `eslint.rdna.config.mjs` instead of the exported shared plugin configs:
 - `rdna/require-exception-metadata`

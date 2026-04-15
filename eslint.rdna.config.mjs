@@ -42,6 +42,7 @@ export default [
       '**/.turbo/**',
       '**/generated/**',
       'apps/rad-os/lib/dotting/**',
+      'apps/rad-os/app/pixel-corners/page.tsx',
     ],
   },
   {
@@ -100,6 +101,33 @@ export default [
   {
     files: [
       'packages/ctrl/**/*.{ts,tsx}',
+    ],
+    plugins: {
+      ...compatibilityPlugins,
+      ...unusedImportsPlugin,
+      rdna,
+    },
+    rules: {
+      ...rdna.configs.internals.rules,
+      'rdna/require-exception-metadata': 'error',
+      'rdna/no-broad-rdna-disables': 'error',
+      'rdna/no-mixed-style-authority': 'error',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+  // Pixel package — internal engine (same internals config as radiants/ctrl)
+  {
+    files: [
+      'packages/pixel/src/**/*.{ts,tsx}',
     ],
     plugins: {
       ...compatibilityPlugins,

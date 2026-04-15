@@ -1,7 +1,7 @@
 /**
  * rdna/no-raw-radius
- * Bans arbitrary border-radius values in className and style props.
- * Use RDNA radius tokens (rounded-xs, rounded-sm, rounded-md, rounded-full) instead.
+ * Bans arbitrary and standard Tailwind border-radius values in className and style props.
+ * Use pixel-rounded-* classes (pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg) instead.
  */
 import {
   getClassNameStrings,
@@ -12,6 +12,7 @@ import {
   isDynamicTemplateLiteral,
   isInsideClassNameAttribute,
   ARBITRARY_RADIUS_CLASS,
+  STANDARD_RADIUS_CLASS,
 } from '../utils.mjs';
 
 const radiusStyleProps = new Set([
@@ -24,13 +25,15 @@ const rule = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Ban arbitrary border-radius values; require RDNA radius tokens',
+      description: 'Ban arbitrary and standard Tailwind border-radius values; require pixel-rounded-* classes',
     },
     messages: {
       arbitraryRadius:
-        'Arbitrary radius "{{raw}}" in className. Use an RDNA radius utility (rounded-xs, rounded-sm, rounded-md, rounded-full).',
+        'Arbitrary radius "{{raw}}" in className. Use pixel-rounded-* instead (e.g. pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg).',
+      standardRadius:
+        'Standard radius "{{raw}}" is not allowed. Use pixel-rounded-* instead (e.g. pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg).',
       hardcodedRadiusStyle:
-        'Hardcoded border-radius in style prop ({{prop}}). Use a Tailwind radius utility class instead.',
+        'Hardcoded border-radius in style prop ({{prop}}). Use a pixel-rounded-* utility class instead.',
     },
     schema: [],
   },
@@ -59,6 +62,18 @@ function checkClassName(context, valueNode) {
         node,
         messageId: 'arbitraryRadius',
         data: { raw: match[0] },
+      });
+    }
+
+    STANDARD_RADIUS_CLASS.lastIndex = 0;
+    while ((match = STANDARD_RADIUS_CLASS.exec(value)) !== null) {
+      const raw = match[0];
+      // Allow rounded-none (removes radius) and pixel-rounded-* (RDNA pattern)
+      if (raw.endsWith('rounded-none') || raw.includes('pixel-rounded')) continue;
+      context.report({
+        node,
+        messageId: 'standardRadius',
+        data: { raw },
       });
     }
   }

@@ -5,7 +5,7 @@ import { Collapsible } from './Collapsible';
 describe('Collapsible', () => {
   test('applies the pixel-rounded xs shell to the trigger and content surfaces', async () => {
     const user = userEvent.setup();
-    const { container } = render(
+    const { container: _container } = render(
       <Collapsible.Root>
         <Collapsible.Trigger>Section</Collapsible.Trigger>
         <Collapsible.Content>Panel body</Collapsible.Content>

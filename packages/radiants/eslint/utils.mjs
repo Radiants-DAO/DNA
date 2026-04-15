@@ -26,6 +26,13 @@ export const ARBITRARY_FONT_WEIGHT_CLASS = new RegExp(`${MOD}font-\\[\\d+\\]`, '
 // Matches arbitrary radius values: rounded-[6px], hover:rounded-t-[8px], etc.
 export const ARBITRARY_RADIUS_CLASS = new RegExp(`${MOD}rounded(?:-[trblse]{1,2})?-\\[[^\\]]+\\]`, 'g');
 
+// Matches standard Tailwind rounded-* classes (not pixel-rounded-*, not rounded-none).
+// Covers bare `rounded`, sized (`rounded-sm` etc.), and directional (`rounded-t-md`, `rounded-tl-lg`, etc.)
+export const STANDARD_RADIUS_CLASS = new RegExp(
+  `(?<![\\w-])${MOD}rounded(?:-(?:t|r|b|l|tl|tr|bl|br|s|e|ss|se|es|ee))?(?:-(?:sm|md|lg|xl|2xl|3xl|full))?(?![\\w-])`,
+  'g',
+);
+
 // Matches arbitrary shadow values: shadow-[...], drop-shadow-[...], etc.
 export const ARBITRARY_SHADOW_CLASS = new RegExp(`${MOD}(?:shadow|drop-shadow)-\\[[^\\]]+\\]`, 'g');
 

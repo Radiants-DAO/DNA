@@ -125,7 +125,7 @@ describe('Dialog', () => {
   });
 
   test('actionsRef exposes close() and onOpenChangeComplete fires', async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
     const onComplete = vi.fn();
     const actionsRef = { current: null as { close: () => void; unmount: () => void } | null };
 

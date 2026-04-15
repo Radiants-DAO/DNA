@@ -94,6 +94,9 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-clipped-shadow` | `shadow-*` tokens on pixel-cornered elements (use `pixel-shadow-*`) |
 | `rdna/no-pixel-border` | `border-*` on pixel-cornered elements (use `::after` pseudo-border) |
 | `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
+| `rdna/no-raw-line-height` | Arbitrary line-height values in style props (use `var(--leading-*)`) |
+| `rdna/no-raw-font-family` | Hardcoded font-family in style props |
+| `rdna/no-pattern-color-override` | Hardcoded colors on pattern-mode elements |
 | `rdna/no-arbitrary-icon-size` | Icon size not 16 or 24, or removed `iconSet` prop |
 
 ### Configs

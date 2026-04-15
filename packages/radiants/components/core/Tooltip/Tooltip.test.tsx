@@ -6,7 +6,7 @@ import React from 'react';
 describe('Tooltip', () => {
   test('shows tooltip on hover and hides on unhover', async () => {
     const user = userEvent.setup();
-    const { baseElement } = render(
+    const { baseElement: _baseElement } = render(
       <Tooltip content="Helpful tip" delay={0}>
         <button>Hover me</button>
       </Tooltip>,
