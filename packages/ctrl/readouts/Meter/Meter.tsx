@@ -160,17 +160,11 @@ function ChannelBar({
               isVertical ? `${segSizeV[size]} h-1.5` : `${segSizeH[size]} flex-1`,
             ].join(' ')}
             style={{
-              backgroundColor: isLit
+              backgroundColor: isLit || isPeak
                 ? color
-                : isPeak
-                  ? color
-                  : 'var(--color-ctrl-cell-bg)',
+                : 'var(--color-ctrl-cell-bg)',
               opacity: isPeak ? 0.9 : undefined,
-              boxShadow: isPeak
-                ? `0 0 4px ${color}`
-                : isLit
-                  ? undefined
-                  : undefined,
+              boxShadow: isPeak ? `0 0 4px ${color}` : undefined,
             }}
           />
         );

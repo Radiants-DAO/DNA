@@ -114,7 +114,7 @@ export function Ribbon({
           {showValue && (
             <span
               className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
-              style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+              style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
             >
               {displayValue}
             </span>

@@ -111,14 +111,14 @@ export function XYPad({
         {/* Position dot */}
         <div
           className="absolute size-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-ctrl-fill pointer-events-none"
-          style={{ left: `${norm.x * 100}%`, bottom: `${norm.y * 100}%`, boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)' }}
+          style={{ left: `${norm.x * 100}%`, bottom: `${norm.y * 100}%`, boxShadow: '0 0 6px var(--color-ctrl-glow)' }}
         />
       </div>
 
       {showValue && (
         <span
           className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
-          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+          style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
         >
           {displayValue}
         </span>

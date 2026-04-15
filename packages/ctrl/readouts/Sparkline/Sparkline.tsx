@@ -46,10 +46,11 @@ export function Sparkline({
       const h = height - padding * 2;
 
       // Get CSS custom property values from the canvas element
-      const fillStyle = getComputedStyle(ctx.canvas).getPropertyValue('--color-ctrl-fill').trim() || '#FCE184';
-      const dotStyle = getComputedStyle(ctx.canvas).getPropertyValue('--color-ctrl-glow').trim() || '#FCE184';
-
-      const glowColor = getComputedStyle(ctx.canvas).getPropertyValue('--glow-sun-yellow').trim() || 'rgba(252, 225, 132, 0.5)';
+      const style = getComputedStyle(ctx.canvas);
+      const accentFallback = style.getPropertyValue('--color-accent').trim();
+      const fillStyle = style.getPropertyValue('--color-ctrl-fill').trim() || accentFallback;
+      const dotStyle = style.getPropertyValue('--color-ctrl-glow').trim() || accentFallback;
+      const glowColor = style.getPropertyValue('--color-ctrl-glow').trim() || accentFallback;
 
       ctx.strokeStyle = fillStyle;
       ctx.lineWidth = 1.5;

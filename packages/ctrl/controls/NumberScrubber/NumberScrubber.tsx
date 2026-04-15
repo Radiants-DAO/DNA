@@ -73,7 +73,7 @@ export function NumberScrubber({
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'bg-ctrl-hover/20',
         ].filter(Boolean).join(' ')}
-        style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+        style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
       >
         {displayValue}
       </span>

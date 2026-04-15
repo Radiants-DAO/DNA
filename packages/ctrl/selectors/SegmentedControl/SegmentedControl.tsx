@@ -8,7 +8,7 @@ import type { ControlSize } from '../../primitives/types';
 // SegmentedControl — Horizontal tab bar with border-driven active state
 //
 // Paper ref: 03 — Segment Picker
-// Active: gold text + glow + border-top/sides. Inactive: cream 50%.
+// Active: gold text + glow + border-bottom. Equal-width segments. Inactive: cream 50%.
 // =============================================================================
 
 interface SegmentedOption {

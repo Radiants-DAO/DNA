@@ -8,7 +8,7 @@ import type { ControlSize } from '../../primitives/types';
 // ButtonStrip — Cell-based preset bar, radio or multi-select
 //
 // Paper ref: 06 — Preset Bar
-// 1px gap cells, dark bg. Active = gold text + glow. Optional leading label.
+// 1px gap cells, no outer border. Active = gold fill + dark text. Optional leading label.
 // =============================================================================
 
 interface ButtonStripOption {

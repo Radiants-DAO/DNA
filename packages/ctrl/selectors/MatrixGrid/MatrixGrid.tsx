@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
@@ -120,7 +120,7 @@ export function MatrixGrid({
               >
                 {row.map((cell, ci) => {
                   const rowColor = rowColors?.[ri];
-                  const activeStyle: React.CSSProperties | undefined = cell
+                  const activeStyle: CSSProperties | undefined = cell
                     ? {
                         backgroundColor: rowColor ?? undefined,
                         boxShadow: rowColor
