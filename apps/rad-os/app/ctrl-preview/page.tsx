@@ -589,6 +589,17 @@ export default function CtrlPreview() {
                 <DemoCard label="Meter (vertical)">
                   <Meter value={55} orientation="vertical" label="Vol" />
                 </DemoCard>
+                <DemoCard label="Stereo VU">
+                  <Meter
+                    value={[72, 58]}
+                    orientation="vertical"
+                    channelLabels={['L', 'R']}
+                    peakHold
+                    showScale
+                    label="VU"
+                    size="lg"
+                  />
+                </DemoCard>
                 <DemoCard label="LED Array">
                   <LEDArray values={[true, true, false, true, false, true, true, false]} label="Status" />
                 </DemoCard>

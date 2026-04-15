@@ -15,6 +15,7 @@ export const CtrlSliderMeta = defineComponentMeta<ContinuousControlProps>()({
     size: { type: "enum", values: ["sm", "md", "lg"], default: "md", description: "Width preset" },
     showValue: { type: "boolean", default: false, description: "Display value beside the label" },
     formatValue: { type: "function", description: "Custom value formatter" },
+    ticks: { type: "number", description: "Number of evenly spaced tick marks along the track" },
   },
   slots: {},
   tokenBindings: {

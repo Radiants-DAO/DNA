@@ -20,10 +20,16 @@ interface RadialMenuProps {
   label?: string;
   disabled?: boolean;
   size?: ControlSize;
+  /** Override diameter in px — takes precedence over `size` */
+  diameter?: number;
+  /** Show center dot (default true) */
+  showCenter?: boolean;
+  /** Show crosshair lines through center — useful for 4-way compact layout (default false) */
+  showCrosshair?: boolean;
   className?: string;
 }
 
-const dimMap: Record<ControlSize, number> = { sm: 48, md: 72, lg: 96 };
+const dimMap: Record<ControlSize, number> = { sm: 72, md: 120, lg: 200 };
 
 function sectorPath(
   cx: number, cy: number, r: number,
@@ -40,10 +46,6 @@ function polarToXY(cx: number, cy: number, r: number, deg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
-function labelPos(cx: number, cy: number, r: number, midAngle: number) {
-  return polarToXY(cx, cy, r * 0.6, midAngle);
-}
-
 export function RadialMenu({
   value,
   onChange,
@@ -51,13 +53,24 @@ export function RadialMenu({
   label,
   disabled = false,
   size = 'md',
+  diameter,
+  showCenter = true,
+  showCrosshair = false,
   className = '',
 }: RadialMenuProps) {
-  const dim = dimMap[size];
-  const cx = dim / 2;
-  const cy = dim / 2;
+  const dim = diameter ?? dimMap[size];
+  // Outer padding to make room for labels outside the circle
+  const labelMargin = dim * 0.3;
+  const svgSize = dim + labelMargin * 2;
+  const cx = svgSize / 2;
+  const cy = svgSize / 2;
   const r = dim / 2 - 2;
   const sliceAngle = 360 / options.length;
+
+  const baseFontSize = dim * 0.11;
+  const activeFontSize = baseFontSize * 1.4;
+  const centerR = Math.max(3, dim * 0.025);
+  const dashedR = r * 0.6;
 
   return (
     <div
@@ -75,28 +88,106 @@ export function RadialMenu({
       )}
 
       <svg
-        width={dim}
-        height={dim}
-        viewBox={`0 0 ${dim} ${dim}`}
+        width={svgSize}
+        height={svgSize}
+        viewBox={`0 0 ${svgSize} ${svgSize}`}
         role="radiogroup"
       >
+        {/* ── Sectors ── */}
         {options.map((opt, i) => {
           const startAngle = i * sliceAngle;
           const endAngle = startAngle + sliceAngle;
+          const isActive = opt.value === value;
+
+          return (
+            <path
+              key={opt.value}
+              d={sectorPath(cx, cy, r, startAngle, endAngle)}
+              fill={isActive ? 'oklch(1 0 0 / 0.08)' : 'var(--color-ctrl-cell-bg)'}
+              stroke="var(--color-ctrl-border-inactive)"
+              strokeWidth={1}
+              className="cursor-pointer outline-none transition-colors duration-fast"
+              onClick={() => !disabled && onChange(opt.value)}
+            />
+          );
+        })}
+
+        {/* ── Outer circle stroke ── */}
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r}
+          fill="none"
+          stroke="var(--color-ctrl-border-inactive)"
+          strokeWidth={1}
+        />
+
+        {/* ── Inner dashed circle at 60% radius ── */}
+        <circle
+          cx={cx}
+          cy={cy}
+          r={dashedR}
+          fill="none"
+          stroke="var(--color-ctrl-border-inactive)"
+          strokeWidth={0.5}
+          strokeDasharray={`${dashedR * 0.15} ${dashedR * 0.1}`}
+          opacity={0.5}
+        />
+
+        {/* ── Divider lines from center to edge ── */}
+        {options.map((_, i) => {
+          const angle = i * sliceAngle;
+          const edge = polarToXY(cx, cy, r, angle);
+          return (
+            <line
+              key={`div-${i}`}
+              x1={cx}
+              y1={cy}
+              x2={edge.x}
+              y2={edge.y}
+              stroke="var(--color-ctrl-border-inactive)"
+              strokeWidth={0.5}
+              opacity={0.25}
+            />
+          );
+        })}
+
+        {/* ── Crosshair lines (optional, for compact 4-way) ── */}
+        {showCrosshair && (
+          <>
+            <line x1={cx - r} y1={cy} x2={cx + r} y2={cy}
+              stroke="var(--color-ctrl-border-inactive)" strokeWidth={0.5} opacity={0.4} />
+            <line x1={cx} y1={cy - r} x2={cx} y2={cy + r}
+              stroke="var(--color-ctrl-border-inactive)" strokeWidth={0.5} opacity={0.4} />
+          </>
+        )}
+
+        {/* ── Center dot ── */}
+        {showCenter && (
+          <circle
+            cx={cx}
+            cy={cy}
+            r={centerR}
+            fill="var(--color-ctrl-thumb)"
+            style={{ filter: 'drop-shadow(0 0 3px var(--color-ctrl-glow))' }}
+          />
+        )}
+
+        {/* ── Labels (outside circle) + ARIA roles ── */}
+        {options.map((opt, i) => {
+          const startAngle = i * sliceAngle;
           const midAngle = startAngle + sliceAngle / 2;
           const isActive = opt.value === value;
-          const lp = labelPos(cx, cy, r, midAngle);
+          const lp = polarToXY(cx, cy, r * 1.25, midAngle);
 
           return (
             <g key={opt.value} role="radio" aria-checked={isActive}>
+              {/* Invisible hit-area that covers the sector for accessibility */}
               <path
-                d={sectorPath(cx, cy, r, startAngle, endAngle)}
-                fill="var(--color-ctrl-cell-bg)"
-                stroke={isActive ? 'var(--color-ctrl-border-active)' : 'var(--color-ctrl-border-inactive)'}
-                strokeWidth={1}
-                className="cursor-pointer outline-none transition-colors duration-fast"
+                d={sectorPath(cx, cy, r, startAngle, startAngle + sliceAngle)}
+                fill="transparent"
+                className="cursor-pointer"
                 onClick={() => !disabled && onChange(opt.value)}
-                style={isActive ? { filter: 'drop-shadow(0 0 4px var(--glow-sun-yellow))' } : undefined}
               />
               <text
                 x={lp.x}
@@ -104,10 +195,12 @@ export function RadialMenu({
                 textAnchor="middle"
                 dominantBaseline="central"
                 fill={isActive ? 'var(--color-ctrl-text-active)' : 'var(--color-ctrl-label)'}
-                fontSize={dim * 0.11}
+                fontSize={isActive ? activeFontSize : baseFontSize}
+                fontWeight={isActive ? 700 : 400}
                 fontFamily="var(--font-mono, monospace)"
                 className="pointer-events-none uppercase"
                 letterSpacing="0.05em"
+                style={isActive ? { filter: 'drop-shadow(0 0 4px var(--color-ctrl-glow))' } : undefined}
               >
                 {opt.label}
               </text>

@@ -8,7 +8,15 @@ import type { ContinuousControlProps, ControlSize } from '../../primitives/types
 // Fader — Vertical track with positioned thumb
 //
 // Drag vertically to adjust. The thumb slides along a vertical groove.
+//
+// Paper reference: 1px track line, thin horizontal thumb with glow,
+// optional perpendicular tick marks.
 // =============================================================================
+
+interface FaderProps extends ContinuousControlProps {
+  /** Number of evenly spaced tick marks along the track */
+  ticks?: number;
+}
 
 const heightMap: Record<ControlSize, string> = {
   sm: 'h-[4rem]',
@@ -41,8 +49,9 @@ export function Fader({
   size = 'md',
   showValue = false,
   formatValue,
+  ticks,
   className = '',
-}: ContinuousControlProps) {
+}: FaderProps) {
   const { bind, normalizedValue, isDragging } = useDragControl({
     axis: 'y',
     min,
@@ -70,29 +79,61 @@ export function Fader({
       <div
         {...bind}
         className={[
-          'relative w-2 flex-1 rounded-full bg-ctrl-cell-bg',
+          'relative flex-1 px-2',
           'cursor-grab outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'cursor-grabbing',
         ].filter(Boolean).join(' ')}
       >
-        {/* Fill from bottom */}
-        <div
-          className="absolute inset-x-0 bottom-0 rounded-full bg-ctrl-fill transition-[height] duration-75"
-          style={{ height: `${norm * 100}%` }}
-        />
+        {/* Track line */}
+        <div className="relative w-px h-full mx-auto bg-ctrl-track">
+          {/* Filled portion from bottom */}
+          <div
+            className="absolute inset-x-0 bottom-0 bg-ctrl-fill transition-[height] duration-75"
+            style={{
+              height: `${norm * 100}%`,
+              boxShadow: '0 0 4px var(--color-ctrl-glow)',
+            }}
+          />
+        </div>
+
+        {/* Tick marks */}
+        {ticks != null && ticks > 1 && (
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            {Array.from({ length: ticks }, (_, i) => {
+              const pct = (i / (ticks - 1)) * 100;
+              return (
+                <div
+                  key={i}
+                  className="absolute left-1/2 -translate-x-1/2"
+                  style={{
+                    bottom: `${pct}%`,
+                    height: 1,
+                    width: 6,
+                    backgroundColor: 'var(--color-ctrl-grid-line)',
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
 
         {/* Thumb */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-2 rounded-sm bg-ctrl-thumb border border-ctrl-border-active"
-          style={{ bottom: `${norm * 100}%`, top: 'auto', position: 'absolute' }}
+          className="absolute left-1/2 -translate-x-1/2 translate-y-1/2 bg-ctrl-thumb"
+          style={{
+            bottom: `${norm * 100}%`,
+            height: 2,
+            width: 14,
+            boxShadow: '0 0 6px var(--color-ctrl-glow)',
+          }}
         />
       </div>
 
       {showValue && (
         <span
           className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
-          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+          style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
         >
           {displayValue}
         </span>
