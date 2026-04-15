@@ -4,7 +4,7 @@
 // PanelTitle — Top-level panel heading with trailing rule
 //
 // Paper ref: 01 — Page Title
-// Large monospace text in gold with glow, followed by a gold rule line.
+// Large monospace text in cream with glow, followed by a right-angle rule ornament.
 // =============================================================================
 
 interface PanelTitleProps {
@@ -23,15 +23,27 @@ export function PanelTitle({
       data-rdna="ctrl-panel-title"
       className={['flex flex-col gap-0.5', className].filter(Boolean).join(' ')}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-end gap-2 h-6 shrink-0">
         <h2
-          className="font-mono text-base text-ctrl-text-active uppercase tracking-wider shrink-0"
-          style={{ textShadow: '0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle)' }}
+          className="font-mono text-base leading-5 uppercase tracking-wider shrink-0"
+          style={{
+            color: 'var(--color-main)',
+            textShadow:
+              'var(--color-ctrl-glow) 0 0 0.5px, var(--color-ctrl-glow) 0 0 3px, var(--color-main) 0 0 10px',
+          }}
         >
           {title}
         </h2>
-        {/* Trailing gold rule */}
-        <span className="flex-1 h-px bg-ctrl-border-active" />
+        {/* Right-angle rule ornament */}
+        <div
+          className="relative"
+          style={{
+            width: '100%',
+            height: 'round(50%, 1px)',
+            borderTop: '1px solid var(--color-ctrl-border-active)',
+            borderRight: '1px solid var(--color-ctrl-border-active)',
+          }}
+        />
       </div>
 
       {subtitle && (
