@@ -94,7 +94,7 @@ export function XYPad({
         ].filter(Boolean).join(' ')}
         style={{
           backgroundImage:
-            'radial-gradient(circle, var(--ctrl-grid-dot) 1px, transparent 1px)',
+            'radial-gradient(circle, var(--color-ctrl-grid-dot) 1px, transparent 1px)',
           backgroundSize: '12px 12px',
         }}
       >

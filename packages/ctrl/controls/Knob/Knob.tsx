@@ -112,7 +112,7 @@ export function Knob({
         <path
           d={trackPath}
           fill="none"
-          stroke="var(--ctrl-track)"
+          stroke="var(--color-ctrl-track)"
           strokeWidth={3}
           strokeLinecap="round"
         />
@@ -122,14 +122,14 @@ export function Knob({
           <path
             d={fillPath}
             fill="none"
-            stroke="var(--ctrl-fill)"
+            stroke="var(--color-ctrl-fill)"
             strokeWidth={3}
             strokeLinecap="round"
           />
         )}
 
         {/* Center dot */}
-        <circle cx={cx} cy={cy} r={2} fill="var(--ctrl-thumb)" />
+        <circle cx={cx} cy={cy} r={2} fill="var(--color-ctrl-thumb)" />
 
         {/* Needle */}
         <line
@@ -137,7 +137,7 @@ export function Knob({
           y1={cy}
           x2={needle.x}
           y2={needle.y}
-          stroke="var(--ctrl-fill)"
+          stroke="var(--color-ctrl-fill)"
           strokeWidth={1.5}
           strokeLinecap="round"
           style={{ filter: 'drop-shadow(0 0 3px var(--glow-sun-yellow))' }}

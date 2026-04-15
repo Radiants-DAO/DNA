@@ -24,7 +24,7 @@ const dotSize: Record<ControlSize, string> = {
 
 export function LEDArray({
   values,
-  color = 'var(--ctrl-fill)',
+  color = 'var(--color-ctrl-fill)',
   label,
   size = 'md',
   className = '',

@@ -53,9 +53,9 @@ const segSizeV: Record<ControlSize, string> = {
 };
 
 function segmentColor(ratio: number): string {
-  if (ratio < 0.6) return 'var(--ctrl-meter-low)';
-  if (ratio < 0.85) return 'var(--ctrl-meter-mid)';
-  return 'var(--ctrl-meter-high)';
+  if (ratio < 0.6) return 'var(--color-ctrl-meter-low)';
+  if (ratio < 0.85) return 'var(--color-ctrl-meter-mid)';
+  return 'var(--color-ctrl-meter-high)';
 }
 
 export function Meter({
@@ -123,7 +123,7 @@ export function Meter({
                 isVertical ? `${segSizeV[size]} h-1.5` : `${segSizeH[size]} flex-1`,
               ].join(' ')}
               style={{
-                backgroundColor: isLit ? segmentColor(segRatio) : 'var(--ctrl-cell-bg)',
+                backgroundColor: isLit ? segmentColor(segRatio) : 'var(--color-ctrl-cell-bg)',
               }}
             />
           );

@@ -105,7 +105,7 @@ export function ArcRing({
         <path
           d={trackPath}
           fill="none"
-          stroke="var(--ctrl-track)"
+          stroke="var(--color-ctrl-track)"
           strokeWidth={stroke}
           strokeLinecap="round"
         />
@@ -115,7 +115,7 @@ export function ArcRing({
           <path
             d={fillPath}
             fill="none"
-            stroke="var(--ctrl-fill)"
+            stroke="var(--color-ctrl-fill)"
             strokeWidth={stroke}
             strokeLinecap="round"
           />
@@ -128,7 +128,7 @@ export function ArcRing({
             y={cy + 1}
             textAnchor="middle"
             dominantBaseline="central"
-            fill="var(--ctrl-text-active)"
+            fill="var(--color-ctrl-text-active)"
             fontSize={dim * 0.22}
             fontFamily="var(--font-mono, monospace)"
             style={{ filter: 'drop-shadow(0 0 4px var(--glow-sun-yellow))' }}

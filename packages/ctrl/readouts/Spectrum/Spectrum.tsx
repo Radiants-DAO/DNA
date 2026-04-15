@@ -33,7 +33,7 @@ export function Spectrum({
     (ctx: CanvasRenderingContext2D, width: number, height: number) => {
       if (data.length === 0) return;
 
-      const fillStyle = getComputedStyle(ctx.canvas).getPropertyValue('--ctrl-fill').trim() || '#FCE184';
+      const fillStyle = getComputedStyle(ctx.canvas).getPropertyValue('--color-ctrl-fill').trim() || '#FCE184';
       const glowColor = getComputedStyle(ctx.canvas).getPropertyValue('--glow-sun-yellow').trim() || 'rgba(252, 225, 132, 0.5)';
 
       ctx.shadowColor = glowColor;

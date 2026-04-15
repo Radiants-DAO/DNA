@@ -91,8 +91,8 @@ export function RadialMenu({
             <g key={opt.value} role="radio" aria-checked={isActive}>
               <path
                 d={sectorPath(cx, cy, r, startAngle, endAngle)}
-                fill="var(--ctrl-cell-bg)"
-                stroke={isActive ? 'var(--ctrl-border-active)' : 'var(--ctrl-border-inactive)'}
+                fill="var(--color-ctrl-cell-bg)"
+                stroke={isActive ? 'var(--color-ctrl-border-active)' : 'var(--color-ctrl-border-inactive)'}
                 strokeWidth={1}
                 className="cursor-pointer outline-none transition-colors duration-fast"
                 onClick={() => !disabled && onChange(opt.value)}
@@ -103,7 +103,7 @@ export function RadialMenu({
                 y={lp.y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fill={isActive ? 'var(--ctrl-text-active)' : 'var(--ctrl-label)'}
+                fill={isActive ? 'var(--color-ctrl-text-active)' : 'var(--color-ctrl-label)'}
                 fontSize={dim * 0.11}
                 fontFamily="var(--font-mono, monospace)"
                 className="pointer-events-none uppercase"

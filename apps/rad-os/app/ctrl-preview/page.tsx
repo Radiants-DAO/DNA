@@ -1,12 +1,42 @@
 'use client';
 
 import { forwardRef, useRef, useState } from 'react';
-import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
-import { ColorPicker } from '@rdna/ctrl/selectors/ColorPicker/ColorPicker';
+// Controls
+import { Knob } from '@rdna/ctrl/controls/Knob/Knob';
+import { Fader } from '@rdna/ctrl/controls/Fader/Fader';
+import { CtrlSlider } from '@rdna/ctrl/controls/Slider/Slider';
+import { XYPad } from '@rdna/ctrl/controls/XYPad/XYPad';
+import { NumberScrubber } from '@rdna/ctrl/controls/NumberScrubber/NumberScrubber';
+import { Ribbon } from '@rdna/ctrl/controls/Ribbon/Ribbon';
+import { ArcRing } from '@rdna/ctrl/controls/ArcRing/ArcRing';
 import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
 import { ScrubSurface } from '@rdna/ctrl/controls/ScrubSurface/ScrubSurface';
+// Selectors
+import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
+import { ColorPicker } from '@rdna/ctrl/selectors/ColorPicker/ColorPicker';
 import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
-import { TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
+import { SegmentedControl } from '@rdna/ctrl/selectors/SegmentedControl/SegmentedControl';
+import { Stepper } from '@rdna/ctrl/selectors/Stepper/Stepper';
+import { ButtonStrip } from '@rdna/ctrl/selectors/ButtonStrip/ButtonStrip';
+import { Toggle } from '@rdna/ctrl/selectors/Toggle/Toggle';
+import { ChipTag } from '@rdna/ctrl/selectors/ChipTag/ChipTag';
+import { MatrixGrid } from '@rdna/ctrl/selectors/MatrixGrid/MatrixGrid';
+import { RadialMenu } from '@rdna/ctrl/selectors/RadialMenu/RadialMenu';
+import { ColorSwatch } from '@rdna/ctrl/selectors/ColorSwatch/ColorSwatch';
+// Readouts
+import { Tooltip, TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
+import { Meter } from '@rdna/ctrl/readouts/Meter/Meter';
+import { LEDArray } from '@rdna/ctrl/readouts/LEDArray/LEDArray';
+import { Sparkline } from '@rdna/ctrl/readouts/Sparkline/Sparkline';
+import { Waveform } from '@rdna/ctrl/readouts/Waveform/Waveform';
+import { Spectrum } from '@rdna/ctrl/readouts/Spectrum/Spectrum';
+// Layout
+import { Section } from '@rdna/ctrl/layout/Section/Section';
+import { PropertyRow } from '@rdna/ctrl/layout/PropertyRow/PropertyRow';
+import { ControlPanel } from '@rdna/ctrl/layout/ControlPanel/ControlPanel';
+import { PanelTitle } from '@rdna/ctrl/layout/PanelTitle/PanelTitle';
+import { LayerTreeRow } from '@rdna/ctrl/layout/LayerTreeRow/LayerTreeRow';
+
 import { Agentation } from 'agentation';
 
 // ============================================================================
@@ -252,7 +282,7 @@ function CaptionText({
         lineHeight: '10px',
         ...(accent
           ? { color: 'var(--color-accent)', textShadow: GLOW_SOFT }
-          : { color: 'var(--ctrl-label)' }),
+          : { color: 'var(--color-ctrl-label)' }),
       }}
     >
       {children}
@@ -276,6 +306,64 @@ function ValueText({ children }: { children: React.ReactNode }) {
     </span>
   );
 }
+
+// ── Demo Card ──────────────────────────────────────────────────────────────
+
+/** Labeled container for component demos */
+function DemoCard({ label, children, className = '', style }: { label: string; children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={['flex flex-col gap-2', className].filter(Boolean).join(' ')} style={{ minWidth: 120, ...style }}>
+      <span className="uppercase" style={{ fontSize: 10, lineHeight: '10px', color: 'var(--color-main)' }}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+/** Section header for the preview page */
+function PreviewSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-end gap-2">
+        <span
+          className="text-sm uppercase shrink-0 font-mono"
+          style={{ color: 'var(--color-accent)', textShadow: GLOW_SOFT }}
+        >
+          {title}
+        </span>
+        <div className="flex-1" style={{ height: 1, backgroundColor: 'var(--color-ctrl-border-inactive)' }} />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Demo Data ──────────────────────────────────────────────────────────────
+
+const SEGMENT_OPTIONS = [
+  { value: 'a', label: 'Alpha' },
+  { value: 'b', label: 'Beta' },
+  { value: 'c', label: 'Gamma' },
+];
+
+const STRIP_OPTIONS = [
+  { value: '1', label: '1x' },
+  { value: '2', label: '2x' },
+  { value: '4', label: '4x' },
+  { value: '8', label: '8x' },
+];
+
+const RADIAL_OPTIONS = [
+  { value: 'n', label: 'N' },
+  { value: 'e', label: 'E' },
+  { value: 's', label: 'S' },
+  { value: 'w', label: 'W' },
+];
+
+const CHIP_OPTIONS = ['Alpha', 'Beta', 'Gamma', 'Delta'];
+
+const SPARKLINE_DATA = [10, 25, 18, 42, 35, 60, 55, 48, 72, 65, 80, 70];
+const WAVEFORM_DATA = Array.from({ length: 128 }, (_, i) => Math.sin(i * 0.1) * 0.8);
+const SPECTRUM_DATA = Array.from({ length: 32 }, (_, i) => Math.max(0, 1 - i * 0.03 + Math.sin(i * 0.5) * 0.15));
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
@@ -366,9 +454,204 @@ export default function CtrlPreview() {
   const setPaddingSide = (side: Side) => (v: number | null) =>
     setPadding((p) => ({ ...p, [side]: Math.max(0, v ?? 0) }));
 
+  // ── Controls demo state ──
+  const [knobVal, setKnobVal] = useState(50);
+  const [faderVal, setFaderVal] = useState(70);
+  const [sliderVal, setSliderVal] = useState(40);
+  const [xyVal, setXyVal] = useState({ x: 50, y: 50 });
+  const [scrubberVal, setScrubberVal] = useState(42);
+  const [ribbonVal, setRibbonVal] = useState(60);
+  const [arcVal, setArcVal] = useState(75);
+
+  // ── Selectors demo state ──
+  const [segmentVal, setSegmentVal] = useState('a');
+  const [stepperVal, setStepperVal] = useState(5);
+  const [stripVal, setStripVal] = useState<string | string[]>('1');
+  const [toggleVal, setToggleVal] = useState(true);
+  const [chipVal, setChipVal] = useState<string | string[]>('Alpha');
+  const [matrixVal, setMatrixVal] = useState(
+    Array.from({ length: 4 }, () => Array.from({ length: 8 }, () => false))
+  );
+  const [radialVal, setRadialVal] = useState('n');
+
+  // ── Layout demo state ──
+  const [treeExpanded, setTreeExpanded] = useState(true);
+  const [treeSelected, setTreeSelected] = useState('root');
+
   return (
     <TooltipProvider>
-      <div className="dark min-h-screen bg-page flex items-center justify-center p-8">
+      <div className="dark min-h-screen bg-page p-8">
+        <div className="mx-auto flex flex-col gap-12" style={{ maxWidth: 960 }}>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              CONTROLS — Continuous value controls
+              ═══════════════════════════════════════════════════════════════════ */}
+          <PreviewSection title="Controls">
+            <div className="flex flex-wrap gap-6 items-end">
+              <DemoCard label="Knob">
+                <Knob value={knobVal} onChange={setKnobVal} showValue />
+              </DemoCard>
+              <DemoCard label="Fader">
+                <Fader value={faderVal} onChange={setFaderVal} showValue />
+              </DemoCard>
+              <DemoCard label="Slider">
+                <CtrlSlider value={sliderVal} onChange={setSliderVal} showValue />
+              </DemoCard>
+              <DemoCard label="XY Pad">
+                <XYPad value={xyVal} onChange={setXyVal} showValue />
+              </DemoCard>
+              <DemoCard label="Number Scrubber">
+                <NumberScrubber value={scrubberVal} onChange={setScrubberVal} label="Value" />
+              </DemoCard>
+              <DemoCard label="Ribbon">
+                <Ribbon value={ribbonVal} onChange={setRibbonVal} showValue />
+              </DemoCard>
+              <DemoCard label="Arc Ring">
+                <ArcRing value={arcVal} onChange={setArcVal} showValue />
+              </DemoCard>
+            </div>
+          </PreviewSection>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              SELECTORS — Discrete selection controls
+              ═══════════════════════════════════════════════════════════════════ */}
+          <PreviewSection title="Selectors">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-wrap gap-6 items-start">
+                <DemoCard label="Segmented Control">
+                  <SegmentedControl value={segmentVal} onChange={setSegmentVal} options={SEGMENT_OPTIONS} />
+                </DemoCard>
+                <DemoCard label="Stepper">
+                  <Stepper value={stepperVal} onChange={setStepperVal} min={0} max={20} />
+                </DemoCard>
+                <DemoCard label="Button Strip">
+                  <ButtonStrip value={stripVal} onChange={setStripVal} options={STRIP_OPTIONS} />
+                </DemoCard>
+                <DemoCard label="Toggle">
+                  <Toggle value={toggleVal} onChange={setToggleVal} label="Active" />
+                </DemoCard>
+              </div>
+              <div className="flex flex-wrap gap-6 items-start">
+                <DemoCard label="Chip Tag">
+                  <ChipTag value={chipVal} onChange={setChipVal} options={CHIP_OPTIONS} />
+                </DemoCard>
+                <DemoCard label="Radial Menu">
+                  <RadialMenu value={radialVal} onChange={setRadialVal} options={RADIAL_OPTIONS} />
+                </DemoCard>
+                <DemoCard label="Color Swatch">
+                  <div className="flex gap-2">
+                    <ColorSwatch color="var(--color-sun-yellow)" label="Sun" />
+                    <ColorSwatch color="var(--color-sky-blue)" label="Sky" />
+                    <ColorSwatch color="var(--color-sun-red)" label="Red" />
+                  </div>
+                </DemoCard>
+              </div>
+              <DemoCard label="Matrix Grid">
+                <MatrixGrid value={matrixVal} onChange={setMatrixVal} />
+              </DemoCard>
+            </div>
+          </PreviewSection>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              READOUTS — Data display / feedback
+              ═══════════════════════════════════════════════════════════════════ */}
+          <PreviewSection title="Readouts">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-wrap gap-6 items-end">
+                <DemoCard label="Meter">
+                  <Meter value={72} label="Level" showValue />
+                </DemoCard>
+                <DemoCard label="Meter (vertical)">
+                  <Meter value={55} orientation="vertical" label="Vol" />
+                </DemoCard>
+                <DemoCard label="LED Array">
+                  <LEDArray values={[true, true, false, true, false, true, true, false]} label="Status" />
+                </DemoCard>
+                <DemoCard label="Tooltip">
+                  <Tooltip content="Hello from Tooltip">
+                    <span
+                      className="uppercase font-mono cursor-default"
+                      style={{ fontSize: 10, color: 'var(--color-accent)', textShadow: GLOW_SOFT }}
+                    >
+                      Hover me
+                    </span>
+                  </Tooltip>
+                </DemoCard>
+              </div>
+              <div className="flex flex-wrap gap-6 items-end">
+                <DemoCard label="Sparkline" className="flex-1" style={{ minWidth: 200 }}>
+                  <Sparkline data={SPARKLINE_DATA} label="Trend" />
+                </DemoCard>
+                <DemoCard label="Waveform" className="flex-1" style={{ minWidth: 200 }}>
+                  <Waveform data={WAVEFORM_DATA} label="Audio" />
+                </DemoCard>
+                <DemoCard label="Spectrum" className="flex-1" style={{ minWidth: 200 }}>
+                  <Spectrum data={SPECTRUM_DATA} label="Freq" />
+                </DemoCard>
+              </div>
+            </div>
+          </PreviewSection>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              LAYOUT — Panel composition primitives
+              ═══════════════════════════════════════════════════════════════════ */}
+          <PreviewSection title="Layout">
+            <ControlPanel>
+              <PanelTitle title="Panel Title" subtitle="Subtitle text" />
+              <Section title="Collapsible Section">
+                <div className="flex flex-col gap-1">
+                  <PropertyRow label="Label">
+                    <span className="text-xs font-mono" style={{ color: 'var(--color-main)' }}>Value content</span>
+                  </PropertyRow>
+                  <PropertyRow label="Knob">
+                    <Knob value={knobVal} onChange={setKnobVal} size="sm" />
+                  </PropertyRow>
+                  <PropertyRow label="Toggle">
+                    <Toggle value={toggleVal} onChange={setToggleVal} size="sm" />
+                  </PropertyRow>
+                </div>
+              </Section>
+              <Section title="Layer Tree" count={3}>
+                <div className="flex flex-col">
+                  <LayerTreeRow
+                    label="Root"
+                    tag="div"
+                    depth={0}
+                    expanded={treeExpanded}
+                    selected={treeSelected === 'root'}
+                    onToggleExpand={() => setTreeExpanded(e => !e)}
+                    onSelect={() => setTreeSelected('root')}
+                  >
+                    {treeExpanded && (
+                      <>
+                        <LayerTreeRow
+                          label="Header"
+                          tag="header"
+                          depth={1}
+                          selected={treeSelected === 'header'}
+                          onSelect={() => setTreeSelected('header')}
+                        />
+                        <LayerTreeRow
+                          label="Main"
+                          tag="main"
+                          depth={1}
+                          selected={treeSelected === 'main'}
+                          onSelect={() => setTreeSelected('main')}
+                        />
+                      </>
+                    )}
+                  </LayerTreeRow>
+                </div>
+              </Section>
+            </ControlPanel>
+          </PreviewSection>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              LAYOUT INSPECTOR — Full composition demo
+              ═══════════════════════════════════════════════════════════════════ */}
+          <PreviewSection title="Layout Inspector">
+            <div className="flex items-center justify-center">
+
         {/* Panel Container */}
         <div
           className="flex flex-col font-mono text-xs leading-4"
@@ -376,7 +659,7 @@ export default function CtrlPreview() {
             width: 353,
             padding: 16,
             backgroundColor: '#000',
-            color: 'var(--ctrl-label)',
+            color: 'var(--color-ctrl-label)',
             boxShadow: 'inset 2px 2px 9.6px #000, 0 1px 0 1px oklch(1 0 0 / 0.04), 0 -2px 0 #000',
             WebkitFontSmoothing: 'antialiased',
             fontSynthesis: 'none',
@@ -395,8 +678,8 @@ export default function CtrlPreview() {
               style={{
                 width: '100%',
                 height: 'round(50%, 1px)',
-                borderTop: '1px solid var(--ctrl-border-active)',
-                borderRight: '1px solid var(--ctrl-border-active)',
+                borderTop: '1px solid var(--color-ctrl-border-active)',
+                borderRight: '1px solid var(--color-ctrl-border-active)',
               }}
             />
           </div>
@@ -410,7 +693,7 @@ export default function CtrlPreview() {
               className="flex items-end gap-1 h-6 w-full text-left shrink-0 cursor-pointer"
             >
               {/* Left bracket ⌐ */}
-              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderLeft: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderLeft: '1px solid var(--color-ctrl-border-inactive)', borderTop: '1px solid var(--color-ctrl-border-inactive)' }} />
 
               <span
                 className="self-stretch flex items-center shrink-0 text-xs leading-4 uppercase"
@@ -420,7 +703,7 @@ export default function CtrlPreview() {
               </span>
 
               {/* Rule */}
-              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderTop: '1px solid var(--color-ctrl-border-inactive)' }} />
 
               {/* Min/Max toggle */}
               <div className="flex items-center gap-1 shrink-0 self-stretch justify-center" style={{ width: 60 }}>
@@ -432,7 +715,7 @@ export default function CtrlPreview() {
                   style={{
                     width: 16,
                     padding: 1,
-                    border: '1px solid var(--ctrl-border-active)',
+                    border: '1px solid var(--color-ctrl-border-active)',
                     boxShadow: GLOW_SOFT,
                     justifyContent: mode === 'max' ? 'flex-end' : 'flex-start',
                   }}
@@ -449,14 +732,14 @@ export default function CtrlPreview() {
               </div>
 
               {/* Rule (short) */}
-              <div className="shrink-0 relative" style={{ width: 12, height: 'round(50%, 1px)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="shrink-0 relative" style={{ width: 12, height: 'round(50%, 1px)', borderTop: '1px solid var(--color-ctrl-border-inactive)' }} />
 
               <span className="self-stretch flex items-center shrink-0 uppercase" style={{ fontSize: 8, lineHeight: '10px' }}>
                 {open ? 'Collapse' : 'Expand'}
               </span>
 
               {/* Right bracket ¬ */}
-              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderRight: '1px solid var(--ctrl-border-inactive)', borderTop: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="shrink-0" style={{ width: 4, height: 'round(50%, 1px)', borderRight: '1px solid var(--color-ctrl-border-inactive)', borderTop: '1px solid var(--color-ctrl-border-inactive)' }} />
             </button>
 
             {/* Section Content */}
@@ -805,14 +1088,18 @@ export default function CtrlPreview() {
 
             {/* Footer: SHOW CSS */}
             <div className="flex items-start gap-1 h-6 shrink-0">
-              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderLeft: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--color-ctrl-border-inactive)', borderLeft: '1px solid var(--color-ctrl-border-inactive)' }} />
               <span className="self-stretch flex items-center uppercase text-center" style={{ fontSize: 8, lineHeight: '10px' }}>
                 Show css
               </span>
-              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--ctrl-border-inactive)', borderRight: '1px solid var(--ctrl-border-inactive)' }} />
+              <div className="flex-1 relative" style={{ height: 'round(50%, 1px)', borderBottom: '1px solid var(--color-ctrl-border-inactive)', borderRight: '1px solid var(--color-ctrl-border-inactive)' }} />
             </div>
           </div>
         </div>
+            </div>
+          </PreviewSection>
+
+        </div>{/* end mx-auto flex-col */}
       </div>
       <Agentation />
     </TooltipProvider>
