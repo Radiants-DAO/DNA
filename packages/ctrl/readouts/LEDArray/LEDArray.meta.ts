@@ -19,7 +19,7 @@ export const LEDArrayMeta = defineComponentMeta<LEDArrayProps>()({
   slots: {},
   tokenBindings: {
     ledOn: { background: "ctrl-fill", glow: "ctrl-glow" },
-    ledOff: { background: "ctrl-track" },
+    ledOff: { background: "ctrl-cell-bg" },
     label: { text: "ctrl-label" },
   },
   examples: [
