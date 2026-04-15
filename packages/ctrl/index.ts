@@ -36,6 +36,10 @@ export { RadialMenu } from './selectors/RadialMenu/RadialMenu';
 export { ColorSwatch } from './selectors/ColorSwatch/ColorSwatch';
 export { Dropdown } from './selectors/Dropdown/Dropdown';
 export type { DropdownOption, DropdownProps } from './selectors/Dropdown/Dropdown';
+export { AlignmentGrid } from './selectors/AlignmentGrid/AlignmentGrid';
+export type { AlignmentPosition, AlignmentGridProps } from './selectors/AlignmentGrid/AlignmentGrid';
+export { DirectionPad } from './selectors/DirectionPad/DirectionPad';
+export type { Direction, DirectionPadProps } from './selectors/DirectionPad/DirectionPad';
 
 // Readouts (data display / feedback)
 export { Meter } from './readouts/Meter/Meter';

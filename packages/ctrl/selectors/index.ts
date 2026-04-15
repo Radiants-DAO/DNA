@@ -10,3 +10,7 @@ export { Dropdown } from './Dropdown/Dropdown';
 export type { DropdownOption, DropdownProps } from './Dropdown/Dropdown';
 export { IconRadioGroup } from './IconRadioGroup/IconRadioGroup';
 export type { IconRadioOption, IconRadioGroupProps } from './IconRadioGroup/IconRadioGroup';
+export { AlignmentGrid } from './AlignmentGrid/AlignmentGrid';
+export type { AlignmentPosition, AlignmentGridProps } from './AlignmentGrid/AlignmentGrid';
+export { DirectionPad } from './DirectionPad/DirectionPad';
+export type { Direction, DirectionPadProps } from './DirectionPad/DirectionPad';
