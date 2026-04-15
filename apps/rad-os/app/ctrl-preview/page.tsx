@@ -470,7 +470,7 @@ export default function CtrlPreview() {
   const [toggleVal, setToggleVal] = useState(true);
   const [chipVal, setChipVal] = useState<string | string[]>('Alpha');
   const [matrixVal, setMatrixVal] = useState(
-    Array.from({ length: 4 }, () => Array.from({ length: 8 }, () => false))
+    Array.from({ length: 4 }, () => Array.from({ length: 16 }, () => false))
   );
   const [radialVal, setRadialVal] = useState('n');
 
