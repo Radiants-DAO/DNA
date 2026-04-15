@@ -547,7 +547,32 @@ export default function CtrlPreview() {
                 </DemoCard>
               </div>
               <DemoCard label="Matrix Grid">
-                <MatrixGrid value={matrixVal} onChange={setMatrixVal} />
+                <MatrixGrid
+                  value={matrixVal}
+                  onChange={setMatrixVal}
+                  rowLabels={['KICK', 'SNR', 'HH', 'OH']}
+                  rowColors={[
+                    'var(--color-sun-yellow)',
+                    'var(--color-cream)',
+                    'var(--color-sky-blue)',
+                    'var(--color-sun-red)',
+                  ]}
+                  showColumnNumbers
+                  beatGrouping={4}
+                  size="lg"
+                  header={
+                    <div className="flex items-center justify-between font-mono text-[0.625rem] uppercase tracking-wider mb-1">
+                      <span className="text-ctrl-label">808 Pattern Editor</span>
+                      <span className="flex items-center gap-2 text-ctrl-label">
+                        <span>BPM <strong className="text-ctrl-text-active">120</strong></span>
+                        <span className="opacity-40">|</span>
+                        <span>4/4</span>
+                        <span className="opacity-40">|</span>
+                        <span>16 Steps</span>
+                      </span>
+                    </div>
+                  }
+                />
               </DemoCard>
             </div>
           </PreviewSection>

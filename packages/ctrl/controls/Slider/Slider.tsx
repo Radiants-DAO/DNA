@@ -9,7 +9,15 @@ import type { ContinuousControlProps, ControlSize } from '../../primitives/types
 //
 // Distinct from core Slider (which wraps Base UI). This is a standalone
 // control-surface primitive using useDragControl.
+//
+// Paper reference: 1px track line, thin vertical thumb with glow,
+// optional perpendicular tick marks.
 // =============================================================================
+
+interface SliderProps extends ContinuousControlProps {
+  /** Number of evenly spaced tick marks along the track */
+  ticks?: number;
+}
 
 const widthMap: Record<ControlSize, string> = {
   sm: 'min-w-[4rem]',
@@ -42,8 +50,9 @@ export function CtrlSlider({
   size = 'md',
   showValue = false,
   formatValue,
+  ticks,
   className = '',
-}: ContinuousControlProps) {
+}: SliderProps) {
   const { bind, normalizedValue, isDragging } = useDragControl({
     axis: 'x',
     min,
@@ -72,7 +81,7 @@ export function CtrlSlider({
           {showValue && (
             <span
               className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
-              style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+              style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
             >
               {displayValue}
             </span>
@@ -83,22 +92,54 @@ export function CtrlSlider({
       <div
         {...bind}
         className={[
-          'relative h-2 w-full rounded-full bg-ctrl-cell-bg',
+          'relative w-full py-2',
           'cursor-grab outline-none',
           'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
           isDragging && 'cursor-grabbing',
         ].filter(Boolean).join(' ')}
       >
-        {/* Fill from left */}
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-ctrl-fill transition-[width] duration-75"
-          style={{ width: `${norm * 100}%` }}
-        />
+        {/* Track line */}
+        <div className="relative h-px w-full bg-ctrl-track">
+          {/* Filled portion */}
+          <div
+            className="absolute inset-y-0 left-0 bg-ctrl-fill transition-[width] duration-75"
+            style={{
+              width: `${norm * 100}%`,
+              boxShadow: '0 0 4px var(--color-ctrl-glow)',
+            }}
+          />
+        </div>
+
+        {/* Tick marks */}
+        {ticks != null && ticks > 1 && (
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            {Array.from({ length: ticks }, (_, i) => {
+              const pct = (i / (ticks - 1)) * 100;
+              return (
+                <div
+                  key={i}
+                  className="absolute top-1/2 -translate-y-1/2"
+                  style={{
+                    left: `${pct}%`,
+                    width: 1,
+                    height: 6,
+                    backgroundColor: 'var(--color-ctrl-grid-line)',
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
 
         {/* Thumb */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-2 rounded-sm bg-ctrl-thumb border border-ctrl-border-active"
-          style={{ left: `${norm * 100}%` }}
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 bg-ctrl-thumb"
+          style={{
+            left: `${norm * 100}%`,
+            width: 2,
+            height: 14,
+            boxShadow: '0 0 6px var(--color-ctrl-glow)',
+          }}
         />
       </div>
     </div>
