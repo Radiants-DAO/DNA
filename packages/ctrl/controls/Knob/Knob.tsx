@@ -140,14 +140,14 @@ export function Knob({
           stroke="var(--color-ctrl-fill)"
           strokeWidth={1.5}
           strokeLinecap="round"
-          style={{ filter: 'drop-shadow(0 0 3px var(--glow-sun-yellow))' }}
+          style={{ filter: 'drop-shadow(0 0 3px var(--color-ctrl-glow))' }}
         />
       </svg>
 
       {showValue && (
         <span
           className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
-          style={{ textShadow: '0 0 8px var(--glow-sun-yellow)' }}
+          style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
         >
           {displayValue}
         </span>

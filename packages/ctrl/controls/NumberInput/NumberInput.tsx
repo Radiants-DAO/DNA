@@ -91,7 +91,7 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
           ref={ref}
           data-rdna="ctrl-number-input"
           className={['flex items-center font-mono min-w-0 self-stretch', className].filter(Boolean).join(' ')}
-          style={{ minHeight: 24, gap: 1 }}
+          style={{ minHeight: 24, gap: 'var(--ctrl-cell-gap)' }}
         >
           <NumberField.ScrubArea
             direction="vertical"
@@ -99,7 +99,7 @@ export const NumberInput = forwardRef<HTMLDivElement, NumberInputProps>(function
             render={(props) => (
               <span
                 {...props}
-                className="flex flex-1 items-center self-stretch min-w-0 bg-black"
+                className="flex flex-1 items-center self-stretch min-w-0 bg-ctrl-cell-bg"
                 style={{
                   cursor: disabled ? 'default' : 'ns-resize',
                   gap: 4,

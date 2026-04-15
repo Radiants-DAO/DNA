@@ -57,10 +57,10 @@ export function Toggle({
           'relative rounded-full border transition-all duration-fast',
           'flex items-center px-0.5',
           value
-            ? 'border-ctrl-border-active bg-ctrl-cell-bg'
+            ? 'border-ctrl-border-active bg-ctrl-fill/20'
             : 'border-ctrl-border-inactive bg-ctrl-cell-bg',
         ].join(' ')}
-        style={value ? { boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)' } : undefined}
+        style={value ? { boxShadow: '0 0 6px var(--color-ctrl-glow)' } : undefined}
       >
         {/* Dot */}
         <span
@@ -77,7 +77,7 @@ export function Toggle({
           'font-mono text-[0.625rem] uppercase tracking-wider transition-colors duration-fast',
           value ? 'text-ctrl-text-active' : 'text-ctrl-label',
         ].join(' ')}
-          style={value ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
+          style={value ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
         >
           {label}
         </span>

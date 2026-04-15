@@ -545,8 +545,11 @@ export default function CtrlPreview() {
                 <DemoCard label="Chip Tag">
                   <ChipTag value={chipVal} onChange={setChipVal} options={CHIP_OPTIONS} />
                 </DemoCard>
-                <DemoCard label="Radial Menu">
-                  <RadialMenu value={radialVal} onChange={setRadialVal} options={RADIAL_OPTIONS} />
+                <DemoCard label="Radial Menu (Compact)">
+                  <RadialMenu value={radialVal} onChange={setRadialVal} options={RADIAL_OPTIONS} size="md" showCrosshair />
+                </DemoCard>
+                <DemoCard label="Radial Menu (Full)">
+                  <RadialMenu value={radialFullVal} onChange={setRadialFullVal} options={RADIAL_OPTIONS_FULL} size="lg" />
                 </DemoCard>
                 <DemoCard label="Color Swatch">
                   <div className="flex gap-2">

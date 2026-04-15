@@ -131,7 +131,7 @@ export function ArcRing({
             fill="var(--color-ctrl-text-active)"
             fontSize={dim * 0.22}
             fontFamily="var(--font-mono, monospace)"
-            style={{ filter: 'drop-shadow(0 0 4px var(--glow-sun-yellow))' }}
+            style={{ filter: 'drop-shadow(0 0 4px var(--color-ctrl-glow))' }}
           >
             {displayValue}
           </text>

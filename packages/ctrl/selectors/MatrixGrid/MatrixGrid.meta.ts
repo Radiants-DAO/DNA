@@ -12,7 +12,7 @@ interface MatrixGridProps {
   rowColors?: string[];
   showColumnNumbers?: boolean;
   beatGrouping?: number;
-  header?: React.ReactNode;
+  header?: unknown;
 }
 
 export const MatrixGridMeta = defineComponentMeta<MatrixGridProps>()({
