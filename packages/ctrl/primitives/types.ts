@@ -45,6 +45,39 @@ export interface ReadoutProps {
   className?: string;
 }
 
+export interface MeterColorZones {
+  low: number;
+  mid: number;
+}
+
+export type MeterProps = Omit<ReadoutProps, 'value'> & {
+  value: number | [number, number];
+  segments?: number;
+  showValue?: boolean;
+  orientation?: 'horizontal' | 'vertical';
+  formatValue?: (v: number) => string;
+  peakHold?: boolean;
+  peakDecay?: number;
+  showScale?: boolean;
+  scaleMarks?: number[];
+  channelLabels?: [string, string];
+  colorZones?: MeterColorZones;
+};
+
+export interface XYPadProps {
+  value: Point2D;
+  onChange: (value: Point2D) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  label?: string;
+  disabled?: boolean;
+  size?: ControlSize;
+  showValue?: boolean;
+  formatValue?: (v: Point2D) => string;
+  className?: string;
+}
+
 // =============================================================================
 // Drag control hook config
 // =============================================================================

@@ -1,12 +1,14 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
+export type SliderSize = "sm" | "md" | "lg";
+
 interface SliderProps {
   value?: number;
   onChange?: (value: number) => void;
   min?: number;
   max?: number;
   step?: number;
-  size?: "sm" | "md" | "lg";
+  size?: SliderSize;
   disabled?: boolean;
   showValue?: boolean;
   label?: string;

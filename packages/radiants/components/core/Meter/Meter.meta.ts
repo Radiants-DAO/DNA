@@ -1,6 +1,6 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface MeterProps {
+export interface MeterProps {
   value: number;
   min?: number;
   max?: number;

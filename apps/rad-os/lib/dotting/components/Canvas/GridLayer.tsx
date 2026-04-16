@@ -198,7 +198,6 @@ export default class GridLayer extends BaseLayer {
       // buttonPos.x = 0;
       buttonPos.y += gridsHeight + this.buttonMargin - buttonHeight / 2;
     } else if (direction === ButtonDirection.TOPLEFT) {
-      // FIXME cleanup codes
       buttonPos.x += -this.buttonMargin - buttonWidth / 2;
       buttonPos.y += -this.buttonMargin - buttonHeight / 2;
     } else if (direction === ButtonDirection.TOPRIGHT) {

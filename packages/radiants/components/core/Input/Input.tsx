@@ -3,21 +3,20 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField } from '@base-ui/react/field';
+import type {
+  InputShellProps,
+  InputSize,
+  TextAreaShellProps,
+} from './Input.types';
 
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type InputSize = 'sm' | 'md' | 'lg';
-
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  /** Size preset */
-  size?: InputSize;
-  /** @deprecated Pass className="border-danger" instead */
-  error?: boolean;
-  /** @deprecated Pass className="w-full" instead */
-  fullWidth?: boolean;
+interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+    InputShellProps {
   /** @deprecated Use icon prop instead */
   iconName?: string;
   /** Icon slot - render your icon component here (displays on the left) */
@@ -26,11 +25,9 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   className?: string;
 }
 
-interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  /** @deprecated Pass className="border-danger" instead */
-  error?: boolean;
-  /** @deprecated Pass className="w-full" instead */
-  fullWidth?: boolean;
+interface TextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    TextAreaShellProps {
   /** Additional classes */
   className?: string;
 }

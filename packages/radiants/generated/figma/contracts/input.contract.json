@@ -32,21 +32,25 @@
     "error": {
       "type": "boolean",
       "default": false,
-      "description": "Shows error state styling (standalone mode only)"
+      "description": "Shows error state styling"
     },
     "fullWidth": {
       "type": "boolean",
       "default": false,
-      "description": "Makes input take full container width"
-    },
-    "iconName": {
-      "type": "string",
-      "description": "Icon name for leading icon slot"
+      "description": "Makes the control take full container width"
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "description": "Disables the input"
+      "description": "Disables the control"
+    },
+    "placeholder": {
+      "type": "string",
+      "description": "Placeholder text"
+    },
+    "iconName": {
+      "type": "string",
+      "description": "Icon name for leading icon slot"
     }
   },
   "slots": {

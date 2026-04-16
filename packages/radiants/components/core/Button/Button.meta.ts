@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-type ButtonMode = "solid" | "flat" | "text" | "pattern";
-type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted" | "transparent";
-type ButtonSize = "sm" | "md" | "lg" | "xl";
-type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
+export type ButtonMode = "solid" | "flat" | "text" | "pattern";
+export type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted" | "transparent";
+export type ButtonSize = "sm" | "md" | "lg" | "xl";
+export type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
 
 interface ButtonProps {
   mode?: ButtonMode;

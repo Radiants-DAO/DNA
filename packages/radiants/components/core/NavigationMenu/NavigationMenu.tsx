@@ -8,6 +8,8 @@ import { NavigationMenu as BaseNavigationMenu } from '@base-ui/react/navigation-
 // Types
 // ============================================================================
 
+type BaseNavigationMenuRootProps = React.ComponentProps<typeof BaseNavigationMenu.Root>;
+
 interface NavigationMenuRootProps {
   /** Children — should be NavigationMenu.List and NavigationMenu.Viewport */
   children: React.ReactNode;
@@ -16,11 +18,11 @@ interface NavigationMenuRootProps {
   /** Orientation of the navigation menu */
   orientation?: 'horizontal' | 'vertical';
   /** Controlled active value */
-  value?: any;
+  value?: BaseNavigationMenuRootProps['value'];
   /** Default active value */
-  defaultValue?: any;
+  defaultValue?: BaseNavigationMenuRootProps['defaultValue'];
   /** Callback when active value changes */
-  onValueChange?: (value: any) => void;
+  onValueChange?: BaseNavigationMenuRootProps['onValueChange'];
 }
 
 interface NavigationMenuListProps {
@@ -105,7 +107,7 @@ function Root({ children, className = '', orientation = 'horizontal', value, def
       orientation={orientation}
       value={value}
       defaultValue={defaultValue}
-      onValueChange={onValueChange ? (val) => onValueChange(val) : undefined}
+      onValueChange={onValueChange}
       className={`
         relative
         ${className}

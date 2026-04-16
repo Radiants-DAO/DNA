@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import * as coreComponents from '../components/core';
 import {
   Alert,
@@ -80,6 +80,13 @@ const autoRuntimeAttachments = Object.fromEntries(
     .map(([name, component]) => [name, { component } satisfies RuntimeAttachment]),
 ) as Record<string, RuntimeAttachment>;
 
+type AvatarDemoProps = ComponentProps<typeof Avatar>;
+type CardDemoProps = Omit<ComponentProps<typeof Card>, 'children'>;
+type CountdownTimerDemoProps = Omit<ComponentProps<typeof CountdownTimer>, 'endTime'>;
+type PopoverDemoProps = Omit<ComponentProps<typeof Popover>, 'children'>;
+type SheetDemoProps = Omit<ComponentProps<typeof Sheet>, 'children'>;
+type SpinnerDemoProps = ComponentProps<typeof Spinner>;
+
 const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   // ── Custom Demo components ────────────────────────────────────────────
@@ -126,8 +133,8 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Avatar: {
     component: Avatar,
-    Demo: ({ size = 'md', shape, ...rest }: Record<string, unknown>) => (
-      <Avatar fallback="JD" size={size as any} shape={shape as any} {...rest} />
+    Demo: ({ size = 'md', shape, ...rest }: AvatarDemoProps) => (
+      <Avatar fallback="JD" size={size} shape={shape} {...rest} />
     ),
   },
 
@@ -148,8 +155,8 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Card: {
     component: Card,
-    Demo: ({ variant = 'default', className = '', ...rest }: Record<string, unknown>) => (
-      <Card variant={variant as any} className={`w-full max-w-[20rem] ${className as any}`.trim()} {...rest}>
+    Demo: ({ variant = 'default', className = '', ...rest }: CardDemoProps) => (
+      <Card variant={variant} className={`w-full max-w-[20rem] ${className}`.trim()} {...rest}>
         <CardHeader>Card Title</CardHeader>
         <CardBody>
           <p className="text-sm text-sub">Card content goes here.</p>
@@ -228,11 +235,11 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   CountdownTimer: {
     component: CountdownTimer,
-    Demo: ({ variant = 'default', label = 'Auction ends in', ...rest }: Record<string, unknown>) => (
+    Demo: ({ variant = 'default', label = 'Auction ends in', ...rest }: CountdownTimerDemoProps) => (
       <CountdownTimer
         endTime={Date.now() + 3 * 60 * 60 * 1000 + 42 * 60 * 1000}
-        label={label as any}
-        variant={variant as any}
+        label={label}
+        variant={variant}
         {...rest}
       />
     ),
@@ -463,8 +470,8 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Popover: {
     component: Popover,
-    Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
-      <Popover position={position as any} {...rest}>
+    Demo: ({ position = 'bottom', ...rest }: PopoverDemoProps) => (
+      <Popover position={position} {...rest}>
         <PopoverTrigger asChild>
           <Button mode="pattern" size="sm">Show Info</Button>
         </PopoverTrigger>
@@ -557,15 +564,15 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
 
   Spinner: {
     component: Spinner,
-    Demo: ({ size = 24, variant, completed, ...rest }: Record<string, unknown>) => (
-      <Spinner size={size as number} variant={variant as any} completed={completed as boolean} {...rest} />
+    Demo: ({ size = 24, variant, completed, ...rest }: SpinnerDemoProps) => (
+      <Spinner size={size} variant={variant} completed={completed} {...rest} />
     ),
   },
 
   Sheet: {
     component: Sheet,
-    Demo: ({ side = 'right', ...rest }: Record<string, unknown>) => (
-      <Sheet side={side as any} {...rest}>
+    Demo: ({ side = 'right', ...rest }: SheetDemoProps) => (
+      <Sheet side={side} {...rest}>
         <SheetTrigger asChild>
           <Button mode="pattern" size="sm">Open Sheet</Button>
         </SheetTrigger>

@@ -8,6 +8,7 @@ import {
   PixelModifyItem,
 } from "../components/Canvas/types";
 import { DottingRef } from "../components/Dotting";
+import { getGridIndicesFromData } from "../utils/data";
 
 const useData = (ref: MutableRefObject<DottingRef | null>) => {
   const { addDataChangeListener, removeDataChangeListener } = useHandlers(ref);
@@ -20,16 +21,21 @@ const useData = (ref: MutableRefObject<DottingRef | null>) => {
   useEffect(() => {
     const listener: CanvasDataChangeHandler = ({ data: canvasData }) => {
       setData(canvasData);
-      const allRowKeys = Array.from(canvasData.keys());
-      const allColumnKeys = Array.from(canvasData.get(allRowKeys[0])!.keys());
-      const currentTopIndex = Math.min(...allRowKeys);
-      const currentLeftIndex = Math.min(...allColumnKeys);
-      const currentBottomIndex = Math.max(...allRowKeys);
-      const currentRightIndex = Math.max(...allColumnKeys);
-      const tempArray = [];
-      for (let i = currentTopIndex; i <= currentBottomIndex; i++) {
-        const row = [];
-        for (let j = currentLeftIndex; j <= currentRightIndex; j++) {
+      if (canvasData.size === 0) {
+        setDataArray([]);
+        return;
+      }
+
+      const {
+        topRowIndex,
+        bottomRowIndex,
+        leftColumnIndex,
+        rightColumnIndex,
+      } = getGridIndicesFromData(canvasData);
+      const tempArray: Array<Array<PixelModifyItem>> = [];
+      for (let i = topRowIndex; i <= bottomRowIndex; i++) {
+        const row: Array<PixelModifyItem> = [];
+        for (let j = leftColumnIndex; j <= rightColumnIndex; j++) {
           const pixel = canvasData.get(i)?.get(j);
           if (pixel) {
             row.push({

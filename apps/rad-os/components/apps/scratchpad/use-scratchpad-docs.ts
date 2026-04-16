@@ -114,7 +114,7 @@ export function useScratchpadDocs() {
       return saved;
     }
 
-    return docs[0]?.id ?? '';
+    return docs[0]!.id;
   });
 
   const activeDoc = docs.find((doc) => doc.id === activeId) ?? docs[0]!;

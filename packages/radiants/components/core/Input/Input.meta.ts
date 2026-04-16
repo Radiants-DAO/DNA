@@ -1,12 +1,12 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+import {
+  inputSizeMetaProp,
+  sharedInputShellMetaProps,
+  type InputShellProps,
+} from "./Input.types.ts";
 
-interface InputProps {
-  size?: "sm" | "md" | "lg";
-  error?: boolean;
-  fullWidth?: boolean;
+interface InputProps extends InputShellProps {
   iconName?: string;
-  disabled?: boolean;
-  placeholder?: string;
 }
 
 export const InputMeta = defineComponentMeta<InputProps>()({
@@ -21,30 +21,11 @@ export const InputMeta = defineComponentMeta<InputProps>()({
     "Input.Validity",
   ],
   props: {
-    size: {
-      type: "enum",
-      values: ["sm", "md", "lg"],
-      default: "md",
-      description: "Size preset for input height and padding",
-    },
-    error: {
-      type: "boolean",
-      default: false,
-      description: "Shows error state styling (standalone mode only)",
-    },
-    fullWidth: {
-      type: "boolean",
-      default: false,
-      description: "Makes input take full container width",
-    },
+    size: inputSizeMetaProp,
+    ...sharedInputShellMetaProps,
     iconName: {
       type: "string",
       description: "Icon name for leading icon slot",
-    },
-    disabled: {
-      type: "boolean",
-      default: false,
-      description: "Disables the input",
     },
   },
   slots: {

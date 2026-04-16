@@ -1,1 +1,0 @@
-export { PatternPlayground } from './PatternPlayground';

@@ -2,8 +2,6 @@ import { lazy, type ComponentType, type ReactNode } from 'react';
 import { RadMarkIcon, Icon } from '@rdna/radiants/icons/runtime';
 import type { WindowSize, WindowSizeTier } from '@/lib/windowSizing';
 
-
-// Lazy load all apps for better initial load performance
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
@@ -11,9 +9,6 @@ const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
 const StudioApp = lazy(() => import('@/components/apps/StudioApp'));
-// ============================================================================
-// Types
-// ============================================================================
 
 export interface AppProps {
   windowId: string;
@@ -48,10 +43,6 @@ export interface AppCatalogEntry {
   startMenuSection?: StartMenuSection;
   ambient?: AmbientCapability;
 }
-
-// ============================================================================
-// Catalog Entries
-// ============================================================================
 
 export const APP_CATALOG: AppCatalogEntry[] = [
   {
@@ -140,10 +131,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     startMenuSection: 'apps',
   },
 ];
-
-// ============================================================================
-// Index & Selectors
-// ============================================================================
 
 const APP_BY_ID = Object.fromEntries(APP_CATALOG.map((app) => [app.id, app]));
 

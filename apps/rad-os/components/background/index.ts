@@ -1,1 +1,0 @@
-export { WebGLSun } from './WebGLSun';

@@ -125,7 +125,7 @@ function Root({
       required={required}
       readOnly={readOnly}
       name={name}
-      className={className || undefined}
+      className={className}
     >
       {children}
     </BaseNumberField.Root>
@@ -200,7 +200,7 @@ function ScrubArea({ children, className = '', direction }: ScrubAreaProps): Rea
  */
 function ScrubAreaCursor({ children, className = '' }: ScrubAreaCursorProps): React.ReactNode {
   return (
-    <BaseNumberField.ScrubAreaCursor className={className || undefined}>
+    <BaseNumberField.ScrubAreaCursor className={className}>
       {children}
     </BaseNumberField.ScrubAreaCursor>
   );

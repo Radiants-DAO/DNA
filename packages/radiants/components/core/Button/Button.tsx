@@ -4,16 +4,12 @@ import React from 'react';
 import { Button as BaseButton } from '@base-ui/react/button';
 import { cva } from 'class-variance-authority';
 import { Icon } from '../../../icons/Icon';
-
-
-// ============================================================================
-// Types
-// ============================================================================
-
-type ButtonMode = 'solid' | 'flat' | 'text' | 'pattern';
-type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted' | 'transparent';
-type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
-type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
+import type {
+  ButtonMode,
+  ButtonRounded,
+  ButtonSize,
+  ButtonTone,
+} from './Button.meta';
 
 /**
  * Maps the Button `rounded` variant to the matching pixel-rounded CSS class.

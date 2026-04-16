@@ -4,14 +4,10 @@ import { useShallow } from 'zustand/shallow';
 import { WindowsSlice, createWindowsSlice } from './slices/windowsSlice';
 import { PreferencesSlice, createPreferencesSlice } from './slices/preferencesSlice';
 import { RadRadioSlice, createRadRadioSlice } from './slices/radRadioSlice';
-
-// Re-export types for convenience
 export type { WindowState } from './slices/windowsSlice';
 
-// Combined store type
 type RadOSState = WindowsSlice & PreferencesSlice & RadRadioSlice;
 
-// Main store with all slices
 export const useRadOSStore = create<RadOSState>()(
   devtools(
     persist(
@@ -57,7 +53,6 @@ export const useRadOSStore = create<RadOSState>()(
   )
 );
 
-// Convenience hooks for specific slices using shallow comparison
 export const useWindowsStore = () =>
   useRadOSStore(
     useShallow((state) => ({

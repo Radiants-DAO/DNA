@@ -2,28 +2,7 @@
 
 import { Meter as BaseMeter } from '@base-ui/react/meter';
 import { cva } from 'class-variance-authority';
-
-
-// ============================================================================
-// Types
-// ============================================================================
-
-interface MeterProps {
-  /** Current value */
-  value: number;
-  /** Minimum value */
-  min?: number;
-  /** Maximum value */
-  max?: number;
-  /** Low threshold — values at or below this are considered low */
-  low?: number;
-  /** High threshold — values at or above this are considered high */
-  high?: number;
-  /** Optimum value — determines which range is preferred */
-  optimum?: number;
-  /** Additional classes */
-  className?: string;
-}
+import type { MeterProps } from './Meter.meta';
 
 // ============================================================================
 // CVA Variants

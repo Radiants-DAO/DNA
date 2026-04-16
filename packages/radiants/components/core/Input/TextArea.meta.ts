@@ -1,10 +1,10 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+import {
+  sharedInputShellMetaProps,
+  type TextAreaShellProps,
+} from "./Input.types.ts";
 
-interface TextAreaProps {
-  error?: boolean;
-  fullWidth?: boolean;
-  disabled?: boolean;
-  placeholder?: string;
+interface TextAreaProps extends TextAreaShellProps {
   rows?: number;
 }
 
@@ -13,25 +13,7 @@ export const TextAreaMeta = defineComponentMeta<TextAreaProps>()({
   sourcePath: "packages/radiants/components/core/Input/Input.tsx",
   description: "Multi-line text input with semantic token styling. Shares visual language with Input.",
   props: {
-    error: {
-      type: "boolean",
-      default: false,
-      description: "Shows error state styling",
-    },
-    fullWidth: {
-      type: "boolean",
-      default: false,
-      description: "Makes textarea take full container width",
-    },
-    disabled: {
-      type: "boolean",
-      default: false,
-      description: "Disables the textarea",
-    },
-    placeholder: {
-      type: "string",
-      description: "Placeholder text",
-    },
+    ...sharedInputShellMetaProps,
     rows: {
       type: "number",
       description: "Visible number of text lines",

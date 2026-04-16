@@ -11,7 +11,7 @@ import {
   FontAaIcon,
 } from '@rdna/radiants/icons/runtime';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
-import { PatternPlayground } from '@/components/apps/pattern-playground';
+import { PatternPlayground } from '@/components/apps/pattern-playground/PatternPlayground';
 import { TypographyPlayground, SubTabNav, type SubTab } from '@/components/apps/typography-playground';
 import { getBrandLogoDownloadHref } from '@/lib/asset-downloads';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
