@@ -24,12 +24,12 @@
     "fullWidth": {
       "type": "boolean",
       "default": false,
-      "description": "Makes textarea take full container width"
+      "description": "Makes the control take full container width"
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "description": "Disables the textarea"
+      "description": "Disables the control"
     },
     "placeholder": {
       "type": "string",

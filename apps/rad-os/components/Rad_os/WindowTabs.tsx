@@ -3,21 +3,12 @@
 import React from 'react';
 import { Tabs } from '@rdna/radiants/components/core';
 
-// ============================================================================
-// Types
-// ============================================================================
-
 interface WindowTabsProps {
   defaultValue: string;
   children: React.ReactNode;
 }
 
-// Tab bar is 48px + gap
 const TAB_BAR_OFFSET = 56;
-
-// ============================================================================
-// WindowTabs — thin height wrapper around Tabs
-// ============================================================================
 
 function WindowTabsRoot({ defaultValue, children }: WindowTabsProps) {
   return (
@@ -39,10 +30,6 @@ function WindowTabsContent({ value, children }: { value: string; children: React
     </div>
   );
 }
-
-// ============================================================================
-// Public API
-// ============================================================================
 
 export const WindowTabs = Object.assign(WindowTabsRoot, {
   Content: WindowTabsContent,

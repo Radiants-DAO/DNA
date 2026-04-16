@@ -232,7 +232,7 @@ export function WindowTitleBar({
               mode="pattern"
               size="sm"
               onClick={handleActionClick}
-              icon={actionButton.iconName ?? undefined}
+              icon={actionButton.iconName}
               className="shrink-0"
             >
               {actionButton.text}

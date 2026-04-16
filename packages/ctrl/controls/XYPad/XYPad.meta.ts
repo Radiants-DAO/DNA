@@ -1,18 +1,5 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
-import type { Point2D } from "../../primitives/types";
-
-interface XYPadProps {
-  value: Point2D;
-  onChange: (value: Point2D) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  label?: string;
-  disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  showValue?: boolean;
-  formatValue?: (v: Point2D) => string;
-}
+import type { XYPadProps } from "../../primitives/types";
 
 export const XYPadMeta = defineComponentMeta<XYPadProps>()({
   name: "XYPad",

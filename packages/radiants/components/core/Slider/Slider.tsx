@@ -2,13 +2,8 @@
 
 import React from 'react';
 import { Slider as BaseSlider } from '@base-ui/react/slider';
+import type { SliderSize } from './Slider.meta';
 
-
-// ============================================================================
-// Types
-// ============================================================================
-
-type SliderSize = 'sm' | 'md' | 'lg';
 type SliderOrientation = 'horizontal' | 'vertical';
 
 interface SliderProps {
@@ -50,7 +45,7 @@ function SliderValue({ className = '' }: { className?: string }) {
 }
 
 function SliderLabel({ children, className = '' }: { children?: React.ReactNode; className?: string }) {
-  return <BaseSlider.Label className={className || undefined}>{children}</BaseSlider.Label>;
+  return <BaseSlider.Label className={className}>{children}</BaseSlider.Label>;
 }
 
 export function Slider({

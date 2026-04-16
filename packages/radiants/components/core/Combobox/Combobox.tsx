@@ -8,19 +8,22 @@ import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
 // Types
 // ============================================================================
 
-interface ComboboxRootProps<V = string> {
+type BaseComboboxRootProps = React.ComponentProps<typeof BaseCombobox.Root>;
+type ComboboxItemValue = React.ComponentProps<typeof BaseCombobox.Item>['value'];
+
+interface ComboboxRootProps {
   /** Children — should include Combobox.Input, Combobox.Portal, etc. */
   children: React.ReactNode;
   /** The controlled selected value */
-  value?: V | null;
+  value?: BaseComboboxRootProps['value'];
   /** Default selected value */
-  defaultValue?: V | null;
+  defaultValue?: BaseComboboxRootProps['defaultValue'];
   /** Callback when value changes */
-  onValueChange?: (value: V | null) => void;
+  onValueChange?: BaseComboboxRootProps['onValueChange'];
   /** Callback when the popup opens or closes — receives Base UI eventDetails as second arg */
-  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  onOpenChange?: BaseComboboxRootProps['onOpenChange'];
   /** Callback when input value changes */
-  onInputValueChange?: (inputValue: string) => void;
+  onInputValueChange?: BaseComboboxRootProps['onInputValueChange'];
   /** Whether to auto-highlight the first matching item */
   autoHighlight?: boolean;
   /** Whether the combobox should ignore user interaction */
@@ -50,7 +53,7 @@ interface ComboboxPopupProps {
 
 interface ComboboxItemProps {
   /** The value for this item */
-  value: any;
+  value: ComboboxItemValue;
   /** Item content */
   children: React.ReactNode;
   /** Disabled state */
@@ -88,7 +91,7 @@ interface ComboboxGroupLabelProps {
  * Combobox root — searchable select / autocomplete input.
  * Wraps Base UI Combobox.Root.
  */
-function Root<V = string>({
+function Root({
   children,
   value,
   defaultValue,
@@ -97,15 +100,15 @@ function Root<V = string>({
   onInputValueChange,
   autoHighlight = true,
   disabled = false,
-}: ComboboxRootProps<V>) {
+}: ComboboxRootProps) {
   return (
     <BaseCombobox.Root
       data-rdna="combobox"
       value={value}
       defaultValue={defaultValue}
-      onValueChange={onValueChange ? (val: V | null) => onValueChange(val) : undefined}
-      onOpenChange={onOpenChange ? (open, eventDetails) => onOpenChange(open, eventDetails) : undefined}
-      onInputValueChange={onInputValueChange ? (val: string) => onInputValueChange(val) : undefined}
+      onValueChange={onValueChange}
+      onOpenChange={onOpenChange}
+      onInputValueChange={onInputValueChange}
       autoHighlight={autoHighlight}
       disabled={disabled}
       openOnInputClick
@@ -295,7 +298,7 @@ interface ComboboxStatusProps {
 
 function Status({ children, className = '' }: ComboboxStatusProps) {
   return (
-    <BaseCombobox.Status className={className || undefined}>
+    <BaseCombobox.Status className={className}>
       {children}
     </BaseCombobox.Status>
   );

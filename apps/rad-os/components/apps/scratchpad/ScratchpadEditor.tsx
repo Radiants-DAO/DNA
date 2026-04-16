@@ -33,26 +33,34 @@ const schema = BlockNoteSchema.create({
 });
 
 const validBlockTypes = new Set(Object.keys(schema.blockSpecs));
+type ScratchpadInitialContent = NonNullable<
+  Parameters<typeof useCreateBlockNote>[0]
+>['initialContent'];
+type ScratchpadBlock = NonNullable<ScratchpadInitialContent>[number];
+type SlashMenuEditor = Parameters<typeof getDefaultReactSlashMenuItems>[0];
+type SlashMenuInsertBlock = Parameters<typeof insertOrUpdateBlockForSlashMenu>[1];
 
-function sanitizeContent(raw: unknown[]): unknown[] | undefined {
+function isScratchpadBlock(block: unknown): block is ScratchpadBlock {
+  return (
+    !!block &&
+    typeof block === 'object' &&
+    'type' in block &&
+    typeof block.type === 'string' &&
+    validBlockTypes.has(block.type)
+  );
+}
+
+function sanitizeContent(raw: unknown[]): ScratchpadInitialContent | undefined {
   if (!Array.isArray(raw) || raw.length === 0) {
     return undefined;
   }
 
-  const clean = raw.filter(
-    (block: any) =>
-      block &&
-      typeof block === 'object' &&
-      typeof block.type === 'string' &&
-      validBlockTypes.has(block.type),
-  );
+  const clean = raw.filter(isScratchpadBlock);
 
   return clean.length > 0 ? clean : undefined;
 }
 
-type AnyBNEditor = Parameters<typeof getDefaultReactSlashMenuItems>[0];
-
-function getSlashMenuItems(editor: AnyBNEditor): DefaultReactSuggestionItem[] {
+function getSlashMenuItems(editor: SlashMenuEditor): DefaultReactSuggestionItem[] {
   const defaults = getDefaultReactSlashMenuItems(editor);
 
   const rdnaItems: DefaultReactSuggestionItem[] =
@@ -63,10 +71,11 @@ function getSlashMenuItems(editor: AnyBNEditor): DefaultReactSuggestionItem[] {
       group: descriptor.group,
       icon: <Icon name={descriptor.icon} /> as React.JSX.Element,
       onItemClick: () => {
-        (insertOrUpdateBlockForSlashMenu as Function)(editor, {
+        const block: SlashMenuInsertBlock = {
           type: descriptor.type,
-          props: descriptor.defaultProps,
-        });
+          props: descriptor.defaultProps as SlashMenuInsertBlock['props'],
+        };
+        insertOrUpdateBlockForSlashMenu(editor, block);
       },
     }));
 
@@ -87,7 +96,7 @@ export default function ScratchpadEditor({
 
   const editor = useCreateBlockNote({
     schema,
-    initialContent: safeContent as any,
+    initialContent: safeContent,
   });
 
   const handleChange = useCallback(() => {
@@ -108,13 +117,15 @@ export default function ScratchpadEditor({
     };
   }, []);
 
+  const slashMenuEditor = editor as unknown as SlashMenuEditor;
+
   const getItems = useMemo(
     () => async (query: string) =>
       filterSuggestionItems(
-        getSlashMenuItems(editor as unknown as AnyBNEditor),
+        getSlashMenuItems(slashMenuEditor),
         query,
       ),
-    [editor],
+    [slashMenuEditor],
   );
 
   return (

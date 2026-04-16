@@ -228,7 +228,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
 // ============================================================================
 
 export function DropdownMenuGroup({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <BaseMenu.Group className={className || undefined}>{children}</BaseMenu.Group>;
+  return <BaseMenu.Group className={className}>{children}</BaseMenu.Group>;
 }
 
 export function DropdownMenuGroupLabel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -293,7 +293,7 @@ export function DropdownMenuRadioGroup({
   className?: string;
 }) {
   return (
-    <BaseMenu.RadioGroup value={value} onValueChange={onValueChange} className={className || undefined}>
+    <BaseMenu.RadioGroup value={value} onValueChange={onValueChange} className={className}>
       {children}
     </BaseMenu.RadioGroup>
   );

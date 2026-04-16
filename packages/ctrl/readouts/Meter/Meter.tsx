@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { cva } from 'class-variance-authority';
-import type { ControlSize } from '../../primitives/types';
+import type { ControlSize, MeterColorZones, MeterProps } from '../../primitives/types';
 
 // =============================================================================
 // ctrl/Meter — VU-style segmented bar with color gradient
@@ -10,39 +10,6 @@ import type { ControlSize } from '../../primitives/types';
 // Supports single-channel or stereo (L/R) with peak hold, dB scale,
 // channel labels, and configurable color zones.
 // =============================================================================
-
-interface ColorZones {
-  /** Fraction (0-1) below which segments are "low" (green) */
-  low: number;
-  /** Fraction (0-1) below which segments are "mid" (yellow); above = "high" (red) */
-  mid: number;
-}
-
-interface MeterProps {
-  /** Current level: single number (mono) or [L, R] tuple (stereo), 0-100 */
-  value: number | [number, number];
-  min?: number;
-  max?: number;
-  segments?: number;
-  label?: string;
-  showValue?: boolean;
-  size?: ControlSize;
-  orientation?: 'horizontal' | 'vertical';
-  formatValue?: (v: number) => string;
-  className?: string;
-  /** Show peak hold indicator */
-  peakHold?: boolean;
-  /** Ms before peak starts falling (default 2000) */
-  peakDecay?: number;
-  /** Show dB scale markings (vertical only) */
-  showScale?: boolean;
-  /** dB values to mark on the scale (default [0, -12, -48]) */
-  scaleMarks?: number[];
-  /** Labels for stereo channels, e.g. ['L', 'R'] */
-  channelLabels?: [string, string];
-  /** Color zone thresholds as fractions (default { low: 0.6, mid: 0.85 }) */
-  colorZones?: ColorZones;
-}
 
 const meterVariants = cva(
   'inline-flex gap-1 select-none',
@@ -73,7 +40,7 @@ const segSizeV: Record<ControlSize, string> = {
   lg: 'w-4',
 };
 
-function segmentColor(ratio: number, zones: ColorZones): string {
+function segmentColor(ratio: number, zones: MeterColorZones): string {
   if (ratio < zones.low) return 'var(--color-ctrl-meter-low)';
   if (ratio < zones.mid) return 'var(--color-ctrl-meter-mid)';
   return 'var(--color-ctrl-meter-high)';
@@ -122,7 +89,7 @@ interface ChannelBarProps {
   segments: number;
   size: ControlSize;
   orientation: 'horizontal' | 'vertical';
-  zones: ColorZones;
+  zones: MeterColorZones;
   peakHold: boolean;
 }
 

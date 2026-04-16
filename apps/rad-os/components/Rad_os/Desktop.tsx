@@ -10,7 +10,7 @@ import { Taskbar } from './Taskbar';
 import { ZoomRects } from './ZoomRects';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
-import { WebGLSun } from '@/components/background';
+import { WebGLSun } from '@/components/background/WebGLSun';
 
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {

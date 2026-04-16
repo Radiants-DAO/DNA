@@ -1,27 +1,5 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
-
-interface ColorZones {
-  low: number;
-  mid: number;
-}
-
-interface MeterProps {
-  value: number | [number, number];
-  min?: number;
-  max?: number;
-  segments?: number;
-  label?: string;
-  showValue?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  orientation?: 'horizontal' | 'vertical';
-  formatValue?: (v: number) => string;
-  peakHold?: boolean;
-  peakDecay?: number;
-  showScale?: boolean;
-  scaleMarks?: number[];
-  channelLabels?: [string, string];
-  colorZones?: ColorZones;
-}
+import type { MeterProps } from "../../primitives/types";
 
 export const MeterMeta = defineComponentMeta<MeterProps>()({
   name: "Meter",

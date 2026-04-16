@@ -2,27 +2,13 @@
 
 import { cva } from 'class-variance-authority';
 import { useDragControl } from '../../primitives/useDragControl';
-import type { ControlSize, Point2D } from '../../primitives/types';
+import type { ControlSize, Point2D, XYPadProps } from '../../primitives/types';
 
 // =============================================================================
 // XYPad — 2D control surface with dot-grid background
 //
 // Drag anywhere to set X/Y position. CSS dot-grid background for visual reference.
 // =============================================================================
-
-interface XYPadProps {
-  value: Point2D;
-  onChange: (value: Point2D) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  label?: string;
-  disabled?: boolean;
-  size?: ControlSize;
-  showValue?: boolean;
-  formatValue?: (v: Point2D) => string;
-  className?: string;
-}
 
 const dimMap: Record<ControlSize, string> = {
   sm: 'size-[4rem]',

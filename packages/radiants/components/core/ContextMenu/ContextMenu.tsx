@@ -117,7 +117,7 @@ export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorPro
 
 export function ContextMenuGroup({ children, className = '' }: ContextMenuGroupProps) {
   return (
-    <BaseContextMenu.Group className={className || undefined}>
+    <BaseContextMenu.Group className={className}>
       {children}
     </BaseContextMenu.Group>
   );

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node ../../scripts/registry-guard.mjs pre-dev",
+    "predev": "pnpm --filter @rdna/pixel build && node ../../scripts/registry-guard.mjs pre-dev",
     "dev": "next dev",
-    "prebuild": "node ../../scripts/registry-guard.mjs pre-build",
+    "prebuild": "pnpm --filter @rdna/pixel build && node ../../scripts/registry-guard.mjs pre-build",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
