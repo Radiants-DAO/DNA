@@ -86,8 +86,8 @@ export function SegmentedControl({
                 'bg-ctrl-cell-bg',
                 'flex-1',
                 isActive
-                  ? 'text-ctrl-text-active border-b-2 border-ctrl-border-active'
-                  : 'text-ctrl-label border-b-2 border-transparent hover:text-ctrl-value',
+                  ? 'text-ctrl-text-active border-t border-l border-r border-ctrl-border-inactive'
+                  : 'text-ctrl-label border-t border-l border-r border-transparent hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
               style={isActive ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
             >

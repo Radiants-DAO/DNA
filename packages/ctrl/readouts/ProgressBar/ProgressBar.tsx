@@ -75,11 +75,8 @@ export function ProgressBar({
                 flex: 1,
                 height: segmentHeight[size],
                 backgroundColor: isFilled
-                  ? 'var(--color-ctrl-fill)'
+                  ? 'var(--color-ctrl-thumb)'
                   : 'var(--color-ctrl-cell-bg)',
-                boxShadow: isFilled
-                  ? '0 0 2px var(--color-ctrl-glow)'
-                  : undefined,
               }}
             />
           );

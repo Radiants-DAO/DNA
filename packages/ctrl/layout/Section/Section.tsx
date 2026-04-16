@@ -88,9 +88,17 @@ export function Section({
           </span>
         )}
 
-        {/* Header controls slot + short right rule */}
+        {/* Header controls slot + short rules on both sides */}
         {headerControls && (
           <>
+            <div
+              className="shrink-0 relative"
+              style={{
+                width: 12,
+                height: 'round(50%, 1px)',
+                borderTop: '1px solid var(--color-ctrl-border-inactive)',
+              }}
+            />
             <div>{headerControls}</div>
             <div
               className="shrink-0 relative"
@@ -132,13 +140,22 @@ export function Section({
       {/* Footer ornament */}
       {footer && (
         <div className="flex items-start gap-1 h-6 shrink-0">
-          {/* Left L-bracket (bottom-left corner) */}
+          {/* Small left corner ⌐ flipped bottom */}
           <div
-            className="flex-1 relative"
+            className="shrink-0"
             style={{
+              width: 4,
               height: 'round(50%, 1px)',
               borderBottom: '1px solid var(--color-ctrl-border-inactive)',
               borderLeft: '1px solid var(--color-ctrl-border-inactive)',
+            }}
+          />
+          {/* Left rule */}
+          <div
+            className="flex-1"
+            style={{
+              height: 'round(50%, 1px)',
+              borderBottom: '1px solid var(--color-ctrl-border-inactive)',
             }}
           />
 
@@ -150,10 +167,19 @@ export function Section({
             {footer}
           </span>
 
-          {/* Right L-bracket (bottom-right corner) */}
+          {/* Right rule */}
           <div
-            className="flex-1 relative"
+            className="flex-1"
             style={{
+              height: 'round(50%, 1px)',
+              borderBottom: '1px solid var(--color-ctrl-border-inactive)',
+            }}
+          />
+          {/* Small right corner ¬ flipped bottom */}
+          <div
+            className="shrink-0"
+            style={{
+              width: 4,
               height: 'round(50%, 1px)',
               borderBottom: '1px solid var(--color-ctrl-border-inactive)',
               borderRight: '1px solid var(--color-ctrl-border-inactive)',

@@ -1,0 +1,421 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e6]: Controls
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]: Knob
+          - generic [ref=e11]:
+            - slider [ref=e12]
+            - generic [ref=e16]: "50"
+        - generic [ref=e17]:
+          - generic [ref=e18]: Fader
+          - generic [ref=e19]:
+            - slider [ref=e20]
+            - generic [ref=e24]: "70"
+        - generic [ref=e25]:
+          - generic [ref=e26]: Slider
+          - generic [ref=e27]:
+            - generic [ref=e29]: "40"
+            - slider [ref=e30]
+        - generic [ref=e34]:
+          - generic [ref=e35]: XY Pad
+          - generic [ref=e36]:
+            - slider [ref=e37]
+            - generic [ref=e38]: 50, 50
+        - generic [ref=e39]:
+          - generic [ref=e40]: Number Scrubber
+          - generic [ref=e41]:
+            - generic [ref=e42]: Value
+            - slider [ref=e43]: "42"
+        - generic [ref=e44]:
+          - generic [ref=e45]: Ribbon
+          - generic [ref=e46]:
+            - generic [ref=e48]: "60"
+            - slider [ref=e49] [cursor=pointer]
+        - generic [ref=e50]:
+          - generic [ref=e51]: Arc Ring
+          - slider [ref=e53]:
+            - generic [ref=e56]: "75"
+    - generic [ref=e57]:
+      - generic [ref=e59]: Selectors
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e64]: Segmented Control
+            - radiogroup [ref=e66]:
+              - radio "Alpha" [checked] [ref=e67]
+              - radio "Beta" [ref=e68]
+              - radio "Gamma" [ref=e69]
+          - generic [ref=e70]:
+            - generic [ref=e71]: Stepper
+            - generic [ref=e72]:
+              - button "Decrease" [ref=e73]: −
+              - textbox [ref=e74]
+              - button "Increase" [ref=e75]: +
+          - generic [ref=e76]:
+            - generic [ref=e77]: Button Strip
+            - radiogroup [ref=e79]:
+              - radio "1x" [checked] [ref=e80]
+              - radio "2x" [ref=e81]
+              - radio "4x" [ref=e82]
+              - radio "8x" [ref=e83]
+          - generic [ref=e84]:
+            - generic [ref=e85]: Toggle
+            - switch "Active" [checked] [ref=e86] [cursor=pointer]:
+              - generic [ref=e89]: Active
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: Chip Tag
+            - generic [ref=e94]:
+              - button "Alpha" [pressed] [ref=e95]
+              - button "Beta" [ref=e96]
+              - button "Gamma" [ref=e97]
+              - button "Delta" [ref=e98]
+          - generic [ref=e99]:
+            - generic [ref=e100]: Radial Menu (Compact)
+            - radiogroup [ref=e102]:
+              - radio "N" [checked] [ref=e110]:
+                - generic: "N"
+              - radio "E" [ref=e112]:
+                - generic: E
+              - radio "S" [ref=e114]:
+                - generic: S
+              - radio "W" [ref=e116]:
+                - generic: W
+          - generic [ref=e118]:
+            - generic [ref=e119]: Radial Menu (Full)
+            - radiogroup [ref=e121]:
+              - radio "SELECT" [checked] [ref=e135]:
+                - generic: SELECT
+              - radio "MOVE" [ref=e137]:
+                - generic: MOVE
+              - radio "ROTATE" [ref=e139]:
+                - generic: ROTATE
+              - radio "SCALE" [ref=e141]:
+                - generic: SCALE
+              - radio "EXTRUDE" [ref=e143]:
+                - generic: EXTRUDE
+              - radio "DELETE" [ref=e145]:
+                - generic: DELETE
+          - generic [ref=e147]:
+            - generic [ref=e148]: Color Swatch
+            - generic [ref=e149]:
+              - generic [ref=e152]: Sun
+              - generic [ref=e155]: Sky
+              - generic [ref=e158]: Red
+        - generic [ref=e159]:
+          - generic [ref=e160]: Matrix Grid
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - generic [ref=e163]: 808 Pattern Editor
+              - generic [ref=e164]:
+                - generic [ref=e165]:
+                  - text: BPM
+                  - strong [ref=e166]: "120"
+                - generic [ref=e167]: "|"
+                - generic [ref=e168]: 4/4
+                - generic [ref=e169]: "|"
+                - generic [ref=e170]: 16 Steps
+            - generic [ref=e171]:
+              - generic [ref=e172]:
+                - generic [ref=e173]: KICK
+                - generic [ref=e174]: SNR
+                - generic [ref=e175]: HH
+                - generic [ref=e176]: OH
+              - generic [ref=e177]:
+                - grid [ref=e178]:
+                  - generic [ref=e179]:
+                    - gridcell [ref=e180]
+                    - gridcell [ref=e181]
+                    - gridcell [ref=e182]
+                    - gridcell [ref=e183]
+                    - gridcell [ref=e184]
+                    - gridcell [ref=e185]
+                    - gridcell [ref=e186]
+                    - gridcell [ref=e187]
+                    - gridcell [ref=e188]
+                    - gridcell [ref=e189]
+                    - gridcell [ref=e190]
+                    - gridcell [ref=e191]
+                    - gridcell [ref=e192]
+                    - gridcell [ref=e193]
+                    - gridcell [ref=e194]
+                    - gridcell [ref=e195]
+                  - generic [ref=e196]:
+                    - gridcell [ref=e197]
+                    - gridcell [ref=e198]
+                    - gridcell [ref=e199]
+                    - gridcell [ref=e200]
+                    - gridcell [ref=e201]
+                    - gridcell [ref=e202]
+                    - gridcell [ref=e203]
+                    - gridcell [ref=e204]
+                    - gridcell [ref=e205]
+                    - gridcell [ref=e206]
+                    - gridcell [ref=e207]
+                    - gridcell [ref=e208]
+                    - gridcell [ref=e209]
+                    - gridcell [ref=e210]
+                    - gridcell [ref=e211]
+                    - gridcell [ref=e212]
+                  - generic [ref=e213]:
+                    - gridcell [ref=e214]
+                    - gridcell [ref=e215]
+                    - gridcell [ref=e216]
+                    - gridcell [ref=e217]
+                    - gridcell [ref=e218]
+                    - gridcell [ref=e219]
+                    - gridcell [ref=e220]
+                    - gridcell [ref=e221]
+                    - gridcell [ref=e222]
+                    - gridcell [ref=e223]
+                    - gridcell [ref=e224]
+                    - gridcell [ref=e225]
+                    - gridcell [ref=e226]
+                    - gridcell [ref=e227]
+                    - gridcell [ref=e228]
+                    - gridcell [ref=e229]
+                  - generic [ref=e230]:
+                    - gridcell [ref=e231]
+                    - gridcell [ref=e232]
+                    - gridcell [ref=e233]
+                    - gridcell [ref=e234]
+                    - gridcell [ref=e235]
+                    - gridcell [ref=e236]
+                    - gridcell [ref=e237]
+                    - gridcell [ref=e238]
+                    - gridcell [ref=e239]
+                    - gridcell [ref=e240]
+                    - gridcell [ref=e241]
+                    - gridcell [ref=e242]
+                    - gridcell [ref=e243]
+                    - gridcell [ref=e244]
+                    - gridcell [ref=e245]
+                    - gridcell [ref=e246]
+                - generic [ref=e247]:
+                  - generic [ref=e248]: "1"
+                  - generic [ref=e249]: "2"
+                  - generic [ref=e250]: "3"
+                  - generic [ref=e251]: "4"
+                  - generic [ref=e252]: "5"
+                  - generic [ref=e253]: "6"
+                  - generic [ref=e254]: "7"
+                  - generic [ref=e255]: "8"
+                  - generic [ref=e256]: "9"
+                  - generic [ref=e257]: "10"
+                  - generic [ref=e258]: "11"
+                  - generic [ref=e259]: "12"
+                  - generic [ref=e260]: "13"
+                  - generic [ref=e261]: "14"
+                  - generic [ref=e262]: "15"
+                  - generic [ref=e263]: "16"
+    - generic [ref=e264]:
+      - generic [ref=e266]: Readouts
+      - generic [ref=e268]:
+        - generic [ref=e269]:
+          - generic [ref=e270]:
+            - generic [ref=e271]: Meter
+            - generic [ref=e272]:
+              - generic [ref=e273]:
+                - generic [ref=e274]: Level
+                - generic [ref=e275]: "72"
+              - meter [ref=e277]
+          - generic [ref=e279]:
+            - generic [ref=e280]: Meter (vertical)
+            - generic [ref=e281]:
+              - generic [ref=e283]: Vol
+              - meter [ref=e285]
+          - generic [ref=e299]:
+            - generic [ref=e300]: Stereo VU
+            - generic [ref=e301]:
+              - generic [ref=e303]: VU
+              - generic [ref=e304]:
+                - generic [ref=e305]:
+                  - generic [ref=e306]: "0"
+                  - generic [ref=e307]: "-12"
+                  - generic [ref=e308]: "-48"
+                - meter [ref=e309]
+                - generic [ref=e336]:
+                  - generic [ref=e337]: L
+                  - generic [ref=e338]: R
+          - generic [ref=e339]:
+            - generic [ref=e340]: LED Array
+            - generic [ref=e342]: Status
+          - generic [ref=e352]:
+            - generic [ref=e353]: Tooltip
+            - generic [ref=e354]: Hover me
+        - generic [ref=e355]:
+          - generic [ref=e356]:
+            - generic [ref=e357]: Sparkline
+            - generic [ref=e359]: Trend
+          - generic [ref=e361]:
+            - generic [ref=e362]: Waveform
+            - generic [ref=e364]: Audio
+          - generic [ref=e366]:
+            - generic [ref=e367]: Spectrum
+            - generic [ref=e369]: Freq
+    - generic [ref=e371]:
+      - generic [ref=e373]: Layout
+      - generic [ref=e375]:
+        - generic [ref=e376]:
+          - heading "Panel Title" [level=2] [ref=e378]
+          - generic [ref=e380]: Subtitle text
+        - generic [ref=e381]:
+          - button "Collapsible Section Collapse" [ref=e382] [cursor=pointer]:
+            - generic [ref=e384]: Collapsible Section
+            - generic [ref=e386]: Collapse
+          - generic [ref=e389]:
+            - generic [ref=e390]:
+              - generic [ref=e391]: Label
+              - generic [ref=e393]: Value content
+            - generic [ref=e394]:
+              - generic [ref=e395]: Knob
+              - slider [ref=e398]
+            - generic [ref=e402]:
+              - generic [ref=e403]: Toggle
+              - switch [checked] [ref=e405] [cursor=pointer]
+        - generic [ref=e408]:
+          - button "Layer Tree 3 found Collapse" [ref=e409] [cursor=pointer]:
+            - generic [ref=e411]: Layer Tree
+            - generic [ref=e413]: 3 found
+            - generic [ref=e414]: Collapse
+          - generic [ref=e418]:
+            - generic [ref=e419] [cursor=pointer]:
+              - button "▼" [ref=e420]
+              - generic [ref=e422]: Root
+              - generic [ref=e423]: div
+            - generic [ref=e425] [cursor=pointer]:
+              - generic [ref=e427]: Header
+              - generic [ref=e428]: header
+            - generic [ref=e430] [cursor=pointer]:
+              - generic [ref=e432]: Main
+              - generic [ref=e433]: main
+    - generic [ref=e434]:
+      - generic [ref=e436]: Layout Inspector
+      - generic [ref=e439]:
+        - generic [ref=e441]: Layout
+        - generic [ref=e443]:
+          - button "Size min max Collapse" [ref=e444] [cursor=pointer]:
+            - generic [ref=e446]: Size
+            - generic [ref=e448]:
+              - generic [ref=e449]: min
+              - generic [ref=e452]: max
+            - generic [ref=e454]: Collapse
+          - generic [ref=e458]:
+            - generic [ref=e459]:
+              - generic [ref=e461]: W
+              - generic [ref=e462]:
+                - generic [ref=e463]: fill
+                - combobox [ref=e464] [cursor=pointer]:
+                  - generic [ref=e465]: ▾
+                - textbox [ref=e466]: fill
+              - generic [ref=e467]:
+                - textbox "-" [ref=e468]
+                - generic [ref=e469]: MIN
+                - combobox [ref=e470] [cursor=pointer]:
+                  - generic [ref=e471]: ▾
+                - textbox [ref=e472]
+              - spinbutton [ref=e473]
+              - generic [ref=e474]:
+                - textbox "-" [ref=e475]
+                - generic [ref=e476]: MAX
+                - combobox [ref=e477] [cursor=pointer]:
+                  - generic [ref=e478]: ▾
+                - textbox [ref=e479]
+              - spinbutton [ref=e480]
+            - generic [ref=e481]:
+              - generic [ref=e483]: H
+              - generic [ref=e484]:
+                - textbox [ref=e485]: "10"
+                - combobox [ref=e486] [cursor=pointer]:
+                  - generic [ref=e487]: VH
+                  - generic [ref=e488]: ▾
+                - textbox [ref=e489]: vh
+              - spinbutton [ref=e490]: "10"
+              - generic [ref=e491]:
+                - textbox "-" [ref=e492]
+                - generic [ref=e493]: MIN
+                - combobox [ref=e494] [cursor=pointer]:
+                  - generic [ref=e495]: ▾
+                - textbox [ref=e496]
+              - spinbutton [ref=e497]
+              - generic [ref=e498]:
+                - textbox "-" [ref=e499]
+                - generic [ref=e500]: MAX
+                - combobox [ref=e501] [cursor=pointer]:
+                  - generic [ref=e502]: ▾
+                - textbox [ref=e503]
+              - spinbutton [ref=e504]
+            - generic [ref=e505]:
+              - generic [ref=e506]:
+                - textbox: "0"
+              - spinbutton [ref=e508]: "0"
+              - generic [ref=e509]:
+                - textbox: "0"
+              - spinbutton [ref=e511]: "0"
+              - generic [ref=e512]:
+                - textbox: "0"
+              - spinbutton [ref=e514]: "0"
+              - generic [ref=e515]:
+                - generic [ref=e517]: margin
+                - generic [ref=e524]:
+                  - generic [ref=e525]: "0"
+                  - generic [ref=e526]: px
+                - textbox: "0"
+              - spinbutton [ref=e527]: "0"
+              - generic [ref=e528]:
+                - generic [ref=e529]:
+                  - generic [ref=e532]:
+                    - generic [ref=e534]: Border
+                    - combobox [ref=e551] [cursor=pointer]:
+                      - generic [ref=e553]: "#FCE184"
+                    - textbox [ref=e554]: var(--color-sun-yellow)
+                  - generic:
+                    - generic: "2"
+                    - generic: px
+                  - textbox: "2"
+                - spinbutton [ref=e563]: "2"
+                - generic [ref=e569]:
+                  - generic [ref=e570]:
+                    - textbox: "2"
+                  - spinbutton [ref=e572]: "2"
+                  - generic [ref=e573]:
+                    - textbox: "2"
+                  - spinbutton [ref=e575]: "2"
+                  - generic [ref=e576]:
+                    - textbox: "2"
+                  - spinbutton [ref=e578]: "2"
+                  - generic [ref=e579]:
+                    - generic [ref=e580]:
+                      - generic [ref=e581]: padding
+                      - generic [ref=e587]:
+                        - generic [ref=e588]: "2"
+                        - generic [ref=e589]: px
+                    - textbox: "2"
+                  - spinbutton [ref=e590]: "2"
+                  - radiogroup [ref=e592]:
+                    - radio [checked] [ref=e593] [cursor=pointer]:
+                      - img [ref=e594]
+                    - radio [checked] [ref=e596]
+                    - radio [ref=e597] [cursor=pointer]:
+                      - img [ref=e598]
+                    - radio [ref=e600]
+                    - radio [ref=e601] [cursor=pointer]:
+                      - img [ref=e602]
+                    - radio [ref=e604]
+                    - radio [ref=e605] [cursor=pointer]:
+                      - img [ref=e606]
+                    - radio [ref=e609]
+                    - radio "Auto" [ref=e610] [cursor=pointer]:
+                      - generic [ref=e611]: Auto
+                    - radio [ref=e612]
+                - generic [ref=e615]:
+                  - generic [ref=e620]:
+                    - generic [ref=e621]: "2"
+                    - generic [ref=e622]: px
+                  - textbox: "2"
+                - spinbutton [ref=e629]: "2"
+          - generic [ref=e632]: Show css
+  - button "Open Next.js Dev Tools" [ref=e639] [cursor=pointer]:
+    - img [ref=e640]

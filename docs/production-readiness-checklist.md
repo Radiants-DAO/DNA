@@ -12,12 +12,21 @@ Regenerated 2026-04-15 from codebase audit against archived checklist (`archive/
 ## How to Read This
 
 * **T0**: Fix now. Small effort, prevents surprises.
+
 * **T1**: Component visual quality. The embarrassment tier.
+
+* **TP**: Launch polish pass (cross-cutting polish batch).
+
 * **T2**: Mobile rebuild. Launch blocker, ground-up rework.
+
 * **T3**: App content & functionality.
+
 * **T4**: Tooling & infrastructure.
+
 * **T5**: Motion pipeline.
+
 * **T6**: Documentation & cleanup.
+
 * **T7**: Post-launch.
 
 Items marked `[explore]` need investigation before scoping.
@@ -42,6 +51,7 @@ Items marked `[explore]` need investigation before scoping.
 ### T1b — Form Controls
 
 **Select:**
+
 * [ ] Verify dropdown clipping at window edges (Base UI Positioner should handle, needs visual QA)
 
 ### T1c — Dropdown Unification
@@ -63,11 +73,60 @@ Items marked `[explore]` need investigation before scoping.
 
 ***
 
+## TP — Launch Polish Pass
+
+Cross-cutting polish batch identified 2026-04-16. Groups visual/content/docs polish that should land before launch but doesn't belong in any single tier.
+
+### TP1 — Studio App Ctrl Polish
+
+* [ ] `@rdna/ctrl` polish pass across the Studio app — swap ad-hoc controls for ctrl primitives, align spacing/density, verify light+dark parity
+
+### TP2 — CMD-K Menu
+
+* [ ] Design polish pass on the CMD-K menu (layout, typography rhythm, hover/selected states, result grouping, empty state)
+
+### TP3 — Pretext
+
+* [ ] Pretext review + polish pass — audit authored pages, fix layout regressions, tighten authoring primitives, refresh broadsheet/editorial/book samples
+
+### TP4 — Manifesto Rewrite
+
+* [ ] Update Manifesto: new version copy, embed images, render through Pretext (replaces current ManifestoBook flow)
+
+### TP5 — AboutApp Post-Manifesto
+
+* [ ] Rewrite AboutApp to follow the new manifesto (tone, structure, references); fold in real team/contributor content (supersedes T3 AboutApp placeholder item)
+
+### TP6 — Skills & Docs Cleanup
+
+* [ ] Finish skills audit/cleanup (see T5 Skills Audit) and produce docs — skills index, authoring guide, per-skill usage notes
+
+### TP7 — Logo Builder
+
+* [ ] Replace logo panes in BrandAssetsApp with a Logo Builder (compose/recolor/export configurable logo lockups instead of static panes)
+
+### TP8 — Colors Page → Swatches Picker
+
+* [ ] Layout revamp on the colors page — "Swatches" picker approach: swatch grid on the left, card explainer (token name, value, usage, contrast) on the right
+
+### TP9 — Type Specimen
+
+* [ ] Type specimen updates/cleanup — scale samples, family showcases, pairing examples, remove stale states, align with current type scale
+
+### TP10 — Pixel Art Tab Editors
+
+Lives in Studio (see T3 Studio Phase 2). Pulled forward as launch polish since pixel corners is unblocked now.
+
+* [ ] Pixel corner editor (unblocked — can start now)
+* [ ] Pixel icon editor (16px / 24px sets)
+* [ ] Pattern editor (larger pull — depends on pattern metadata format stabilizing)
+
+***
+
 ## T2 — Mobile Rebuild
 
 Launch blocker. Complete absence of mobile UI — nothing exists yet.
 
-* [ ] Clear all existing mobile breakpoints and overrides (start fresh)
 * [ ] Design + implement mobile app drawer / launcher (bottom nav, smooth UX)
 * [ ] Replace hidden Taskbar with mobile nav component
 * [ ] Make Start Menu reachable on mobile
@@ -205,12 +264,12 @@ Launch blocker. Complete absence of mobile UI — nothing exists yet.
 
 These packages landed after the original checklist was written and have their own roadmaps:
 
-| Package | Status | Notes |
-|---------|--------|-------|
-| `@rdna/ctrl` | Active | Control surface library (30+ controls/selectors/readouts). Preview at `/ctrl-preview`. |
-| `@rdna/pixel` | Active | 1-bit pixel engine (grids, renderers, transitions, icons). Preview at `/pixel-corners`. |
-| `@rdna/create` | Shipped | Project scaffolder CLI + templates |
-| Pretext system | Active | Layout editor with broadsheet/editorial/book modes, serialization, authoring primitives |
+| Package        | Status  | Notes                                                                                   |
+| -------------- | ------- | --------------------------------------------------------------------------------------- |
+| `@rdna/ctrl`   | Active  | Control surface library (30+ controls/selectors/readouts). Preview at `/ctrl-preview`.  |
+| `@rdna/pixel`  | Active  | 1-bit pixel engine (grids, renderers, transitions, icons). Preview at `/pixel-corners`. |
+| `@rdna/create` | Shipped | Project scaffolder CLI + templates                                                      |
+| Pretext system | Active  | Layout editor with broadsheet/editorial/book modes, serialization, authoring primitives |
 
 ***
 
@@ -223,6 +282,12 @@ T1 (components) ─────────────────────�
   T1c (dropdown unification) ──► after individual QA
   T1d (cross-cutting) ──► after core components stable
   T1e (missing components) ──► after T1d
+TP (launch polish) ────────────────────────────► parallel with T1
+  TP1 Studio ctrl polish ──► after @rdna/ctrl stable
+  TP3 Pretext polish ──► blocks TP4 manifesto rewrite
+  TP4 Manifesto ──► blocks TP5 AboutApp rewrite
+  TP6 Skills docs ──► after T5 skills audit
+  TP10 Pixel editors ──► corner editor now, pattern editor after format stable
 T2 (mobile) ───────────────────────────────────► after T0, benefits from stable T1
 T3 (apps) ─────────────────────────────────────► Studio Phase 2 after @rdna/pixel
   AboutApp content ──► independent, anytime
@@ -233,3 +298,5 @@ T5 (motion) ──────────────────────�
 T6 (docs) ─────────────────────────────────────► parallel with anything
 T7 (post-launch) ──────────────────────────────► after launch
 ```
+
+⠀

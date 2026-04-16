@@ -25,7 +25,7 @@ export function PanelTitle({
     >
       <div className="flex items-end gap-2 h-6 shrink-0">
         <h2
-          className="font-mono text-base leading-5 uppercase tracking-wider shrink-0"
+          className="font-mono text-lg leading-6 uppercase tracking-wider shrink-0"
           style={{
             color: 'var(--color-main)',
             textShadow:

@@ -109,7 +109,7 @@ export function MatrixGrid({
         <div className="inline-flex flex-col">
           <div
             role="grid"
-            className="inline-flex flex-col border border-ctrl-border-inactive p-px"
+            className="inline-flex flex-col"
             style={{ gap: 'var(--ctrl-cell-gap)' }}
           >
             {value.map((row, ri) => (

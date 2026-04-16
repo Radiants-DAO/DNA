@@ -162,15 +162,35 @@ export function RadialMenu({
           </>
         )}
 
-        {/* ── Center dot ── */}
+        {/* ── Center dot + optional rings ── */}
         {showCenter && (
-          <circle
-            cx={cx}
-            cy={cy}
-            r={centerR}
-            fill="var(--color-ctrl-thumb)"
-            style={{ filter: 'drop-shadow(0 0 3px var(--color-ctrl-glow))' }}
-          />
+          <>
+            {showCrosshair && (
+              <>
+                <circle
+                  cx={cx} cy={cy} r={centerR * 3}
+                  fill="none"
+                  stroke="var(--color-ctrl-border-inactive)"
+                  strokeWidth={0.5}
+                  opacity={0.5}
+                />
+                <circle
+                  cx={cx} cy={cy} r={centerR * 2}
+                  fill="none"
+                  stroke="var(--color-ctrl-border-inactive)"
+                  strokeWidth={0.5}
+                  opacity={0.3}
+                />
+              </>
+            )}
+            <circle
+              cx={cx}
+              cy={cy}
+              r={centerR}
+              fill="var(--color-ctrl-thumb)"
+              style={{ filter: 'drop-shadow(0 0 3px var(--color-ctrl-glow))' }}
+            />
+          </>
         )}
 
         {/* ── Labels (outside circle) + ARIA roles ── */}

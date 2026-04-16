@@ -27,7 +27,7 @@ interface StepperProps {
 }
 
 const buttonVariants = cva(
-  'flex items-center justify-center font-mono outline-none transition-colors duration-fast',
+  'flex items-center justify-center font-mono outline-none transition-colors duration-fast aspect-square',
   {
     variants: {
       size: {
@@ -151,7 +151,7 @@ export function Stepper({
         <span
           className={[
             'flex-1 flex items-center justify-center font-mono uppercase tracking-wider px-2',
-            'bg-ctrl-cell-bg text-ctrl-text-active min-h-[--ctrl-row-height]',
+            'bg-ctrl-cell-bg text-ctrl-value min-h-[--ctrl-row-height]',
             valueFontSize,
           ].join(' ')}
           style={glowStyle}
@@ -169,7 +169,7 @@ export function Stepper({
           onKeyDown={handleKeyDown}
           className={[
             'flex-1 min-w-8 text-center font-mono tabular-nums px-2 outline-none',
-            'bg-ctrl-cell-bg text-ctrl-text-active min-h-[--ctrl-row-height]',
+            'bg-ctrl-cell-bg text-ctrl-value min-h-[--ctrl-row-height]',
             valueFontSize,
           ].join(' ')}
           style={glowStyle}
@@ -182,7 +182,7 @@ export function Stepper({
           onFocus={startEditing}
           className={[
             'flex-1 flex items-center justify-center font-mono tabular-nums px-2 cursor-text',
-            'bg-ctrl-cell-bg text-ctrl-text-active min-h-[--ctrl-row-height]',
+            'bg-ctrl-cell-bg text-ctrl-value min-h-[--ctrl-row-height]',
             valueFontSize,
           ].join(' ')}
           style={glowStyle}

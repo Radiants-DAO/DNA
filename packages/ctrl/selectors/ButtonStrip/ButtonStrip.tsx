@@ -100,7 +100,7 @@ export function ButtonStrip({
                 'uppercase tracking-wider',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
                 isActive
-                  ? 'bg-ctrl-fill text-ctrl-active'
+                  ? 'bg-ctrl-cell-bg text-ctrl-value'
                   : 'bg-ctrl-cell-bg text-ctrl-label hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
               style={isActive ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}

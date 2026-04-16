@@ -82,6 +82,8 @@ export function DirectionPad({
           gap: 1,
           width: dim,
           height: dim,
+          border: '1px solid var(--color-ctrl-border-inactive)',
+          borderRadius: 2,
         }}
       >
         {cells.map(({ row, col }) => {

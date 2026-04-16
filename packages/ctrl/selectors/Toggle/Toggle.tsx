@@ -11,7 +11,7 @@ import type { ControlSize } from '../../primitives/types';
 //
 // Sizes: xs | sm | md | lg
 // - xs: 16px rectangular track, 6x6 square dot, dual-label layout
-// - sm/md/lg: rounded-full track + dot (original behaviour)
+// - sm/md/lg: rectangular track + square dot (matching Paper reference)
 // =============================================================================
 
 type ToggleSize = ControlSize | 'xs';
@@ -93,7 +93,7 @@ export function Toggle({
     <span
       className={[
         dims.track,
-        'relative rounded-full border transition-all duration-fast',
+        'relative border transition-all duration-fast',
         'flex items-center px-0.5',
         value
           ? 'border-ctrl-border-active bg-ctrl-fill/20'
@@ -104,7 +104,7 @@ export function Toggle({
       <span
         className={[
           dims.dot,
-          'rounded-full transition-transform duration-fast',
+          'transition-transform duration-fast',
           value ? ['bg-ctrl-thumb', dims.translate].join(' ') : 'bg-ctrl-label translate-x-0',
         ].join(' ')}
       />

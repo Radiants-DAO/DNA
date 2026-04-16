@@ -305,7 +305,7 @@ export function Meter({
           aria-valuemax={max}
           aria-valuenow={ariaValue}
           className={[
-            'flex gap-px border border-ctrl-border-inactive rounded-sm p-0.5',
+            'flex gap-px',
             isStereo
               ? isVertical
                 ? 'flex-row gap-0.5'
