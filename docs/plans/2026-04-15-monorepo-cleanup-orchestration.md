@@ -49,7 +49,9 @@ Hard constraints:
 - Do NOT remove .schema.json files; they are generated outputs.
 - Do NOT remove icon assets in packages/radiants/assets/icons/ solely because there are no direct imports.
 - Do NOT remove the backward-compat alias block in packages/radiants/tokens.css.
+- Do NOT remove pretext authoring primitives, section tags, or meta/contract files referenced by name from generators, migrations, or runtime loaders; static import graphs will miss these.
 - Protect existing user changes. Do not overwrite or revert unstaged work. If a proposed edit touches a dirty file, mark it blocked unless that file is explicitly assigned for the run.
+- `knip` and `madge` are NOT installed in this repo. Do not assume they can run. Any dead-code or cycle claim must be supported by manual trace (rg for importers, read barrels, check dynamic imports, check string-based loaders).
 
 Output style requirements:
 - Every finding must include file paths and line numbers.
@@ -160,15 +162,16 @@ Your job is to audit one cleanup domain in this monorepo and return structured f
 
 Rules:
 - Read as much code as needed to build evidence.
-- Do not modify files.
+- Do not modify files other than writing your own report to the output paths given in the dispatch instructions.
 - Do not propose abstractions for patterns used only twice.
 - Respect the copy-on-import constraint.
-- If a finding touches a dirty file, still report it, but mark it blocked.
+- If a finding touches a dirty file (per the git-status snapshot in the dispatch), still report it, but mark it blocked.
 - Prefer direct evidence over inferred style opinions.
 - Include file paths and line numbers for every finding.
-- Output:
-  1. A short critical assessment in markdown ordered by severity and confidence.
-  2. A JSON array of findings using the required schema.
+- `knip` and `madge` are NOT installed. Do not attempt to run them. Trace importers manually with rg, read barrels, and check string-based dynamic imports and generator inputs.
+- Output two files at the paths specified in the dispatch:
+  1. Markdown report: a short critical assessment ordered by severity and confidence.
+  2. JSON report: an array of findings using the required schema.
 
 When evaluating confidence:
 - Trace importers, call sites, and ownership.
@@ -341,8 +344,8 @@ Use this after all Stage 1 agents return.
 You are the cleanup coordinator.
 
 Inputs:
-- 8 Stage 1 agent reports
-- current git status
+- 8 Stage 1 agent reports (markdown + JSON at ops/cleanup-audit/stage1/)
+- the git-status snapshot captured at Stage 1 dispatch time (HEAD sha + dirty-file list); use that snapshot, not a fresh `git status`, so dirty-file blocking is consistent with what agents saw
 
 Tasks:
 1. Merge all findings into a single queue.
@@ -402,10 +405,12 @@ Rules:
 - If you discover a finding depends on a blocked or rejected change, stop and mark the item blocked rather than improvising.
 - Before editing, re-read the targeted files and confirm the evidence still holds.
 - After editing, run the listed verification commands.
+- Verification-failure protocol: if any verification command fails, STOP immediately. Do not commit. Do not stage. Do not attempt autonomous rollback of your edits unless the coordinator explicitly authorized it. Report the failing command, its output, the diff you produced, and mark the wave halted. Wait for coordinator instructions before continuing.
+- Do not run destructive git commands (reset --hard, checkout --, clean -f) and do not use `git add -A`. Stage only files in your write scope by path.
 - Report:
-  1. what changed
-  2. what was verified
-  3. anything deferred or blocked
+  1. what changed (file paths + one-line description each)
+  2. what was verified (commands + pass/fail)
+  3. anything deferred, blocked, or halted
 ```
 
 ## Recommended Output Locations
