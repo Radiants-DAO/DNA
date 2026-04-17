@@ -1,6 +1,6 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-type AlertVariant = "default" | "success" | "warning" | "error" | "info";
+export type AlertVariant = "default" | "success" | "warning" | "error" | "info";
 
 interface AlertProps {
   variant?: AlertVariant;

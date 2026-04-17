@@ -5,13 +5,12 @@ import { cva } from 'class-variance-authority';
 import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '../../../icons/generated';
 import { Button } from '../Button/Button';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import type { AlertVariant } from './Alert.meta';
 
 
 // ============================================================================
 // Types
 // ============================================================================
-
-type AlertVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 
 interface AlertRootProps {
   variant?: AlertVariant;
