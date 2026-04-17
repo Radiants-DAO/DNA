@@ -102,7 +102,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
   return (
     <BaseAlertDialog.Portal>
       <BaseAlertDialog.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-150 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-base)] ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseAlertDialog.Popup
         className="group fixed inset-0 z-50 flex items-center justify-center"
@@ -111,7 +111,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           className={`
             relative z-10
             w-full max-w-[32rem] mx-4
-            transition-[opacity,transform,filter] duration-150 ease-out
+            transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95
             group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
           `.trim()}

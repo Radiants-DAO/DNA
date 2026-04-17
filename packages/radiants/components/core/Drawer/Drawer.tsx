@@ -143,7 +143,7 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
   return (
     <BaseDrawer.Portal>
       <BaseDrawer.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-200 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-moderate)] ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDrawer.Popup
         data-rdna="drawer"
@@ -153,7 +153,7 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
           bg-card
           border border-line
           shadow-floating
-          transition-transform duration-200 ease-out
+          transition-transform duration-[var(--duration-moderate)] ease-out
           ${className}
         `.trim()}
       >

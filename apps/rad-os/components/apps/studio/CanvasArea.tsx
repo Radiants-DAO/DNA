@@ -2,6 +2,7 @@
 
 import { type MutableRefObject } from 'react';
 import { Dotting, type DottingRef, type BrushTool, type LayerProps } from '@/lib/dotting';
+import { usePreferencesStore } from '@/store';
 import { CANVAS_BG_COLOR, CANVAS_SIZE } from './constants';
 
 interface CanvasAreaProps {
@@ -19,6 +20,8 @@ export function CanvasArea({
   isGridVisible,
   initLayers,
 }: CanvasAreaProps) {
+  const darkMode = usePreferencesStore((state) => state.darkMode);
+  const gridStrokeColor = darkMode ? '#fef8e220' : '#0f0e0c20';
   return (
     // Outer: fills the available space in the editor row; establishes a size-type
     // container so the inner square can read both `cqw` and `cqh`.
@@ -41,7 +44,7 @@ export function CanvasArea({
           initLayers={initLayers}
           backgroundColor={CANVAS_BG_COLOR}
           defaultPixelColor={CANVAS_BG_COLOR}
-          gridStrokeColor="#0f0e0c20"
+          gridStrokeColor={gridStrokeColor}
           gridStrokeWidth={0.5}
           minScale={0.3}
           maxScale={10}

@@ -97,7 +97,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
     >
       <span>{children}</span>
       <span
-        className="select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
+        className="select-none transition-transform duration-[var(--duration-moderate)] ease-out group-data-[panel-open]:rotate-180"
         aria-hidden="true"
       >
         <ChevronDown size={14} />

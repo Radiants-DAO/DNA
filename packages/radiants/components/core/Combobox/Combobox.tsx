@@ -184,7 +184,7 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
         className={`
           z-50
           w-[var(--anchor-width)]
-          transition-[opacity,transform] duration-150 ease-out
+          transition-[opacity,transform] duration-[var(--duration-base)] ease-out
           data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
           data-[ending-style]:opacity-0
         `.trim()}

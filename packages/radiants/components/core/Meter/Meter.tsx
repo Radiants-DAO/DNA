@@ -12,7 +12,7 @@ const trackVariants = cva(
   'w-full h-4 relative'
 );
 
-const indicatorVariants = cva('h-full transition-all duration-150 ease-out', {
+const indicatorVariants = cva('h-full transition-all duration-[var(--duration-base)] ease-out', {
   variants: {
     status: {
       success: 'bg-success',

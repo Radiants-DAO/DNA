@@ -29,7 +29,7 @@ interface ScrollAreaRootProps extends React.HTMLAttributes<HTMLDivElement> {
 const scrollbarBase = [
   'flex touch-none select-none',
   'opacity-0 pointer-events-none',
-  'transition-opacity duration-150 ease-out',
+  'transition-opacity duration-[var(--duration-base)] ease-out',
   'data-[scrolling]:opacity-100 data-[scrolling]:duration-0 data-[scrolling]:pointer-events-auto',
   'data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto',
 ].join(' ');

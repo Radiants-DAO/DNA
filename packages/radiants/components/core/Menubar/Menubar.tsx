@@ -111,7 +111,7 @@ function Trigger({ children, className = '' }: MenubarTriggerProps) {
         text-flip
         hover:bg-tinted
         cursor-pointer
-        transition-colors duration-150 ease-out
+        transition-colors duration-[var(--duration-base)] ease-out
         focus-visible:outline-none
         ${className}
       `.trim()}
@@ -132,7 +132,7 @@ function Content({ children, className = '' }: MenubarContentProps) {
           className={`
             z-50
             min-w-[10rem]
-            transition-[opacity,transform,filter] duration-150 ease-out
+            transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
           `.trim()}

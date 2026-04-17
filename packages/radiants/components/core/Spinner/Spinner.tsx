@@ -65,7 +65,7 @@ function LoadingDots({ size = 24, className = '', completed = false }: Omit<Spin
               key={i}
               style={{ width: dotSize, height: dotSize }}
               className={`
-                transition-colors duration-150 ease-out
+                transition-colors duration-[var(--duration-base)] ease-out
                 ${filled
                   ? `bg-main ${flash ? 'animate-pulse' : ''}`
                   : 'bg-accent'

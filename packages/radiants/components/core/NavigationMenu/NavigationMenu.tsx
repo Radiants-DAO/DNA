@@ -166,7 +166,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
     >
       {children}
       <BaseNavigationMenu.Icon
-        className="transition-transform duration-150 ease-out data-[popup-open]:rotate-180"
+        className="transition-transform duration-[var(--duration-base)] ease-out data-[popup-open]:rotate-180"
       >
         <DefaultChevron />
       </BaseNavigationMenu.Icon>
@@ -228,7 +228,7 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
       <BaseNavigationMenu.Positioner sideOffset={8}>
         <BaseNavigationMenu.Popup
           className={`
-            transition-[opacity,transform] duration-200 ease-out
+            transition-[opacity,transform] duration-[var(--duration-moderate)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
           `.trim()}

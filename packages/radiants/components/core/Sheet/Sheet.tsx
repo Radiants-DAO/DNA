@@ -135,7 +135,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-moderate)] data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDialog.Popup
         className={`
@@ -144,7 +144,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
           bg-page
           border-line
           shadow-floating
-          transition-transform duration-200 ease-out
+          transition-transform duration-[var(--duration-moderate)] ease-out
           ${className}
         `.trim()}
       >

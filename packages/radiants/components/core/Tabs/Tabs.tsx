@@ -114,7 +114,7 @@ export const tabsTriggerVariants = cva(
   `flex items-center cursor-pointer select-none
    font-heading text-xs uppercase tracking-tight leading-none
    relative shadow-none border-none
-   transition-[border-color,background-color,color,transform,gap,padding,max-width,opacity] duration-200 ease-out
+   transition-[border-color,background-color,color,transform,gap,padding,max-width,opacity] duration-[var(--duration-moderate)] ease-out
    focus-visible:outline-none`,
   {
     variants: {
@@ -162,7 +162,7 @@ function DotPill({ className = '' }: { className?: string }) {
               type="button"
               aria-label={`Go to ${val}`}
               onClick={() => setActiveTab(val)}
-              className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
+              className={`flex-shrink-0 cursor-pointer transition-all duration-[var(--duration-slow)] ease-out border-none p-0 ${
                 isActive
                   ? 'w-8 h-2 bg-page'
                   : 'size-2 bg-accent hover:bg-accent/75'
@@ -331,7 +331,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
         const chromeBackground = mode === 'chrome'
           ? isActive
             ? 'bg-card'
-            : 'bg-accent group-hover/pixel:bg-cream transition-colors duration-200 ease-out'
+            : 'bg-accent group-hover/pixel:bg-cream transition-colors duration-[var(--duration-moderate)] ease-out'
           : undefined;
         const chromeButtonClasses = mode === 'chrome'
           ? isActive
@@ -339,7 +339,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             : 'bg-transparent group'
           : '';
         const chromeWrapperClasses = mode === 'chrome' && !isActive
-          ? 'translate-y-1 hover:translate-y-0.5 transition-transform duration-200 ease-out'
+          ? 'translate-y-1 hover:translate-y-0.5 transition-transform duration-[var(--duration-moderate)] ease-out'
           : undefined;
 
         const buttonEl = (
@@ -366,7 +366,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             {/* Chrome inactive: pattern overlay */}
             {mode === 'chrome' && !isActive && (
               <span
-                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-300 ease-out rdna-pat rdna-pat--spray-grid"
+                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-[var(--duration-slow)] ease-out rdna-pat rdna-pat--spray-grid"
                 style={{
                   ['--pat-color' as string]: 'currentColor',
                 }}

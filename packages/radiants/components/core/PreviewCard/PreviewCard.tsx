@@ -99,7 +99,7 @@ export function PreviewCardContent({
           data-rdna="previewcard"
           className={`
             z-50
-            transition-[opacity,transform,filter] duration-150 ease-out
+            transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
           `.trim()}
