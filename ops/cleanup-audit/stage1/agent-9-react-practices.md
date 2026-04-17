@@ -12,17 +12,17 @@ This report is **read-only**. No files were modified. Findings are sorted by sev
 
 ## Executive Summary
 
-**Total findings:** 22.
+**Total findings:** 21 (IDs REACT-001..REACT-024; REACT-005/008/009 were collapsed into others or re-classified as non-violations).
 
 | Category | Count |
 |---|---|
-| useEffect anti-patterns | 6 |
-| Array-index keys | 4 |
-| Inline-style objects (5+ props, identity re-creation) | 3 |
-| Click-without-keyboard a11y | 3 |
-| Derived state (`useState(prop)` + sync `useEffect`) | 1 |
-| Typography below legible threshold (`text-[10px]` / `fontSize:10`) | 3 |
-| `bg-black` visible surfaces | 2 |
+| useEffect anti-patterns | 5 (REACT-001..004, 006) |
+| Array-index keys | 3 (REACT-007, 010, 011) |
+| Inline-style objects (5+ props) | 3 (REACT-012..014) |
+| Click-without-keyboard a11y | 4 (REACT-015..018) |
+| Derived state (`useState(prop)` + sync `useEffect`) | 1 (REACT-019) |
+| Typography below legible threshold | 3 (REACT-020..022) |
+| `bg-black` visible surfaces | 2 (REACT-023..024) |
 
 **Noteworthy density hotspots:**
 - `apps/rad-os/app/ctrl-preview/page.tsx` — 9+ inline `fontSize:10` inline-style objects; `bg-black`; 1 unlabeled `<div onClick>`.

@@ -187,11 +187,11 @@
       "owner": "agent_scattered_cleanup",
       "finding_ids": [
         "DEFENSIVE-001", "SLOP-001", "SLOP-002", "SLOP-005", "SLOP-006",
-        "LEGACY-007", "WEAK-002"
+        "LEGACY-007", "WEAK-002", "REACT-019", "REACT-020"
       ],
       "risk": "low",
       "status": "approved",
-      "summary": "Scattered small fixes: unreachable SSR guard in WindowTitleBar; running-commentary comments in useKonamiCode and WebGLSun; empty barrel components/ui/index.ts and single-file barrel lib/mockData/index.ts; PropControls legacyEnum dead branch; @rdna/preview ComponentType<any>.",
+      "summary": "Scattered small fixes: unreachable SSR guard in WindowTitleBar; running-commentary comments in useKonamiCode and WebGLSun; empty barrel components/ui/index.ts and single-file barrel lib/mockData/index.ts; PropControls triple-hit (legacyEnum dead branch + derived-state anti-pattern in NumberControl + 5× text-[10px] below 12px floor); @rdna/preview ComponentType<any>.",
       "write_scope": [
         "apps/rad-os/components/Rad_os/WindowTitleBar.tsx",
         "apps/rad-os/hooks/useKonamiCode.ts",
@@ -205,7 +205,8 @@
         "pnpm turbo typecheck --filter=rad-os --filter=@rdna/radiants --filter=@rdna/preview",
         "pnpm --filter rad-os lint",
         "pnpm --filter rad-os test:ci",
-        "pnpm --filter @rdna/radiants test run registry"
+        "pnpm --filter @rdna/radiants test run registry",
+        "pnpm lint:design-system"
       ]
     },
     {
@@ -224,6 +225,32 @@
         "pnpm turbo typecheck --filter=@rdna/radiants",
         "pnpm lint --filter=@rdna/radiants"
       ]
+    },
+    {
+      "wave": 11,
+      "owner": "agent_react_practices",
+      "finding_ids": ["REACT-015", "REACT-016", "REACT-017", "REACT-012"],
+      "risk": "low",
+      "status": "pending_approval",
+      "summary": "React practices batch: add a11y affordances (tabIndex, role, onKeyDown) to three clickable non-interactive elements in ctrl (LayerTreeRow, ColorSwatch) and apps/rad-os (GoodNews DropCapBox); hoist recurring 5+ prop inline-style objects in ctrl-preview to module-level constants. REACT-015 at conf 0.90 is auto-approvable; REACT-016/017/012 at 0.80–0.86 are additive-only edits but bundled here for coordinator review as a class.",
+      "write_scope": [
+        "packages/ctrl/layout/LayerTreeRow/LayerTreeRow.tsx",
+        "packages/ctrl/selectors/ColorSwatch/ColorSwatch.tsx",
+        "apps/rad-os/components/apps/goodnews/GoodNewsLegacyApp.tsx",
+        "apps/rad-os/app/ctrl-preview/page.tsx"
+      ],
+      "verification": [
+        "pnpm --filter @rdna/ctrl build",
+        "pnpm --filter rad-os build",
+        "pnpm --filter rad-os lint",
+        "pnpm --filter rad-os test:ci"
+      ],
+      "sub_status": {
+        "REACT-015": "approved",
+        "REACT-016": "pending_approval",
+        "REACT-017": "pending_approval",
+        "REACT-012": "pending_approval"
+      }
     }
   ],
   "deferred": [
@@ -237,13 +264,19 @@
     { "finding_id": "SLOP-009", "reason": "Thin App.tsx wrappers serve lazy() targets intentionally; conf 0.55." },
     { "finding_id": "SLOP-010", "reason": "Generator banner comments; conf 0.60, stylistic." },
     { "finding_id": "SLOP-003", "reason": "windowsSlice comment restatements; conf 0.74 below threshold." },
-    { "finding_id": "DEFENSIVE-002", "reason": "No-op video error listener; conf 0.72 below threshold." }
+    { "finding_id": "DEFENSIVE-002", "reason": "No-op video error listener; conf 0.72 below threshold." },
+    { "finding_id": "REACT-001", "reason": "useHashRouting listener-rebind via callbacksRef; conf 0.78. Refs-based fix is subjective; depends on store-selector pattern choice." },
+    { "finding_id": "REACT-013", "reason": "NumberInput inline-style memoization; conf 0.68 below threshold." },
+    { "finding_id": "REACT-018", "reason": "ctrl-preview mode toggle a11y; conf 0.75. Preview-only surface, low urgency." },
+    { "finding_id": "REACT-021", "reason": "DesignSystemTab text-[10px] single occurrence; conf 0.70." },
+    { "finding_id": "REACT-023", "reason": "ctrl-preview bg-black vs bg-ctrl-cell-bg token; conf 0.55, stylistic." }
   ],
   "rejected_as_kept": [
     "DEDUP-003", "DEDUP-004", "DEDUP-005",
     "TYPE-009", "TYPE-010",
     "DEFENSIVE-003", "DEFENSIVE-004", "DEFENSIVE-005", "DEFENSIVE-006", "DEFENSIVE-007", "DEFENSIVE-008", "DEFENSIVE-009", "DEFENSIVE-010", "DEFENSIVE-011", "DEFENSIVE-012", "DEFENSIVE-013", "DEFENSIVE-014", "DEFENSIVE-015", "DEFENSIVE-016", "DEFENSIVE-017", "DEFENSIVE-018", "DEFENSIVE-019", "DEFENSIVE-020", "DEFENSIVE-021", "DEFENSIVE-022", "DEFENSIVE-023", "DEFENSIVE-024", "DEFENSIVE-025", "DEFENSIVE-026", "DEFENSIVE-027",
     "WEAK-018", "WEAK-019",
-    "LEGACY-KEEP-001", "LEGACY-KEEP-002", "LEGACY-KEEP-003", "LEGACY-KEEP-004", "LEGACY-KEEP-005", "LEGACY-KEEP-006"
+    "LEGACY-KEEP-001", "LEGACY-KEEP-002", "LEGACY-KEEP-003", "LEGACY-KEEP-004", "LEGACY-KEEP-005", "LEGACY-KEEP-006",
+    "REACT-002", "REACT-003", "REACT-004", "REACT-006", "REACT-010", "REACT-011", "REACT-014", "REACT-022", "REACT-024"
   ]
 }
