@@ -2,15 +2,15 @@
 
 import React from 'react';
 import { cva } from 'class-variance-authority';
+import type { CardRounded, CardVariant } from './Card.meta';
 
 
 
 // ============================================================================
-// Types
+// Types (enums re-exported from ./Card.meta)
 // ============================================================================
 
-type CardVariant = 'default' | 'inverted' | 'raised';
-type CardRounded = 'sm' | 'md' | 'lg';
+export type { CardRounded, CardVariant };
 
 const CARD_PIXEL_CLASS: Record<CardRounded, string> = {
   sm: 'pixel-rounded-sm',

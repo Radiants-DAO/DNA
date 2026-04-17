@@ -1,8 +1,15 @@
 'use client';
 
 import { Avatar as BaseAvatar } from '@base-ui/react/avatar';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
+import type { AvatarShape, AvatarSize } from './Avatar.meta';
 
+
+// ============================================================================
+// Type re-exports (canonical in ./Avatar.meta)
+// ============================================================================
+
+export type { AvatarShape, AvatarSize };
 
 // ============================================================================
 // CVA Variants
@@ -17,11 +24,11 @@ const avatarVariants = cva(
         md: 'h-8 w-8 text-sm',
         lg: 'h-10 w-10 text-base',
         xl: 'h-14 w-14 text-lg',
-      },
+      } satisfies Record<AvatarSize, string>,
       shape: {
         circle: 'rounded-full border border-line',
         square: '',
-      },
+      } satisfies Record<AvatarShape, string>,
     },
     defaultVariants: {
       size: 'md',
@@ -34,7 +41,11 @@ const avatarVariants = cva(
 // Types
 // ============================================================================
 
-interface AvatarProps extends VariantProps<typeof avatarVariants> {
+interface AvatarProps {
+  /** Size preset */
+  size?: AvatarSize;
+  /** Border-radius shape */
+  shape?: AvatarShape;
   /** Image source URL */
   src?: string;
   /** Alt text for the image */

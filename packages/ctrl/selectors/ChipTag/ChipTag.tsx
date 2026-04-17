@@ -1,22 +1,13 @@
 'use client';
 
 import { cva } from 'class-variance-authority';
-import type { ControlSize } from '../../primitives/types';
+import type { ChipTagProps } from './ChipTag.meta';
 
 // =============================================================================
 // ChipTag — Selectable pill labels, single or multi-select
 // =============================================================================
 
-interface ChipTagProps {
-  value: string | string[];
-  onChange: (value: string | string[]) => void;
-  options: string[];
-  mode?: 'single' | 'multi';
-  label?: string;
-  disabled?: boolean;
-  size?: ControlSize;
-  className?: string;
-}
+export type { ChipTagProps };
 
 const chipVariants = cva(
   'font-mono uppercase tracking-wider rounded-full outline-none transition-colors duration-fast',

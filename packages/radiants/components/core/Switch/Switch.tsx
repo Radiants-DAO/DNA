@@ -3,30 +3,14 @@
 import { useId } from 'react';
 import { cva } from 'class-variance-authority';
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
+import type { SwitchProps, SwitchSize } from './Switch.meta';
 
 
 // ============================================================================
-// Types
+// Types (re-exported from ./Switch.meta)
 // ============================================================================
 
-type SwitchSize = 'sm' | 'md' | 'lg';
-
-interface SwitchProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  size?: SwitchSize;
-  disabled?: boolean;
-  /** Form field name for submission */
-  name?: string;
-  /** Whether the switch is required for form validation */
-  required?: boolean;
-  /** Whether the switch is read-only */
-  readOnly?: boolean;
-  label?: string;
-  labelPosition?: 'left' | 'right';
-  className?: string;
-  id?: string;
-}
+export type { SwitchProps, SwitchSize };
 
 // ============================================================================
 // CVA Variants

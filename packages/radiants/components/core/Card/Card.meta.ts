@@ -1,8 +1,11 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface CardProps {
-  variant?: "default" | "inverted" | "raised";
-  rounded?: "sm" | "md" | "lg";
+export type CardVariant = "default" | "inverted" | "raised";
+export type CardRounded = "sm" | "md" | "lg";
+
+export interface CardProps {
+  variant?: CardVariant;
+  rounded?: CardRounded;
 }
 
 export const CardMeta = defineComponentMeta<CardProps>()({

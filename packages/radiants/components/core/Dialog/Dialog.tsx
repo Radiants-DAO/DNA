@@ -3,11 +3,15 @@
 import React, { useState, useCallback } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import type { DialogProps } from './Dialog.meta';
 
 
 // ============================================================================
-// Types
+// Types (root contract re-exported from ./Dialog.meta)
 // ============================================================================
+
+export type { DialogProps };
+
 
 interface DialogState {
   open: boolean;

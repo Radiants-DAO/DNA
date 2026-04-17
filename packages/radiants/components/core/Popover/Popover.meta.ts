@@ -1,10 +1,23 @@
+import type React from "react";
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface PopoverProps {
+export type PopoverPosition = "top" | "bottom" | "left" | "right";
+
+export interface PopoverProps {
+  /** Controlled open state */
   open?: boolean;
+  /** Default open state */
   defaultOpen?: boolean;
-  onOpenChange?: string;
-  position?: string;
+  /** Callback when open state changes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  /** Callback fired after open/close animations complete */
+  onOpenChangeComplete?: (open: boolean) => void;
+  /** Ref for imperative actions (close, unmount) */
+  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
+  /** Position relative to trigger */
+  position?: PopoverPosition;
+  /** Children */
+  children: React.ReactNode;
 }
 
 export const PopoverMeta = defineComponentMeta<PopoverProps>()({
