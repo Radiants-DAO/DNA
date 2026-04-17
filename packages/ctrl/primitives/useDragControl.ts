@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { clamp } from './math';
 import type { DragControlConfig, DragControlReturn, Point2D } from './types';
 
 // =============================================================================
@@ -12,10 +13,6 @@ import type { DragControlConfig, DragControlReturn, Point2D } from './types';
 
 const DEFAULT_SENSITIVITY = 4; // px per unit of value change
 const LARGE_STEP_MULTIPLIER = 10;
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
 
 function snapToStep(value: number, step: number, min: number): number {
   if (step <= 0) return value;

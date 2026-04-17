@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { cva } from 'class-variance-authority';
+import { clamp } from '../../primitives/math';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
@@ -39,10 +40,6 @@ const buttonVariants = cva(
     defaultVariants: { size: 'md' },
   },
 );
-
-function clamp(v: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, v));
-}
 
 export function Stepper({
   value,
