@@ -1,0 +1,195 @@
+[
+  {
+    "finding_id": "DEAD-001",
+    "agent_area": "dead_code",
+    "title": "Unused npm dependency `motion` in apps/rad-os",
+    "classification": "dead_code",
+    "confidence": 0.96,
+    "blast_radius": "high",
+    "evidence": [
+      { "file": "apps/rad-os/package.json", "lines": "28" }
+    ],
+    "summary": "`motion@^12.38.0` is declared in the rad-os dependencies but no source file imports anything from `motion` or `motion/*`. All repo-wide `rg` matches for `motion` in code refer to the CSS/design-system `motion` token namespace, not the npm package.",
+    "proposed_action": "Remove the `motion` entry from `apps/rad-os/package.json` dependencies and run `pnpm install` to refresh the lockfile.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"from ['\\\"]motion['\\\"]|from ['\\\"]motion/|require\\\\(['\\\"]motion['\\\"]\\\\)|require\\\\(['\\\"]motion/\" --glob '!node_modules' --glob '!.next' --glob '!.turbo' --glob '!archive'",
+      "pnpm install",
+      "pnpm --filter rad-os build"
+    ],
+    "edit_scope": [
+      "apps/rad-os/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "finding_id": "DEAD-002",
+    "agent_area": "dead_code",
+    "title": "Unused npm dependency `motion` in @rdna/radiants",
+    "classification": "dead_code",
+    "confidence": 0.96,
+    "blast_radius": "high",
+    "evidence": [
+      { "file": "packages/radiants/package.json", "lines": "146" }
+    ],
+    "summary": "`motion@^12.38.0` is declared under `dependencies` in the radiants package but no `.ts`/`.tsx` file anywhere in the monorepo imports from `motion`. `@rdna/radiants` publishes publicly so an unused runtime dep bloats every downstream install.",
+    "proposed_action": "Remove the `motion` entry from `packages/radiants/package.json` dependencies and regenerate the lockfile.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"from ['\\\"]motion['\\\"]|from ['\\\"]motion/\" --glob '!node_modules' --glob '!archive'",
+      "pnpm install",
+      "pnpm --filter @rdna/radiants test:ci"
+    ],
+    "edit_scope": [
+      "packages/radiants/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "finding_id": "DEAD-003",
+    "agent_area": "dead_code",
+    "title": "Unused npm dependency `ts-node` in apps/rad-os",
+    "classification": "dead_code",
+    "confidence": 0.95,
+    "blast_radius": "high",
+    "evidence": [
+      { "file": "apps/rad-os/package.json", "lines": "58" }
+    ],
+    "summary": "`ts-node@^10.9.2` is declared in rad-os devDependencies. Nothing in the repo (`scripts/`, configs, `.json`, `.mjs`, `.mts`, `.ts`, `.tsx`) references `ts-node` outside the one `package.json` line. TypeScript scripts in this repo use `node --experimental-strip-types` (see `packages/radiants/package.json`).",
+    "proposed_action": "Remove the `ts-node` entry from `apps/rad-os/package.json` devDependencies.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"ts-node\" --glob '!node_modules' --glob '!archive' --glob '!.next' --glob '!.turbo'",
+      "pnpm install",
+      "pnpm --filter rad-os build"
+    ],
+    "edit_scope": [
+      "apps/rad-os/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "finding_id": "DEAD-004",
+    "agent_area": "dead_code",
+    "title": "Superseded generator script `generate-icons.mjs`",
+    "classification": "dead_code",
+    "confidence": 0.94,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/scripts/generate-icons.mjs", "lines": "1-50" },
+      { "file": "packages/radiants/package.json", "lines": "111" },
+      { "file": "knip.json", "lines": "40-41" }
+    ],
+    "summary": "`generate-icons.mjs` was superseded by the TypeScript rewrite `generate-icons.ts`, which is the script invoked by `generate:icons` (`package.json:111`) and imported by the freshness test at `packages/radiants/test/generate-icons.test.ts`. The `.mjs` copy has no active consumer and is explicitly parked in `knip.json` `ignoreFiles`. Agent 1 also flagged it as a likely dead-code shim during dedup audit.",
+    "proposed_action": "Delete `packages/radiants/scripts/generate-icons.mjs` and drop the matching entry from `knip.json` `workspaces.packages/radiants.ignoreFiles`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"generate-icons\\\\.mjs\" --glob '!node_modules' --glob '!archive'",
+      "pnpm --filter @rdna/radiants run generate:icons",
+      "pnpm --filter @rdna/radiants test:ci"
+    ],
+    "edit_scope": [
+      "packages/radiants/scripts/generate-icons.mjs",
+      "knip.json"
+    ]
+  },
+  {
+    "finding_id": "DEAD-005",
+    "agent_area": "dead_code",
+    "title": "Dead layout primitive `WindowTabs` (no importers)",
+    "classification": "dead_code",
+    "confidence": 0.93,
+    "blast_radius": "medium",
+    "evidence": [
+      { "file": "apps/rad-os/components/Rad_os/WindowTabs.tsx", "lines": "1-40" },
+      { "file": "apps/rad-os/components/Rad_os/index.ts", "lines": "6" }
+    ],
+    "summary": "`WindowTabs` was shipped as a compound layout primitive but no current source file imports it — all hits outside the file and the barrel live in `archive/plans/`, `docs/plans/`, and Playwright snapshots. Tests do not reference it either.",
+    "proposed_action": "Delete `apps/rad-os/components/Rad_os/WindowTabs.tsx` and remove the `export { WindowTabs } from './WindowTabs';` line in `components/Rad_os/index.ts`.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"WindowTabs\" --glob '*.ts' --glob '*.tsx' --glob '!archive' --glob '!docs' --glob '!.playwright-mcp' | rg -v 'WindowTabs\\\\.tsx|Rad_os/index\\\\.ts'",
+      "pnpm --filter rad-os lint",
+      "pnpm --filter rad-os test:ci"
+    ],
+    "edit_scope": [
+      "apps/rad-os/components/Rad_os/WindowTabs.tsx",
+      "apps/rad-os/components/Rad_os/index.ts"
+    ]
+  },
+  {
+    "finding_id": "DEAD-006",
+    "agent_area": "dead_code",
+    "title": "Dead layout primitive `WindowSidebar` (no importers)",
+    "classification": "dead_code",
+    "confidence": 0.93,
+    "blast_radius": "medium",
+    "evidence": [
+      { "file": "apps/rad-os/components/Rad_os/WindowSidebar.tsx", "lines": "1-40" },
+      { "file": "apps/rad-os/components/Rad_os/index.ts", "lines": "7" }
+    ],
+    "summary": "`WindowSidebar` is re-exported from `components/Rad_os/index.ts` but nothing imports it. All non-self hits are in `archive/plans/`, `archive/brainstorms/`, and `docs/CODEMAP.md`. The component was never wired up in production.",
+    "proposed_action": "Delete `apps/rad-os/components/Rad_os/WindowSidebar.tsx` and remove the `export { WindowSidebar } from './WindowSidebar';` line in `components/Rad_os/index.ts`.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"WindowSidebar\" --glob '*.ts' --glob '*.tsx' --glob '!archive' --glob '!docs' | rg -v 'WindowSidebar\\\\.tsx|Rad_os/index\\\\.ts'",
+      "pnpm --filter rad-os lint",
+      "pnpm --filter rad-os test:ci"
+    ],
+    "edit_scope": [
+      "apps/rad-os/components/Rad_os/WindowSidebar.tsx",
+      "apps/rad-os/components/Rad_os/index.ts"
+    ]
+  },
+  {
+    "finding_id": "DEAD-007",
+    "agent_area": "dead_code",
+    "title": "Dead component `PatternsTab` (zero importers)",
+    "classification": "dead_code",
+    "confidence": 0.92,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "apps/rad-os/components/ui/PatternsTab.tsx", "lines": "93-99" }
+    ],
+    "summary": "`PatternsTab` is exported from `apps/rad-os/components/ui/PatternsTab.tsx` but no source file imports it. The sibling barrel `components/ui/index.ts` contains only a comment (no re-exports). All non-self matches live in `archive/reports/` and `docs/plans/`.",
+    "proposed_action": "Delete `apps/rad-os/components/ui/PatternsTab.tsx`. Coordinate with DEAD-008 for the now-fully-empty `components/ui/` directory.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"PatternsTab\" --glob '*.ts' --glob '*.tsx' --glob '!archive' --glob '!docs'",
+      "pnpm --filter rad-os lint",
+      "pnpm --filter rad-os test:ci"
+    ],
+    "edit_scope": [
+      "apps/rad-os/components/ui/PatternsTab.tsx"
+    ]
+  },
+  {
+    "finding_id": "DEAD-008",
+    "agent_area": "dead_code",
+    "title": "Unused public helper `getPatternsByDensity` in @rdna/radiants/patterns",
+    "classification": "dead_code",
+    "confidence": 0.78,
+    "blast_radius": "medium",
+    "evidence": [
+      { "file": "packages/radiants/patterns/index.ts", "lines": "14-15" }
+    ],
+    "summary": "`export const getPatternsByDensity` has no importer anywhere in the monorepo. Sibling helpers (`getPatternByName`, `getPatternsByGroup`, `PATTERN_GROUPS`) are actively used. Because `@rdna/radiants` publishes publicly (`publishConfig.access: public`) and `patterns` is an exposed subpath, external consumers may rely on it; confidence is intentionally under 0.80 for that reason.",
+    "proposed_action": "Report-only for now. If a public-API survey confirms no external consumer, remove the helper in a coordinator-approved minor release wave. Otherwise keep with an explicit `/** @public */` or deprecate first.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "rg -n \"getPatternsByDensity\" --glob '!node_modules' --glob '!archive'",
+      "pnpm --filter @rdna/radiants test:ci"
+    ],
+    "edit_scope": [
+      "packages/radiants/patterns/index.ts"
+    ]
+  }
+]
