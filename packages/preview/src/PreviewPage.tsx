@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import type { ComponentType } from "react";
 import { useSearchParams } from "next/navigation";
 
-type ComponentRegistry = Record<string, ComponentType<any>>;
+type ComponentRegistry = Record<string, ComponentType<Record<string, unknown>>>;
 
 function ComponentRenderer({ registry }: { registry: ComponentRegistry }) {
   const params = useSearchParams();

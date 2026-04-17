@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { PropDef, RenderMode } from "./types";
 import { Toggle } from "../components/core/Toggle/Toggle";
 import { ToggleGroup } from "../components/core/ToggleGroup/ToggleGroup";
@@ -45,9 +45,6 @@ export interface PropControlsProps {
 function getEnumValues(prop: PropDef): Array<string | number> | undefined {
   if (prop.options?.length) return prop.options;
   if (prop.values?.length) return prop.values;
-
-  const legacyEnum = (prop as PropDef & { enum?: Array<string | number> }).enum;
-  if (legacyEnum?.length) return legacyEnum;
 
   return undefined;
 }
@@ -176,7 +173,7 @@ function StringControl({
       value={value}
       onChange={(event) => onChange(name, event.target.value)}
       placeholder={name}
-      className="w-full rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-[10px] text-main outline-none placeholder:text-mute focus:border-main"
+      className="w-full rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-xs text-main outline-none placeholder:text-mute focus:border-main"
     />
   );
 }
@@ -190,26 +187,27 @@ function NumberControl({
   value: number;
   onChange: (name: string, value: number) => void;
 }) {
-  const [raw, setRaw] = useState(String(value));
-
-  useEffect(() => {
-    setRaw(String(value));
-  }, [value]);
+  const [draft, setDraft] = useState<string | null>(null);
 
   return (
     <input
       type="number"
-      value={raw}
+      value={draft ?? String(value)}
       onChange={(event) => {
-        setRaw(event.target.value);
+        setDraft(event.target.value);
         const nextValue = Number(event.target.value);
 
         if (event.target.value !== "" && !Number.isNaN(nextValue)) {
           onChange(name, nextValue);
         }
       }}
-      onBlur={() => setRaw(String(value))}
-      className="w-full rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-[10px] text-main outline-none focus:border-main"
+      onBlur={() => setDraft(null)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          event.currentTarget.blur();
+        }
+      }}
+      className="w-full rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-xs text-main outline-none focus:border-main"
     />
   );
 }
@@ -229,7 +227,7 @@ function ReactNodeControl({
       onChange={(event) => onChange(name, event.target.value)}
       placeholder={name}
       rows={2}
-      className="w-full resize-none rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-[10px] text-main outline-none placeholder:text-mute focus:border-main"
+      className="w-full resize-none rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-xs text-main outline-none placeholder:text-mute focus:border-main"
     />
   );
 }
@@ -254,7 +252,7 @@ export function PropControls({
   if (controllable.length === 0) {
     return (
       <div className="px-2 py-3">
-        <span className="font-mono text-[10px] text-mute">
+        <span className="font-mono text-xs text-mute">
           No controllable props
         </span>
       </div>
@@ -292,7 +290,7 @@ export function PropControls({
             const enumValues = getEnumValues(prop);
             return (
               <div key={name} className="flex flex-col gap-0.5">
-                <label className="font-mono text-[10px] text-mute">
+                <label className="font-mono text-xs text-mute">
                   {name}
                 </label>
                 {enumValues ? (
