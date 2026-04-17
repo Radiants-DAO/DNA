@@ -104,7 +104,7 @@ export interface AppWindowContentProps {
   layout?: ContentLayout;
 }
 
-export type ContentLayout = 'single' | 'split' | 'sidebar' | 'bleed';
+export type ContentLayout = 'single' | 'split' | 'sidebar' | 'three' | 'bleed';
 
 export interface AppWindowIslandProps {
   children: React.ReactNode;

@@ -53,6 +53,10 @@
   @apply flex gap-1.5;
 }
 
+[data-aw="layout"][data-layout="three"] {
+  @apply flex gap-1.5;
+}
+
 [data-aw="layout"][data-layout="bleed"] {
   @apply h-full flex flex-col;
 }
