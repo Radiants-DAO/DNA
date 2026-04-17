@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { EditorialSettings } from '../../types';
+import { useFontsReady } from '../shared/useFontsReady';
 import {
   computeEditorialLayout,
   type EditorialLayoutElement,
@@ -144,35 +145,18 @@ export function EditorialView({
   const cacheRef = useRef<Map<string, PreparedTextWithSegments>>(new Map());
   const [result, setResult] = useState<EditorialLayoutResult | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const ready =
-      typeof document !== 'undefined' && 'fonts' in document && document.fonts?.ready
-        ? document.fonts.ready
-        : Promise.resolve();
-
-    void ready.then(() => {
-      if (cancelled) {
-        return;
-      }
-
-      setResult(
-        computeEditorialLayout({
-          blocks,
-          containerWidth,
-          desiredColumns: settings.columnCount,
-          dropCap: settings.dropCap,
-          pullquote: settings.pullquote,
-          assets,
-          cache: cacheRef.current,
-        }),
-      );
-    });
-
-    return () => {
-      cancelled = true;
-    };
+  useFontsReady(() => {
+    setResult(
+      computeEditorialLayout({
+        blocks,
+        containerWidth,
+        desiredColumns: settings.columnCount,
+        dropCap: settings.dropCap,
+        pullquote: settings.pullquote,
+        assets,
+        cache: cacheRef.current,
+      }),
+    );
   }, [
     assets,
     blocks,
