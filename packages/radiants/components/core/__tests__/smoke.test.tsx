@@ -8,7 +8,6 @@ import {
   Checkbox,
   Radio,
   Tabs,
-  useTabsState,
   ToastProvider,
   useToast,
   Tooltip,
@@ -41,7 +40,6 @@ test('selection cluster exports are defined', () => {
 
 test('navigation cluster exports are defined', () => {
   expect(Tabs).toBeTruthy();
-  expect(useTabsState).toBeTruthy();
 });
 
 test('form cluster exports are defined', () => {

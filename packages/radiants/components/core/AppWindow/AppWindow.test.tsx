@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AppWindow, AppWindowBody, AppWindowPane, AppWindowSplitView } from './AppWindow';
+import { AppWindow } from './AppWindow';
 
 class ResizeObserverMock {
   observe() {}
@@ -22,7 +22,9 @@ describe('AppWindow', () => {
   test('renders desktop presentation with title and window body', () => {
     render(
       <AppWindow id="about" title="About">
-        <AppWindowBody>Body content</AppWindowBody>
+        <AppWindow.Content>
+          <AppWindow.Island>Body content</AppWindow.Island>
+        </AppWindow.Content>
       </AppWindow>,
     );
 
@@ -33,7 +35,9 @@ describe('AppWindow', () => {
   test('renders windowed presentation with the expected shadow and resize handles', () => {
     render(
       <AppWindow id="about" title="About">
-        <AppWindowBody>Body content</AppWindowBody>
+        <AppWindow.Content>
+          <AppWindow.Island>Body content</AppWindow.Island>
+        </AppWindow.Content>
       </AppWindow>,
     );
 
@@ -46,7 +50,9 @@ describe('AppWindow', () => {
   test('renders an unfocused overlay using rdna-pat diagonal-dots pattern', () => {
     const { container } = render(
       <AppWindow id="about" title="About" focused={false}>
-        <AppWindowBody>Body content</AppWindowBody>
+        <AppWindow.Content>
+          <AppWindow.Island>Body content</AppWindow.Island>
+        </AppWindow.Content>
       </AppWindow>,
     );
 
@@ -54,21 +60,6 @@ describe('AppWindow', () => {
     expect(overlay).toBeInTheDocument();
     expect(overlay?.getAttribute('style')).toContain('--pat-color');
     expect(overlay).toHaveClass('pointer-events-none');
-  });
-
-  test('renders split compare panes with shared window layout helper', () => {
-    render(
-      <AppWindow id="lab" title="Control Surface Lab">
-        <AppWindowSplitView>
-          <AppWindowPane padding="sm">Legacy pane</AppWindowPane>
-          <AppWindowPane padding="sm">RDNA pane</AppWindowPane>
-        </AppWindowSplitView>
-      </AppWindow>,
-    );
-
-    expect(screen.getByText('Legacy pane')).toBeInTheDocument();
-    expect(screen.getByText('RDNA pane')).toBeInTheDocument();
-    expect(document.querySelector('[data-window-layout="split"]')).toBeInTheDocument();
   });
 
   test('renders mobile presentation with close action', async () => {
@@ -140,7 +131,9 @@ describe('AppWindow', () => {
 
     render(
       <AppWindow id="about" title="About" autoCenter onPositionChange={onPositionChange}>
-        <AppWindowBody>Body content</AppWindowBody>
+        <AppWindow.Content>
+          <AppWindow.Island>Body content</AppWindow.Island>
+        </AppWindow.Content>
       </AppWindow>,
     );
 
@@ -241,16 +234,6 @@ describe('AppWindow', () => {
       expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
       expect(screen.getByText('Below toolbar')).toBeInTheDocument();
       expect(document.querySelector('[data-window-toolbar]')).toBeInTheDocument();
-    });
-
-    test('bare children still render in content area (backward compat)', () => {
-      render(
-        <AppWindow id="test" title="Test">
-          <AppWindowBody>Legacy content</AppWindowBody>
-        </AppWindow>,
-      );
-
-      expect(screen.getByText('Legacy content')).toBeInTheDocument();
     });
 
     test('Toolbar works without Nav', () => {

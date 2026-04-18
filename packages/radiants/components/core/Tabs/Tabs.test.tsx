@@ -228,11 +228,4 @@ describe('Tabs', () => {
     });
   });
 
-  // ── Backward compat: useTabsState still exported ───────────
-
-  it('exports useTabsState for backward compatibility', async () => {
-    const mod = await import('./Tabs');
-    expect(mod.useTabsState).toBeDefined();
-    expect(typeof mod.useTabsState).toBe('function');
-  });
 });

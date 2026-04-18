@@ -77,13 +77,6 @@ export interface AppWindowBodyProps {
   noScroll?: boolean;
 }
 
-export interface AppWindowSplitViewProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export interface AppWindowPaneProps extends AppWindowBodyProps {}
-
 // --- Compound Children Types ---
 
 export interface AppWindowNavProps {
@@ -153,44 +146,6 @@ interface AppWindowChromeContext {
 
 const AppWindowChromeCtx = React.createContext<AppWindowChromeContext | null>(null);
 const AppWindowContentDepthCtx = React.createContext(0);
-
-function renderWindowBodyShell({
-  children,
-  padding = 'lg',
-  bordered = true,
-  bgClassName = 'bg-card',
-  noScroll = false,
-}: AppWindowBodyProps) {
-  const shellClasses = [
-    'h-full',
-    bordered ? 'border border-line rounded' : '',
-    bgClassName,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const paddingClass = PADDING_MAP[padding];
-
-  if (noScroll) {
-    return (
-      <div
-        className={[shellClasses, paddingClass].filter(Boolean).join(' ')}
-        style={{ maxHeight: 'var(--app-content-max-height, none)' }}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  return (
-    <ScrollArea.Root
-      className={shellClasses}
-      style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
-    >
-      {paddingClass ? <div className={paddingClass}>{children}</div> : children}
-    </ScrollArea.Root>
-  );
-}
 
 function getMaxWindowSize(viewportBottomInset: number, viewportMargin: number): { width: number; height: number } {
   if (typeof window === 'undefined') {
@@ -375,70 +330,7 @@ function AppWindowTitleBar({
         <Separator />
       </div>
 
-      {/* Registered nav content, or portal slot for legacy apps */}
-      {navContent || <div id={`window-titlebar-slot-${id}`} className="contents" />}
-    </div>
-  );
-}
-
-/**
- * @deprecated Use `<AppWindow.Content><AppWindow.Island>` instead.
- */
-function AppWindowBody({
-  children,
-  className = '',
-  padding = 'lg',
-  bordered = true,
-  bgClassName = 'bg-card',
-  noScroll = false,
-}: AppWindowBodyProps) {
-  return (
-    <div className={`flex-1 min-h-0 mx-2 ${className}`.trim()}>
-      {renderWindowBodyShell({
-        children,
-        padding,
-        bordered,
-        bgClassName,
-        noScroll,
-      })}
-    </div>
-  );
-}
-
-/**
- * @deprecated Use `<AppWindow.Content layout="split">` with two `<AppWindow.Island>` children instead.
- */
-function AppWindowSplitView({ children, className = '' }: AppWindowSplitViewProps) {
-  return (
-    <div
-      className={`flex flex-1 min-h-0 gap-1 px-2 pb-2 ${className}`.trim()}
-      data-window-layout="split"
-    >
-      {children}
-    </div>
-  );
-}
-
-/**
- * @deprecated Use `<AppWindow.Island>` inside `<AppWindow.Content layout="split">` instead.
- */
-function AppWindowPane({
-  children,
-  className = '',
-  padding = 'lg',
-  bordered = true,
-  bgClassName = 'bg-card',
-  noScroll = false,
-}: AppWindowPaneProps) {
-  return (
-    <div className={`flex-1 min-w-0 min-h-0 ${className}`.trim()}>
-      {renderWindowBodyShell({
-        children,
-        padding,
-        bordered,
-        bgClassName,
-        noScroll,
-      })}
+      {navContent}
     </div>
   );
 }
@@ -1068,12 +960,7 @@ const AppWindowCompound = Object.assign(AppWindow, {
   Content: AppWindowContent,
   Island: AppWindowIsland,
   Banner: AppWindowBanner,
-  // Legacy — deprecated, use Content + Island instead
-  Body: AppWindowBody,
-  SplitView: AppWindowSplitView,
-  Pane: AppWindowPane,
 });
 
-// Named exports: compound AppWindow + individual sub-components for backward compat
-export { AppWindowCompound as AppWindow, AppWindowBody, AppWindowSplitView, AppWindowPane };
+export { AppWindowCompound as AppWindow };
 export default AppWindowCompound;

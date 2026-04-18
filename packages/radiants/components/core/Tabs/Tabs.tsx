@@ -414,51 +414,6 @@ function Indicator({ className = '' }: { className?: string }) {
 }
 
 // ============================================================================
-// Backward compat: useTabsState
-// ============================================================================
-
-/** @deprecated Use <Tabs defaultValue={...} mode={...}> directly. */
-export function useTabsState({
-  defaultValue = '',
-  value,
-  onValueChange,
-  mode = 'capsule',
-  layout = 'bottom-tabs',
-}: {
-  defaultValue?: string;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  mode?: TabsMode;
-  layout?: string;
-} = {}) {
-  const [internal, setInternal] = useState(defaultValue);
-  const isControlled = value !== undefined;
-  const activeTab = isControlled ? value : internal;
-
-  const setActiveTab = useCallback((newValue: string) => {
-    if (!isControlled) setInternal(newValue);
-    onValueChange?.(newValue);
-  }, [isControlled, onValueChange]);
-
-  // Map old layout values to new position values
-  const positionMap: Record<string, TabsPosition> = {
-    'default': 'top',
-    'bottom-tabs': 'bottom',
-    'sidebar': 'left',
-  };
-
-  return {
-    state: { activeTab },
-    actions: { setActiveTab },
-    meta: {
-      mode,
-      layout,
-      position: positionMap[layout] ?? 'top',
-    },
-  };
-}
-
-// ============================================================================
 // Public API
 // ============================================================================
 
