@@ -1,9 +1,9 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-type AvatarSize = "sm" | "md" | "lg" | "xl";
-type AvatarShape = "circle" | "square";
+export type AvatarSize = "sm" | "md" | "lg" | "xl";
+export type AvatarShape = "circle" | "square";
 
-interface AvatarProps {
+export interface AvatarProps {
   src?: string;
   alt?: string;
   fallback?: string;

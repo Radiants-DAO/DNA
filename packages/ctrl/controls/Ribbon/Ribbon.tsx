@@ -2,6 +2,7 @@
 
 import React, { useCallback, useRef, useState } from 'react';
 import { cva } from 'class-variance-authority';
+import { clamp } from '../../primitives/math';
 import type { ContinuousControlProps, ControlSize } from '../../primitives/types';
 
 // =============================================================================
@@ -34,10 +35,6 @@ const ribbonVariants = cva(
 interface RibbonProps extends ContinuousControlProps {
   /** When true, value snaps to center ((min+max)/2) on pointer release */
   springReturn?: boolean;
-}
-
-function clamp(v: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, v));
 }
 
 export function Ribbon({

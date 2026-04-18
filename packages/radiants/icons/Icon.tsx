@@ -4,21 +4,7 @@ import { memo, useEffect, useState, type ComponentType } from 'react';
 
 import { getIconImporter, resolveIconRequest } from './resolve-icon';
 import type { IconProps as SvgIconProps, IconSet } from './types';
-
-interface IconProps {
-  /** Icon name (filename without .svg extension) */
-  name: string;
-  /** Render size in CSS pixels. Generated assets come from the 16px or 24px sets. */
-  size?: number;
-  /** When true, renders at 24px (1.5rem) using the 24px icon set. Default: 16px (1rem). */
-  large?: boolean;
-  /** Additional CSS classes for styling (use text-* for color) */
-  className?: string;
-  /** Accessible label for screen readers */
-  'aria-label'?: string;
-  /** Optional asset host/path override. Non-default values use fetched SVG compatibility loading. */
-  basePath?: string;
-}
+import type { DynamicIconProps } from '../components/core/Icon/Icon.meta';
 
 type LoadedIcon = ComponentType<SvgIconProps>;
 const DEFAULT_ICON_BASE_PATH = '/assets/icons';
@@ -86,7 +72,7 @@ function IconComponent({
   className = '',
   'aria-label': ariaLabel,
   basePath = DEFAULT_ICON_BASE_PATH,
-}: IconProps) {
+}: DynamicIconProps) {
   const size = sizeProp ?? (large ? 24 : 16);
   const [LoadedIcon, setLoadedIcon] = useState<LoadedIcon | null>(null);
   const [fetchedSvg, setFetchedSvg] = useState<string | null>(null);

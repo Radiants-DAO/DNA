@@ -37,7 +37,6 @@
         "patterns/pretext-prepare.ts",
         "patterns/pretext-type-scale.ts",
         "scripts/generate-figma-contracts.ts",
-        "scripts/generate-icons.mjs",
         "scripts/generate-icons.ts",
         "scripts/generate-pixel-corners.mjs",
         "scripts/generate-typography-tokens.ts",

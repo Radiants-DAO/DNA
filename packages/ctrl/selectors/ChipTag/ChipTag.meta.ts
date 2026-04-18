@@ -1,13 +1,15 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+import type { ControlSize } from "../../primitives/types";
 
-interface ChipTagProps {
+export interface ChipTagProps {
   value: string | string[];
   onChange: (value: string | string[]) => void;
   options: string[];
   mode?: 'single' | 'multi';
   label?: string;
   disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ControlSize;
+  className?: string;
 }
 
 export const ChipTagMeta = defineComponentMeta<ChipTagProps>()({

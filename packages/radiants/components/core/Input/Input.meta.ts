@@ -5,9 +5,7 @@ import {
   type InputShellProps,
 } from "./Input.types.ts";
 
-interface InputProps extends InputShellProps {
-  iconName?: string;
-}
+type InputProps = InputShellProps;
 
 export const InputMeta = defineComponentMeta<InputProps>()({
   name: "Input",
@@ -23,10 +21,6 @@ export const InputMeta = defineComponentMeta<InputProps>()({
   props: {
     size: inputSizeMetaProp,
     ...sharedInputShellMetaProps,
-    iconName: {
-      type: "string",
-      description: "Icon name for leading icon slot",
-    },
   },
   slots: {
     icon: { description: "Leading icon slot" },

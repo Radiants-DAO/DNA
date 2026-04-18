@@ -143,7 +143,6 @@
     "@chenglou/pretext": "^0.0.4",
     "@rdna/pixel": "workspace:*",
     "class-variance-authority": "^0.7.1",
-    "motion": "^12.38.0",
     "react-draggable": "^4.5.0"
   }
 }

@@ -2,12 +2,8 @@
 
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
-import { Field as BaseField } from '@base-ui/react/field';
-import type {
-  InputShellProps,
-  InputSize,
-  TextAreaShellProps,
-} from './Input.types';
+import { Field as BaseField, type FieldValidity } from '@base-ui/react/field';
+import type { InputShellProps, TextAreaShellProps } from './Input.types';
 
 
 // ============================================================================
@@ -17,8 +13,6 @@ import type {
 interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     InputShellProps {
-  /** @deprecated Use icon prop instead */
-  iconName?: string;
   /** Icon slot - render your icon component here (displays on the left) */
   icon?: React.ReactNode;
   /** Additional classes */
@@ -73,7 +67,7 @@ interface InputErrorProps {
 }
 
 interface InputValidityProps {
-  children: (state: { validity: Record<string, unknown> }) => React.ReactNode;
+  children: (state: FieldValidity.State) => React.ReactNode;
 }
 
 // ============================================================================
@@ -234,13 +228,12 @@ function InputControl({
   size = 'md',
   error = false,
   fullWidth = false,
-  iconName,
   icon,
   className = '',
   ...props
 }: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
   const rootCtx = useInputRootContext();
-  const hasIcon = Boolean(icon || iconName);
+  const hasIcon = Boolean(icon);
   const paddingLeft = hasIcon ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
 
   const classes = inputVariants({
@@ -273,15 +266,7 @@ function InputControl({
     return (
       <div className={fullWidth ? 'relative w-full' : 'relative'}>
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute z-10">
-          {icon || (
-            <div
-              data-icon-slot={iconName}
-              style={{
-                width: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
-                height: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
-              }}
-            />
-          )}
+          {icon}
         </div>
         {wrappedInput}
       </div>

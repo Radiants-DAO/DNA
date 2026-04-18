@@ -8,10 +8,7 @@
     "AppWindow.Toolbar",
     "AppWindow.Content",
     "AppWindow.Island",
-    "AppWindow.Banner",
-    "AppWindowBody",
-    "AppWindowSplitView",
-    "AppWindowPane"
+    "AppWindow.Banner"
   ],
   "props": {
     "id": {
@@ -66,11 +63,11 @@
   "examples": [
     {
       "name": "Desktop window shell",
-      "code": "<AppWindow id=\"about\" title=\"About\">\n  <AppWindowBody>Content</AppWindowBody>\n</AppWindow>"
+      "code": "<AppWindow id=\"about\" title=\"About\">\n  <AppWindow.Content>\n    <AppWindow.Island>Content</AppWindow.Island>\n  </AppWindow.Content>\n</AppWindow>"
     },
     {
       "name": "Two-pane compare layout",
-      "code": "<AppWindow id=\"lab\" title=\"Control Surface Lab\">\n  <AppWindowSplitView>\n    <AppWindowPane>Legacy</AppWindowPane>\n    <AppWindowPane>RDNA</AppWindowPane>\n  </AppWindowSplitView>\n</AppWindow>"
+      "code": "<AppWindow id=\"lab\" title=\"Control Surface Lab\">\n  <AppWindow.Content layout=\"split\">\n    <AppWindow.Island>Legacy</AppWindow.Island>\n    <AppWindow.Island>RDNA</AppWindow.Island>\n  </AppWindow.Content>\n</AppWindow>"
     },
     {
       "name": "Compound: Nav + Toolbar + Content",

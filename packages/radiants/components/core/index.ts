@@ -1,6 +1,6 @@
 // Core component exports
 export { Alert, alertVariants } from './Alert/Alert';
-export { AppWindow, AppWindowBody, AppWindowSplitView, AppWindowPane } from './AppWindow/AppWindow';
+export { AppWindow } from './AppWindow/AppWindow';
 export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
 export { Button, IconButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';
@@ -14,7 +14,7 @@ export { Spinner } from './Spinner/Spinner';
 export { Select, useSelectState, selectTriggerVariants } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch, switchTrackVariants } from './Switch/Switch';
-export { Tabs, useTabsState, tabsTriggerVariants, tabsRootVariants, tabsListVariants, tabsContentVariants } from './Tabs/Tabs';
+export { Tabs, tabsTriggerVariants, tabsRootVariants, tabsListVariants, tabsContentVariants } from './Tabs/Tabs';
 export type { TabsMode, TabsPosition, TabsTone, TabsSize } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast, ToastAction } from './Toast/Toast';

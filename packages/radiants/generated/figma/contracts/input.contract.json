@@ -47,10 +47,6 @@
     "placeholder": {
       "type": "string",
       "description": "Placeholder text"
-    },
-    "iconName": {
-      "type": "string",
-      "description": "Icon name for leading icon slot"
     }
   },
   "slots": {

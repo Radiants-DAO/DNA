@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { BroadsheetSettings } from '../../types';
+import { useFontsReady } from '../shared/useFontsReady';
 import {
   computeBroadsheetLayout,
   pretextBlocksToBroadsheetModel,
@@ -156,40 +157,23 @@ export function BroadsheetView({
   const cacheRef = useRef<Map<string, PreparedTextWithSegments>>(new Map());
   const [result, setResult] = useState<BroadsheetLayoutResult | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const ready =
-      typeof document !== 'undefined' && 'fonts' in document && document.fonts?.ready
-        ? document.fonts.ready
-        : Promise.resolve();
-
-    void ready.then(() => {
-      if (cancelled) {
-        return;
-      }
-
-      const model = pretextBlocksToBroadsheetModel(blocks, assets);
-      setResult(
-        computeBroadsheetLayout({
-          containerWidth,
-          masthead: settings.masthead || title || 'Broadsheet',
-          dateline,
-          headline: model.headline || title || 'Latest Edition',
-          columns: settings.columns,
-          heroWrap: settings.heroWrap,
-          heroImageSrc:
-            (settings.heroImageKey && assets[settings.heroImageKey]) ||
-            model.heroImageSrc,
-          flow: model.flow,
-          cache: cacheRef.current,
-        }),
-      );
-    });
-
-    return () => {
-      cancelled = true;
-    };
+  useFontsReady(() => {
+    const model = pretextBlocksToBroadsheetModel(blocks, assets);
+    setResult(
+      computeBroadsheetLayout({
+        containerWidth,
+        masthead: settings.masthead || title || 'Broadsheet',
+        dateline,
+        headline: model.headline || title || 'Latest Edition',
+        columns: settings.columns,
+        heroWrap: settings.heroWrap,
+        heroImageSrc:
+          (settings.heroImageKey && assets[settings.heroImageKey]) ||
+          model.heroImageSrc,
+        flow: model.flow,
+        cache: cacheRef.current,
+      }),
+    );
   }, [
     assets,
     blocks,

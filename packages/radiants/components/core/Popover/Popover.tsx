@@ -2,30 +2,14 @@
 
 import React from 'react';
 import { Popover as BasePopover } from '@base-ui/react/popover';
+import type { PopoverProps, PopoverPosition } from './Popover.meta';
 
 
 // ============================================================================
-// Types
+// Types (re-exported from ./Popover.meta)
 // ============================================================================
 
-type PopoverPosition = 'top' | 'bottom' | 'left' | 'right';
-
-interface PopoverProps {
-  /** Controlled open state */
-  open?: boolean;
-  /** Default open state */
-  defaultOpen?: boolean;
-  /** Callback when open state changes — receives Base UI eventDetails as second arg */
-  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
-  /** Callback fired after open/close animations complete */
-  onOpenChangeComplete?: (open: boolean) => void;
-  /** Ref for imperative actions (close, unmount) */
-  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
-  /** Position relative to trigger */
-  position?: PopoverPosition;
-  /** Children */
-  children: React.ReactNode;
-}
+export type { PopoverProps, PopoverPosition };
 
 // ============================================================================
 // Internal context for position passthrough

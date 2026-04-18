@@ -112,6 +112,7 @@ lines.push(``);
 
 // Imports — BlockNote
 lines.push(`import { createReactBlockSpec } from '@blocknote/react';`);
+lines.push(`import type { BlockNoteRenderProps } from '../blocknote/types';`);
 lines.push(``);
 
 // Imports — RDNA components (for auto-generated renders, no custom render file)
@@ -177,18 +178,19 @@ for (const entry of entries) {
   lines.push(`  {`);
 
   if (blockNote.render) {
-    // Custom render function — explicit any to avoid deep BlockNote generic noise
-    lines.push(`    render: (props: any) => render${name}Block(props),`);
+    // Custom render function — typed via BlockNoteRenderProps adapter to keep
+    // @blocknote/react out of radiants' dependencies without resorting to any.
+    lines.push(`    render: (props: BlockNoteRenderProps) => render${name}Block(props),`);
   } else if (content === "inline") {
     // Inline content — component wraps editable contentRef
     const hasChildren = Boolean(meta.slots?.['children']);
     if (hasChildren) {
-      lines.push(`    render: ({ contentRef }: any) => (`);
+      lines.push(`    render: ({ contentRef }: BlockNoteRenderProps) => (`);
       lines.push(`      <${name}><span ref={contentRef} /></${name}>`);
       lines.push(`    ),`);
     } else {
       // No children slot but content: inline — just provide contentRef in a wrapper
-      lines.push(`    render: ({ contentRef }: any) => (`);
+      lines.push(`    render: ({ contentRef }: BlockNoteRenderProps) => (`);
       lines.push(`      <div><${name} /><span ref={contentRef} /></div>`);
       lines.push(`    ),`);
     }

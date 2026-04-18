@@ -1,9 +1,12 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface DialogProps {
+export interface DialogProps {
+  /** Controlled open state */
   open?: boolean;
+  /** Default open state for uncontrolled usage */
   defaultOpen?: boolean;
-  onOpenChange?: string;
+  /** Callback fired when dialog opens or closes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
 }
 
 export const DialogMeta = defineComponentMeta<DialogProps>()({

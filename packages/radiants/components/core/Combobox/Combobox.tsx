@@ -2,11 +2,14 @@
 
 import React from 'react';
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
+import type { ComboboxProps } from './Combobox.meta';
 
 
 // ============================================================================
-// Types
+// Types (root contract re-exported from ./Combobox.meta)
 // ============================================================================
+
+export type { ComboboxProps };
 
 type BaseComboboxRootProps = React.ComponentProps<typeof BaseCombobox.Root>;
 type ComboboxItemValue = React.ComponentProps<typeof BaseCombobox.Item>['value'];

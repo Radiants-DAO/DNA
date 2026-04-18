@@ -1,12 +1,19 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface ComboboxProps {
+export interface ComboboxProps {
+  /** The controlled selected value */
   value?: unknown;
+  /** Default selected value for uncontrolled usage */
   defaultValue?: unknown;
+  /** Callback when value changes */
   onValueChange?: (value: unknown) => void;
-  onOpenChange?: (open: boolean) => void;
+  /** Callback when the popup opens or closes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  /** Callback when input value changes */
   onInputValueChange?: (value: string) => void;
+  /** Whether to auto-highlight the first matching item */
   autoHighlight?: boolean;
+  /** Whether the combobox should ignore user interaction */
   disabled?: boolean;
 }
 

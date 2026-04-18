@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { BookSettings } from '../../types';
+import { useFontsReady } from '../shared/useFontsReady';
 import {
   paginateBookLayout,
   pretextBlocksToBookLayoutBlocks,
@@ -98,34 +99,17 @@ export function BookView({
   const cacheRef = useRef<Map<string, PreparedTextWithSegments>>(new Map());
   const [result, setResult] = useState<BookPaginationResult | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const ready =
-      typeof document !== 'undefined' && 'fonts' in document && document.fonts?.ready
-        ? document.fonts.ready
-        : Promise.resolve();
-
-    void ready.then(() => {
-      if (cancelled) {
-        return;
-      }
-
-      const layoutBlocks = pretextBlocksToBookLayoutBlocks(blocks, assets);
-      const nextResult = paginateBookLayout({
-        blocks: layoutBlocks,
-        pageWidth: settings.pageWidth,
-        pageHeight: settings.pageHeight,
-        columns: settings.columns,
-        obstacles,
-        cache: cacheRef.current,
-      });
-      setResult(nextResult);
+  useFontsReady(() => {
+    const layoutBlocks = pretextBlocksToBookLayoutBlocks(blocks, assets);
+    const nextResult = paginateBookLayout({
+      blocks: layoutBlocks,
+      pageWidth: settings.pageWidth,
+      pageHeight: settings.pageHeight,
+      columns: settings.columns,
+      obstacles,
+      cache: cacheRef.current,
     });
-
-    return () => {
-      cancelled = true;
-    };
+    setResult(nextResult);
   }, [assets, blocks, obstacles, settings.columns, settings.pageHeight, settings.pageWidth]);
 
   const pages = result?.pages ?? [];

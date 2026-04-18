@@ -1,12 +1,21 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface SwitchProps {
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  size?: "sm" | "md" | "lg";
+export type SwitchSize = "sm" | "md" | "lg";
+
+export interface SwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  size?: SwitchSize;
   disabled?: boolean;
+  /** Form field name for submission */
+  name?: string;
+  /** Whether the switch is required for form validation */
+  required?: boolean;
+  /** Whether the switch is read-only */
+  readOnly?: boolean;
   label?: string;
   labelPosition?: "left" | "right";
+  className?: string;
   id?: string;
 }
 

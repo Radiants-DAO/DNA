@@ -1,13 +1,21 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-interface IconProps {
+export interface DynamicIconProps {
+  /** Icon name (filename without .svg extension) */
   name: string;
-  size?: 16 | 24;
+  /** Render size in CSS pixels. Generated assets come from the 16px or 24px sets. */
+  size?: number;
+  /** When true, renders at 24px (1.5rem) using the 24px icon set. Default: 16px (1rem). */
   large?: boolean;
+  /** Additional CSS classes for styling (use text-* for color) */
   className?: string;
+  /** Accessible label for screen readers */
+  'aria-label'?: string;
+  /** Optional asset host/path override. Non-default values use fetched SVG compatibility loading. */
+  basePath?: string;
 }
 
-export const IconMeta = defineComponentMeta<IconProps>()({
+export const IconMeta = defineComponentMeta<DynamicIconProps>()({
   name: "Icon",
   description:
     "Dynamic SVG icon loader with dual-size support. Loads pixel-art icons (16px) or detailed icons (24px). Size is locked to 16 or 24 — no arbitrary scaling.",

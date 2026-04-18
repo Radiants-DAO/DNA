@@ -336,7 +336,6 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       return;
     }
 
-    // Get locations
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
     const texCoordAttributeLocation = gl.getAttribLocation(program, 'a_texCoord');
     const timeUniformLocation = gl.getUniformLocation(program, 'u_time');
@@ -421,7 +420,6 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       gl.STATIC_DRAW
     );
 
-    // Animation loop
     const render = (time: number) => {
       time *= 0.001; // Convert to seconds
 
@@ -463,17 +461,13 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
         sunOffsetY *= 0.95;
       }
 
-      // Set viewport
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-      // Clear canvas
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      // Use program
       gl.useProgram(program);
 
-      // Set uniforms
       gl.uniform1f(timeUniformLocation, time);
       gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
       gl.uniform2f(mouseUniformLocation, smoothMouseX, smoothMouseY);
@@ -483,17 +477,14 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       gl.uniform3f(sunGlowColorLocation, curGlow[0], curGlow[1], curGlow[2]);
       gl.uniform1f(darkModeLocation, curDarkModeVal);
 
-      // Bind position buffer
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       gl.enableVertexAttribArray(positionAttributeLocation);
       gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-      // Bind texture coordinate buffer
       gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
       gl.enableVertexAttribArray(texCoordAttributeLocation);
       gl.vertexAttribPointer(texCoordAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-      // Draw
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
       if (!reduceMotionRef.current) {
@@ -505,10 +496,8 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
 
     renderRef.current = render;
 
-    // Start animation
     animationRef.current = requestAnimationFrame(render);
 
-    // Cleanup
     return () => {
       renderRef.current = null;
       if (animationRef.current) {

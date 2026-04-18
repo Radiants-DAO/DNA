@@ -131,8 +131,6 @@ export function WindowTitleBar({
   const [copied, setCopied] = useState(false);
   // Copy link to clipboard
   const handleCopyLink = async () => {
-    if (typeof window === 'undefined') return;
-    
     const url = `${window.location.origin}${window.location.pathname}#${windowId}`;
     
     try {

@@ -12,8 +12,8 @@ export type PropDefType =
 
 export interface PropDef {
   type: PropDefType;
-  values?: PropEnumValue[];
-  options?: PropEnumValue[];
+  values?: readonly PropEnumValue[];
+  options?: readonly PropEnumValue[];
   default?: unknown;
   required?: boolean;
   description?: string;

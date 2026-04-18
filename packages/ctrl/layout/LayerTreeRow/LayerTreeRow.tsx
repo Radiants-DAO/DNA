@@ -42,6 +42,8 @@ export function LayerTreeRow({
     <div data-rdna="ctrl-layer-tree-row" className={className}>
       {/* Row */}
       <div
+        role="button"
+        tabIndex={0}
         className={[
           'flex items-center min-h-5 font-mono text-[0.625rem] uppercase tracking-wider',
           'transition-all duration-fast cursor-pointer',
@@ -54,6 +56,12 @@ export function LayerTreeRow({
           ...(selected ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : {}),
         }}
         onClick={onSelect}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (e.key === ' ') e.preventDefault();
+            onSelect?.();
+          }
+        }}
       >
         {/* Expand/collapse arrow */}
         {isExpandable ? (

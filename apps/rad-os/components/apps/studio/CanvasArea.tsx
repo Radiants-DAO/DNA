@@ -20,7 +20,7 @@ export function CanvasArea({
   isGridVisible,
   initLayers,
 }: CanvasAreaProps) {
-  const darkMode = usePreferencesStore((state) => state.darkMode);
+  const { darkMode } = usePreferencesStore();
   const gridStrokeColor = darkMode ? '#fef8e220' : '#0f0e0c20';
   return (
     // Outer: fills the available space in the editor row; establishes a size-type

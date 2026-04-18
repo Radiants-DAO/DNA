@@ -4,6 +4,7 @@
 // Components: Alert, AlertDialog, AppWindow, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox, Collapsible, Combobox, ContextMenu, CountdownTimer, Dialog, Drawer, DropdownMenu, Icon, Input, InputSet, Menubar, Meter, NavigationMenu, NumberField, Pattern, Popover, PreviewCard, ScrollArea, Select, Separator, Sheet, Slider, Spinner, Switch, Tabs, Toast, Toggle, ToggleGroup, Toolbar, Tooltip
 
 import { createReactBlockSpec } from '@blocknote/react';
+import type { BlockNoteRenderProps } from '../blocknote/types';
 
 import { Avatar, Badge, Button, Checkbox, Input, Meter, Separator, Spinner, Toggle } from '../components/core';
 import { renderAlertBlock } from '../blocknote/renders/Alert';
@@ -46,7 +47,7 @@ export const alertBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props: any) => renderAlertBlock(props),
+    render: (props: BlockNoteRenderProps) => renderAlertBlock(props),
   },
 );
 
@@ -57,7 +58,7 @@ export const alertdialogBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderAlertDialogBlock(props),
+    render: (props: BlockNoteRenderProps) => renderAlertDialogBlock(props),
   },
 );
 
@@ -70,7 +71,7 @@ export const appwindowBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderAppWindowBlock(props),
+    render: (props: BlockNoteRenderProps) => renderAppWindowBlock(props),
   },
 );
 
@@ -98,7 +99,7 @@ export const badgeBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: ({ contentRef }: any) => (
+    render: ({ contentRef }: BlockNoteRenderProps) => (
       <Badge><span ref={contentRef} /></Badge>
     ),
   },
@@ -111,7 +112,7 @@ export const breadcrumbsBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderBreadcrumbsBlock(props),
+    render: (props: BlockNoteRenderProps) => renderBreadcrumbsBlock(props),
   },
 );
 
@@ -127,7 +128,7 @@ export const buttonBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: ({ contentRef }: any) => (
+    render: ({ contentRef }: BlockNoteRenderProps) => (
       <Button><span ref={contentRef} /></Button>
     ),
   },
@@ -142,7 +143,7 @@ export const cardBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props: any) => renderCardBlock(props),
+    render: (props: BlockNoteRenderProps) => renderCardBlock(props),
   },
 );
 
@@ -164,7 +165,7 @@ export const collapsibleBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props: any) => renderCollapsibleBlock(props),
+    render: (props: BlockNoteRenderProps) => renderCollapsibleBlock(props),
   },
 );
 
@@ -175,7 +176,7 @@ export const comboboxBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderComboboxBlock(props),
+    render: (props: BlockNoteRenderProps) => renderComboboxBlock(props),
   },
 );
 
@@ -186,7 +187,7 @@ export const contextmenuBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderContextMenuBlock(props),
+    render: (props: BlockNoteRenderProps) => renderContextMenuBlock(props),
   },
 );
 
@@ -197,7 +198,7 @@ export const countdowntimerBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderCountdownTimerBlock(props),
+    render: (props: BlockNoteRenderProps) => renderCountdownTimerBlock(props),
   },
 );
 
@@ -208,7 +209,7 @@ export const dialogBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderDialogBlock(props),
+    render: (props: BlockNoteRenderProps) => renderDialogBlock(props),
   },
 );
 
@@ -219,7 +220,7 @@ export const drawerBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderDrawerBlock(props),
+    render: (props: BlockNoteRenderProps) => renderDrawerBlock(props),
   },
 );
 
@@ -230,7 +231,7 @@ export const dropdownmenuBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderDropdownMenuBlock(props),
+    render: (props: BlockNoteRenderProps) => renderDropdownMenuBlock(props),
   },
 );
 
@@ -241,7 +242,7 @@ export const iconBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderIconBlock(props),
+    render: (props: BlockNoteRenderProps) => renderIconBlock(props),
   },
 );
 
@@ -265,7 +266,7 @@ export const inputsetBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderInputSetBlock(props),
+    render: (props: BlockNoteRenderProps) => renderInputSetBlock(props),
   },
 );
 
@@ -276,7 +277,7 @@ export const menubarBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderMenubarBlock(props),
+    render: (props: BlockNoteRenderProps) => renderMenubarBlock(props),
   },
 );
 
@@ -298,7 +299,7 @@ export const navigationmenuBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderNavigationMenuBlock(props),
+    render: (props: BlockNoteRenderProps) => renderNavigationMenuBlock(props),
   },
 );
 
@@ -309,7 +310,7 @@ export const numberfieldBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderNumberFieldBlock(props),
+    render: (props: BlockNoteRenderProps) => renderNumberFieldBlock(props),
   },
 );
 
@@ -323,7 +324,7 @@ export const patternBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props: any) => renderPatternBlock(props),
+    render: (props: BlockNoteRenderProps) => renderPatternBlock(props),
   },
 );
 
@@ -334,7 +335,7 @@ export const popoverBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderPopoverBlock(props),
+    render: (props: BlockNoteRenderProps) => renderPopoverBlock(props),
   },
 );
 
@@ -345,7 +346,7 @@ export const previewcardBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderPreviewCardBlock(props),
+    render: (props: BlockNoteRenderProps) => renderPreviewCardBlock(props),
   },
 );
 
@@ -356,7 +357,7 @@ export const scrollareaBlock = createReactBlockSpec(
     content: 'inline' as const,
   },
   {
-    render: (props: any) => renderScrollAreaBlock(props),
+    render: (props: BlockNoteRenderProps) => renderScrollAreaBlock(props),
   },
 );
 
@@ -367,7 +368,7 @@ export const selectBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderSelectBlock(props),
+    render: (props: BlockNoteRenderProps) => renderSelectBlock(props),
   },
 );
 
@@ -392,7 +393,7 @@ export const sheetBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderSheetBlock(props),
+    render: (props: BlockNoteRenderProps) => renderSheetBlock(props),
   },
 );
 
@@ -405,7 +406,7 @@ export const sliderBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderSliderBlock(props),
+    render: (props: BlockNoteRenderProps) => renderSliderBlock(props),
   },
 );
 
@@ -432,7 +433,7 @@ export const switchBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderSwitchBlock(props),
+    render: (props: BlockNoteRenderProps) => renderSwitchBlock(props),
   },
 );
 
@@ -443,7 +444,7 @@ export const tabsBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderTabsBlock(props),
+    render: (props: BlockNoteRenderProps) => renderTabsBlock(props),
   },
 );
 
@@ -454,7 +455,7 @@ export const toastBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderToastBlock(props),
+    render: (props: BlockNoteRenderProps) => renderToastBlock(props),
   },
 );
 
@@ -476,7 +477,7 @@ export const togglegroupBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderToggleGroupBlock(props),
+    render: (props: BlockNoteRenderProps) => renderToggleGroupBlock(props),
   },
 );
 
@@ -487,7 +488,7 @@ export const toolbarBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderToolbarBlock(props),
+    render: (props: BlockNoteRenderProps) => renderToolbarBlock(props),
   },
 );
 
@@ -501,7 +502,7 @@ export const tooltipBlock = createReactBlockSpec(
     content: 'none' as const,
   },
   {
-    render: (props: any) => renderTooltipBlock(props),
+    render: (props: BlockNoteRenderProps) => renderTooltipBlock(props),
   },
 );
 

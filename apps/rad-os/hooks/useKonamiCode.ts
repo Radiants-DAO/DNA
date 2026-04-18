@@ -52,38 +52,31 @@ export function useKonamiCode({ onActivate, timeout = 2000 }: UseKonamiCodeOptio
     if (typeof window === 'undefined') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Clear any existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
-      // Add key to sequence
       sequenceRef.current.push(e.key);
 
-      // Check if sequence matches so far
       const currentLength = sequenceRef.current.length;
       const expectedSequence = KONAMI_CODE.slice(0, currentLength);
       const currentSequence = sequenceRef.current;
 
-      // Check if current sequence matches expected
       const matches = currentSequence.every(
         (key, index) => key === expectedSequence[index]
       );
 
       if (!matches) {
-        // Reset if sequence doesn't match
         resetSequence();
         return;
       }
 
-      // Check if full sequence is complete
       if (currentLength === KONAMI_CODE.length) {
         onActivate();
         resetSequence();
         return;
       }
 
-      // Set timeout to reset sequence if user takes too long
       timeoutRef.current = setTimeout(resetSequence, timeout);
     };
 

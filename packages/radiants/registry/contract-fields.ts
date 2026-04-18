@@ -2,7 +2,7 @@ import type { ComponentMeta } from "@rdna/preview";
 
 export type ContractFieldSource = Partial<
   Pick<
-    ComponentMeta<any>,
+    ComponentMeta,
     | "name"
     | "description"
     | "props"
