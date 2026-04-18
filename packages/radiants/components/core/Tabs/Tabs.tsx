@@ -14,6 +14,7 @@ export type TabsMode = 'capsule' | 'chrome';
 export type TabsPosition = 'top' | 'bottom' | 'left';
 export type TabsTone = 'neutral' | 'accent';
 export type TabsSize = 'sm' | 'md' | 'lg';
+export type TabsAlign = 'left' | 'center' | 'right';
 
 interface TabsRootProps {
   /** Active tab value (controlled) */
@@ -26,6 +27,8 @@ interface TabsRootProps {
   mode?: TabsMode;
   /** Where the tab list sits relative to content */
   position?: TabsPosition;
+  /** Horizontal alignment of the tab list (chrome mode) */
+  align?: TabsAlign;
   /** Color tone */
   tone?: TabsTone;
   /** Trigger size preset */
@@ -62,6 +65,7 @@ interface TabsContentProps {
 interface TabsInternalContext {
   mode: TabsMode;
   position: TabsPosition;
+  align: TabsAlign;
   tone: TabsTone;
   size: TabsSize;
   indicator: 'none' | 'dot';
@@ -185,6 +189,7 @@ function TabsRoot({
   onValueChange,
   mode = 'capsule',
   position = 'top',
+  align = 'right',
   tone = 'neutral',
   size = 'md',
   indicator = 'none',
@@ -221,14 +226,14 @@ function TabsRoot({
   }, [isControlled, onValueChange]);
 
   const ctx = useMemo(() => ({
-    mode, position, tone, size, indicator,
+    mode, position, align, tone, size, indicator,
     activeTab,
     setActiveTab,
     tabValuesRef,
     tabVersion,
     registerTab,
     unregisterTab,
-  }), [mode, position, tone, size, indicator, activeTab, setActiveTab, tabVersion, registerTab, unregisterTab]);
+  }), [mode, position, align, tone, size, indicator, activeTab, setActiveTab, tabVersion, registerTab, unregisterTab]);
 
   const rootClasses = tabsRootVariants({ position, className });
 
@@ -251,8 +256,14 @@ function TabsRoot({
   );
 }
 
+const CHROME_ALIGN_CLASS: Record<TabsAlign, string> = {
+  left: 'absolute left-2',
+  center: 'absolute left-1/2 -translate-x-1/2',
+  right: 'absolute right-2',
+};
+
 function List({ children, className = '' }: TabsListProps) {
-  const { mode, position, indicator } = useTabsContext();
+  const { mode, position, align, indicator } = useTabsContext();
   const listClasses = tabsListVariants({ mode, position, className });
 
   // Capsule (detached): wrap in a centering container
@@ -276,7 +287,7 @@ function List({ children, className = '' }: TabsListProps) {
       <BaseTabs.List
         activateOnFocus
         data-slot="tab-list"
-        className={`flex absolute right-2 gap-1 items-end ${className}`}
+        className={`flex ${CHROME_ALIGN_CLASS[align]} gap-1 items-end ${className}`}
       >
         {children}
       </BaseTabs.List>

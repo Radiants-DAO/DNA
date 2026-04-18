@@ -319,8 +319,8 @@ function AppWindowTitleBar({
         ) : null}
       </div>
 
-      <div className="flex-1 flex items-center justify-center min-w-0">
-        {/* Registered nav content centered, or portal slot for legacy apps */}
+      <div className="flex-1 min-w-0">
+        {/* Registered nav content (positioned by Tabs align prop), or portal slot */}
         {navContent || <div id={`window-titlebar-slot-${id}`} className="contents" />}
       </div>
 
@@ -354,7 +354,7 @@ function AppWindowNav({ value, onChange, children }: AppWindowNavProps) {
 
   const navContent = useMemo(
     () => (
-      <Tabs value={value} onValueChange={onChange} mode="chrome">
+      <Tabs value={value} onValueChange={onChange} mode="chrome" align="center">
         <Tabs.List>
           {items.map((item) => (
             <Tabs.Trigger key={item.value} value={item.value} icon={item.icon}>
