@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/UILibraryTab';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 import type { RegistryEntry } from '@rdna/radiants/registry';
-import { PatternPlayground } from '@/components/apps/pattern-playground';
 import { TypographyPlayground, SubTabNav, type SubTab } from '@/components/apps/typography-playground';
 import { getBrandLogoDownloadHref } from '@/lib/asset-downloads';
 
@@ -496,7 +495,6 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
     { value: 'colors', label: 'Color', icon: <Icon name="pencil" /> },
     { value: 'fonts', label: 'Type', icon: <FontAaIcon /> },
     { value: 'components', label: 'UI Library', icon: <Icon name="outline-box" /> },
-    { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" /> },
     { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
   ] as const;
 
@@ -642,10 +640,6 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
                 </div>
               )}
 
-              {/* Patterns */}
-              {activeTab === 'patterns' && (
-                <PatternPlayground />
-              )}
             </div>
           </AppWindow.Island>
         </AppWindow.Content>
