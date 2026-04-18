@@ -60,3 +60,5 @@ coverage/
 # Collaborator app state
 .collaborator/
 .vercel
+# Added by code-review-graph
+.code-review-graph/
