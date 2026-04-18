@@ -81,17 +81,29 @@ function ComponentShowcaseCard({
   entry,
   scrollRootRef,
   eager,
+  onInteract,
 }: {
   entry: RegistryEntry;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   eager: boolean;
+  onInteract?: (entry: RegistryEntry, props: Record<string, unknown>) => void;
 }) {
   const Component = entry.component as ComponentType<Record<string, unknown>> | undefined;
-  const { props, remountKey, setPropValue, resetProps } = useShowcaseProps(entry);
+  const { props, remountKey, setPropValue: rawSetPropValue, resetProps } = useShowcaseProps(entry);
   const [forcedState, setForcedState] = useState<'default' | ForcedState>('default');
   const availableStates = ['default', ...getPreviewStateNames(entry.states)] as const;
   const { wrapperState, propOverrides } = resolvePreviewState(forcedState, entry.states);
   const renderProps = { ...props, ...propOverrides };
+
+  const setPropValue = (name: string, value: unknown) => {
+    rawSetPropValue(name, value);
+    const next = { ...props, [name]: value, ...propOverrides };
+    onInteract?.(entry, next);
+  };
+
+  const handlePreviewClick = () => {
+    onInteract?.(entry, renderProps);
+  };
   const hasPreview = entry.renderMode !== 'description-only';
   const hasControllableProps =
     Object.keys(entry.props).length > 0 &&
@@ -122,7 +134,8 @@ function ComponentShowcaseCard({
 
         {/* Demo Area */}
         {!hasPreview ? null : (
-          <div className="border-t border-rule pt-3">
+          // eslint-disable-next-line rdna/prefer-rdna-components -- reason:preview-click-capture owner:design expires:2027-01-01 issue:DNA-001
+          <div className="border-t border-rule pt-3" onClick={handlePreviewClick} onKeyDown={undefined} role="presentation">
             <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
             {isReady ? (
               <div data-force-state={wrapperState} key={remountKey}>
@@ -148,7 +161,11 @@ function ComponentShowcaseCard({
               <button
                 key={s}
                 type="button"
-                onClick={() => setForcedState(s)}
+                onClick={() => {
+                  setForcedState(s);
+                  const resolved = resolvePreviewState(s as 'default' | ForcedState, entry.states);
+                  onInteract?.(entry, { ...props, ...resolved.propOverrides });
+                }}
                 className={`pixel-rounded-xs inline-block cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
                   forcedState === s
                     ? 'bg-main text-page'
@@ -195,6 +212,7 @@ interface DesignSystemTabProps {
   activeCategory?: ComponentCategory | 'all';
   hideControls?: boolean;
   initialInteractiveCards?: number;
+  onComponentInteract?: (entry: RegistryEntry, props: Record<string, unknown>) => void;
 }
 
 export function DesignSystemTab({
@@ -202,6 +220,7 @@ export function DesignSystemTab({
   activeCategory: propCategory,
   hideControls = false,
   initialInteractiveCards = DEFAULT_INITIAL_INTERACTIVE_CARDS,
+  onComponentInteract,
 }: DesignSystemTabProps) {
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const [localCategory, setLocalCategory] = useState<ComponentCategory | 'all'>('all');
@@ -299,11 +318,12 @@ export function DesignSystemTab({
                 showcaseIndex += 1;
 
                 return (
-                  <div key={entry.name} className="break-inside-avoid mb-3">
+                  <div key={entry.name} id={`component-${entry.name}`} className="break-inside-avoid mb-3">
                     <ComponentShowcaseCard
                       entry={entry}
                       scrollRootRef={scrollRootRef}
                       eager={eager}
+                      onInteract={onComponentInteract}
                     />
                   </div>
                 );

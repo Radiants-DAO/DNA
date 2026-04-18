@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { AppWindow, Button, Switch, Tooltip, Input } from '@rdna/radiants/components/core';
+import { useState, useRef, useCallback } from 'react';
+import { AppWindow, Button, Switch, Tooltip } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
 import {
   Icon,
@@ -10,12 +10,16 @@ import {
   RadSunLogo,
   FontAaIcon,
 } from '@rdna/radiants/icons/runtime';
+import {
+  useUILibrary,
+  UILibraryNavigator,
+  UILibraryCode,
+} from '@/components/ui/UILibraryTab';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
-import { PatternPlayground } from '@/components/apps/pattern-playground/PatternPlayground';
+import type { RegistryEntry } from '@rdna/radiants/registry';
+import { PatternPlayground } from '@/components/apps/pattern-playground';
 import { TypographyPlayground, SubTabNav, type SubTab } from '@/components/apps/typography-playground';
 import { getBrandLogoDownloadHref } from '@/lib/asset-downloads';
-import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
-import type { ComponentCategory } from '@rdna/radiants/registry';
 
 // ============================================================================
 // Types
@@ -478,16 +482,20 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
 export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
-  const [componentSearch, setComponentSearch] = useState('');
-  const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
   const [activeTab, setActiveTab] = useState('logos');
+  const uiLib = useUILibrary();
+  const [activeComponent, setActiveComponent] = useState<{ entry: RegistryEntry; props: Record<string, unknown> } | null>(null);
+
+  const handleComponentInteract = useCallback((entry: RegistryEntry, props: Record<string, unknown>) => {
+    setActiveComponent({ entry, props });
+  }, []);
 
   const TAB_NAV = [
     { value: 'logos', label: 'Logos', icon: <RadMarkIcon /> },
     { value: 'colors', label: 'Color', icon: <Icon name="pencil" /> },
     { value: 'fonts', label: 'Type', icon: <FontAaIcon /> },
-    { value: 'components', label: 'UI', icon: <Icon name="outline-box" /> },
+    { value: 'components', label: 'UI Library', icon: <Icon name="outline-box" /> },
     { value: 'patterns', label: 'Pixels', icon: <Icon name="grid-3x3" /> },
     { value: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
   ] as const;
@@ -503,10 +511,37 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
         ))}
       </AppWindow.Nav>
 
-      {/* ── Content island ───────────────────────────────────── */}
-      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */}
-      <AppWindow.Content className="bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
-        <AppWindow.Island corners="pixel" padding="none" className="@container">
+      {/* ── Content ───────────────────────────────────── */}
+      {activeTab === 'components' ? (
+        /* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */
+        <AppWindow.Content layout="split" className="bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
+          <div className="w-56 shrink-0 flex flex-col gap-1.5">
+            <AppWindow.Island corners="pixel" padding="none" className="flex-1 min-h-0">
+              <UILibraryNavigator
+                searchQuery={uiLib.searchQuery}
+                setSearchQuery={uiLib.setSearchQuery}
+                grouped={uiLib.grouped}
+                selectedEntry={uiLib.selectedEntry}
+                setSelectedEntry={uiLib.setSelectedEntry}
+              />
+            </AppWindow.Island>
+            {activeComponent && (
+              <AppWindow.Island corners="pixel" padding="none" className="shrink max-h-[50%] min-h-0">
+                <UILibraryCode
+                  selectedEntry={activeComponent.entry}
+                  propValues={activeComponent.props}
+                />
+              </AppWindow.Island>
+            )}
+          </div>
+          <AppWindow.Island corners="pixel" padding="none" noScroll className="flex-1 @container">
+            <DesignSystemTab hideControls onComponentInteract={handleComponentInteract} />
+          </AppWindow.Island>
+        </AppWindow.Content>
+      ) : (
+        /* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */
+        <AppWindow.Content className="bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
+          <AppWindow.Island corners="pixel" padding="none" className="@container">
 
             {/* ── Conditional toolbar per active tab (inside content card) ── */}
             {activeTab === 'fonts' && (
@@ -514,142 +549,107 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
                 <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
               </div>
             )}
-            {activeTab === 'components' && (
-              <div className="shrink-0 px-3 py-2 border-b border-ink bg-card flex items-center gap-3">
-                <Input
-                  value={componentSearch}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
-                  placeholder="Search..."
-                />
-                <div className="flex flex-wrap gap-1">
-                  <Button quiet={componentCategory !== 'all'} size="sm" compact onClick={() => setComponentCategory('all')}>
-                    All ({registry.length})
-                  </Button>
-                  {CATEGORIES.map((cat) => {
-                    const count = registry.filter((e) => e.category === cat).length;
-                    if (count === 0) return null;
-                    return (
-                      <Button key={cat} quiet={componentCategory !== cat} size="sm" compact onClick={() => setComponentCategory(cat)}>
-                        {CATEGORY_LABELS[cat]} ({count})
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             <div className="flex-1 min-h-0">
 
-            {/* Logos */}
-            {activeTab === 'logos' && (
-              <div className="p-5 h-full flex flex-col gap-3">
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="font-heading text-xs text-mute uppercase">Format</span>
-                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>PNG</span>
-                  <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
-                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>SVG</span>
+              {/* Logos */}
+              {activeTab === 'logos' && (
+                <div className="p-5 h-full flex flex-col gap-3">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="font-heading text-xs text-mute uppercase">Format</span>
+                    <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>PNG</span>
+                    <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
+                    <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>SVG</span>
+                  </div>
+                  <div className="flex-1 grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 auto-rows-fr">
+                    {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
+                  </div>
                 </div>
-                <div className="flex-1 grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 auto-rows-fr">
-                  {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* Colors */}
-            {activeTab === 'colors' && (
-              <div className="p-5 space-y-10">
+              {/* Colors */}
+              {activeTab === 'colors' && (
+                <div className="p-5 space-y-10">
 
-                {/* ── Brand Palette ── */}
-                <section className="space-y-4">
-                  <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
-                    <div>
-                      <h2 className="text-main leading-tight">Brand Palette</h2>
-                      <p className="text-sm text-mute mt-1">Tier 1 — raw values. Never use directly in component code.</p>
+                  {/* ── Brand Palette ── */}
+                  <section className="space-y-4">
+                    <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                      <div>
+                        <h2 className="text-main leading-tight">Brand Palette</h2>
+                        <p className="text-sm text-mute mt-1">Tier 1 — raw values. Never use directly in component code.</p>
+                      </div>
+                      <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
                     </div>
-                    <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
-                  </div>
-                  <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-3 gap-3">
-                    {BRAND_COLORS.map((c, i) => <BrandColorCard key={c.hex} color={c} index={i} />)}
-                  </div>
-                </section>
-
-                {/* ── Extended Palette ── */}
-                <section className="space-y-4">
-                  <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
-                    <div>
-                      <h2 className="text-main leading-tight">Extended Palette</h2>
-                      <p className="text-sm text-mute mt-1">Accent colors for status, links, and editorial moments.</p>
+                    <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-3 gap-3">
+                      {BRAND_COLORS.map((c, i) => <BrandColorCard key={c.hex} color={c} index={i} />)}
                     </div>
-                    <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
-                  </div>
-                  <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-4 gap-3">
-                    {EXTENDED_COLORS.map((c, i) => <ExtendedColorSwatch key={c.hex} color={c} index={i} />)}
-                  </div>
-                </section>
+                  </section>
 
-                {/* ── Semantic Tokens ── */}
-                <section className="space-y-4">
-                  <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
-                    <div>
-                      <h2 className="text-main leading-tight">Semantic Tokens</h2>
-                      <p className="text-sm text-mute mt-1">Tier 2 — flip in Sun/Moon mode. Click any row to copy the CSS variable.</p>
+                  {/* ── Extended Palette ── */}
+                  <section className="space-y-4">
+                    <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                      <div>
+                        <h2 className="text-main leading-tight">Extended Palette</h2>
+                        <p className="text-sm text-mute mt-1">Accent colors for status, links, and editorial moments.</p>
+                      </div>
+                      <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
                     </div>
-                    <span className="font-mono text-xs text-mute shrink-0">tokens.css / dark.css</span>
+                    <div className="grid grid-cols-1 @3xl:grid-cols-2 @7xl:grid-cols-4 gap-3">
+                      {EXTENDED_COLORS.map((c, i) => <ExtendedColorSwatch key={c.hex} color={c} index={i} />)}
+                    </div>
+                  </section>
+
+                  {/* ── Semantic Tokens ── */}
+                  <section className="space-y-4">
+                    <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                      <div>
+                        <h2 className="text-main leading-tight">Semantic Tokens</h2>
+                        <p className="text-sm text-mute mt-1">Tier 2 — flip in Sun/Moon mode. Click any row to copy the CSS variable.</p>
+                      </div>
+                      <span className="font-mono text-xs text-mute shrink-0">tokens.css / dark.css</span>
+                    </div>
+                    <div className="space-y-3">
+                      {SEMANTIC_CATEGORIES.map((cat, i) => (
+                        <SemanticCategoryCard key={cat.name} category={cat} index={i} />
+                      ))}
+                    </div>
+                  </section>
+
+                </div>
+              )}
+
+              {/* Fonts */}
+              {activeTab === 'fonts' && (
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 min-h-0">
+                    <TypographyPlayground activeSubTab={typoSubTab} />
                   </div>
-                  <div className="space-y-3">
-                    {SEMANTIC_CATEGORIES.map((cat, i) => (
-                      <SemanticCategoryCard key={cat.name} category={cat} index={i} />
-                    ))}
+                </div>
+              )}
+
+              {/* AI Gen */}
+              {activeTab === 'ai-gen' && (
+                <div className="p-5">
+                  <div className="text-center mb-6">
+                    <h2 className="mb-3">Midjourney Style Codes</h2>
+                    <p className="max-w-[42rem] mx-auto">
+                      Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
+                    </p>
                   </div>
-                </section>
-
-              </div>
-            )}
-
-            {/* Fonts */}
-            {activeTab === 'fonts' && (
-              <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0">
-                  <TypographyPlayground activeSubTab={typoSubTab} />
+                  <div className="grid grid-cols-2 gap-2">
+                    {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Components */}
-            {activeTab === 'components' && (
-              <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0 @container">
-                  <DesignSystemTab
-                    searchQuery={componentSearch}
-                    activeCategory={componentCategory}
-                    hideControls
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* AI Gen */}
-            {activeTab === 'ai-gen' && (
-              <div className="p-5">
-                <div className="text-center mb-6">
-                  <h2 className="mb-3">Midjourney Style Codes</h2>
-                  <p className="max-w-[42rem] mx-auto">
-                    Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
-                </div>
-              </div>
-            )}
-
-            {/* Patterns */}
-            {activeTab === 'patterns' && (
-              <PatternPlayground />
-            )}
-              </div>
-        </AppWindow.Island>
-      </AppWindow.Content>
+              {/* Patterns */}
+              {activeTab === 'patterns' && (
+                <PatternPlayground />
+              )}
+            </div>
+          </AppWindow.Island>
+        </AppWindow.Content>
+      )}
     </>
   );
 }
