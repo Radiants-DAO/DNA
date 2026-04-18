@@ -3,11 +3,7 @@
 import React, { createContext, useContext } from 'react';
 import { cva } from 'class-variance-authority';
 import { Field as BaseField, type FieldValidity } from '@base-ui/react/field';
-import type {
-  InputShellProps,
-  InputSize,
-  TextAreaShellProps,
-} from './Input.types';
+import type { InputShellProps, TextAreaShellProps } from './Input.types';
 
 
 // ============================================================================

@@ -201,8 +201,8 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
         <div className="w-full max-w-[16rem]">
           <Combobox.Root
             value={value}
-            onValueChange={setValue}
-            onInputValueChange={setInputValue}
+            onValueChange={(next) => setValue(next as string | null)}
+            onInputValueChange={(next) => setInputValue(next as string)}
             {...(disabled !== undefined ? { disabled: disabled as boolean } : {})}
             {...rest}
           >

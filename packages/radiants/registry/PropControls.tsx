@@ -42,7 +42,7 @@ export interface PropControlsProps {
   className?: string;
 }
 
-function getEnumValues(prop: PropDef): Array<string | number> | undefined {
+function getEnumValues(prop: PropDef): ReadonlyArray<string | number> | undefined {
   if (prop.options?.length) return prop.options;
   if (prop.values?.length) return prop.values;
 
@@ -54,7 +54,7 @@ function shouldSkipProp(prop: PropDef): boolean {
   return SKIP_TYPES.has(type) || type.endsWith("[]") || type.includes("=>");
 }
 
-function isColorLikeEnum(values: Array<string | number>): boolean {
+function isColorLikeEnum(values: ReadonlyArray<string | number>): boolean {
   const matches = values.filter(
     (v) => typeof v === "string" && v in SEMANTIC_COLORS,
   ).length;
@@ -118,7 +118,7 @@ function EnumControl({
 }: {
   name: string;
   value: string | number;
-  values: Array<string | number>;
+  values: ReadonlyArray<string | number>;
   onChange: (name: string, value: string | number) => void;
 }) {
   const colorLike = isColorLikeEnum(values);
