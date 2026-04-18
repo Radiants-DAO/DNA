@@ -284,7 +284,8 @@ function DropCapBox({
   } as const;
 
   return (
-    <div
+    <button
+      type="button"
       className="absolute text-head"
       style={{
         left: x,
@@ -297,6 +298,12 @@ function DropCapBox({
         padding: `${size * 2}px ${size * 2}px 0`,
         border: `${borderWidth}px solid var(--color-line)`,
         overflow: 'hidden',
+        appearance: 'none',
+        background: 'none',
+        font: 'inherit',
+        color: 'inherit',
+        cursor: 'pointer',
+        textAlign: 'inherit',
       }}
       onClick={() => onScaleChange?.((scale % 4 + 1) as 1 | 2 | 3 | 4)}
       onMouseEnter={startCycle}
@@ -342,7 +349,7 @@ function DropCapBox({
         </span>
         <span style={{ position: 'absolute', ...textStyle }}>{letter}</span>
       </div>
-    </div>
+    </button>
   );
 }
 
