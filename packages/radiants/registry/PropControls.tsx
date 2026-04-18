@@ -105,6 +105,7 @@ function BooleanControl({
       pressed={value}
       onPressedChange={(pressed) => onChange(name, pressed)}
       size="sm"
+      rounded="lg"
       compact
       quiet
     >
@@ -136,6 +137,7 @@ function EnumControl({
         onChange(name, hasNumeric && !Number.isNaN(Number(raw)) ? Number(raw) : raw);
       }}
       size="sm"
+      rounded="lg"
       compact
     >
       {values.map((optionValue) => {

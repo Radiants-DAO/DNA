@@ -70,7 +70,7 @@ const toggleGroupRootVariants = cva(
   {
     variants: {
       orientation: {
-        horizontal: 'flex-row items-stretch',
+        horizontal: 'flex-row flex-wrap items-stretch gap-1',
         vertical: 'flex-col',
       },
       disabled: {
@@ -187,24 +187,6 @@ function ToggleGroupRoot({
     [size, orientation, mode, tone, rounded, quiet, compact]
   );
 
-  // Insert separator spans between items
-  const childArray = React.Children.toArray(children);
-  const separated = childArray.flatMap((child, i) => {
-    if (i === 0) return [child];
-    const sep = (
-      <span
-        key={`sep-${i}`}
-        className={
-          orientation === 'horizontal'
-            ? 'w-px self-stretch bg-line'
-            : 'h-px self-stretch bg-line'
-        }
-        aria-hidden="true"
-      />
-    );
-    return [sep, child];
-  });
-
   return (
     <ToggleGroupContext.Provider value={contextValue}>
       <BaseToggleGroup
@@ -214,12 +196,12 @@ function ToggleGroupRoot({
         onValueChange={(newValue) => onValueChange?.(newValue)}
         disabled={disabled}
         orientation={orientation}
-        className={`pixel-rounded-xs inline-block ${rootClasses}`.trim()}
+        className={rootClasses}
         data-rdna="togglegroup"
         data-slot="toggle-group"
         data-orientation={orientation}
       >
-        {separated}
+        {children}
       </BaseToggleGroup>
     </ToggleGroupContext.Provider>
   );

@@ -21,6 +21,7 @@ const BUTTON_ROUNDED_TO_PIXEL_CLASS: Record<ButtonRounded, string | null> = {
   md: 'pixel-rounded-md',
   lg: 'pixel-rounded-lg',
   xl: 'pixel-rounded-xl',
+  full: 'pixel-rounded-full',
   none: null,
 };
 
@@ -109,8 +110,10 @@ export const buttonFaceVariants = cva(
         md: '',
         lg: '',
         xl: '',
+        full: '',
       },
       size: {
+        xs: 'h-5 text-xs gap-0.5 [&_svg]:size-3.5',
         sm: 'h-6 text-xs gap-0.5 [&_svg]:size-4',
         md: 'h-7 text-xs gap-0.5 [&_svg]:size-4',
         lg: 'h-8 text-sm gap-1 [&_svg]:size-4',
@@ -129,16 +132,19 @@ export const buttonFaceVariants = cva(
     },
     compoundVariants: [
       // Text-only: equal padding (symmetric)
+      { iconOnly: false, textOnly: true, size: 'xs', className: 'pl-1 pr-1' },
       { iconOnly: false, textOnly: true, size: 'sm', className: 'pl-1.5 pr-1.5' },
       { iconOnly: false, textOnly: true, size: 'md', className: 'pl-2 pr-2' },
       { iconOnly: false, textOnly: true, size: 'lg', className: 'pl-3 pr-3' },
       { iconOnly: false, textOnly: true, size: 'xl', className: 'pl-4 pr-4' },
       // Default: full left padding, half right (icon takes up right side)
+      { iconOnly: false, textOnly: false, size: 'xs', className: 'pl-1 pr-0.5' },
       { iconOnly: false, textOnly: false, size: 'sm', className: 'pl-1.5 pr-0.5' },
       { iconOnly: false, textOnly: false, size: 'md', className: 'pl-2 pr-1' },
       { iconOnly: false, textOnly: false, size: 'lg', className: 'pl-3 pr-1.5' },
       { iconOnly: false, textOnly: false, size: 'xl', className: 'pl-4 pr-2' },
       // Icon-only: square
+      { iconOnly: true, size: 'xs', className: 'w-5' },
       { iconOnly: true, size: 'sm', className: 'w-6' },
       { iconOnly: true, size: 'md', className: 'w-7' },
       { iconOnly: true, size: 'lg', className: 'w-8' },

@@ -7,8 +7,8 @@ interface ToggleProps {
   disabled?: boolean;
   mode?: "solid" | "flat" | "pattern";
   tone?: "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
-  size?: "sm" | "md" | "lg";
-  rounded?: "xs" | "sm" | "md" | "lg" | "xl" | "none";
+  size?: "xs" | "sm" | "md" | "lg";
+  rounded?: "xs" | "sm" | "md" | "lg" | "xl" | "full" | "none";
   value?: string;
   children?: string;
 }
@@ -49,13 +49,13 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
     },
     size: {
       type: "enum",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg"],
       default: "md",
       description: "Size preset",
     },
     rounded: {
       type: "enum",
-      options: ["xs", "sm", "md", "lg", "xl", "none"],
+      options: ["xs", "sm", "md", "lg", "xl", "full", "none"],
       default: "xs",
       description: "Pixel-corner roundness",
     },

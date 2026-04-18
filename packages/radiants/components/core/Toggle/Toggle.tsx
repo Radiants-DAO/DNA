@@ -12,8 +12,8 @@ import { Icon } from '../../../icons/Icon';
 
 export type ToggleMode = 'solid' | 'flat' | 'pattern';
 export type ToggleTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
-export type ToggleSize = 'sm' | 'md' | 'lg';
-export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
+export type ToggleSize = 'xs' | 'sm' | 'md' | 'lg';
+export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'none';
 
 /**
  * Maps the Toggle `rounded` variant to the matching pixel-rounded CSS class.
@@ -25,6 +25,7 @@ const TOGGLE_ROUNDED_TO_PIXEL_CLASS: Record<ToggleRounded, string | null> = {
   md: 'pixel-rounded-md',
   lg: 'pixel-rounded-lg',
   xl: 'pixel-rounded-xl',
+  full: 'pixel-rounded-full',
   none: null,
 };
 

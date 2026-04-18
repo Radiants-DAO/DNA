@@ -545,9 +545,7 @@ function AppWindowIsland({
           className="h-full"
           style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
         >
-          <ScrollArea.Viewport className="h-full overflow-x-hidden">
-            {paddingClass ? <div className={paddingClass}>{children}</div> : children}
-          </ScrollArea.Viewport>
+          {paddingClass ? <div className={paddingClass}>{children}</div> : children}
         </ScrollArea.Root>
       );
 

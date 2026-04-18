@@ -3,8 +3,8 @@ import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 export type ButtonMode = "solid" | "flat" | "text" | "pattern";
 export type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted" | "transparent";
-export type ButtonSize = "sm" | "md" | "lg" | "xl";
-export type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
+export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "full" | "none";
 
 interface ButtonProps {
   mode?: ButtonMode;
@@ -46,13 +46,13 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
     },
     size: {
       type: "enum",
-      values: ["sm", "md", "lg", "xl"],
+      values: ["xs", "sm", "md", "lg", "xl"],
       default: "md",
       description: "Size preset controlling height, padding, and text size",
     },
     rounded: {
       type: "enum",
-      values: ["none", "xs", "sm", "md", "lg", "xl"],
+      values: ["none", "xs", "sm", "md", "lg", "xl", "full"],
       default: "xs",
       description: "Pixel-corner roundness",
     },
