@@ -32,6 +32,7 @@
     "size": {
       "type": "enum",
       "values": [
+        "xs",
         "sm",
         "md",
         "lg",
@@ -48,7 +49,8 @@
         "sm",
         "md",
         "lg",
-        "xl"
+        "xl",
+        "full"
       ],
       "default": "xs",
       "description": "Pixel-corner roundness"
