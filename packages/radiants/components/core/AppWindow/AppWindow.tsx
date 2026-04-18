@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Button } from '../Button/Button';
 import { ScrollArea } from '../ScrollArea/ScrollArea';
-import { Separator } from '../Separator/Separator';
+
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
 
@@ -319,18 +319,17 @@ function AppWindowTitleBar({
         ) : null}
       </div>
 
+      <div className="flex-1 flex items-center justify-center min-w-0">
+        {/* Registered nav content centered, or portal slot for legacy apps */}
+        {navContent || <div id={`window-titlebar-slot-${id}`} className="contents" />}
+      </div>
+
       <span
         id={`window-title-${id}`}
-        className="absolute left-1/2 -translate-x-1/2 font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap pointer-events-none bg-page px-2 py-0.5"
+        className="shrink-0 font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap px-2 py-0.5"
       >
         {title}
       </span>
-
-      <div className="flex-1">
-        <Separator />
-      </div>
-
-      {navContent}
     </div>
   );
 }
