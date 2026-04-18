@@ -257,9 +257,9 @@ function TabsRoot({
 }
 
 const CHROME_ALIGN_CLASS: Record<TabsAlign, string> = {
-  left: 'absolute left-2',
-  center: 'absolute left-1/2 -translate-x-1/2',
-  right: 'absolute right-2',
+  left: 'absolute bottom-0 left-2',
+  center: 'absolute bottom-0 left-1/2 -translate-x-1/2',
+  right: 'absolute bottom-0 right-2',
 };
 
 function List({ children, className = '' }: TabsListProps) {
