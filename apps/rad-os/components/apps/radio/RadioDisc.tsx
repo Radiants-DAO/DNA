@@ -160,6 +160,7 @@ export function RadioDisc({
           playsInline
           muted
           autoPlay
+          loop
         >
           <source src={videoSrc} type="video/mp4" />
         </video>
