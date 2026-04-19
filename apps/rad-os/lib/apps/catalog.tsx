@@ -6,6 +6,7 @@ const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
+const RadioApp = lazy(() => import('@/components/apps/radio/Radio').then((m) => ({ default: m.Radio })));
 const GoodNewsApp = lazy(() => import('@/components/apps/GoodNewsApp'));
 const ScratchpadApp = lazy(() => import('@/components/apps/ScratchpadApp'));
 const StudioApp = lazy(() => import('@/components/apps/StudioApp'));
@@ -123,6 +124,20 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     defaultSize: 'md',
     resizable: false,
     contentPadding: false,
+    desktopVisible: true,
+    category: 'media',
+  },
+  {
+    id: 'radio',
+    windowTitle: 'Radio',
+    launcherTitle: 'Radio',
+    windowIcon: <Icon name="broadcast-dish" large />,
+    launcherIcon: <Icon name="music-8th-notes" large />,
+    component: RadioApp,
+    defaultSize: { width: '277px', height: '535px' },
+    resizable: false,
+    contentPadding: false,
+    chromeless: true,
     desktopVisible: true,
     category: 'media',
   },

@@ -7,7 +7,6 @@ import {
   getStartMenuCategories,
   type AppSubtab,
   type StartMenuCategory,
-  type StartMenuLink,
 } from '@/lib/apps';
 import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
@@ -51,7 +50,7 @@ function MenuRow({
       <span className="w-5 h-5 flex items-center justify-center shrink-0">
         {icon}
       </span>
-      <span className="flex-1 font-joystix text-sm uppercase text-left">
+      <span className="flex-1 font-mono text-sm uppercase text-left">
         {label}
       </span>
       {hasChildren && (
@@ -108,19 +107,15 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const { openWindowWithZoom, setActiveTab } = useWindowManager();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Two levels of safe-hover: category → submenu, and app → subtab submenu
-  const catHover = useSafeHover<StartMenuCategory>();
+  // Only one level of hover safety: Design Codex is the sole popout trigger.
   const appHover = useSafeHover<AppHoverKey>();
 
-  const categoryRowRefs = useRef<Map<StartMenuCategory, HTMLDivElement | null>>(new Map());
   const appRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
   const categories = getStartMenuCategories();
-  const activeCategory = categories.find((c) => c.id === catHover.active) ?? null;
-  const activeApp =
-    activeCategory?.apps.find(
-      (a) => appHover.active === `${activeCategory.id}:${a.id}`,
-    ) ?? null;
+  const activeApp = categories
+    .flatMap((cat) => cat.apps.map((app) => ({ catId: cat.id, ...app })))
+    .find((a) => appHover.active === `${a.catId}:${a.id}`) ?? null;
 
   // Keep the latest onClose in a ref so we can depend only on `isOpen`.
   // Parents commonly pass an inline arrow for onClose, which would otherwise
@@ -131,7 +126,6 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   // Close behavior + reset hover state when the menu opens
   useEffect(() => {
     if (!isOpen) return;
-    catHover.reset();
     appHover.reset();
 
     const handleClickOutside = (e: PointerEvent) => {
@@ -170,13 +164,6 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
 
   if (!isOpen) return null;
 
-  const categoryTop = (cat: StartMenuCategory): number => {
-    const row = categoryRowRefs.current.get(cat);
-    const menu = menuRef.current;
-    if (!row || !menu) return 0;
-    return row.getBoundingClientRect().top - menu.getBoundingClientRect().top;
-  };
-
   const appTop = (appId: string): number => {
     const row = appRowRefs.current.get(appId);
     const menu = menuRef.current;
@@ -188,102 +175,73 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
     <div
       ref={menuRef}
       className="absolute bottom-full left-0 mb-2 z-10"
-      onPointerMove={(e) => {
-        catHover.onContainerMove(e);
-        appHover.onContainerMove(e);
-      }}
+      onPointerMove={appHover.onContainerMove}
     >
-      {/* Category column — pixel-rounded on its own so the clip-path
-          doesn't swallow the absolute-positioned fly-outs below. */}
       <div
         className="pixel-rounded-sm pixel-shadow-floating flex flex-col min-w-0 bg-page pb-1"
         style={{ width: COLUMN_WIDTH_PX }}
       >
-        {categories.map((cat) => (
-          <div
-            key={cat.id}
-            ref={(el) => {
-              categoryRowRefs.current.set(cat.id, el);
-            }}
-          >
-            <MenuRow
-              icon={cat.icon}
-              label={cat.label}
-              hasChildren
-              highlighted={catHover.active === cat.id}
-              onPointerEnter={(e) => {
-                catHover.onItemEnter(cat.id, e);
-                appHover.reset();
-              }}
-            />
-          </div>
+        {categories.map((cat, idx) => (
+          <section key={cat.id} className={idx === 0 ? 'pt-1' : 'pt-2'}>
+            <div className="px-3 pb-1">
+              <span className="font-mono text-xs text-mute uppercase tracking-tight">
+                {cat.label}
+              </span>
+            </div>
+            {cat.links?.map((link) => {
+              const key: AppHoverKey = `${cat.id}:${link.id}`;
+              return (
+                <MenuRow
+                  key={link.id}
+                  icon={link.icon}
+                  label={link.label}
+                  href={link.href}
+                  onPointerEnter={(e) => appHover.onItemEnter(key, e)}
+                />
+              );
+            })}
+            {cat.apps.map((app) => {
+              const hasSubtabs = Boolean(app.subtabs?.length);
+              const key: AppHoverKey = `${cat.id}:${app.id}`;
+              return (
+                <div
+                  key={app.id}
+                  ref={(el) => {
+                    appRowRefs.current.set(app.id, el);
+                  }}
+                >
+                  <MenuRow
+                    icon={app.icon}
+                    label={app.label}
+                    hasChildren={hasSubtabs}
+                    highlighted={hasSubtabs && appHover.active === key}
+                    onClick={(e) => launch(app.id, e)}
+                    onPointerEnter={(e) => appHover.onItemEnter(key, e)}
+                  />
+                </div>
+              );
+            })}
+          </section>
         ))}
       </div>
 
-      {/* Level 1 submenu: apps (or links) in the active category */}
-        {activeCategory && (
-          <SubmenuPanel
-            left={COLUMN_WIDTH_PX}
-            top={categoryTop(activeCategory.id)}
-            registerEl={catHover.registerSubmenu}
-          >
-            {activeCategory.links ? (
-              <LinksList
-                links={activeCategory.links}
-                onPointerEnterAny={() => appHover.reset()}
-              />
-            ) : (
-              <div className="py-1">
-                {activeCategory.apps.map((app) => {
-                  const key: AppHoverKey = `${activeCategory.id}:${app.id}`;
-                  return (
-                    <div
-                      key={app.id}
-                      ref={(el) => {
-                        appRowRefs.current.set(app.id, el);
-                      }}
-                    >
-                      <MenuRow
-                        icon={app.icon}
-                        label={app.label}
-                        hasChildren={Boolean(app.subtabs?.length)}
-                        highlighted={appHover.active === key}
-                        onClick={(e) => launch(app.id, e)}
-                        onPointerEnter={(e) => {
-                          if (app.subtabs?.length) {
-                            appHover.onItemEnter(key, e);
-                          } else {
-                            appHover.reset();
-                          }
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </SubmenuPanel>
-        )}
-
-        {/* Level 2 submenu: subtabs for the hovered app */}
-        {activeCategory && activeApp?.subtabs && (
-          <SubmenuPanel
-            left={COLUMN_WIDTH_PX * 2}
-            top={appTop(activeApp.id)}
-            registerEl={appHover.registerSubmenu}
-          >
-            <div className="py-1">
-              {activeApp.subtabs.map((sub: AppSubtab) => (
-                <MenuRow
-                  key={sub.id}
-                  icon={sub.icon ?? <Icon name="chevron-right" />}
-                  label={sub.label}
-                  onClick={(e) => launch(activeApp.id, e, sub.id)}
-                />
-              ))}
-            </div>
-          </SubmenuPanel>
-        )}
+      {/* Design Codex popout — only app with subtabs. */}
+      {activeApp?.subtabs && (
+        <SubmenuPanel
+          left={COLUMN_WIDTH_PX}
+          top={appTop(activeApp.id)}
+          registerEl={appHover.registerSubmenu}
+        >
+          {activeApp.subtabs.map((sub: AppSubtab) => (
+            <MenuRow
+              key={sub.id}
+              icon={sub.icon ?? <Icon name="chevron-right" />}
+              label={sub.label}
+              onClick={(e) => launch(activeApp.id, e, sub.id)}
+            />
+          ))}
+        </SubmenuPanel>
+      )}
     </div>
   );
 }
@@ -315,28 +273,6 @@ function SubmenuPanel({
       <div className="pixel-rounded-sm pixel-shadow-floating bg-page">
         {children}
       </div>
-    </div>
-  );
-}
-
-function LinksList({
-  links,
-  onPointerEnterAny,
-}: {
-  links: StartMenuLink[];
-  onPointerEnterAny: () => void;
-}) {
-  return (
-    <div className="py-1">
-      {links.map((link) => (
-        <MenuRow
-          key={link.id}
-          icon={link.icon}
-          label={link.label}
-          href={link.href}
-          onPointerEnter={onPointerEnterAny}
-        />
-      ))}
     </div>
   );
 }

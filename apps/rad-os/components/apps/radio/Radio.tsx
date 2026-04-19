@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { AppWindow, Button, Tooltip } from '@rdna/radiants/components/core';
+import { AppWindow, Tooltip } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import { LCDScreen, TransportPill } from '@rdna/ctrl';
 import { usePreferencesStore, useRadRadioStore } from '@/store';
