@@ -3,6 +3,7 @@
 import React, { useCallback } from 'react';
 import { AppWindow as CoreAppWindow } from '@rdna/radiants/components/core';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import type { SnapRegion } from '@/hooks/useWindowManager';
 import { resolveWindowSize } from '@/lib/windowSizing';
 import type { WindowSizeTier, WindowSize } from '@/lib/windowSizing';
 
@@ -38,6 +39,11 @@ export function AppWindow({
     closeWindow,
     toggleFullscreen,
     focusWindow,
+    fillWindow,
+    centerWindow,
+    snapWindow,
+    restoreWindowSize,
+    canRestoreWindow,
     updateWindowPosition,
     updateWindowSize,
     openWindows,
@@ -50,6 +56,13 @@ export function AppWindow({
   const handleClose = useCallback(() => closeWindow(id), [closeWindow, id]);
   const handleFocus = useCallback(() => focusWindow(id), [focusWindow, id]);
   const handleFullscreen = useCallback(() => toggleFullscreen(id), [toggleFullscreen, id]);
+  const handleFill = useCallback(() => fillWindow(id), [fillWindow, id]);
+  const handleCenter = useCallback(() => centerWindow(id), [centerWindow, id]);
+  const handleSnap = useCallback(
+    (region: SnapRegion) => snapWindow(id, region),
+    [id, snapWindow],
+  );
+  const handleRestore = useCallback(() => restoreWindowSize(id), [id, restoreWindowSize]);
   const handlePositionChange = useCallback(
     (position: { x: number; y: number }) => updateWindowPosition(id, position),
     [id, updateWindowPosition],
@@ -83,6 +96,11 @@ export function AppWindow({
       onClose={handleClose}
       onFocus={handleFocus}
       onFullscreen={handleFullscreen}
+      onFill={handleFill}
+      onCenter={handleCenter}
+      onSnap={handleSnap}
+      onRestore={handleRestore}
+      canRestore={canRestoreWindow(id)}
       onPositionChange={handlePositionChange}
       onSizeChange={handleSizeChange}
     >

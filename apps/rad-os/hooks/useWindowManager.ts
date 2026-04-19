@@ -2,9 +2,11 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRadOSStore, WindowState } from '@/store';
+import type { SnapRegion } from '@/store/slices/windowsSlice';
 
 // Re-export WindowState for consumers
 export type { WindowState } from '@/store';
+export type { SnapRegion } from '@/store/slices/windowsSlice';
 
 export interface UseWindowManagerReturn {
   // State
@@ -19,6 +21,10 @@ export interface UseWindowManagerReturn {
   toggleFullscreen: (appId: string) => void;
   toggleWidget: (appId: string) => void;
   toggleWindow: (appId: string) => void;
+  fillWindow: (appId: string) => void;
+  centerWindow: (appId: string) => void;
+  snapWindow: (appId: string, region: SnapRegion) => void;
+  restoreWindowSize: (appId: string) => void;
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
   setActiveTab: (appId: string, tabId: string) => void;
@@ -27,6 +33,7 @@ export interface UseWindowManagerReturn {
   isWindowOpen: (appId: string) => boolean;
   isWindowFullscreen: (appId: string) => boolean;
   isWindowWidget: (appId: string) => boolean;
+  canRestoreWindow: (appId: string) => boolean;
   getWindowState: (appId: string) => WindowState | undefined;
   getActiveTab: (appId: string) => string | undefined;
   getTopWindow: () => WindowState | undefined;
@@ -67,6 +74,10 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeFocusWindow = useRadOSStore((state) => state.focusWindow);
   const storeToggleFullscreen = useRadOSStore((state) => state.toggleFullscreen);
   const storeToggleWidget = useRadOSStore((state) => state.toggleWidget);
+  const storeFillWindow = useRadOSStore((state) => state.fillWindow);
+  const storeCenterWindow = useRadOSStore((state) => state.centerWindow);
+  const storeSnapWindow = useRadOSStore((state) => state.snapWindow);
+  const storeRestoreWindowSize = useRadOSStore((state) => state.restoreWindowSize);
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
   const storeSetActiveTab = useRadOSStore((state) => state.setActiveTab);
@@ -118,6 +129,34 @@ export function useWindowManager(): UseWindowManagerReturn {
       storeToggleWidget(appId);
     },
     [storeToggleWidget]
+  );
+
+  const fillWindow = useCallback(
+    (appId: string) => {
+      storeFillWindow(appId);
+    },
+    [storeFillWindow]
+  );
+
+  const centerWindow = useCallback(
+    (appId: string) => {
+      storeCenterWindow(appId);
+    },
+    [storeCenterWindow]
+  );
+
+  const snapWindow = useCallback(
+    (appId: string, region: SnapRegion) => {
+      storeSnapWindow(appId, region);
+    },
+    [storeSnapWindow]
+  );
+
+  const restoreWindowSize = useCallback(
+    (appId: string) => {
+      storeRestoreWindowSize(appId);
+    },
+    [storeRestoreWindowSize]
   );
 
   const toggleWindow = useCallback(
@@ -178,6 +217,14 @@ export function useWindowManager(): UseWindowManagerReturn {
     [windows]
   );
 
+  const canRestoreWindow = useCallback(
+    (appId: string): boolean => {
+      const w = windows.find((win) => win.id === appId);
+      return !!w?.preSnapState;
+    },
+    [windows]
+  );
+
   const getWindowState = useCallback(
     (appId: string): WindowState | undefined => {
       return windows.find((win) => win.id === appId);
@@ -210,12 +257,17 @@ export function useWindowManager(): UseWindowManagerReturn {
     toggleFullscreen,
     toggleWidget,
     toggleWindow,
+    fillWindow,
+    centerWindow,
+    snapWindow,
+    restoreWindowSize,
     updateWindowPosition,
     updateWindowSize,
     setActiveTab,
     isWindowOpen,
     isWindowFullscreen,
     isWindowWidget,
+    canRestoreWindow,
     getWindowState,
     getActiveTab,
     getTopWindow,

@@ -2,6 +2,23 @@ import { StateCreator } from 'zustand';
 import { getWindowChrome, supportsAmbientWidget } from '@/lib/apps';
 import { resolveWindowSize, remToPx } from '@/lib/windowSizing';
 
+export type SnapRegion =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'fill';
+
+export interface PreSnapState {
+  position: { x: number; y: number };
+  size?: { width: number; height: number };
+  isFullscreen: boolean;
+}
+
 export interface WindowState {
   id: string;
   isOpen: boolean;
@@ -13,6 +30,8 @@ export interface WindowState {
   size?: { width: number; height: number };
   /** Active tab within the window (if the app uses tabs) */
   activeTab?: string;
+  /** Snapshot captured before first snap/fill action; null once restored or user-modified */
+  preSnapState?: PreSnapState | null;
 }
 
 export interface ZoomAnimation {
@@ -35,6 +54,10 @@ export interface WindowsSlice {
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
   toggleWidget: (id: string) => void;
+  fillWindow: (id: string) => void;
+  centerWindow: (id: string) => void;
+  snapWindow: (id: string, region: SnapRegion) => void;
+  restoreWindowSize: (id: string) => void;
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
   setActiveTab: (id: string, tabId: string) => void;
@@ -44,6 +67,47 @@ export interface WindowsSlice {
 
 const CASCADE_OFFSET = 30;
 const TASKBAR_HEIGHT = 48; // bottom-12 = 48px
+
+function getDesktopSize(): { width: number; height: number } {
+  if (typeof window === 'undefined') {
+    return { width: 1200, height: 800 };
+  }
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight - TASKBAR_HEIGHT,
+  };
+}
+
+function computeSnapRect(
+  region: SnapRegion,
+  desktop: { width: number; height: number },
+): { position: { x: number; y: number }; size: { width: number; height: number } } {
+  const w = desktop.width;
+  const h = desktop.height;
+  const halfW = Math.floor(w / 2);
+  const halfH = Math.floor(h / 2);
+
+  switch (region) {
+    case 'fill':
+      return { position: { x: 0, y: 0 }, size: { width: w, height: h } };
+    case 'left':
+      return { position: { x: 0, y: 0 }, size: { width: halfW, height: h } };
+    case 'right':
+      return { position: { x: halfW, y: 0 }, size: { width: w - halfW, height: h } };
+    case 'top':
+      return { position: { x: 0, y: 0 }, size: { width: w, height: halfH } };
+    case 'bottom':
+      return { position: { x: 0, y: halfH }, size: { width: w, height: h - halfH } };
+    case 'top-left':
+      return { position: { x: 0, y: 0 }, size: { width: halfW, height: halfH } };
+    case 'top-right':
+      return { position: { x: halfW, y: 0 }, size: { width: w - halfW, height: halfH } };
+    case 'bottom-left':
+      return { position: { x: 0, y: halfH }, size: { width: halfW, height: h - halfH } };
+    case 'bottom-right':
+      return { position: { x: halfW, y: halfH }, size: { width: w - halfW, height: h - halfH } };
+  }
+}
 
 /**
  * Calculate centered position for a new window.
@@ -259,17 +323,103 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
     }));
   },
 
+  fillWindow: (id) => {
+    get().snapWindow(id, 'fill');
+  },
+
+  centerWindow: (id) => {
+    const target = get().getWindow(id);
+    if (!target) return;
+    const desktop = getDesktopSize();
+    const fallbackSize = { width: 600, height: 400 };
+    const currentSize = target.size ?? fallbackSize;
+    const x = Math.max(0, Math.round((desktop.width - currentSize.width) / 2));
+    const y = Math.max(0, Math.round((desktop.height - currentSize.height) / 2));
+    const preSnapState: PreSnapState = target.preSnapState ?? {
+      position: target.position,
+      size: target.size,
+      isFullscreen: target.isFullscreen,
+    };
+    const { nextZIndex } = get();
+    set({
+      windows: get().windows.map((w) =>
+        w.id === id
+          ? {
+              ...w,
+              position: { x, y },
+              isFullscreen: false,
+              preSnapState,
+              zIndex: nextZIndex,
+            }
+          : w,
+      ),
+      nextZIndex: nextZIndex + 1,
+    });
+  },
+
+  snapWindow: (id, region) => {
+    const target = get().getWindow(id);
+    if (!target) return;
+    const desktop = getDesktopSize();
+    const { position, size } = computeSnapRect(region, desktop);
+    const preSnapState: PreSnapState = target.preSnapState ?? {
+      position: target.position,
+      size: target.size,
+      isFullscreen: target.isFullscreen,
+    };
+    const { nextZIndex } = get();
+    set({
+      windows: get().windows.map((w) =>
+        w.id === id
+          ? {
+              ...w,
+              position,
+              size,
+              isFullscreen: false,
+              preSnapState,
+              zIndex: nextZIndex,
+            }
+          : w,
+      ),
+      nextZIndex: nextZIndex + 1,
+    });
+  },
+
+  restoreWindowSize: (id) => {
+    const target = get().getWindow(id);
+    if (!target?.preSnapState) return;
+    const { position, size, isFullscreen } = target.preSnapState;
+    const { nextZIndex } = get();
+    set({
+      windows: get().windows.map((w) =>
+        w.id === id
+          ? {
+              ...w,
+              position,
+              size,
+              isFullscreen,
+              preSnapState: null,
+              zIndex: nextZIndex,
+            }
+          : w,
+      ),
+      nextZIndex: nextZIndex + 1,
+    });
+  },
+
   updateWindowPosition: (id, position) => {
     set((state) => ({
       windows: state.windows.map((w) =>
-        w.id === id ? { ...w, position } : w
+        w.id === id ? { ...w, position, preSnapState: null } : w
       ),
     }));
   },
 
   updateWindowSize: (id, size) => {
     set((state) => ({
-      windows: state.windows.map((w) => (w.id === id ? { ...w, size } : w)),
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, size, preSnapState: null } : w
+      ),
     }));
   },
 
