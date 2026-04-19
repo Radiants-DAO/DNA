@@ -1,6 +1,7 @@
 'use client';
 
 import { Children, isValidElement, type CSSProperties, type ReactElement, type ReactNode } from 'react';
+import './TransportPill.css';
 
 // =============================================================================
 // TransportPill — Rounded pill housing N transport slots (prev / play / next / …)
@@ -8,6 +9,10 @@ import { Children, isValidElement, type CSSProperties, type ReactElement, type R
 // The pill paints a dark outer shell and renders each child inside an inset
 // gradient "slot". First and last slots receive end-cap rounding; middle slots
 // are squared. Children are rendered as-is — they provide their own icon.
+//
+// Slot gradient + bevel are driven by CSS custom properties declared in
+// TransportPill.css so they flip cleanly between light and dark modes:
+//   --transport-slot-from / --transport-slot-to / --transport-slot-bevel
 //
 // Usage:
 //   <TransportPill>
@@ -38,12 +43,17 @@ const SLOT_BASE_STYLE: CSSProperties = {
   overflow: 'hidden',
   position: 'relative',
   backgroundImage:
-    'linear-gradient(in oklab 180deg, oklab(21.4% .0009 0.002) 0%, oklab(16.4% .0004 0.004) 100%)',
-  boxShadow:
-    'oklch(0.9780 0.0295 94.34 / 0.33) 0px 1px 1px inset,' +
-    ' oklch(0 0 0) 0px -1px 1px inset,' +
-    ' oklch(0 0 0) 0px 0.5px 0.6px,' +
-    ' oklch(0 0 0) 0px 2.9px 3.3px -0.4px',
+    'linear-gradient(in oklab 180deg, var(--transport-slot-from) 0%, var(--transport-slot-to) 100%)',
+  boxShadow: 'var(--transport-slot-bevel)',
+};
+
+// Pressed-state slot: reverse the gradient so it appears LIGHTER (paper reference
+// shows active slot brighter, not darker). Also apply a micro-depression.
+const SLOT_PRESSED_STYLE: CSSProperties = {
+  backgroundImage:
+    'linear-gradient(in oklab 180deg, var(--transport-slot-to) 0%, var(--transport-slot-from) 100%)',
+  boxShadow: 'oklch(0 0 0) 0 1px 5px inset',
+  transform: 'translateY(0.5px)',
 };
 
 function slotRadiusStyle(isFirst: boolean, isLast: boolean): CSSProperties {
@@ -104,48 +114,12 @@ export function TransportPill({
         const slotStyle: CSSProperties = {
           ...SLOT_BASE_STYLE,
           ...slotRadiusStyle(i === 0, i === last),
-          filter: isPressed ? 'brightness(0.9)' : undefined,
-          boxShadow: isPressed
-            ? 'oklch(0 0 0) 0px 1px 5px inset'
-            : SLOT_BASE_STYLE.boxShadow,
-          transition: 'box-shadow 80ms ease-out, filter 80ms ease-out',
+          ...(isPressed ? SLOT_PRESSED_STYLE : null),
+          transition: 'box-shadow 80ms ease-out, transform 80ms ease-out, background-image 80ms ease-out',
         };
         return (
           <div key={child.key ?? i} style={slotStyle} data-transport-slot={i}>
             {child}
-            {/* inner highlight blobs */}
-            <span
-              aria-hidden
-              style={{
-                position: 'absolute',
-                top: -59,
-                left: 18,
-                width: 77,
-                height: 77,
-                borderRadius: '9999px',
-                filter: 'blur(16px)',
-                mixBlendMode: 'overlay',
-                backgroundColor: 'oklch(0 0 0)',
-                pointerEvents: 'none',
-              }}
-            />
-            <span
-              aria-hidden
-              style={{
-                position: 'absolute',
-                bottom: -58,
-                left: -27,
-                width: 77,
-                height: 77,
-                borderRadius: '9999px',
-                filter: 'blur(16px)',
-                mixBlendMode: 'overlay',
-                backgroundColor: isPressed
-                  ? 'oklch(1 0 0 / 0.05)'
-                  : 'oklch(1 0 0 / 0.12)',
-                pointerEvents: 'none',
-              }}
-            />
           </div>
         );
       })}
