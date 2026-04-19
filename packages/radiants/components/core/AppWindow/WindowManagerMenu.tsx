@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import { Button } from '../Button/Button';
+import { Icon } from '../../../icons/Icon';
 
 export type SnapRegion =
   | 'left'
@@ -28,6 +28,7 @@ export interface WindowManagerMenuProps {
 
 const itemClass = `
   w-full px-4 py-1.5
+  flex items-center gap-3
   text-left font-sans text-sm
   text-main
   hover:bg-inv hover:text-flip
@@ -112,17 +113,20 @@ export function WindowManagerMenu({
               <div className="py-1">
                 {onFill ? (
                   <BaseMenu.Item className={itemClass} onClick={onFill}>
-                    Fill
+                    <Icon name="rectangle-filled" size={16} className="shrink-0" />
+                    <span>Fill</span>
                   </BaseMenu.Item>
                 ) : null}
                 {onCenter ? (
                   <BaseMenu.Item className={itemClass} onClick={onCenter}>
-                    Center
+                    <Icon name="align-center" size={16} className="shrink-0" />
+                    <span>Center</span>
                   </BaseMenu.Item>
                 ) : null}
                 {onFullscreen ? (
                   <BaseMenu.Item className={itemClass} onClick={onFullscreen}>
-                    {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                    <Icon name={isFullscreen ? 'collapse' : 'expand'} size={16} className="shrink-0" />
+                    <span>{isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}</span>
                   </BaseMenu.Item>
                 ) : null}
 

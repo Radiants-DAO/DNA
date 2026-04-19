@@ -7,6 +7,9 @@ import { ScrollArea } from '../ScrollArea/ScrollArea';
 
 import { Tabs } from '../Tabs/Tabs';
 import { Tooltip } from '../Tooltip/Tooltip';
+import { WindowManagerMenu, type SnapRegion } from './WindowManagerMenu';
+
+export type { SnapRegion } from './WindowManagerMenu';
 
 type WindowDimension = number | string;
 type AppWindowPresentation = 'window' | 'fullscreen' | 'mobile';
@@ -64,6 +67,11 @@ export interface AppWindowProps {
   onClose?: () => void;
   onFocus?: () => void;
   onFullscreen?: () => void;
+  onFill?: () => void;
+  onCenter?: () => void;
+  onSnap?: (region: SnapRegion) => void;
+  onRestore?: () => void;
+  canRestore?: boolean;
   onPositionChange?: (position: AppWindowPosition) => void;
   onSizeChange?: (size: { width: number; height: number }) => void;
 }
@@ -196,6 +204,11 @@ function AppWindowTitleBar({
   navContent,
   onClose,
   onFullscreen,
+  onFill,
+  onCenter,
+  onSnap,
+  onRestore,
+  canRestore = false,
   onWidget,
 }: {
   id: string;
@@ -212,6 +225,11 @@ function AppWindowTitleBar({
   navContent?: React.ReactNode;
   onClose?: () => void;
   onFullscreen?: () => void;
+  onFill?: () => void;
+  onCenter?: () => void;
+  onSnap?: (region: SnapRegion) => void;
+  onRestore?: () => void;
+  canRestore?: boolean;
   onWidget?: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -252,17 +270,30 @@ function AppWindowTitleBar({
         ) : null}
 
         {showFullscreenButton && onFullscreen ? (
-          <Tooltip content={presentation === 'fullscreen' ? 'Exit fullscreen' : 'Enter fullscreen'}>
-            <Button
-              tone="accent"
-              size="sm"
-              rounded="sm"
-              iconOnly
-              icon={presentation === 'fullscreen' ? 'collapse' : 'expand'}
-              onClick={onFullscreen}
-              aria-label={`${presentation === 'fullscreen' ? 'Exit' : 'Enter'} fullscreen ${title}`}
+          onFill || onCenter || onSnap || onRestore ? (
+            <WindowManagerMenu
+              title={title}
+              isFullscreen={presentation === 'fullscreen'}
+              canRestore={canRestore}
+              onFullscreen={onFullscreen}
+              onFill={onFill}
+              onCenter={onCenter}
+              onSnap={onSnap}
+              onRestore={onRestore}
             />
-          </Tooltip>
+          ) : (
+            <Tooltip content={presentation === 'fullscreen' ? 'Exit fullscreen' : 'Enter fullscreen'}>
+              <Button
+                tone="accent"
+                size="sm"
+                rounded="sm"
+                iconOnly
+                icon={presentation === 'fullscreen' ? 'collapse' : 'expand'}
+                onClick={onFullscreen}
+                aria-label={`${presentation === 'fullscreen' ? 'Exit' : 'Enter'} fullscreen ${title}`}
+              />
+            </Tooltip>
+          )
         ) : null}
 
         {showCopyButton ? (
@@ -550,6 +581,11 @@ function AppWindow({
   onClose,
   onFocus,
   onFullscreen,
+  onFill,
+  onCenter,
+  onSnap,
+  onRestore,
+  canRestore = false,
   onPositionChange,
   onSizeChange,
 }: AppWindowProps) {
@@ -859,6 +895,11 @@ function AppWindow({
         navContent={navContent}
         onClose={onClose}
         onFullscreen={onFullscreen}
+        onFill={onFill}
+        onCenter={onCenter}
+        onSnap={onSnap}
+        onRestore={onRestore}
+        canRestore={canRestore}
         onWidget={onWidget}
       />
 
