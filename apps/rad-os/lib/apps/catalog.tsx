@@ -57,6 +57,8 @@ export interface AppCatalogEntry {
   defaultSize?: WindowSizeTier | WindowSize;
   resizable: boolean;
   contentPadding?: boolean;
+  /** When true the window renders without titlebar/shell chrome. The app component must supply its own frame and drag handle. */
+  chromeless?: boolean;
   helpConfig?: AppHelpConfig;
   desktopVisible?: boolean;
   category?: StartMenuCategory;
@@ -229,6 +231,7 @@ export function getWindowChrome(id: string) {
     defaultSize: app.defaultSize,
     resizable: app.resizable,
     contentPadding: app.contentPadding,
+    chromeless: app.chromeless,
     helpConfig: app.helpConfig,
     ambient: app.ambient,
   };

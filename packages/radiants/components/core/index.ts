@@ -1,6 +1,7 @@
 // Core component exports
 export { Alert, alertVariants } from './Alert/Alert';
-export { AppWindow } from './AppWindow/AppWindow';
+export { AppWindow, useAppWindowControls } from './AppWindow/AppWindow';
+export type { AppWindowControls } from './AppWindow/AppWindow';
 export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
 export { Button, IconButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';

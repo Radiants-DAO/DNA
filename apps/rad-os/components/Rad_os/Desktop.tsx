@@ -140,6 +140,7 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
                 resizable={config.resizable}
                 defaultSize={config.defaultSize}
                 contentPadding={config.contentPadding}
+                chromeless={config.chromeless}
                 showWidgetButton={Boolean(config.ambient)}
                 onWidget={config.ambient ? () => toggleWidget(windowState.id) : undefined}
               >

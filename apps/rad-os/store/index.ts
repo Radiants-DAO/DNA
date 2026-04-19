@@ -116,5 +116,9 @@ export const useRadRadioStore = () =>
       toggleFavorite: state.radioToggleFavorite,
       minified: state.radioMinified,
       toggleMinified: state.radioToggleMinified,
+      slow: state.radioSlow,
+      reverb: state.radioReverb,
+      setSlow: state.radioSetSlow,
+      setReverb: state.radioSetReverb,
     }))
   );

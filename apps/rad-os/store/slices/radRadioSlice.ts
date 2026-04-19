@@ -27,6 +27,11 @@ export interface RadRadioSlice {
   radioToggleFavorite: (trackId: string) => void;
   radioMinified: boolean;
   radioToggleMinified: () => void;
+
+  radioSlow: number;
+  radioReverb: number;
+  radioSetSlow: (v: number) => void;
+  radioSetReverb: (v: number) => void;
 }
 
 export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSlice> = (
@@ -132,4 +137,9 @@ export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSl
   radioToggleMinified: () => {
     set((state) => ({ radioMinified: !state.radioMinified }));
   },
+
+  radioSlow: 0,
+  radioReverb: 0,
+  radioSetSlow: (v) => set({ radioSlow: Math.max(0, Math.min(1, v)) }),
+  radioSetReverb: (v) => set({ radioReverb: Math.max(0, Math.min(1, v)) }),
 });
