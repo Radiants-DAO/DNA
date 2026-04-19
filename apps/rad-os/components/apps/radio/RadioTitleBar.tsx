@@ -25,7 +25,6 @@ export function RadioTitleBar({ title, style, className = '' }: RadioTitleBarPro
     <div
       className={['absolute flex items-center gap-1 p-1 pl-1.5', className].filter(Boolean).join(' ')}
       style={{
-        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-chromeless-titlebar-pill owner:rad-os expires:2026-12-31 issue:DNA-999
         background: 'linear-gradient(180deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         boxShadow: 'var(--shadow-floating)',
         borderRadius: 9999,
