@@ -148,21 +148,8 @@ function MenuRow({
   onPointerEnter,
   href,
 }: MenuRowProps) {
-  return (
-    <Button
-      type={href ? undefined : 'button'}
-      href={href}
-      target={href ? '_blank' : undefined}
-      rel={href ? 'noopener noreferrer' : undefined}
-      quiet
-      fullWidth
-      rounded="none"
-      size="lg"
-      active={highlighted}
-      onClick={onClick}
-      onPointerEnter={onPointerEnter}
-      className="gap-3"
-    >
+  const body = (
+    <>
       <span className="w-5 h-5 flex items-center justify-center shrink-0">
         {icon}
       </span>
@@ -174,6 +161,41 @@ function MenuRow({
           <Icon name="chevron-right" />
         </span>
       )}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Button
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        quiet
+        fullWidth
+        rounded="none"
+        size="lg"
+        active={highlighted}
+        onPointerEnter={onPointerEnter}
+        className="gap-3"
+      >
+        {body}
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      type="button"
+      quiet
+      fullWidth
+      rounded="none"
+      size="lg"
+      active={highlighted}
+      onClick={onClick}
+      onPointerEnter={onPointerEnter}
+      className="gap-3"
+    >
+      {body}
     </Button>
   );
 }
