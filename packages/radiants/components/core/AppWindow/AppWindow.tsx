@@ -67,7 +67,6 @@ export interface AppWindowProps {
   onClose?: () => void;
   onFocus?: () => void;
   onFullscreen?: () => void;
-  onFill?: () => void;
   onCenter?: () => void;
   onSnap?: (region: SnapRegion) => void;
   onRestore?: () => void;
@@ -136,6 +135,73 @@ const DEFAULT_VIEWPORT_MARGIN = 8;
 const TITLE_BAR_HEIGHT = 40;
 const CHROME_PADDING = 16;
 const DEFAULT_CASCADE_OFFSET = 30;
+const SNAP_CORNER_ZONE = 48;
+const SNAP_EDGE_ZONE = 16;
+
+function getDragViewport(viewportBottomInset: number) {
+  if (typeof window === 'undefined') return { width: 0, height: 0 };
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight - viewportBottomInset,
+  };
+}
+
+function computeDragSnapZone(
+  clientX: number,
+  clientY: number,
+  viewportBottomInset: number,
+): SnapRegion | null {
+  const { width, height } = getDragViewport(viewportBottomInset);
+  if (!width || !height) return null;
+  const nearLeftCorner = clientX < SNAP_CORNER_ZONE;
+  const nearRightCorner = clientX > width - SNAP_CORNER_ZONE;
+  const nearTop = clientY < SNAP_CORNER_ZONE;
+  const nearBottom = clientY > height - SNAP_CORNER_ZONE;
+  if (nearTop && nearLeftCorner) return 'top-left';
+  if (nearTop && nearRightCorner) return 'top-right';
+  if (nearBottom && nearLeftCorner) return 'bottom-left';
+  if (nearBottom && nearRightCorner) return 'bottom-right';
+  if (clientX < SNAP_EDGE_ZONE) return 'left';
+  if (clientX > width - SNAP_EDGE_ZONE) return 'right';
+  return null;
+}
+
+function getSnapRect(
+  region: SnapRegion,
+  viewportBottomInset: number,
+): { x: number; y: number; width: number; height: number } {
+  const { width, height } = getDragViewport(viewportBottomInset);
+  const halfW = Math.floor(width / 2);
+  const halfH = Math.floor(height / 2);
+  switch (region) {
+    case 'left':
+      return { x: 0, y: 0, width: halfW, height };
+    case 'right':
+      return { x: halfW, y: 0, width: width - halfW, height };
+    case 'top':
+      return { x: 0, y: 0, width, height: halfH };
+    case 'bottom':
+      return { x: 0, y: halfH, width, height: height - halfH };
+    case 'top-left':
+      return { x: 0, y: 0, width: halfW, height: halfH };
+    case 'top-right':
+      return { x: halfW, y: 0, width: width - halfW, height: halfH };
+    case 'bottom-left':
+      return { x: 0, y: halfH, width: halfW, height: height - halfH };
+    case 'bottom-right':
+      return { x: halfW, y: halfH, width: width - halfW, height: height - halfH };
+  }
+}
+
+function readClientPoint(event: DraggableEvent): { x: number; y: number } | null {
+  if ('touches' in event && event.touches && event.touches[0]) {
+    return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+  }
+  if ('clientX' in event && 'clientY' in event) {
+    return { x: (event as MouseEvent).clientX, y: (event as MouseEvent).clientY };
+  }
+  return null;
+}
 
 const PADDING_MAP: Record<NonNullable<AppWindowBodyProps['padding']>, string> = {
   none: '',
@@ -204,7 +270,6 @@ function AppWindowTitleBar({
   navContent,
   onClose,
   onFullscreen,
-  onFill,
   onCenter,
   onSnap,
   onRestore,
@@ -225,7 +290,6 @@ function AppWindowTitleBar({
   navContent?: React.ReactNode;
   onClose?: () => void;
   onFullscreen?: () => void;
-  onFill?: () => void;
   onCenter?: () => void;
   onSnap?: (region: SnapRegion) => void;
   onRestore?: () => void;
@@ -270,13 +334,12 @@ function AppWindowTitleBar({
         ) : null}
 
         {showFullscreenButton && onFullscreen ? (
-          onFill || onCenter || onSnap || onRestore ? (
+          onCenter || onSnap || onRestore ? (
             <WindowManagerMenu
               title={title}
               isFullscreen={presentation === 'fullscreen'}
               canRestore={canRestore}
               onFullscreen={onFullscreen}
-              onFill={onFill}
               onCenter={onCenter}
               onSnap={onSnap}
               onRestore={onRestore}
@@ -581,7 +644,6 @@ function AppWindow({
   onClose,
   onFocus,
   onFullscreen,
-  onFill,
   onCenter,
   onSnap,
   onRestore,
@@ -624,6 +686,7 @@ function AppWindow({
   const [internalSize, setInternalSize] = useState<AppWindowSize | undefined>(defaultSize);
   const [isResizing, setIsResizing] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [dragSnapZone, setDragSnapZone] = useState<SnapRegion | null>(null);
   const [resizeDirection, setResizeDirection] = useState('');
   const [resizeStart, setResizeStart] = useState({
     x: 0,
@@ -676,12 +739,28 @@ function AppWindow({
     onFocus?.();
   }, [focused, onFocus]);
 
+  const handleDrag = useCallback(
+    (event: DraggableEvent) => {
+      if (!onSnap) return;
+      const point = readClientPoint(event);
+      if (!point) return;
+      setDragSnapZone(computeDragSnapZone(point.x, point.y, viewportBottomInset));
+    },
+    [onSnap, viewportBottomInset],
+  );
+
   const handleDragStop = useCallback(
     (_event: DraggableEvent, data: DraggableData) => {
       setHasUserInteracted(true);
+      if (dragSnapZone && onSnap) {
+        onSnap(dragSnapZone);
+        setDragSnapZone(null);
+        return;
+      }
+      setDragSnapZone(null);
       commitPosition({ x: data.x, y: data.y });
     },
-    [commitPosition],
+    [commitPosition, dragSnapZone, onSnap],
   );
 
   const handleResizeStart = useCallback(
@@ -895,7 +974,6 @@ function AppWindow({
         navContent={navContent}
         onClose={onClose}
         onFullscreen={onFullscreen}
-        onFill={onFill}
         onCenter={onCenter}
         onSnap={onSnap}
         onRestore={onRestore}
@@ -977,17 +1055,35 @@ function AppWindow({
     return shell;
   }
 
+  const snapPreviewRect = dragSnapZone ? getSnapRect(dragSnapZone, viewportBottomInset) : null;
+
   return (
-    <Draggable
-      nodeRef={nodeRef}
-      handle="[data-drag-handle]"
-      position={effectivePosition}
-      onStop={handleDragStop}
-      bounds="parent"
-      disabled={isResizing}
-    >
-      {shell}
-    </Draggable>
+    <>
+      <Draggable
+        nodeRef={nodeRef}
+        handle="[data-drag-handle]"
+        position={effectivePosition}
+        onDrag={handleDrag}
+        onStop={handleDragStop}
+        bounds="parent"
+        disabled={isResizing}
+      >
+        {shell}
+      </Draggable>
+      {snapPreviewRect ? (
+        <div
+          aria-hidden
+          className="fixed pointer-events-none pixel-rounded-md bg-accent/30"
+          style={{
+            left: snapPreviewRect.x,
+            top: snapPreviewRect.y,
+            width: snapPreviewRect.width,
+            height: snapPreviewRect.height,
+            zIndex: 9999,
+          }}
+        />
+      ) : null}
+    </>
   );
 }
 

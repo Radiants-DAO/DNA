@@ -39,7 +39,6 @@ export function AppWindow({
     closeWindow,
     toggleFullscreen,
     focusWindow,
-    fillWindow,
     centerWindow,
     snapWindow,
     restoreWindowSize,
@@ -56,7 +55,6 @@ export function AppWindow({
   const handleClose = useCallback(() => closeWindow(id), [closeWindow, id]);
   const handleFocus = useCallback(() => focusWindow(id), [focusWindow, id]);
   const handleFullscreen = useCallback(() => toggleFullscreen(id), [toggleFullscreen, id]);
-  const handleFill = useCallback(() => fillWindow(id), [fillWindow, id]);
   const handleCenter = useCallback(() => centerWindow(id), [centerWindow, id]);
   const handleSnap = useCallback(
     (region: SnapRegion) => snapWindow(id, region),
@@ -96,7 +94,6 @@ export function AppWindow({
       onClose={handleClose}
       onFocus={handleFocus}
       onFullscreen={handleFullscreen}
-      onFill={handleFill}
       onCenter={handleCenter}
       onSnap={handleSnap}
       onRestore={handleRestore}

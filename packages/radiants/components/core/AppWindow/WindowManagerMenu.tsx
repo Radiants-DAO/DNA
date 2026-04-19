@@ -12,15 +12,13 @@ export type SnapRegion =
   | 'top-left'
   | 'top-right'
   | 'bottom-left'
-  | 'bottom-right'
-  | 'fill';
+  | 'bottom-right';
 
 export interface WindowManagerMenuProps {
   title: string;
   isFullscreen: boolean;
   canRestore: boolean;
   onFullscreen?: () => void;
-  onFill?: () => void;
   onCenter?: () => void;
   onSnap?: (region: SnapRegion) => void;
   onRestore?: () => void;
@@ -51,7 +49,6 @@ const gridItemClass = `
 
 function RegionGlyph({ region }: { region: SnapRegion }) {
   const cells: Record<SnapRegion, Array<[number, number, number, number]>> = {
-    fill: [[0, 0, 8, 8]],
     left: [[0, 0, 4, 8]],
     right: [[4, 0, 4, 8]],
     top: [[0, 0, 8, 4]],
@@ -76,7 +73,6 @@ export function WindowManagerMenu({
   isFullscreen,
   canRestore,
   onFullscreen,
-  onFill,
   onCenter,
   onSnap,
   onRestore,
@@ -111,12 +107,6 @@ export function WindowManagerMenu({
           >
             <div className="pixel-rounded-sm bg-page pixel-shadow-raised">
               <div className="py-1">
-                {onFill ? (
-                  <BaseMenu.Item className={itemClass} onClick={onFill}>
-                    <Icon name="rectangle-filled" size={16} className="shrink-0" />
-                    <span>Fill</span>
-                  </BaseMenu.Item>
-                ) : null}
                 {onCenter ? (
                   <BaseMenu.Item className={itemClass} onClick={onCenter}>
                     <Icon name="align-center" size={16} className="shrink-0" />

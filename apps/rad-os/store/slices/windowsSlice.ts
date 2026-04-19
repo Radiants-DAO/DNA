@@ -10,8 +10,7 @@ export type SnapRegion =
   | 'top-left'
   | 'top-right'
   | 'bottom-left'
-  | 'bottom-right'
-  | 'fill';
+  | 'bottom-right';
 
 export interface PreSnapState {
   position: { x: number; y: number };
@@ -54,7 +53,6 @@ export interface WindowsSlice {
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
   toggleWidget: (id: string) => void;
-  fillWindow: (id: string) => void;
   centerWindow: (id: string) => void;
   snapWindow: (id: string, region: SnapRegion) => void;
   restoreWindowSize: (id: string) => void;
@@ -88,8 +86,6 @@ function computeSnapRect(
   const halfH = Math.floor(h / 2);
 
   switch (region) {
-    case 'fill':
-      return { position: { x: 0, y: 0 }, size: { width: w, height: h } };
     case 'left':
       return { position: { x: 0, y: 0 }, size: { width: halfW, height: h } };
     case 'right':
@@ -321,10 +317,6 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
             : w
       ),
     }));
-  },
-
-  fillWindow: (id) => {
-    get().snapWindow(id, 'fill');
   },
 
   centerWindow: (id) => {

@@ -21,7 +21,6 @@ export interface UseWindowManagerReturn {
   toggleFullscreen: (appId: string) => void;
   toggleWidget: (appId: string) => void;
   toggleWindow: (appId: string) => void;
-  fillWindow: (appId: string) => void;
   centerWindow: (appId: string) => void;
   snapWindow: (appId: string, region: SnapRegion) => void;
   restoreWindowSize: (appId: string) => void;
@@ -74,7 +73,6 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeFocusWindow = useRadOSStore((state) => state.focusWindow);
   const storeToggleFullscreen = useRadOSStore((state) => state.toggleFullscreen);
   const storeToggleWidget = useRadOSStore((state) => state.toggleWidget);
-  const storeFillWindow = useRadOSStore((state) => state.fillWindow);
   const storeCenterWindow = useRadOSStore((state) => state.centerWindow);
   const storeSnapWindow = useRadOSStore((state) => state.snapWindow);
   const storeRestoreWindowSize = useRadOSStore((state) => state.restoreWindowSize);
@@ -129,13 +127,6 @@ export function useWindowManager(): UseWindowManagerReturn {
       storeToggleWidget(appId);
     },
     [storeToggleWidget]
-  );
-
-  const fillWindow = useCallback(
-    (appId: string) => {
-      storeFillWindow(appId);
-    },
-    [storeFillWindow]
   );
 
   const centerWindow = useCallback(
@@ -257,7 +248,6 @@ export function useWindowManager(): UseWindowManagerReturn {
     toggleFullscreen,
     toggleWidget,
     toggleWindow,
-    fillWindow,
     centerWindow,
     snapWindow,
     restoreWindowSize,
