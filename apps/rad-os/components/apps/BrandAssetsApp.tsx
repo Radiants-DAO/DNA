@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { AppWindow, Button, Switch, Tooltip } from '@rdna/radiants/components/core';
 import { type AppProps } from '@/lib/apps';
+import { useWindowManager } from '@/hooks/useWindowManager';
 import {
   Icon,
   RadMarkIcon,
@@ -479,10 +480,11 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // Main Component
 // ============================================================================
 
-export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
+export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
   const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
-  const [activeTab, setActiveTab] = useState('logos');
+  const { getActiveTab, setActiveTab } = useWindowManager();
+  const activeTab = getActiveTab(windowId) ?? 'logos';
   const uiLib = useUILibrary();
   const [activeComponent, setActiveComponent] = useState<{ entry: RegistryEntry; props: Record<string, unknown> } | null>(null);
 
@@ -501,7 +503,7 @@ export function BrandAssetsApp({ windowId: _windowId }: AppProps) {
   return (
     <>
       {/* ── Tab nav — rendered into the window title bar via compound API ── */}
-      <AppWindow.Nav value={activeTab} onChange={setActiveTab}>
+      <AppWindow.Nav value={activeTab} onChange={(tabId) => setActiveTab(windowId, tabId)}>
         {TAB_NAV.map((tab) => (
           <AppWindow.Nav.Item key={tab.value} value={tab.value} icon={tab.icon}>
             {tab.label}

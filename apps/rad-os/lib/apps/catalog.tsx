@@ -1,5 +1,5 @@
 import { lazy, type ComponentType, type ReactNode } from 'react';
-import { RadMarkIcon, Icon } from '@rdna/radiants/icons/runtime';
+import { RadMarkIcon, Icon, FontAaIcon } from '@rdna/radiants/icons/runtime';
 import type { WindowSize, WindowSizeTier } from '@/lib/windowSizing';
 
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
@@ -26,7 +26,7 @@ export const START_MENU_CATEGORIES: StartMenuCategoryDef[] = [
   { id: 'tools', label: 'Tools', icon: <Icon name="wrench" /> },
   { id: 'media', label: 'Media', icon: <Icon name="broadcast-dish" /> },
   { id: 'about', label: 'About', icon: <Icon name="question" /> },
-  { id: 'links', label: 'Links', icon: <Icon name="link" /> },
+  { id: 'links', label: 'Links', icon: <Icon name="globe" /> },
 ];
 
 export interface AmbientCapability {
@@ -83,7 +83,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     subtabs: [
       { id: 'logos', label: 'Logos', icon: <RadMarkIcon /> },
       { id: 'colors', label: 'Color', icon: <Icon name="pencil" /> },
-      { id: 'fonts', label: 'Type', icon: <Icon name="font-aa" /> },
+      { id: 'fonts', label: 'Type', icon: <FontAaIcon /> },
       { id: 'components', label: 'UI Library', icon: <Icon name="outline-box" /> },
       { id: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
     ],
