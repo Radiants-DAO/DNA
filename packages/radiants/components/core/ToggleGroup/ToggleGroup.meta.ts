@@ -6,20 +6,17 @@ interface ToggleGroupProps {
   defaultValue?: string;
   onValueChange?: string;
   disabled?: boolean;
-  orientation?: string;
-  mode?: string;
-  tone?: string;
-  size?: string;
-  rounded?: string;
-  quiet?: boolean;
-  compact?: boolean;
+  orientation?: "horizontal" | "vertical";
+  tone?: "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
+  size?: "xs" | "sm" | "md" | "lg";
+  rounded?: "xs" | "sm" | "md" | "lg" | "xl" | "full" | "none";
   children?: React.ReactNode;
 }
 
 export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
   name: "ToggleGroup",
   description:
-    "Group of related toggle buttons for single or multiple selection. Items render as RDNA Toggles, inheriting the full Button visual system.",
+    "Ink-surfaced group of chip toggles for single or multi-select. Items render as RDNA Toggles.",
   subcomponents: ["ToggleGroup.Item"],
   props: {
     multiple: {
@@ -45,41 +42,28 @@ export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
       description: "Disable all toggle interactions",
     },
     orientation: {
-      type: "string",
+      type: "enum",
+      options: ["horizontal", "vertical"],
       default: "horizontal",
-      description: "Layout direction: horizontal or vertical",
-    },
-    mode: {
-      type: "string",
-      default: "solid",
-      description: "Visual mode: solid, flat, pattern",
+      description: "Layout direction",
     },
     tone: {
-      type: "string",
-      default: "accent",
-      description:
-        "Color tone: accent, danger, success, neutral, cream, white, info, tinted",
+      type: "enum",
+      options: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted"],
+      default: "neutral",
+      description: "Color tone applied to all items",
     },
     size: {
-      type: "string",
-      default: "md",
-      description: "Size applied to all toggle items: sm, md, lg",
+      type: "enum",
+      options: ["xs", "sm", "md", "lg"],
+      default: "xs",
+      description: "Size applied to all items",
     },
     rounded: {
-      type: "string",
-      default: "none",
-      description:
-        "Pixel-corner roundness for items: xs, sm, md, lg, xl, none",
-    },
-    quiet: {
-      type: "boolean",
-      default: true,
-      description: "Transparent at rest — fills on hover/selected",
-    },
-    compact: {
-      type: "boolean",
-      default: false,
-      description: "Compact badge-like styling — uses mono font",
+      type: "enum",
+      options: ["xs", "sm", "md", "lg", "xl", "full", "none"],
+      default: "xs",
+      description: "Pixel-corner roundness applied to all items",
     },
   },
   slots: {
@@ -90,7 +74,7 @@ export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
   examples: [
     {
       name: "Single selection",
-      code: '<ToggleGroup defaultValue="center">\n  <ToggleGroup.Item value="left">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value="center">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value="right">Right</ToggleGroup.Item>\n</ToggleGroup>',
+      code: '<ToggleGroup defaultValue={["center"]}>\n  <ToggleGroup.Item value="left">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value="center">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value="right">Right</ToggleGroup.Item>\n</ToggleGroup>',
     },
     {
       name: "Multiple selection",
