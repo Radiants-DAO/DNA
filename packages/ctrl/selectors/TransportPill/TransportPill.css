@@ -1,0 +1,27 @@
+/* TransportPill slot gradient + bevel tokens.
+ * Defaults are light-mode values; `.dark` overrides flip the slot to the
+ * deep oklab pair used in the Paper dark reference.
+ *
+ * Declared outside of `@theme` because these are component-scoped tokens
+ * (not Tailwind utility sources) and they must resolve on `:root` / `.dark`
+ * directly so inline `style` values read them correctly at runtime.
+ */
+:root {
+  --transport-slot-from: var(--color-cream);
+  --transport-slot-to: var(--color-sun-yellow);
+  --transport-slot-bevel:
+    oklch(1 0 0 / 0.5) 0px 1px 1px inset,
+    oklch(0 0 0 / 0.15) 0px -1px 1px inset,
+    oklch(0 0 0 / 0.25) 0px 0.5px 0.6px,
+    oklch(0 0 0 / 0.3) 0px 2.9px 3.3px -0.4px;
+}
+
+.dark {
+  --transport-slot-from: oklab(21.4% 0.0009 0.002);
+  --transport-slot-to: oklab(16.4% 0.0004 0.004);
+  --transport-slot-bevel:
+    oklch(0.9780 0.0295 94.34 / 0.33) 0px 1px 1px inset,
+    oklch(0 0 0) 0px -1px 1px inset,
+    oklch(0 0 0) 0px 0.5px 0.6px,
+    oklch(0 0 0) 0px 2.9px 3.3px -0.4px;
+}

@@ -23,15 +23,14 @@ export function RadioFrame({ children, className = '', style }: RadioFrameProps)
   return (
     <div
       data-drag-handle=""
-      className={['relative flex flex-col justify-end', className].filter(Boolean).join(' ')}
+      className={['relative flex flex-col', className].filter(Boolean).join(' ')}
       style={{
         width: 277,
         height: 535,
         borderRadius: 8,
         backgroundImage: [
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-exact-spec owner:rad-os expires:2026-12-31 issue:DNA-999
           'url(https://app.paper.design/file-assets/01KP7YATPHZNBNEC215AM9958W/3VVBRZ1DW67PP068JSK3FPWHDM.svg)',
-          'linear-gradient(180deg, oklab(16.4% .0004 0.004) 0%, oklab(40% .0004 0.004) 100%)',
+          'linear-gradient(180deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         ].join(', '),
         backgroundSize: '200px 200px, auto',
         backgroundRepeat: 'repeat, no-repeat',

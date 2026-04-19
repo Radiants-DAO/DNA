@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppWindow, Tooltip } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import { LCDScreen, TransportPill } from '@rdna/ctrl';
@@ -18,6 +18,7 @@ import { RadioDisc } from './RadioDisc';
 import { RadioVisualizer } from './RadioVisualizer';
 import { RadioEffectsRow } from './RadioEffectsRow';
 import { useWebAudioEffects } from './useWebAudioEffects';
+import { lcdText } from './styles';
 
 // =============================================================================
 // Radio — Side-by-side sibling of RadRadioApp. Chromeless 277×535 portrait
@@ -90,20 +91,114 @@ interface TransportButtonProps {
   label: string;
   iconName: string;
   onClick: () => void;
+  onPointerDown?: () => void;
+  onPointerUp?: () => void;
 }
-function TransportButton({ label, iconName, onClick }: TransportButtonProps) {
+function TransportButton({ label, iconName, onClick, onPointerDown, onPointerUp }: TransportButtonProps) {
   return (
     <Tooltip content={label}>
       <button
         type="button"
         onClick={onClick}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
+        onPointerCancel={onPointerUp}
         aria-label={label}
         // eslint-disable-next-line rdna/prefer-rdna-components -- reason:transport-pill-custom-slot owner:rad-os expires:2026-12-31 issue:DNA-999
-        className="flex items-center justify-center w-full h-full bg-transparent outline-none cursor-pointer"
+        className="flex items-center justify-center w-full h-full bg-transparent outline-none cursor-pointer text-accent"
+        style={{ imageRendering: 'pixelated' }}
       >
-        <Icon name={iconName} />
+        <Icon name={iconName} size={16} />
       </button>
     </Tooltip>
+  );
+}
+
+// Thin 1px volume slider that preserves the paper-design cream track + white
+// fill with a 3-layer yellow/cream glow. Click or drag on the track to set
+// volume in the [0..100] range.
+interface VolumeSliderProps {
+  volume: number;
+  onChange: (v: number) => void;
+}
+function VolumeSlider({ volume, onChange }: VolumeSliderProps) {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const update = useCallback(
+    (clientX: number) => {
+      const el = trackRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      onChange(Math.round(pct * 100));
+    },
+    [onChange],
+  );
+
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+      update(e.clientX);
+    },
+    [update],
+  );
+
+  const onPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) update(e.clientX);
+    },
+    [update],
+  );
+
+  const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+  }, []);
+
+  return (
+    <div
+      ref={trackRef}
+      role="slider"
+      aria-label="Volume"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={volume}
+      tabIndex={0}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      className="flex-1 cursor-pointer relative"
+      style={{
+        // Enlarge the hit target vertically while keeping the visible line 1px.
+        paddingTop: 6,
+        paddingBottom: 6,
+        touchAction: 'none',
+      }}
+    >
+      <div
+        style={{
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-progress-line-track owner:rad-os expires:2026-12-31 issue:DNA-999
+          backgroundColor: 'oklch(0.9126 0.1170 93.68 / 0.53)',
+          height: 1,
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-progress-line-fill owner:rad-os expires:2026-12-31 issue:DNA-999
+            backgroundColor: 'oklch(1 0 0)',
+            boxShadow:
+              'var(--color-sun-yellow) 0 0 0.25px, var(--color-sun-yellow) 0 0 2.25px, var(--color-cream) 0 0 8.25px',
+            height: 1,
+            width: `${volume}%`,
+            transition: 'width 75ms linear',
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -124,7 +219,7 @@ export function Radio({ windowId: _windowId }: AppProps) {
     setSlow,
     setReverb,
   } = useRadRadioStore();
-  const { volume } = usePreferencesStore();
+  const { volume, setVolume } = usePreferencesStore();
 
   const channelTracks = getTracksByChannel(currentChannel);
   const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
@@ -135,8 +230,12 @@ export function Radio({ windowId: _windowId }: AppProps) {
   const handlePrev = useCallback(() => prevTrack(channelTracks.length), [prevTrack, channelTracks.length]);
   const handleNext = useCallback(() => nextTrack(channelTracks.length), [nextTrack, channelTracks.length]);
 
+  // Momentary press state for skip buttons (pressed only while pointer is down).
+  // Play/pause uses the persistent `isPlaying` flag for its pressed state.
+  const [prevPressed, setPrevPressed] = useState(false);
+  const [nextPressed, setNextPressed] = useState(false);
+
   const currentVideo = videos[currentVideoIndex % videos.length];
-  const progressPct = currentTrack.duration > 0 ? Math.round((currentTime / currentTrack.duration) * 100) : 0;
   const trackTitle = `${currentTrack.title} - ${currentTrack.artist}`;
 
   return (
@@ -147,17 +246,21 @@ export function Radio({ windowId: _windowId }: AppProps) {
       {/* Floating chromeless titlebar — sits just above the frame */}
       <RadioTitleBar
         title="Radio"
-        style={{ top: -36, left: '50%', transform: 'translateX(-50%)' }}
+        style={{ top: -40, left: '50%', transform: 'translateX(-50%)' }}
       />
 
       <RadioFrame>
-        {/* Circular disc with tick ring and video — sits overlapping the top */}
+        {/* Circular disc with tick ring and video — sits overlapping the bottom.
+            zIndex keeps the overhanging portion above the frame's inner content
+            (TransportPill, LCDScreen) which may create their own stacking
+            contexts via shadows/transforms. */}
         <RadioDisc
           style={{
             position: 'absolute',
-            top: -66,
+            bottom: -66,
             left: '50%',
             transform: 'translateX(-50%)',
+            zIndex: 1,
           }}
           currentTime={currentTime}
           duration={currentTrack.duration}
@@ -165,7 +268,32 @@ export function Radio({ windowId: _windowId }: AppProps) {
           videoSrc={currentVideo.src}
         />
 
-        {/* LCD screen — 260×210, asymmetric padding, flex-col justify-end */}
+        {/* Transport pill — at the top inside the frame */}
+        <div className="px-2 py-2">
+          <TransportPill pressedStates={[prevPressed, isPlaying, nextPressed]}>
+            <TransportButton
+              label="Previous"
+              iconName="skip-back"
+              onClick={handlePrev}
+              onPointerDown={() => setPrevPressed(true)}
+              onPointerUp={() => setPrevPressed(false)}
+            />
+            <TransportButton
+              label={isPlaying ? 'Pause' : 'Play'}
+              iconName={isPlaying ? 'pause' : 'play'}
+              onClick={togglePlay}
+            />
+            <TransportButton
+              label="Next"
+              iconName="skip-forward"
+              onClick={handleNext}
+              onPointerDown={() => setNextPressed(true)}
+              onPointerUp={() => setNextPressed(false)}
+            />
+          </TransportPill>
+        </div>
+
+        {/* LCD screen — 260×210, asymmetric padding, flex-col */}
         <LCDScreen
           padding="none"
           style={{
@@ -176,7 +304,7 @@ export function Radio({ windowId: _windowId }: AppProps) {
             marginRight: 'auto',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'flex-end',
+            justifyContent: 'flex-start',
             gap: 6,
           }}
         >
@@ -205,89 +333,39 @@ export function Radio({ windowId: _windowId }: AppProps) {
               lineHeight: '12px',
             }}
           >
-            <span
-              style={{
-                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-lcd-text-dim owner:rad-os expires:2026-12-31 issue:DNA-999
-                color: 'oklch(1 0 0 / 0.35)',
-                textShadow:
-                  'var(--color-sun-yellow) 0 0 0.25px, var(--color-sun-yellow) 0 0 2.25px, var(--color-cream) 0 0 8.25px',
-              }}
-            >
-              {formatDuration(currentTime)}
-            </span>
-            <span
-              className="flex-1 text-center truncate"
-              style={{
-                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-lcd-text owner:rad-os expires:2026-12-31 issue:DNA-999
-                color: 'oklch(1 0 0)',
-                textShadow:
-                  'var(--color-sun-yellow) 0 0 0.25px, var(--color-sun-yellow) 0 0 2.25px, var(--color-cream) 0 0 8.25px',
-              }}
-            >
+            <span style={lcdText}>{formatDuration(currentTime)}</span>
+            <span className="flex-1 text-center truncate" style={lcdText}>
               {trackTitle}
             </span>
-            <span
-              style={{
-                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-lcd-text-dim owner:rad-os expires:2026-12-31 issue:DNA-999
-                color: 'oklch(1 0 0 / 0.35)',
-                textShadow:
-                  'var(--color-sun-yellow) 0 0 0.25px, var(--color-sun-yellow) 0 0 2.25px, var(--color-cream) 0 0 8.25px',
-              }}
-            >
-              {formatDuration(currentTrack.duration)}
-            </span>
+            <span style={lcdText}>{formatDuration(currentTrack.duration)}</span>
           </div>
 
-          {/* Music note icon + progress line + volume pct */}
+          {/* Music note icon + VOLUME slider + volume pct */}
           <div className="flex items-center gap-1.5">
-            <Icon name="music-8th-notes" className="text-accent" />
-            <div
-              className="flex-1"
+            <span
+              aria-hidden
+              className="inline-flex text-accent"
               style={{
-                // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-progress-line-track owner:rad-os expires:2026-12-31 issue:DNA-999
-                backgroundColor: 'oklch(0.9126 0.1170 93.68 / 0.53)',
-                height: 1,
-                position: 'relative',
+                filter:
+                  'drop-shadow(0 0 0.25px var(--color-sun-yellow)) drop-shadow(0 0 2.25px var(--color-sun-yellow)) drop-shadow(0 0 8.25px var(--color-cream))',
               }}
             >
-              <div
-                style={{
-                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-progress-line-fill owner:rad-os expires:2026-12-31 issue:DNA-999
-                  backgroundColor: 'oklch(1 0 0)',
-                  boxShadow:
-                    'var(--color-sun-yellow) 0 0 0.25px, var(--color-sun-yellow) 0 0 2.25px, var(--color-cream) 0 0 8.25px',
-                  height: 1,
-                  width: `${progressPct}%`,
-                  transition: 'width 150ms linear',
-                }}
-              />
-            </div>
+              <Icon name="music-8th-notes" />
+            </span>
+            <VolumeSlider volume={volume} onChange={setVolume} />
             <span
               className="font-mono tabular-nums"
               style={{
-                // eslint-disable-next-line rdna/no-hardcoded-typography, rdna/no-raw-line-height, rdna/no-hardcoded-colors -- reason:paper-design-lcd-pct owner:rad-os expires:2026-12-31 issue:DNA-999
+                // eslint-disable-next-line rdna/no-hardcoded-typography, rdna/no-raw-line-height -- reason:paper-design-lcd-pct owner:rad-os expires:2026-12-31 issue:DNA-999
                 fontSize: 9,
                 lineHeight: '12px',
-                color: 'oklch(1 0 0 / 0.35)',
+                ...lcdText,
               }}
             >
               {volume}%
             </span>
           </div>
         </LCDScreen>
-
-        {/* Transport pill — at the bottom inside the frame */}
-        <div className="px-2 py-2">
-          <TransportPill activeIndex={1}>
-            <TransportButton label="Previous" iconName="skip-back" onClick={handlePrev} />
-            <TransportButton
-              label={isPlaying ? 'Pause' : 'Play'}
-              iconName={isPlaying ? 'pause' : 'play'}
-              onClick={togglePlay}
-            />
-            <TransportButton label="Next" iconName="skip-forward" onClick={handleNext} />
-          </TransportPill>
-        </div>
       </RadioFrame>
     </AppWindow.Content>
   );

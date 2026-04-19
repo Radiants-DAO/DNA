@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, type RefObject } from 'react';
-import { Fader, Meter } from '@rdna/ctrl';
+import { CtrlSlider, Meter } from '@rdna/ctrl';
+import { lcdText } from './styles';
 
 // =============================================================================
 // RadioEffectsRow — Stereo VU meters flanking SLOW + REVERB faders.
@@ -45,9 +46,10 @@ function useAnimatedLevel(ref: RefObject<number>): number {
 
 function DbScale() {
   return (
-    <div className="flex flex-col justify-between h-20 text-[7px] leading-[8px] tracking-wide" style={{
-      color: 'color-mix(in oklch, var(--color-main) 38%, transparent)',
-    }}>
+    <div
+      className="flex flex-col justify-between h-20 text-[7px] leading-[8px] tracking-wide font-mono"
+      style={lcdText}
+    >
       {DB_LABELS.map((l) => (
         <span key={l}>{l}</span>
       ))}
@@ -84,8 +86,8 @@ export function RadioEffectsRow({
             colorZones={{ low: 1, mid: 1 }}
           />
           <span
-            className="text-[8px] uppercase tracking-wider"
-            style={{ color: 'color-mix(in oklch, var(--color-main) 50%, transparent)' }}
+            className="text-[8px] uppercase tracking-wider font-mono"
+            style={lcdText}
           >
             L
           </span>
@@ -97,12 +99,11 @@ export function RadioEffectsRow({
       <div className="flex-1 flex flex-col items-center gap-2">
         <span
           className="text-[8px] uppercase tracking-wider"
-          style={{ color: 'color-mix(in oklch, var(--color-main) 50%, transparent)' }}
+          style={lcdText}
         >
           Slow
         </span>
-        <Fader
-          orientation="horizontal"
+        <CtrlSlider
           size="sm"
           min={0}
           max={1}
@@ -114,12 +115,11 @@ export function RadioEffectsRow({
         />
         <span
           className="text-[8px] uppercase tracking-wider"
-          style={{ color: 'color-mix(in oklch, var(--color-main) 50%, transparent)' }}
+          style={lcdText}
         >
           Reverb
         </span>
-        <Fader
-          orientation="horizontal"
+        <CtrlSlider
           size="sm"
           min={0}
           max={1}
@@ -148,8 +148,8 @@ export function RadioEffectsRow({
             colorZones={{ low: 1, mid: 1 }}
           />
           <span
-            className="text-[8px] uppercase tracking-wider"
-            style={{ color: 'color-mix(in oklch, var(--color-main) 50%, transparent)' }}
+            className="text-[8px] uppercase tracking-wider font-mono"
+            style={lcdText}
           >
             R
           </span>

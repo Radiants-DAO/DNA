@@ -56,7 +56,12 @@ export function RadioDisc({
     });
   }, []);
 
-  const litCount = Math.floor(progress * TICK_COUNT);
+  // Round instead of floor so the lit arc crosses each tick's midpoint rather
+  // than only after a full step, and clamp to full at the tail end of the
+  // track — the `ended` handler resets currentTime to 0 just before the ratio
+  // would hit 1.0, so without the clamp litCount peaks at 34-35 and never 36.
+  const litCount =
+    progress >= 0.98 ? TICK_COUNT : Math.min(TICK_COUNT, Math.round(progress * TICK_COUNT));
 
   // (Re)play the video when src changes, and forward `ended` through.
   useEffect(() => {
@@ -78,33 +83,36 @@ export function RadioDisc({
         width: OUTER_SIZE,
         height: OUTER_SIZE,
         borderRadius: '50%',
-        // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-black-disc-and-inset owner:rad-os expires:2026-12-31 issue:DNA-999
-        backgroundColor: 'oklch(0 0 0)',
-        boxShadow: 'oklch(0 0 0 / 0.15) 2px 2px 9.6px inset, oklch(0.9780 0.0295 94.34 / 0.1) -2px -2px 9.6px inset',
-        borderLeft: '3px solid oklch(0 0 0)',
+        // Disc body tracks the page color (cream in light, near-black in dark)
+        // so the "platter" reads as the same surface as the surrounding frame.
+        backgroundColor: 'var(--color-page)',
+        // Subtle bevel — dark inset on the top-left, faint rim highlight on
+        // the bottom-right. Works in both modes because we use tokens.
+        // eslint-disable-next-line rdna/no-raw-shadow -- reason:paper-design-disc-inset owner:rad-os expires:2026-12-31 issue:DNA-999
+        boxShadow: 'color-mix(in oklch, var(--color-ink) 30%, transparent) 0 2px 10px inset, color-mix(in oklch, var(--color-cream) 15%, transparent) 0 -2px 6px inset',
         ...style,
       }}
     >
-      {/* Solid subtle outer ring. Paper hex #EFDC8A2E (paler yellow 18%). */}
+      {/* Solid outer ring — just inside the tick ring. Uses sun-yellow at
+          a readable opacity so it's visible in both modes. */}
       <div
         aria-hidden
         className="absolute rounded-full pointer-events-none"
         style={{
-          inset: 20,
-          // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-ring owner:rad-os expires:2026-12-31 issue:DNA-999
-          border: '1px solid oklch(0.89 0.11 93 / 0.18)',
-          boxShadow: 'oklch(0 0 0 / 0.8) 0 0 30px inset',
+          inset: 6,
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-ring-sun-yellow-tinted owner:rad-os expires:2026-12-31 issue:DNA-999
+          border: '1px solid oklch(0.89 0.11 93 / 0.35)',
         }}
       />
 
-      {/* Dashed inner ring. Paper hex #8A7F554D. */}
+      {/* Dashed inner ring — slightly further inside. */}
       <div
         aria-hidden
         className="absolute rounded-full pointer-events-none"
         style={{
-          inset: 34,
+          inset: 14,
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-dashed-ring owner:rad-os expires:2026-12-31 issue:DNA-999
-          border: '1px dashed oklch(0.56 0.03 90 / 0.3)',
+          border: '1px dashed oklch(0.56 0.03 90 / 0.55)',
         }}
       />
 
@@ -115,10 +123,14 @@ export function RadioDisc({
       {ticks.map((t) => {
         const isLit = t.index < litCount;
         const isPlayhead = isPlaying && isLit && t.index === litCount - 1;
+        // Tick palette chosen to read on both cream (light) and near-black
+        // (dark) disc backgrounds. Lit uses a mid-amber that's visible on
+        // cream yet still glows in dark via the box-shadow bloom. Dim uses
+        // low-opacity ink so it fades into whichever background it sits on.
         // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow, rdna/no-hardcoded-motion -- reason:paper-design-tick-palette owner:rad-os expires:2026-12-31 issue:DNA-999
-        const litColor = 'oklch(0.89 0.11 93)';
-        const dimColor = 'oklch(0.27 0.015 90)';
-        const playheadColor = 'oklch(1 0 0)';
+        const litColor = 'oklch(0.76 0.14 85)';
+        const dimColor = 'color-mix(in oklch, var(--color-ink) 45%, transparent)';
+        const playheadColor = 'var(--color-cream)';
         return (
           <div
             key={t.index}
@@ -127,6 +139,11 @@ export function RadioDisc({
             style={{
               width: TICK_WIDTH,
               height: TICK_HEIGHT,
+              // The tick is anchored at `left: 50%; top: 50%` (disc centre).
+              // Translate it up+left so its local rotation origin lands on the
+              // disc centre, then rotate around that origin. Distance from the
+              // disc centre to the base of the tick is OUTER_SIZE/2 - 8px
+              // (8px inset from the outer edge).
               transformOrigin: `${TICK_WIDTH / 2}px ${OUTER_SIZE / 2 - 8}px`,
               transform: `translate(-${TICK_WIDTH / 2}px, -${OUTER_SIZE / 2 - 8}px) rotate(${t.angleDeg}deg)`,
               backgroundColor: isPlayhead ? playheadColor : isLit ? litColor : dimColor,

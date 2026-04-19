@@ -21,8 +21,10 @@ interface TransportPillProps {
   children: ReactNode;
   /** Height of the pill in px */
   height?: number;
-  /** Emphasize a single slot (usually the play/pause). 0-indexed. */
-  activeIndex?: number;
+  /** Per-slot pressed flag. Slot `i` renders with the inset/pressed shell when
+   * `pressedStates[i]` is true. Use this for both toggle (e.g. play/pause) and
+   * momentary (e.g. skip-back while pointer is down) states. */
+  pressedStates?: boolean[];
   className?: string;
   style?: CSSProperties;
 }
@@ -72,7 +74,7 @@ function slotRadiusStyle(isFirst: boolean, isLast: boolean): CSSProperties {
 export function TransportPill({
   children,
   height = 40,
-  activeIndex,
+  pressedStates,
   className = '',
   style,
 }: TransportPillProps) {
@@ -98,14 +100,15 @@ export function TransportPill({
       }}
     >
       {items.map((child, i) => {
-        const isActive = activeIndex === i;
+        const isPressed = Boolean(pressedStates?.[i]);
         const slotStyle: CSSProperties = {
           ...SLOT_BASE_STYLE,
           ...slotRadiusStyle(i === 0, i === last),
-          filter: isActive ? 'brightness(0.9)' : undefined,
-          boxShadow: isActive
+          filter: isPressed ? 'brightness(0.9)' : undefined,
+          boxShadow: isPressed
             ? 'oklch(0 0 0) 0px 1px 5px inset'
             : SLOT_BASE_STYLE.boxShadow,
+          transition: 'box-shadow 80ms ease-out, filter 80ms ease-out',
         };
         return (
           <div key={child.key ?? i} style={slotStyle} data-transport-slot={i}>
@@ -137,9 +140,9 @@ export function TransportPill({
                 borderRadius: '9999px',
                 filter: 'blur(16px)',
                 mixBlendMode: 'overlay',
-                backgroundColor: isActive
-                  ? 'oklch(1 0 0 / 0.1)'
-                  : 'oklch(1 0 0 / 0.39)',
+                backgroundColor: isPressed
+                  ? 'oklch(1 0 0 / 0.05)'
+                  : 'oklch(1 0 0 / 0.12)',
                 pointerEvents: 'none',
               }}
             />

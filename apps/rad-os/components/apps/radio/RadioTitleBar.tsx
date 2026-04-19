@@ -26,7 +26,9 @@ export function RadioTitleBar({ title, style, className = '' }: RadioTitleBarPro
       className={['absolute flex items-center gap-1 p-1 pl-1.5', className].filter(Boolean).join(' ')}
       style={{
         background: 'linear-gradient(180deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
-        boxShadow: 'var(--shadow-floating)',
+        // Floating shadow + hairline ring so the pill stays legible against
+        // the frame in light mode (where pill gradient ≈ frame gradient).
+        boxShadow: 'var(--shadow-floating), 0 0 0 1px var(--color-line)',
         borderRadius: 9999,
         ...style,
       }}
