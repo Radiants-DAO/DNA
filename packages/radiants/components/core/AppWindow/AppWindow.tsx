@@ -58,6 +58,10 @@ export interface AppWindowProps {
   focused?: boolean;
   zIndex?: number;
   presentation?: AppWindowPresentation;
+  /** When true, the window renders chromeless: no titlebar, no shell background/shadow/corners.
+   * Children must provide their own visual frame. Drag is preserved via [data-drag-handle] inside children.
+   * Window controls are exposed to children via the `useAppWindowControls()` hook so they can build a custom titlebar. */
+  chromeless?: boolean;
   minSize?: { width: number; height: number };
   viewportBottomInset?: number;
   viewportMargin?: number;
@@ -193,6 +197,10 @@ function getSnapRect(
   }
 }
 
+function isWindowPresentationEarly(p: AppWindowPresentation): boolean {
+  return p === 'window';
+}
+
 function readClientPoint(event: DraggableEvent): { x: number; y: number } | null {
   if ('touches' in event && event.touches && event.touches[0]) {
     return { x: event.touches[0].clientX, y: event.touches[0].clientY };
@@ -212,13 +220,33 @@ const PADDING_MAP: Record<NonNullable<AppWindowBodyProps['padding']>, string> = 
 
 // --- AppWindow context for compound children (state-registration) ---
 
+export interface AppWindowControls {
+  onClose?: () => void;
+  onFullscreen?: () => void;
+  onWidget?: () => void;
+  onCenter?: () => void;
+  onSnap?: (region: SnapRegion) => void;
+  onRestore?: () => void;
+  canRestore: boolean;
+  isFullscreen: boolean;
+  widgetActive: boolean;
+}
+
 interface AppWindowChromeContext {
   setNav: (content: React.ReactNode) => void;
   setToolbar: (content: { children: React.ReactNode; className: string } | null) => void;
   contentPadding: boolean;
+  chromeless: boolean;
+  controls: AppWindowControls;
 }
 
 const AppWindowChromeCtx = React.createContext<AppWindowChromeContext | null>(null);
+
+/** Access window controls from within an AppWindow child (e.g., for chromeless custom titlebars). */
+export function useAppWindowControls(): AppWindowControls | null {
+  const chrome = React.useContext(AppWindowChromeCtx);
+  return chrome?.controls ?? null;
+}
 const AppWindowContentDepthCtx = React.createContext(0);
 
 function getMaxWindowSize(viewportBottomInset: number, viewportMargin: number): { width: number; height: number } {
@@ -635,6 +663,7 @@ function AppWindow({
   focused = false,
   zIndex = 100,
   presentation = 'window',
+  chromeless = false,
   minSize = DEFAULT_MIN_SIZE,
   viewportBottomInset = DEFAULT_BOTTOM_INSET,
   viewportMargin = DEFAULT_VIEWPORT_MARGIN,
@@ -659,8 +688,24 @@ function AppWindow({
   const [toolbarContent, setToolbarContent] = useState<{ children: React.ReactNode; className: string } | null>(null);
 
   const chromeCtx = useMemo<AppWindowChromeContext>(
-    () => ({ setNav: setNavContent, setToolbar: setToolbarContent, contentPadding }),
-    [contentPadding],
+    () => ({
+      setNav: setNavContent,
+      setToolbar: setToolbarContent,
+      contentPadding,
+      chromeless,
+      controls: {
+        onClose,
+        onFullscreen,
+        onWidget,
+        onCenter,
+        onSnap,
+        onRestore,
+        canRestore,
+        isFullscreen: presentation === 'fullscreen',
+        widgetActive,
+      },
+    }),
+    [contentPadding, chromeless, onClose, onFullscreen, onWidget, onCenter, onSnap, onRestore, canRestore, presentation, widgetActive],
   );
 
   // --- Toolbar height measurement via ref callback ---
@@ -908,6 +953,47 @@ function AppWindow({
 
   if (!open || widgetActive) {
     return null;
+  }
+
+  if (chromeless && isWindowPresentationEarly(presentation)) {
+    const chromelessStyle: React.CSSProperties = {
+      zIndex,
+      width: effectiveSize?.width ?? 'fit-content',
+      height: effectiveSize?.height ?? 'fit-content',
+    };
+    const chromelessShell = (
+      <div
+        ref={nodeRef}
+        role="dialog"
+        aria-labelledby={`window-title-${id}`}
+        className={className}
+        style={chromelessStyle}
+        onPointerDown={handleFocus}
+        onClick={handleFocus}
+        tabIndex={-1}
+        data-app-window={id}
+        data-aw="window"
+        data-presentation={presentation}
+        data-chromeless="true"
+        data-focused={focused || undefined}
+      >
+        <AppWindowChromeCtx.Provider value={chromeCtx}>
+          {children}
+        </AppWindowChromeCtx.Provider>
+      </div>
+    );
+    return (
+      <Draggable
+        nodeRef={nodeRef}
+        handle="[data-drag-handle]"
+        position={effectivePosition}
+        onDrag={handleDrag}
+        onStop={handleDragStop}
+        bounds="parent"
+      >
+        {chromelessShell}
+      </Draggable>
+    );
   }
 
   const actualWindowHeight = dimensionToPx(effectiveSize?.height);

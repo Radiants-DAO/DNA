@@ -19,6 +19,7 @@ interface AppWindowProps {
   contentPadding?: boolean;
   showWidgetButton?: boolean;
   onWidget?: () => void;
+  chromeless?: boolean;
 }
 
 export function AppWindow({
@@ -33,6 +34,7 @@ export function AppWindow({
   contentPadding = true,
   showWidgetButton = false,
   onWidget,
+  chromeless = false,
 }: AppWindowProps) {
   const {
     getWindowState,
@@ -84,6 +86,7 @@ export function AppWindow({
       className={className}
       icon={icon}
       contentPadding={contentPadding}
+      chromeless={chromeless}
       showWidgetButton={showWidgetButton}
       widgetActive={windowState?.isWidget ?? false}
       focused={(windowState?.zIndex ?? 0) === topZIndex}
