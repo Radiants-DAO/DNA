@@ -60,7 +60,8 @@ export interface AppWindowProps {
   presentation?: AppWindowPresentation;
   /** When true, the window renders chromeless: no titlebar, no shell background/shadow/corners.
    * Children must provide their own visual frame. Drag is preserved via [data-drag-handle] inside children.
-   * Window controls are exposed to children via the `useAppWindowControls()` hook so they can build a custom titlebar. */
+   * Window controls are exposed to children via the `useAppWindowControls()` hook so they can build a custom titlebar.
+   * Not supported in chromeless mode: `resizable` (no handles rendered) and snap-preview visuals. */
   chromeless?: boolean;
   minSize?: { width: number; height: number };
   viewportBottomInset?: number;
@@ -195,10 +196,6 @@ function getSnapRect(
     case 'bottom-right':
       return { x: halfW, y: halfH, width: width - halfW, height: height - halfH };
   }
-}
-
-function isWindowPresentationEarly(p: AppWindowPresentation): boolean {
-  return p === 'window';
 }
 
 function readClientPoint(event: DraggableEvent): { x: number; y: number } | null {
@@ -955,7 +952,12 @@ function AppWindow({
     return null;
   }
 
-  if (chromeless && isWindowPresentationEarly(presentation)) {
+  // Chromeless mode: no titlebar, no shell bg/shadow. The child supplies its
+  // own frame and titlebar. We still wrap in Draggable for positioning; the
+  // child must attach [data-drag-handle] to the area the user can grab.
+  // Note: `resizable`, snap-preview, and fullscreen visuals are not wired in
+  // chromeless mode — children own their presentation.
+  if (chromeless && presentation === 'window') {
     const chromelessStyle: React.CSSProperties = {
       zIndex,
       width: effectiveSize?.width ?? 'fit-content',
@@ -977,6 +979,10 @@ function AppWindow({
         data-chromeless="true"
         data-focused={focused || undefined}
       >
+        {/* Visually-hidden title anchor so aria-labelledby resolves. */}
+        <span id={`window-title-${id}`} className="sr-only">
+          {title}
+        </span>
         <AppWindowChromeCtx.Provider value={chromeCtx}>
           {children}
         </AppWindowChromeCtx.Provider>

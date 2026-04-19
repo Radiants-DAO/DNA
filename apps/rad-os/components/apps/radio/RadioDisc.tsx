@@ -78,41 +78,47 @@ export function RadioDisc({
         width: OUTER_SIZE,
         height: OUTER_SIZE,
         borderRadius: '50%',
-        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-black-disc owner:rad-os expires:2026-12-31 issue:DNA-999
+        // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-black-disc-and-inset owner:rad-os expires:2026-12-31 issue:DNA-999
         backgroundColor: 'oklch(0 0 0)',
-        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-inset-highlight owner:rad-os expires:2026-12-31 issue:DNA-999
         boxShadow: 'oklch(0 0 0 / 0.15) 2px 2px 9.6px inset, oklch(0.9780 0.0295 94.34 / 0.1) -2px -2px 9.6px inset',
+        borderLeft: '3px solid oklch(0 0 0)',
         ...style,
       }}
     >
-      {/* Solid subtle outer ring */}
+      {/* Solid subtle outer ring. Paper hex #EFDC8A2E (paler yellow 18%). */}
       <div
         aria-hidden
         className="absolute rounded-full pointer-events-none"
         style={{
           inset: 20,
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-ring owner:rad-os expires:2026-12-31 issue:DNA-999
-          border: '1px solid oklch(0.9126 0.1170 93.68 / 0.18)',
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-vignette owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-ring owner:rad-os expires:2026-12-31 issue:DNA-999
+          border: '1px solid oklch(0.89 0.11 93 / 0.18)',
           boxShadow: 'oklch(0 0 0 / 0.8) 0 0 30px inset',
         }}
       />
 
-      {/* Dashed inner ring */}
+      {/* Dashed inner ring. Paper hex #8A7F554D. */}
       <div
         aria-hidden
         className="absolute rounded-full pointer-events-none"
         style={{
           inset: 34,
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-dashed-ring owner:rad-os expires:2026-12-31 issue:DNA-999
-          border: '1px dashed oklch(0.65 0.035 90 / 0.3)',
+          border: '1px dashed oklch(0.56 0.03 90 / 0.3)',
         }}
       />
 
-      {/* Tick ring — 36 ticks around the perimeter */}
+      {/* Tick ring — 36 ticks around the perimeter.
+          Lit cells advance with track progress; the topmost lit cell (the
+          playhead) glows white. Paper hex reference: lit #EFDC8A, dim #3A3528,
+          playhead pure white with white glow. */}
       {ticks.map((t) => {
         const isLit = t.index < litCount;
-        const dim = !isLit;
+        const isPlayhead = isPlaying && isLit && t.index === litCount - 1;
+        // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow, rdna/no-hardcoded-motion -- reason:paper-design-tick-palette owner:rad-os expires:2026-12-31 issue:DNA-999
+        const litColor = 'oklch(0.89 0.11 93)';
+        const dimColor = 'oklch(0.27 0.015 90)';
+        const playheadColor = 'oklch(1 0 0)';
         return (
           <div
             key={t.index}
@@ -123,15 +129,12 @@ export function RadioDisc({
               height: TICK_HEIGHT,
               transformOrigin: `${TICK_WIDTH / 2}px ${OUTER_SIZE / 2 - 8}px`,
               transform: `translate(-${TICK_WIDTH / 2}px, -${OUTER_SIZE / 2 - 8}px) rotate(${t.angleDeg}deg)`,
-              // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-tick owner:rad-os expires:2026-12-31 issue:DNA-999
-              backgroundColor: dim ? 'oklch(0.3 0.015 90 / 1)' : 'oklch(0.88 0.13 93)',
-              boxShadow: dim
-                ? undefined
-                : isPlaying
-                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-tick-glow owner:rad-os expires:2026-12-31 issue:DNA-999
-                  ? 'oklch(0.88 0.13 93) 0 0 6px'
-                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-tick-glow-dim owner:rad-os expires:2026-12-31 issue:DNA-999
-                  : 'oklch(0.88 0.13 93 / 0.4) 0 0 3px',
+              backgroundColor: isPlayhead ? playheadColor : isLit ? litColor : dimColor,
+              boxShadow: isPlayhead
+                ? `${playheadColor} 0 0 10px`
+                : isLit
+                  ? `${litColor} 0 0 6px`
+                  : undefined,
               transition: 'box-shadow 120ms ease-out, background-color 120ms ease-out',
             }}
           />

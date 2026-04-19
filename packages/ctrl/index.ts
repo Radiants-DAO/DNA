@@ -40,7 +40,6 @@ export { AlignmentGrid } from './selectors/AlignmentGrid/AlignmentGrid';
 export type { AlignmentPosition, AlignmentGridProps } from './selectors/AlignmentGrid/AlignmentGrid';
 export { DirectionPad } from './selectors/DirectionPad/DirectionPad';
 export type { Direction, DirectionPadProps } from './selectors/DirectionPad/DirectionPad';
-export { TransportPill } from './selectors/TransportPill/TransportPill';
 
 // Readouts (data display / feedback)
 export { Meter } from './readouts/Meter/Meter';
@@ -56,3 +55,4 @@ export { ControlPanel, useDensity } from './layout/ControlPanel/ControlPanel';
 export { PanelTitle } from './layout/PanelTitle/PanelTitle';
 export { LayerTreeRow } from './layout/LayerTreeRow/LayerTreeRow';
 export { LCDScreen } from './layout/LCDScreen/LCDScreen';
+export { TransportPill } from './selectors/TransportPill/TransportPill';

@@ -4,21 +4,31 @@ import { useEffect, useRef, type RefObject } from 'react';
 
 /**
  * Audio graph:
- *   audio element
- *     └ MediaElementSource
- *          ├─ dryGain ────────────┐
- *          └─ convolver → wetGain ┴─→ masterGain → analyser → destination
  *
- * SLOW — applied on the HTMLAudioElement via `playbackRate` with `preservesPitch = false`
- *        (classic chopped/screwed character).
+ *   HTMLAudioElement
+ *     └ MediaElementSource
+ *          ├─ dryGain ───────────────────┐
+ *          └─ convolver → wetGain ───────┤
+ *                                        ▼
+ *                                     splitter (2 channels)
+ *                                      ├─ analyserL  (L peak)
+ *                                      └─ analyserR  (R peak)
+ *                                        merger → destination
+ *
+ * SLOW — applied on the HTMLAudioElement via `playbackRate` with
+ *        `preservesPitch = false` (classic chopped/screwed character).
  * REVERB — convolver wet/dry mix.
  *
- * Peak levels are read from the analyser time-domain data each frame and exposed
+ * Peak levels are read from each channel's analyser every frame and exposed
  * via refs (no re-render per frame; meter components read these in their own RAF).
+ *
+ * Invariants:
+ * - `createMediaElementSource` may only be called once per HTMLAudioElement.
+ *   This hook guards against re-init; if the parent mounts a fresh audio
+ *   element, remount this hook too.
+ * - Values are driven by the `opts` prop only — no imperative setters.
  */
 export interface WebAudioEffectsHandle {
-  setSlow: (v: number) => void;
-  setReverb: (v: number) => void;
   leftLevelRef: RefObject<number>;
   rightLevelRef: RefObject<number>;
   analyserRef: RefObject<AnalyserNode | null>;
@@ -46,9 +56,10 @@ export function useWebAudioEffects(
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const dryGainRef = useRef<GainNode | null>(null);
   const wetGainRef = useRef<GainNode | null>(null);
-  const convolverRef = useRef<ConvolverNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+  const analyserLRef = useRef<AnalyserNode | null>(null);
+  const analyserRRef = useRef<AnalyserNode | null>(null);
+  const dataLRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+  const dataRRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const leftLevelRef = useRef(0);
   const rightLevelRef = useRef(0);
   const rafRef = useRef<number | null>(null);
@@ -71,16 +82,31 @@ export function useWebAudioEffects(
     const convolver = ctx.createConvolver();
     convolver.buffer = buildImpulseResponse(ctx);
 
-    const analyser = ctx.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.6;
+    // Stereo split for true L/R metering.
+    const splitter = ctx.createChannelSplitter(2);
+    const merger = ctx.createChannelMerger(2);
+    const analyserL = ctx.createAnalyser();
+    const analyserR = ctx.createAnalyser();
+    analyserL.fftSize = 1024;
+    analyserR.fftSize = 1024;
+    analyserL.smoothingTimeConstant = 0.6;
+    analyserR.smoothingTimeConstant = 0.6;
 
+    // Dry + wet mix → splitter
     source.connect(dryGain);
     source.connect(convolver);
     convolver.connect(wetGain);
-    dryGain.connect(analyser);
-    wetGain.connect(analyser);
-    analyser.connect(ctx.destination);
+    dryGain.connect(splitter);
+    wetGain.connect(splitter);
+
+    // L channel
+    splitter.connect(analyserL, 0);
+    analyserL.connect(merger, 0, 0);
+    // R channel
+    splitter.connect(analyserR, 1);
+    analyserR.connect(merger, 0, 1);
+
+    merger.connect(ctx.destination);
 
     dryGain.gain.value = 1;
     wetGain.gain.value = 0;
@@ -89,28 +115,30 @@ export function useWebAudioEffects(
     sourceRef.current = source;
     dryGainRef.current = dryGain;
     wetGainRef.current = wetGain;
-    convolverRef.current = convolver;
-    analyserRef.current = analyser;
-    dataArrayRef.current = new Uint8Array(new ArrayBuffer(analyser.fftSize));
+    analyserLRef.current = analyserL;
+    analyserRRef.current = analyserR;
+    dataLRef.current = new Uint8Array(new ArrayBuffer(analyserL.fftSize));
+    dataRRef.current = new Uint8Array(new ArrayBuffer(analyserR.fftSize));
+
+    const peakOf = (data: Uint8Array<ArrayBuffer>): number => {
+      let peak = 0;
+      for (let i = 0; i < data.length; i += 1) {
+        const v = Math.abs(data[i] - 128) / 128;
+        if (v > peak) peak = v;
+      }
+      return peak;
+    };
 
     const tick = () => {
-      const a = analyserRef.current;
-      const data = dataArrayRef.current;
-      if (a && data) {
-        a.getByteTimeDomainData(data);
-        let peakL = 0;
-        let peakR = 0;
-        const mid = data.length >> 1;
-        for (let i = 0; i < mid; i += 1) {
-          const v = Math.abs(data[i] - 128) / 128;
-          if (v > peakL) peakL = v;
-        }
-        for (let i = mid; i < data.length; i += 1) {
-          const v = Math.abs(data[i] - 128) / 128;
-          if (v > peakR) peakR = v;
-        }
-        leftLevelRef.current = peakL;
-        rightLevelRef.current = peakR;
+      const dL = dataLRef.current;
+      const dR = dataRRef.current;
+      const aL = analyserLRef.current;
+      const aR = analyserRRef.current;
+      if (aL && aR && dL && dR) {
+        aL.getByteTimeDomainData(dL);
+        aR.getByteTimeDomainData(dR);
+        leftLevelRef.current = peakOf(dL);
+        rightLevelRef.current = peakOf(dR);
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -124,7 +152,10 @@ export function useWebAudioEffects(
     return () => {
       audio.removeEventListener('play', resume);
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-      analyser.disconnect();
+      merger.disconnect();
+      analyserL.disconnect();
+      analyserR.disconnect();
+      splitter.disconnect();
       dryGain.disconnect();
       wetGain.disconnect();
       convolver.disconnect();
@@ -153,28 +184,11 @@ export function useWebAudioEffects(
     wet.gain.value = r;
   }, [opts.reverb]);
 
-  const setSlow = (v: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const mutable = audio as HTMLAudioElement & { preservesPitch?: boolean };
-    mutable.preservesPitch = false;
-    audio.playbackRate = 1 - Math.max(0, Math.min(1, v)) * 0.5;
-  };
-
-  const setReverb = (v: number) => {
-    const dry = dryGainRef.current;
-    const wet = wetGainRef.current;
-    if (!dry || !wet) return;
-    const r = Math.max(0, Math.min(1, v));
-    dry.gain.value = 1 - r * 0.6;
-    wet.gain.value = r;
-  };
-
   return {
-    setSlow,
-    setReverb,
     leftLevelRef,
     rightLevelRef,
-    analyserRef,
+    // Expose only the L analyser by default for callers that just want one
+    // spectrum handle (e.g. Spectrum component).
+    analyserRef: analyserLRef,
   };
 }

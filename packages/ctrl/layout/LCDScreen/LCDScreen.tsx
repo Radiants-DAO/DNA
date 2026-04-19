@@ -52,12 +52,12 @@ export function LCDScreen({
         .filter(Boolean)
         .join(' ')}
       style={{
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-exact-lcd-black owner:rad-os expires:2026-12-31 issue:DNA-999
         backgroundColor: 'oklch(0 0 0)',
         backgroundImage:
           'radial-gradient(ellipse 38% 69% at 26% 11% in oklab, oklab(100% 0 0 / 0.09) 0%, oklab(100% 0 0 / 0) 100%)',
         boxShadow:
           'oklch(0 0 0 / 0.15) 2px 2px 9.6px inset, oklch(0.9780 0.0295 94.34 / 0.1) -2px -2px 9.6px inset',
-        borderLeft: '3px solid oklch(0 0 0)',
         ...style,
       }}
     >

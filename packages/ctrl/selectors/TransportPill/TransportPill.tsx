@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, cloneElement, isValidElement, type CSSProperties, type ReactElement, type ReactNode } from 'react';
+import { Children, isValidElement, type CSSProperties, type ReactElement, type ReactNode } from 'react';
 
 // =============================================================================
 // TransportPill — Rounded pill housing N transport slots (prev / play / next / …)
@@ -36,7 +36,7 @@ const SLOT_BASE_STYLE: CSSProperties = {
   overflow: 'hidden',
   position: 'relative',
   backgroundImage:
-    'linear-gradient(in oklab, 180deg, oklab(21.4% .0009 0.002) 0%, oklab(16.4% .0004 0.004) 100%)',
+    'linear-gradient(in oklab 180deg, oklab(21.4% .0009 0.002) 0%, oklab(16.4% .0004 0.004) 100%)',
   boxShadow:
     'oklch(0.9780 0.0295 94.34 / 0.33) 0px 1px 1px inset,' +
     ' oklch(0 0 0) 0px -1px 1px inset,' +
@@ -109,7 +109,7 @@ export function TransportPill({
         };
         return (
           <div key={child.key ?? i} style={slotStyle} data-transport-slot={i}>
-            {cloneElement(child as ReactElement)}
+            {child}
             {/* inner highlight blobs */}
             <span
               aria-hidden
