@@ -14,7 +14,20 @@ export interface AppProps {
   windowId: string;
 }
 
-export type StartMenuSection = 'apps' | 'web3';
+export type StartMenuCategory = 'tools' | 'media' | 'about' | 'links';
+
+export interface StartMenuCategoryDef {
+  id: StartMenuCategory;
+  label: string;
+  icon: ReactNode;
+}
+
+export const START_MENU_CATEGORIES: StartMenuCategoryDef[] = [
+  { id: 'tools', label: 'Tools', icon: <Icon name="wrench" /> },
+  { id: 'media', label: 'Media', icon: <Icon name="broadcast-dish" /> },
+  { id: 'about', label: 'About', icon: <Icon name="question" /> },
+  { id: 'links', label: 'Links', icon: <Icon name="link" /> },
+];
 
 export interface AmbientCapability {
   wallpaper?: ComponentType;
@@ -26,6 +39,12 @@ export interface AppHelpConfig {
   showHelpButton: boolean;
   helpTitle?: string;
   helpContent?: ReactNode;
+}
+
+export interface AppSubtab {
+  id: string;
+  label: string;
+  icon?: ReactNode;
 }
 
 export interface AppCatalogEntry {
@@ -40,7 +59,8 @@ export interface AppCatalogEntry {
   contentPadding?: boolean;
   helpConfig?: AppHelpConfig;
   desktopVisible?: boolean;
-  startMenuSection?: StartMenuSection;
+  category?: StartMenuCategory;
+  subtabs?: AppSubtab[];
   ambient?: AmbientCapability;
 }
 
@@ -48,7 +68,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'brand',
     windowTitle: 'Design Codex',
-    launcherTitle: 'Brand & Press',
+    launcherTitle: 'Design Codex',
     windowIcon: <RadMarkIcon large />,
     component: BrandAssetsApp,
     defaultSize: 'lg',
@@ -59,64 +79,14 @@ export const APP_CATALOG: AppCatalogEntry[] = [
       helpTitle: 'Design Codex',
     },
     desktopVisible: true,
-    startMenuSection: 'apps',
-  },
-  {
-    id: 'manifesto',
-    windowTitle: 'Becoming Substance',
-    windowIcon: <Icon name="document" large />,
-    component: ManifestoApp,
-    defaultSize: { width: '42rem', height: '44rem' },
-    resizable: true,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'apps',
-  },
-  {
-    id: 'music',
-    windowTitle: 'Rad Radio',
-    launcherTitle: 'Music',
-    windowIcon: <Icon name="broadcast-dish" large />,
-    launcherIcon: <Icon name="music-8th-notes" large />,
-    component: RadRadioApp,
-    defaultSize: 'md',
-    resizable: false,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'apps',
-  },
-  {
-    id: 'about',
-    windowTitle: 'About',
-    windowIcon: <Icon name="question" large />,
-    component: AboutApp,
-    defaultSize: 'md',
-    resizable: true,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'apps',
-  },
-  {
-    id: 'good-news',
-    windowTitle: 'Good News',
-    windowIcon: <Icon name="newspaper" large />,
-    component: GoodNewsApp,
-    defaultSize: 'lg',
-    resizable: true,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'apps',
-  },
-  {
-    id: 'scratchpad',
-    windowTitle: 'Scratchpad',
-    windowIcon: <Icon name="pencil" large />,
-    component: ScratchpadApp,
-    defaultSize: 'lg',
-    resizable: true,
-    contentPadding: false,
-    desktopVisible: true,
-    startMenuSection: 'apps',
+    category: 'tools',
+    subtabs: [
+      { id: 'logos', label: 'Logos', icon: <RadMarkIcon /> },
+      { id: 'colors', label: 'Color', icon: <Icon name="pencil" /> },
+      { id: 'fonts', label: 'Type', icon: <Icon name="font-aa" /> },
+      { id: 'components', label: 'UI Library', icon: <Icon name="outline-box" /> },
+      { id: 'ai-gen', label: 'AI', icon: <Icon name="usericon" /> },
+    ],
   },
   {
     id: 'studio',
@@ -128,8 +98,77 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     resizable: true,
     contentPadding: false,
     desktopVisible: true,
-    startMenuSection: 'apps',
+    category: 'tools',
   },
+  {
+    id: 'scratchpad',
+    windowTitle: 'Scratchpad',
+    windowIcon: <Icon name="pencil" large />,
+    component: ScratchpadApp,
+    defaultSize: 'lg',
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    category: 'tools',
+  },
+  {
+    id: 'music',
+    windowTitle: 'Rad Radio',
+    launcherTitle: 'Rad Radio',
+    windowIcon: <Icon name="broadcast-dish" large />,
+    launcherIcon: <Icon name="music-8th-notes" large />,
+    component: RadRadioApp,
+    defaultSize: 'md',
+    resizable: false,
+    contentPadding: false,
+    desktopVisible: true,
+    category: 'media',
+  },
+  {
+    id: 'good-news',
+    windowTitle: 'Good News',
+    windowIcon: <Icon name="newspaper" large />,
+    component: GoodNewsApp,
+    defaultSize: 'lg',
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    category: 'media',
+  },
+  {
+    id: 'about',
+    windowTitle: 'About',
+    windowIcon: <Icon name="question" large />,
+    component: AboutApp,
+    defaultSize: 'md',
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    category: 'about',
+  },
+  {
+    id: 'manifesto',
+    windowTitle: 'Becoming Substance',
+    windowIcon: <Icon name="document" large />,
+    component: ManifestoApp,
+    defaultSize: { width: '42rem', height: '44rem' },
+    resizable: true,
+    contentPadding: false,
+    desktopVisible: true,
+    category: 'about',
+  },
+];
+
+export interface StartMenuLink {
+  id: string;
+  label: string;
+  href: string;
+  icon: ReactNode;
+}
+
+export const START_MENU_LINKS: StartMenuLink[] = [
+  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants', icon: <Icon name="twitter" /> },
+  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants', icon: <Icon name="discord" /> },
 ];
 
 const APP_BY_ID = Object.fromEntries(APP_CATALOG.map((app) => [app.id, app]));
@@ -152,15 +191,33 @@ export function getDesktopLaunchers(): Array<{ id: string; label: string; icon: 
     }));
 }
 
-export function getStartMenuSections(): Record<StartMenuSection, Array<{ id: string; label: string; icon: ReactNode }>> {
-  return {
-    apps: APP_CATALOG
-      .filter((app) => app.startMenuSection === 'apps')
-      .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
-    web3: APP_CATALOG
-      .filter((app) => app.startMenuSection === 'web3')
-      .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
-  };
+export interface StartMenuAppEntry {
+  id: string;
+  label: string;
+  icon: ReactNode;
+  subtabs?: AppSubtab[];
+}
+
+export function getStartMenuCategories(): Array<StartMenuCategoryDef & {
+  apps: StartMenuAppEntry[];
+  links?: StartMenuLink[];
+}> {
+  return START_MENU_CATEGORIES.map((cat) => {
+    if (cat.id === 'links') {
+      return { ...cat, apps: [], links: START_MENU_LINKS };
+    }
+    return {
+      ...cat,
+      apps: APP_CATALOG
+        .filter((app) => app.category === cat.id)
+        .map((app) => ({
+          id: app.id,
+          label: app.launcherTitle ?? app.windowTitle,
+          icon: app.launcherIcon ?? app.windowIcon,
+          subtabs: app.subtabs,
+        })),
+    };
+  });
 }
 
 export function getWindowChrome(id: string) {
