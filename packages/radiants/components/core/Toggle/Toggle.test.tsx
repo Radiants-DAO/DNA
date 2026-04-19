@@ -45,17 +45,17 @@ describe('Toggle', () => {
     expect(onPressedChange).toHaveBeenCalledWith(true, expect.anything());
   });
 
-  test('renders face span with button-face slot and data-mode', () => {
-    const { container } = render(<Toggle mode="solid">Power</Toggle>);
-    const face = container.querySelector('[data-slot="button-face"]');
+  test('renders face span with toggle-face slot and data-color', () => {
+    const { container } = render(<Toggle tone="accent">Power</Toggle>);
+    const face = container.querySelector('[data-slot="toggle-face"]');
     expect(face).toBeInTheDocument();
-    expect(face).toHaveAttribute('data-mode', 'solid');
+    expect(face).toHaveAttribute('data-color', 'accent');
   });
 
   test('face data-state matches pressed state', async () => {
     const user = userEvent.setup();
     const { container } = render(<Toggle>Power</Toggle>);
-    const face = container.querySelector('[data-slot="button-face"]');
+    const face = container.querySelector('[data-slot="toggle-face"]');
     expect(face).toHaveAttribute('data-state', 'default');
 
     await user.click(screen.getByRole('button'));

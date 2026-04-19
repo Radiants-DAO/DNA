@@ -14,7 +14,6 @@ export function ToolPalette({ activeTool, onToolChange }: ToolPaletteProps) {
   return (
     <ToggleGroup
       orientation="vertical"
-      quiet
       size="md"
       value={[activeTool]}
       onValueChange={(values) => {

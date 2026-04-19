@@ -102,9 +102,6 @@ function BooleanControl({
       pressed={value}
       onPressedChange={(pressed) => onChange(name, pressed)}
       size="sm"
-      rounded="lg"
-      compact
-      quiet
     >
       {name}
     </Toggle>
@@ -134,8 +131,6 @@ function EnumControl({
         onChange(name, hasNumeric && !Number.isNaN(Number(raw)) ? Number(raw) : raw);
       }}
       size="sm"
-      rounded="lg"
-      compact
     >
       {values.map((optionValue) => {
         const label = String(optionValue);
