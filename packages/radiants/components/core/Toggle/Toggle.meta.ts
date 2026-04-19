@@ -4,19 +4,20 @@ interface ToggleProps {
   pressed?: boolean;
   defaultPressed?: boolean;
   onPressedChange?: string;
-  disabled?: boolean;
-  mode?: "solid" | "flat" | "pattern";
+  value?: string;
   tone?: "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
   size?: "xs" | "sm" | "md" | "lg";
   rounded?: "xs" | "sm" | "md" | "lg" | "xl" | "full" | "none";
-  value?: string;
+  icon?: string;
+  iconOnly?: boolean;
+  disabled?: boolean;
   children?: string;
 }
 
 export const ToggleMeta = defineComponentMeta<ToggleProps>()({
   name: "Toggle",
   description:
-    "Pressable toggle button that holds a pressed/unpressed state. Used as standalone or inside ToggleGroup.",
+    "Pressable chip-style toggle that holds a pressed/unpressed state. Used standalone or inside ToggleGroup.",
   props: {
     pressed: {
       type: "boolean",
@@ -30,27 +31,20 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
       type: "string",
       description: "Callback when pressed state changes",
     },
-    disabled: {
-      type: "boolean",
-      default: false,
-      description: "Disable toggle interactions",
-    },
-    mode: {
-      type: "enum",
-      options: ["solid", "flat", "pattern"],
-      default: "solid",
-      description: "Visual mode — controls fill treatment",
+    value: {
+      type: "string",
+      description: "Value when used inside ToggleGroup",
     },
     tone: {
       type: "enum",
       options: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted"],
-      default: "accent",
+      default: "neutral",
       description: "Color tone",
     },
     size: {
       type: "enum",
       options: ["xs", "sm", "md", "lg"],
-      default: "md",
+      default: "xs",
       description: "Size preset",
     },
     rounded: {
@@ -59,9 +53,19 @@ export const ToggleMeta = defineComponentMeta<ToggleProps>()({
       default: "xs",
       description: "Pixel-corner roundness",
     },
-    value: {
+    icon: {
       type: "string",
-      description: "Value when used inside ToggleGroup",
+      description: "RDNA icon name",
+    },
+    iconOnly: {
+      type: "boolean",
+      default: false,
+      description: "Square button showing only the icon",
+    },
+    disabled: {
+      type: "boolean",
+      default: false,
+      description: "Disable toggle interactions",
     },
     children: {
       type: "string",
