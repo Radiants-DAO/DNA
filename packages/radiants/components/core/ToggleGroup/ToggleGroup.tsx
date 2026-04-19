@@ -4,73 +4,59 @@ import React from 'react';
 import { cva } from 'class-variance-authority';
 import { ToggleGroup as BaseToggleGroup } from '@base-ui/react/toggle-group';
 import { Toggle } from '../Toggle/Toggle';
-import type { ToggleMode, ToggleTone, ToggleSize, ToggleRounded } from '../Toggle/Toggle';
-
+import type { ToggleTone, ToggleSize, ToggleRounded } from '../Toggle/Toggle';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ToggleGroupItemProps {
-  /** Unique value for this item within the group */
   value: string;
-  /** Whether this individual item is disabled */
   disabled?: boolean;
-  /** Item content */
   children?: React.ReactNode;
-  /** Additional className */
   className?: string;
-  /** Accessible label */
   'aria-label'?: string;
   /** Icon — RDNA icon name (string) or custom ReactNode */
   icon?: string | React.ReactNode;
   /** Square button showing only the icon */
   iconOnly?: boolean;
-  /** Suppress icon slot and leader line */
-  textOnly?: boolean;
 }
 
 interface ToggleGroupProps {
-  /** Whether the group allows multiple items to be pressed simultaneously */
+  /** Allow multiple items to be pressed simultaneously */
   multiple?: boolean;
-  /** The pressed values (controlled) — array of value strings */
+  /** Controlled selected values */
   value?: string[];
-  /** Initial pressed values for uncontrolled usage */
+  /** Initial selected values for uncontrolled usage */
   defaultValue?: string[];
-  /** Callback fired when the pressed values change */
+  /** Callback fired when the selected values change */
   onValueChange?: (value: string[]) => void;
-  /** Whether all items in the group should ignore user interaction */
+
   disabled?: boolean;
   /** Layout direction */
   orientation?: 'horizontal' | 'vertical';
-  /** Visual mode — controls fill treatment. Defaults to 'solid'. */
-  mode?: ToggleMode;
-  /** Color tone — sets data-color for CSS styling */
+
+  /** Color tone applied to all items */
   tone?: ToggleTone;
-  /** Size preset applied to all items */
+  /** Size applied to all items */
   size?: ToggleSize;
-  /** Pixel-corner roundness for items (defaults to 'none' inside group) */
+  /** Pixel-corner roundness applied to all items */
   rounded?: ToggleRounded;
-  /** Transparent at rest — fills on hover/selected */
-  quiet?: boolean;
-  /** Compact badge-like styling — uses mono font */
-  compact?: boolean;
-  /** Group content — should be ToggleGroup.Item children */
+
   children?: React.ReactNode;
-  /** Additional className */
   className?: string;
 }
 
 // ============================================================================
-// CVA Variants
+// CVA — group wrapper (ink surface)
 // ============================================================================
 
 const toggleGroupRootVariants = cva(
-  'inline-flex',
+  'inline-flex items-stretch gap-0.5 p-0.5 bg-ink pixel-rounded-xs',
   {
     variants: {
       orientation: {
-        horizontal: 'flex-row flex-wrap items-stretch gap-1',
+        horizontal: 'flex-row flex-wrap',
         vertical: 'flex-col',
       },
       disabled: {
@@ -86,27 +72,19 @@ const toggleGroupRootVariants = cva(
 );
 
 // ============================================================================
-// Context for passing visual props down to items
+// Context — passes visual props to items
 // ============================================================================
 
 interface ToggleGroupContextValue {
-  size: ToggleSize;
-  orientation: 'horizontal' | 'vertical';
-  mode: ToggleMode;
   tone: ToggleTone;
+  size: ToggleSize;
   rounded: ToggleRounded;
-  quiet: boolean;
-  compact: boolean;
 }
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({
-  size: 'md',
-  orientation: 'horizontal',
-  mode: 'solid',
-  tone: 'accent',
-  rounded: 'none',
-  quiet: true,
-  compact: false,
+  tone: 'neutral',
+  size: 'xs',
+  rounded: 'xs',
 });
 
 // ============================================================================
@@ -121,25 +99,19 @@ function ToggleGroupItem({
   'aria-label': ariaLabel,
   icon,
   iconOnly,
-  textOnly,
 }: ToggleGroupItemProps) {
-  const { size, mode, tone, rounded, quiet, compact } =
-    React.useContext(ToggleGroupContext);
+  const { tone, size, rounded } = React.useContext(ToggleGroupContext);
 
   return (
     <Toggle
       value={value}
       disabled={disabled}
       aria-label={ariaLabel}
-      mode={mode}
       tone={tone}
       size={size}
       rounded={rounded}
-      quiet={quiet}
-      compact={compact}
       icon={icon}
       iconOnly={iconOnly}
-      textOnly={textOnly}
       className={className}
     >
       {children}
@@ -152,13 +124,10 @@ function ToggleGroupItem({
 // ============================================================================
 
 /**
- * A group of toggle buttons that supports single or multiple selection.
+ * A group of pressable chips for single or multi-select.
  *
- * Uses Base UI ToggleGroup internally for accessibility and keyboard navigation.
- * Items render as RDNA Toggle components, inheriting the full Button visual system.
- *
- * Namespace API: `ToggleGroup.Root` + `ToggleGroup.Item`
- * Shorthand: `<ToggleGroup>` renders the root.
+ * Renders as an ink-surfaced container that houses RDNA Toggle items. Uses
+ * Base UI ToggleGroup for accessibility and keyboard navigation.
  */
 function ToggleGroupRoot({
   multiple = false,
@@ -167,12 +136,9 @@ function ToggleGroupRoot({
   onValueChange,
   disabled = false,
   orientation = 'horizontal',
-  mode = 'solid',
-  tone = 'accent',
-  size = 'md',
-  rounded = 'none',
-  quiet = true,
-  compact = false,
+  tone = 'neutral',
+  size = 'xs',
+  rounded = 'xs',
   children,
   className = '',
 }: ToggleGroupProps) {
@@ -183,8 +149,8 @@ function ToggleGroupRoot({
   });
 
   const contextValue = React.useMemo(
-    () => ({ size, orientation, mode, tone, rounded, quiet, compact }),
-    [size, orientation, mode, tone, rounded, quiet, compact]
+    () => ({ tone, size, rounded }),
+    [tone, size, rounded]
   );
 
   return (
