@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { useSafeHover } from '@/hooks/useSafeHover';
 import {
   getStartMenuCategories,
   type AppSubtab,
@@ -20,123 +21,7 @@ interface StartMenuProps {
   onClose: () => void;
 }
 
-type HoverKey = string; // category id, or `${categoryId}:${appId}` for app-level
-
-interface PendingHover {
-  key: HoverKey;
-  timer: ReturnType<typeof setTimeout>;
-  enterPoint: { x: number; y: number };
-}
-
-// ============================================================================
-// Safe-triangle utility
-// ============================================================================
-
-function pointInTriangle(
-  p: { x: number; y: number },
-  a: { x: number; y: number },
-  b: { x: number; y: number },
-  c: { x: number; y: number },
-): boolean {
-  const sign = (
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-    p3: { x: number; y: number },
-  ) => (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-  const d1 = sign(p, a, b);
-  const d2 = sign(p, b, c);
-  const d3 = sign(p, c, a);
-  const hasNeg = d1 < 0 || d2 < 0 || d3 < 0;
-  const hasPos = d1 > 0 || d2 > 0 || d3 > 0;
-  return !(hasNeg && hasPos);
-}
-
-const HOVER_DELAY_MS = 400;
-
-/**
- * Hover state for a single fly-out level (parent items + one open submenu).
- * Delays switching to a new item while the pointer is still aiming at the
- * currently-open submenu (XP/Amazon "safe area" pattern).
- */
-function useSafeHover() {
-  const [active, setActive] = useState<HoverKey | null>(null);
-  const pendingRef = useRef<PendingHover | null>(null);
-  const submenuElRef = useRef<HTMLElement | null>(null);
-
-  const clearPending = () => {
-    if (pendingRef.current) {
-      clearTimeout(pendingRef.current.timer);
-      pendingRef.current = null;
-    }
-  };
-
-  const registerSubmenu = useCallback((el: HTMLElement | null) => {
-    submenuElRef.current = el;
-  }, []);
-
-  const onItemEnter = useCallback(
-    (key: HoverKey, e: React.PointerEvent) => {
-      if (key === active) {
-        clearPending();
-        return;
-      }
-      if (!active || !submenuElRef.current) {
-        clearPending();
-        setActive(key);
-        return;
-      }
-      clearPending();
-      const enterPoint = { x: e.clientX, y: e.clientY };
-      const timer = setTimeout(() => {
-        setActive(key);
-        pendingRef.current = null;
-      }, HOVER_DELAY_MS);
-      pendingRef.current = { key, timer, enterPoint };
-    },
-    [active],
-  );
-
-  const onContainerMove = useCallback((e: React.PointerEvent) => {
-    const pending = pendingRef.current;
-    const submenu = submenuElRef.current;
-    if (!pending || !submenu) return;
-    const rect = submenu.getBoundingClientRect();
-    const p = { x: e.clientX, y: e.clientY };
-
-    // Reached the current submenu: user was aiming at it all along. Cancel the
-    // pending switch entirely — otherwise the timer fires in the background
-    // and yanks the submenu out from under them mid-hover.
-    const insideSubmenu =
-      p.x >= rect.left && p.x <= rect.right &&
-      p.y >= rect.top && p.y <= rect.bottom;
-    if (insideSubmenu) {
-      clearTimeout(pending.timer);
-      pendingRef.current = null;
-      return;
-    }
-
-    const aiming = pointInTriangle(
-      p,
-      pending.enterPoint,
-      { x: rect.left, y: rect.top },
-      { x: rect.left, y: rect.bottom },
-    );
-    if (!aiming) {
-      clearTimeout(pending.timer);
-      setActive(pending.key);
-      pendingRef.current = null;
-    }
-  }, []);
-
-  const reset = useCallback(() => {
-    clearPending();
-    setActive(null);
-  }, []);
-
-  useEffect(() => () => clearPending(), []);
-
-  return { active, setActive, onItemEnter, onContainerMove, registerSubmenu, reset };
-}
+type AppHoverKey = `${StartMenuCategory}:${string}`;
 
 // ============================================================================
 // Menu row
@@ -224,8 +109,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Two levels of safe-hover: category → submenu, and app → subtab submenu
-  const catHover = useSafeHover();
-  const appHover = useSafeHover();
+  const catHover = useSafeHover<StartMenuCategory>();
+  const appHover = useSafeHover<AppHoverKey>();
 
   const categoryRowRefs = useRef<Map<StartMenuCategory, HTMLDivElement | null>>(new Map());
   const appRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
@@ -350,7 +235,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             ) : (
               <div className="py-1">
                 {activeCategory.apps.map((app) => {
-                  const key = `${activeCategory.id}:${app.id}`;
+                  const key: AppHoverKey = `${activeCategory.id}:${app.id}`;
                   return (
                     <div
                       key={app.id}

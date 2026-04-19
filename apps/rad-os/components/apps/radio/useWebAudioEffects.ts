@@ -48,7 +48,7 @@ export function useWebAudioEffects(
   const wetGainRef = useRef<GainNode | null>(null);
   const convolverRef = useRef<ConvolverNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const leftLevelRef = useRef(0);
   const rightLevelRef = useRef(0);
   const rafRef = useRef<number | null>(null);
@@ -91,7 +91,7 @@ export function useWebAudioEffects(
     wetGainRef.current = wetGain;
     convolverRef.current = convolver;
     analyserRef.current = analyser;
-    dataArrayRef.current = new Uint8Array(analyser.fftSize);
+    dataArrayRef.current = new Uint8Array(new ArrayBuffer(analyser.fftSize));
 
     const tick = () => {
       const a = analyserRef.current;
