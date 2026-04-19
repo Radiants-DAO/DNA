@@ -34,31 +34,54 @@ interface SocialLink {
 }
 
 const SOCIAL_LINKS: SocialLink[] = [
-  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants', icon: <Icon name="twitter" /> },
-  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants', icon: <Icon name="discord" /> },
+  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants', icon: <Icon name="twitter" large /> },
+  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants', icon: <Icon name="discord" large /> },
 ];
 
 // ============================================================================
-// Shared MenuItem
+// Tile
 // ============================================================================
 
-function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: (e: React.MouseEvent) => void }) {
+const TILE_CLASSES = '!h-auto !flex-col !items-center !justify-start !gap-1 !py-2 !px-1';
+
+function AppTile({ item, onClick }: { item: MenuItemConfig; onClick: (e: React.MouseEvent) => void }) {
   return (
     <Button
-      key={item.id}
       type="button"
       quiet
-      fullWidth
       rounded="none"
-      size="lg"
+      size="xl"
+      textOnly
       onClick={onClick}
-      className="gap-3"
+      className={TILE_CLASSES}
     >
-      <span className="w-5 h-5 flex items-center justify-center shrink-0">
+      <span className="w-6 h-6 flex items-center justify-center shrink-0">
         {item.icon}
       </span>
-      <span className="flex-1 font-joystix text-sm uppercase text-left">
+      <span className="font-joystix text-xs uppercase text-center leading-tight w-full truncate">
         {item.label}
+      </span>
+    </Button>
+  );
+}
+
+function SocialTile({ link }: { link: SocialLink }) {
+  return (
+    <Button
+      href={link.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      quiet
+      rounded="none"
+      size="xl"
+      textOnly
+      className={TILE_CLASSES}
+    >
+      <span className="w-6 h-6 flex items-center justify-center shrink-0">
+        {link.icon}
+      </span>
+      <span className="font-joystix text-xs uppercase text-center leading-tight w-full truncate">
+        {link.label}
       </span>
     </Button>
   );
@@ -119,82 +142,79 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute bottom-full left-0 mb-2 z-10 w-72"
+      className="absolute bottom-full left-0 mb-2 z-10 w-80"
       style={{ position: 'absolute' }}
     >
       <div className="pixel-rounded-sm pixel-shadow-floating">
         <div className="flex flex-row bg-page">
-      {/* Left sidebar — Win95 branding strip */}
-      <div className="w-10 bg-inv flex items-end justify-center pb-3 shrink-0">
-        <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-          <WordmarkLogo className="h-3 w-auto" color="cream" />
-        </div>
-      </div>
-
-      {/* Right column — menu content */}
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* Core Apps Section */}
-        <div className="py-1">
-          <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-mute uppercase">
-              Apps
-            </span>
+          {/* Left sidebar — Win95 branding strip */}
+          <div className="w-10 bg-inv flex items-end justify-center pb-3 shrink-0">
+            <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+              <WordmarkLogo className="h-3 w-auto" color="cream" />
+            </div>
           </div>
-          {sections.apps.map((item) => (
-            <MenuItem key={item.id} item={item} onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)} />
-          ))}
-        </div>
 
-        <Separator className="mx-2" />
+          {/* Right column — tile grid content */}
+          <div className="flex flex-col flex-1 min-w-0">
+            {/* Core Apps Section */}
+            <div className="pt-2 pb-2 px-2">
+              <div className="px-1 pb-1">
+                <span className="font-joystix text-sm text-mute uppercase">
+                  Apps
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {sections.apps.map((item) => (
+                  <AppTile
+                    key={item.id}
+                    item={item}
+                    onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)}
+                  />
+                ))}
+              </div>
+            </div>
 
-        {/* Web3 Apps Section */}
-        <div className="py-1">
-          <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-mute uppercase">
-              Web3
-            </span>
+            <Separator className="mx-2" />
+
+            {/* Web3 Apps Section */}
+            <div className="pt-2 pb-2 px-2">
+              <div className="px-1 pb-1">
+                <span className="font-joystix text-sm text-mute uppercase">
+                  Web3
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {sections.web3.map((item) => (
+                  <AppTile
+                    key={item.id}
+                    item={item}
+                    onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <Separator className="mx-2" />
+
+            {/* Connect Section */}
+            <div className="pt-2 pb-2 px-2">
+              <div className="px-1 pb-1">
+                <span className="font-joystix text-sm text-mute uppercase">
+                  Connect
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {SOCIAL_LINKS.map((link) => (
+                  <SocialTile key={link.id} link={link} />
+                ))}
+              </div>
+            </div>
+
+            {/* Footer — full width across right column */}
+            <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
+              <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
+            </div>
           </div>
-          {sections.web3.map((item) => (
-            <MenuItem key={item.id} item={item} onClick={(e: React.MouseEvent) => handleAppClick(item.id, e)} />
-          ))}
-        </div>
-
-        <Separator className="mx-2" />
-
-        {/* Connect Section */}
-        <div className="py-1">
-          <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-mute uppercase">
-              Connect
-            </span>
-          </div>
-              {SOCIAL_LINKS.map((link) => (
-                <Button
-                  key={link.id}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  quiet
-                  fullWidth
-                  rounded="none"
-                  size="lg"
-                  className="gap-3"
-                >
-                  <span className="w-5 h-5 flex items-center justify-center shrink-0">
-                    {link.icon}
-              </span>
-              <span className="flex-1 font-joystix text-sm uppercase text-left">
-                {link.label}
-              </span>
-            </Button>
-          ))}
-        </div>
-
-        {/* Footer — full width across right column */}
-        <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
-          <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
-        </div>
-      </div>
         </div>
       </div>
     </div>
