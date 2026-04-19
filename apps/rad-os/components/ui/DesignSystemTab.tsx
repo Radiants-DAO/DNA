@@ -11,7 +11,7 @@ import {
   useShowcaseProps,
 } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
-import { Button, Input } from '@rdna/radiants/components/core';
+import { Button, Input, ToggleGroup } from '@rdna/radiants/components/core';
 
 const CARD_INTERSECTION_ROOT_MARGIN = '240px 0px';
 const DEFAULT_INITIAL_INTERACTIVE_CARDS = 6;
@@ -156,25 +156,21 @@ function ComponentShowcaseCard({
 
         {/* Forced state strip */}
         {entry.states && entry.states.length > 0 && (
-            <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
-            {availableStates.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => {
-                  setForcedState(s);
-                  const resolved = resolvePreviewState(s as 'default' | ForcedState, entry.states);
-                  onInteract?.(entry, { ...props, ...resolved.propOverrides });
-                }}
-                className={`pixel-rounded-xs inline-block cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
-                  forcedState === s
-                    ? 'bg-main text-page'
-                    : 'bg-depth text-sub hover:text-main'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+          <div className="border-t border-rule pt-2">
+            <ToggleGroup
+              value={[forcedState]}
+              onValueChange={(vals) => {
+                if (!vals.length) return;
+                const next = vals[0] as 'default' | ForcedState;
+                setForcedState(next);
+                const resolved = resolvePreviewState(next, entry.states);
+                onInteract?.(entry, { ...props, ...resolved.propOverrides });
+              }}
+            >
+              {availableStates.map((s) => (
+                <ToggleGroup.Item key={s} value={s}>{s}</ToggleGroup.Item>
+              ))}
+            </ToggleGroup>
           </div>
         )}
 

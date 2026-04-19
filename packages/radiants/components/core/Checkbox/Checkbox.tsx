@@ -150,14 +150,14 @@ export function Checkbox({
           return (
             <span
               {...props}
+              data-state={isOn ? 'checked' : 'unchecked'}
               className={`
-                pixel-rounded-xs inline-block
-                ${isOn ? 'bg-accent' : 'bg-card'}
+                pixel-rounded-2 inline-block
+                ${isOn ? 'bg-accent' : 'bg-page'}
                 relative w-5 h-5
                 flex items-center justify-center
                 cursor-pointer
-                focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
-                focus-visible:outline-offset-1
+                outline-none focus-visible:shadow-focused
               `}
             />
           );
@@ -238,23 +238,24 @@ export function Radio({
       inputRef={ref}
       id={id}
       disabled={disabled}
-      render={(props) => (
+      render={(props, state) => (
         <span
           {...props}
+          data-state={state.checked ? 'checked' : 'unchecked'}
           className={`
-            relative w-5 h-5
+            relative w-5 h-5 inline-block
             pixel-rounded-full
+            ${state.checked ? 'bg-accent' : 'bg-page'}
             flex items-center justify-center
-            transition-colors
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
             cursor-pointer
+            outline-none focus-visible:shadow-focused
             ${className}
           `}
         />
       )}
     >
       <BaseRadio.Indicator className="absolute inset-0 flex items-center justify-center">
-        <div className="relative w-2 h-2 bg-accent-inv" />
+        <span className="w-2.5 h-2.5 rounded-full bg-accent-inv" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>
   );

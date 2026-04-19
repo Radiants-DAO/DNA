@@ -22,7 +22,7 @@ import type {
   ComponentCategory,
   ForcedState,
 } from '@rdna/radiants/registry';
-import { Input, Button } from '@rdna/radiants/components/core';
+import { Input, Button, ToggleGroup } from '@rdna/radiants/components/core';
 import { ComponentCodeOutput } from './ui-library/ComponentCodeOutput';
 
 // ============================================================================
@@ -293,22 +293,17 @@ function PropsPanel({
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2">
         {/* Forced state strip */}
         {entry.states && entry.states.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {availableStates.map((s) => (
-              // eslint-disable-next-line rdna/prefer-rdna-components -- reason:state-toggle-button owner:design expires:2027-01-01 issue:DNA-001
-              <button
-                key={s}
-                type="button"
-                onClick={() => setForcedState(s)}
-                className={`pixel-rounded-xs inline-block cursor-pointer px-1.5 py-0.5 font-mono text-xs transition-colors ${
-                  forcedState === s
-                    ? 'bg-main text-page'
-                    : 'bg-depth text-sub hover:text-main'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+          <div className="mb-3">
+            <ToggleGroup
+              value={[forcedState]}
+              onValueChange={(vals) => {
+                if (vals.length) setForcedState(vals[0] as 'default' | ForcedState);
+              }}
+            >
+              {availableStates.map((s) => (
+                <ToggleGroup.Item key={s} value={s}>{s}</ToggleGroup.Item>
+              ))}
+            </ToggleGroup>
           </div>
         )}
         {hasControllableProps && (

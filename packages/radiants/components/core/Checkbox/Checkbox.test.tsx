@@ -7,8 +7,8 @@ describe('Checkbox', () => {
     render(<Checkbox label="Accept terms" checked={false} onChange={() => {}} />);
     expect(screen.getByText('Accept terms')).toBeInTheDocument();
     const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toHaveClass('pixel-rounded-xs');
-    expect(checkbox).toHaveClass('bg-card');
+    expect(checkbox).toHaveClass('pixel-rounded-2');
+    expect(checkbox).toHaveClass('bg-page');
   });
 
   test('fires onChange on click', async () => {

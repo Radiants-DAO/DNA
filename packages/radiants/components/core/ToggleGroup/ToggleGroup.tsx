@@ -52,7 +52,7 @@ interface ToggleGroupProps {
 // ============================================================================
 
 const toggleGroupRootVariants = cva(
-  'inline-flex items-stretch gap-0.5 p-0.5 bg-ink pixel-rounded-xs',
+  'inline-flex items-stretch gap-0.5',
   {
     variants: {
       orientation: {

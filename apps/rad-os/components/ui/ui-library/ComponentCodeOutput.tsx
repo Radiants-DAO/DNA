@@ -62,7 +62,6 @@ export function ComponentCodeOutput({ entry, propValues }: ComponentCodeOutputPr
         <ToggleGroup
           value={[format]}
           onValueChange={(vals) => { if (vals.length) setFormat(vals[0] as CodeFormat); }}
-          size="sm"
         >
           <ToggleGroup.Item value="jsx">JSX</ToggleGroup.Item>
           <ToggleGroup.Item value="css">CSS</ToggleGroup.Item>

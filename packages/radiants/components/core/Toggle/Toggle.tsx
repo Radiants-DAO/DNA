@@ -58,7 +58,7 @@ interface ToggleProps {
 
 export const toggleFaceVariants = cva(
   `inline-flex items-center justify-center whitespace-nowrap select-none
-   font-heading uppercase tracking-tight leading-none
+   font-mono uppercase tracking-tight leading-none
    transition-colors duration-[var(--duration-base)] ease-out
    bg-depth text-sub hover:text-main
    data-[state=selected]:bg-main data-[state=selected]:text-page`,
