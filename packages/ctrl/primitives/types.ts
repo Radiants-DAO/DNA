@@ -62,6 +62,10 @@ export type MeterProps = Omit<ReadoutProps, 'value'> & {
   scaleMarks?: number[];
   channelLabels?: [string, string];
   colorZones?: MeterColorZones;
+  /** When true, lit cells emit a yellow LED glow (paper LCD look). */
+  glow?: boolean;
+  /** Override color for the topmost lit cell. Defaults to zone color. */
+  peakCapColor?: string;
 };
 
 export interface XYPadProps {

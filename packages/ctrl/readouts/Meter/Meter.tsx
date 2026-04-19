@@ -91,6 +91,8 @@ interface ChannelBarProps {
   orientation: 'horizontal' | 'vertical';
   zones: MeterColorZones;
   peakHold: boolean;
+  glow: boolean;
+  peakCapColor?: string;
 }
 
 function ChannelBar({
@@ -101,10 +103,13 @@ function ChannelBar({
   orientation,
   zones,
   peakHold,
+  glow,
+  peakCapColor,
 }: ChannelBarProps) {
   const litCount = Math.round(norm * segments);
   const peakSegment = peakHold ? Math.min(Math.round(peakNorm * segments) - 1, segments - 1) : -1;
   const isVertical = orientation === 'vertical';
+  const topLitIndex = litCount - 1;
 
   return (
     <div
@@ -117,7 +122,17 @@ function ChannelBar({
         const segRatio = (i + 1) / segments;
         const isLit = i < litCount;
         const isPeak = peakHold && i === peakSegment && !isLit;
-        const color = segmentColor(segRatio, zones);
+        const isTopLit = isLit && i === topLitIndex;
+        const zoneColor = segmentColor(segRatio, zones);
+        const fillColor = isTopLit && peakCapColor ? peakCapColor : zoneColor;
+
+        let boxShadow: string | undefined;
+        if (isPeak) {
+          boxShadow = `0 0 4px ${zoneColor}`;
+        } else if (glow && isLit) {
+          const cap = isTopLit && peakCapColor ? peakCapColor : 'var(--color-ctrl-glow)';
+          boxShadow = `0 0 0.5px ${cap}, 0 0 3px ${cap}, 0 0 10px ${fillColor}`;
+        }
 
         return (
           <div
@@ -127,11 +142,9 @@ function ChannelBar({
               isVertical ? `${segSizeV[size]} h-1.5` : `${segSizeH[size]} flex-1`,
             ].join(' ')}
             style={{
-              backgroundColor: isLit || isPeak
-                ? color
-                : 'var(--color-ctrl-cell-bg)',
+              backgroundColor: isLit || isPeak ? fillColor : 'var(--color-ctrl-cell-bg)',
               opacity: isPeak ? 0.9 : undefined,
-              boxShadow: isPeak ? `0 0 4px ${color}` : undefined,
+              boxShadow,
             }}
           />
         );
@@ -203,6 +216,8 @@ export function Meter({
   scaleMarks = [0, -12, -48],
   channelLabels,
   colorZones = { low: 0.6, mid: 0.85 },
+  glow = false,
+  peakCapColor,
 }: MeterProps) {
   const isStereo = Array.isArray(value);
   const leftValue = isStereo ? value[0] : value;
@@ -288,6 +303,8 @@ export function Meter({
             orientation={orientation}
             zones={colorZones}
             peakHold={peakHoldEnabled}
+            glow={glow}
+            peakCapColor={peakCapColor}
           />
           {isStereo && (
             <ChannelBar
@@ -298,6 +315,8 @@ export function Meter({
               orientation={orientation}
               zones={colorZones}
               peakHold={peakHoldEnabled}
+              glow={glow}
+              peakCapColor={peakCapColor}
             />
           )}
         </div>
