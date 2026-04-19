@@ -156,7 +156,7 @@ Typical workflow:
 
 1. Add the app component under `apps/rad-os/components/apps/`.
 2. Register it in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx).
-3. Set launcher visibility with `desktopVisible` and `startMenuSection`.
+3. Set launcher visibility with `desktopVisible` and `category` (`'tools' | 'media' | 'about' | 'links'`); add `subtabs` if the app should deep-link into a specific tab from the Start menu.
 4. Set chrome behavior with `defaultSize`, `resizable`, `contentPadding`, and optional `ambient`.
 
 Catalog example:
@@ -172,7 +172,7 @@ const MyApp = lazy(() => import('@/components/apps/MyApp'));
   defaultSize: 'md',
   resizable: true,
   desktopVisible: true,
-  startMenuSection: 'apps',
+  category: 'tools',
 }
 ```
 

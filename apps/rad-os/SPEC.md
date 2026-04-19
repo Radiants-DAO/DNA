@@ -185,7 +185,7 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     defaultSize: 'lg',
     resizable: true,
     desktopVisible: true,
-    startMenuSection: 'apps',
+    category: 'tools',
   },
   // ...
 ];

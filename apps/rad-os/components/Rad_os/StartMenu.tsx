@@ -9,7 +9,7 @@ import {
   type StartMenuLink,
 } from '@/lib/apps';
 import { Button } from '@rdna/radiants/components/core';
-import { WordmarkLogo, Icon } from '@rdna/radiants/icons/runtime';
+import { Icon } from '@rdna/radiants/icons/runtime';
 
 // ============================================================================
 // Types
@@ -102,6 +102,19 @@ function useSafeHover() {
     if (!pending || !submenu) return;
     const rect = submenu.getBoundingClientRect();
     const p = { x: e.clientX, y: e.clientY };
+
+    // Reached the current submenu: user was aiming at it all along. Cancel the
+    // pending switch entirely — otherwise the timer fires in the background
+    // and yanks the submenu out from under them mid-hover.
+    const insideSubmenu =
+      p.x >= rect.left && p.x <= rect.right &&
+      p.y >= rect.top && p.y <= rect.bottom;
+    if (insideSubmenu) {
+      clearTimeout(pending.timer);
+      pendingRef.current = null;
+      return;
+    }
+
     const aiming = pointInTriangle(
       p,
       pending.enterPoint,
@@ -224,7 +237,13 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       (a) => appHover.active === `${activeCategory.id}:${a.id}`,
     ) ?? null;
 
-  // Close behavior
+  // Keep the latest onClose in a ref so we can depend only on `isOpen`.
+  // Parents commonly pass an inline arrow for onClose, which would otherwise
+  // re-run this effect on every parent render and reset hover state mid-hover.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Close behavior + reset hover state when the menu opens
   useEffect(() => {
     if (!isOpen) return;
     catHover.reset();
@@ -234,11 +253,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         const target = e.target as HTMLElement;
         if (target.closest('[data-start-button]')) return;
-        onClose();
+        onCloseRef.current();
       }
     };
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
     document.addEventListener('pointerdown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
@@ -247,7 +266,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       document.removeEventListener('keydown', handleEscape);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reason:reset-on-open-only owner:rad-os expires:2027-01-01 issue:DNA-startmenu
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   const launch = useCallback(
     (appId: string, e: React.MouseEvent, tabId?: string) => {
@@ -289,53 +308,37 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         appHover.onContainerMove(e);
       }}
     >
-      <div className="pixel-rounded-sm pixel-shadow-floating relative">
-        <div className="flex flex-row bg-page">
-          {/* Left brand strip */}
-          <div className="w-10 bg-inv flex items-end justify-center pb-3 shrink-0">
-            <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-              <WordmarkLogo className="h-3 w-auto" color="cream" />
-            </div>
-          </div>
-
-          {/* Category column */}
+      {/* Category column — pixel-rounded on its own so the clip-path
+          doesn't swallow the absolute-positioned fly-outs below. */}
+      <div
+        className="pixel-rounded-sm pixel-shadow-floating flex flex-col min-w-0 bg-page pb-1"
+        style={{ width: COLUMN_WIDTH_PX }}
+      >
+        {categories.map((cat) => (
           <div
-            className="flex flex-col min-w-0"
-            style={{ width: COLUMN_WIDTH_PX }}
+            key={cat.id}
+            ref={(el) => {
+              categoryRowRefs.current.set(cat.id, el);
+            }}
           >
-            <div className="py-1 flex-1">
-              {categories.map((cat) => (
-                <div
-                  key={cat.id}
-                  ref={(el) => {
-                    categoryRowRefs.current.set(cat.id, el);
-                  }}
-                >
-                  <MenuRow
-                    icon={cat.icon}
-                    label={cat.label}
-                    hasChildren
-                    highlighted={catHover.active === cat.id}
-                    onPointerEnter={(e) => {
-                      catHover.onItemEnter(cat.id, e);
-                      appHover.reset();
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Footer */}
-            <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between">
-              <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
-            </div>
+            <MenuRow
+              icon={cat.icon}
+              label={cat.label}
+              hasChildren
+              highlighted={catHover.active === cat.id}
+              onPointerEnter={(e) => {
+                catHover.onItemEnter(cat.id, e);
+                appHover.reset();
+              }}
+            />
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Level 1 submenu: apps (or links) in the active category */}
+      {/* Level 1 submenu: apps (or links) in the active category */}
         {activeCategory && (
           <SubmenuPanel
-            left={COLUMN_WIDTH_PX + 40 /* brand strip */}
+            left={COLUMN_WIDTH_PX}
             top={categoryTop(activeCategory.id)}
             registerEl={catHover.registerSubmenu}
           >
@@ -380,7 +383,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Level 2 submenu: subtabs for the hovered app */}
         {activeCategory && activeApp?.subtabs && (
           <SubmenuPanel
-            left={COLUMN_WIDTH_PX + 40 + COLUMN_WIDTH_PX}
+            left={COLUMN_WIDTH_PX * 2}
             top={appTop(activeApp.id)}
             registerEl={appHover.registerSubmenu}
           >
@@ -396,7 +399,6 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             </div>
           </SubmenuPanel>
         )}
-      </div>
     </div>
   );
 }
@@ -416,13 +418,18 @@ function SubmenuPanel({
   registerEl: (el: HTMLElement | null) => void;
   children: React.ReactNode;
 }) {
+  // Outer wrapper owns the absolute positioning; inner applies pixel-rounded
+  // (which sets its own `position: relative` and would otherwise clobber
+  // `absolute` via CSS layer ordering, dropping the panel back into flow).
   return (
     <div
       ref={registerEl}
-      className="absolute pixel-rounded-sm pixel-shadow-floating bg-page"
+      className="absolute"
       style={{ left, top, width: COLUMN_WIDTH_PX }}
     >
-      {children}
+      <div className="pixel-rounded-sm pixel-shadow-floating bg-page">
+        {children}
+      </div>
     </div>
   );
 }
