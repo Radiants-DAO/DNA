@@ -14,17 +14,21 @@
     "packages/radiants/generated/figma/**"
   ],
   "workspaces": {
-    "packages/create": {
-      "ignoreFiles": [
-        "scripts/sync-templates.mjs"
-      ]
-    },
     "packages/preview": {
       "ignoreFiles": [
         "src/generate-schemas.ts"
       ]
     },
-    "packages/ctrl": {},
+    "packages/ctrl": {
+      "entry": [
+        "index.ts",
+        "{controls,selectors,readouts,layout}/index.ts",
+        "**/*.meta.ts"
+      ],
+      "ignoreFiles": [
+        "**/*.meta.ts"
+      ]
+    },
     "packages/radiants": {
       "ignoreDependencies": [
         "@chenglou/pretext"
@@ -37,7 +41,6 @@
         "patterns/pretext-prepare.ts",
         "patterns/pretext-type-scale.ts",
         "scripts/generate-figma-contracts.ts",
-        "scripts/generate-icons.ts",
         "scripts/generate-pixel-corners.mjs",
         "scripts/generate-typography-tokens.ts",
         "scripts/pixel-corners-lib.mjs",

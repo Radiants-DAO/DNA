@@ -10,7 +10,7 @@
     "build:raw": "turbo build",
     "lint": "turbo lint",
     "test": "pnpm test:ci",
-    "test:ci": "turbo test:ci && pnpm test:scripts",
+    "test:ci": "turbo test:ci && pnpm test:scripts && pnpm check:design-md-drift",
     "test:full": "turbo test && pnpm test:scripts",
     "deadcode:check": "knip --production --exclude exports,types,nsExports,nsTypes,enumMembers,namespaceMembers,duplicates",
     "audit:style-authority": "node scripts/audit-style-authority.mjs",
@@ -19,13 +19,14 @@
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs",
     "lint:token-colors": "node scripts/lint-token-colors.mjs",
     "tokens:generate": "pnpm --filter @rdna/radiants generate:tokens",
-    "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/radiants generate:figma-contracts",
+    "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/radiants generate:figma-contracts && pnpm --filter @rdna/radiants generate:design-md",
+    "registry:check:full": "pnpm registry:generate && pnpm registry:test:radiants",
     "registry:test:radiants": "pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry.test.ts registry/__tests__/registry-metadata.test.ts registry/__tests__/PropControls.test.tsx registry/__tests__/runtime-coverage.test.ts registry/__tests__/runtime-attachments-props.test.ts --cache=false",
     "test:scripts": "node --test scripts/__tests__/*.test.mjs",
-    "test:create": "pnpm --filter @rdna/create test",
-    "create:smoke": "pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts"
+    "check:design-md-drift": "node scripts/check-design-md-drift.mjs"
   },
   "devDependencies": {
+    "dependency-cruiser": "^17.3.10",
     "eslint": "^9",
     "eslint-plugin-unused-imports": "^4.4.1",
     "knip": "^6.0.6",
