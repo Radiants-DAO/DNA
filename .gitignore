@@ -33,10 +33,26 @@ yarn-error.log*
 
 # Testing
 coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright-mcp/
 
 # Temp
 *.tmp
 *.temp
+
+# Debug screenshots at repo root
+/pixel-playground-*.png
+/qa-*.png
+/brand-app-*.png
+/cmdk-*.png
+/chrome-tabs-*.png
+/radOS-*.png
+/studio-*.png
+
+# Playwright CLI debug dumps
+.playwright-cli/
 
 # Cache
 .eslintcache
