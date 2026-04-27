@@ -44,6 +44,8 @@ A **theme** in DNA is a self-contained design system package. It provides everyt
 
 **Core principle:** DNA discovers what themes provide and presents visual editing interfaces for them. The theme is the "game" — the tooling is just the "console."
 
+**Current repo direction:** model themes as a family of contract-compatible packages. Radiants is the default first theme, MONOLITH/SKR are campaign themes, and future themes should use the same token/component contract instead of being treated as special-case skins.
+
 ### Integration with json-render
 
 DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) as the runtime format for AI-generated UI.
@@ -356,7 +358,7 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 ### 4.1 Repository Structure
 
-Themes are **separate repositories** linked via pnpm workspaces:
+Themes can live in separate repositories or in a monorepo workspace. For this repo, the preferred future shape is a theme package family so Radiants, MONOLITH/SKR, and future themes share one contract and package strategy.
 
 ```text
 dna-themes/
@@ -366,8 +368,10 @@ dna-themes/
 │   │   ├── tokens/
 │   │   └── package.json
 │   │
-│   ├── theme-rad-os/        # Theme package
-│   └── theme-phase/         # Another theme
+│   └── themes/
+│       ├── radiants/        # Default theme package
+│       ├── monolith/        # Campaign theme package
+│       └── phase/           # Another theme
 │
 ├── tools/
 │   ├── dna-cli/             # CLI tooling
@@ -375,6 +379,8 @@ dna-themes/
 │
 └── pnpm-workspace.yaml
 ```
+
+Package names can remain compatibility-focused during migration, such as `@rdna/radiants` for the default theme. Future naming should be decided deliberately: either package names like `@rdna/theme-radiants` / `@rdna/theme-monolith`, or a meta package such as `@rdna/themes` with subpath exports like `@rdna/themes/radiants`.
 
 ### 4.2 Theme Package Structure
 
