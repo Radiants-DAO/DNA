@@ -915,9 +915,9 @@ git commit -m "feat(rad-os): add real pretext bundle samples and loader"
 
 * Modify: `apps/rad-os/components/apps/scratchpad/scratchpad-spec.md`
 
-* Modify: `docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md`
+* Modify: `archive/brainstorms-ideas-ops-audit-2026-04-25/docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md`
 
-* Modify: `docs/plans/2026-03-29-pretext-migration-phase1-foundation.md`
+* Modify: `archive/plans/2026-03-29-pretext-migration-phase1-foundation.md`
 
 **Step 1: Run focused tests**
 
@@ -976,9 +976,9 @@ Verify:
 
 Update the old migration docs so they match the new reality:
 
-* `docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md`
+* `archive/brainstorms-ideas-ops-audit-2026-04-25/docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md`
 
-* `docs/plans/2026-03-29-pretext-migration-phase1-foundation.md`
+* `archive/plans/2026-03-29-pretext-migration-phase1-foundation.md`
 
 Specifically:
 
@@ -993,8 +993,8 @@ Specifically:
 ```bash
 git add \
   apps/rad-os/components/apps/scratchpad/scratchpad-spec.md \
-  docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md \
-  docs/plans/2026-03-29-pretext-migration-phase1-foundation.md
+  archive/brainstorms-ideas-ops-audit-2026-04-25/docs/brainstorms/2026-03-29-rados-pretext-migration-brainstorm.md \
+  archive/plans/2026-03-29-pretext-migration-phase1-foundation.md
 git commit -m "docs: update pretext migration plan for scratchpad authoring and primitives"
 ```
 

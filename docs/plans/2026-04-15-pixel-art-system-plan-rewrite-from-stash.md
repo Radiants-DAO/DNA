@@ -1778,7 +1778,6 @@ git commit -m "refactor(AppWindow): migrate from clip-path to PixelCorner overla
 - `pattern-playground/PatternCodeOutput.tsx` (line 50)
 - `pattern-playground/PatternPreview.tsx` (lines 59-60, 64-65)
 - `pattern-playground/PatternGridPicker.tsx` (line 53)
-- `templates/rados-app-prototype/components/StartMenu.tsx` (line 76 — also uses `pixel-shadow-floating`)
 
 **Batch 7 — `pixel-shadow-*` migration (20+ consumers):**
 

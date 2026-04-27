@@ -4,7 +4,7 @@
 
 **Goal:** Replace the static 9-card preset grid in the `Logos` tab of `BrandAssetsApp` with a live, two-pane logo asset maker that composes SVG bg + logo on the fly and exports as SVG or PNG.
 
-**Worktree:** `/Users/rivermassey/Desktop/dev/DNA` on `main` (user opted in to plan + execute on `main` directly — no feature worktree).
+**Worktree:** `/Users/rivermassey/Desktop/dev/DNA-logo-maker` on `feat/logo-asset-maker`. All execution happens in this worktree — never in the main checkout.
 
 **Architecture:** Client-side SVG composition + canvas rasterization. Pure helpers (`composeLogoSvg`, `patternToSvgDef`, `rasterizeSvgToPng`, ratio presets) live in `apps/rad-os/lib/logo-maker/` and are TDD'd in isolation. A new `LogoMaker.tsx` component composes them into a controls island + canvas island layout using the existing `AppWindow.Content layout="sidebar"` primitive. The existing `LOGOS` preset array, `LogoCard`, and tab-level format toggle are removed.
 
@@ -16,7 +16,7 @@
 
 ### Brainstorm
 
-`docs/brainstorms/2026-04-18-logo-asset-maker-brainstorm.md` — read this before starting. All key decisions (chosen approach, color palette, layout) come from there.
+`archive/brainstorms-ideas-ops-audit-2026-04-25/docs/brainstorms/2026-04-18-logo-asset-maker-brainstorm.md` — read this before starting. All key decisions (chosen approach, color palette, layout) come from there.
 
 ### Key files for orientation
 

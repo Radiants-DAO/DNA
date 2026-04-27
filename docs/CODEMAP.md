@@ -24,7 +24,7 @@ graph TB
     end
 
     subgraph APPS["apps/"]
-        RADOS["rad-os<br/>━━━━━━━━━━━━━━━<br/>Next.js 16 desktop-OS UI<br/>Draggable window system<br/>7 registered apps<br/>Port 3000"]
+        RADOS["rad-os<br/>━━━━━━━━━━━━━━━<br/>Next.js 16 desktop-OS UI<br/>Draggable window system<br/>9 catalog entries / 8 desktop launchers<br/>Port 3000"]
     end
 
     subgraph TOOLS["tools/"]
@@ -66,12 +66,12 @@ graph TB
         PATTERNS_CSS["patterns.css<br/>+ pattern-shadows.css"]
     end
 
-    subgraph COMPONENTS["components/core/ — 33 Components"]
+    subgraph COMPONENTS["components/core/ — 42 Components"]
         direction LR
         C_INTERACTIVE["Interactive<br/>━━━━━━━━━━<br/>Button · Checkbox · Combobox<br/>Input · InputSet · NumberField<br/>Select · Slider · Switch<br/>Toggle · ToggleGroup"]
         C_OVERLAY["Overlay / Dialog<br/>━━━━━━━━━━<br/>AlertDialog · Dialog<br/>Drawer · Sheet · Popover<br/>ContextMenu · DropdownMenu<br/>Tooltip · PreviewCard"]
-        C_LAYOUT["Layout / Display<br/>━━━━━━━━━━<br/>Card · Alert · Badge<br/>Breadcrumbs · Collapsible<br/>Menubar · NavigationMenu<br/>ScrollArea · Separator<br/>Tabs · Toolbar"]
-        C_FEEDBACK["Feedback / Misc<br/>━━━━━━━━━━<br/>Avatar · CountdownTimer<br/>Meter · Pattern · Spinner<br/>Toast"]
+        C_LAYOUT["Layout / Display<br/>━━━━━━━━━━<br/>AppWindow · Card · Alert · Badge<br/>Breadcrumbs · Collapsible<br/>Menubar · NavigationMenu<br/>ScrollArea · Separator<br/>Tabs · Toolbar"]
+        C_FEEDBACK["Feedback / Pixel / Misc<br/>━━━━━━━━━━<br/>Avatar · CountdownTimer · Icon<br/>Meter · Pattern · PixelBorder<br/>PixelIcon · PixelTransition<br/>Spinner · Toast"]
     end
 
     subgraph META_LAYER["Meta / Contract Layer"]
@@ -115,8 +115,8 @@ graph TB
 
     subgraph SCRIPTS["scripts/"]
         direction LR
-        GEN_ICONS["generate-icons.mjs"]
-        GEN_PIXEL["generate-pixel-corners.mjs<br/>pixel-corners-lib.mjs<br/>pixel-corners.config.mjs"]
+        GEN_ICONS["generate-icons.ts"]
+        GEN_PIXEL["generate-pixel-corners.ts<br/>pixel-corners-lib.ts<br/>pixel-corners.config.ts"]
     end
 
     INDEX_CSS --> TOKENS_CSS
@@ -175,46 +175,51 @@ graph LR
 | `./patterns`                   | `patterns/index.ts`          | 51 dither patterns (6 groups)        |
 | `./registry/forced-states.css` | `registry/forced-states.css` | Pseudo-state CSS                     |
 
-### All 33 Components
+### All 42 Components
 
 | Directory         | Component       | Has Tests | Base-UI Wrap |
 | ----------------- | --------------- | --------- | ------------ |
-| `Alert/`          | Alert           | -         | -            |
+| `Alert/`          | Alert           | yes       | -            |
 | `AlertDialog/`    | AlertDialog     | yes       | yes          |
-| `Avatar/`         | Avatar          | -         | -            |
-| `Badge/`          | Badge           | -         | -            |
+| `AppWindow/`      | AppWindow       | yes       | yes          |
+| `Avatar/`         | Avatar          | yes       | yes          |
+| `Badge/`          | Badge           | yes       | -            |
 | `Breadcrumbs/`    | Breadcrumbs     | -         | -            |
-| `Button/`         | Button          | yes       | -            |
-| `Card/`           | Card            | -         | -            |
+| `Button/`         | Button          | yes       | yes          |
+| `Card/`           | Card            | yes       | -            |
 | `Checkbox/`       | Checkbox, Radio | yes       | yes          |
-| `Collapsible/`    | Collapsible     | -         | yes          |
-| `Combobox/`       | Combobox        | yes       | -            |
-| `ContextMenu/`    | ContextMenu     | yes       | -            |
-| `CountdownTimer/` | CountdownTimer  | -         | -            |
+| `Collapsible/`    | Collapsible     | yes       | yes          |
+| `Combobox/`       | Combobox        | yes       | yes          |
+| `ContextMenu/`    | ContextMenu     | yes       | yes          |
+| `CountdownTimer/` | CountdownTimer  | yes       | -            |
 | `Dialog/`         | Dialog          | yes       | yes          |
-| `Drawer/`         | Drawer          | yes       | -            |
-| `DropdownMenu/`   | DropdownMenu    | yes       | -            |
+| `Drawer/`         | Drawer          | yes       | yes          |
+| `DropdownMenu/`   | DropdownMenu    | yes       | yes          |
+| `Icon/`           | Icon            | -         | -            |
 | `Input/`          | Input, TextArea | yes       | yes          |
-| `InputSet/`       | InputSet        | yes       | -            |
-| `Menubar/`        | Menubar         | -         | -            |
-| `Meter/`          | Meter           | -         | yes          |
-| `NavigationMenu/` | NavigationMenu  | -         | -            |
+| `InputSet/`       | InputSet        | yes       | yes          |
+| `Menubar/`        | Menubar         | yes       | yes          |
+| `Meter/`          | Meter           | yes       | yes          |
+| `NavigationMenu/` | NavigationMenu  | yes       | yes          |
 | `NumberField/`    | NumberField     | yes       | yes          |
-| `Pattern/`        | Pattern         | -         | -            |
+| `Pattern/`        | Pattern         | yes       | -            |
+| `PixelBorder/`    | PixelBorder     | yes       | -            |
+| `PixelIcon/`      | PixelIcon       | yes       | -            |
+| `PixelTransition/` | PixelTransition | yes       | -            |
 | `Popover/`        | Popover         | yes       | yes          |
 | `PreviewCard/`    | PreviewCard     | yes       | yes          |
 | `ScrollArea/`     | ScrollArea      | yes       | -            |
 | `Select/`         | Select          | yes       | yes          |
 | `Separator/`      | Separator       | -         | yes          |
-| `Sheet/`          | Sheet           | yes       | -            |
+| `Sheet/`          | Sheet           | yes       | yes          |
 | `Slider/`         | Slider          | yes       | yes          |
 | `Spinner/`        | Spinner         | -         | -            |
 | `Switch/`         | Switch          | yes       | yes          |
 | `Tabs/`           | Tabs            | yes       | yes          |
-| `Toast/`          | Toast           | yes       | -            |
+| `Toast/`          | Toast           | yes       | yes          |
 | `Toggle/`         | Toggle          | yes       | yes          |
-| `ToggleGroup/`    | ToggleGroup     | -         | yes          |
-| `Toolbar/`        | Toolbar         | -         | -            |
+| `ToggleGroup/`    | ToggleGroup     | yes       | yes          |
+| `Toolbar/`        | Toolbar         | yes       | yes          |
 | `Tooltip/`        | Tooltip         | yes       | yes          |
 
 ***
@@ -234,25 +239,22 @@ graph TB
     subgraph WINDOW_SYSTEM["components/Rad_os/ — Window System"]
         DESKTOP["Desktop.tsx<br/>RadOSDesktop.tsx"]
         APPWINDOW["AppWindow.tsx<br/>Draggable window chrome"]
-        MOBILE_MODAL["MobileAppModal.tsx<br/>Fullscreen mobile fallback"]
-        TITLEBAR["WindowTitleBar.tsx"]
-        CONTENT["WindowContent.tsx"]
-        SIDEBAR["WindowSidebar.tsx"]
-        TABS["WindowTabs.tsx"]
         TASKBAR["Taskbar.tsx"]
         STARTMENU["StartMenu.tsx"]
-        DESKICON["DesktopIcon.tsx"]
         INVERT["InvertModeProvider.tsx<br/>InvertOverlay.tsx"]
     end
 
     subgraph APP_COMPONENTS["components/apps/ — Catalog Apps"]
         ABOUT["AboutApp.tsx"]
-        BRAND["BrandAssetsApp.tsx"]
-        LINKS["LinksApp.tsx"]
-        MANIFESTO["ManifestoApp.tsx"]
-        STUDIO["StudioApp.tsx<br/>+ studio/ (pixel art editor)"]
-        RADIO["RadRadioApp.tsx<br/>+ rad-radio/ambient.tsx"]
-        TYPE_PG["typography-playground/"]
+        BRAND["BrandApp.tsx<br/>+ brand-assets/"]
+        LAB["LabApp.tsx"]
+        PIXEL_LAB["pixel-lab/PixelLab.tsx<br/>+ pixel-playground/"]
+        PREFS["PreferencesApp.tsx<br/>(desktop hidden)"]
+        SCRATCHPAD["ScratchpadApp.tsx<br/>+ scratchpad/"]
+        HACKATHON["HackathonExeApp.tsx"]
+        GOOD_NEWS["goodnews/GoodNewsLegacyApp.tsx"]
+        MANIFESTO["manifesto/ManifestoBook.tsx"]
+        RADIO["radio/RadioWidget.tsx<br/>(taskbar-hosted)"]
     end
 
     subgraph STATE["store/ — Zustand"]
@@ -260,7 +262,6 @@ graph TB
         WINDOWS_SLICE["windowsSlice.ts<br/>Window positions, z-index,<br/>open/close/focus"]
         PREFS_SLICE["preferencesSlice.ts<br/>Theme, wallpaper,<br/>favorites"]
         RADIO_SLICE["radRadioSlice.ts<br/>Track playback state"]
-        MOCK_SLICE["mockDataSlice.ts<br/>Studio submissions"]
     end
 
     subgraph HOOKS_LIB["hooks/ + lib/"]
@@ -269,7 +270,6 @@ graph TB
         USE_MOBILE["useIsMobile"]
         USE_KONAMI["useKonamiCode"]
         APP_CATALOG["lib/apps/catalog.tsx<br/>Single source of truth:<br/>id, title, icon, component,<br/>sizing, ambient, start menu"]
-        MOCK_DATA["lib/mockData/<br/>tracks · studioSubmissions"]
     end
 
     subgraph BG["components/background/"]
@@ -280,17 +280,11 @@ graph TB
     DESKTOP --> APPWINDOW
     DESKTOP --> TASKBAR
     DESKTOP --> STARTMENU
-    DESKTOP --> DESKICON
     DESKTOP --> WEBGL_SUN
-    APPWINDOW --> TITLEBAR
-    APPWINDOW --> CONTENT
-    APPWINDOW --> SIDEBAR
-    APPWINDOW --> TABS
     APP_CATALOG -->|"registers"| APP_COMPONENTS
     STORE_INDEX --> WINDOWS_SLICE
     STORE_INDEX --> PREFS_SLICE
     STORE_INDEX --> RADIO_SLICE
-    STORE_INDEX --> MOCK_SLICE
 
     style NEXTJS fill:#dbeafe,stroke:#2563eb,color:#000
     style WINDOW_SYSTEM fill:#e0e7ff,stroke:#4f46e5,color:#000
@@ -300,14 +294,19 @@ graph TB
 
 ### App Catalog (`lib/apps/catalog.tsx`)
 
-| id          | Window Title    | Section | Ambient Capable               |
-| ----------- | --------------- | ------- | ----------------------------- |
-| `brand`     | Brand Assets    | apps    | -                             |
-| `manifesto` | Manifesto       | apps    | -                             |
-| `music`     | Rad Radio       | apps    | wallpaper, widget, controller |
-| `links`     | Links           | apps    | -                             |
-| `about`     | About           | apps    | -                             |
-| `studio`    | Radiants Studio | web3    | -                             |
+| id | Window Title | Category | Desktop Visible | Subtabs |
+| --- | --- | --- | --- | --- |
+| `brand` | Brand | tools | yes | Logos, Color, Type |
+| `lab` | Dev Tools | tools | yes | UI Library |
+| `pixel-lab` | Pixel Lab | tools | yes | Radiants, Corners, Icons, Patterns, Dither, Canvas |
+| `preferences` | Preferences | tools | no | General, Themes |
+| `scratchpad` | Scratchpad | tools | yes | - |
+| `hackathon-exe` | Hackathon.EXE | media | yes | Winners, Submissions, Archive |
+| `good-news` | Good News | media | yes | - |
+| `about` | About | about | yes | - |
+| `manifesto` | Becoming Substance | about | yes | - |
+
+Radio playback is taskbar-hosted through `components/apps/radio/RadioWidget.tsx`, not registered as a launchable catalog window.
 
 ### Zustand Store Persistence
 
@@ -394,7 +393,7 @@ graph TB
 
 ```mermaid
 graph LR
-    A["Component.meta.ts<br/>(33 components)"] -->|"pnpm registry:generate"| B["Component.schema.json<br/>(per component)"]
+    A["Component.meta.ts<br/>(42 components)"] -->|"pnpm registry:generate"| B["Component.schema.json<br/>(per component)"]
     A -->|"meta/index.ts barrel"| C["@rdna/radiants/meta"]
     B -->|"schemas/index.ts barrel"| D["@rdna/radiants/schemas"]
     A -->|"build-registry-metadata.ts"| E["registry/index.ts"]
@@ -661,7 +660,7 @@ graph TB
 
 | Dep                        | Used By              | Purpose             |
 | -------------------------- | -------------------- | ------------------- |
-| `@base-ui/react` ^1.3.0    | radiants components  | Headless primitives |
+| `@base-ui/react` ^1.4.1    | radiants, ctrl       | Headless primitives |
 | `class-variance-authority` | radiants, playground | Variant styling     |
 | `zustand` ^5               | rad-os               | State management    |
 | `react-draggable`          | rad-os               | Window dragging     |

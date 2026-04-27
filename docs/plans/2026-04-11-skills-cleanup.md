@@ -33,7 +33,7 @@
 - **Session miner reference:** `/Users/rivermassey/Desktop/dev/reforge/prompts/session-miner.md` — adapt for skill-invocation frequency, not full transcript mining.
 - **Session corpus:** 1290 `.jsonl` files under `~/.claude/projects/`. Must filter to last 90 days.
 - **Archive path:** `/Users/rivermassey/Desktop/dev/ai-skills/INDEX.md` (single flat file, table format, placeholder for usefulness ratings).
-- **Review file:** `ops/skills-cleanup-review-2026-04-11.md` (in-repo, spawned as Collaborator note tile).
+- **Review file:** `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md` (in-repo, spawned as Collaborator note tile).
 
 ## Open Decisions Surfaced For User
 
@@ -88,11 +88,11 @@ Saves a baseline tile list so we can diff after spawning the review tile.
 ## Task 2: Build canonical skill inventory
 
 **Files:**
-- Create: `ops/skills-cleanup/inventory.json` (working file, untracked, git-ignored if needed)
+- Create: `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json` (working file, untracked, git-ignored if needed)
 
 **Step 1: Generate inventory**
 
-Write a single-file bash script or inline pipeline that produces `ops/skills-cleanup/inventory.json` with one row per skill:
+Write a single-file bash script or inline pipeline that produces `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json` with one row per skill:
 
 ```json
 {
@@ -110,13 +110,13 @@ Write a single-file bash script or inline pipeline that produces `ops/skills-cle
 **Step 2: Implementation**
 
 ```bash
-mkdir -p ops/skills-cleanup
+mkdir -p archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup
 node -e "
 const fs=require('fs');
 const path=require('path');
 const yaml=require('js-yaml');
 // ...traverse the three skill roots, read SKILL.md frontmatter, stat the dir
-" > ops/skills-cleanup/inventory.json
+" > archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json
 ```
 
 If `js-yaml` isn't available, do plain line-parsing of the YAML frontmatter (first-block between `---` lines). Don't add npm deps.
@@ -124,7 +124,7 @@ If `js-yaml` isn't available, do plain line-parsing of the YAML frontmatter (fir
 **Step 3: Cross-reference with `npx skills list` to flag managed vs hand-installed**
 
 ```bash
-npx -y skills list > ops/skills-cleanup/npx-managed.txt 2>&1
+npx -y skills list > archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/npx-managed.txt 2>&1
 ```
 
 Parse the `[36m...[0m` ANSI-colored names out, match against `inventory.json` IDs, set `managed_by_npx: true` where matched.
@@ -132,8 +132,8 @@ Parse the `[36m...[0m` ANSI-colored names out, match against `inventory.json` ID
 **Step 4: Sanity check**
 
 ```bash
-jq 'length' ops/skills-cleanup/inventory.json
-jq '[.[] | .scope] | group_by(.) | map({scope: .[0], count: length})' ops/skills-cleanup/inventory.json
+jq 'length' archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json
+jq '[.[] | .scope] | group_by(.) | map({scope: .[0], count: length})' archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json
 ```
 
 Expected: total ≈ 80 (59 global + 17 project-figma + 4 typography), grouped by scope.
@@ -141,7 +141,7 @@ Expected: total ≈ 80 (59 global + 17 project-figma + 4 typography), grouped by
 **Step 5: Commit the inventory**
 
 ```bash
-git add ops/skills-cleanup/inventory.json
+git add archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json
 git commit -m "ops(skills-cleanup): snapshot skill inventory"
 ```
 
@@ -149,13 +149,13 @@ git commit -m "ops(skills-cleanup): snapshot skill inventory"
 
 ## Task 3: Spawn three parallel research subagents
 
-All three run in the same message (parallel). None of them write outside `ops/skills-cleanup/`. All use `Read` input: `ops/skills-cleanup/inventory.json`.
+All three run in the same message (parallel). None of them write outside `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/`. All use `Read` input: `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json`.
 
 ### Task 3a: Usage miner
 
 **Subagent type:** `general-purpose`
 
-**Writes:** `ops/skills-cleanup/usage-report.json`
+**Writes:** `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/usage-report.json`
 
 **Prompt template (exact, paste into Agent tool):**
 
@@ -167,7 +167,7 @@ Reference prompt (read for methodology, but narrow its scope to skill usage only
 /Users/rivermassey/Desktop/dev/reforge/prompts/session-miner.md
 
 Inputs:
-- ops/skills-cleanup/inventory.json — list of skills to rank (one row per skill, id field)
+- archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json — list of skills to rank (one row per skill, id field)
 - ~/.claude/projects/**/*.jsonl — Claude Code session transcripts
 
 Scope:
@@ -182,14 +182,14 @@ What to count per skill id:
 3. user_slash_invocations: times the user typed /skill-name directly
 4. sessions_touched: number of distinct session files containing any invocation
 
-Output: ops/skills-cleanup/usage-report.json
+Output: archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/usage-report.json
 Format: array of {id, invocations, last_used, user_slash_invocations, sessions_touched}
 Skills with zero invocations in the window should still appear with zeros.
 
 Constraints:
 - Do NOT read full session content into memory. Stream line-by-line. Some sessions are > 100 MB.
-- Cache progress to ops/skills-cleanup/usage-report.partial.json every ~100 files so reruns skip already-processed.
-- If a session JSONL is malformed, log the path to ops/skills-cleanup/usage-report.errors.log and skip.
+- Cache progress to archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/usage-report.partial.json every ~100 files so reruns skip already-processed.
+- If a session JSONL is malformed, log the path to archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/usage-report.errors.log and skip.
 - Do not spawn your own subagents. Do the work in-process.
 - Report under 200 words when done; the full data lives in usage-report.json.
 ```
@@ -198,7 +198,7 @@ Constraints:
 
 **Subagent type:** `general-purpose`
 
-**Writes:** `ops/skills-cleanup/staleness-report.json`
+**Writes:** `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/staleness-report.json`
 
 **Prompt template:**
 
@@ -206,7 +206,7 @@ Constraints:
 You are a staleness auditor for a Claude Code skills cleanup.
 
 Input:
-- ops/skills-cleanup/inventory.json — skills to audit (one row per skill with path, skill_md_path)
+- archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json — skills to audit (one row per skill with path, skill_md_path)
 
 For EACH skill, read its SKILL.md and check:
 
@@ -225,7 +225,7 @@ For EACH skill, read its SKILL.md and check:
 4. Size red flag: SKILL.md > 500 lines OR < 10 lines.
    Very large skills may be outdated procedural docs; very small ones may be stubs.
 
-Output: ops/skills-cleanup/staleness-report.json
+Output: archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/staleness-report.json
 Format: array of {
   id,
   dead_paths: [string],
@@ -252,7 +252,7 @@ Constraints:
 
 **Subagent type:** `general-purpose`
 
-**Writes:** `ops/skills-cleanup/provenance-report.json`
+**Writes:** `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/provenance-report.json`
 
 **Prompt template:**
 
@@ -260,7 +260,7 @@ Constraints:
 You are a provenance tracer for a Claude Code skills cleanup.
 
 Input:
-- ops/skills-cleanup/inventory.json — skills to trace
+- archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json — skills to trace
 
 For each skill, try to identify WHERE IT CAME FROM so we have an install path for the archive.
 
@@ -285,7 +285,7 @@ Sources to check (in priority order):
    Only claim this if the SKILL.md content actually matches (compare first 20 lines against
    the GitHub version via `gh api`).
 
-Output: ops/skills-cleanup/provenance-report.json
+Output: archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/provenance-report.json
 Format: array of {
   id,
   source_kind: "npx-lock" | "frontmatter" | "github-url" | "bundled-app" | "user-authored" | "unknown",
@@ -297,7 +297,7 @@ Format: array of {
 
 Constraints:
 - Do NOT clone anything. Use gh api for remote reads.
-- Do NOT write outside ops/skills-cleanup/.
+- Do NOT write outside archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/.
 - Do not spawn subagents.
 - Report under 200 words.
 ```
@@ -310,14 +310,14 @@ Constraints:
 
 ```bash
 for f in usage-report staleness-report provenance-report; do
-  jq 'length' ops/skills-cleanup/$f.json || echo "MISSING/INVALID: $f"
+  jq 'length' archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/$f.json || echo "MISSING/INVALID: $f"
 done
 ```
 
 **Step 4: Commit research outputs**
 
 ```bash
-git add ops/skills-cleanup/usage-report.json ops/skills-cleanup/staleness-report.json ops/skills-cleanup/provenance-report.json
+git add archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/usage-report.json archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/staleness-report.json archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/provenance-report.json
 git commit -m "ops(skills-cleanup): research reports from parallel agents"
 ```
 
@@ -326,7 +326,7 @@ git commit -m "ops(skills-cleanup): research reports from parallel agents"
 ## Task 4: Synthesize review table
 
 **Files:**
-- Create: `ops/skills-cleanup-review-2026-04-11.md`
+- Create: `archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md`
 
 **Step 1: Merge the four JSON files into one table row per skill**
 
@@ -391,7 +391,7 @@ Join `inventory.json`, `usage-report.json`, `staleness-report.json`, `provenance
 **Step 4: Commit review file**
 
 ```bash
-git add ops/skills-cleanup-review-2026-04-11.md
+git add archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md
 git commit -m "ops(skills-cleanup): review table for human triage"
 ```
 
@@ -402,7 +402,7 @@ git commit -m "ops(skills-cleanup): review table for human triage"
 **Step 1: Create the tile via collab-canvas CLI**
 
 ```bash
-collab-canvas tile create note --file /Users/rivermassey/Desktop/dev/DNA-pixel-art/ops/skills-cleanup-review-2026-04-11.md
+collab-canvas tile create note --file /Users/rivermassey/Desktop/dev/DNA-pixel-art/archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md
 ```
 
 Capture the returned tile ID.
@@ -436,7 +436,7 @@ User signals via:
 
 ```bash
 # Parse the review file and confirm every row has exactly one checkbox ticked
-node ops/skills-cleanup/verify-review.mjs ops/skills-cleanup-review-2026-04-11.md
+node archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/verify-review.mjs archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md
 ```
 
 If any row has 0 or 2+ ticks, report which rows are ambiguous and wait for the user to fix.
@@ -478,7 +478,7 @@ The `Usefulness` column is a placeholder for future ratings.
 **Step 3: Verify write succeeded and row count matches archive count**
 
 ```bash
-ARCHIVE_COUNT=$(node ops/skills-cleanup/count-archived.mjs ops/skills-cleanup-review-2026-04-11.md)
+ARCHIVE_COUNT=$(node archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/count-archived.mjs archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md)
 INDEX_ADDED=$(tail -n $((ARCHIVE_COUNT + 2)) ~/Desktop/dev/ai-skills/INDEX.md | grep -c '^|')
 test "$ARCHIVE_COUNT" -eq "$((INDEX_ADDED - 1))" && echo ok || echo MISMATCH
 ```
@@ -494,7 +494,7 @@ test "$ARCHIVE_COUNT" -eq "$((INDEX_ADDED - 1))" && echo ok || echo MISMATCH
 **Step 2: Remove them via npx skills, one at a time with verification**
 
 ```bash
-for skill in $(cat ops/skills-cleanup/to-remove-managed.txt); do
+for skill in $(cat archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/to-remove-managed.txt); do
   echo "Removing managed: $skill"
   npx -y skills remove -s "$skill" -y
   sleep 0.5
@@ -504,7 +504,7 @@ done
 **Step 3: Verify removal**
 
 ```bash
-npx -y skills list | grep -F -f ops/skills-cleanup/to-remove-managed.txt && echo STILL_PRESENT || echo clean
+npx -y skills list | grep -F -f archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/to-remove-managed.txt && echo STILL_PRESENT || echo clean
 ```
 
 Expected: `clean`.
@@ -530,7 +530,7 @@ while read -r skill_path; do
   test -d "$skill_path" || { echo "MISSING: $skill_path"; continue; }
   rm -rf "$skill_path"
   echo "removed: $skill_path"
-done < ops/skills-cleanup/to-remove-paths.txt
+done < archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/to-remove-paths.txt
 ```
 
 **Step 3: Verify**
@@ -538,7 +538,7 @@ done < ops/skills-cleanup/to-remove-paths.txt
 ```bash
 while read -r skill_path; do
   test -d "$skill_path" && echo STILL_PRESENT: "$skill_path"
-done < ops/skills-cleanup/to-remove-paths.txt
+done < archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/to-remove-paths.txt
 ```
 
 Expected: no output.
@@ -658,9 +658,9 @@ test -f ~/.claude/CLAUDE.md && wc -l ~/.claude/CLAUDE.md
 **Step 1: Re-run the inventory script and diff against the original**
 
 ```bash
-node ops/skills-cleanup/build-inventory.mjs > ops/skills-cleanup/inventory.post.json
-diff <(jq -S 'map(.id) | sort' ops/skills-cleanup/inventory.json) \
-     <(jq -S 'map(.id) | sort' ops/skills-cleanup/inventory.post.json)
+node archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/build-inventory.mjs > archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.post.json
+diff <(jq -S 'map(.id) | sort' archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json) \
+     <(jq -S 'map(.id) | sort' archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.post.json)
 ```
 
 Expected diff should match exactly the set of skills removed.
@@ -668,7 +668,7 @@ Expected diff should match exactly the set of skills removed.
 **Step 2: Verify INDEX.md row count = archive count**
 
 ```bash
-ARCHIVED=$(node ops/skills-cleanup/count-archived.mjs ops/skills-cleanup-review-2026-04-11.md)
+ARCHIVED=$(node archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/count-archived.mjs archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md)
 INDEX_ROWS=$(grep -c '^| [^-]' ~/Desktop/dev/ai-skills/INDEX.md)
 echo "archived=$ARCHIVED  index_rows=$INDEX_ROWS"
 ```
@@ -676,10 +676,10 @@ echo "archived=$ARCHIVED  index_rows=$INDEX_ROWS"
 **Step 3: Write summary report**
 
 ```bash
-cat > ops/skills-cleanup/SUMMARY.md <<EOF
+cat > archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/SUMMARY.md <<EOF
 # Skills Cleanup Summary — 2026-04-11
 
-- Audited: $(jq length ops/skills-cleanup/inventory.json) skills
+- Audited: $(jq length archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/inventory.json) skills
 - Kept global: $KEEP_GLOBAL
 - Kept DNA: $KEEP_DNA
 - Archived: $ARCHIVED
@@ -696,7 +696,7 @@ EOF
 **Step 4: Commit everything**
 
 ```bash
-git add ops/skills-cleanup/ ops/skills-cleanup-review-2026-04-11.md
+git add archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/ archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup-review-2026-04-11.md
 git commit -m "ops(skills-cleanup): complete cleanup — $ARCHIVED archived, summary logged"
 ```
 
@@ -704,7 +704,7 @@ git commit -m "ops(skills-cleanup): complete cleanup — $ARCHIVED archived, sum
 
 ```bash
 SOCK=$(cat ~/.collaborator/socket-path)
-printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"app.notify","params":{"title":"Skills cleanup","body":"Cleanup complete. See ops/skills-cleanup/SUMMARY.md."}}' | nc -U "$SOCK" -w 1
+printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"app.notify","params":{"title":"Skills cleanup","body":"Cleanup complete. See archive/brainstorms-ideas-ops-audit-2026-04-25/ops/skills-cleanup/SUMMARY.md."}}' | nc -U "$SOCK" -w 1
 ```
 
 ---

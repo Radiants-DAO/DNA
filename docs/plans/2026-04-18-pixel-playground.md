@@ -10,7 +10,7 @@
 
 **Tech Stack:** React 19, TypeScript, Tailwind v4, `@/lib/dotting`, `@rdna/pixel`, `@rdna/radiants`, Vitest.
 
-**Brainstorm:** `docs/brainstorms/2026-04-18-pixel-playground-brainstorm.md`
+**Brainstorm:** `archive/brainstorms-ideas-ops-audit-2026-04-25/docs/brainstorms/2026-04-18-pixel-playground-brainstorm.md`
 
 ---
 

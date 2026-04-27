@@ -268,7 +268,6 @@ These packages landed after the original checklist was written and have their ow
 | -------------- | ------- | --------------------------------------------------------------------------------------- |
 | `@rdna/ctrl`   | Active  | Control surface library (30+ controls/selectors/readouts). Preview at `/ctrl-preview`.  |
 | `@rdna/pixel`  | Active  | 1-bit pixel engine (grids, renderers, transitions, icons). Preview at `/pixel-corners`. |
-| `@rdna/create` | Shipped | Project scaffolder CLI + templates                                                      |
 | Pretext system | Active  | Layout editor with broadsheet/editorial/book modes, serialization, authoring primitives |
 
 ***

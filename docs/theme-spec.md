@@ -286,7 +286,8 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 /* Shadows */
 --shadow-sm
---shadow-card
+--shadow-resting
+--shadow-lifted
 ```
 
 ### 3.4 Token Categories Reference
@@ -300,7 +301,7 @@ All tokens use CSS custom property syntax with kebab-case naming:
 | Action      | `--color-action-{type}`   | Interactive      | `--color-action-primary`                         |
 | Status      | `--color-status-{state}`  | Feedback         | `--color-status-success`                         |
 | Radius      | `--radius-{size}`         | Border radius    | `--radius-md: 8px`                               |
-| Shadow      | `--shadow-{name}`         | Box shadows      | `--shadow-card`                                  |
+| Shadow      | `--shadow-{name}`         | Box shadows      | `--shadow-resting`                               |
 | Spacing     | `--spacing-{size}`        | Margins/padding  | `--spacing-md: 1rem`                             |
 | Font Family | `--font-{name}`           | Typefaces        | `--font-heading`                                 |
 | Font Size   | `--font-size-{size}`      | Type scale       | `--font-size-lg`                                 |
@@ -343,9 +344,9 @@ All tokens use CSS custom property syntax with kebab-case naming:
   --radius-md: 8px;
   --radius-lg: 16px;
 
-  /* Shadows → shadow-btn, shadow-card */
-  --shadow-btn: 0 2px 0 0 var(--color-ink);
-  --shadow-card: 4px 4px 0 0 var(--color-ink);
+  /* Shadows → shadow-resting, shadow-lifted */
+  --shadow-resting: 1px 1px 0 0 var(--color-ink);
+  --shadow-lifted: 2px 2px 0 0 var(--color-ink);
 }
 ```
 
@@ -620,7 +621,7 @@ className="bg-page text-main border-line"
 className="bg-[#FEF8E2] text-[#0F0E0C]"
 
 // DO: Use token-based shadows
-className="shadow-card hover:shadow-card-hover"
+className="shadow-resting hover:shadow-lifted"
 
 // DON'T: Arbitrary shadows
 className="shadow-[4px_4px_0_0_#000]"

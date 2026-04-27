@@ -133,4 +133,3 @@ packages/controls/
 - **agentation**: Visual feedback toolbar. MCP integration for annotation workflows. Worth studying for feedback overlay patterns.
 - **App catalog** (`apps/rad-os/lib/apps/catalog.tsx`): Already supports `ambient` capability. `controlSurface` would be a parallel catalog-level capability.
 - **Window store** (`apps/rad-os/store/slices/windowsSlice.ts`): Manages open/close/focus/fullscreen/widget. Needs `parentId` for companion windows.
-- **Template scaffold** (`packages/create`): Largely done. Has `lib/controlSurface.ts` seam ready for `@rdna/controls` consumption.
