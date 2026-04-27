@@ -1,22 +1,22 @@
 'use client';
 
 import { useEffect, useState, type RefObject } from 'react';
-import { CtrlSlider, Meter } from '@rdna/ctrl';
+import { Meter, Slider } from '@rdna/ctrl';
 import { lcdText } from './styles';
 
 // =============================================================================
-// RadioEffectsRow — Stereo VU meters flanking SLOW + REVERB faders.
+// RadioEffectsRow — Stereo VU meters flanking SLOW + REVERB sliders.
 //
 // Layout (L to R):
 //   [L Meter (vertical, 12-seg, glow)]
 //   [dB scale: 0 / -12 / -48]
-//   [SLOW label + horizontal Fader]
-//   [REVERB label + horizontal Fader]
+//   [SLOW slider + REVERB slider (stacked, labels below each track)]
 //   [dB scale: 0 / -12 / -48]
 //   [R Meter (vertical, 12-seg, glow)]
 //
 // VU levels come from refs populated by the WebAudio analyser (no parent
-// re-renders per frame). Slow / reverb values are store-backed.
+// re-renders per frame). Slow / reverb values are store-backed. Sliders use
+// the shared LCD Slider primitive from @rdna/ctrl (default variant).
 // =============================================================================
 
 interface RadioEffectsRowProps {
@@ -47,7 +47,7 @@ function useAnimatedLevel(ref: RefObject<number>): number {
 function DbScale() {
   return (
     <div
-      className="flex flex-col justify-between h-20 text-[7px] leading-[8px] tracking-wide font-mono"
+      className="flex flex-col justify-between h-20 text-xs leading-none tracking-wide font-mono"
       style={lcdText}
     >
       {DB_LABELS.map((l) => (
@@ -81,12 +81,11 @@ export function RadioEffectsRow({
             size="sm"
             orientation="vertical"
             glow
-            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-peak-cap-yellow owner:rad-os expires:2026-12-31 issue:DNA-999
-            peakCapColor="oklch(0.9126 0.1170 93.68)"
+            peakCapColor="accent"
             colorZones={{ low: 1, mid: 1 }}
           />
           <span
-            className="text-[8px] uppercase tracking-wider font-mono"
+            className="text-xs uppercase tracking-wider font-mono"
             style={lcdText}
           >
             L
@@ -95,40 +94,42 @@ export function RadioEffectsRow({
         <DbScale />
       </div>
 
-      {/* SLOW + REVERB */}
-      <div className="flex-1 flex flex-col items-center gap-2">
-        <span
-          className="text-[8px] uppercase tracking-wider"
-          style={lcdText}
-        >
-          Slow
-        </span>
-        <CtrlSlider
-          size="sm"
-          min={0}
-          max={1}
-          step={0.01}
-          value={slow}
-          onChange={onSlowChange}
-          ticks={5}
-          className="w-full"
-        />
-        <span
-          className="text-[8px] uppercase tracking-wider"
-          style={lcdText}
-        >
-          Reverb
-        </span>
-        <CtrlSlider
-          size="sm"
-          min={0}
-          max={1}
-          step={0.01}
-          value={reverb}
-          onChange={onReverbChange}
-          ticks={5}
-          className="w-full"
-        />
+      {/* SLOW + REVERB — LCD sliders (default variant) with labels below */}
+      <div className="flex-1 flex flex-col self-stretch gap-3">
+        <div className="flex flex-col items-center gap-0.5 w-full">
+          <Slider
+            value={slow}
+            onChange={onSlowChange}
+            min={0}
+            max={1}
+            step={0}
+            ariaLabel="Slow"
+            className="w-full"
+          />
+          <span
+            className="text-xs uppercase tracking-wider font-mono"
+            style={lcdText}
+          >
+            Slow
+          </span>
+        </div>
+        <div className="flex flex-col items-center gap-0.5 w-full">
+          <Slider
+            value={reverb}
+            onChange={onReverbChange}
+            min={0}
+            max={1}
+            step={0}
+            ariaLabel="Reverb"
+            className="w-full"
+          />
+          <span
+            className="text-xs uppercase tracking-wider font-mono"
+            style={lcdText}
+          >
+            Reverb
+          </span>
+        </div>
       </div>
 
       {/* R channel */}
@@ -143,12 +144,11 @@ export function RadioEffectsRow({
             size="sm"
             orientation="vertical"
             glow
-            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-peak-cap-yellow owner:rad-os expires:2026-12-31 issue:DNA-999
-            peakCapColor="oklch(0.9126 0.1170 93.68)"
+            peakCapColor="accent"
             colorZones={{ low: 1, mid: 1 }}
           />
           <span
-            className="text-[8px] uppercase tracking-wider font-mono"
+            className="text-xs uppercase tracking-wider font-mono"
             style={lcdText}
           >
             R

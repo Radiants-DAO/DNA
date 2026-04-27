@@ -76,7 +76,7 @@ export function CoverPage({ pageWidth, pageHeight }: CoverPageProps) {
   const layoutW = pageWidth - margin * 2;
 
   useEffect(() => {
-    if (layoutW <= 0 || typeof window === 'undefined') return;
+    if (layoutW <= 0) return;
     document.fonts.ready.then(() => {
       const result = fitHeadline(
         'Becoming Substance',

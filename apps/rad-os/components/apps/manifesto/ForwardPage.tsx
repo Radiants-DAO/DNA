@@ -26,7 +26,7 @@ export function ForwardPage({ pageWidth, pageHeight }: ForwardPageProps) {
   const maxTextW = Math.min(layoutW, 340); // comfortable reading width for centered block
 
   useEffect(() => {
-    if (layoutW <= 0 || typeof window === 'undefined') return;
+    if (layoutW <= 0) return;
     document.fonts.ready.then(() => {
       // Heading
       const headingSize = 18;

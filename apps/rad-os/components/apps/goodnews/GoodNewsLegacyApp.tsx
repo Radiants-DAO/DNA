@@ -1128,7 +1128,7 @@ export function GoodNewsLegacyApp(_props: AppProps) {
         <div className="absolute left-0 right-0 top-1 z-10 h-1 rdna-pat rdna-pat--spray-grid" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
         <div
           ref={containerRef}
-          className="h-full overflow-y-auto border-t border-ink bg-card"
+          className="h-full overflow-y-auto border-t border-line bg-card"
         >
           {result ? (
             <div

@@ -133,36 +133,6 @@ export function deserializePretextBundle(
   return { markdown, settings };
 }
 
-export function downloadPretextBundle(bundle: PretextBundle): {
-  mdFilename: string;
-  jsonFilename: string;
-} {
-  const slug = bundle.settings.slug || 'untitled';
-  const serialized = serializePretextBundle(bundle);
-
-  const mdBlob = new Blob([serialized.markdown], { type: 'text/markdown' });
-  const jsonBlob = new Blob([serialized.settingsJson], {
-    type: 'application/json',
-  });
-
-  downloadBlob(mdBlob, `${slug}.md`);
-  downloadBlob(jsonBlob, `${slug}.pretext.json`);
-
-  return {
-    mdFilename: `${slug}.md`,
-    jsonFilename: `${slug}.pretext.json`,
-  };
-}
-
-function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 export type PasteResult =
   | { kind: 'full'; markdown: string; settings: PretextDocumentSettings }
   | { kind: 'markdown-only'; markdown: string }

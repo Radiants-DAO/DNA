@@ -122,7 +122,7 @@ function renderAnnotatedLine(
         parts.push(
           <span
             key={trig.id}
-            className={`cursor-pointer ${isActive ? 'bg-accent/50' : 'bg-accent/30'}`}
+            className={`cursor-pointer ${isActive ? 'bg-accent' : 'bg-accent-soft'}`}
             title="tap to show image"
             onClick={(e) => { e.stopPropagation(); onToggle(trig); }}
           >{text}</span>,
@@ -131,7 +131,7 @@ function renderAnnotatedLine(
         parts.push(
           <span
             key={`g-${partKey++}`}
-            className="cursor-help hover:bg-link/20 transition-colors"
+            className="cursor-help hover:bg-depth transition-colors"
             title={m.ann.term.definition}
           >{text}</span>,
         );
@@ -193,7 +193,7 @@ function renderAnnotatedLine(
       parts.push(
         <span
           key={trig.id}
-          className={`cursor-pointer ${isActive ? 'bg-accent/50' : 'bg-accent/30'}`}
+          className={`cursor-pointer ${isActive ? 'bg-accent' : 'bg-accent-soft'}`}
           title="tap to show image"
           onClick={(e) => { e.stopPropagation(); onToggle(trig); }}
         >{text}</span>,
@@ -202,7 +202,7 @@ function renderAnnotatedLine(
       parts.push(
         <span
           key={`g-${partKey++}`}
-          className="cursor-help hover:bg-link/20 transition-colors"
+          className="cursor-help hover:bg-depth transition-colors"
           title={m.ann.term.definition}
         >{text}</span>,
       );

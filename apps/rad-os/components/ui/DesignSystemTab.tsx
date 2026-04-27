@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useEffect, useMemo, useRef, useState, type ComponentType, type RefObject } from 'react';
+import { useRef, useState, type ComponentType, type RefObject } from 'react';
 import {
   registry,
   CATEGORIES,
@@ -12,48 +12,9 @@ import {
 } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
 import { Button, Input, ToggleGroup } from '@rdna/radiants/components/core';
+import { useDeferredContent, useRegistryBrowserEntries } from './ui-library/browser-state';
 
-const CARD_INTERSECTION_ROOT_MARGIN = '240px 0px';
 const DEFAULT_INITIAL_INTERACTIVE_CARDS = 6;
-
-function useDeferredContent(
-  shouldDefer: boolean,
-  rootRef: RefObject<HTMLElement | null>,
-) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isReady, setIsReady] = useState(() => !shouldDefer);
-
-  useEffect(() => {
-    if (!shouldDefer || isReady) return;
-
-    const node = containerRef.current;
-    if (!node || typeof IntersectionObserver === 'undefined') {
-      const frame = window.requestAnimationFrame(() => {
-        setIsReady(true);
-      });
-      return () => window.cancelAnimationFrame(frame);
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        startTransition(() => {
-          setIsReady(true);
-        });
-        observer.disconnect();
-      },
-      {
-        root: rootRef.current,
-        rootMargin: CARD_INTERSECTION_ROOT_MARGIN,
-      },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [isReady, rootRef, shouldDefer]);
-
-  return { containerRef, isReady };
-}
 
 function DeferredSectionPlaceholder({
   label,
@@ -64,7 +25,7 @@ function DeferredSectionPlaceholder({
 }) {
   return (
     <div
-      className={`flex items-center justify-center border border-dashed border-rule bg-depth/40 px-3 py-4 ${minHeightClass}`}
+      className={`flex items-center justify-center border border-dashed border-rule bg-depth px-3 py-4 ${minHeightClass}`}
     >
       <span className="font-mono text-[10px] uppercase tracking-wide text-mute">
         {label}
@@ -72,10 +33,6 @@ function DeferredSectionPlaceholder({
     </div>
   );
 }
-
-// ============================================================================
-// Showcase Card
-// ============================================================================
 
 function ComponentShowcaseCard({
   entry,
@@ -104,6 +61,7 @@ function ComponentShowcaseCard({
   const handlePreviewClick = () => {
     onInteract?.(entry, renderProps);
   };
+
   const hasPreview = entry.renderMode !== 'description-only';
   const hasControllableProps =
     Object.keys(entry.props).length > 0 &&
@@ -114,25 +72,22 @@ function ComponentShowcaseCard({
   );
 
   return (
-    <div className="pixel-rounded-sm pixel-shadow-resting">
+    <div className="pixel-rounded-6 pixel-shadow-resting">
       <div
         ref={containerRef}
         className="bg-page p-4 flex flex-col gap-3"
       >
-        {/* Header */}
         <div className="flex items-center gap-2">
           <h3 className="text-base font-heading font-bold text-main">
             {entry.name}
           </h3>
-          <span className="pixel-rounded-xs inline-block block text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
+          <span className="pixel-rounded-4 inline-block block text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
             {entry.category}
           </span>
         </div>
 
-        {/* Description */}
         <p className="text-base text-sub">{entry.description}</p>
 
-        {/* Demo Area */}
         {!hasPreview ? null : (
           // eslint-disable-next-line rdna/prefer-rdna-components -- reason:preview-click-capture owner:design expires:2027-01-01 issue:DNA-001
           <div className="border-t border-rule pt-3" onClick={handlePreviewClick} onKeyDown={undefined} role="presentation">
@@ -154,7 +109,6 @@ function ComponentShowcaseCard({
           </div>
         )}
 
-        {/* Forced state strip */}
         {entry.states && entry.states.length > 0 && (
           <div className="border-t border-rule pt-2">
             <ToggleGroup
@@ -167,14 +121,13 @@ function ComponentShowcaseCard({
                 onInteract?.(entry, { ...props, ...resolved.propOverrides });
               }}
             >
-              {availableStates.map((s) => (
-                <ToggleGroup.Item key={s} value={s}>{s}</ToggleGroup.Item>
+              {availableStates.map((stateName) => (
+                <ToggleGroup.Item key={stateName} value={stateName}>{stateName}</ToggleGroup.Item>
               ))}
             </ToggleGroup>
           </div>
         )}
 
-        {/* Prop controls */}
         {hasControllableProps && (
           <div className="border-t border-rule pt-2">
             {isReady ? (
@@ -199,10 +152,6 @@ function ComponentShowcaseCard({
   );
 }
 
-// ============================================================================
-// DesignSystemTab
-// ============================================================================
-
 interface DesignSystemTabProps {
   searchQuery?: string;
   activeCategory?: ComponentCategory | 'all';
@@ -224,38 +173,7 @@ export function DesignSystemTab({
 
   const search = propSearchQuery || localSearch;
   const activeCategory = propCategory ?? localCategory;
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return registry.filter((entry) => {
-      if (activeCategory !== 'all' && entry.category !== activeCategory) return false;
-      if (q) {
-        const searchable = [
-          entry.name,
-          entry.description,
-          entry.category,
-          ...(entry.tags ?? []),
-        ].join(' ').toLowerCase();
-        return searchable.includes(q);
-      }
-      return true;
-    });
-  }, [search, activeCategory]);
-
-  // Group by category for display
-  const grouped = useMemo(() => {
-    const groups: { category: ComponentCategory; label: string; entries: RegistryEntry[] }[] = [];
-    let current: typeof groups[number] | null = null;
-
-    for (const entry of filtered) {
-      if (!current || current.category !== entry.category) {
-        current = { category: entry.category, label: CATEGORY_LABELS[entry.category], entries: [] };
-        groups.push(current);
-      }
-      current.entries.push(entry);
-    }
-    return groups;
-  }, [filtered]);
+  const { filtered, grouped } = useRegistryBrowserEntries(search, activeCategory);
 
   let showcaseIndex = 0;
 
@@ -264,7 +182,6 @@ export function DesignSystemTab({
       <div className="flex flex-col gap-4 p-5">
       {!hideControls && (
         <>
-          {/* Search (only if no external searchQuery) */}
           {!propSearchQuery && (
             <Input
               value={localSearch}
@@ -274,7 +191,6 @@ export function DesignSystemTab({
             />
           )}
 
-          {/* Category filter */}
           <div className="flex flex-wrap gap-1">
             <Button
               quiet={activeCategory !== 'all'}
@@ -283,17 +199,18 @@ export function DesignSystemTab({
             >
               All ({registry.length})
             </Button>
-            {CATEGORIES.map((cat) => {
-              const count = registry.filter((e) => e.category === cat).length;
+            {CATEGORIES.map((category) => {
+              const count = registry.filter((entry) => entry.category === category).length;
               if (count === 0) return null;
+
               return (
                 <Button
-                  key={cat}
-                  quiet={activeCategory !== cat}
+                  key={category}
+                  quiet={activeCategory !== category}
                   size="sm"
-                  onClick={() => setLocalCategory(cat)}
+                  onClick={() => setLocalCategory(category)}
                 >
-                  {CATEGORY_LABELS[cat]} ({count})
+                  {CATEGORY_LABELS[category]} ({count})
                 </Button>
               );
             })}
@@ -301,7 +218,6 @@ export function DesignSystemTab({
         </>
       )}
 
-      {/* Component grid, grouped by category */}
       <div className="flex flex-col gap-6">
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">

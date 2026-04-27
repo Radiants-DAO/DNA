@@ -27,7 +27,7 @@ function renderElement(element: EditorialLayoutElement, key: string) {
           key={key}
           className={
             element.variant === 'code'
-              ? 'absolute rounded-sm bg-main/5 px-2 text-head'
+              ? 'absolute rounded-sm bg-depth px-2 text-head'
               : 'absolute text-head'
           }
           style={{
@@ -86,7 +86,7 @@ function renderElement(element: EditorialLayoutElement, key: string) {
       return (
         <div
           key={key}
-          className="absolute border border-line bg-accent/10 px-4 py-4 text-head"
+          className="absolute border border-line bg-accent-soft px-4 py-4 text-head"
           style={{
             left: element.x,
             top: element.y,
