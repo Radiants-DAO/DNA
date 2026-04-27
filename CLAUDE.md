@@ -11,11 +11,13 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 ### Monorepo Map
 
 **Packages:**
-- `@rdna/radiants` — Reference theme with ESLint plugin, icons, hooks (components in `components/core/`)
-- `@rdna/preview` — Shared `PreviewPage` component for theme previews
+- `@rdna/radiants` — Reference theme with ESLint plugin, icons, hooks (components in `components/core/`). Canonical design spec lives at `packages/radiants/DESIGN.md`.
+- `@rdna/ctrl` — Control surface primitives (knobs, faders, pads, meters, panel layout). Wraps `@base-ui/react`, depends on `@rdna/radiants`.
+- `@rdna/pixel` — 1-bit pixel engine (grids, SVG/canvas renderers, transitions, icon import).
+- `@rdna/preview` — Shared `PreviewPage` component for theme previews.
 
 **Apps:**
-- `rad-os` — Next.js 16 desktop-OS UI with draggable window system (7 registered apps)
+- `rad-os` — Next.js 16 desktop-OS UI with draggable window system. Top-level apps registered in `apps/rad-os/lib/apps/catalog.tsx` (brand, lab, studio, scratchpad, good-news, about, manifesto), with nested apps under brand (logos, colors, fonts) and lab (pixel, components).
 
 ## Architecture
 
@@ -30,7 +32,7 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
    - `Component.meta.ts` — Source of truth: props, slots, token bindings, registry config
    - `Component.schema.json` — Generated from meta (`pnpm registry:generate`)
 
-3. **Headless primitives:** All interactive components wrap `@base-ui/react` (v1.3.0)
+3. **Headless primitives:** All interactive components wrap `@base-ui/react` (v1.4.1)
 
 ### Theme Package Structure
 
@@ -98,13 +100,15 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-raw-font-family` | Hardcoded font-family in style props |
 | `rdna/no-pattern-color-override` | Hardcoded colors on pattern-mode elements |
 | `rdna/no-arbitrary-icon-size` | Icon size not 16 or 24, or removed `iconSet` prop |
+| `rdna/no-translucent-bg` | Translucent bg utilities (`bg-page/80`, `bg-accent/30`) — chrome must be opaque |
+| `rdna/no-backdrop-blur` | `backdrop-blur-*` utilities and `backdrop-filter` styles — RDNA chrome is opaque, no glassmorphism |
 
 ### Configs
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**` | 14 shared RDNA rules at `warn` |
-| `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
+| `recommended` | `apps/rad-os/**` | 16 shared RDNA rules at `warn` |
+| `internals` | `packages/radiants/components/core/**` | Same 16 rules; `prefer-rdna-components: off` |
 | `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
 ### Repo-local RDNA review rules (shipped in `eslint.rdna.config.mjs`)
@@ -134,11 +138,9 @@ pnpm lint:design-system     # RDNA ESLint rules only
 
 ## Specification
 
-The complete specification is in `docs/theme-spec.md`. Key sections:
-- Section 3: Token structure and naming conventions
-- Section 4: Package structure options
-- Section 7: Component schema format
-- Section 12: Validation rules
+The portable DNA spec is `docs/theme-spec.md` (token structure, package layout, component schema format, validation rules).
+
+The **canonical RDNA design system** (used by every component in this repo) is `packages/radiants/DESIGN.md` — that document is the source of truth for tokens, motion, interaction, accessibility, machine enforcement, and RadOS-specific rules. When code and DESIGN.md conflict, DESIGN.md wins for design intent; code wins for current implementation reality.
 
 ## User Communication Style
 
