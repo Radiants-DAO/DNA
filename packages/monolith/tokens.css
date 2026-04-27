@@ -1,0 +1,594 @@
+/* =============================================================================
+   MONOLITH semantic token overrides
+   Scope: RadOS-wide only when <html data-theme="monolith"> is active.
+   ============================================================================= */
+
+[data-theme='monolith'] {
+  --monolith-black: #010101;
+  --monolith-white: #f6f6f5;
+  --monolith-green: #14f1b2;
+  --monolith-ultraviolet: #6939ca;
+  --monolith-magma: #ef5c6f;
+  --monolith-amber: #fd8f3a;
+  --monolith-ocean: #160e24;
+  --monolith-slate: #06060a;
+  --monolith-lavender: #b494f7;
+  --monolith-panel: #0b0712;
+  --monolith-panel-raised: #120b1e;
+
+  --color-page: var(--monolith-black);
+  --color-card: var(--monolith-panel);
+  --color-depth: var(--monolith-slate);
+  --color-inv: var(--monolith-ultraviolet);
+  --color-tinted: color-mix(in srgb, var(--monolith-ultraviolet) 24%, var(--monolith-black));
+  --color-hover: color-mix(in srgb, var(--monolith-lavender) 12%, transparent);
+  --color-active: color-mix(in srgb, var(--monolith-lavender) 20%, transparent);
+
+  --color-main: var(--monolith-white);
+  --color-head: var(--monolith-white);
+  --color-sub: color-mix(in srgb, var(--monolith-lavender) 84%, var(--monolith-white));
+  --color-mute: color-mix(in srgb, var(--monolith-white) 62%, transparent);
+  --color-flip: var(--monolith-black);
+  --color-link: var(--monolith-lavender);
+
+  --color-line: color-mix(in srgb, var(--monolith-lavender) 48%, transparent);
+  --color-rule: color-mix(in srgb, var(--monolith-lavender) 22%, transparent);
+  --color-line-hover: var(--monolith-lavender);
+  --color-focus: var(--monolith-lavender);
+
+  --color-accent: var(--monolith-lavender);
+  --color-accent-inv: var(--monolith-ultraviolet);
+  --color-accent-soft: color-mix(in srgb, var(--monolith-lavender) 38%, var(--monolith-black));
+  --color-danger: var(--monolith-magma);
+  --color-success: var(--monolith-green);
+  --color-warning: var(--monolith-amber);
+
+  --glow-sun-yellow: color-mix(in srgb, var(--monolith-lavender) 62%, transparent);
+  --glow-sun-yellow-subtle: color-mix(in srgb, var(--monolith-lavender) 32%, transparent);
+  --glow-mint: color-mix(in srgb, var(--monolith-lavender) 50%, transparent);
+  --glow-sky-blue: color-mix(in srgb, var(--monolith-ultraviolet) 50%, transparent);
+
+  --rdna-text-glow:
+    0 0 8px color-mix(in srgb, var(--monolith-lavender) 42%, transparent),
+    0 0 28px color-mix(in srgb, var(--monolith-ultraviolet) 38%, transparent);
+
+  --shadow-glow-sm:
+    0 0 0 1px var(--color-rule),
+    0 0 6px color-mix(in srgb, var(--monolith-lavender) 34%, transparent);
+  --shadow-glow-md:
+    0 0 0 1px var(--color-rule),
+    0 0 10px color-mix(in srgb, var(--monolith-lavender) 34%, transparent),
+    0 0 18px color-mix(in srgb, var(--monolith-ultraviolet) 26%, transparent);
+  --shadow-glow-lg:
+    0 0 0 1px var(--color-line),
+    0 0 14px color-mix(in srgb, var(--monolith-lavender) 42%, transparent),
+    0 0 32px color-mix(in srgb, var(--monolith-ultraviolet) 34%, transparent);
+  --shadow-glow-xl:
+    0 0 0 1px var(--color-line),
+    0 0 18px color-mix(in srgb, var(--monolith-lavender) 52%, transparent),
+    0 0 42px color-mix(in srgb, var(--monolith-ultraviolet) 42%, transparent);
+
+  --shadow-surface:
+    0 0 0 1px var(--color-rule),
+    0 2px 0 color-mix(in srgb, var(--monolith-black) 80%, transparent);
+  --shadow-resting:
+    0 0 0 1px var(--color-rule),
+    0 0 8px color-mix(in srgb, var(--monolith-lavender) 18%, transparent);
+  --shadow-lifted:
+    0 0 0 1px var(--color-line),
+    0 0 14px color-mix(in srgb, var(--monolith-lavender) 24%, transparent);
+  --shadow-raised:
+    0 0 0 1px var(--color-line),
+    0 0 18px color-mix(in srgb, var(--monolith-lavender) 28%, transparent);
+  --shadow-floating:
+    0 0 0 1px var(--color-line),
+    0 0 20px color-mix(in srgb, var(--monolith-lavender) 32%, transparent),
+    0 0 36px color-mix(in srgb, var(--monolith-ultraviolet) 24%, transparent);
+  --shadow-focused:
+    0 0 0 1px var(--color-line-hover),
+    0 0 18px color-mix(in srgb, var(--monolith-lavender) 42%, transparent),
+    0 0 42px color-mix(in srgb, var(--monolith-ultraviolet) 38%, transparent);
+
+  --color-ctrl-fill: var(--monolith-lavender);
+  --color-ctrl-cell-bg: rgba(1, 1, 1, 0.78);
+  --color-ctrl-track: rgba(1, 1, 1, 0.58);
+  --color-ctrl-thumb: var(--monolith-black);
+  --color-ctrl-label: color-mix(in srgb, var(--monolith-white) 58%, transparent);
+  --color-ctrl-value: var(--monolith-white);
+  --color-ctrl-text-active: var(--monolith-lavender);
+  --color-ctrl-border-active: var(--monolith-lavender);
+  --color-ctrl-border-inactive: color-mix(in srgb, var(--monolith-lavender) 24%, transparent);
+  --color-ctrl-rule: color-mix(in srgb, var(--monolith-lavender) 18%, transparent);
+  --color-ctrl-grid-line: color-mix(in srgb, var(--monolith-lavender) 18%, transparent);
+  --color-ctrl-grid-dot: color-mix(in srgb, var(--monolith-lavender) 44%, transparent);
+  --color-ctrl-meter-low: var(--monolith-ultraviolet);
+  --color-ctrl-meter-mid: var(--monolith-lavender);
+  --color-ctrl-meter-high: var(--monolith-magma);
+  --color-ctrl-glow: var(--monolith-lavender);
+  --color-ctrl-hover: color-mix(in srgb, var(--monolith-lavender) 82%, var(--monolith-white));
+  --color-ctrl-active: var(--monolith-ultraviolet);
+  --color-ctrl-transport-shell: rgba(1, 1, 1, 0.78);
+  --ctrl-lcd-text-color: var(--monolith-white);
+  --ctrl-lcd-text-shadow:
+    var(--monolith-lavender) 0 0 0.5px,
+    var(--monolith-lavender) 0 0 4px,
+    var(--monolith-ultraviolet) 0 0 12px;
+  --ctrl-text-glow-active:
+    var(--monolith-lavender) 0 0 0.5px,
+    var(--monolith-lavender) 0 0 3px,
+    var(--monolith-ultraviolet) 0 0 10px;
+}
+
+[data-theme='monolith'].light {
+  --monolith-black: #020101;
+  --monolith-ink: #101618;
+  --monolith-deep-teal: #10282c;
+  --monolith-white: #f6f6f5;
+  --monolith-cream: #faf9f4;
+  --monolith-bluegrey: #99b3be;
+  --monolith-mist: #cfe6e4;
+  --monolith-sky: #95d2e6;
+  --monolith-teal: #61afbd;
+
+  --color-cream: var(--monolith-cream);
+  --color-ink: var(--monolith-deep-teal);
+  --color-pure-black: var(--monolith-black);
+  --color-sun-yellow: var(--monolith-sky);
+  --color-sky-blue: var(--monolith-teal);
+  --color-sunset-fuzz: var(--monolith-mist);
+  --color-sun-red: var(--monolith-deep-teal);
+  --color-mint: var(--monolith-mist);
+  --color-pure-white: var(--monolith-white);
+
+  --monolith-ultraviolet: var(--monolith-teal);
+  --monolith-lavender: var(--monolith-sky);
+  --monolith-panel: var(--monolith-white);
+  --monolith-panel-raised: var(--monolith-cream);
+  --monolith-slate: var(--monolith-mist);
+  --monolith-ocean: var(--monolith-deep-teal);
+
+  --color-page: var(--monolith-cream);
+  --color-card: var(--monolith-white);
+  --color-depth: var(--monolith-mist);
+  --color-inv: var(--monolith-deep-teal);
+  --color-tinted: color-mix(in srgb, var(--monolith-sky) 34%, var(--monolith-cream));
+  --color-hover: color-mix(in srgb, var(--monolith-teal) 12%, transparent);
+  --color-active: color-mix(in srgb, var(--monolith-teal) 20%, transparent);
+
+  --color-main: var(--monolith-deep-teal);
+  --color-head: var(--monolith-ink);
+  --color-sub: color-mix(in srgb, var(--monolith-deep-teal) 72%, var(--monolith-teal));
+  --color-mute: color-mix(in srgb, var(--monolith-deep-teal) 58%, transparent);
+  --color-flip: var(--monolith-cream);
+  --color-link: var(--monolith-teal);
+
+  --color-line: color-mix(in srgb, var(--monolith-teal) 72%, var(--monolith-deep-teal));
+  --color-rule: color-mix(in srgb, var(--monolith-teal) 38%, transparent);
+  --color-line-hover: var(--monolith-deep-teal);
+  --color-focus: var(--monolith-teal);
+
+  --color-accent: var(--monolith-teal);
+  --color-accent-inv: var(--monolith-cream);
+  --color-accent-soft: color-mix(in srgb, var(--monolith-sky) 48%, var(--monolith-cream));
+  --color-danger: var(--monolith-deep-teal);
+  --color-success: var(--monolith-teal);
+  --color-warning: var(--monolith-bluegrey);
+
+  --color-content-primary: var(--monolith-deep-teal);
+  --color-content-heading: var(--monolith-ink);
+  --color-content-secondary: color-mix(in srgb, var(--monolith-deep-teal) 72%, var(--monolith-teal));
+  --color-content-inverted: var(--monolith-cream);
+  --color-content-muted: color-mix(in srgb, var(--monolith-deep-teal) 58%, transparent);
+  --color-content-link: var(--monolith-teal);
+
+  --color-edge-primary: color-mix(in srgb, var(--monolith-teal) 72%, var(--monolith-deep-teal));
+  --color-edge-muted: color-mix(in srgb, var(--monolith-teal) 38%, transparent);
+  --color-edge-hover: var(--monolith-deep-teal);
+  --color-edge-focus: var(--monolith-teal);
+
+  --color-action-primary: var(--monolith-teal);
+  --color-action-secondary: var(--monolith-deep-teal);
+  --color-action-destructive: var(--monolith-deep-teal);
+  --color-action-accent: var(--monolith-sky);
+
+  --color-status-success: var(--monolith-mist);
+  --color-status-warning: var(--monolith-bluegrey);
+  --color-status-error: var(--monolith-deep-teal);
+  --color-status-info: var(--monolith-sky);
+
+  --color-window-chrome-from: var(--monolith-sky);
+  --color-window-chrome-to: var(--monolith-cream);
+
+  --glow-sun-yellow: color-mix(in srgb, var(--monolith-sky) 52%, transparent);
+  --glow-sun-yellow-subtle: color-mix(in srgb, var(--monolith-teal) 24%, transparent);
+  --glow-mint: color-mix(in srgb, var(--monolith-teal) 44%, transparent);
+  --glow-sky-blue: color-mix(in srgb, var(--monolith-sky) 46%, transparent);
+
+  --rdna-text-glow:
+    0 0 6px color-mix(in srgb, var(--monolith-sky) 26%, transparent),
+    0 0 18px color-mix(in srgb, var(--monolith-teal) 20%, transparent);
+
+  --shadow-glow-sm:
+    0 0 0 1px var(--color-rule),
+    0 0 6px color-mix(in srgb, var(--monolith-sky) 28%, transparent);
+  --shadow-glow-md:
+    0 0 0 1px var(--color-rule),
+    0 0 10px color-mix(in srgb, var(--monolith-sky) 28%, transparent),
+    0 0 18px color-mix(in srgb, var(--monolith-teal) 18%, transparent);
+  --shadow-glow-lg:
+    0 0 0 1px var(--color-line),
+    0 0 14px color-mix(in srgb, var(--monolith-sky) 32%, transparent),
+    0 0 28px color-mix(in srgb, var(--monolith-teal) 20%, transparent);
+  --shadow-glow-xl:
+    0 0 0 1px var(--color-line),
+    0 0 18px color-mix(in srgb, var(--monolith-sky) 38%, transparent),
+    0 0 42px color-mix(in srgb, var(--monolith-teal) 24%, transparent);
+
+  --shadow-surface:
+    0 0 0 1px var(--color-rule),
+    0 2px 0 color-mix(in srgb, var(--monolith-bluegrey) 55%, transparent);
+  --shadow-resting:
+    0 0 0 1px var(--color-rule),
+    0 0 8px color-mix(in srgb, var(--monolith-sky) 18%, transparent);
+  --shadow-lifted:
+    0 0 0 1px var(--color-line),
+    0 0 14px color-mix(in srgb, var(--monolith-sky) 24%, transparent);
+  --shadow-raised:
+    0 0 0 1px var(--color-line),
+    0 0 18px color-mix(in srgb, var(--monolith-teal) 18%, transparent);
+  --shadow-floating:
+    0 0 0 1px var(--color-line),
+    0 0 20px color-mix(in srgb, var(--monolith-sky) 22%, transparent),
+    0 0 36px color-mix(in srgb, var(--monolith-teal) 18%, transparent);
+  --shadow-focused:
+    0 0 0 1px var(--color-line-hover),
+    0 0 18px color-mix(in srgb, var(--monolith-sky) 34%, transparent),
+    0 0 42px color-mix(in srgb, var(--monolith-teal) 28%, transparent);
+
+  --color-ctrl-fill: var(--monolith-teal);
+  --color-ctrl-cell-bg: rgba(250, 249, 244, 0.82);
+  --color-ctrl-track: rgba(207, 230, 228, 0.72);
+  --color-ctrl-thumb: var(--monolith-deep-teal);
+  --color-ctrl-label: color-mix(in srgb, var(--monolith-deep-teal) 58%, transparent);
+  --color-ctrl-value: var(--monolith-deep-teal);
+  --color-ctrl-text-active: var(--monolith-deep-teal);
+  --color-ctrl-border-active: var(--monolith-teal);
+  --color-ctrl-border-inactive: color-mix(in srgb, var(--monolith-teal) 36%, transparent);
+  --color-ctrl-rule: color-mix(in srgb, var(--monolith-teal) 28%, transparent);
+  --color-ctrl-grid-line: color-mix(in srgb, var(--monolith-teal) 24%, transparent);
+  --color-ctrl-grid-dot: color-mix(in srgb, var(--monolith-teal) 46%, transparent);
+  --color-ctrl-meter-low: var(--monolith-bluegrey);
+  --color-ctrl-meter-mid: var(--monolith-teal);
+  --color-ctrl-meter-high: var(--monolith-deep-teal);
+  --color-ctrl-glow: var(--monolith-sky);
+  --color-ctrl-hover: color-mix(in srgb, var(--monolith-teal) 72%, var(--monolith-deep-teal));
+  --color-ctrl-active: var(--monolith-deep-teal);
+  --color-ctrl-transport-shell: rgba(250, 249, 244, 0.86);
+  --ctrl-lcd-text-color: var(--monolith-deep-teal);
+  --ctrl-lcd-text-shadow:
+    var(--monolith-sky) 0 0 0.5px,
+    var(--monolith-sky) 0 0 3px;
+  --ctrl-text-glow-active:
+    var(--monolith-sky) 0 0 0.5px,
+    var(--monolith-sky) 0 0 3px;
+}
+
+[data-theme='skr'] {
+  --monolith-black: #010607;
+  --monolith-ink: #e8fbfb;
+  --monolith-deep-teal: #08191c;
+  --monolith-white: #f6fffe;
+  --monolith-cream: #d7f2f0;
+  --monolith-bluegrey: #729da4;
+  --monolith-mist: #bfe8e6;
+  --monolith-sky: #95d2e6;
+  --monolith-teal: #19b9bd;
+
+  --color-cream: var(--monolith-cream);
+  --color-ink: var(--monolith-deep-teal);
+  --color-pure-black: var(--monolith-black);
+  --color-sun-yellow: var(--monolith-sky);
+  --color-sky-blue: var(--monolith-teal);
+  --color-sunset-fuzz: var(--monolith-mist);
+  --color-sun-red: var(--monolith-sky);
+  --color-mint: var(--monolith-mist);
+  --color-pure-white: var(--monolith-white);
+
+  --monolith-ultraviolet: var(--monolith-teal);
+  --monolith-lavender: var(--monolith-sky);
+  --monolith-panel: #071417;
+  --monolith-panel-raised: #0c2024;
+  --monolith-slate: #030b0d;
+  --monolith-ocean: var(--monolith-deep-teal);
+
+  --color-page: var(--monolith-black);
+  --color-card: var(--monolith-panel);
+  --color-depth: var(--monolith-slate);
+  --color-inv: var(--monolith-deep-teal);
+  --color-tinted: color-mix(in srgb, var(--monolith-teal) 24%, var(--monolith-black));
+  --color-hover: color-mix(in srgb, var(--monolith-sky) 12%, transparent);
+  --color-active: color-mix(in srgb, var(--monolith-sky) 20%, transparent);
+
+  --color-main: var(--monolith-cream);
+  --color-head: var(--monolith-white);
+  --color-sub: color-mix(in srgb, var(--monolith-mist) 84%, var(--monolith-white));
+  --color-mute: color-mix(in srgb, var(--monolith-mist) 62%, transparent);
+  --color-flip: var(--monolith-black);
+  --color-link: var(--monolith-sky);
+
+  --color-line: color-mix(in srgb, var(--monolith-sky) 48%, transparent);
+  --color-rule: color-mix(in srgb, var(--monolith-sky) 22%, transparent);
+  --color-line-hover: var(--monolith-sky);
+  --color-focus: var(--monolith-sky);
+
+  --color-content-primary: var(--color-main);
+  --color-content-heading: var(--color-head);
+  --color-content-secondary: var(--color-sub);
+  --color-content-inverted: var(--color-flip);
+  --color-content-muted: var(--color-mute);
+  --color-content-link: var(--color-link);
+  --color-edge-primary: var(--color-line);
+  --color-edge-muted: var(--color-rule);
+  --color-edge-hover: var(--color-line-hover);
+  --color-edge-focus: var(--color-focus);
+
+  --color-accent: var(--monolith-sky);
+  --color-accent-inv: var(--monolith-deep-teal);
+  --color-accent-soft: color-mix(in srgb, var(--monolith-sky) 38%, var(--monolith-black));
+  --color-danger: var(--monolith-sky);
+  --color-success: var(--monolith-teal);
+  --color-warning: var(--monolith-bluegrey);
+  --color-action-primary: var(--monolith-sky);
+  --color-action-secondary: var(--monolith-teal);
+  --color-action-destructive: var(--monolith-sky);
+  --color-action-accent: var(--monolith-mist);
+  --color-status-success: var(--monolith-teal);
+  --color-status-warning: var(--monolith-bluegrey);
+  --color-status-error: var(--monolith-sky);
+  --color-status-info: var(--monolith-sky);
+  --color-window-chrome-from: var(--monolith-black);
+  --color-window-chrome-to: var(--monolith-black);
+
+  --glow-sun-yellow: color-mix(in srgb, var(--monolith-sky) 62%, transparent);
+  --glow-sun-yellow-subtle: color-mix(in srgb, var(--monolith-sky) 32%, transparent);
+  --glow-mint: color-mix(in srgb, var(--monolith-teal) 50%, transparent);
+  --glow-sky-blue: color-mix(in srgb, var(--monolith-sky) 50%, transparent);
+  --rdna-text-glow:
+    0 0 8px color-mix(in srgb, var(--monolith-sky) 42%, transparent),
+    0 0 28px color-mix(in srgb, var(--monolith-teal) 38%, transparent);
+
+  --shadow-glow-sm: 0 0 0 1px var(--color-rule), 0 0 6px color-mix(in srgb, var(--monolith-sky) 34%, transparent);
+  --shadow-glow-md: 0 0 0 1px var(--color-rule), 0 0 10px color-mix(in srgb, var(--monolith-sky) 34%, transparent), 0 0 18px color-mix(in srgb, var(--monolith-teal) 26%, transparent);
+  --shadow-glow-lg: 0 0 0 1px var(--color-line), 0 0 14px color-mix(in srgb, var(--monolith-sky) 42%, transparent), 0 0 32px color-mix(in srgb, var(--monolith-teal) 34%, transparent);
+  --shadow-glow-xl: 0 0 0 1px var(--color-line), 0 0 18px color-mix(in srgb, var(--monolith-sky) 52%, transparent), 0 0 42px color-mix(in srgb, var(--monolith-teal) 42%, transparent);
+  --shadow-surface: 0 0 0 1px var(--color-rule), 0 2px 0 color-mix(in srgb, var(--monolith-black) 80%, transparent);
+  --shadow-resting: 0 0 0 1px var(--color-rule), 0 0 8px color-mix(in srgb, var(--monolith-sky) 18%, transparent);
+  --shadow-lifted: 0 0 0 1px var(--color-line), 0 0 14px color-mix(in srgb, var(--monolith-sky) 24%, transparent);
+  --shadow-raised: 0 0 0 1px var(--color-line), 0 0 18px color-mix(in srgb, var(--monolith-sky) 28%, transparent);
+  --shadow-floating: 0 0 0 1px var(--color-line), 0 0 20px color-mix(in srgb, var(--monolith-sky) 32%, transparent), 0 0 36px color-mix(in srgb, var(--monolith-teal) 24%, transparent);
+  --shadow-focused: 0 0 0 1px var(--color-line-hover), 0 0 18px color-mix(in srgb, var(--monolith-sky) 42%, transparent), 0 0 42px color-mix(in srgb, var(--monolith-teal) 38%, transparent);
+
+  --color-ctrl-fill: var(--monolith-sky);
+  --color-ctrl-cell-bg: rgba(1, 6, 7, 0.78);
+  --color-ctrl-track: rgba(1, 6, 7, 0.58);
+  --color-ctrl-thumb: var(--monolith-black);
+  --color-ctrl-label: color-mix(in srgb, var(--monolith-mist) 58%, transparent);
+  --color-ctrl-value: var(--monolith-white);
+  --color-ctrl-text-active: var(--monolith-sky);
+  --color-ctrl-border-active: var(--monolith-sky);
+  --color-ctrl-border-inactive: color-mix(in srgb, var(--monolith-sky) 24%, transparent);
+  --color-ctrl-rule: color-mix(in srgb, var(--monolith-sky) 18%, transparent);
+  --color-ctrl-grid-line: color-mix(in srgb, var(--monolith-sky) 18%, transparent);
+  --color-ctrl-grid-dot: color-mix(in srgb, var(--monolith-sky) 44%, transparent);
+  --color-ctrl-meter-low: var(--monolith-teal);
+  --color-ctrl-meter-mid: var(--monolith-sky);
+  --color-ctrl-meter-high: var(--monolith-mist);
+  --color-ctrl-glow: var(--monolith-sky);
+  --color-ctrl-hover: color-mix(in srgb, var(--monolith-sky) 82%, var(--monolith-white));
+  --color-ctrl-active: var(--monolith-teal);
+  --color-ctrl-transport-shell: rgba(1, 6, 7, 0.78);
+  --ctrl-lcd-text-color: var(--monolith-white);
+  --ctrl-lcd-text-shadow: var(--monolith-sky) 0 0 0.5px, var(--monolith-sky) 0 0 4px, var(--monolith-teal) 0 0 12px;
+  --ctrl-text-glow-active: var(--monolith-sky) 0 0 0.5px, var(--monolith-sky) 0 0 3px, var(--monolith-teal) 0 0 10px;
+}
+
+[data-theme='skr'].light {
+  --monolith-black: #020101;
+  --monolith-ink: #101618;
+  --monolith-deep-teal: #10282c;
+  --monolith-white: #f6f6f5;
+  --monolith-cream: #faf9f4;
+  --monolith-bluegrey: #99b3be;
+  --monolith-mist: #cfe6e4;
+  --monolith-sky: #95d2e6;
+  --monolith-teal: #61afbd;
+
+  --color-cream: var(--monolith-cream);
+  --color-ink: var(--monolith-deep-teal);
+  --color-pure-black: var(--monolith-black);
+  --color-sun-yellow: var(--monolith-sky);
+  --color-sky-blue: var(--monolith-teal);
+  --color-sunset-fuzz: var(--monolith-mist);
+  --color-sun-red: var(--monolith-deep-teal);
+  --color-mint: var(--monolith-mist);
+  --color-pure-white: var(--monolith-white);
+
+  --monolith-ultraviolet: var(--monolith-teal);
+  --monolith-lavender: var(--monolith-sky);
+  --monolith-panel: var(--monolith-white);
+  --monolith-panel-raised: var(--monolith-cream);
+  --monolith-slate: var(--monolith-mist);
+  --monolith-ocean: var(--monolith-deep-teal);
+
+  --color-page: var(--monolith-cream);
+  --color-card: var(--monolith-white);
+  --color-depth: var(--monolith-mist);
+  --color-inv: var(--monolith-deep-teal);
+  --color-tinted: color-mix(in srgb, var(--monolith-sky) 34%, var(--monolith-cream));
+  --color-hover: color-mix(in srgb, var(--monolith-teal) 12%, transparent);
+  --color-active: color-mix(in srgb, var(--monolith-teal) 20%, transparent);
+  --color-main: var(--monolith-deep-teal);
+  --color-head: var(--monolith-ink);
+  --color-sub: color-mix(in srgb, var(--monolith-deep-teal) 72%, var(--monolith-teal));
+  --color-mute: color-mix(in srgb, var(--monolith-deep-teal) 58%, transparent);
+  --color-flip: var(--monolith-cream);
+  --color-link: var(--monolith-teal);
+  --color-line: color-mix(in srgb, var(--monolith-teal) 72%, var(--monolith-deep-teal));
+  --color-rule: color-mix(in srgb, var(--monolith-teal) 38%, transparent);
+  --color-line-hover: var(--monolith-deep-teal);
+  --color-focus: var(--monolith-teal);
+  --color-accent: var(--monolith-teal);
+  --color-accent-inv: var(--monolith-cream);
+  --color-accent-soft: color-mix(in srgb, var(--monolith-sky) 48%, var(--monolith-cream));
+  --color-danger: var(--monolith-deep-teal);
+  --color-success: var(--monolith-teal);
+  --color-warning: var(--monolith-bluegrey);
+  --color-content-primary: var(--color-main);
+  --color-content-heading: var(--color-head);
+  --color-content-secondary: var(--color-sub);
+  --color-content-inverted: var(--color-flip);
+  --color-content-muted: var(--color-mute);
+  --color-content-link: var(--color-link);
+  --color-edge-primary: var(--color-line);
+  --color-edge-muted: var(--color-rule);
+  --color-edge-hover: var(--color-line-hover);
+  --color-edge-focus: var(--color-focus);
+  --color-action-primary: var(--monolith-teal);
+  --color-action-secondary: var(--monolith-deep-teal);
+  --color-action-destructive: var(--monolith-deep-teal);
+  --color-action-accent: var(--monolith-sky);
+  --color-status-success: var(--monolith-mist);
+  --color-status-warning: var(--monolith-bluegrey);
+  --color-status-error: var(--monolith-deep-teal);
+  --color-status-info: var(--monolith-sky);
+  --color-window-chrome-from: var(--monolith-sky);
+  --color-window-chrome-to: var(--monolith-cream);
+  --rdna-text-glow: 0 0 6px color-mix(in srgb, var(--monolith-sky) 26%, transparent), 0 0 18px color-mix(in srgb, var(--monolith-teal) 20%, transparent);
+  --shadow-surface: 0 0 0 1px var(--color-rule), 0 2px 0 color-mix(in srgb, var(--monolith-bluegrey) 55%, transparent);
+  --shadow-resting: 0 0 0 1px var(--color-rule), 0 0 8px color-mix(in srgb, var(--monolith-sky) 18%, transparent);
+  --shadow-lifted: 0 0 0 1px var(--color-line), 0 0 14px color-mix(in srgb, var(--monolith-sky) 24%, transparent);
+  --shadow-raised: 0 0 0 1px var(--color-line), 0 0 18px color-mix(in srgb, var(--monolith-teal) 18%, transparent);
+  --shadow-floating: 0 0 0 1px var(--color-line), 0 0 20px color-mix(in srgb, var(--monolith-sky) 22%, transparent), 0 0 36px color-mix(in srgb, var(--monolith-teal) 18%, transparent);
+  --shadow-focused: 0 0 0 1px var(--color-line-hover), 0 0 18px color-mix(in srgb, var(--monolith-sky) 34%, transparent), 0 0 42px color-mix(in srgb, var(--monolith-teal) 28%, transparent);
+  --color-ctrl-fill: var(--monolith-teal);
+  --color-ctrl-cell-bg: rgba(250, 249, 244, 0.82);
+  --color-ctrl-track: rgba(207, 230, 228, 0.72);
+  --color-ctrl-thumb: var(--monolith-deep-teal);
+  --color-ctrl-label: color-mix(in srgb, var(--monolith-deep-teal) 58%, transparent);
+  --color-ctrl-value: var(--monolith-deep-teal);
+  --color-ctrl-text-active: var(--monolith-deep-teal);
+  --color-ctrl-border-active: var(--monolith-teal);
+  --color-ctrl-border-inactive: color-mix(in srgb, var(--monolith-teal) 36%, transparent);
+  --color-ctrl-rule: color-mix(in srgb, var(--monolith-teal) 28%, transparent);
+  --color-ctrl-grid-line: color-mix(in srgb, var(--monolith-teal) 24%, transparent);
+  --color-ctrl-grid-dot: color-mix(in srgb, var(--monolith-teal) 46%, transparent);
+  --color-ctrl-meter-low: var(--monolith-bluegrey);
+  --color-ctrl-meter-mid: var(--monolith-teal);
+  --color-ctrl-meter-high: var(--monolith-deep-teal);
+  --color-ctrl-glow: var(--monolith-sky);
+  --color-ctrl-hover: color-mix(in srgb, var(--monolith-teal) 72%, var(--monolith-deep-teal));
+  --color-ctrl-active: var(--monolith-deep-teal);
+  --color-ctrl-transport-shell: rgba(250, 249, 244, 0.86);
+  --ctrl-lcd-text-color: var(--monolith-deep-teal);
+  --ctrl-lcd-text-shadow: var(--monolith-sky) 0 0 0.5px, var(--monolith-sky) 0 0 3px;
+  --ctrl-text-glow-active: var(--monolith-sky) 0 0 0.5px, var(--monolith-sky) 0 0 3px;
+}
+
+[data-theme='monolith'].light {
+  --monolith-black: #010101;
+  --monolith-white: #f8f5ff;
+  --monolith-green: #14f1b2;
+  --monolith-ultraviolet: #6939ca;
+  --monolith-magma: #ef5c6f;
+  --monolith-amber: #fd8f3a;
+  --monolith-ocean: #160e24;
+  --monolith-slate: #eee7ff;
+  --monolith-lavender: #b494f7;
+  --monolith-panel: #fffafe;
+  --monolith-panel-raised: #f1e8ff;
+
+  --color-cream: #fbf8ff;
+  --color-ink: var(--monolith-ocean);
+  --color-pure-black: var(--monolith-black);
+  --color-sun-yellow: var(--monolith-lavender);
+  --color-sky-blue: var(--monolith-ultraviolet);
+  --color-sunset-fuzz: #f0b5c8;
+  --color-sun-red: var(--monolith-magma);
+  --color-mint: #d9fff4;
+  --color-pure-white: #fffafe;
+
+  --color-page: #fbf8ff;
+  --color-card: var(--monolith-panel);
+  --color-depth: #f1e8ff;
+  --color-inv: var(--monolith-ocean);
+  --color-tinted: color-mix(in srgb, var(--monolith-lavender) 26%, #fbf8ff);
+  --color-hover: color-mix(in srgb, var(--monolith-lavender) 14%, transparent);
+  --color-active: color-mix(in srgb, var(--monolith-lavender) 22%, transparent);
+  --color-main: var(--monolith-ocean);
+  --color-head: #09030f;
+  --color-sub: color-mix(in srgb, var(--monolith-ocean) 74%, var(--monolith-ultraviolet));
+  --color-mute: color-mix(in srgb, var(--monolith-ocean) 58%, transparent);
+  --color-flip: #fbf8ff;
+  --color-link: var(--monolith-ultraviolet);
+  --color-line: color-mix(in srgb, var(--monolith-lavender) 68%, var(--monolith-ocean));
+  --color-rule: color-mix(in srgb, var(--monolith-lavender) 42%, transparent);
+  --color-line-hover: var(--monolith-ultraviolet);
+  --color-focus: var(--monolith-lavender);
+  --color-accent: var(--monolith-lavender);
+  --color-accent-inv: var(--monolith-ocean);
+  --color-accent-soft: color-mix(in srgb, var(--monolith-lavender) 42%, #fbf8ff);
+  --color-danger: var(--monolith-magma);
+  --color-success: var(--monolith-green);
+  --color-warning: var(--monolith-amber);
+  --color-content-primary: var(--color-main);
+  --color-content-heading: var(--color-head);
+  --color-content-secondary: var(--color-sub);
+  --color-content-inverted: var(--color-flip);
+  --color-content-muted: var(--color-mute);
+  --color-content-link: var(--color-link);
+  --color-edge-primary: var(--color-line);
+  --color-edge-muted: var(--color-rule);
+  --color-edge-hover: var(--color-line-hover);
+  --color-edge-focus: var(--color-focus);
+  --color-action-primary: var(--monolith-lavender);
+  --color-action-secondary: var(--monolith-ultraviolet);
+  --color-action-destructive: var(--monolith-magma);
+  --color-action-accent: #f0b5c8;
+  --color-status-success: var(--monolith-green);
+  --color-status-warning: var(--monolith-amber);
+  --color-status-error: var(--monolith-magma);
+  --color-status-info: var(--monolith-lavender);
+  --color-window-chrome-from: #f0e8ff;
+  --color-window-chrome-to: #fffafe;
+  --rdna-text-glow:
+    0 0 6px color-mix(in srgb, var(--monolith-lavender) 22%, transparent),
+    0 0 18px color-mix(in srgb, var(--monolith-ultraviolet) 16%, transparent);
+  --shadow-surface: 0 0 0 1px var(--color-rule), 0 2px 0 color-mix(in srgb, var(--monolith-lavender) 38%, transparent);
+  --shadow-resting: 0 0 0 1px var(--color-rule), 0 0 8px color-mix(in srgb, var(--monolith-lavender) 14%, transparent);
+  --shadow-lifted: 0 0 0 1px var(--color-line), 0 0 14px color-mix(in srgb, var(--monolith-lavender) 20%, transparent);
+  --shadow-raised: 0 0 0 1px var(--color-line), 0 0 18px color-mix(in srgb, var(--monolith-ultraviolet) 14%, transparent);
+  --shadow-floating: 0 0 0 1px var(--color-line), 0 0 20px color-mix(in srgb, var(--monolith-lavender) 18%, transparent), 0 0 36px color-mix(in srgb, var(--monolith-ultraviolet) 14%, transparent);
+  --shadow-focused: 0 0 0 1px var(--color-line-hover), 0 0 18px color-mix(in srgb, var(--monolith-lavender) 32%, transparent), 0 0 42px color-mix(in srgb, var(--monolith-ultraviolet) 22%, transparent);
+  --color-ctrl-fill: var(--monolith-lavender);
+  --color-ctrl-cell-bg: rgba(255, 250, 254, 0.84);
+  --color-ctrl-track: rgba(241, 232, 255, 0.74);
+  --color-ctrl-thumb: var(--monolith-ocean);
+  --color-ctrl-label: color-mix(in srgb, var(--monolith-ocean) 58%, transparent);
+  --color-ctrl-value: var(--monolith-ocean);
+  --color-ctrl-text-active: var(--monolith-ultraviolet);
+  --color-ctrl-border-active: var(--monolith-lavender);
+  --color-ctrl-border-inactive: color-mix(in srgb, var(--monolith-lavender) 36%, transparent);
+  --color-ctrl-rule: color-mix(in srgb, var(--monolith-lavender) 28%, transparent);
+  --color-ctrl-grid-line: color-mix(in srgb, var(--monolith-lavender) 24%, transparent);
+  --color-ctrl-grid-dot: color-mix(in srgb, var(--monolith-lavender) 46%, transparent);
+  --color-ctrl-meter-low: var(--monolith-ultraviolet);
+  --color-ctrl-meter-mid: var(--monolith-lavender);
+  --color-ctrl-meter-high: var(--monolith-magma);
+  --color-ctrl-glow: var(--monolith-lavender);
+  --color-ctrl-hover: color-mix(in srgb, var(--monolith-lavender) 72%, var(--monolith-ocean));
+  --color-ctrl-active: var(--monolith-ultraviolet);
+  --color-ctrl-transport-shell: rgba(255, 250, 254, 0.86);
+  --ctrl-lcd-text-color: var(--monolith-ocean);
+  --ctrl-lcd-text-shadow: var(--monolith-lavender) 0 0 0.5px, var(--monolith-lavender) 0 0 3px;
+  --ctrl-text-glow-active: var(--monolith-lavender) 0 0 0.5px, var(--monolith-lavender) 0 0 3px;
+}

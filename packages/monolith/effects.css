@@ -1,0 +1,307 @@
+:is([data-theme='monolith'], [data-theme='skr']) body {
+  background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--monolith-ultraviolet) 42%, transparent), transparent 34rem),
+    radial-gradient(circle at 78% 72%, color-mix(in srgb, var(--monolith-lavender) 18%, transparent), transparent 26rem),
+    var(--color-page);
+}
+
+[data-theme='skr'].light body {
+  background:
+    radial-gradient(circle at 50% 22%, color-mix(in srgb, #cfe6e4 58%, transparent), transparent 34rem),
+    radial-gradient(circle at 76% 74%, color-mix(in srgb, #95d2e6 24%, transparent), transparent 26rem),
+    var(--color-page);
+}
+
+[data-theme='monolith'].light body {
+  background:
+    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--monolith-lavender) 34%, transparent), transparent 34rem),
+    radial-gradient(circle at 76% 74%, color-mix(in srgb, var(--monolith-ultraviolet) 16%, transparent), transparent 26rem),
+    var(--color-page);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) {
+  --monolith-webgl-falloff: 0.009;
+  --monolith-webgl-band-shift: 4;
+  --monolith-webgl-center-zero: 0.37;
+  --monolith-webgl-mask-radius: 0.54;
+  --monolith-webgl-signal-divisor: 4.6;
+  --monolith-webgl-pixel-scale: 1;
+  --monolith-webgl-opacity: 1;
+  --monolith-webgl-primary-dither-opacity: 0.78;
+  --monolith-portal-bg-scale: 1.12;
+  --monolith-portal-bg-x: 0;
+  --monolith-portal-bg-y: 0;
+  --monolith-portal-mid-scale: 1.44;
+  --monolith-portal-mid-x: 1.75;
+  --monolith-portal-mid-y: -3;
+  --monolith-portal-opacity: 1;
+  --monolith-door-scale: 0.86;
+  --monolith-logo-scale: 1;
+  --monolith-map-portal-dark: 1;
+  --monolith-map-portal-teal: 1;
+  --monolith-map-portal-sky: 1;
+  --monolith-map-portal-mist: 1;
+  --monolith-map-portal-cream: 1;
+  --monolith-map-door-teal: 1;
+  --monolith-map-door-sky: 1;
+  --monolith-map-door-mist: 1;
+  --monolith-map-door-cream: 1;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .rados-wallpaper {
+  background: var(--color-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-wallpaper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  animation: monolith-wallpaper-enter 1200ms var(--ease-drift, ease-out) both;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-gradient-map-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .webgl-sun {
+  z-index: 0;
+  opacity: var(--monolith-webgl-opacity, 1);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-portal-layer,
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-door-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-portal-layer {
+  z-index: 2;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-portal {
+  position: absolute;
+  display: block;
+  width: calc(min(82vmin, 66rem) * var(--monolith-portal-bg-scale, 1));
+  min-width: calc(min(94vw, 39rem) * var(--monolith-portal-bg-scale, 1));
+  height: auto;
+  user-select: none;
+  transform-origin: center;
+  opacity: var(--monolith-portal-opacity, 1);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-map-source {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+[data-theme='skr'].light .monolith-gradient-map .monolith-map-source {
+  filter: url('#monolith-light-portal-map');
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-portal--bg {
+  --monolith-portal-x: var(--monolith-portal-bg-x, 0);
+  --monolith-portal-y: var(--monolith-portal-bg-y, 0);
+  animation: monolith-portal-rotate 180s linear infinite;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-portal--mid {
+  --monolith-portal-x: var(--monolith-portal-mid-x, 0);
+  --monolith-portal-y: var(--monolith-portal-mid-y, 0);
+  width: calc(min(72vmin, 58rem) * var(--monolith-portal-mid-scale, 1));
+  animation: monolith-portal-rotate 120s linear infinite reverse;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-door-layer {
+  z-index: 4;
+  opacity: 1;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-door {
+  display: block;
+  height: calc(min(58vmin, 34rem) * var(--monolith-door-scale, 1));
+  width: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  animation: monolith-portal-pulse 8s var(--ease-drift, ease-in-out) infinite;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-door .monolith-map-source {
+  width: auto;
+  height: 100%;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']).light .monolith-door {
+  opacity: 1;
+}
+
+[data-theme='skr'].light .monolith-door .monolith-map-source {
+  filter: url('#monolith-light-door-map');
+  mix-blend-mode: multiply;
+  opacity: 1;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .rados-watermark {
+  z-index: 2;
+}
+
+.rados-watermark-lockup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+}
+
+.rados-watermark svg {
+  transition:
+    width 900ms var(--ease-drift, ease-out),
+    transform 900ms var(--ease-drift, ease-out),
+    opacity 520ms var(--ease-drift, ease-out),
+    filter 900ms var(--ease-drift, ease-out);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .rados-watermark svg {
+  width: calc(min(36vmin, 26rem) * var(--monolith-logo-scale, 1));
+  transform: translateY(-0.8rem);
+  filter:
+    drop-shadow(0 0 0.2rem rgba(246, 246, 245, 0.9))
+    drop-shadow(0 0 1.25rem rgba(180, 148, 247, 0.7));
+}
+
+[data-theme='skr'].light .rados-watermark svg {
+  color: #10282c;
+  filter:
+    drop-shadow(0 0 0.15rem rgba(250, 249, 244, 0.9))
+    drop-shadow(0 0 0.85rem rgba(149, 210, 230, 0.5));
+}
+
+[data-theme='monolith'].light .rados-watermark svg {
+  color: #160e24;
+  filter:
+    drop-shadow(0 0 0.15rem rgba(255, 250, 254, 0.9))
+    drop-shadow(0 0 0.85rem rgba(180, 148, 247, 0.52));
+}
+
+html:not([data-theme='monolith']):not([data-theme='skr']) .monolith-wallpaper {
+  display: none;
+}
+
+:is([data-theme='monolith'], [data-theme='skr'])[data-reduce-motion='true'] .monolith-portal,
+:is([data-theme='monolith'], [data-theme='skr'])[data-reduce-motion='true'] .monolith-wallpaper,
+:is([data-theme='monolith'], [data-theme='skr'])[data-reduce-motion='true'] .monolith-door {
+  animation: none;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .dark-glow-logo,
+:is([data-theme='monolith'], [data-theme='skr']) .font-joystix,
+:is([data-theme='monolith'], [data-theme='skr']) .font-heading {
+  text-shadow: var(--rdna-text-glow);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-campaign-surface {
+  background:
+    linear-gradient(180deg, rgba(22, 14, 36, 0.98), rgba(6, 6, 10, 0.98)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--monolith-lavender) 18%, transparent), transparent 22rem);
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-scanline {
+  position: relative;
+  isolation: isolate;
+}
+
+:is([data-theme='monolith'], [data-theme='skr']) .monolith-scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(246, 246, 245, 0.06),
+    rgba(246, 246, 245, 0.06) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+
+:is([data-theme='monolith'], [data-theme='skr'])[data-reduce-motion='false'] .monolith-boot {
+  animation: monolith-boot-fade 520ms steps(8, end);
+}
+
+@keyframes monolith-wallpaper-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) rotate(-2deg);
+  }
+  42% {
+    opacity: 0;
+    transform: scale(0.98) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes monolith-boot-fade {
+  0% {
+    filter: contrast(2) brightness(0.2);
+    clip-path: inset(48% 0 48% 0);
+  }
+  40% {
+    clip-path: inset(18% 0 18% 0);
+  }
+  100% {
+    filter: contrast(1) brightness(1);
+    clip-path: inset(0);
+  }
+}
+
+@keyframes monolith-portal-rotate {
+  from {
+    transform: translate(
+      calc(var(--monolith-portal-x, 0) * 1vmin),
+      calc(var(--monolith-portal-y, 0) * 1vmin)
+    ) rotate(0deg);
+  }
+  to {
+    transform: translate(
+      calc(var(--monolith-portal-x, 0) * 1vmin),
+      calc(var(--monolith-portal-y, 0) * 1vmin)
+    ) rotate(360deg);
+  }
+}
+
+@keyframes monolith-portal-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}

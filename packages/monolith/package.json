@@ -1,0 +1,21 @@
+{
+  "name": "@rdna/monolith",
+  "version": "0.0.1",
+  "description": "MONOLITH theme package for DNA and RadOS campaign skins",
+  "private": true,
+  "main": "./index.css",
+  "exports": {
+    ".": "./index.css",
+    "./tokens": "./tokens.css",
+    "./fonts": "./fonts.css",
+    "./effects": "./effects.css"
+  },
+  "files": [
+    "*.css",
+    "assets/",
+    "icons/"
+  ],
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  }
+}
