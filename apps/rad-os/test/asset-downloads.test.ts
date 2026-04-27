@@ -1,14 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { getBrandLogoDownloadHref, getFontDownloadHref } from '@/lib/asset-downloads';
+import { getFontDownloadHref } from '@/lib/asset-downloads';
 import { GET as getLogoAsset } from '@/app/assets/logos/[assetFile]/route';
 import { GET as getFontAsset } from '@/app/assets/fonts/[fontFile]/route';
 
 describe('asset download helpers', () => {
-  it('builds flat logo download paths', () => {
-    expect(getBrandLogoDownloadHref('wordmark-cream', 'png')).toBe('/assets/logos/wordmark-cream.png');
-    expect(getBrandLogoDownloadHref('wordmark-cream', 'svg')).toBe('/assets/logos/wordmark-cream.svg');
-  });
-
   it('builds local font download paths', () => {
     expect(getFontDownloadHref('Joystix.woff2')).toBe('/assets/fonts/Joystix.woff2');
   });

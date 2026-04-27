@@ -1,7 +1,5 @@
 import { getFontDownloadHref } from '@/lib/asset-downloads';
 
-export type FontKey = 'joystix' | 'mondwest' | 'pixelcode' | 'blackletter' | 'tinycpc' | 'pixeloid';
-
 export type FontCategory = 'core' | 'editorial';
 
 export interface FontEntry {
@@ -146,16 +144,6 @@ export const FONTS: FontEntry[] = [
   },
 ];
 
-/** Lookup by key */
-export const FONT_MAP: Record<FontKey, FontEntry> = {
-  joystix: FONTS[0],
-  mondwest: FONTS[1],
-  pixelcode: FONTS[2],
-  blackletter: FONTS[3],
-  tinycpc: FONTS[4],
-  pixeloid: FONTS[5],
-};
-
 /** Fonts grouped by category */
 export const CORE_FONTS = FONTS.filter(f => f.category === 'core');
 export const EDITORIAL_FONTS = FONTS.filter(f => f.category === 'editorial');
@@ -183,26 +171,3 @@ export const ELEMENT_STYLES = [
   { el: 'pre', font: 'PixelCode', fontClass: 'font-mono', size: 'sm', weight: 400, leading: 'relaxed' },
   { el: 'label', font: 'Joystix', fontClass: 'font-joystix', size: 'xs', weight: 500, leading: 'normal' },
 ] as const;
-
-/** Template IDs */
-export type TemplateId =
-  | 'display'
-  | 'statement'
-  | 'document'
-  | 'dictionary'
-  | 'quote'
-  | 'poster';
-
-export interface TemplateMeta {
-  id: TemplateId;
-  label: string;
-}
-
-export const TEMPLATES: TemplateMeta[] = [
-  { id: 'display', label: 'Display' },
-  { id: 'statement', label: 'Statement' },
-  { id: 'document', label: 'Document' },
-  { id: 'dictionary', label: 'Dictionary' },
-  { id: 'quote', label: 'Quote' },
-  { id: 'poster', label: 'Poster' },
-];

@@ -2,9 +2,8 @@
 
 import { SpecimenLayout } from './layouts/SpecimenLayout';
 import { EditorialLayout } from './layouts/EditorialLayout';
-import { UsageGuide } from './UsageGuide';
 
-export type SubTab = 'manual' | 'editorial' | 'usage';
+export type SubTab = 'manual' | 'editorial';
 
 interface TypographyPlaygroundProps {
   activeSubTab: SubTab;
@@ -15,9 +14,6 @@ export function TypographyPlayground({
 }: TypographyPlaygroundProps) {
   if (activeSubTab === 'editorial') {
     return <EditorialLayout />;
-  }
-  if (activeSubTab === 'usage') {
-    return <UsageGuide />;
   }
 
   return <SpecimenLayout />;

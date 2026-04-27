@@ -10,7 +10,6 @@ interface SubTabNavProps {
 const SUB_TABS: { value: SubTab; label: string }[] = [
   { value: 'manual', label: 'Type Manual' },
   { value: 'editorial', label: 'Editorial' },
-  { value: 'usage', label: 'Usage Guide' },
 ];
 
 export function SubTabNav({ active, onChange }: SubTabNavProps) {
