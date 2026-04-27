@@ -2,11 +2,11 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRadOSStore, WindowState } from '@/store';
-import type { SnapRegion } from '@/store/slices/windowsSlice';
+import type { ControlSurfaceSide, SnapRegion } from '@/store/slices/windowsSlice';
 
 // Re-export WindowState for consumers
 export type { WindowState } from '@/store';
-export type { SnapRegion } from '@/store/slices/windowsSlice';
+export type { ControlSurfaceSide, SnapRegion } from '@/store/slices/windowsSlice';
 
 export interface UseWindowManagerReturn {
   // State
@@ -27,6 +27,8 @@ export interface UseWindowManagerReturn {
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
   setActiveTab: (appId: string, tabId: string) => void;
+  toggleControlSurface: (appId: string, side?: ControlSurfaceSide) => void;
+  setControlSurfaceOpen: (appId: string, open: boolean, side?: ControlSurfaceSide) => void;
 
   // Queries
   isWindowOpen: (appId: string) => boolean;
@@ -79,6 +81,8 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
   const storeSetActiveTab = useRadOSStore((state) => state.setActiveTab);
+  const storeToggleControlSurface = useRadOSStore((state) => state.toggleControlSurface);
+  const storeSetControlSurfaceOpen = useRadOSStore((state) => state.setControlSurfaceOpen);
 
   // Computed: open windows
   const openWindows = useMemo(
@@ -183,6 +187,20 @@ export function useWindowManager(): UseWindowManagerReturn {
     [storeSetActiveTab]
   );
 
+  const toggleControlSurface = useCallback(
+    (appId: string, side?: ControlSurfaceSide) => {
+      storeToggleControlSurface(appId, side);
+    },
+    [storeToggleControlSurface]
+  );
+
+  const setControlSurfaceOpen = useCallback(
+    (appId: string, open: boolean, side?: ControlSurfaceSide) => {
+      storeSetControlSurfaceOpen(appId, open, side);
+    },
+    [storeSetControlSurfaceOpen]
+  );
+
   // Queries
   const isWindowOpen = useCallback(
     (appId: string): boolean => {
@@ -254,6 +272,8 @@ export function useWindowManager(): UseWindowManagerReturn {
     updateWindowPosition,
     updateWindowSize,
     setActiveTab,
+    toggleControlSurface,
+    setControlSurfaceOpen,
     isWindowOpen,
     isWindowFullscreen,
     isWindowWidget,
@@ -263,5 +283,3 @@ export function useWindowManager(): UseWindowManagerReturn {
     getTopWindow,
   };
 }
-
-export default useWindowManager;

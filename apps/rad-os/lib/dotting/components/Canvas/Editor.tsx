@@ -120,7 +120,7 @@ export default class Editor extends EventDispatcher {
     lastMousePos: { x: 0, y: 0 },
   };
   private dpr = 1;
-  private brushColor = "#FF0000";
+  private brushColor = "#0f0e0c";
   private gridSquareLength: number = DefaultGridSquareLength;
   private maxHistoryCount = 100;
   private undoHistory: Array<Action> = [];
@@ -252,20 +252,17 @@ export default class Editor extends EventDispatcher {
 
   adjustInitialZoomScale(dimensions: Dimensions, initScale?: number) {
     const { width, height } = dimensions;
-    // Was 20 upstream — forced a permanent inset around the grid even when the
-    // container matched the data. We want the grid to fill the container.
-    const minMargin = 0;
     const gridWidth = width * this.gridSquareLength;
-    const canvasWidth = this.width;
     const gridHeight = height * this.gridSquareLength;
+    const canvasWidth = this.width;
     const canvasHeight = this.height;
-    const horizontalMargin = Math.max((canvasWidth - gridWidth) / 2, minMargin);
-    const verticalMargin = Math.max((canvasHeight - gridHeight) / 2, minMargin);
-    const horizontalScale = canvasWidth / (gridWidth + horizontalMargin * 2);
-    const verticalScale = canvasHeight / (gridHeight + verticalMargin * 2);
+    // Pure fit-to-container. Do NOT fold margin into the denominator —
+    // that scheme locks scale at 1 once the canvas exceeds the raw grid
+    // size, so the grid visually stops growing while the canvas keeps
+    // expanding. Centering happens via the offset below.
     const scale = initScale
       ? initScale
-      : Math.min(horizontalScale, verticalScale);
+      : Math.min(canvasWidth / gridWidth, canvasHeight / gridHeight);
     const originWordPos = {
       x: 0,
       y: 0,
@@ -1751,10 +1748,10 @@ export default class Editor extends EventDispatcher {
   };
 
   handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
     if (!this.isPanZoomable || this.mouseMode === MouseMode.EXTENDING) {
       return;
     }
+    e.preventDefault();
     if (e.ctrlKey) {
       const zoom = 1 - e.deltaY / this.zoomSensitivity;
       let newScale = this.panZoom.scale * zoom;

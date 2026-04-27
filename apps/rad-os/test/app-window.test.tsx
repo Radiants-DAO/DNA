@@ -58,7 +58,8 @@ describe('RadOS AppWindow', () => {
       </AppWindow>,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Enter fullscreen Brand' }));
+    await user.click(screen.getByRole('button', { name: 'Window options for Brand' }));
+    await user.click(await screen.findByRole('menuitem', { name: /Enter Fullscreen/i }));
 
     await waitFor(() => {
       expect(useRadOSStore.getState().getWindow('brand')?.isFullscreen).toBe(true);

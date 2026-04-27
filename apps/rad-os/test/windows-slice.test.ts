@@ -33,8 +33,8 @@ describe('windows slice launch policy', () => {
 
   it('centers from catalog default size without caller-supplied defaults', () => {
     const store = createStore();
-    store.getState().openWindow('music');
-    const pos = store.getState().getWindow('music')?.position;
+    store.getState().openWindow('about');
+    const pos = store.getState().getWindow('about')?.position;
     // 'md' tier = 48rem × 36rem = 768×576 at 16px base
     // Store subtracts 48px taskbar from viewport height for centering
     const expectedX = (1440 - 768) / 2;

@@ -10,7 +10,19 @@ import {
 import { DottingRef } from "../components/Dotting";
 import { getGridIndicesFromData } from "../utils/data";
 
-const useData = (ref: MutableRefObject<DottingRef | null>) => {
+/**
+ * Subscribe to pixel-data changes on a Dotting canvas.
+ *
+ * @param ref       Dotting ref.
+ * @param resetKey  Optional signal that the underlying Dotting instance has
+ *                  been remounted (e.g., caller bumps this when passing a new
+ *                  `key` to <Dotting>). Changing it re-registers the listener
+ *                  on the new instance so data events keep flowing.
+ */
+const useData = (
+  ref: MutableRefObject<DottingRef | null>,
+  resetKey?: unknown,
+) => {
   const { addDataChangeListener, removeDataChangeListener } = useHandlers(ref);
   const [data, setData] = useState<DottingData>(
     new Map<number, Map<number, PixelData>>(),
@@ -56,7 +68,11 @@ const useData = (ref: MutableRefObject<DottingRef | null>) => {
     return () => {
       removeDataChangeListener(listener);
     };
-  }, [addDataChangeListener, removeDataChangeListener]);
+    // resetKey is intentional: when the Dotting instance remounts (e.g. caller
+    // uses `key={...}` to force a fresh canvas), the listener is attached to
+    // the OLD, now-dead instance. Bumping resetKey re-runs this effect so we
+    // register against the new instance.
+  }, [addDataChangeListener, removeDataChangeListener, resetKey]);
 
   return { data, dataArray };
 };

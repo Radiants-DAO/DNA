@@ -24,6 +24,7 @@ describe('useHashRouting', () => {
       windows: [],
       nextZIndex: 1,
       zoomAnimation: null,
+      theme: 'radiants',
     });
   });
 
@@ -33,6 +34,7 @@ describe('useHashRouting', () => {
       windows: [],
       nextZIndex: 1,
       zoomAnimation: null,
+      theme: 'radiants',
     });
   });
 
@@ -67,6 +69,19 @@ describe('useHashRouting', () => {
 
     await waitFor(() => {
       expect(getOpenWindowIds()).toEqual([]);
+    });
+  });
+
+  it('treats #monolith as a campaign alias for the MONOLITH theme and winners app', async () => {
+    window.history.replaceState(null, '', '/#monolith');
+
+    render(<HashRoutingHarness />);
+
+    await waitFor(() => {
+      const state = useRadOSStore.getState();
+      expect(state.theme).toBe('monolith');
+      expect(state.windows.find((w) => w.id === 'hackathon-exe')?.isOpen).toBe(true);
+      expect(state.windows.find((w) => w.id === 'hackathon-exe')?.activeTab).toBe('winners');
     });
   });
 });

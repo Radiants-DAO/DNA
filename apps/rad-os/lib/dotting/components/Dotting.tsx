@@ -615,6 +615,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeDataChangeListener = useCallback(
     (listener: CanvasDataChangeHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.DATA_CHANGE, listener);
       setDataChangeListeners(listeners =>
         listeners.filter(l => l !== listener),
@@ -632,6 +635,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeGridChangeListener = useCallback(
     (listener: CanvasGridChangeHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.GRID_CHANGE, listener);
       setGridChangeListeners(listeners =>
         listeners.filter(l => l !== listener),
@@ -649,6 +655,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeBrushChangeListener = useCallback(
     (listener: CanvasBrushChangeHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.BRUSH_CHANGE, listener);
       setBrushChangeListeners(listeners =>
         listeners.filter(l => l !== listener),
@@ -666,6 +675,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeStrokeEndListener = useCallback(
     (listener: CanvasStrokeEndHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.STROKE_END, listener);
       setStrokeEndListeners(listeners => listeners.filter(l => l !== listener));
     },
@@ -681,6 +693,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeHoverPixelChangeListener = useCallback(
     (listener: CanvasHoverPixelChangeHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.HOVER_PIXEL_CHANGE, listener);
       setHoverPixelChangeListeners(listeners =>
         listeners.filter(l => l !== listener),
@@ -698,6 +713,9 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
 
   const removeCanvasInfoChangeEventListener = useCallback(
     (listener: CanvasInfoChangeHandler) => {
+      if (!editor) {
+        return;
+      }
       editor.removeEventListener(CanvasEvents.CANVAS_INFO_CHANGE, listener);
       setCanvasInfoChangeListeners(listeners =>
         listeners.filter(l => l !== listener),
@@ -1143,7 +1161,6 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         ref={gotBackgroundCanvasRef}
         style={{
           position: "absolute",
-          border: "1px solid #555555",
           pointerEvents: "none",
           backgroundColor: props.backgroundColor
             ? props.backgroundColor
@@ -1158,7 +1175,6 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         style={{
           position: "absolute",
           pointerEvents: "none",
-          border: "1px solid #555555",
           ...props.style,
         }}
       />
@@ -1167,7 +1183,6 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         ref={gotInteractionCanvasRef}
         style={{
           position: "absolute",
-          border: "1px solid #555555",
           ...props.style,
         }}
       />
@@ -1177,7 +1192,6 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         style={{
           position: "absolute",
           pointerEvents: "none",
-          border: "1px solid #555555",
           ...props.style,
         }}
       />
@@ -1187,7 +1201,6 @@ const Dotting = forwardRef<DottingRef, DottingProps>(function Dotting(
         style={{
           position: "absolute",
           pointerEvents: "none",
-          border: "1px solid #555555",
           ...props.style,
         }}
       />

@@ -5,7 +5,6 @@ import {
   serializePretextBundle,
   validateSettings,
 } from '@/components/apps/pretext/serialization';
-import { coerceStoredDoc } from '@/components/apps/pretext/legacy';
 import type { PretextDocumentSettings } from '@/components/apps/pretext/types';
 
 const sampleSettings: PretextDocumentSettings = {
@@ -285,33 +284,3 @@ describe('deserializePretextBundleFromPaste', () => {
   });
 });
 
-describe('legacy doc coercion', () => {
-  it('wraps old BlockNote docs as legacy-blocknote', () => {
-    const oldDoc = {
-      id: 'old-1',
-      title: 'Old Note',
-      content: [
-        { type: 'paragraph', content: [{ type: 'text', text: 'Hi' }] },
-      ],
-      updatedAt: Date.now(),
-    };
-    const result = coerceStoredDoc(oldDoc);
-    expect(result.kind).toBe('legacy-blocknote');
-    expect(result.id).toBe('old-1');
-    expect(result.title).toBe('Old Note');
-  });
-
-  it('passes through pretext docs unchanged', () => {
-    const pretextDoc = {
-      kind: 'pretext' as const,
-      id: 'pt-1',
-      title: 'New Doc',
-      markdown: '# New',
-      settings: sampleSettings,
-      updatedAt: Date.now(),
-    };
-    const result = coerceStoredDoc(pretextDoc);
-    expect(result.kind).toBe('pretext');
-    expect(result.id).toBe('pt-1');
-  });
-});

@@ -4,20 +4,20 @@ RadOS is the desktop-style web app inside the DNA monorepo. It renders the Radia
 
 ## Current Surface
 
-Desktop launchers are defined in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx). The current desktop-visible apps are:
+Desktop launchers are defined in [lib/apps/catalog.tsx](lib/apps/catalog.tsx). The current desktop-visible apps are:
 
-- `brand` -> Brand Assets
-- `manifesto` -> Manifesto
-- `music` -> Rad Radio
-- `about` -> About
+| id | Window title | Category | Subtabs |
+| --- | --- | --- | --- |
+| `brand` | Brand | tools | Logos, Color, Type |
+| `lab` | Dev Tools | tools | UI Library |
+| `pixel-lab` | Pixel Lab | tools | Radiants, Corners, Icons, Patterns, Dither, Canvas |
+| `scratchpad` | Scratchpad | tools | - |
+| `hackathon-exe` | Hackathon.EXE | media | Winners, Submissions, Archive |
+| `good-news` | Good News | media | - |
+| `about` | About | about | - |
+| `manifesto` | Becoming Substance | about | - |
 
-Internal product/design tooling also lives in this app, especially under `components/apps/pattern-playground` and `components/apps/typography-playground`, but not every internal surface is exposed as a desktop launcher.
-
-`Rad Radio` is currently the only app with ambient capabilities. It can provide:
-
-- wallpaper/background treatment
-- a floating widget surface
-- a persistent controller
+`preferences` is registered in the catalog for shell access but is not desktop-visible. Radio playback is taskbar-hosted through the transport strip and drop-down widget, not a launchable window.
 
 ## Running RadOS
 
@@ -72,9 +72,7 @@ The shared window chrome now lives in `@rdna/radiants/components/core/AppWindow`
 
 Primary wrappers:
 
-- [AppWindow.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/AppWindow.tsx) for desktop windowed/fullscreen presentation
-- [MobileAppModal.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/MobileAppModal.tsx) for mobile fullscreen presentation
-- [WindowContent.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/components/Rad_os/WindowContent.tsx) as the RadOS alias for `AppWindowBody`
+- [AppWindow.tsx](components/Rad_os/AppWindow.tsx) for desktop windowed/fullscreen presentation
 
 Public `AppWindow` API includes:
 
@@ -97,16 +95,16 @@ Typical content shape:
 
 ```txt
 AppWindow
-  > AppWindowBody
-    > ScrollArea.Root or plain div
-      > padded children
+  > CoreAppWindow
+    > control surfaces (optional)
+    > app children
 ```
 
-On desktop, launcher clicks open/focus windows. On mobile, the same app surfaces render through `MobileAppModal`.
+Launcher clicks open/focus windows through the same RadOS `AppWindow` wrapper.
 
 ### State Model
 
-RadOS uses one Zustand store composed from three slices in [store/index.ts](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/store/index.ts):
+RadOS uses one Zustand store composed from three slices in [store/index.ts](store/index.ts):
 
 - `windows` -> open/close/focus/fullscreen/widget state, window position/size, active tabs
 - `preferences` -> volume, reduce motion, dark mode, invert mode
@@ -116,7 +114,7 @@ Persisted state is intentionally limited. Preferences and radio favorites persis
 
 ### App Catalog
 
-The catalog in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx) is the source of truth for:
+The catalog in [lib/apps/catalog.tsx](lib/apps/catalog.tsx) is the source of truth for:
 
 - lazy app component registration
 - launcher visibility
@@ -155,9 +153,9 @@ interface AppProps {
 Typical workflow:
 
 1. Add the app component under `apps/rad-os/components/apps/`.
-2. Register it in [lib/apps/catalog.tsx](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/lib/apps/catalog.tsx).
+2. Register it in [lib/apps/catalog.tsx](lib/apps/catalog.tsx).
 3. Set launcher visibility with `desktopVisible` and `category` (`'tools' | 'media' | 'about' | 'links'`); add `subtabs` if the app should deep-link into a specific tab from the Start menu.
-4. Set chrome behavior with `defaultSize`, `resizable`, `contentPadding`, and optional `ambient`.
+4. Set chrome behavior with `defaultSize`, `contentPadding`, and optional `ambient`.
 
 Catalog example:
 
@@ -170,22 +168,10 @@ const MyApp = lazy(() => import('@/components/apps/MyApp'));
   windowIcon: <Icon name="square" size={20} />,
   component: MyApp,
   defaultSize: 'md',
-  resizable: true,
   desktopVisible: true,
   category: 'tools',
 }
 ```
-
-For standalone prototype apps, scaffold from the workspace create package:
-
-```bash
-pnpm --filter @rdna/create exec node --experimental-strip-types src/cli.ts my-app --out-dir /tmp/my-app
-```
-
-That scaffold is backed by:
-
-- [packages/create](/Users/rivermassey/Desktop/dev/DNA/packages/create)
-- [templates/rados-app-prototype](/Users/rivermassey/Desktop/dev/DNA/templates/rados-app-prototype)
 
 ## Key Paths
 
@@ -200,15 +186,13 @@ That scaffold is backed by:
 | `apps/rad-os/store/slices/` | Zustand slices |
 | `apps/rad-os/test/` | Vitest coverage for app behavior |
 | `packages/radiants/` | Shared design system used by RadOS |
-| `packages/create/` | Standalone app scaffolder |
-| `templates/rados-app-prototype/` | Scaffold template source |
 
 ## Related Docs
 
 Start here for deeper context:
 
-- [SPEC.md](/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/SPEC.md)
-- [packages/radiants/README.md](/Users/rivermassey/Desktop/dev/DNA/packages/radiants/README.md)
-- [docs/production-readiness-checklist.md](/Users/rivermassey/Desktop/dev/DNA/docs/production-readiness-checklist.md)
+- [SPEC.md](SPEC.md)
+- [packages/radiants/README.md](../../packages/radiants/README.md)
+- [docs/production-readiness-checklist.md](../../docs/production-readiness-checklist.md)
 
-Older references to `.vault` or app-local `components/ui` primitives are obsolete. The current source of truth is the code in this app plus the shared `packages/radiants` and `packages/create` packages.
+Older references to `.vault` or app-local `components/ui` primitives are obsolete. The current source of truth is the code in this app plus the shared `packages/radiants` package.

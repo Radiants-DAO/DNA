@@ -90,5 +90,3 @@ export function useKonamiCode({ onActivate, timeout = 2000 }: UseKonamiCodeOptio
     };
   }, [onActivate, timeout, resetSequence]);
 }
-
-export default useKonamiCode;

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useWindowManager } from './useWindowManager';
 import { isValidAppId } from '@/lib/apps';
+import { useRadOSStore } from '@/store';
 
 /**
  * Hook that syncs window state with URL hash.
@@ -27,22 +28,29 @@ import { isValidAppId } from '@/lib/apps';
  */
 export function useHashRouting() {
   const { windows, openWindow, closeWindow, setActiveTab } = useWindowManager();
+  const setTheme = useRadOSStore((state) => state.setTheme);
   const isInitialMount = useRef(true);
   const isUpdatingFromHash = useRef(false);
   const windowsRef = useRef(windows);
 
-  windowsRef.current = windows;
+  useEffect(() => {
+    windowsRef.current = windows;
+  }, [windows]);
 
   // Parse hash and open windows on mount
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
     const syncWindowsFromHash = () => {
       const hash = window.location.hash.slice(1); // Remove #
       const segments = hash ? hash.split(',').filter((s) => s.trim()) : [];
       const desiredWindows = new Map<string, string | undefined>();
+      const isMonolithCampaign = segments.some((segment) => segment.trim() === 'monolith');
 
       isUpdatingFromHash.current = true;
+
+      if (isMonolithCampaign) {
+        setTheme('monolith');
+        desiredWindows.set('hackathon-exe', 'winners');
+      }
 
       segments.forEach((segment) => {
         const [appId, tabId] = segment.trim().split(':');
@@ -84,12 +92,10 @@ export function useHashRouting() {
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [openWindow, closeWindow, setActiveTab]);
+  }, [openWindow, closeWindow, setActiveTab, setTheme]);
 
   // Update hash when windows change
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
     // Skip the initial mount effect
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -117,5 +123,3 @@ export function useHashRouting() {
     }
   }, [windows]);
 }
-
-export default useHashRouting;

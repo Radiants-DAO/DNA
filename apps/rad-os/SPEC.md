@@ -1,6 +1,8 @@
 # RadOS Technical Specification v2
 
-This document is the authoritative source of truth for the RadOS build. All implementation decisions and requirements are captured here.
+This document describes the current RadOS build. For app registration, launcher visibility, start menu grouping, and chrome defaults, `apps/rad-os/lib/apps/catalog.tsx` is the source of truth.
+
+> This document owns RadOS product-specific behavior. `packages/radiants/DESIGN.md` owns portable Radiants design-system behavior.
 
 ---
 
@@ -80,7 +82,6 @@ interface AppWindowConfig {
   defaultSize: { width: number; height: number };
   minSize?: { width: number; height: number };
   maxSize?: { width: number; height: number };
-  resizable: boolean;
 }
 ```
 
@@ -127,7 +128,7 @@ https://rados.app/#brand,manifesto # Opens multiple windows
 - **Start Button**: Opens Start Menu
 - **Window Buttons**: Shown only when >1 window is open (hybrid approach)
 - **Social Links**: Twitter, Discord, GitHub (GitHub hidden on mobile)
-- **System Tray**: Invert toggle, volume (if Rad Radio active)
+- **System Tray**: Invert toggle and taskbar-hosted audio controls
 - **Clock**: Real time display (HH:MM format), updates every minute
 
 ### Start Menu
@@ -174,16 +175,15 @@ interface AppProps {
 ### App Registration
 ```typescript
 // lib/apps/catalog.tsx — single source of truth for app metadata
-const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
+const BrandApp = lazy(() => import('@/components/apps/BrandApp'));
 
 export const APP_CATALOG: AppCatalogEntry[] = [
   {
     id: 'brand',
-    windowTitle: 'Brand Assets',
+    windowTitle: 'Brand',
     windowIcon: <RadMarkIcon size={20} />,
-    component: BrandAssetsApp,
+    component: BrandApp,
     defaultSize: 'lg',
-    resizable: true,
     desktopVisible: true,
     category: 'tools',
   },
@@ -193,146 +193,37 @@ export const APP_CATALOG: AppCatalogEntry[] = [
 
 ### Siloed Development (Optional)
 For AI workflow optimization:
-- Apps can be scaffolded in isolation using the `@rdna/create` workspace package
+- Apps can be developed in isolation once a supported RadOS shell workspace API exists
 - The scaffold generates a standalone Next.js prototype app and keeps the control-surface seam in `lib/controlSurface.ts`
 - Merge workflow: Copy finished app into monorepo, register in `lib/apps/catalog.tsx`
 
 ---
 
-## 8. Mock Data System
+## 8. Data & App State
 
-### Centralized Mock Data Store
-All mock data lives in a single location for consistency across apps:
+App data should stay local to the app surface until it becomes shared runtime state. Shared runtime state belongs in the Zustand store; app metadata belongs in `apps/rad-os/lib/apps/catalog.tsx`.
 
-```typescript
-// lib/mockData/index.ts
-export const mockData = {
-  auctions: [...],
-  radiants: [...],
-  studioSubmissions: [...],
-  murderTreeData: [...],
-  // ...
-};
-```
-
-### Backend-Ready Stubs
-Apps are built with API-ready patterns:
-```typescript
-// Services return mock data but match future API signatures
-async function fetchAuctions(): Promise<Auction[]> {
-  // TODO: Replace with actual API call
-  return mockData.auctions;
-}
-```
+Backend-ready services may return local fixtures while preserving future API boundaries, but mock data must not define app inventory. The catalog remains the authority for which surfaces can open as windows.
 
 ---
 
-## 9. V1 App Inventory
+## 9. Current App Inventory
 
-### Core Apps (7)
+`APP_CATALOG` currently contains 9 entries. 8 are desktop-visible launchers; `preferences` is registered for shell access but hidden from the desktop.
 
-#### 1. Brand Assets
-- **Tabs**: Logos, Colors, Fonts, AI Gen
-- **Logos**: 9 variants (wordmark, rad-mark, radsun × cream/black/yellow)
-- **Downloads**: Working PNG/SVG downloads from `/public/assets/logos/`
-- **Colors**: Clickable swatches with copy-to-clipboard
-- **Fonts**: Joystix, Mondwest with download buttons
-- **AI Gen**: Midjourney sref codes and prompts (to be updated)
+| id | Window title | Category | Desktop visible | Subtabs |
+| --- | --- | --- | --- | --- |
+| `brand` | Brand | tools | yes | `logos` (Logos), `colors` (Color), `fonts` (Type) |
+| `lab` | Dev Tools | tools | yes | `components` (UI Library) |
+| `pixel-lab` | Pixel Lab | tools | yes | `radiants` (Radiants), `corners` (Corners), `icons` (Icons), `patterns` (Patterns), `dither` (Dither), `canvas` (Canvas) |
+| `preferences` | Preferences | tools | no | `general` (General), `themes` (Themes) |
+| `scratchpad` | Scratchpad | tools | yes | - |
+| `hackathon-exe` | Hackathon.EXE | media | yes | `winners` (Winners), `submissions` (Submissions), `archive` (Archive) |
+| `good-news` | Good News | media | yes | - |
+| `about` | About | about | yes | - |
+| `manifesto` | Becoming Substance | about | yes | - |
 
-#### 2. Manifesto
-- **Structure**: Sectioned with side navigation
-- **Content**: Radiants manifesto/philosophy text
-- **Navigation**: Anchor links to jump between sections
-
-#### 3. Calendar
-- **Type**: Static events list
-- **Content**: Curated community events, drops, milestones
-- **No external sync**: Manually updated data
-
-#### 4. Rad Radio
-- **Reference**: Poolsuite FM (https://poolsuite.net/)
-- **Features**:
-  - Auto-play on page load
-  - Dithered video visualizer (soundless video background)
-  - Volume visualizer
-  - Volume slider
-  - Channel selection
-  - Favoriting tracks
-  - Direct linking to tracks
-- **Data**: Local audio files (simulated, backend-ready)
-- **Opens automatically**: Player window opens on page load
-
-#### 5. Links
-- **Type**: Simple categorized link list
-- **Behavior**: All links open in new tabs
-- **Categories**: Socials, Resources, Tools, etc.
-
-#### 6. Settings
-- **Minimal scope**:
-  - Volume control (for Rad Radio)
-  - Reduce motion toggle (disables WebGL animations)
-- **Persistence**: localStorage
-
-#### 7. About
-- **Content**: Full credits
-  - Project description
-  - Team/contributors
-  - Acknowledgments
-  - Open source licenses
-  - Version info
-
-### Additional Apps (3)
-
-#### 8. Radiants Studio
-Single window with tabs for three tools:
-
-**A. Pixel Art Maker**
-- **Canvas**: 32x32 pixels
-- **Colors**: 3 only (cream, black, sun-yellow from design tokens)
-- **Tools**: Pencil, eraser, fill bucket, clear canvas (essential tools only)
-- **Submit to DB**: Backend-ready stub (mock submission)
-- **Voting Interface**: Tinder-style swipe (right=upvote, left=downvote)
-- **Leaderboard**: Net votes ranking
-- **Wallet gating**: Mock state (no actual web3 integration)
-- **Vote weighting**: 1 vote per wallet, 150 votes if holding Radiant NFT (mocked)
-
-**B. Dither Tool**
-- **Reference**: Dither Boy (https://studioaaa.com/product/dither-boy/)
-- **Implementation**: Build from scratch
-- **Input Methods**: Drag & drop images, paste from clipboard, paste image URL
-- **Algorithms**: Bayer matrix dithering, Floyd-Steinberg, etc.
-- **Controls**: Algorithm selection, threshold, color palette
-- **Export**: PNG download
-
-**C. Commission Marketplace**
-- **Two-sided**: Browse commissions AND submit art
-- **Browse**: List of open commission requests from Radiant owners
-- **Submit**: Form to submit art to specific Radiants
-- **Integration**: Commission art feeds into Murder Tree branches
-
-#### 9. Murder Tree
-- **Visualization**: Graph-theory tree structure (not literal tree art)
-- **Scale**: Provenance branch can have thousands of items; art/commission branches smaller
-- **Three branches**:
-  1. **Creation Branch**: NFTs burned to win the Radiant (immutable)
-  2. **Owner Branch**: Owner's personal burns (on-chain scrapbook)
-  3. **Commission Branch**: Whitelist-controlled art contributions
-- **Exploration UI**: Navigate branches, view NFT details on each node
-- **NFT Details**: Name, source collection, burn date, image thumbnail
-- **Hover animations**: Visual feedback on nodes
-
-#### 10. Auctions
-- **Scope**: Full replication of existing frontend with mock data
-- **Styling**: Restyle with RDNA components (preserve layout/UX, swap components)
-- **Features**:
-  - Current auction display (image, name, countdown)
-  - Vault system (deposit/withdraw NFTs as bids)
-  - Previous/next auction navigation
-  - Bid history
-  - Wallet connection (mocked)
-  - Admin settings panel (mocked)
-  - Toast notifications (win, deposit, withdraw)
-- **Reference**: `/tmp/radiants_frontend/` extracted code
+Radio is taskbar-hosted through the transport strip and drop-down widget, not an `APP_CATALOG` window entry.
 
 ---
 
@@ -366,19 +257,18 @@ All UI components from `@/components/ui`:
 
 ### Shadows & Effects
 ```css
---shadow-btn: 2px 2px 0px 0px var(--border-primary);
---shadow-btn-hover: 3px 3px 0px 0px var(--border-primary);
---shadow-card: 4px 4px 0px 0px var(--border-primary);
+--shadow-resting
+--shadow-lifted
+--shadow-raised
+--shadow-floating
 ```
 
 ---
 
 ## 11. Asset Locations
 
-### Brand Assets (to be copied from Dropbox)
-Source: `/Users/rivermassey/Dropbox/1_Clients/Current/Radiants/Brand/Logo/`
-
-Destination: `/public/assets/logos/`
+### Brand Assets
+Destination: `apps/rad-os/public/assets/logos/`
 ```
 SVG/
   wordmark-cream.svg
@@ -422,8 +312,8 @@ Location: `/reference/rados/`
 
 ### Mobile Behaviors
 - **Taskbar**: Simplified (Start button + essential icons only)
-- **Windows**: Full-screen modal overlays (MobileAppModal)
-- **Desktop Icons**: Horizontal row at top instead of vertical column
+- **Windows**: Fullscreen AppWindow presentation
+- **Launchers**: Taskbar/start-menu driven app launching
 - **Start Menu**: Full-screen overlay
 - **App Switching**: Via Start Menu only
 
@@ -467,23 +357,21 @@ Location: `/reference/rados/`
 - Hash routing
 - WebGL background with Intersection Observer optimization
 
-### Phase 2: Core Apps
-- Brand Assets (with working downloads)
-- Manifesto
+### Phase 2: Catalog Apps
+- Brand
+- Dev Tools
+- Pixel Lab
+- Scratchpad
+- Hackathon.EXE
+- Good News
 - About
-- Links
-- Settings
+- Becoming Substance
 
-### Phase 3: Complex Apps
-- Calendar
-- Rad Radio
+### Phase 3: Shell Surfaces
+- Taskbar-hosted radio transport
+- Preferences surface
 
-### Phase 4: Web3 Mock Apps
-- Radiants Studio (all three tools)
-- Murder Tree
-- Auctions
-
-### Phase 5: Polish
+### Phase 4: Polish
 - Mobile optimization
 - Performance tuning
 - Accessibility audit
@@ -493,10 +381,12 @@ Location: `/reference/rados/`
 
 ## Appendix A: Reference Files
 
-- Murder Tree Spec: `/Users/rivermassey/Downloads/Murder Tree v2 Radiants Feature Upgrade.md`
-- Radiants Studio Brief: `/Users/rivermassey/Downloads/Radiants Studio Design Brief.md`
-- Frontend Reference: `/Users/rivermassey/Downloads/Radiants Frontend Main.zip`
-- Program Library: `/Users/rivermassey/Downloads/Radiants Program Library.zip`
+Current repo-local references:
+
+- Catalog: `apps/rad-os/lib/apps/catalog.tsx`
+- Window shell: `apps/rad-os/components/Rad_os/`
+- App surfaces: `apps/rad-os/components/apps/`
+- Shared design system: `packages/radiants/`
 
 ---
 
@@ -511,50 +401,23 @@ Current Midjourney codes (placeholder):
 
 ---
 
-## Appendix C: Mock Data Shapes
+## Appendix C: Catalog Shape
 
-### Auction
 ```typescript
-interface Auction {
-  auctionId: string;
-  version: 'v1' | 'v2';
-  metadata: {
-    name: string;
-    image: string;
-    attributes: Array<{ trait_type: string; value: string | number }>;
-  };
-  account: {
-    startTimestamp: number;
-    endTimestamp: number;
-    winner: string | null;
-    highestBidder: string | null;
-    isClaimed: boolean;
-  };
-}
-```
-
-### Radiant (for Murder Tree)
-```typescript
-interface Radiant {
+interface AppCatalogEntry {
   id: string;
-  name: string;
-  image: string;
-  owner: string;
-  creationBranch: BurnedNFT[];
-  ownerBranch: BurnedNFT[];
-  commissionBranch: CommissionedNFT[];
-}
-
-interface BurnedNFT {
-  id: string;
-  name: string;
-  collection: string;
-  image: string;
-  burnDate: number;
-}
-
-interface CommissionedNFT extends BurnedNFT {
-  contributor: string;
+  windowTitle: string;
+  launcherTitle?: string;
+  component: ComponentType<AppProps> | null;
+  defaultSize?: WindowSizeTier | WindowSize;
+  minSize?: { width: number; height: number };
+  aspectRatio?: number;
+  contentPadding?: boolean;
+  chromeless?: boolean;
+  desktopVisible?: boolean;
+  category?: 'tools' | 'media' | 'about' | 'links';
+  subtabs?: AppSubtab[];
+  ambient?: AmbientCapability;
 }
 ```
 
