@@ -39,9 +39,17 @@
       "types": "./dist/corners.d.ts",
       "import": "./dist/corners.js"
     },
+    "./dither": {
+      "types": "./dist/dither.d.ts",
+      "import": "./dist/dither.js"
+    },
     "./patterns": {
       "types": "./dist/patterns.d.ts",
       "import": "./dist/patterns.js"
+    },
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js"
     },
     "./shapes": {
       "types": "./dist/shapes.d.ts",
@@ -50,13 +58,25 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "generate:icon-registry": "pnpm run build && node --experimental-strip-types scripts/generate-icon-registry.ts",
     "test": "vitest run",
     "test:ci": "pnpm run build && vitest run && node scripts/check-package-boundary.mjs",
     "prepack": "pnpm run build"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/react": "^19.2.9",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "typescript": "^5",
     "vitest": "^2.1.9"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   }
 }

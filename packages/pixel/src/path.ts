@@ -76,6 +76,6 @@ export function bitsToMaskURI(
     typeof heightOrTransform === 'string' ? heightOrTransform : transform;
   const t = resolvedTransform ? ` transform="${resolvedTransform}"` : '';
   return `url("data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}'><path fill='white'${t} d='${pathD}'/></svg>`,
+    `<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' width='${width}' height='${height}'><path fill='white'${t} d='${pathD}'/></svg>`,
   )}")`;
 }

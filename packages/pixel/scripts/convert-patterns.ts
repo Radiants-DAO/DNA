@@ -3,10 +3,11 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const REGISTRY_PATH = resolve(SCRIPT_DIR, '../../radiants/patterns/registry.ts');
+const REGISTRY_PATH = resolve(SCRIPT_DIR, '../src/patterns/registry.ts');
 const ENTRY_BLOCK_RE = /\{[^{}]*\}/gs;
 const NAME_RE = /\bname:\s*(['"])(.*?)\1/s;
 const HEX_RE = /\bhex:\s*(['"])(.*?)\1/s;
+const BITS_RE = /\bbits:\s*(['"])(.*?)\1/s;
 
 export function hexToBitstring(hex: string): string {
   const bytes = hex.trim().split(/\s+/).filter(Boolean);
@@ -34,17 +35,21 @@ export function extractPatternEntries(
     .map((block) => {
       const nameMatch = block.match(NAME_RE);
       const hexMatch = block.match(HEX_RE);
+      const bitsMatch = block.match(BITS_RE);
 
-      if (!nameMatch || !hexMatch) {
+      if (!nameMatch) {
         return null;
       }
 
       return {
         name: nameMatch[2],
-        bits: hexToBitstring(hexMatch[2]),
+        bits: bitsMatch ? bitsMatch[2] : hexMatch ? hexToBitstring(hexMatch[2]) : '',
       };
     })
-    .filter((entry): entry is { name: string; bits: string } => entry !== null);
+    .filter(
+      (entry): entry is { name: string; bits: string } =>
+        entry !== null && entry.bits.length > 0,
+    );
 
   return entries;
 }

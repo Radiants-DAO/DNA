@@ -1,6 +1,51 @@
 import { mirrorH, mirrorV } from './core.js';
 import type { CornerPosition, PixelGrid } from './types.js';
 
+export { prepareCornerProfile, prepareCornerRecipe } from './corners/prepare.js';
+export {
+  clampCornerRadii,
+  fitCornerRadii,
+  materializeCornerRecipe,
+  materializeCornerStyle,
+} from './corners/runtime.js';
+export {
+  generateShape,
+  listCornerShapeNames,
+  registerCornerDefinition,
+} from './corners/registry.js';
+export {
+  CORNER_SETS,
+  getCornerSet,
+} from './corners/authoring/presets.js';
+export { corner, cornerMap, fixedCorner, flatCorner, themedCorner } from './corners/helpers.js';
+export { concave } from './concave.js';
+export type { CornerSize } from './corners/authoring/presets.js';
+export type { ConcaveCornerConfig, ConcaveCornerProps } from './concave.js';
+export type {
+  BuiltInCornerShapeName,
+  CornerBinding,
+  CornerDefinition,
+  CornerDescriptor,
+  CornerGeneratorDefinition,
+  CornerMap,
+  CornerOverrideDefinition,
+  CornerRecipeDefinition,
+  CornerRecipeMaterializeOptions,
+  CornerShapeName,
+  CornerStyleMaterializeOptions,
+  CornerValue,
+  EdgeFlags,
+  FixedCornerBinding,
+  NormalizedCornerRecipe,
+  PxConfigCanonical,
+  PreparedCornerAsset,
+  PreparedCornerProfile,
+  PreparedCornerRecipe,
+  PreparedCornerRecipeEntry,
+  RequiredCornerMap,
+  ThemeCornerBinding,
+} from './corners/types.js';
+
 export function mirrorForCorner(
   tl: PixelGrid,
   position: CornerPosition,

@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useConcaveCorner } from '@rdna/radiants/components/core';
+import { corner, px, type CornerShapeName } from '@rdna/pixel';
 
 /** Every numeric size in the generated CSS, plus the special `full` circle. */
 const SIZES = [2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 'full'] as const;
@@ -49,6 +51,84 @@ const SHADOW_OPTIONS = [
   { label: 'pixel-shadow-resting', value: 'pixel-shadow' },
 ] as const;
 
+const SHAPE_SAMPLES = [
+  { shape: 'circle', label: 'Circle' },
+  { shape: 'chamfer', label: 'Chamfer' },
+  { shape: 'scallop', label: 'Scallop' },
+] as const satisfies readonly { shape: CornerShapeName; label: string }[];
+
+const CONCAVE_POSITIONS = {
+  tl: 'left-0 top-0',
+  tr: 'right-0 top-0',
+  br: 'right-0 bottom-0',
+  bl: 'left-0 bottom-0',
+} as const;
+
+type ConcaveCorner = keyof typeof CONCAVE_POSITIONS;
+
+function ShapeSample({
+  shape,
+  label,
+}: {
+  shape: CornerShapeName;
+  label: string;
+}) {
+  const outer = px({
+    corners: corner.map(corner.fixed(shape, 11)),
+  });
+  const concavePatch = useConcaveCorner({
+    corner: 'br',
+    radiusPx: 11,
+    shape,
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="relative bg-main p-4" style={{ '--pixel-scale': 3 } as React.CSSProperties}>
+        <div
+          className={`${outer.className} relative flex h-28 items-start justify-start bg-card p-3`}
+          style={outer.style as React.CSSProperties}
+        >
+          <span className="text-xs font-mono text-main">{shape}</span>
+          <div
+            className={`${concavePatch.className} absolute right-0 bottom-0 bg-main`}
+            style={concavePatch.style as React.CSSProperties}
+          />
+        </div>
+      </div>
+      <span className="text-xs opacity-40">{label} outer + concave</span>
+    </div>
+  );
+}
+
+function ConcaveCornerSample({
+  corner,
+  label,
+}: {
+  corner: ConcaveCorner;
+  label: string;
+}) {
+  const patch = useConcaveCorner({
+    corner,
+    radiusPx: 11,
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div
+        className="pixel-rounded-12 relative h-32 bg-main"
+        style={{ '--pixel-scale': 4 } as React.CSSProperties}
+      >
+        <div
+          className={`${patch.className} absolute ${CONCAVE_POSITIONS[corner]} bg-page`}
+          style={patch.style as React.CSSProperties}
+        />
+      </div>
+      <span className="text-xs opacity-40">{label}</span>
+    </div>
+  );
+}
+
 export default function PixelCornersPreview() {
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
@@ -95,7 +175,7 @@ export default function PixelCornersPreview() {
         </header>
 
         {/* Controls */}
-        <section className="flex flex-col gap-4 p-4 bg-inv/5">
+        <section className="flex flex-col gap-4 p-4 bg-depth">
           <h2 className="text-sm uppercase tracking-wider opacity-60">Controls</h2>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -201,11 +281,26 @@ export default function PixelCornersPreview() {
                 key={size}
                 onClick={() => scrollToSize(size)}
                 className={`px-3 py-1 text-sm transition-colors ${
-                  highlightedSize === size ? 'bg-main text-page' : 'bg-inv/10 hover:bg-inv/20'
+                  highlightedSize === size ? 'bg-main text-page' : 'bg-depth hover:bg-card'
                 }`}
               >
                 {size === 'full' ? 'full' : size}
               </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Shape Gallery */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Shape Gallery</h2>
+          <p className="text-sm opacity-50">
+            Fixed-shape runtime samples show the available outer corner shapes and their matching
+            concave inner patch.
+          </p>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {SHAPE_SAMPLES.map((sample) => (
+              <ShapeSample key={sample.shape} shape={sample.shape} label={sample.label} />
             ))}
           </div>
         </section>
@@ -298,6 +393,22 @@ export default function PixelCornersPreview() {
                 <span className="text-xs opacity-40">--pixel-scale: {scale}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Concave Corner Demo */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm uppercase tracking-wider opacity-60">Concave Runtime Demo</h2>
+          <p className="text-sm opacity-50">
+            Runtime concave patches use the active <code>data-corner-shape</code> setting and
+            arbitrary radii.
+          </p>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <ConcaveCornerSample corner="tl" label="top-left inverse patch" />
+            <ConcaveCornerSample corner="tr" label="top-right inverse patch" />
+            <ConcaveCornerSample corner="bl" label="bottom-left inverse patch" />
+            <ConcaveCornerSample corner="br" label="bottom-right inverse patch" />
           </div>
         </section>
 

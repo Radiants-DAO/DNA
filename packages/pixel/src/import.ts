@@ -32,6 +32,22 @@ interface Shape {
   polygons: Point[][];
 }
 
+interface RotateTransform {
+  angle: number;
+  cx: number;
+  cy: number;
+}
+
+interface RasterizeResult {
+  bits: string;
+  boundaryHits: number;
+}
+
+interface SampleOffset {
+  x: number;
+  y: number;
+}
+
 const ATTRIBUTE_RE = /([\w:-]+)\s*=\s*(['"])(.*?)\2/g;
 const TAG_RE = /<\/?([a-zA-Z][\w:-]*)\b([^>]*)>/g;
 const TOKEN_RE = /[a-zA-Z]|[-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?/g;
@@ -56,19 +72,13 @@ export function svgToGrid(
   const snapStep = options.snapStep ?? 0.5;
   const viewBox = parseViewBox(svg);
   const shapes = collectShapes(svg, viewBox, options.size, snapStep, report, offGridSeen);
+  const preferredOffset = detectSampleOffsets(shapes);
+  const candidates = buildSampleOffsetCandidates(preferredOffset)
+    .map((sampleOffset) => rasterizeShapes(shapes, options.size, sampleOffset))
+    .sort((left, right) => left.boundaryHits - right.boundaryHits);
+  const chosen = candidates[0];
 
-  const bits: string[] = Array(options.size * options.size).fill('0');
-
-  for (let y = 0; y < options.size; y++) {
-    for (let x = 0; x < options.size; x++) {
-      const sample = { x: x + 1, y: y + 1 };
-      if (shapes.some((shape) => pointInShape(sample, shape))) {
-        bits[y * options.size + x] = '1';
-      }
-    }
-  }
-
-  const grid = bitsToGrid(name, options.size, options.size, bits.join(''));
+  const grid = bitsToGrid(name, options.size, options.size, chosen.bits);
   return { grid, report };
 }
 
@@ -168,6 +178,107 @@ function collectShapes(
   return shapes;
 }
 
+function detectSampleOffsets(shapes: readonly Shape[]): SampleOffset {
+  let integerAlignedX = 0;
+  let halfAlignedX = 0;
+  let integerAlignedY = 0;
+  let halfAlignedY = 0;
+
+  for (const shape of shapes) {
+    for (const polygon of shape.polygons) {
+      for (const point of polygon) {
+        tallyCoordinate(point.x, 'x');
+        tallyCoordinate(point.y, 'y');
+      }
+    }
+  }
+
+  return {
+    x: halfAlignedX > integerAlignedX ? 1 : 0.5,
+    y: halfAlignedY > integerAlignedY ? 1 : 0.5,
+  };
+
+  function tallyCoordinate(value: number, axis: 'x' | 'y'): void {
+    const fractional = Math.abs(value - Math.trunc(value));
+
+    if (fractional <= EPSILON) {
+      if (axis === 'x') {
+        integerAlignedX += 1;
+      } else {
+        integerAlignedY += 1;
+      }
+      return;
+    }
+
+    if (Math.abs(fractional - 0.5) <= EPSILON) {
+      if (axis === 'x') {
+        halfAlignedX += 1;
+      } else {
+        halfAlignedY += 1;
+      }
+    }
+  }
+}
+
+function buildSampleOffsetCandidates(preferred: SampleOffset): SampleOffset[] {
+  const candidates: SampleOffset[] = [preferred];
+  const fallback = [0.5, 1] as const;
+
+  for (const x of fallback) {
+    for (const y of fallback) {
+      if (x === preferred.x && y === preferred.y) {
+        continue;
+      }
+
+      candidates.push({ x, y });
+    }
+  }
+
+  return candidates;
+}
+
+function rasterizeShapes(
+  shapes: readonly Shape[],
+  size: number,
+  sampleOffset: SampleOffset,
+): RasterizeResult {
+  const bits: string[] = Array(size * size).fill('0');
+  let boundaryHits = 0;
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const sample = { x: x + sampleOffset.x, y: y + sampleOffset.y };
+      let isInside = false;
+      let isOnBoundary = false;
+
+      for (const shape of shapes) {
+        const result = pointInShape(sample, shape);
+        if (result.onBoundary) {
+          isOnBoundary = true;
+        }
+
+        if (result.inside) {
+          isInside = true;
+          break;
+        }
+      }
+
+      if (isInside) {
+        bits[y * size + x] = '1';
+      }
+
+      if (isOnBoundary) {
+        boundaryHits += 1;
+      }
+    }
+  }
+
+  return {
+    bits: bits.join(''),
+    boundaryHits,
+  };
+}
+
 function parseAttributes(source: string): Record<string, string> {
   const attrs: Record<string, string> = {};
   ATTRIBUTE_RE.lastIndex = 0;
@@ -188,57 +299,113 @@ function rectToPolygon(
   report: ImportReport,
   offGridSeen: Set<string>,
 ): Point[] {
-  const x = normalizeCoordinate(
-    parseRequiredNumber(attrs.x ?? '0', 'rect.x'),
-    'x',
-    false,
-    viewBox,
-    size,
-    snapStep,
-    report,
-    offGridSeen,
-  );
-  const y = normalizeCoordinate(
-    parseRequiredNumber(attrs.y ?? '0', 'rect.y'),
-    'y',
-    false,
-    viewBox,
-    size,
-    snapStep,
-    report,
-    offGridSeen,
-  );
-  const width = normalizeCoordinate(
-    parseRequiredNumber(attrs.width, 'rect.width'),
-    'x',
-    true,
-    viewBox,
-    size,
-    snapStep,
-    report,
-    offGridSeen,
-  );
-  const height = normalizeCoordinate(
-    parseRequiredNumber(attrs.height, 'rect.height'),
-    'y',
-    true,
-    viewBox,
-    size,
-    snapStep,
-    report,
-    offGridSeen,
-  );
+  const rawX = parseRequiredNumber(attrs.x ?? '0', 'rect.x');
+  const rawY = parseRequiredNumber(attrs.y ?? '0', 'rect.y');
+  const rawWidth = parseRequiredNumber(attrs.width, 'rect.width');
+  const rawHeight = parseRequiredNumber(attrs.height, 'rect.height');
 
-  if (width <= 0 || height <= 0) {
-    throw new Error(`rect width and height must be positive, received ${width}×${height}`);
+  if (rawWidth <= 0 || rawHeight <= 0) {
+    throw new Error(`rect width and height must be positive, received ${rawWidth}×${rawHeight}`);
   }
 
-  return [
-    { x, y },
-    { x: x + width, y },
-    { x: x + width, y: y + height },
-    { x, y: y + height },
+  const polygon = [
+    { x: rawX, y: rawY },
+    { x: rawX + rawWidth, y: rawY },
+    { x: rawX + rawWidth, y: rawY + rawHeight },
+    { x: rawX, y: rawY + rawHeight },
   ];
+  const transformed = applyRectTransform(polygon, attrs.transform);
+
+  return transformed.map((point) => ({
+    x: normalizeCoordinate(
+      point.x,
+      'x',
+      false,
+      viewBox,
+      size,
+      snapStep,
+      report,
+      offGridSeen,
+    ),
+    y: normalizeCoordinate(
+      point.y,
+      'y',
+      false,
+      viewBox,
+      size,
+      snapStep,
+      report,
+      offGridSeen,
+    ),
+  }));
+}
+
+function applyRectTransform(points: Point[], transform: string | undefined): Point[] {
+  const rotate = parseRotateTransform(transform);
+  if (!rotate) {
+    return points;
+  }
+
+  return points.map((point) => rotatePoint(point, rotate));
+}
+
+function parseRotateTransform(transform: string | undefined): RotateTransform | null {
+  if (!transform) {
+    return null;
+  }
+
+  const match = transform.match(
+    /^\s*rotate\(\s*([-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?)\s+([-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?)\s+([-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?)\s*\)\s*$/u,
+  );
+  if (!match) {
+    return null;
+  }
+
+  return {
+    angle: Number.parseFloat(match[1]),
+    cx: Number.parseFloat(match[2]),
+    cy: Number.parseFloat(match[3]),
+  };
+}
+
+function rotatePoint(point: Point, transform: RotateTransform): Point {
+  const angle = ((transform.angle % 360) + 360) % 360;
+  const dx = point.x - transform.cx;
+  const dy = point.y - transform.cy;
+
+  if (nearlyEqual(angle, 0)) {
+    return point;
+  }
+
+  if (nearlyEqual(angle, 90)) {
+    return {
+      x: transform.cx - dy,
+      y: transform.cy + dx,
+    };
+  }
+
+  if (nearlyEqual(angle, 180)) {
+    return {
+      x: transform.cx - dx,
+      y: transform.cy - dy,
+    };
+  }
+
+  if (nearlyEqual(angle, 270)) {
+    return {
+      x: transform.cx + dy,
+      y: transform.cy - dx,
+    };
+  }
+
+  const radians = (angle * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  return {
+    x: transform.cx + dx * cos - dy * sin,
+    y: transform.cy + dx * sin + dy * cos,
+  };
 }
 
 function pathToPolygons(
@@ -311,7 +478,6 @@ function pathToPolygons(
     const from = ensureCurrent();
     if (!nearlyEqual(from.x, point.x) && !nearlyEqual(from.y, point.y)) {
       report.hadDiagonalSegments = true;
-      throw new Error('Diagonal path segments are not supported');
     }
 
     appendPoint(point);
@@ -493,39 +659,45 @@ function popTagContext(
   }
 }
 
-function pointInShape(point: Point, shape: Shape): boolean {
+function pointInShape(point: Point, shape: Shape): { inside: boolean; onBoundary: boolean } {
   if (shape.fillRule === 'evenodd') {
     let crossings = 0;
+    let onBoundary = false;
 
     for (const polygon of shape.polygons) {
       const winding = windingNumber(point, polygon);
-      if (winding === null) {
-        return true;
+      if (winding.onBoundary) {
+        onBoundary = true;
+        break;
       }
 
-      if (winding !== 0) {
+      if (winding.value !== 0) {
         crossings += 1;
       }
     }
 
-    return crossings % 2 === 1;
+    if (onBoundary) {
+      return { inside: true, onBoundary: true };
+    }
+
+    return { inside: crossings % 2 === 1, onBoundary: false };
   }
 
   let totalWinding = 0;
 
   for (const polygon of shape.polygons) {
     const winding = windingNumber(point, polygon);
-    if (winding === null) {
-      return true;
+    if (winding.onBoundary) {
+      return { inside: true, onBoundary: true };
     }
 
-    totalWinding += winding;
+    totalWinding += winding.value;
   }
 
-  return totalWinding !== 0;
+  return { inside: totalWinding !== 0, onBoundary: false };
 }
 
-function windingNumber(point: Point, polygon: Point[]): number | null {
+function windingNumber(point: Point, polygon: Point[]): { value: number; onBoundary: boolean } {
   let winding = 0;
 
   for (let i = 0; i < polygon.length; i++) {
@@ -533,7 +705,7 @@ function windingNumber(point: Point, polygon: Point[]): number | null {
     const end = polygon[(i + 1) % polygon.length];
 
     if (pointOnSegment(point, start, end)) {
-      return null;
+      return { value: 0, onBoundary: true };
     }
 
     if (start.y <= point.y) {
@@ -545,7 +717,7 @@ function windingNumber(point: Point, polygon: Point[]): number | null {
     }
   }
 
-  return winding;
+  return { value: winding, onBoundary: false };
 }
 
 function pointOnSegment(point: Point, start: Point, end: Point): boolean {

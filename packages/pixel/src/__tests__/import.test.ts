@@ -69,11 +69,16 @@ describe('svgToGrid', () => {
     );
   });
 
-  it('rejects diagonal segments', async () => {
+  it('imports diagonal segments and records them in the report', async () => {
     const svg = await readFixture('diagonal.svg');
-    expect(() => svgToGrid('diagonal', svg, { size: 4, snapStep: 0.5 })).toThrow(
-      'Diagonal path segments are not supported',
-    );
+    const { grid, report } = svgToGrid('diagonal', svg, {
+      size: 4,
+      snapStep: 0.5,
+    });
+
+    expect(grid.bits[0]).toBe('1');
+    expect([...grid.bits].filter((bit) => bit === '1')).toHaveLength(1);
+    expect(report.hadDiagonalSegments).toBe(true);
   });
 
   it('preserves compound-path holes from real 24px icons', async () => {

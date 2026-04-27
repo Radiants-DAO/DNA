@@ -101,16 +101,21 @@
 <section>
   <h2>Alternate Shapes</h2>
   <p class="subtitle" style="margin-bottom:1rem;">
-    Shapes (chamfer, scallop, octagon, crenellation) are <strong>runtime-only</strong>
+    Shapes (chamfer, scallop) are <strong>runtime-only</strong>
     via the <code>px()</code> API &mdash; no pregenerated CSS. Use them in React/TS:
   </p>
   <pre style="background:rgba(0,0,0,0.05); padding:1rem; font-size:0.8rem; margin-bottom:1rem; overflow-x:auto;">// Uniform chamfer corners
-&lt;div {...px('chamfer', 8)} /&gt;
+&lt;div {...px({ corners: corner.map(corner.fixed('chamfer', 8)) })} /&gt;
 
-// Per-corner: chamfer top, circle bottom
-&lt;div {...px({ radius: [['chamfer',8], ['chamfer',8], 8, 8] })} /&gt;
+// Per-corner: chamfer top, theme-following bottom
+&lt;div {...px({
+  corners: corner.map(corner.themed(8), {
+    tl: corner.fixed('chamfer', 8),
+    tr: corner.fixed('chamfer', 8),
+  })
+})} /&gt;
 
-// Available shapes: circle, chamfer, scallop, octagon, crenellation</pre>
+// Available shapes: circle, chamfer, scallop</pre>
 </section>
 
 <!-- ============================================ -->
