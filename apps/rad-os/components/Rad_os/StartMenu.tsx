@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { useSafeHover } from '@/hooks/useSafeHover';
+import { usePreferencesStore } from '@/store';
 import {
   getStartMenuCategories,
   type AppSubtab,
@@ -21,6 +22,8 @@ interface StartMenuProps {
 }
 
 type AppHoverKey = `${StartMenuCategory}:${string}`;
+const startMenuSurfaceClassName = 'bg-page dark:bg-[color-mix(in_oklch,var(--color-ink),var(--color-accent)_15%)]';
+const menuRowClassName = 'gap-3 dark:data-[state=selected]:!text-accent dark:data-[state=selected]:hover:!text-ink';
 
 // ============================================================================
 // Menu row
@@ -45,12 +48,13 @@ function MenuRow({
   onPointerEnter,
   href,
 }: MenuRowProps) {
+  const { darkMode } = usePreferencesStore();
   const body = (
     <>
       <span className="w-5 h-5 flex items-center justify-center shrink-0">
         {icon}
       </span>
-      <span className="flex-1 font-mono text-sm uppercase text-left">
+      <span className="flex-1 font-joystix text-xs uppercase tracking-tight text-left">
         {label}
       </span>
       {hasChildren && (
@@ -68,12 +72,13 @@ function MenuRow({
         target="_blank"
         rel="noopener noreferrer"
         quiet
+        tone={darkMode ? 'accent' : undefined}
         fullWidth
         rounded="none"
         size="lg"
         active={highlighted}
         onPointerEnter={onPointerEnter}
-        className="gap-3"
+        className={menuRowClassName}
       >
         {body}
       </Button>
@@ -84,13 +89,14 @@ function MenuRow({
     <Button
       type="button"
       quiet
+      tone={darkMode ? 'accent' : undefined}
       fullWidth
       rounded="none"
       size="lg"
       active={highlighted}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
-      className="gap-3"
+      className={menuRowClassName}
     >
       {body}
     </Button>
@@ -174,11 +180,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute bottom-full left-0 mb-2 z-10"
+      className="absolute top-full left-0 mt-2 z-10"
       onPointerMove={appHover.onContainerMove}
     >
       <div
-        className="pixel-rounded-sm pixel-shadow-floating flex flex-col min-w-0 bg-page pb-1"
+        className={`pixel-rounded-6 pixel-shadow-floating flex flex-col min-w-0 pb-1 ${startMenuSurfaceClassName}`}
         style={{ width: COLUMN_WIDTH_PX }}
       >
         {categories.map((cat, idx) => (
@@ -270,11 +276,9 @@ function SubmenuPanel({
       className="absolute"
       style={{ left, top, width: COLUMN_WIDTH_PX }}
     >
-      <div className="pixel-rounded-sm pixel-shadow-floating bg-page">
+      <div className={`pixel-rounded-6 pixel-shadow-floating ${startMenuSurfaceClassName}`}>
         {children}
       </div>
     </div>
   );
 }
-
-export default StartMenu;

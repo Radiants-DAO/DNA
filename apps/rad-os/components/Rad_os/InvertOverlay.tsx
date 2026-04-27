@@ -25,5 +25,3 @@ export function InvertOverlay({ active }: InvertOverlayProps) {
     />
   );
 }
-
-export default InvertOverlay;

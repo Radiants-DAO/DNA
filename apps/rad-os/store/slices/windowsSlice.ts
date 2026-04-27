@@ -18,6 +18,38 @@ export interface PreSnapState {
   isFullscreen: boolean;
 }
 
+/** Which edge of the AppWindow a control-surface dock attaches to.
+ *  - `left` / `right` / `bottom`: supported by both `drawer` and `inset` variants.
+ *  - `top`: inset-only (there is no top drawer — apps use the titlebar instead).
+ *  - `taskbar`: inset-only; renders inside the AppWindow toolbar as a
+ *    non-collapsable strip of controls (acts as the chrome for other trays). */
+export type ControlSurfaceSide =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'taskbar';
+
+/**
+ * Per-side open state for a window's control surfaces. Missing keys are
+ * treated as "default open" (controlled by the consumer on first render).
+ * `taskbar` is always open by contract — its entry is ignored even if set.
+ */
+export interface ControlSurfaceOpenState {
+  left?: boolean;
+  right?: boolean;
+  top?: boolean;
+  bottom?: boolean;
+  taskbar?: boolean;
+}
+
+/** Pixel-footprint hint for each docked side — used when centering a new window. */
+export interface DockFootprint {
+  left?: number;
+  right?: number;
+  bottom?: number;
+}
+
 export interface WindowState {
   id: string;
   isOpen: boolean;
@@ -31,6 +63,9 @@ export interface WindowState {
   activeTab?: string;
   /** Snapshot captured before first snap/fill action; null once restored or user-modified */
   preSnapState?: PreSnapState | null;
+  /** Per-side open state for docks attached to this window. Each side
+   * defaults to open when its entry is undefined. */
+  controlSurfaceOpen?: ControlSurfaceOpenState;
 }
 
 export interface ZoomAnimation {
@@ -59,12 +94,37 @@ export interface WindowsSlice {
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
   setActiveTab: (id: string, tabId: string) => void;
+  /** Toggle one or more control-surface docks. When `side` is omitted, every
+   * registered side (i.e. every key currently present in the per-side map)
+   * flips together; if no side is registered yet, all three sides flip from
+   * the default-open baseline. */
+  toggleControlSurface: (id: string, side?: ControlSurfaceSide) => void;
+  /** Explicitly set the open state for a specific side, or every side when
+   * `side` is omitted (matches the legacy single-dock behavior). */
+  setControlSurfaceOpen: (id: string, open: boolean, side?: ControlSurfaceSide) => void;
   getWindow: (id: string) => WindowState | undefined;
   getOpenWindows: () => WindowState[];
 }
 
 const CASCADE_OFFSET = 30;
 const TASKBAR_HEIGHT = 48; // bottom-12 = 48px
+
+/**
+ * Pick which control-surface sides a toggle/set action should touch.
+ *
+ * - When `side` is provided, act only on that side.
+ * - When omitted, act on every currently-registered side. If none have been
+ *   touched yet, fall back to the legacy `right` dock so the first click
+ *   closes it (matches the original single-dock behavior).
+ */
+function resolveControlSurfaceTargets(
+  current: ControlSurfaceOpenState,
+  side?: ControlSurfaceSide,
+): ControlSurfaceSide[] {
+  if (side) return [side];
+  const keys = Object.keys(current) as ControlSurfaceSide[];
+  return keys.length > 0 ? keys : ['right'];
+}
 
 function getDesktopSize(): { width: number; height: number } {
   if (typeof window === 'undefined') {
@@ -108,11 +168,14 @@ function computeSnapRect(
 /**
  * Calculate centered position for a new window.
  * Centers in the visible desktop area (accounting for taskbar).
+ * When `dockFootprint` is provided, the centering math treats the window +
+ * dock as a single bounding box so the composite stays inside the viewport.
  * Falls back to cascade positioning if viewport is not available.
  */
 function calculateCenteredPosition(
   openCount: number,
-  estimatedSize?: { width: number; height: number }
+  estimatedSize?: { width: number; height: number },
+  dockFootprint: DockFootprint = {},
 ): { x: number; y: number } {
   // SSR safety check
   if (typeof window === 'undefined') {
@@ -126,13 +189,21 @@ function calculateCenteredPosition(
   const viewportHeight = window.innerHeight;
   const desktopHeight = viewportHeight - TASKBAR_HEIGHT;
 
+  const leftDock = Math.max(0, dockFootprint.left ?? 0);
+  const rightDock = Math.max(0, dockFootprint.right ?? 0);
+  const bottomDock = Math.max(0, dockFootprint.bottom ?? 0);
+
   // Default window size estimate if not provided
   const windowWidth = estimatedSize?.width ?? 600;
   const windowHeight = estimatedSize?.height ?? 400;
 
-  // Calculate centered position
-  let x = Math.max(0, (viewportWidth - windowWidth) / 2);
-  let y = Math.max(0, (desktopHeight - windowHeight) / 2);
+  // The composite footprint (window + docks) is what we center in the viewport;
+  // the window's own x/y is then the composite offset plus the left-dock margin.
+  const compositeWidth = windowWidth + leftDock + rightDock;
+  const compositeHeight = windowHeight + bottomDock;
+
+  let x = Math.max(0, (viewportWidth - compositeWidth) / 2) + leftDock;
+  let y = Math.max(0, (desktopHeight - compositeHeight) / 2);
 
   // Apply cascade offset if multiple windows are open
   if (openCount > 0) {
@@ -140,9 +211,11 @@ function calculateCenteredPosition(
     y += openCount * CASCADE_OFFSET;
   }
 
-  // Ensure window doesn't go off-screen
-  x = Math.min(x, viewportWidth - Math.min(windowWidth, 300));
-  y = Math.min(y, desktopHeight - Math.min(windowHeight, 200));
+  // Ensure window + dock(s) don't go off-screen
+  const maxX = viewportWidth - Math.min(windowWidth, 300) - rightDock;
+  const maxY = desktopHeight - Math.min(windowHeight, 200) - bottomDock;
+  x = Math.min(x, Math.max(leftDock, maxX));
+  y = Math.min(y, Math.max(0, maxY));
 
   return { x: Math.round(x), y: Math.round(y) };
 }
@@ -420,6 +493,36 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       windows: state.windows.map((w) =>
         w.id === id ? { ...w, activeTab: tabId } : w
       ),
+    }));
+  },
+
+  toggleControlSurface: (id, side) => {
+    set((state) => ({
+      windows: state.windows.map((w) => {
+        if (w.id !== id) return w;
+        const current = w.controlSurfaceOpen ?? {};
+        const targets = resolveControlSurfaceTargets(current, side);
+        // Derive the new unified state from the first target's current value
+        // (defaulting to open), so every touched side ends up in the same
+        // state. With an explicit `side`, this flips just that side.
+        const reference = current[targets[0]] ?? true;
+        const next: ControlSurfaceOpenState = { ...current };
+        for (const k of targets) next[k] = !reference;
+        return { ...w, controlSurfaceOpen: next };
+      }),
+    }));
+  },
+
+  setControlSurfaceOpen: (id, open, side) => {
+    set((state) => ({
+      windows: state.windows.map((w) => {
+        if (w.id !== id) return w;
+        const current = w.controlSurfaceOpen ?? {};
+        const targets = resolveControlSurfaceTargets(current, side);
+        const next: ControlSurfaceOpenState = { ...current };
+        for (const k of targets) next[k] = open;
+        return { ...w, controlSurfaceOpen: next };
+      }),
     }));
   },
 

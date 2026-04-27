@@ -32,6 +32,11 @@ export interface RadRadioSlice {
   radioReverb: number;
   radioSetSlow: (v: number) => void;
   radioSetReverb: (v: number) => void;
+
+  /** Dropdown widget panel (session-only, not persisted). */
+  radioWidgetOpen: boolean;
+  radioToggleWidget: () => void;
+  radioSetWidgetOpen: (open: boolean) => void;
 }
 
 export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSlice> = (
@@ -142,4 +147,8 @@ export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSl
   radioReverb: 0,
   radioSetSlow: (v) => set({ radioSlow: Math.max(0, Math.min(1, v)) }),
   radioSetReverb: (v) => set({ radioReverb: Math.max(0, Math.min(1, v)) }),
+
+  radioWidgetOpen: false,
+  radioToggleWidget: () => set((s) => ({ radioWidgetOpen: !s.radioWidgetOpen })),
+  radioSetWidgetOpen: (open) => set({ radioWidgetOpen: open }),
 });

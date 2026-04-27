@@ -1,16 +1,17 @@
 'use client';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { useTypewriter } from '@/hooks/useTypewriter';
-import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
+import { getApp, getActiveAmbientApp, getWindowChrome } from '@/lib/apps';
 import { AppWindow } from './AppWindow';
-import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
 import { ZoomRects } from './ZoomRects';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons/runtime';
 import { WebGLSun } from '@/components/background/WebGLSun';
+import { MonolithWallpaper } from '@/components/background/MonolithWallpaper';
+import { MonolithThemeTuner } from '@/components/background/MonolithThemeTuner';
+import { RadioWidget } from '@/components/apps/radio/RadioWidget';
 
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {
@@ -55,19 +56,8 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 // Desktop Component
 // ============================================================================
 
-const TAGLINES = [
-  'Be kind, make rad sh*t',
-  'Est. 2023',
-  'From dawn to dusk',
-  'be both alchemist & substance',
-  'all assets open-sourced under the Rad public license',
-];
-
-export function Desktop({ className: _className = '' }: DesktopProps) {
+export function Desktop({ className = '' }: DesktopProps) {
   const { toggleWidget, windows } = useWindowManager();
-  const desktopApps = getDesktopLaunchers();
-  const taglines = useMemo(() => TAGLINES, []);
-  const { displayed, cursorVisible } = useTypewriter(taglines);
 
   // Resolve ambient capability from catalog
   const ambient = getActiveAmbientApp(windows);
@@ -76,48 +66,34 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
   const AmbientController = ambient?.ambient.controller;
 
   return (
-    <div className="fixed inset-0 overflow-hidden">
+    <div className={`fixed inset-0 overflow-hidden ${className}`.trim()}>
       {/* Background Layer - Ambient wallpaper in widget mode, WebGL sun otherwise */}
       {AmbientWallpaper ? (
         <div className="absolute inset-0 z-0 bg-inv">
           <AmbientWallpaper />
         </div>
       ) : (
-        <div className="absolute inset-0 z-0 bg-accent dark:bg-page">
+        <div className="rados-wallpaper absolute inset-0 z-0 bg-accent dark:bg-page">
           <WebGLSun />
+          <MonolithWallpaper />
         </div>
       )}
 
       {/* Background Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
-        <div className="relative">
-          {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
-          <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
-          {/* eslint-disable-next-line rdna/no-viewport-breakpoints-in-window-layout -- reason:desktop-watermark-scales-with-viewport owner:rad-os expires:2026-12-31 issue:DNA-001 */}
-          <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
-          <div className="text-sm font-mono font-bold uppercase max-w-[40ch] ml-2">
-            {displayed}
-            <span className={cursorVisible ? 'opacity-100' : 'opacity-0'}>|</span>
-          </div>
+      <div className="rados-watermark absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
+        <div className="rados-watermark-lockup relative">
+          <WordmarkLogo className="w-64 sm:w-80 md:w-96 mx-auto dark-glow-logo" />
         </div>
       </div>
 
-      {/* App Icons — top center */}
-      <div className="absolute z-10 top-0 left-0 right-0 flex flex-row items-center justify-center gap-2 p-4 pt-4">
-        {desktopApps.map((app) => (
-          <DesktopIcon
-            key={app.id}
-            appId={app.id}
-            label={app.label}
-            icon={app.icon}
-          />
-        ))}
-      </div>
-
-      {/* Bottom bar — Start + Utility icons */}
-      <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center pb-4">
+      {/* Top bar — Start + app launchers, marquee slot, settings */}
+      <div className="absolute top-0 left-0 right-0 z-[200] pt-2 px-2">
         <Taskbar />
       </div>
+
+      {/* Radio drop-down widget — always mounted (audio continuity), sits
+          behind the windows layer so opened windows can cover it. */}
+      <RadioWidget />
 
       {/* Windows Container - sits above icons but below taskbar */}
       <div className="absolute inset-0 z-[100] pointer-events-none">
@@ -137,8 +113,9 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
                 id={windowState.id}
                 title={config.windowTitle}
                 icon={config.windowIcon}
-                resizable={config.resizable}
                 defaultSize={config.defaultSize}
+                minSize={config.minSize}
+                aspectRatio={config.aspectRatio}
                 contentPadding={config.contentPadding}
                 chromeless={config.chromeless}
                 showWidgetButton={Boolean(config.ambient)}
@@ -168,9 +145,8 @@ export function Desktop({ className: _className = '' }: DesktopProps) {
 
       {/* System 7 zoom rectangles animation */}
       <ZoomRects />
+      <MonolithThemeTuner />
 
     </div>
   );
 }
-
-export default Desktop;

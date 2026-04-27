@@ -3,6 +3,7 @@ import { Desktop } from './Desktop';
 import { CommandPalette } from './CommandPalette';
 import { InvertModeProvider } from './InvertModeProvider';
 import { ToastProvider } from '@rdna/radiants/components/core';
+import { TooltipProvider } from '@rdna/ctrl';
 import { Agentation } from 'agentation';
 import { useHashRouting } from '@/hooks';
 
@@ -20,13 +21,13 @@ export function RadOSDesktop() {
 
   return (
     <ToastProvider>
-      <InvertModeProvider>
-        <Desktop />
-        <CommandPalette />
-        <Agentation />
-      </InvertModeProvider>
+      <TooltipProvider>
+        <InvertModeProvider>
+          <Desktop />
+          <CommandPalette />
+          <Agentation />
+        </InvertModeProvider>
+      </TooltipProvider>
     </ToastProvider>
   );
 }
-
-export default RadOSDesktop;

@@ -8,6 +8,40 @@ export type { WindowState } from './slices/windowsSlice';
 
 type RadOSState = WindowsSlice & PreferencesSlice & RadRadioSlice;
 
+function sanitizePersistedState(state: unknown) {
+  if (!state || typeof state !== 'object') {
+    return {};
+  }
+
+  const persistedState = state as Record<string, unknown>;
+
+  if (
+    persistedState.cornerShape !== 'circle' &&
+    persistedState.cornerShape !== 'chamfer' &&
+    persistedState.cornerShape !== 'scallop'
+  ) {
+    persistedState.cornerShape = 'chamfer';
+  }
+
+  if (
+    persistedState.pixelScale !== 1 &&
+    persistedState.pixelScale !== 2 &&
+    persistedState.pixelScale !== 3
+  ) {
+    persistedState.pixelScale = 1;
+  }
+
+  if (
+    persistedState.theme !== 'radiants' &&
+    persistedState.theme !== 'skr' &&
+    persistedState.theme !== 'monolith'
+  ) {
+    persistedState.theme = 'radiants';
+  }
+
+  return persistedState;
+}
+
 export const useRadOSStore = create<RadOSState>()(
   devtools(
     persist(
@@ -24,6 +58,11 @@ export const useRadOSStore = create<RadOSState>()(
           volume: state.volume,
           reduceMotion: state.reduceMotion,
           darkMode: state.darkMode,
+          darkModeAuto: state.darkModeAuto,
+          theme: state.theme,
+          pixelScale: state.pixelScale,
+          cornerShape: state.cornerShape,
+          monolithGradientMapValues: state.monolithGradientMapValues,
           // Persist radio favorites
           radioFavorites: state.radioFavorites,
           // Don't persist windows (fresh start each session)
@@ -45,34 +84,17 @@ export const useRadOSStore = create<RadOSState>()(
               }
             }
           }
-          return state as unknown as RadOSState;
+          return sanitizePersistedState(state) as unknown as RadOSState;
         },
+        merge: (persisted, current) => ({
+          ...current,
+          ...sanitizePersistedState(persisted),
+        }),
       }
     ),
     { name: 'RadOS Store' }
   )
 );
-
-export const useWindowsStore = () =>
-  useRadOSStore(
-    useShallow((state) => ({
-      windows: state.windows,
-      nextZIndex: state.nextZIndex,
-      openWindow: state.openWindow,
-      openWindowWithZoom: state.openWindowWithZoom,
-      clearZoomAnimation: state.clearZoomAnimation,
-      zoomAnimation: state.zoomAnimation,
-      closeWindow: state.closeWindow,
-      focusWindow: state.focusWindow,
-      toggleFullscreen: state.toggleFullscreen,
-      toggleWidget: state.toggleWidget,
-      updateWindowPosition: state.updateWindowPosition,
-      updateWindowSize: state.updateWindowSize,
-      setActiveTab: state.setActiveTab,
-      getWindow: state.getWindow,
-      getOpenWindows: state.getOpenWindows,
-    }))
-  );
 
 export const usePreferencesStore = () =>
   useRadOSStore(
@@ -81,6 +103,11 @@ export const usePreferencesStore = () =>
       reduceMotion: state.reduceMotion,
       invertMode: state.invertMode,
       darkMode: state.darkMode,
+      darkModeAuto: state.darkModeAuto,
+      theme: state.theme,
+      pixelScale: state.pixelScale,
+      cornerShape: state.cornerShape,
+      monolithGradientMapValues: state.monolithGradientMapValues,
       setVolume: state.setVolume,
       setReduceMotion: state.setReduceMotion,
       toggleReduceMotion: state.toggleReduceMotion,
@@ -88,6 +115,11 @@ export const usePreferencesStore = () =>
       toggleInvertMode: state.toggleInvertMode,
       setDarkMode: state.setDarkMode,
       toggleDarkMode: state.toggleDarkMode,
+      setDarkModeAuto: state.setDarkModeAuto,
+      setTheme: state.setTheme,
+      setPixelScale: state.setPixelScale,
+      setCornerShape: state.setCornerShape,
+      setMonolithGradientMapValues: state.setMonolithGradientMapValues,
     }))
   );
 
@@ -120,5 +152,8 @@ export const useRadRadioStore = () =>
       reverb: state.radioReverb,
       setSlow: state.radioSetSlow,
       setReverb: state.radioSetReverb,
+      widgetOpen: state.radioWidgetOpen,
+      toggleWidget: state.radioToggleWidget,
+      setWidgetOpen: state.radioSetWidgetOpen,
     }))
   );
