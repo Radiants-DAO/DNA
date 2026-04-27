@@ -80,7 +80,7 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
       data-rdna="menubar"
       modal={modal}
       orientation={orientation}
-      className={`pixel-rounded-xs flex items-center bg-inv ${className}`.trim()}
+      className={`pixel-rounded-4 flex items-center bg-inv ${className}`.trim()}
     >
       {children}
     </BaseMenubar>
@@ -132,16 +132,15 @@ function Content({ children, className = '' }: MenubarContentProps) {
           className={`
             z-50
             min-w-[10rem]
+            py-1
+            pixel-rounded-4 bg-card pixel-shadow-raised
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
         >
-          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
-            <div className="py-1">
-            {children}
-            </div>
-          </div>
+          {children}
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>
@@ -176,7 +175,7 @@ function Item({
     >
       <span>{children}</span>
       {shortcut && (
-        <span className="text-xs text-mute ml-auto pl-4">{shortcut}</span>
+        <span className="text-mute ml-auto pl-4">{shortcut}</span>
       )}
     </BaseMenu.Item>
   );
@@ -216,5 +215,3 @@ function Label({ children, className = '' }: MenubarLabelProps) {
 // ============================================================================
 
 export const Menubar = { Root, Menu, Trigger, Content, Item, Separator, Label };
-
-export default Menubar;

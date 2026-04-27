@@ -15,7 +15,7 @@ describe('Alert', () => {
     const alert = screen.getByRole('alert');
     expect(alert).toBeInTheDocument();
     expect(alert).toHaveAttribute('data-variant', 'info');
-    expect(alert).toHaveClass('pixel-rounded-xs');
+    expect(alert).toHaveClass('pixel-rounded-4');
     expect(alert).toHaveClass('pixel-shadow-raised');
   });
 });

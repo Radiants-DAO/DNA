@@ -29,7 +29,7 @@
         "rdna": {
           "source": "--color-card",
           "srgb": {
-            "light": "#ffffff",
+            "light": "#fffcf3",
             "dark": "#000000"
           }
         }
@@ -185,7 +185,7 @@
           "source": "--color-head",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#ffffff"
+            "dark": "#fffcf3"
           }
         }
       }
@@ -213,13 +213,13 @@
       "$extensions": {
         "modes": {
           "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.6)"
         },
         "rdna": {
           "source": "--color-mute",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }
@@ -243,16 +243,16 @@
     },
     "link": {
       "$type": "color",
-      "$value": "{color.sky-blue-dark}",
+      "$value": "{color.sky-blue}",
       "$extensions": {
         "modes": {
-          "light": "{color.sky-blue-dark}",
+          "light": "{color.sky-blue}",
           "dark": "{color.sky-blue}"
         },
         "rdna": {
           "source": "--color-content-link",
           "srgb": {
-            "light": "#276182",
+            "light": "#95bad2",
             "dark": "#95bad2"
           }
         }
@@ -287,7 +287,7 @@
           "source": "--color-content-heading",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#ffffff"
+            "dark": "#fffcf3"
           }
         }
       }
@@ -332,13 +332,13 @@
       "$extensions": {
         "modes": {
           "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.6)"
         },
         "rdna": {
           "source": "--color-content-muted",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }
@@ -351,30 +351,30 @@
       "$extensions": {
         "modes": {
           "light": "{color.ink}",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.2)"
         },
         "rdna": {
           "source": "--color-line",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }
     },
     "rule": {
       "$type": "color",
-      "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+      "$value": "{color.ink}",
       "$extensions": {
         "modes": {
-          "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+          "light": "{color.ink}",
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.12)"
         },
         "rdna": {
           "source": "--color-rule",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }
@@ -419,30 +419,30 @@
       "$extensions": {
         "modes": {
           "light": "{color.ink}",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.2)"
         },
         "rdna": {
           "source": "--color-edge-primary",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }
     },
     "muted": {
       "$type": "color",
-      "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+      "$value": "{color.ink}",
       "$extensions": {
         "modes": {
-          "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
-          "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+          "light": "{color.ink}",
+          "dark": "oklch(0.9126 0.1170 93.68 / 0.12)"
         },
         "rdna": {
           "source": "--color-edge-muted",
           "srgb": {
             "light": "#0f0e0c",
-            "dark": "#fef8e2"
+            "dark": "#fce184"
           }
         }
       }

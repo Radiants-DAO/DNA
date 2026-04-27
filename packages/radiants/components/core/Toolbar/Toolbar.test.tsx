@@ -14,9 +14,9 @@ describe('Toolbar', () => {
     const button = screen.getByRole('button', { name: 'Bold' });
     const link = screen.getByRole('link', { name: 'Docs' });
 
-    expect(root).toHaveClass('pixel-rounded-sm');
-    expect(button).toHaveClass('pixel-rounded-xs');
-    expect(link).toHaveClass('pixel-rounded-xs');
+    expect(root).toHaveClass('pixel-rounded-6');
+    expect(button).toHaveClass('pixel-rounded-4');
+    expect(link).toHaveClass('pixel-rounded-4');
     expect(container.querySelector('[data-slot="toolbar-button"]')).not.toBeInTheDocument();
   });
 });

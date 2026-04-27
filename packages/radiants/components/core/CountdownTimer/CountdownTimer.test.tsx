@@ -8,8 +8,8 @@ describe('CountdownTimer', () => {
     );
 
     expect(container.querySelector('[data-rdna="countdowntimer"]')).toBeInTheDocument();
-    expect(container.querySelector('.pixel-rounded-lg')).toBeInTheDocument();
+    expect(container.querySelector('.pixel-rounded-12')).toBeInTheDocument();
     expect(container.querySelector('.pixel-shadow-raised')).toBeInTheDocument();
-    expect(container.querySelectorAll('.pixel-rounded-sm')).toHaveLength(3);
+    expect(container.querySelectorAll('.pixel-rounded-6')).toHaveLength(3);
   });
 });

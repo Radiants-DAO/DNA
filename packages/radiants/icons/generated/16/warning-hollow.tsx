@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const WarningHollow = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 11H3V13H2V11ZM3 9H4V11H3V9ZM3 13H13V14H3V13ZM4 7H5V9H4V7ZM5 5H6V7H5V5ZM6 3H7V5H6V3ZM7 2H9V3H7V2ZM7 6H9V10H8V9H7V6ZM8 11H9V12H8V11ZM9 3H10V5H9V3ZM10 5H11V7H10V5ZM11 7H12V9H11V7ZM12 9H13V11H12V9ZM13 11H14V13H13V11Z" /></svg>;
-WarningHollow.displayName = 'WarningHollow';
-
-export default WarningHollow;

@@ -6,7 +6,7 @@ describe('Meter', () => {
     const { container } = render(<Meter value={60} />);
     const meter = container.querySelector('[data-rdna="meter"]');
     expect(meter).toBeInTheDocument();
-    const shell = container.querySelector('[data-rdna="meter"] .pixel-rounded-xs');
+    const shell = container.querySelector('[data-rdna="meter"] .pixel-rounded-4');
     expect(shell).toBeInTheDocument();
     expect(shell).toHaveClass('bg-page');
   });

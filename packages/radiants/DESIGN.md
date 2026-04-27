@@ -4,11 +4,11 @@
 
 ## How to Use This Document
 
-This document is the **canonical source of truth** for the RDNA design system. It defines what the system _should_ be — current code may not match. When code and this document conflict, this document wins.
+This document is the **canonical source of truth** for the RDNA design system. It defines intent and source-backed implementation contracts. Generated regions are rewritten from `tokens.css`, `dark.css`, `generated/typography-tokens.css`, and `eslint/index.mjs`; when a generated table conflicts with prose, the generated table wins until the source file changes.
 
 **Audience:** Designers, engineers, and AI agents implementing UI.
 
-**Scope:** Part 1 (Design System) applies to all RDNA consumers. Part 2 (RadOS Application) applies only to the rad-os app. Part 3 captures cross-cutting hard-won implementation rules.
+**Scope:** Part 1 applies to all RDNA consumers. Part 2 links RadOS product-specific behavior to the RadOS spec while retaining portable AppWindow guidance. Part 3 captures cross-cutting hard-won implementation rules.
 
 ### Normative Language
 
@@ -130,7 +130,7 @@ These beliefs manifest as a spatial hierarchy. Radiants treats art as the center
 |-------|------|----------|
 | **Environment** | Art, video, canvas — the deepest layer. This is where emotion lives. | WebGL sun, Rad Radio fullscreen video, dither textures |
 | **Surface** | Windows, cards, panels — containers for content. The familiar interaction layer. | AppWindow, Card, Dialog, Sheet |
-| **Chrome** | Title bars, buttons, controls — minimal and functional. The thinnest layer. | WindowTitleBar, Button, Tabs, Taskbar |
+| **Chrome** | Title bars, buttons, controls — minimal and functional. The thinnest layer. | AppWindow chrome, Button, Tabs, Taskbar |
 
 **Rule:** Chrome should never compete with art. When in doubt, reduce chrome.
 
@@ -169,17 +169,19 @@ Source: [`tokens.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/
 
 Raw color values. Never use these directly in component code — they exist only to be referenced by semantic tokens.
 
-| Token | Value | Name |
-|-------|-------|------|
+<!-- BEGIN GENERATED:color-brand-palette -->
+| Token | Value | Usage |
+|---|---|---|
 | `--color-cream` | `oklch(0.9780 0.0295 94.34)` | Primary warm neutral |
-| `--color-ink` | `oklch(0.1641 0.0044 84.59)` | Primary dark (default dark tone) |
-| `--color-pure-black` | `oklch(0.0000 0.0000 0)` | Absolute black (reserved) |
+| `--color-ink` | `oklch(0.1641 0.0044 84.59)` | Primary dark tone |
+| `--color-pure-black` | `oklch(0.0000 0.0000 0)` | Absolute black, reserved for deepest Moon surfaces |
 | `--color-sun-yellow` | `oklch(0.9126 0.1170 93.68)` | Brand accent |
-| `--color-sky-blue` | `oklch(0.7701 0.0527 236.81)` | Secondary accent |
+| `--color-sky-blue` | `oklch(0.7701 0.0527 236.81)` | Secondary accent and links |
 | `--color-sunset-fuzz` | `oklch(0.8546 0.1039 68.93)` | Warm accent |
-| `--color-sun-red` | `oklch(0.7429 0.1568 21.43)` | Error / destructive |
-| `--color-mint` | `oklch(0.9312 0.0702 142.51)` | Success |
-| `--color-pure-white` | `oklch(0.9909 0.0123 91.51)` | Warm white (reserved) |
+| `--color-sun-red` | `oklch(0.7429 0.1568 21.43)` | Error and destructive states |
+| `--color-mint` | `oklch(0.9312 0.0702 142.51)` | Success states |
+| `--color-pure-white` | `oklch(99.1% 0.012 91.5)` | Warm white, reserved for hard contrast |
+<!-- END GENERATED:color-brand-palette -->
 
 > **Deprecated:** `--color-warm-cloud` is removed. Use `--color-cream` instead. They were identical (`#FEF8E2`).
 
@@ -202,73 +204,110 @@ Raw color values. Never use these directly in component code — they exist only
 
 Purpose-based tokens that flip between Sun Mode and Moon Mode. **All component code MUST use these.**
 
+<!-- BEGIN GENERATED:color-surface -->
 #### Surface Tokens
 
 | Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-surface-primary` | cream | ink |
-| `--color-surface-secondary` | ink | cream |
-| `--color-surface-tertiary` | sunset-fuzz | `oklch(0.3129 0.0389 73.57)` |
-| `--color-surface-elevated` | pure-white | pure-black |
-| `--color-surface-muted` | cream | `oklch(0.9126 0.1170 93.68 / 0.08)` |
-| `--color-surface-overlay-subtle` | cream | cream (5% opacity) |
-| `--color-surface-overlay-medium` | sun-yellow | cream (10% opacity) |
+|---|---|---|
+| `--color-page` | `var(--color-cream)` | `var(--color-ink)` |
+| `--color-card` | `var(--color-pure-white)` | `var(--color-pure-black)` |
+| `--color-tinted` | `var(--color-sunset-fuzz)` | `oklch(0.3129 0.0389 73.57)` |
+| `--color-inv` | `var(--color-ink)` | `var(--color-ink)` |
+| `--color-depth` | `var(--color-cream)` | `oklch(0.22 0.0100 84.59)` |
+| `--color-surface-primary` | _(not defined in Sun)_ | `var(--color-ink)` |
+| `--color-surface-secondary` | _(not defined in Sun)_ | `var(--color-cream)` |
+| `--color-surface-tertiary` | _(not defined in Sun)_ | `oklch(0.3129 0.0389 73.57)` |
+| `--color-surface-elevated` | _(not defined in Sun)_ | `var(--color-pure-black)` |
+| `--color-surface-muted` | _(not defined in Sun)_ | `oklch(0.9126 0.1170 93.68 / 0.08)` |
+<!-- END GENERATED:color-surface -->
 
+<!-- BEGIN GENERATED:color-overlay -->
 #### Overlay Tokens
 
 | Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-hover` | sun-yellow | sun-yellow (8% opacity) |
-| `--color-active` | sun-yellow | sun-yellow (12% opacity) |
+|---|---|---|
+| `--color-hover` | `var(--color-sun-yellow)` | `oklch(0.9126 0.1170 93.68 / 0.08)` |
+| `--color-active` | `var(--color-sun-yellow)` | `oklch(0.9126 0.1170 93.68 / 0.12)` |
+| `--color-hover-overlay` | _(not defined in Sun)_ | `oklch(0.9126 0.1170 93.68 / 0.08)` |
+| `--color-active-overlay` | _(not defined in Sun)_ | `oklch(0.9126 0.1170 93.68 / 0.12)` |
+| `--color-surface-overlay-subtle` | _(not defined in Sun)_ | `oklch(0.9126 0.1170 93.68 / 0.04)` |
+| `--color-surface-overlay-medium` | _(not defined in Sun)_ | `oklch(0.9126 0.1170 93.68 / 0.08)` |
+<!-- END GENERATED:color-overlay -->
 
 Sun Mode opacity policy: overlays are fully opaque primitive colors. In Sun Mode, opacity is reserved for text-secondary and explicitly muted/disabled states. In Moon Mode, overlays use a sun-yellow opacity ladder for depth and hover feedback.
 
-#### Content Tokens
-
 Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → secondary (85%) → muted (60%). This gives subtle text differentiation while respecting the 3-color palette. In Moon Mode, cream replaces ink at comparable opacities.
 
-| Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-main` | ink (100%) | cream |
-| `--color-sub` | ink (85% opacity) | cream (85% opacity) |
-| `--color-head` | ink | pure-white |
-| `--color-mute` | ink (60% opacity) | cream (60% opacity) |
-| `--color-flip` | cream | ink |
-| `--color-link` | sky-blue | sky-blue |
-
-#### Edge Tokens (Borders)
+<!-- BEGIN GENERATED:color-content -->
+#### Content Tokens
 
 | Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-line` | ink | cream (20% opacity) |
-| `--color-rule` | ink (20% opacity) | cream (12% opacity) |
-| `--color-line-hover` | ink (30% opacity) | cream (35% opacity) |
-| `--color-focus` | sun-yellow | sun-yellow |
+|---|---|---|
+| `--color-main` | `var(--color-ink)` | `var(--color-cream)` |
+| `--color-head` | `var(--color-ink)` | `var(--color-pure-white)` |
+| `--color-sub` | `oklch(0.1641 0.0044 84.59 / 0.85)` | `oklch(0.9780 0.0295 94.34 / 0.85)` |
+| `--color-mute` | `oklch(0.1641 0.0044 84.59 / 0.6)` | `oklch(0.9126 0.1170 93.68 / 0.6)` |
+| `--color-flip` | `var(--color-cream)` | `var(--color-cream)` |
+| `--color-link` | `var(--color-sky-blue)` | `var(--color-sky-blue)` |
+| `--color-content-primary` | `var(--color-ink)` | `var(--color-cream)` |
+| `--color-content-heading` | `var(--color-ink)` | `var(--color-pure-white)` |
+| `--color-content-secondary` | `oklch(0.1641 0.0044 84.59 / 0.85)` | `oklch(0.9780 0.0295 94.34 / 0.85)` |
+| `--color-content-inverted` | `var(--color-cream)` | `var(--color-ink)` |
+| `--color-content-muted` | `oklch(0.1641 0.0044 84.59 / 0.6)` | `oklch(0.9126 0.1170 93.68 / 0.6)` |
+| `--color-content-link` | `var(--color-sky-blue)` | `var(--color-sky-blue)` |
+<!-- END GENERATED:color-content -->
 
+<!-- BEGIN GENERATED:color-edge -->
+#### Edge Tokens
+
+| Token | Sun Mode | Moon Mode |
+|---|---|---|
+| `--color-line` | `var(--color-ink)` | `oklch(0.9126 0.1170 93.68 / 0.2)` |
+| `--color-rule` | `var(--color-ink)` | `oklch(0.9126 0.1170 93.68 / 0.12)` |
+| `--color-line-hover` | `oklch(0.1641 0.0044 84.59 / 0.3)` | `oklch(0.9780 0.0295 94.34 / 0.35)` |
+| `--color-focus` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+| `--color-edge-primary` | `var(--color-ink)` | `oklch(0.9126 0.1170 93.68 / 0.2)` |
+| `--color-edge-muted` | `var(--color-ink)` | `oklch(0.9126 0.1170 93.68 / 0.12)` |
+| `--color-edge-hover` | `oklch(0.1641 0.0044 84.59 / 0.3)` | `oklch(0.9780 0.0295 94.34 / 0.35)` |
+| `--color-edge-focus` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+<!-- END GENERATED:color-edge -->
+
+<!-- BEGIN GENERATED:color-action -->
 #### Action Tokens
 
 | Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-accent` | sun-yellow | sun-yellow |
-| `--color-accent-inv` | ink | cream |
-| `--color-danger` | sun-red | sun-red |
-| `--color-accent-soft` | sunset-fuzz | sunset-fuzz |
+|---|---|---|
+| `--color-accent` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+| `--color-accent-inv` | `var(--color-ink)` | `var(--color-ink)` |
+| `--color-accent-soft` | `var(--color-sunset-fuzz)` | `var(--color-sunset-fuzz)` |
+| `--color-danger` | `var(--color-sun-red)` | `var(--color-sun-red)` |
+| `--color-success` | `var(--color-mint)` | `var(--color-mint)` |
+| `--color-warning` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+| `--color-action-primary` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+| `--color-action-secondary` | `var(--color-ink)` | `var(--color-ink)` |
+| `--color-action-destructive` | `var(--color-sun-red)` | `var(--color-sun-red)` |
+| `--color-action-accent` | `var(--color-sunset-fuzz)` | `var(--color-sunset-fuzz)` |
+<!-- END GENERATED:color-action -->
 
+<!-- BEGIN GENERATED:color-window-chrome -->
 #### Window Chrome Tokens
 
 | Token | Sun Mode | Moon Mode |
-|-------|----------|-----------|
-| `--color-window-chrome-from` | sun-yellow | ink |
-| `--color-window-chrome-to` | cream | ink |
+|---|---|---|
+| `--color-window-chrome-from` | `var(--color-sun-yellow)` | `var(--color-ink)` |
+| `--color-window-chrome-to` | `var(--color-cream)` | `var(--color-ink)` |
+<!-- END GENERATED:color-window-chrome -->
 
+<!-- BEGIN GENERATED:color-status -->
 #### Status Tokens
 
-| Token | Value |
-|-------|-------|
-| `--color-success` | mint |
-| `--color-warning` | sun-yellow |
-| `--color-danger` | sun-red |
-| `--color-link` | sky-blue |
+| Token | Sun Mode | Moon Mode |
+|---|---|---|
+| `--color-status-success` | `var(--color-mint)` | `var(--color-mint)` |
+| `--color-status-warning` | `var(--color-sun-yellow)` | `var(--color-sun-yellow)` |
+| `--color-status-error` | `var(--color-sun-red)` | `var(--color-sun-red)` |
+| `--color-status-info` | `var(--color-sky-blue)` | `var(--color-sky-blue)` |
+<!-- END GENERATED:color-status -->
 
 ### Token Usage Rules
 
@@ -353,7 +392,7 @@ In Tailwind v4, `max-w-{T-shirt-size}` classes resolve to tiny spacing values, N
 
 ## 3. Typography
 
-Source: [`typography.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/typography.css) (base styles) | [`fonts.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/fonts.css) (font-face declarations)
+Source: [`typography.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/typography.css) (base styles) | [`fonts.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/fonts.css) (font-face declarations) | [`generated/typography-tokens.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/generated/typography-tokens.css) (generated scale)
 
 ### Fonts
 
@@ -367,17 +406,24 @@ Source: [`typography.css`](https://github.com/Radiants-DAO/DNA/blob/master/packa
 
 ### Type Scale
 
-rem-based on a uniform 0.25rem (4px) grid. The entire scale flexes with the root font size clamp.
+Generated by `packages/radiants/scripts/generate-typography-tokens.ts` from `pretext-type-scale.ts`. The scale uses fixed small UI sizes, then a modular progression for display sizes.
 
-| Token | Value | At 16px root |
-|-------|-------|-------------|
-| `--font-size-xs` | `0.5rem` | 8px |
+<!-- BEGIN GENERATED:typography-scale -->
+| Token | Value | At 16px Root |
+|---|---|---|
+| `--font-size-xs` | `0.625rem` | 10px |
 | `--font-size-sm` | `0.75rem` | 12px |
 | `--font-size-base` | `1rem` | 16px |
-| `--font-size-lg` | `1.25rem` | 20px |
-| `--font-size-xl` | `1.5rem` | 24px |
-| `--font-size-2xl` | `1.75rem` | 28px |
-| `--font-size-3xl` | `2rem` | 32px |
+| `--font-size-lg` | `1.333rem` | 21px |
+| `--font-size-xl` | `1.777rem` | 28px |
+| `--font-size-2xl` | `2.369rem` | 38px |
+| `--font-size-3xl` | `3.157rem` | 51px |
+| `--font-size-4xl` | `4.209rem` | 67px |
+| `--font-size-5xl` | `5.61rem` | 90px |
+| `--font-size-display` | `5.61rem` | 90px |
+<!-- END GENERATED:typography-scale -->
+
+Fluid variants also ship for container-aware editorial layouts: `--font-size-fluid-{sm,base,lg,xl,2xl,3xl,4xl}`. Use them only when the surrounding layout can absorb fluid text changes without clipping controls.
 
 ### Root Font Size Clamp
 
@@ -426,13 +472,13 @@ Shadows tell an elevation story. In Sun Mode, a harsh overhead sun casts sharp d
 
 | Level | Token | Sun Mode | Moon Mode | Used by |
 |-------|-------|----------|-----------|---------|
-| **Inset** | `shadow-inset` | `inset 0 0 0 1px ink` | `inset 0 0 8px glow-subtle` | Slider tracks, recessed containers |
-| **Surface** | `shadow-surface` | `0 1px 0 0 ink` | `0 0 2px glow-subtle` | Nested containers, sections within cards |
-| **Resting** | `shadow-resting` | `0 2px 0 0 ink` | `0 0 6px glow-subtle` | Buttons at rest, badges, inputs |
-| **Lifted** | `shadow-lifted` | `0 4px 0 0 ink` | `0 0 10px glow + 20px subtle` | Interactive hover (buttons, selects, switches) — vertical only |
-| **Raised** | `shadow-raised` | `2px 2px 0 0 ink` | `0 0 10px glow + 20px subtle` | Cards, panels, popovers — diagonal |
-| **Floating** | `shadow-floating` | `4px 4px 0 0 ink` | `0 0 12px glow + 24px subtle` | Windows, dialogs, sheets — diagonal |
-| **Focused** | `shadow-focused` | `4px 4px 0 0 ink` | `0 0 12px + 24px + 36px glow` | Active/focused window only |
+| **Inset** | `shadow-inset` | `inset 0 0 0 1px ink` | rule inset ring + 6px subtle glow | Slider tracks, recessed containers |
+| **Surface** | `shadow-surface` | `0 1px 0 0 ink` | rule ring + 1px/2px subtle glow | Nested containers, sections within cards |
+| **Resting** | `shadow-resting` | `0 2px 0 0 ink` | rule ring + 4px/8px subtle glow | Buttons at rest, badges, inputs |
+| **Lifted** | `shadow-lifted` | `0 4px 0 0 ink` | line ring + 8px glow + 16px subtle glow | Interactive hover (buttons, selects, switches) — vertical only |
+| **Raised** | `shadow-raised` | `2px 2px 0 0 ink` | line ring + 8px glow + 20px subtle glow | Cards, panels, popovers — diagonal |
+| **Floating** | `shadow-floating` | `4px 4px 0 0 ink` | line ring + 10px glow + 24px subtle glow | Windows, dialogs, sheets — diagonal |
+| **Focused** | `shadow-focused` | 2px sun-yellow focus glow | line-hover ring + 12px/24px glow + 36px subtle glow | Active/focused window only |
 
 ### Status Glows
 
@@ -446,7 +492,7 @@ Colored variants of the `raised` level for status feedback:
 
 ### Pixel-Cornered Shadows
 
-Elements with pixel corners (`rounded-xs/sm/md/lg`) MUST use `pixel-shadow-*` utilities instead of `shadow-*`. Standard `box-shadow` gets clipped by `clip-path`. The `pixel-shadow-*` utilities use `filter: drop-shadow()` which renders outside the clip-path.
+Elements with pixel corners (`pixel-rounded-4/6/8/12/20` or `pixel-corners`) MUST use `pixel-shadow-*` utilities instead of `shadow-*`. Standard `box-shadow` gets clipped by the mask layer. The `pixel-shadow-*` utilities use `filter: drop-shadow()` which renders outside the clipped shape.
 
 ```tsx
 // DO: Use pixel-shadow on clipped elements
@@ -487,25 +533,31 @@ Inset `box-shadow` (bevels) works fine inside clip-path and is used for the retr
 
 ## 5. Motion & Animation
 
-### Duration Scale
+### Motion Tokens
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--duration-instant` | `0ms` | Immediate state changes, reduced-motion fallback |
-| `--duration-fast` | `100ms` | Hover states, focus rings, micro-interactions |
-| `--duration-base` | `150ms` | Standard transitions (opacity, color, border) |
-| `--duration-moderate` | `200ms` | Medium complexity (accordion expand, tab switch) |
-| `--duration-slow` | `300ms` | Complex animations (dialog open, sheet slide, toast enter) |
+<!-- BEGIN GENERATED:motion-tokens -->
+#### Durations
 
-**Hard ceiling:** No animation may exceed 300ms.
+| Token | Value |
+|---|---|
+| `--duration-instant` | `0ms` |
+| `--duration-fast` | `100ms` |
+| `--duration-base` | `150ms` |
+| `--duration-moderate` | `200ms` |
+| `--duration-slow` | `300ms` |
+| `--duration-scalar` | `1` |
 
-### Easing
+#### Easings
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--easing-default` | `cubic-bezier(0, 0, 0.2, 1)` | All transitions |
+| Token | Value |
+|---|---|
+| `--easing-default` | `cubic-bezier(0, 0, 0.2, 1)` |
+| `--easing-out` | `cubic-bezier(0, 0, 0.2, 1)` |
+| `--easing-in` | `cubic-bezier(0.4, 0, 1, 1)` |
+| `--easing-spring` | `cubic-bezier(0.22, 1, 0.36, 1)` |
+<!-- END GENERATED:motion-tokens -->
 
-**Rule:** Ease-out only. No ease-in, no ease-in-out, no linear (except progress bars). One easing curve for the entire system.
+**Hard ceiling:** No animation may exceed 300ms. `--easing-default` and `--easing-out` currently share the same curve; `--easing-in` exists for exits, and `--easing-spring` exists for popover/badge settle-in motion. Do not introduce ad hoc easing literals in component code.
 
 ### Sun Mode Motion: Snap on Input, Ease on State
 
@@ -550,7 +602,7 @@ When scalar is 0, all transitions resolve to `0ms` — instant state changes wit
 | `animate-slideIn` | TranslateX(100%) → 0 + opacity | `--duration-moderate` |
 | `animate-slide-in-right` | TranslateX(100%) → 0 | `--duration-moderate` |
 
-> **Note:** These are enter-only animations. No exit animations are defined — elements are removed immediately.
+> **Note:** `animations.css` still carries hardcoded `0.15s` and `0.2s` literals that numerically match the duration tokens. Tokenizing those animation declarations is a follow-up; do not add new hardcoded animation literals.
 
 ### Usage Rules
 
@@ -577,13 +629,17 @@ When scalar is 0, all transitions resolve to `0ms` — instant state changes wit
 
 ### Size Scale
 
-All interactive elements (buttons, inputs, selects) share a consistent height scale on an 8px grid:
+Buttons currently ship five size presets; inputs and selects should align to the nearest equivalent control height unless their component contract says otherwise.
 
 | Size | Height | Use |
 |------|--------|-----|
-| `sm` | 24px (`h-6`) | Compact UI: title bar buttons, inline actions, tight layouts |
-| `md` | 32px (`h-8`) | Standard: most buttons, inputs, selects |
-| `lg` | 40px (`h-10`) | Hero CTAs, primary form inputs, prominent actions |
+| `xs` | 20px (`h-5`) | Ultra-compact chrome and dense icon controls |
+| `sm` | 24px (`h-6`) | Title bar buttons, inline actions, tight layouts |
+| `md` | 28px (`h-7`) | Standard compact RDNA button |
+| `lg` | 32px (`h-8`) | Prominent controls inside panels |
+| `xl` | 40px (`h-10`) | Hero CTAs and large primary actions |
+
+Button modes are `solid`, `flat`, `text`, and `pattern`; tones are `accent`, `danger`, `success`, `neutral`, `cream`, `white`, `info`, `tinted`, and `transparent`. Mode controls treatment, tone controls semantic color through `data-color`, and size controls height/padding/text scale.
 
 ### Borders
 
@@ -612,11 +668,11 @@ Pixel corners use **CSS `mask-image`** to clip elements to a staircase shape. Ap
 
 | Class | Radius | Use |
 |-------|--------|-----|
-| `pixel-rounded-xs` | 4px staircase | Buttons, inputs, badges, checkboxes |
-| `pixel-rounded-sm` | 6px staircase | Tabs, toasts |
-| `pixel-rounded-md` | 8px staircase | Cards, menus |
-| `pixel-rounded-lg` | 12px staircase | Windows, dialogs |
-| `pixel-rounded-xl` | 20px staircase | Large panels |
+| `pixel-rounded-4` | 4px staircase | Buttons, inputs, badges, checkboxes |
+| `pixel-rounded-6` | 6px staircase | Tabs, toasts |
+| `pixel-rounded-8` | 8px staircase | Cards, menus |
+| `pixel-rounded-12` | 12px staircase | Windows, dialogs |
+| `pixel-rounded-20` | 20px staircase | Large panels |
 | `rounded-full` | Unchanged | Switch tracks, radio buttons (no pixel corners) |
 
 **Pixel corners are opt-in.** Standard `rounded-*` classes remain plain Tailwind border-radius with no clip-path or mask side effects.
@@ -632,18 +688,18 @@ Pixel corners use **CSS `mask-image`** to clip elements to a staircase shape. Ap
 <PixelBorder size="sm" background="bg-page">...</PixelBorder>
 
 // DON'T: CSS border on pixel-cornered elements
-<div className="pixel-rounded-sm border border-line bg-page">...</div>
+<div className="pixel-rounded-6 border border-line bg-page">...</div>
 ```
 
 **MUST NOT use `box-shadow` for external shadows on pixel-cornered elements.** `mask-image` clips `box-shadow`. Use `filter: drop-shadow()` via the `pixel-shadow-*` utilities instead.
 
 | Utility | Sun Mode | Moon Mode |
 |---------|----------|-----------|
-| `pixel-shadow-surface` | `drop-shadow(0 1px 0 ink)` | Subtle glow |
-| `pixel-shadow-resting` | `drop-shadow(0 2px 0 ink)` | Soft glow |
-| `pixel-shadow-lifted` | `drop-shadow(0 4px 0 ink)` | Medium glow |
-| `pixel-shadow-raised` | `drop-shadow(2px 2px 0 ink)` | Warm glow |
-| `pixel-shadow-floating` | `drop-shadow(4px 4px 0 ink)` | Strong glow |
+| `pixel-shadow-surface` | `drop-shadow(0 1px 0 ink)` | Moon override in `dark.css`: subtle ambient glow |
+| `pixel-shadow-resting` | `drop-shadow(0 2px 0 ink)` | Moon override in `dark.css`: soft ambient glow |
+| `pixel-shadow-lifted` | `drop-shadow(0 4px 0 ink)` | Moon override in `dark.css`: medium ambient glow |
+| `pixel-shadow-raised` | `drop-shadow(2px 2px 0 ink)` | Moon override in `dark.css`: warm raised glow |
+| `pixel-shadow-floating` | `drop-shadow(4px 4px 0 ink)` | Moon override in `dark.css`: strongest floating glow |
 
 **MUST NOT nest pixel-cornered elements that both need visible borders.** When a parent and child both have `rounded-*`, both generate `::after` borders. Suppress the parent's `::after` via CSS (e.g. `[data-slot="button-root"]::after { display: none }`).
 
@@ -663,8 +719,8 @@ Pixel corners use **CSS `mask-image`** to clip elements to a staircase shape. Ap
 Void elements (`<img>`, `<input>`) cannot have `::after`. Wrap them in a `--wrapper` div:
 
 ```tsx
-<div className="pixel-rounded-sm--wrapper">
-  <img className="pixel-rounded-sm" src="..." />
+<div className="pixel-rounded-6--wrapper">
+  <img className="pixel-rounded-6" src="..." />
 </div>
 ```
 
@@ -686,7 +742,7 @@ outline: 2px solid var(--color-focus);
 outline-offset: 2px;
 ```
 
-This is applied automatically to all `.rounded-xs/sm/md/lg:focus-visible` elements in `pixel-corners.css`. The outline is rectangular (doesn't follow the staircase shape), but is accessible and visible.
+This is applied automatically to all `.pixel-rounded-4/6/8/12/20:focus-visible` and `.pixel-corners:focus-visible` elements in `pixel-corners.css`. The outline is rectangular (doesn't follow the staircase shape), but is accessible and visible.
 
 Sun-yellow in both modes — high contrast against cream and ink backgrounds.
 
@@ -736,9 +792,18 @@ Apply via `.custom-scrollbar` utility class. Dark mode variant: `.custom-scrollb
 
 Source: [`components/core/`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/core)
 
+### Package Map
+
+| Package | Role | Contract note |
+|---------|------|---------------|
+| `@rdna/radiants` | Core tokens, CSS, icons, component primitives, registry metadata, ESLint plugin | Core components follow `*.meta.ts` plus generated schemas |
+| `@rdna/ctrl` | Dense control surfaces, selectors, rows, rails, and editor-style layout primitives | Shares RDNA lint and token rules; currently schema-free by design until a ctrl registry is introduced |
+| `@rdna/pixel` | Pixel masks, pattern preparation, icons, and low-level pixel geometry | Owns the pixel math used by radiants generators |
+| `@rdna/preview` | Registry/schema generation and preview tooling | Provides the current schema generator entrypoint used by `registry:generate` |
+
 ### Two-File Pattern
 
-Every component in `@rdna/radiants` follows this structure:
+Every core component in `@rdna/radiants/components/core` follows this structure:
 
 ```
 ComponentName/
@@ -805,7 +870,7 @@ const classes = [
 
 ### Registry Architecture
 
-- `build-registry-metadata.ts` is the canonical server-safe metadata builder.
+- `registry:generate` runs `@rdna/radiants` schema generation through `packages/preview/src/generate-schemas.ts`, then figma contract generation.
 - `runtime-attachments.tsx` is the only runtime wiring layer for custom demos.
 - Shared consumers should use canonical registry metadata instead of ad hoc manifest joins.
 
@@ -972,19 +1037,35 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 
 ## 10. Machine Enforcement
 
-These rules are enforced by `eslint-plugin-rdna`. Rule names map 1:1 to policy.
+These rules are exported by `eslint-plugin-rdna`. Rule names map 1:1 to policy; the generated table also records whether each rule is included in `recommended`, `internals`, and `recommended-strict`.
 
-| Rule | Enforces | Severity |
-|---|---|---|
-| `rdna/no-hardcoded-colors` | Ban hex/rgb/hsl literals and arbitrary Tailwind color classes | warn in shared configs, target: error |
-| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing values (`p-[13px]`, inline pixel spacing); allow standard Tailwind scale classes for now | warn in shared configs, target: error |
-| `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | warn in shared configs, target: error |
-| `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | warn in shared configs, target: error |
-| `rdna/no-removed-aliases` | Ban removed token aliases | warn in shared configs, target: error |
-| `rdna/no-raw-radius` | Ban arbitrary rounded classes or raw radius styles | warn in shared configs, target: error |
-| `rdna/no-raw-shadow` | Ban arbitrary shadow classes or raw `boxShadow` styles | warn in shared configs, target: error |
-| `rdna/no-clipped-shadow` | Ban `shadow-*` (box-shadow) tokens on pixel-cornered elements (`rounded-xs/sm/md/lg`); use `pixel-shadow-*` instead | warn in shared configs, target: error |
-| `rdna/no-hardcoded-motion` | Ban arbitrary duration/easing classes or raw motion styles | warn in shared configs, target: error |
+<!-- BEGIN GENERATED:eslint-rules -->
+| Rule | Enforces | recommended | internals | recommended-strict |
+|---|---|---|---|---|
+| `rdna/no-arbitrary-icon-size` | Restrict Icon size to 16 or 24 and ban removed iconSet prop | warn | warn | error |
+| `rdna/no-backdrop-blur` | Ban backdrop-blur utilities and backdrop-filter in style props. RDNA chrome is opaque. | warn | warn | error |
+| `rdna/no-broad-rdna-disables` | Ban broad or same-line eslint-disable comments for rdna/* rules; only eslint-disable-next-line is allowed | — | — | — |
+| `rdna/no-clipped-shadow` | Ban box-shadow tokens on pixel-cornered elements; use pixel-shadow-* (filter: drop-shadow) instead | warn | warn | error |
+| `rdna/no-hardcoded-colors` | Ban non-semantic color usage; require RDNA semantic color tokens | warn | warn | error |
+| `rdna/no-hardcoded-motion` | Ban arbitrary duration/easing values; require RDNA motion tokens | warn | warn | error |
+| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing bracket values; allow standard Tailwind scale utilities | warn | warn | error |
+| `rdna/no-hardcoded-typography` | Ban arbitrary font sizes/weights; require RDNA typography tokens | warn | warn | error |
+| `rdna/no-mixed-style-authority` | Ban mixing local semantic color utilities with theme-targeted data-variant hooks | — | — | — |
+| `rdna/no-pattern-color-override` | Ban hardcoded colors on pattern-mode buttons and rdna-pat elements — use semantic tokens so dark/light mode works correctly | warn | warn | error |
+| `rdna/no-pixel-border` | Ban border-* and overflow-hidden on pixel-cornered elements. ::after handles borders; clip-path handles overflow. | warn | warn | error |
+| `rdna/no-raw-font-family` | Ban hardcoded font-family in style props; require RDNA font tokens | warn | warn | error |
+| `rdna/no-raw-line-height` | Ban arbitrary line-height values; require RDNA leading tokens | warn | warn | error |
+| `rdna/no-raw-radius` | Ban arbitrary and standard Tailwind border-radius values; require pixel-rounded-* classes | warn | warn | error |
+| `rdna/no-raw-shadow` | Ban arbitrary shadow values; require RDNA elevation/shadow tokens | warn | warn | error |
+| `rdna/no-removed-aliases` | Ban removed RDNA token aliases | warn | warn | error |
+| `rdna/no-translucent-bg` | Ban translucent bg utilities (bg-*/N). Chrome surfaces must be opaque — use semantic tokens (bg-depth, bg-card, bg-tinted, bg-accent-soft, bg-line). | warn | warn | error |
+| `rdna/no-translucent-ink` | Ban semi-transparent ink/black styling. Use opaque semantic surfaces instead. | warn | warn | error |
+| `rdna/no-viewport-breakpoints-in-window-layout` | Ban viewport breakpoint prefixes in window layout; use container queries instead | — | — | — |
+| `rdna/prefer-rdna-components` | Prefer RDNA components over raw HTML elements | warn | off | error |
+| `rdna/require-exception-metadata` | Require valid reason, owner, expires, and issue metadata on rdna/* eslint-disable-next-line comments | — | — | — |
+<!-- END GENERATED:eslint-rules -->
+
+Repo-local governance rules such as exception metadata and broad-disable checks are exported by the plugin but are scoped by the repository ESLint config. Use owner slugs `design-system`, `frontend-platform`, and `rad-os` for new exceptions unless the owning team has published a narrower slug.
 
 ### How to run
 
@@ -1019,193 +1100,39 @@ Not enforced (yet):
 
 # Part 2: RadOS Application
 
-> These patterns apply specifically to the rad-os desktop application, not to all RDNA consumers.
+> RadOS-specific design (windows, desktop/taskbar, app registration, hash routing, mobile) lives in [`apps/rad-os/SPEC.md`](../../apps/rad-os/SPEC.md). DESIGN.md is the portable design system; SPEC.md is the product adapter.
 
-## 10. Window System
+## 10. Portable AppWindow Guidance
+
+`AppWindow` is a core Radiants component, so its portable component contract remains here. RadOS-specific catalog fields, taskbar behavior, routing, desktop icon behavior, and mobile adaptation belong in `apps/rad-os/SPEC.md`.
 
 ### Window Chrome
 
 | Property | Value |
 |----------|-------|
-| Border | `rounded-md` (pixel-corner `::after` provides border) |
-| Shadow | `pixel-shadow-floating` (active: `shadow-focused`) |
-| Background | Gradient: `linear-gradient(0deg, window-chrome-from, window-chrome-to)` |
-| Title bar height | Compact: `pt-[4px] pb-1 pl-4 pr-1` |
-| Min size | 300 x 200px |
+| Border | Pixel-corner border supplied by AppWindow/pixel-corner layers |
+| Shadow | `pixel-shadow-floating` by default; focused state uses the focused elevation token |
+| Background | `linear-gradient(0deg, var(--color-window-chrome-from), var(--color-window-chrome-to))` |
+| Min size | 300 x 200px in the core component |
 | Content max height | `--app-content-max-height` CSS variable |
-
-### Window Chrome in Sun/Moon Mode
-
-| | Sun Mode | Moon Mode |
-|---|---|---|
-| Gradient | Yellow-to-cream (bottom up) | Flat ink |
-| Focused shadow | 4px 4px hard ink offset | Multi-layer sun-yellow glow |
-| Border | Solid ink | 20% translucent cream |
-
-### Window Behaviors
-
-| Behavior | Description |
-|----------|-------------|
-| **Open** | Appears at default position, cascaded if multiple |
-| **Focus** | Click anywhere → highest z-index, receives `data-focused` attribute |
-| **Minimize** | Hides window, restore from Start Menu |
-| **Close** | Removes window, state persists for reopening |
-| **Drag** | Title bar is drag handle (`data-drag-handle`) |
-| **Resize** | Per-app configuration (some apps fixed size) |
-| **Fullscreen** | Toggle via title bar button |
-| **Edge snap** | Drag to left/right screen edge → outline appears → snaps to half-screen width |
 
 ### Window-Internal Layout
 
-**Critical rule:** Do not use viewport breakpoints (`md:block`, `lg:flex`) for layout inside windows. Tailwind breakpoints fire on the viewport width, not the window width. A window can be any size regardless of viewport.
-
-**Container queries are built in.** Both `AppWindow` and `MobileAppModal` set `@container` on their content wrapper. Use Tailwind v4 container query variants (`@sm:`, `@md:`, `@lg:`, etc.) for responsive layout inside any app — they fire based on the window's actual width.
-
-Container query breakpoints (Tailwind v4 defaults):
-- `@xs` — 320px (minimum window width)
-- `@sm` — 384px
-- `@md` — 448px
-- `@lg` — 512px
-- `@xl` — 576px
-- `@2xl` — 672px
-
-This means **mobile optimization is mostly handled by the window manager**, not by individual apps. On mobile, `MobileAppModal` renders apps full-screen — the same `@` breakpoints fire correctly at the device width. On desktop, they fire at whatever width the user drags the window to.
+Do not use viewport breakpoints (`md:block`, `lg:flex`) for layout inside windows. Tailwind breakpoints fire on viewport width, not window width. Use Tailwind v4 container query variants (`@sm:`, `@md:`, `@lg:`, etc.) inside AppWindow content so layouts respond to the actual window width.
 
 <!-- DO -->
 ```tsx
-// DO: Container query breakpoints — respond to window width
+// DO: Container query breakpoints respond to window width
 <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">...</div>
 <span className="hidden @sm:inline">Extra detail</span>
-
-// DO: Fixed layout when the window size is known
-<div className="flex flex-col">
-  <nav className="w-48 shrink-0">...</nav>
-  <main className="flex-1 overflow-auto">...</main>
-</div>
 ```
 
 <!-- DON'T -->
 ```tsx
-// DON'T: Viewport breakpoints inside windows — they respond to browser width, not window width
+// DON'T: Viewport breakpoints respond to browser width, not window width
 <nav className="hidden md:block w-48">...</nav>
-<main className="md:ml-48">...</main>
 <div className="grid grid-cols-1 sm:grid-cols-2">...</div>
 ```
-
-### Window Limit
-
-Soft limit of 5 windows. Opening a 6th shows a toast warning about performance but does not block.
-
-### Title Bar Buttons
-
-All use `Button variant="ghost" size="md" iconOnly`:
-- Help (optional, per-app config)
-- MockStates (dev only, per-app config)
-- Widget/PiP (optional)
-- Fullscreen toggle
-- Copy link
-- Close
-
-## 11. Desktop & Taskbar
-
-### Desktop
-- Icons in grid layout, left side
-- Double-click to open (no single-click selection)
-- Icon positions saved to localStorage
-
-### Taskbar
-- Fixed at bottom of viewport, 48px height
-- **Start Button** → opens Start Menu
-- **Window Buttons** → shown only when >1 window open
-- **Social Links** → Twitter, Discord, GitHub (GitHub hidden on mobile)
-- **System Tray** → Invert toggle, volume (if Rad Radio active)
-- **Clock** → Real time, HH:MM format, updates every minute
-
-### Start Menu
-- Full-screen overlay on mobile
-- Popup menu on desktop
-- Sections: Apps, Connect (social links)
-
-### Usage Rules
-
-<!-- DO -->
-```tsx
-// DO: Use APP_REGISTRY as the single source of app metadata
-const apps = Object.values(APP_REGISTRY);
-const icon = APP_REGISTRY[appId].icon;
-```
-
-<!-- DON'T -->
-```tsx
-// DON'T: Hardcode app lists or duplicate registry data
-const apps = [
-  { id: 'brand', title: 'Brand Assets', icon: <BrandIcon /> },
-  { id: 'radio', title: 'Rad Radio', icon: <RadioIcon /> },
-];
-```
-
-## 12. App Registration
-
-All apps register in `lib/constants.tsx` via `APP_REGISTRY`:
-
-```typescript
-const APP_REGISTRY: Record<AppId, AppConfig> = {
-  [APP_IDS.BRAND]: {
-    id: APP_IDS.BRAND,
-    title: 'Brand Assets',
-    icon: <RadMarkIcon size={20} />,
-    component: BrandAssetsApp,
-    resizable: true,
-    defaultSize: { width: 800, height: 600 },
-    contentPadding: false,
-  },
-  // ...
-};
-```
-
-### AppConfig Shape
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `id` | `AppId` | Yes | Unique identifier, used in URL hash |
-| `title` | `string` | Yes | Window title bar text |
-| `icon` | `ReactNode` | Yes | Icon for desktop, taskbar, start menu |
-| `component` | `ComponentType<AppProps>` | Yes | Lazy-loaded app component |
-| `resizable` | `boolean` | Yes | Whether window can be resized |
-| `defaultSize` | `{ width, height }` | No | Initial window dimensions |
-| `contentPadding` | `boolean` | No | Bottom padding below scroll area (default: true) |
-| `helpConfig` | object | No | Help panel configuration |
-| `mockStatesConfig` | object | No | Mock state switcher (dev only) |
-| `showWidgetButton` | `boolean` | No | PiP/widget mode in title bar |
-
-## 13. Hash Routing
-
-```
-https://rados.app/#brand           → Opens Brand Assets
-https://rados.app/#brand,manifesto → Opens multiple windows
-```
-
-- Valid IDs open windows; invalid IDs silently ignored
-- Opening/closing updates URL hash
-- Comma-separated for multiple windows
-
-## 14. Mobile (Unresolved)
-
-> **Status:** Mobile aesthetic is not yet defined. This section is a placeholder.
-
-**Current behavior (to be redesigned):**
-- Windows → fullscreen modals (`MobileAppModal`)
-- Taskbar → simplified (Start button + essential icons)
-- Desktop icons → horizontal row at top
-- Start Menu → full-screen overlay
-- Breakpoint: 768px
-
-**Open questions:**
-- What is the mobile-native aesthetic for Radiants?
-- How does "art is the environment" translate to mobile?
-- Does the window metaphor work on mobile at all?
-
-Mobile design requires its own dedicated brainstorm session.
 
 ---
 
@@ -1217,6 +1144,8 @@ Mobile design requires its own dedicated brainstorm session.
 
 Without a defined scale, every agent invents values. One session uses `z-5`, another `z-[999]`, another `z-50`. Then they collide and elements become unclickable.
 
+This section is documentation only for the current rewrite. The codebase still has known leaks outside the documented bands (`z-[9999]`, `z-[1000]`, `z-[950]`, `z-[80]`, and `z-[5]` in app/component code). Those are cleanup-plan items, not part of this DESIGN.md rewrite.
+
 ### RadOS Stacking Order
 
 | Band | Range | Layer | Notes |
@@ -1227,7 +1156,7 @@ Without a defined scale, every agent invents values. One session uses `z-5`, ano
 | `chrome` | `200` | Taskbar | Always above all windows |
 | `menus` | `300` | Start Menu, dropdown menus | Above taskbar |
 | `toasts` | `400` | Toast notifications | Above menus, always visible |
-| `modals` | `500` | MobileAppModal, Dialog portals | Highest interactive layer |
+| `modals` | `500` | Dialog portals and app modal overlays | Highest interactive layer |
 | `system` | `900` | Invert overlay, system-level effects | Non-interactive, covers everything |
 
 ### In-App Z-Indexes
@@ -1287,31 +1216,31 @@ Panels, overlays, and controls _within_ a window use z-10/z-20/z-30 **relative t
 
 **The rule:** All visual symbols in RDNA are icons, never emojis. Emojis MUST NOT appear anywhere in the UI — not in buttons, labels, headings, toasts, badges, empty states, or placeholder text. No exceptions. Emojis break visual consistency, render differently across platforms, and undermine the design system's typographic control.
 
-Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/icons) instead. The icon set is built on a 24x24 grid with 2px stroke — see the [icon components source](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/icons) and [icon assets](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/assets/icons) for the full inventory.
+Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/icons) instead. The default `Icon` component is bitmap-backed: it resolves names and aliases against the baked 16px and 24px registries and renders through `@rdna/pixel`'s `BitmapIcon`. Public `Icon` sizes are `16` and `24` only; use the default 16px size, `large`, or `size={24}`.
 
-### Three icon types
+### Icon entrypoints
 
 | Type | Import | Use |
 |------|--------|-----|
-| **CoreIcons** (inline SVGs) | `import { X, Check, Plus } from '@rdna/radiants/icons'` | ~80 pre-rendered icons. Best performance — no network requests. |
-| **DesktopIcons** (pixel-art) | `import { RadMarkIcon, TreeIcon } from '@rdna/radiants/icons/runtime'` | Brand-specific pixel art icons for desktop, taskbar, start menu. |
-| **Dynamic Icon** (runtime SVG loader) | `import { Icon } from '@rdna/radiants/icons/runtime'` | `<Icon name="icon-name" />` — loads from `/assets/icons/`. Use for custom or less common icons. |
+| **Bitmap `Icon`** | `import { Icon } from '@rdna/radiants/icons'` | Default for UI affordances. Bitmap-backed, no asset fetches, and constrained to 16px or 24px. |
+| **Lean runtime `Icon` entrypoint** | `import { Icon } from '@rdna/radiants/icons/runtime'` | Same bitmap-backed `Icon`, exposed from the runtime entrypoint when you only need that lean surface plus the brand/runtime exports. |
+| **Brand/runtime marks** | `import { RadMarkIcon, RadSunLogo, WordmarkLogo, FontAaIcon } from '@rdna/radiants/icons'` | Product marks and special cases. Not a generic UI icon set. |
 
 ### Priority order
 
-1. **CoreIcons** — check if the icon exists in the barrel export first
-2. **Dynamic Icon** — use `<Icon name="..." />` for icons in the asset folder
-3. **DesktopIcons** — use for brand/pixel-art icons only
-4. **Never** reach for heroicons or any external icon library
+1. **Bitmap `Icon`** — use `<Icon name="..." />` for almost all UI icons
+2. **Lean runtime entrypoint** — use it only when you intentionally want the runtime import surface
+3. **Brand/runtime marks** — use for product identity and special cases only
+4. **Never** reach for heroicons, emojis, or any external icon library
 
 <!-- DO -->
 ```tsx
 // DO: Import from radiants
-import { X, Check, ChevronDown } from '@rdna/radiants/icons';
-import { Icon } from '@rdna/radiants/icons/runtime';
+import { Icon, RadMarkIcon } from '@rdna/radiants/icons';
 
-<X size={16} />
-<Icon name="broadcast-dish" size={20} />
+<Icon name="close" />
+<Icon name="broadcast-dish" size={24} />
+<RadMarkIcon size={20} />
 ```
 
 <!-- DON'T -->
@@ -1370,13 +1299,13 @@ When adding or modifying tokens:
 
 ### Tokens that DON'T need dark overrides
 
-Some tokens are mode-invariant (same in both modes):
+Some tokens are mode-invariant by design (same in both modes):
 - `--color-accent` (sun-yellow in both)
 - `--color-focus` (sun-yellow in both)
 - `--color-link` (sky-blue in both)
 - `--color-status-*` tokens (status colors don't change per mode)
 
-If a token is intentionally the same in both modes, add a comment in `dark.css` documenting this decision so future agents don't "fix" it.
+Status tokens intentionally keep their semantic hue across modes so success, warning, error, and info do not shift meaning between Sun and Moon. If a future code cleanup adds comments or explicit same-value overrides in `dark.css`, it should preserve that invariant rather than recoloring status tokens.
 
 <!-- DO -->
 ```css

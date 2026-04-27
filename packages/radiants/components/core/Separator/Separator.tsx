@@ -85,5 +85,3 @@ export function Separator({
     />
   );
 }
-
-export default Separator;

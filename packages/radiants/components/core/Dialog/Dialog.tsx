@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { ModalShell, MODAL_TRIGGER_CLASS } from '../_shared/ModalShell';
+import { PatternBackdrop } from '../_shared/PatternBackdrop';
 import type { DialogProps } from './Dialog.meta';
 
 
@@ -80,16 +82,14 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDialog.Trigger className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDialog.Trigger>
   );
@@ -97,6 +97,14 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
 // ============================================================================
 // Content — Base UI handles portal, focus trap, escape key, scroll lock
+// ============================================================================
+//
+// Structure (per audit 00-MASTER §3a):
+//   BaseDialog.Popup (fullscreen centering group)
+//     └── <div> — LOAD-BEARING: carries width + margin + animation state
+//                 (group-data-[starting-style] / group-data-[ending-style]).
+//                 Merged with the former inner card-div so the pixel-rounded
+//                 surface + transition live on one element instead of two.
 // ============================================================================
 
 interface ContentProps {
@@ -107,9 +115,7 @@ interface ContentProps {
 function Content({ className = '', children }: ContentProps): React.ReactNode {
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-base)] ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-      />
+      <PatternBackdrop as={BaseDialog.Backdrop} duration="base" />
       <BaseDialog.Popup
         className="group fixed inset-0 z-50 flex items-center justify-center"
       >
@@ -117,14 +123,14 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           className={`
             relative z-10
             w-full max-w-[32rem] mx-4
+            pixel-rounded-6 bg-page pixel-shadow-floating
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95
             group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
         >
-          <div className={`pixel-rounded-sm bg-page pixel-shadow-floating ${className}`.trim()}>
-            {children}
-          </div>
+          {children}
         </div>
       </BaseDialog.Popup>
     </BaseDialog.Portal>
@@ -132,7 +138,8 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
 }
 
 // ============================================================================
-// Header, Title, Description
+// Header, Title, Description, Body, Footer — shared ModalShell primitives
+// Re-exported under the Dialog.* namespace so public API is unchanged.
 // ============================================================================
 
 interface HeaderProps {
@@ -141,11 +148,7 @@ interface HeaderProps {
 }
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
-  return (
-    <div className={`px-6 pt-6 pb-4 border-b border-rule ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Header className={className}>{children}</ModalShell.Header>;
 }
 
 interface TitleProps {
@@ -155,9 +158,9 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
+    <ModalShell.Title as={BaseDialog.Title} className={className}>
       {children}
-    </BaseDialog.Title>
+    </ModalShell.Title>
   );
 }
 
@@ -168,15 +171,11 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
+    <ModalShell.Description as={BaseDialog.Description} className={className}>
       {children}
-    </BaseDialog.Description>
+    </ModalShell.Description>
   );
 }
-
-// ============================================================================
-// Body & Footer
-// ============================================================================
 
 interface BodyProps {
   className?: string;
@@ -184,11 +183,7 @@ interface BodyProps {
 }
 
 function Body({ className = '', children }: BodyProps): React.ReactNode {
-  return (
-    <div className={`px-6 py-4 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Body className={className}>{children}</ModalShell.Body>;
 }
 
 interface FooterProps {
@@ -197,11 +192,7 @@ interface FooterProps {
 }
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
-  return (
-    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Footer className={className}>{children}</ModalShell.Footer>;
 }
 
 // ============================================================================
@@ -217,16 +208,14 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDialog.Close
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDialog.Close
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDialog.Close className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDialog.Close>
   );
@@ -271,5 +260,3 @@ export const Dialog = {
   Close,
   useDialogState,
 };
-
-export default Dialog;

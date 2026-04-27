@@ -1,9 +1,8 @@
 /* ============================================================================
-   Pixel Corners — Shell file
-   Imports generated geometry and contains only manual utilities.
-
-   Generated geometry, shared base styles, and polygon definitions live in
-   pixel-corners.generated.css (do not edit by hand — run the generator).
+   Pixel Corners — shell CSS
+   Author corner definitions in `packages/pixel/src/corners/registry.ts`.
+   Radiants materializes shared geometry into `pixel-corners.generated.css`;
+   this file keeps only manual utilities used by the active runtime surface.
    ============================================================================ */
 
 @import './pixel-corners.generated.css';
@@ -35,6 +34,23 @@
   background: var(--color-danger) !important;
 }
 
+/* Runtime concave corner host. Geometry is supplied by @rdna/pixel concave(). */
+.pixel-concave-corner {
+  --px-concave-mask: none;
+  --px-concave-s: 0px;
+  display: block;
+  inline-size: var(--px-concave-s);
+  block-size: var(--px-concave-s);
+  flex: none;
+  pointer-events: none;
+  mask-image: var(--px-concave-mask);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: var(--px-concave-mask);
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
 /* Focus ring for pixel-cornered elements — outline instead of box-shadow ring */
 .pixel-rounded-2:focus-visible,
 .pixel-rounded-4:focus-visible,
@@ -49,19 +65,7 @@
 .pixel-rounded-48:focus-visible,
 .pixel-rounded-64:focus-visible,
 .pixel-rounded-full:focus-visible,
-/* legacy t-shirt aliases */
-.pixel-rounded-xs:focus-visible,
-.pixel-rounded-sm:focus-visible,
-.pixel-rounded-md:focus-visible,
-.pixel-rounded-lg:focus-visible,
-.pixel-rounded-xl:focus-visible,
-/* variable-driven base */
-.pixel-corner:focus-visible,
-/* alternate corner shapes (runtime-only via px() API) */
-[class*="pixel-chamfer-"]:focus-visible,
-[class*="pixel-scallop-"]:focus-visible,
-[class*="pixel-octagon-"]:focus-visible,
-[class*="pixel-crenellation-"]:focus-visible {
+.pixel-corner:focus-visible {
   outline: 2px solid var(--color-focus, var(--color-accent));
   outline-offset: 2px;
 }

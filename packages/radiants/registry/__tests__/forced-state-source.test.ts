@@ -21,8 +21,8 @@ describe("forced state style source of truth", () => {
     expect(baseCss).toContain('[data-force-state="disabled"]');
     expect(baseCss).toContain('[data-force-state="error"]');
 
-    expect(darkCss).toContain('[data-force-state="hover"] [data-slot="button-root"]');
-    expect(darkCss).toContain('[data-force-state="pressed"] [data-slot="button-root"]');
+    expect(darkCss).toContain('[data-force-state="hover"] [data-rdna="button"]');
+    expect(darkCss).toContain('[data-force-state="pressed"] [data-rdna="button"]');
   });
 
   it("does not rely on a separate forced-states stylesheet surface", () => {

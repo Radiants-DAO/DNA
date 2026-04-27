@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialMove = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M21.496 10.497H20.498V9.5H19.501V8.502H18.497V11.501H14.5V12.499H18.497V15.498H19.501V14.5H20.498V13.503H21.496V12.499H22.5V11.501H21.496V10.497ZM12.499 18.497V14.5H11.501V18.497H8.496V19.501H9.5V20.498H10.497V21.502H11.501V22.5H12.499V21.502H13.496V20.498H14.5V19.501H15.498V18.497H12.499ZM11.501 1.5V2.498H10.497V3.502H9.5V4.499H8.496V5.503H11.501V9.5H12.499V5.503H15.498V4.499H14.5V3.502H13.496V2.498H12.499V1.5H11.501ZM4.499 8.502V9.5H3.502V10.497H2.498V11.501H1.5V12.499H2.498V13.503H3.502V14.5H4.499V15.498H5.497V12.499H9.5V11.501H5.497V8.502H4.499Z" /></g></svg>;
-InterfaceEssentialMove.displayName = 'InterfaceEssentialMove';
-
-export default InterfaceEssentialMove;

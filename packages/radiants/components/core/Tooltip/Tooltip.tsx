@@ -84,24 +84,19 @@ function TooltipRoot({
             className={`
               z-[1000]
               pointer-events-none
+              pixel-rounded-4 bg-inv
+              px-2 py-1
+              text-flip
+              font-heading uppercase tracking-tight leading-none
+              whitespace-nowrap
+              ${sizeStyles[size]}
               transition-[opacity,transform] duration-[var(--duration-fast)] ease-out
               data-[starting-style]:opacity-0 data-[starting-style]:scale-95
               data-[ending-style]:opacity-0 data-[ending-style]:scale-95
               ${className}
             `}
           >
-            <div
-              className={`
-                pixel-rounded-xs bg-inv
-                px-2 py-1
-                text-flip
-                font-heading uppercase tracking-tight leading-none
-                whitespace-nowrap
-                ${sizeStyles[size]}
-              `}
-            >
-              {content}
-            </div>
+            {content}
           </BaseTooltip.Popup>
         </BaseTooltip.Positioner>
       </BaseTooltip.Portal>
@@ -114,5 +109,3 @@ function TooltipRoot({
 // ============================================================================
 
 export const Tooltip = Object.assign(TooltipRoot, { Provider });
-
-export default Tooltip;

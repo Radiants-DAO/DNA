@@ -818,7 +818,7 @@ export const rdnaSlashMenuDescriptors: RdnaSlashMenuDescriptor[] = [
     title: 'Separator',
     subtext: 'Accessible separator element for visually dividing...',
     aliases: ["separator","divider","line","separator"],
-    icon: 'minus',
+    icon: 'col-horizontal',
     group: 'RDNA',
     defaultProps: {"orientation":"horizontal","variant":"solid"},
   },

@@ -15,75 +15,40 @@ function writeSvg(dir: string, name: string, svg: string) {
 }
 
 describe('generate-icons', () => {
-  it('builds per-file component artifacts and thin barrels', async () => {
+  it('builds one prepared manifest with aliases, set availability, importer keys, and preferred names', async () => {
     const root = mkdtempSync(join(tmpdir(), 'rdna-icons-'));
     const icons16Dir = join(root, 'assets', 'icons', '16px');
     const icons24Dir = join(root, 'assets', 'icons', '24px');
 
-    writeSvg(
-      icons16Dir,
-      'grid-3x3',
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g id="grid-3x3"><path fill="#000000" d="M1 1H7V7H1z"/></g></svg>',
-    );
-    writeSvg(
-      icons16Dir,
-      'settings-cog',
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill="#000" d="M2 2H14V14H2z"/></svg>',
-    );
-    writeSvg(
-      icons24Dir,
-      'interface-essential-search-1',
-      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="black" d="M1 1H23V23H1z"/></svg>',
-    );
-
-    const { buildIconArtifacts } = await import('../scripts/generate-icons.ts');
-    const artifacts = await buildIconArtifacts({
-      icons16Dir,
-      icons24Dir,
-    });
-
-    expect(artifacts.files['generated/16/grid-3x3.tsx']).toContain(
-      'export const Grid3X3',
-    );
-    expect(artifacts.files['generated/16/grid-3x3.tsx']).toContain(
-      'fill="currentColor"',
-    );
-    expect(artifacts.files['generated/16/grid-3x3.tsx']).not.toContain('<g id=');
-
-    expect(artifacts.files['generated.tsx']).toContain(
-      "export { Grid3X3 } from './generated/16/grid-3x3';",
-    );
-    expect(artifacts.files['generated.tsx']).toContain('export const ICON_BY_NAME');
-    expect(artifacts.files['generated.tsx']).not.toContain('<svg');
-
-    expect(artifacts.files['generated-24.tsx']).toContain(
-      "export { InterfaceEssentialSearch1 } from './generated/24/interface-essential-search-1';",
-    );
-    expect(artifacts.files['generated-24.tsx']).toContain(
-      'export const ICON_24_BY_NAME',
-    );
-    expect(artifacts.files['generated-24.tsx']).not.toContain('<svg');
-  });
-
-  it('emits alias and importer registries for the runtime Icon wrapper', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'rdna-icons-'));
-    const icons16Dir = join(root, 'assets', 'icons', '16px');
-    const icons24Dir = join(root, 'assets', 'icons', '24px');
-
-    writeSvg(
-      icons16Dir,
-      'settings-cog',
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill="#000" d="M2 2H14V14H2z"/></svg>',
-    );
     writeSvg(
       icons16Dir,
       'search',
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill="#000" d="M2 2H14V14H2z"/></svg>',
     );
     writeSvg(
+      icons16Dir,
+      'settings-cog',
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill="#000" d="M3 3H13V13H3z"/></svg>',
+    );
+    writeSvg(
+      icons16Dir,
+      'chevron-left',
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill="#000" d="M1 8L9 1V15z"/></svg>',
+    );
+    writeSvg(
       icons24Dir,
       'interface-essential-search-1',
       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="#000" d="M1 1H23V23H1z"/></svg>',
+    );
+    writeSvg(
+      icons24Dir,
+      'interface-essential-setting-cog',
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="#000" d="M2 2H22V22H2z"/></svg>',
+    );
+    writeSvg(
+      icons24Dir,
+      'interface-essential-eraser',
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="#000" d="M4 4H20V20H4z"/></svg>',
     );
 
     const { buildIconArtifacts } = await import('../scripts/generate-icons.ts');
@@ -91,19 +56,39 @@ describe('generate-icons', () => {
       icons16Dir,
       icons24Dir,
     });
+    const manifest = artifacts.files['manifest.ts'];
 
+    expect(manifest).toContain(
+      'export const SVG_ICON_MANIFEST: readonly PreparedSvgIcon[] = [',
+    );
+    expect(manifest).toContain("name: 'search'");
+    expect(manifest).toContain("aliases: ['interface-essential-search-1']");
+    expect(manifest).toContain('availableSets: [16, 24]');
+    expect(manifest).toContain('importerKeys: { 16: \'16px/search\', 24: \'24px/interface-essential-search-1\' }');
+    expect(manifest).toContain("preferredSmallName: 'search'");
+    expect(manifest).toContain(
+      "preferredLargeName: 'interface-essential-search-1'",
+    );
+    expect(manifest).toContain("name: 'chevron-left'");
+    expect(manifest).toContain("importerKeys: { 16: '16px/chevron-left' }");
+    expect(manifest).toContain("name: 'interface-essential-eraser'");
+    expect(manifest).toContain('availableSets: [24]');
+    expect(manifest).toContain(
+      "importerKeys: { 24: '24px/interface-essential-eraser' }",
+    );
+    expect(manifest).toContain("'settings': 'settings-cog'");
     expect(artifacts.files['generated-aliases.ts']).toContain(
-      "settings: 'settings-cog'",
+      "export { ICON_ALIASES } from './manifest';",
     );
     expect(artifacts.files['generated-importers.ts']).toContain(
-      "search: () => import('./generated/16/search')",
+      "'16px/search': () => Promise.resolve({ default: createSvgIcon(",
     );
     expect(artifacts.files['generated-importers.ts']).toContain(
-      "'interface-essential-search-1': () => import('./generated/24/interface-essential-search-1')",
+      "'24px/interface-essential-search-1': () => Promise.resolve({ default: createSvgIcon(",
     );
   });
 
-  it('prunes stale generated per-file modules when source SVGs are removed', async () => {
+  it('prunes stale generated modules when source SVGs are removed', async () => {
     const root = mkdtempSync(join(tmpdir(), 'rdna-icons-'));
     const icons16Dir = join(root, 'assets', 'icons', '16px');
     const icons24Dir = join(root, 'assets', 'icons', '24px');

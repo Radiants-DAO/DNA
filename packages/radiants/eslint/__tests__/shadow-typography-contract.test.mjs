@@ -4,7 +4,7 @@ import { shadows, typography } from "../contract.mjs";
 
 describe("shadow and typography contract wiring", () => {
   it("exposes contract-backed suggestion lists", () => {
-    expect(shadows.validStandard).toEqual(expect.arrayContaining(["shadow-raised", "shadow-card"]));
+    expect(shadows.validStandard).toEqual(expect.arrayContaining(["shadow-raised", "shadow-floating"]));
     expect(shadows.validPixel).toEqual(expect.arrayContaining(["pixel-shadow-raised"]));
     expect(typography.validSizes).toEqual(expect.arrayContaining(["text-base", "text-xl"]));
     expect(typography.validWeights).toEqual(expect.arrayContaining(["font-semibold", "font-bold"]));

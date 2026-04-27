@@ -13,12 +13,12 @@ describe('Collapsible', () => {
     );
 
     const trigger = screen.getByRole('button', { name: 'Section' });
-    expect(trigger).toHaveClass('pixel-rounded-xs');
+    expect(trigger).toHaveClass('pixel-rounded-4');
 
     await user.click(trigger);
 
     const panelBody = screen.getByText('Panel body');
     expect(panelBody).toBeInTheDocument();
-    expect(panelBody.closest('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(panelBody.closest('.pixel-rounded-4')).toBeInTheDocument();
   });
 });

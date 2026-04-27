@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const CdHorizontal = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 7H3V9H2V7ZM3 6H5V5H11V6H13V7H12V8H11V9H9V10H11V11H5V10H3V9H4V7H3V6ZM5 6V7H6V6H5ZM7 7V8H9V7H7ZM7 9V10H8V9H7ZM11 9H13V10H11V9ZM13 7H14V9H13V7Z" /></svg>;
-CdHorizontal.displayName = 'CdHorizontal';
-
-export default CdHorizontal;

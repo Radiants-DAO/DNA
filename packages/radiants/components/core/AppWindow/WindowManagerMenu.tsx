@@ -105,7 +105,7 @@ export function WindowManagerMenu({
               data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
             `.trim()}
           >
-            <div className="pixel-rounded-sm bg-page pixel-shadow-raised">
+            <div className="pixel-rounded-6 bg-page pixel-shadow-raised">
               <div className="py-1">
                 {onCenter ? (
                   <BaseMenu.Item className={itemClass} onClick={onCenter}>
@@ -178,5 +178,3 @@ function SnapGridButton({
     </BaseMenu.Item>
   );
 }
-
-export default WindowManagerMenu;

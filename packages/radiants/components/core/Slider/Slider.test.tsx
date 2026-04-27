@@ -6,7 +6,7 @@ import * as SliderModule from './Slider';
 // Base UI Slider positions its thumb asynchronously — use findByRole throughout.
 
 async function getSlider() {
-  return screen.findByRole('slider');
+  return screen.findByRole('slider', { hidden: true });
 }
 
 async function focusAndPress(key: string) {
@@ -23,8 +23,8 @@ describe('Slider', () => {
   test('renders with slider role', async () => {
     const { container } = render(<Slider value={50} onChange={() => {}} min={0} max={100} />);
     expect(await getSlider()).toBeInTheDocument();
-    expect(container.querySelector('[data-slot="slider-track"]')?.parentElement).toHaveClass('pixel-rounded-xs');
-    expect(container.querySelector('[data-slot="slider-thumb"]')?.parentElement).toHaveClass('pixel-rounded-xs');
+    expect(container.querySelector('[data-slot="slider-track"]')?.parentElement).toHaveClass('pixel-rounded-4');
+    expect(container.querySelector('[data-slot="slider-thumb"]')?.parentElement).toHaveClass('pixel-rounded-4');
   });
 
   test('renders with label and value display', async () => {

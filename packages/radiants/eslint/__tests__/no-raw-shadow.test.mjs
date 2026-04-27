@@ -136,7 +136,7 @@ describe('rdna/no-raw-shadow', () => {
 
     const messages = linter.verify('<div className="shadow-[0_0_0_1px_#000]" />', config);
     expect(messages).toHaveLength(1);
-    expect(messages[0].message).toContain('shadow-card');
+    expect(messages[0].message).toContain('shadow-raised');
     expect(messages[0].message).toContain('pixel-shadow-raised');
   });
 });

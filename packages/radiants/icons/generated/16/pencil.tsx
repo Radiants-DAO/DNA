@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const Pencil = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 11H3V13H5V14H2V11ZM3 10H4V9H5V8H6V7H7V6H8V5H9V4H10V5H11V6H12V7H11V8H10V9H9V10H8V11H7V12H6V13H5V12H4V11H3V10ZM10 3H11V4H10V3ZM11 2H12V3H11V2ZM12 3H13V4H12V3ZM12 5H13V6H12V5ZM13 4H14V5H13V4Z" /></svg>;
-Pencil.displayName = 'Pencil';
-
-export default Pencil;

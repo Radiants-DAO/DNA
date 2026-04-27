@@ -27,26 +27,6 @@
     }
   },
   "shadow": {
-    "btn": {
-      "$type": "shadow",
-      "$value": "0 1px 0 0 var(--color-ink)"
-    },
-    "btn-hover": {
-      "$type": "shadow",
-      "$value": "0 3px 0 0 var(--color-ink)"
-    },
-    "card": {
-      "$type": "shadow",
-      "$value": "2px 2px 0 0 var(--color-ink)"
-    },
-    "card-lg": {
-      "$type": "shadow",
-      "$value": "4px 4px 0 0 var(--color-ink)"
-    },
-    "inner": {
-      "$type": "shadow",
-      "$value": "inset 0 0 0 1px var(--color-ink)"
-    },
     "glow-sm": {
       "$type": "shadow",
       "$value": "2px 2px 0 0 var(--color-ink)"
@@ -126,6 +106,10 @@
     "comfortable": {
       "$type": "dimension",
       "$value": "48px"
+    },
+    "default": {
+      "$type": "dimension",
+      "$value": "{touchTarget.comfortable}"
     }
   },
   "breakpoint": {

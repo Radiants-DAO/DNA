@@ -40,7 +40,7 @@ describe('Select', () => {
   test('trigger renders with placeholder text', () => {
     render(<TestSelect />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByRole('combobox')).toHaveClass('pixel-rounded-xs');
+    expect(screen.getByRole('combobox')).toHaveClass('pixel-rounded-4');
   });
 
   test('opens popup when trigger is clicked', async () => {

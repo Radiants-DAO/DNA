@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 
+import { preparePixelIcon } from '@rdna/pixel/icons';
 import { getPixelIcon } from '../../../pixel-icons/registry';
 import { PixelIcon } from './PixelIcon';
 
@@ -52,9 +53,11 @@ describe('PixelIcon', () => {
 
   test('resolves a named icon from the registry seed set', () => {
     const registryEntry = getPixelIcon('caret');
+    const preparedIcon = preparePixelIcon('caret');
 
     expect(registryEntry).toBeDefined();
     expect(registryEntry?.name).toBe('caret');
+    expect(registryEntry?.maskImage).toBe(preparedIcon?.maskImage);
 
     const { container } = render(<PixelIcon name="caret" />);
     const host = container.firstElementChild as HTMLElement | null;

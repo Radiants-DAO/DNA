@@ -20,6 +20,9 @@ interface SliderProps {
   /** Form field name for submission */
   name?: string;
   className?: string;
+  /** Values the slider snaps to. When provided, emitted values are clamped
+   *  to the nearest entry, and tick marks render on the track at each point. */
+  snapPoints?: readonly number[];
 }
 
 // ============================================================================
@@ -61,9 +64,33 @@ export function Slider({
   label,
   name,
   className = '',
+  snapPoints,
 }: SliderProps) {
   const { hTrack, vTrack, thumb } = sizeClasses[size];
   const vertical = orientation === 'vertical';
+
+  const handleChange = React.useCallback(
+    (raw: number) => {
+      if (snapPoints && snapPoints.length > 0) {
+        let nearest = snapPoints[0];
+        let bestDiff = Math.abs(raw - nearest);
+        for (const p of snapPoints) {
+          const d = Math.abs(raw - p);
+          if (d < bestDiff) {
+            bestDiff = d;
+            nearest = p;
+          }
+        }
+        onChange(nearest);
+      } else {
+        onChange(raw);
+      }
+    },
+    [onChange, snapPoints],
+  );
+
+  const pctFor = (p: number) =>
+    max === min ? 0 : ((p - min) / (max - min)) * 100;
 
   // Track classes swap width/height depending on orientation. Track bg now
   // lives on the pixel-rounded mask-image layer (clipped to the staircase),
@@ -91,7 +118,7 @@ export function Slider({
 
       <BaseSlider.Root
         value={value}
-        onValueChange={(v) => onChange(Array.isArray(v) ? v[0] : v)}
+        onValueChange={(v) => handleChange(Array.isArray(v) ? v[0] : v)}
         min={min}
         max={max}
         step={step}
@@ -112,7 +139,7 @@ export function Slider({
             disabled ? 'pointer-events-none' : 'cursor-pointer',
           ].filter(Boolean).join(' ')}
         >
-          <div className={`pixel-rounded-xs bg-page ${vertical ? 'h-full' : 'w-full'}`}>
+          <div className={`pixel-rounded-4 bg-cream ${vertical ? 'h-full' : 'w-full'}`}>
             <BaseSlider.Track
               className={trackClasses}
               data-slot="slider-track"
@@ -121,13 +148,25 @@ export function Slider({
                 className="z-[0] bg-accent pointer-events-none"
                 style={indicatorStyle}
               />
+              {snapPoints?.map((p) => (
+                <div
+                  key={p}
+                  data-slot="slider-tick"
+                  className="absolute w-0.5 h-0.5 bg-line pointer-events-none"
+                  style={
+                    vertical
+                      ? { left: '50%', bottom: `${pctFor(p)}%`, transform: 'translate(-50%, 50%)' }
+                      : { top: '50%', left: `${pctFor(p)}%`, transform: 'translate(-50%, -50%)' }
+                  }
+                />
+              ))}
               <BaseSlider.Thumb
                 data-slot="slider-thumb"
                 render={(thumbProps) => {
                   const { style: thumbStyle, className: _cn, ...restThumbProps } = thumbProps;
                   return (
                     <div
-                      className={`pixel-rounded-xs group/pixel bg-page hover:bg-accent transition-colors ${[thumb].filter(Boolean).join(' ')}`.trim()}
+                      className={`pixel-rounded-4 group/pixel bg-page hover:bg-accent transition-colors ${[thumb].filter(Boolean).join(' ')}`.trim()}
                       style={thumbStyle}
                     >
                       <div
@@ -154,5 +193,3 @@ export function Slider({
 // Attach Value and Label as namespace sub-components
 (Slider as typeof Slider & { Value: typeof SliderValue; Label: typeof SliderLabel }).Value = SliderValue;
 (Slider as typeof Slider & { Value: typeof SliderValue; Label: typeof SliderLabel }).Label = SliderLabel;
-
-export default Slider;

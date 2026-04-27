@@ -81,8 +81,12 @@ export const radiantsSystemContract = {
 
   pixelCorners: {
     triggerClasses: [
-      "pixel-rounded-xs", "pixel-rounded-sm", "pixel-rounded-md",
-      "pixel-rounded-lg", "pixel-rounded-xl", "pixel-corners",
+      "pixel-rounded-2", "pixel-rounded-4", "pixel-rounded-6",
+      "pixel-rounded-8", "pixel-rounded-12", "pixel-rounded-16",
+      "pixel-rounded-20", "pixel-rounded-24", "pixel-rounded-32",
+      "pixel-rounded-40", "pixel-rounded-48", "pixel-rounded-64",
+      "pixel-rounded-full", "pixel-corner",
+      "pixel-concave-corner",
     ],
     shadowMigrationMap: {
       "shadow-surface": "pixel-shadow-surface",
@@ -119,7 +123,6 @@ export const radiantsSystemContract = {
     validStandard: [
       "shadow-surface", "shadow-resting", "shadow-lifted", "shadow-raised",
       "shadow-floating", "shadow-focused", "shadow-inset",
-      "shadow-btn", "shadow-btn-hover", "shadow-card", "shadow-card-lg", "shadow-inner",
     ],
     validPixel: [
       "pixel-shadow-surface", "pixel-shadow-resting", "pixel-shadow-lifted",

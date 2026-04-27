@@ -1,7 +1,8 @@
 /**
  * rdna/no-raw-radius
- * Bans arbitrary and standard Tailwind border-radius values in className and style props.
- * Use pixel-rounded-* classes (pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg) instead.
+ * Bans arbitrary border-radius values (e.g. `rounded-[6px]`) in className and
+ * hardcoded radius values in style props. Standard Tailwind tokens
+ * (`rounded-sm`/`rounded-md`/`rounded-full`) remain allowed.
  */
 import {
   getClassNameStrings,
@@ -12,7 +13,6 @@ import {
   isDynamicTemplateLiteral,
   isInsideClassNameAttribute,
   ARBITRARY_RADIUS_CLASS,
-  STANDARD_RADIUS_CLASS,
 } from '../utils.mjs';
 
 const radiusStyleProps = new Set([
@@ -29,11 +29,9 @@ const rule = {
     },
     messages: {
       arbitraryRadius:
-        'Arbitrary radius "{{raw}}" in className. Use pixel-rounded-* instead (e.g. pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg).',
-      standardRadius:
-        'Standard radius "{{raw}}" is not allowed. Use pixel-rounded-* instead (e.g. pixel-rounded-sm, pixel-rounded-md, pixel-rounded-lg).',
+        'Arbitrary radius "{{raw}}" in className. Use an RDNA radius utility (rounded-xs, rounded-sm, rounded-md, rounded-full) or pixel-rounded-*.',
       hardcodedRadiusStyle:
-        'Hardcoded border-radius in style prop ({{prop}}). Use a pixel-rounded-* utility class instead.',
+        'Hardcoded border-radius in style prop ({{prop}}). Use a radius utility class instead.',
     },
     schema: [],
   },
@@ -62,18 +60,6 @@ function checkClassName(context, valueNode) {
         node,
         messageId: 'arbitraryRadius',
         data: { raw: match[0] },
-      });
-    }
-
-    STANDARD_RADIUS_CLASS.lastIndex = 0;
-    while ((match = STANDARD_RADIUS_CLASS.exec(value)) !== null) {
-      const raw = match[0];
-      // Allow rounded-none (removes radius) and pixel-rounded-* (RDNA pattern)
-      if (raw.endsWith('rounded-none') || raw.includes('pixel-rounded')) continue;
-      context.report({
-        node,
-        messageId: 'standardRadius',
-        data: { raw },
       });
     }
   }

@@ -2,7 +2,7 @@
    @rdna/radiants — Pattern-Based Shadow Elevation
    Replaces box-shadow with dither-pattern ::after pseudo-elements in light mode.
    Dark mode suppresses these entirely (glow system takes over in dark.css).
-   All patterns rendered at 2x (16px) — 1x is too fine for shadows.
+   All patterns rendered at 1x (8px) — unified pixel-engine scale.
 
    Elevation scale mirrors tokens.css shadow-* tokens:
      surface  — 1px straight down   (sparse: spray-grid ~12%)
@@ -30,8 +30,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -57,8 +57,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-checkerboard);
   mask-image: var(--pat-checkerboard);
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -87,8 +87,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-fill-75);
   mask-image: var(--pat-fill-75);
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -115,8 +115,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-fill-88);
   mask-image: var(--pat-fill-88);
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -124,9 +124,64 @@
 }
 
 /* =============================================================================
+   Pixel-Shape Shadow — sibling layer for clipped (pixel-cornered) elements
+   The element's own mask clips box-shadow / drop-shadow / pseudo elements,
+   so pattern elevation has to live in a separate sibling DOM node that reuses
+   the same pixel-corner mask via a `pixel-rounded-*` class.
+
+   Anatomy:
+     <div class="pat-pixel-shadow pixel-rounded-8" aria-hidden>
+       <div class="pat-pixel-shadow__fill" />
+     </div>
+     <div class="pixel-rounded-8 ...">…actual surface…</div>
+
+   The outer `pat-pixel-shadow` carries the corner mask and the drop offset.
+   The inner `__fill` carries the dither pattern (clipped by the parent's mask).
+   ============================================================================= */
+
+.pat-pixel-shadow {
+  position: absolute;
+  inset: 0 2px;
+  z-index: -1;
+  pointer-events: none;
+  transform: translate(0, 4px);
+}
+
+/* Suppress the pixel-rounded-* border ::after on the shadow layer.
+   The shadow borrows the corner mask but should not paint its own border. */
+.pat-pixel-shadow::after {
+  display: none !important;
+}
+
+.pat-pixel-shadow__fill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-shadow-pat);
+  -webkit-mask-image: var(--pat-fill-75);
+  mask-image: var(--pat-fill-75);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+}
+
+/* Drag state — softer/sparser pattern, larger lift. Set [data-dragging]
+   on the same wrapper that contains the .pat-pixel-shadow node. */
+[data-dragging] > .pat-pixel-shadow {
+  transform: translate(0, 6px);
+}
+
+[data-dragging] > .pat-pixel-shadow > .pat-pixel-shadow__fill {
+  -webkit-mask-image: var(--pat-checkerboard);
+  mask-image: var(--pat-checkerboard);
+}
+
+/* =============================================================================
    Dark mode suppression
-   Pattern shadows are a light-mode-only effect. In dark mode the glow system
-   defined in dark.css handles elevation instead.
+   Legacy pseudo-element pattern shadows stay light-mode-only. Pixel-shape
+   sibling shadows remain visible in dark mode so AppWindow and popup shells
+   keep the same dithered elevation language across themes.
    ============================================================================= */
 
 .dark .pat-shadow-surface::after,

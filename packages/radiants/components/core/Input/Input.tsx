@@ -183,7 +183,7 @@ function InputLabel({ children, className = '', required }: InputLabelProps): Re
 function InputDescription({ children, className = '' }: InputDescriptionProps): React.ReactNode {
   return (
     <BaseField.Description
-      className={`text-mute text-xs ${className}`.trim()}
+      className={`text-mute ${className}`.trim()}
     >
       {children}
     </BaseField.Description>
@@ -197,7 +197,7 @@ function InputError({ children, className = '', match }: InputErrorProps): React
   return (
     <BaseField.Error
       match={match}
-      className={`text-danger text-xs ${className}`.trim()}
+      className={`text-danger ${className}`.trim()}
     >
       {children}
     </BaseField.Error>
@@ -257,7 +257,7 @@ function InputControl({
   );
 
   const wrappedInput = (
-    <div className={`pixel-rounded-xs ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
+    <div className={`pixel-rounded-4 ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
       {inputWithRef}
     </div>
   );
@@ -307,7 +307,7 @@ export function TextArea({
   );
 
   return (
-    <div className={`pixel-rounded-xs ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
+    <div className={`pixel-rounded-4 ${INPUT_BACKGROUND} ${fullWidth ? 'w-full' : ''} ${INPUT_DISABLED_WRAPPER} ${showStandaloneError ? 'pixel-border-danger' : ''}`.trim()}>
       {textareaEl}
     </div>
   );
@@ -344,5 +344,3 @@ export const Input = Object.assign(InputControl, {
   Error: typeof InputError;
   Validity: typeof InputValidity;
 };
-
-export default Input;

@@ -48,15 +48,6 @@
             }
           }
         },
-        "sky-blue-dark": {
-          "$type": "color",
-          "$value": "oklch(0.47 0.08 237)",
-          "$extensions": {
-            "rdna": {
-              "srgb": "#276182"
-            }
-          }
-        },
         "sunset-fuzz": {
           "$type": "color",
           "$value": "oklch(0.8546 0.1039 68.93)",
@@ -86,10 +77,10 @@
         },
         "pure-white": {
           "$type": "color",
-          "$value": "oklch(1.0000 0.0000 0)",
+          "$value": "oklch(99.1% 0.012 91.5)",
           "$extensions": {
             "rdna": {
-              "srgb": "#ffffff"
+              "srgb": "#fffcf3"
             }
           }
         },
@@ -164,26 +155,6 @@
         }
       },
       "shadow": {
-        "btn": {
-          "$type": "shadow",
-          "$value": "0 1px 0 0 var(--color-ink)"
-        },
-        "btn-hover": {
-          "$type": "shadow",
-          "$value": "0 3px 0 0 var(--color-ink)"
-        },
-        "card": {
-          "$type": "shadow",
-          "$value": "2px 2px 0 0 var(--color-ink)"
-        },
-        "card-lg": {
-          "$type": "shadow",
-          "$value": "4px 4px 0 0 var(--color-ink)"
-        },
-        "inner": {
-          "$type": "shadow",
-          "$value": "inset 0 0 0 1px var(--color-ink)"
-        },
         "glow-sm": {
           "$type": "shadow",
           "$value": "2px 2px 0 0 var(--color-ink)"
@@ -263,6 +234,10 @@
         "comfortable": {
           "$type": "dimension",
           "$value": "48px"
+        },
+        "default": {
+          "$type": "dimension",
+          "$value": "{touchTarget.comfortable}"
         }
       },
       "breakpoint": {
@@ -391,7 +366,7 @@
           "rdna": {
             "source": "--color-card",
             "srgb": {
-              "light": "#ffffff",
+              "light": "#fffcf3",
               "dark": "#000000"
             }
           }
@@ -547,7 +522,7 @@
             "source": "--color-head",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#ffffff"
+              "dark": "#fffcf3"
             }
           }
         }
@@ -575,13 +550,13 @@
         "$extensions": {
           "modes": {
             "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.6)"
           },
           "rdna": {
             "source": "--color-mute",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }
@@ -605,16 +580,16 @@
       },
       "link": {
         "$type": "color",
-        "$value": "{color.sky-blue-dark}",
+        "$value": "{color.sky-blue}",
         "$extensions": {
           "modes": {
-            "light": "{color.sky-blue-dark}",
+            "light": "{color.sky-blue}",
             "dark": "{color.sky-blue}"
           },
           "rdna": {
             "source": "--color-content-link",
             "srgb": {
-              "light": "#276182",
+              "light": "#95bad2",
               "dark": "#95bad2"
             }
           }
@@ -649,7 +624,7 @@
             "source": "--color-content-heading",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#ffffff"
+              "dark": "#fffcf3"
             }
           }
         }
@@ -694,13 +669,13 @@
         "$extensions": {
           "modes": {
             "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.6)"
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.6)"
           },
           "rdna": {
             "source": "--color-content-muted",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }
@@ -713,30 +688,30 @@
         "$extensions": {
           "modes": {
             "light": "{color.ink}",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.2)"
           },
           "rdna": {
             "source": "--color-line",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }
       },
       "rule": {
         "$type": "color",
-        "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+        "$value": "{color.ink}",
         "$extensions": {
           "modes": {
-            "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+            "light": "{color.ink}",
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.12)"
           },
           "rdna": {
             "source": "--color-rule",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }
@@ -781,30 +756,30 @@
         "$extensions": {
           "modes": {
             "light": "{color.ink}",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.2)"
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.2)"
           },
           "rdna": {
             "source": "--color-edge-primary",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }
       },
       "muted": {
         "$type": "color",
-        "$value": "oklch(0.1641 0.0044 84.59 / 0.2)",
+        "$value": "{color.ink}",
         "$extensions": {
           "modes": {
-            "light": "oklch(0.1641 0.0044 84.59 / 0.2)",
-            "dark": "oklch(0.9780 0.0295 94.34 / 0.12)"
+            "light": "{color.ink}",
+            "dark": "oklch(0.9126 0.1170 93.68 / 0.12)"
           },
           "rdna": {
             "source": "--color-edge-muted",
             "srgb": {
               "light": "#0f0e0c",
-              "dark": "#fef8e2"
+              "dark": "#fce184"
             }
           }
         }

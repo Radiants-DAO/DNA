@@ -11,13 +11,31 @@ afterEach(() => {
 });
 
 describe('Icon', () => {
-  it('fetches from a non-default basePath for compatibility', async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      text: async () =>
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg>',
+  it.each([
+    { name: 'search', label: 'Search', size: 24 },
+    { name: 'chevron-left', label: 'Chevron Left', size: 24 },
+    { name: 'interface-essential-eraser', label: 'Eraser', size: 24 },
+  ])('renders $name through the default importer path', async ({ name, label, size }) => {
+    render(
+      React.createElement(Icon, {
+        name,
+        size,
+        'aria-label': label,
+      }),
+    );
+
+    await waitFor(() => {
+      const element = screen.getByLabelText(label);
+      expect(element.tagName.toLowerCase()).toBe('svg');
+      expect(element.querySelector('path')).not.toBeNull();
     });
 
+    expect(screen.getByLabelText(label)).toHaveAttribute('width', `${size}`);
+    expect(screen.getByLabelText(label)).toHaveAttribute('height', `${size}`);
+  });
+
+  it('ignores deprecated basePath and still renders through the generated importer path', async () => {
+    const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
     render(
@@ -29,15 +47,12 @@ describe('Icon', () => {
       }),
     );
 
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        'https://cdn.example/icons/24px/interface-essential-search-1.svg',
-      ),
-    );
+    await waitFor(() => {
+      const element = screen.getByLabelText('Search');
+      expect(element.tagName.toLowerCase()).toBe('svg');
+      expect(element.querySelector('path')).not.toBeNull();
+    });
 
-    const wrapper = await screen.findByLabelText('Search');
-    expect(wrapper.tagName).toBe('SPAN');
-    expect(wrapper).toHaveStyle({ width: '24px', height: '24px' });
-    expect(wrapper.querySelector('svg')).not.toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

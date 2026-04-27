@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const ResizeCorner = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M13 1H15V3H13V1ZM9 5H11V7H9V5ZM13 5H15V7H13V5ZM5 9H7V11H5V9ZM9 9H11V11H9V9ZM13 9H15V11H13V9ZM1 13H3V15H1V13ZM5 13H7V15H5V13ZM9 13H11V15H9V13ZM13 13H15V15H13V13Z" /></svg>;
-ResizeCorner.displayName = 'ResizeCorner';
-
-export default ResizeCorner;

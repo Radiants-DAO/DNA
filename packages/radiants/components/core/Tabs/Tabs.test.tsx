@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect } from 'vitest';
+import { corner, px, registerCornerDefinition } from '@rdna/pixel';
+import { afterEach, describe, it, expect } from 'vitest';
 import { Tabs } from './Tabs';
 import type { TabsMode, TabsPosition } from './Tabs';
 
@@ -35,9 +36,25 @@ function TestTabs({
   );
 }
 
+async function setDocumentCornerShape(value?: string) {
+  await act(async () => {
+    if (value === undefined) {
+      delete document.documentElement.dataset.cornerShape;
+    } else {
+      document.documentElement.dataset.cornerShape = value;
+    }
+
+    await Promise.resolve();
+  });
+}
+
 // ── Core behavior ────────────────────────────────────────────────
 
 describe('Tabs', () => {
+  afterEach(async () => {
+    await setDocumentCornerShape();
+  });
+
   it('renders tabs with correct roles and initial selection', () => {
     render(<TestTabs />);
     const tabs = screen.getAllByRole('tab');
@@ -132,7 +149,7 @@ describe('Tabs', () => {
     const { container } = render(<TestTabs />);
     const list = container.querySelector('[data-slot="tab-list"]');
     expect(list).toBeInTheDocument();
-    expect(list).toHaveClass('pixel-rounded-xs');
+    expect(list).toHaveClass('pixel-rounded-4');
     expect(list).toHaveClass('bg-card');
   });
 
@@ -174,7 +191,7 @@ describe('Tabs', () => {
     );
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
     const trigger = screen.getByRole('tab', { name: 'Tab A' });
-    expect(trigger.closest('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(trigger.closest('.pixel-rounded-4')).toBeInTheDocument();
   });
 
   it('renders the dot indicator shell with the rounded frame classes', () => {
@@ -191,7 +208,7 @@ describe('Tabs', () => {
     );
     const bgLayer = container.querySelector('.bg-main') as HTMLElement | null;
     expect(bgLayer).toBeInTheDocument();
-    expect(bgLayer).toHaveClass('pixel-rounded-sm');
+    expect(bgLayer).toHaveClass('pixel-rounded-6');
   });
 
   // ── Chrome mode ─────────────────────────────────────────────
@@ -225,6 +242,141 @@ describe('Tabs', () => {
       expect(screen.getByText('Active')).toBeInTheDocument();
       // Inactive text should not be rendered (icon-expand-on-active pattern)
       expect(screen.queryByText('Inactive')).not.toBeInTheDocument();
+    });
+
+    it('updates chrome corner styling when html data-corner-shape changes', async () => {
+      await setDocumentCornerShape('circle');
+
+      render(<TestTabs mode="chrome" />);
+
+      const getActiveWrapper = () => {
+        const activeTab = screen.getByRole('tab', { name: 'One' });
+        return activeTab.parentElement as HTMLElement;
+      };
+
+      const initialWrapper = getActiveWrapper();
+      const initialTopLeftCover = initialWrapper.style.getPropertyValue('--px-tl-cover');
+      const initialTopRightCover = initialWrapper.style.getPropertyValue('--px-tr-cover');
+      const initialShell = initialWrapper.parentElement as HTMLElement;
+      const initialLeftShoulder = initialShell.querySelector(
+        '[data-slot="tab-chrome-concave-left"]',
+      ) as HTMLElement;
+      const initialRightShoulder = initialShell.querySelector(
+        '[data-slot="tab-chrome-concave-right"]',
+      ) as HTMLElement;
+      const initialLeftShoulderMask =
+        initialLeftShoulder.style.getPropertyValue('--px-concave-mask');
+      const initialRightShoulderMask =
+        initialRightShoulder.style.getPropertyValue('--px-concave-mask');
+
+      expect(initialWrapper).toHaveClass('pixel-corner');
+      expect(initialTopLeftCover).not.toBe('');
+      expect(initialTopRightCover).not.toBe('');
+      expect(initialLeftShoulder).toHaveClass('pixel-concave-corner', 'pixel-concave-br');
+      expect(initialRightShoulder).toHaveClass('pixel-concave-corner', 'pixel-concave-bl');
+      expect(initialLeftShoulderMask).not.toBe('');
+      expect(initialRightShoulderMask).not.toBe('');
+
+      await setDocumentCornerShape('chamfer');
+
+      await waitFor(() => {
+        const updatedWrapper = getActiveWrapper();
+        const updatedShell = updatedWrapper.parentElement as HTMLElement;
+        const updatedLeftShoulder = updatedShell.querySelector(
+          '[data-slot="tab-chrome-concave-left"]',
+        ) as HTMLElement;
+        const updatedRightShoulder = updatedShell.querySelector(
+          '[data-slot="tab-chrome-concave-right"]',
+        ) as HTMLElement;
+        expect(updatedWrapper.style.getPropertyValue('--px-tl-cover')).not.toBe(initialTopLeftCover);
+        expect(updatedWrapper.style.getPropertyValue('--px-tr-cover')).not.toBe(initialTopRightCover);
+        expect(updatedLeftShoulder.style.getPropertyValue('--px-concave-mask')).not.toBe(
+          initialLeftShoulderMask,
+        );
+        expect(updatedRightShoulder.style.getPropertyValue('--px-concave-mask')).not.toBe(
+          initialRightShoulderMask,
+        );
+      });
+
+      await setDocumentCornerShape('circle');
+
+      await waitFor(() => {
+        const resetWrapper = getActiveWrapper();
+        const resetShell = resetWrapper.parentElement as HTMLElement;
+        const resetLeftShoulder = resetShell.querySelector(
+          '[data-slot="tab-chrome-concave-left"]',
+        ) as HTMLElement;
+        const resetRightShoulder = resetShell.querySelector(
+          '[data-slot="tab-chrome-concave-right"]',
+        ) as HTMLElement;
+        expect(resetWrapper.style.getPropertyValue('--px-tl-cover')).toBe(initialTopLeftCover);
+        expect(resetWrapper.style.getPropertyValue('--px-tr-cover')).toBe(initialTopRightCover);
+        expect(resetLeftShoulder.style.getPropertyValue('--px-concave-mask')).toBe(
+          initialLeftShoulderMask,
+        );
+        expect(resetRightShoulder.style.getPropertyValue('--px-concave-mask')).toBe(
+          initialRightShoulderMask,
+        );
+      });
+    });
+
+    it('uses non-empty custom html data-corner-shape values for chrome tabs', async () => {
+      const dispose = registerCornerDefinition({
+        kind: 'override',
+        shape: 'test-custom-shape',
+        match(radiusPx) {
+          if (radiusPx !== 6) {
+            return null;
+          }
+
+          return {
+            name: 'test-custom-shape-6',
+            tl: {
+              name: 'test-custom-shape-6-cover',
+              width: 4,
+              height: 4,
+              bits: '1110110010000000',
+            },
+            border: {
+              name: 'test-custom-shape-6-border',
+              width: 4,
+              height: 4,
+              bits: '0001001001001000',
+            },
+          };
+        },
+      });
+
+      try {
+        await setDocumentCornerShape('test-custom-shape');
+
+        render(<TestTabs mode="chrome" />);
+
+        const activeTab = screen.getByRole('tab', { name: 'One' });
+        const wrapper = activeTab.parentElement as HTMLElement;
+        const expectedStyle = px({
+          corners: corner.map(corner.flat, {
+            tl: corner.themed(6),
+            tr: corner.themed(6),
+          }),
+          edges: [1, 1, 0, 1],
+          themeShape: 'test-custom-shape',
+        }).style;
+        const circleStyle = px({
+          corners: corner.map(corner.flat, {
+            tl: corner.themed(6),
+            tr: corner.themed(6),
+          }),
+          edges: [1, 1, 0, 1],
+          themeShape: 'circle',
+        }).style;
+
+        expect(wrapper.style.getPropertyValue('--px-tl-cover')).toBe(expectedStyle['--px-tl-cover']);
+        expect(wrapper.style.getPropertyValue('--px-tr-cover')).toBe(expectedStyle['--px-tr-cover']);
+        expect(wrapper.style.getPropertyValue('--px-tl-cover')).not.toBe(circleStyle['--px-tl-cover']);
+      } finally {
+        dispose();
+      }
     });
   });
 

@@ -16,11 +16,11 @@ import type {
  * `none` collapses to `null` — a sentinel meaning "no pixel corners".
  */
 const BUTTON_ROUNDED_TO_PIXEL_CLASS: Record<ButtonRounded, string | null> = {
-  xs: 'pixel-rounded-xs',
-  sm: 'pixel-rounded-sm',
-  md: 'pixel-rounded-md',
-  lg: 'pixel-rounded-lg',
-  xl: 'pixel-rounded-xl',
+  xs: 'pixel-rounded-4',
+  sm: 'pixel-rounded-6',
+  md: 'pixel-rounded-8',
+  lg: 'pixel-rounded-12',
+  xl: 'pixel-rounded-20',
   full: 'pixel-rounded-full',
   none: null,
 };
@@ -76,6 +76,13 @@ type ButtonProps = ButtonButtonProps | ButtonAnchorProps;
 // CVA Variants
 // ============================================================================
 
+/**
+ * Root (outer) classes. Carries `data-rdna="button"` and is the single
+ * interactive node — ref, onClick, ARIA, and focus all land here. No mask is
+ * applied to this element, so `filter: drop-shadow(…)` on hover/press (sun
+ * mode lift, moon mode glow) is not clipped. See `packages/radiants/base.css`
+ * and `dark.css` for the state filters that depend on this split.
+ */
 export const buttonRootVariants = cva(
   `group relative inline-flex select-none cursor-pointer overflow-visible
    focus-visible:outline-none focus-visible:shadow-focused`,
@@ -88,6 +95,11 @@ export const buttonRootVariants = cva(
   }
 );
 
+/**
+ * Face (inner) classes. Carries `data-slot="button-face"` and the
+ * `pixel-rounded-*` mask. All visual treatment (bg, padding, pattern overlay
+ * pseudo, borders) targets this element.
+ */
 export const buttonFaceVariants = cva(
   `inline-flex items-center uppercase tracking-tight leading-none whitespace-nowrap shadow-none
    transition-[border-color,background-color,color] duration-[var(--duration-base)] ease-out`,
@@ -99,10 +111,9 @@ export const buttonFaceVariants = cva(
         text: 'no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit] normal-case !h-auto !p-0',
         pattern: '',
       },
-      // Geometry is now handled by the `pixel-rounded-*` CSS class (see
-      // Button render body). This variant stays in the cva signature so
-      // compound variants that key on `rounded` keep type-checking, but it
-      // no longer contributes classes to the face element.
+      // Geometry is handled by the `pixel-rounded-*` CSS class (see render body).
+      // This variant stays in the signature so compound variants that key on
+      // `rounded` keep type-checking, but it no longer contributes classes.
       rounded: {
         none: '',
         xs: '',
@@ -116,8 +127,8 @@ export const buttonFaceVariants = cva(
         xs: 'h-5 text-xs gap-0.5 [&_svg]:size-3.5',
         sm: 'h-6 text-xs gap-0.5 [&_svg]:size-4',
         md: 'h-7 text-xs gap-0.5 [&_svg]:size-4',
-        lg: 'h-8 text-sm gap-1 [&_svg]:size-4',
-        xl: 'h-10 text-sm gap-1.5 [&_svg]:size-6',
+        lg: 'h-8 text-base gap-1 [&_svg]:size-6',
+        xl: 'h-10 text-base gap-1.5 [&_svg]:size-6',
       },
       iconOnly: {
         true: 'px-0 py-0 justify-center',
@@ -200,11 +211,17 @@ export function Button({
 
   const isDisabled = Boolean(disabled);
   const rootClasses = buttonRootVariants({ fullWidth, disabled: isDisabled });
-  const justifyClass = !iconOnly && fullWidth && resolvedIcon && !textOnly ? 'justify-between' : iconOnly ? '' : 'justify-start';
+  const justifyClass =
+    !iconOnly && fullWidth && resolvedIcon && !textOnly
+      ? 'justify-between'
+      : iconOnly
+        ? ''
+        : 'justify-start';
 
-  // Modes without pixel-corner borders (text / flat / pattern) force `none`.
+  // Modes without pixel-corner borders (text / pattern) force `none`.
+  // Flat keeps pixel corners — it drops the lift, not the border.
   const effectiveRounded: ButtonRounded =
-    mode === 'text' || mode === 'flat' || mode === 'pattern' ? 'none' : rounded;
+    mode === 'text' || mode === 'pattern' ? 'none' : rounded;
 
   const faceClasses = buttonFaceVariants({
     mode,
@@ -217,8 +234,9 @@ export function Button({
     className: `${justifyClass} ${className}`.trim(),
   });
 
-  // When the button has pixel-art corners, apply the CSS pixel-rounded class.
-  // The map collapses `none` to `null`, in which case no pixel corners are applied.
+  // When the button has pixel-art corners, apply the CSS pixel-rounded class
+  // to the face (inner, masked) element. The outer stays unmasked so state
+  // filters (lift/press, moon-mode glow) aren't clipped.
   const pixelClass = BUTTON_ROUNDED_TO_PIXEL_CLASS[effectiveRounded];
 
   // Content based on mode
@@ -325,5 +343,3 @@ export function IconButton({
 }: IconButtonProps) {
   return <Button size={size} quiet={quiet} iconOnly icon={icon} {...props} />;
 }
-
-export default Button;

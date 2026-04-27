@@ -3,7 +3,7 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Toast as BaseToast } from '@base-ui/react/toast';
 import { Alert } from '../Alert/Alert';
-import { Close as CloseIcon } from '../../../icons/generated';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 import { createCompoundContext } from '../../shared/createCompoundContext';
 
 // ============================================================================
@@ -259,7 +259,7 @@ function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
           )}
         </Alert.Content>
         <BaseToast.Close aria-label="Close alert">
-          {renderCloseIcon ? renderCloseIcon() : <CloseIcon size={14} />}
+          {renderCloseIcon ? renderCloseIcon() : <BitmapIcon name="close" size={16} />}
         </BaseToast.Close>
       </Alert.Root>
     </BaseToast.Root>
@@ -268,5 +268,3 @@ function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
 
 /** Renders an action button inside a toast. Must be used within a BaseToast.Root context. */
 export const ToastAction = BaseToast.Action;
-
-export default ToastProvider;

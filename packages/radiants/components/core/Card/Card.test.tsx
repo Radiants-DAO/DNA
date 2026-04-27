@@ -12,7 +12,7 @@ describe('Card', () => {
     expect(screen.getByText('Card content')).toBeInTheDocument();
     const card = screen.getByText('Card content').closest('[data-slot="card"]');
     expect(card).toBeInTheDocument();
-    expect(card).toHaveClass('pixel-rounded-lg');
+    expect(card).toHaveClass('pixel-rounded-12');
     expect(card).toHaveAttribute('data-variant', 'default');
   });
 
@@ -24,7 +24,7 @@ describe('Card', () => {
     );
 
     const card = screen.getByText('Raised card').closest('[data-slot="card"]');
-    expect(card).toHaveClass('pixel-rounded-sm');
+    expect(card).toHaveClass('pixel-rounded-6');
     expect(card).toHaveClass('pixel-shadow-raised');
     expect(card).toHaveAttribute('data-variant', 'raised');
   });

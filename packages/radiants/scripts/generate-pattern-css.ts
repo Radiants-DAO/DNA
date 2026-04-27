@@ -2,32 +2,35 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
-import { bitsToMaskURI, bitsToPath } from '@rdna/pixel';
-
-import { patternRegistry } from '../patterns/registry.ts';
+import {
+  PATTERN_GROUPS,
+  preparePatterns,
+  type PatternGroup,
+  type PreparedPattern,
+} from '../../pixel/src/patterns.ts';
 
 const GRID_SIZE = 8;
+// Mask size is one --pat-cell per pattern pixel, scaled by the pixel/pat scale
+// multipliers. --pat-cell is declared in base.css as the global authority.
 const DEFAULT_MASK_SIZE =
-  `calc(${GRID_SIZE}px * var(--pixel-scale, 1) * var(--pat-scale, 1)) ` +
-  `calc(${GRID_SIZE}px * var(--pixel-scale, 1) * var(--pat-scale, 1))`;
+  `calc(var(--pat-cell, ${GRID_SIZE}px) * var(--pixel-scale, 1) * var(--pat-scale, 1)) ` +
+  `calc(var(--pat-cell, ${GRID_SIZE}px) * var(--pixel-scale, 1) * var(--pat-scale, 1))`;
 const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
-   Source: scripts/generate-pattern-css.ts + patterns/registry.ts
+   Authored source: packages/pixel/src/patterns/registry.ts
+   Materialized by: packages/radiants/scripts/generate-pattern-css.ts
    Run: node --experimental-strip-types scripts/generate-pattern-css.ts
 */`;
+
+const patternRegistry = preparePatterns();
 
 function indent(level: number, line: string) {
   return '  '.repeat(level) + line;
 }
 
-function renderTokenValue(bits: string) {
-  const pathD = bitsToPath(bits, GRID_SIZE, GRID_SIZE);
-  return bitsToMaskURI(pathD, GRID_SIZE);
-}
-
 export function renderPatternCss() {
   const lines: string[] = [GENERATED_FILE_BANNER, '', '@theme {'];
 
-  const grouped = new Map<string, typeof patternRegistry>();
+  const grouped = new Map<PatternGroup, PreparedPattern[]>();
   for (const entry of patternRegistry) {
     const list = grouped.get(entry.group);
     if (list) {
@@ -37,19 +40,14 @@ export function renderPatternCss() {
     }
   }
 
-  const groupLabels: Record<string, string> = {
-    structural: 'Structural',
-    diagonal: 'Diagonal',
-    grid: 'Grid & Lattice',
-    figurative: 'Figurative',
-    scatter: 'Scatter / Stipple',
-    heavy: 'Heavy Fill',
-  };
+  const groupLabels = Object.fromEntries(
+    PATTERN_GROUPS.map((group) => [group.key, group.label]),
+  );
 
   for (const [group, entries] of grouped) {
     lines.push(indent(1, `/* ─── Group: ${groupLabels[group] ?? group} ─── */`));
     for (const entry of entries) {
-      lines.push(indent(1, `${entry.token}: ${renderTokenValue(entry.bits)};`));
+      lines.push(indent(1, `${entry.token}: ${entry.maskImage};`));
     }
     lines.push('');
   }

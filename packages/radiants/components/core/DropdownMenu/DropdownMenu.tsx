@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -121,16 +122,15 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
           className={`
             z-50
             min-w-[8rem]
+            py-1
+            pixel-rounded-6 bg-page pixel-shadow-raised
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
         >
-          <div className={`pixel-rounded-sm bg-page pixel-shadow-raised ${className}`.trim()}>
-            <div className="py-1">
-            {children}
-            </div>
-          </div>
+          {children}
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>
@@ -270,7 +270,7 @@ export function DropdownMenuCheckboxItem({
       `.trim()}
     >
       <BaseMenu.CheckboxItemIndicator className="w-4 h-4 flex items-center justify-center">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1,5H3V6H4V7H6V6H7V5H8V3H6V5H4V3H2V5Z"/></svg>
+        <BitmapIcon name="checkmark" size={16} />
       </BaseMenu.CheckboxItemIndicator>
       {children}
     </BaseMenu.CheckboxItem>
@@ -329,5 +329,3 @@ export function DropdownMenuRadioItem({
     </BaseMenu.RadioItem>
   );
 }
-
-export default DropdownMenu;

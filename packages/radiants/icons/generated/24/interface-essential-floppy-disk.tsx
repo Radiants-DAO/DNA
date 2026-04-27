@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialFloppyDisk = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.5 3.501H21.496V21.502H22.5V3.501ZM21.496 2.498H20.498V3.502H21.496V2.498ZM19.501 12.499H18.497V21.503H5.497V12.499H4.499V21.503H2.498V22.5H21.496V21.503H19.501V12.499ZM13.496 7.498H17.499V3.501H13.496V7.498ZM14.5 4.499H15.498V6.501H14.5V4.499Z" /><path d="M16.495 18.497H7.498V19.501H16.495V18.497ZM16.495 15.498H7.498V16.502H16.495V15.498ZM18.497 11.501H5.497V12.499H18.497V11.501ZM4.499 7.498H5.497V2.498H7.498V7.498H5.497V8.502H7.498V9.5H19.501V2.498H20.499V1.5H3.502V2.498H4.499V7.498ZM8.496 2.498H18.497V8.502H8.496V2.498ZM3.502 2.498H2.498V3.502H3.502V2.498ZM2.498 3.501H1.5V21.502H2.498V3.501Z" /></g></svg>;
-InterfaceEssentialFloppyDisk.displayName = 'InterfaceEssentialFloppyDisk';
-
-export default InterfaceEssentialFloppyDisk;

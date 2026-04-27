@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 import type { ComboboxProps } from './Combobox.meta';
 
 
@@ -131,7 +132,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
         placeholder={placeholder}
         disabled={disabled}
         className={`
-          pixel-rounded-xs w-full
+          pixel-rounded-4 w-full
           bg-page group-focus-within/pixel:bg-card
           w-full h-8
           px-3 py-1.5
@@ -147,19 +148,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
         className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer z-10"
       >
         <BaseCombobox.Icon className="text-mute">
-          <svg
-            width={14}
-            height={14}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+          <BitmapIcon name="chevron-down" size={16} />
         </BaseCombobox.Icon>
       </BaseCombobox.Trigger>
     </div>
@@ -187,16 +176,16 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
         className={`
           z-50
           w-[var(--anchor-width)]
+          pixel-rounded-4 bg-card pixel-shadow-raised
           transition-[opacity,transform] duration-[var(--duration-base)] ease-out
           data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
           data-[ending-style]:opacity-0
+          ${className}
         `.trim()}
       >
-        <div className={`pixel-rounded-xs bg-card pixel-shadow-raised w-full ${className}`.trim()}>
-          <BaseCombobox.List className="max-h-48 overflow-y-auto py-1">
-            {children}
-          </BaseCombobox.List>
-        </div>
+        <BaseCombobox.List className="max-h-48 overflow-y-auto py-1">
+          {children}
+        </BaseCombobox.List>
       </BaseCombobox.Popup>
     </BaseCombobox.Positioner>
   );
@@ -223,19 +212,7 @@ function Item({ value, children, disabled = false, className = '' }: ComboboxIte
       `.trim()}
     >
       <BaseCombobox.ItemIndicator className="shrink-0">
-        <svg
-          width={14}
-          height={14}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
+        <BitmapIcon name="checkmark" size={16} />
       </BaseCombobox.ItemIndicator>
       {children}
     </BaseCombobox.Item>
@@ -319,5 +296,3 @@ export { useComboboxFilter };
 // ============================================================================
 
 export const Combobox = { Root, Input, Portal, Popup, Item, Empty, Group, GroupLabel, Status };
-
-export default Combobox;

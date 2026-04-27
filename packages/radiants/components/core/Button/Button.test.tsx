@@ -58,18 +58,18 @@ describe('Button', () => {
     render(<Button>Rounded</Button>);
     const face = screen.getByText('Rounded').closest('[data-slot="button-face"]');
 
-    expect(face).toHaveClass('pixel-rounded-xs');
+    expect(face).toHaveClass('pixel-rounded-4');
     expect(face).toHaveAttribute('data-variant', 'solid');
     expect(face).toHaveAttribute('data-state', 'default');
   });
 
   test('rounded variants map to the matching pixel-rounded classes', () => {
     const cases: Array<{ rounded: 'xs' | 'sm' | 'md' | 'lg' | 'xl'; className: string }> = [
-      { rounded: 'xs', className: 'pixel-rounded-xs' },
-      { rounded: 'sm', className: 'pixel-rounded-sm' },
-      { rounded: 'md', className: 'pixel-rounded-md' },
-      { rounded: 'lg', className: 'pixel-rounded-lg' },
-      { rounded: 'xl', className: 'pixel-rounded-xl' },
+      { rounded: 'xs', className: 'pixel-rounded-4' },
+      { rounded: 'sm', className: 'pixel-rounded-6' },
+      { rounded: 'md', className: 'pixel-rounded-8' },
+      { rounded: 'lg', className: 'pixel-rounded-12' },
+      { rounded: 'xl', className: 'pixel-rounded-20' },
     ];
 
     for (const { rounded, className } of cases) {

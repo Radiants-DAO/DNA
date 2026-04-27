@@ -10,7 +10,7 @@ describe('Input', () => {
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('data-rdna', 'input');
     const shell = container.firstElementChild as HTMLElement | null;
-    expect(shell).toHaveClass('pixel-rounded-xs');
+    expect(shell).toHaveClass('pixel-rounded-4');
     expect(shell).toHaveClass('bg-page');
   });
 

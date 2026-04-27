@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialTextInputArea1 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.5 9.004H21.503V15.002H22.5V9.004ZM21.503 8H13.503V9.004H21.503V8ZM21.503 15.002H13.503V16H21.503V15.002ZM14.5 5.999H12.499V7.003H14.5V5.999ZM14.5 17.004H12.499V18.001H14.5V17.004ZM12.499 7.003H11.501V17.004H12.499V7.003ZM11.501 5.999H9.5V7.003H11.501V5.999ZM11.501 17.004H9.5V18.001H11.501V17.004ZM10.504 15.002H2.504V16H10.504V15.002ZM6.501 13.998V13.001H7.505V12.003H8.502V10.999H7.505V10.002H6.501V10.999H5.503V10.002H4.499V10.999H3.502V12.003H4.499V13.001H5.503V13.998H6.501ZM10.504 8H2.504V9.004H10.504V8ZM2.504 9.004H1.5V15.002H2.504V9.004Z" /></g></svg>;
-InterfaceEssentialTextInputArea1.displayName = 'InterfaceEssentialTextInputArea1';
-
-export default InterfaceEssentialTextInputArea1;

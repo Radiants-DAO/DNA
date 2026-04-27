@@ -21,7 +21,7 @@ describe('Menubar', () => {
     const root = container.querySelector('[data-rdna="menubar"]');
 
     expect(root).toBeInTheDocument();
-    expect(root).toHaveClass('pixel-rounded-xs');
+    expect(root).toHaveClass('pixel-rounded-4');
     expect(root).toHaveClass('bg-inv');
   });
 
@@ -33,7 +33,7 @@ describe('Menubar', () => {
     await waitFor(() => {
       expect(screen.getByText('New')).toBeInTheDocument();
     });
-    expect(screen.getByText('New').closest('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(screen.getByText('New').closest('.pixel-rounded-4')).toBeInTheDocument();
     expect(screen.getByText('New').closest('.pixel-shadow-raised')).toBeInTheDocument();
   });
 });

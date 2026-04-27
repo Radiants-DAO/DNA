@@ -5,13 +5,13 @@
  * represented as static SVG files in assets/icons/.
  */
 
-import type { IconProps } from './types';
+import type { BrandIconProps } from './types';
 
 // ============================================================================
 // Brand Icons
 // ============================================================================
 
-export function RadMarkIcon({ className = '', size: sizeProp, large = false }: IconProps) {
+export function RadMarkIcon({ className = '', size: sizeProp, large = false }: BrandIconProps) {
   const size = sizeProp ?? (large ? 24 : 16);
   return (
     <svg
@@ -35,7 +35,7 @@ export function RadMarkIcon({ className = '', size: sizeProp, large = false }: I
 // Special non-SVG icons
 // ============================================================================
 
-export function FontAaIcon({ className = '', size: sizeProp, large = false }: IconProps) {
+export function FontAaIcon({ className = '', size: sizeProp, large = false }: BrandIconProps) {
   const size = sizeProp ?? (large ? 24 : 16);
   return (
     <span

@@ -3,8 +3,6 @@
 import React from 'react';
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field';
 import { cva } from 'class-variance-authority';
-import { Plus, Minus } from '../../../icons/generated';
-
 
 // ============================================================================
 // Types
@@ -90,6 +88,18 @@ const stepButtonVariants = cva(
    h-8 w-8 shrink-0 cursor-pointer select-none`
 );
 
+function StepGlyph({ children }: { children: React.ReactNode }): React.ReactNode {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center justify-center text-[12px] leading-none"
+      style={{ fontFamily: 'var(--font-pixel-code)' }}
+    >
+      {children}
+    </span>
+  );
+}
+
 // ============================================================================
 // Components
 // ============================================================================
@@ -152,7 +162,7 @@ function Increment({ children, className = '' }: IncrementProps): React.ReactNod
     <BaseNumberField.Increment
       className={stepButtonVariants({ className: `border-l ${className}`.trim() })}
     >
-      {children ?? <Plus size={14} />}
+      {children ?? <StepGlyph>+</StepGlyph>}
     </BaseNumberField.Increment>
   );
 }
@@ -165,7 +175,7 @@ function Decrement({ children, className = '' }: DecrementProps): React.ReactNod
     <BaseNumberField.Decrement
       className={stepButtonVariants({ className: `border-r ${className}`.trim() })}
     >
-      {children ?? <Minus size={14} />}
+      {children ?? <StepGlyph>-</StepGlyph>}
     </BaseNumberField.Decrement>
   );
 }
@@ -175,7 +185,7 @@ function Decrement({ children, className = '' }: DecrementProps): React.ReactNod
  */
 function Group({ children, className = '' }: GroupProps): React.ReactNode {
   return (
-    <BaseNumberField.Group className={`pixel-rounded-xs flex items-center ${className}`.trim()}>
+    <BaseNumberField.Group className={`pixel-rounded-4 flex items-center ${className}`.trim()}>
       {children}
     </BaseNumberField.Group>
   );
@@ -219,5 +229,3 @@ export const NumberField = {
   ScrubArea,
   ScrubAreaCursor,
 };
-
-export default NumberField;

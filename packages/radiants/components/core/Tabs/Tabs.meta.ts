@@ -9,6 +9,7 @@ interface TabsProps {
   tone?: "neutral" | "accent";
   size?: "sm" | "md" | "lg";
   indicator?: "none" | "dot";
+  showInactiveLabels?: boolean;
 }
 
 export const TabsMeta = defineComponentMeta<TabsProps>()({
@@ -59,6 +60,11 @@ export const TabsMeta = defineComponentMeta<TabsProps>()({
       options: ["none", "dot"],
       default: "none",
       description: "Show dot pagination indicator alongside tab list",
+    },
+    showInactiveLabels: {
+      type: "boolean",
+      default: false,
+      description: "Render inactive tab labels alongside icons (default: icon-only when inactive)",
     },
   },
   slots: {

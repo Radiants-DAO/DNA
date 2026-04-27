@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { ModalShell, MODAL_TRIGGER_CLASS } from '../_shared/ModalShell';
+import { PatternBackdrop } from '../_shared/PatternBackdrop';
 
 // ============================================================================
 // Types
@@ -94,16 +96,14 @@ export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
   if (asChild) {
     return (
       <BaseDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDialog.Trigger className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDialog.Trigger>
   );
@@ -134,9 +134,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
 
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-moderate)] data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-      />
+      <PatternBackdrop as={BaseDialog.Backdrop} duration="moderate" />
       <BaseDialog.Popup
         className={`
           fixed z-50
@@ -155,7 +153,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
 }
 
 // ============================================================================
-// Sheet Header, Title, Description
+// Sheet Header, Title, Description — shared ModalShell primitives
 // ============================================================================
 
 interface SheetHeaderProps {
@@ -166,11 +164,7 @@ interface SheetHeaderProps {
 }
 
 export function SheetHeader({ className = '', children }: SheetHeaderProps) {
-  return (
-    <div className={`px-6 pt-6 pb-4 border-b border-rule ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Header className={className}>{children}</ModalShell.Header>;
 }
 
 interface SheetTitleProps {
@@ -182,9 +176,9 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
+    <ModalShell.Title as={BaseDialog.Title} className={className}>
       {children}
-    </BaseDialog.Title>
+    </ModalShell.Title>
   );
 }
 
@@ -197,14 +191,14 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
+    <ModalShell.Description as={BaseDialog.Description} className={className}>
       {children}
-    </BaseDialog.Description>
+    </ModalShell.Description>
   );
 }
 
 // ============================================================================
-// Sheet Body & Footer
+// Sheet Body & Footer — shared ModalShell primitives (Body is scrollable)
 // ============================================================================
 
 interface SheetBodyProps {
@@ -215,11 +209,7 @@ interface SheetBodyProps {
 }
 
 export function SheetBody({ className = '', children }: SheetBodyProps) {
-  return (
-    <div className={`px-6 py-4 flex-1 overflow-auto ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Body scrollable className={className}>{children}</ModalShell.Body>;
 }
 
 interface SheetFooterProps {
@@ -230,11 +220,7 @@ interface SheetFooterProps {
 }
 
 export function SheetFooter({ className = '', children }: SheetFooterProps) {
-  return (
-    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Footer className={className}>{children}</ModalShell.Footer>;
 }
 
 // ============================================================================
@@ -252,19 +238,15 @@ export function SheetClose({ children, asChild = false }: SheetCloseProps) {
   if (asChild) {
     return (
       <BaseDialog.Close
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDialog.Close
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDialog.Close className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDialog.Close>
   );
 }
-
-export default Sheet;

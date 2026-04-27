@@ -100,7 +100,7 @@ export function Avatar({
 
   if (shape === 'square') {
     return (
-      <div className={`pixel-rounded-xs inline-block ${className}`.trim()}>
+      <div className={`pixel-rounded-4 inline-block ${className}`.trim()}>
         {root}
       </div>
     );
@@ -108,5 +108,3 @@ export function Avatar({
 
   return root;
 }
-
-export default Avatar;

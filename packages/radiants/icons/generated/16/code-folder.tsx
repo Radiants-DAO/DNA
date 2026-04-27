@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const CodeFolder = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M1 4H2V12H1V4ZM2 3H5V4H2V3ZM2 12H14V13H2V12ZM4 9H5V10H4V9ZM5 4H14V5H5V4ZM5 8H6V9H5V8ZM5 10H6V11H5V10ZM7 10H8V11H7V10ZM8 9H9V10H8V9ZM9 8H10V9H9V8ZM11 8H12V9H11V8ZM11 10H12V11H11V10ZM12 9H13V10H12V9ZM14 5H15V12H14V5Z" /></svg>;
-CodeFolder.displayName = 'CodeFolder';
-
-export default CodeFolder;

@@ -7,7 +7,7 @@ describe('Avatar', () => {
     const avatar = container.querySelector('[data-rdna="avatar"]');
 
     expect(avatar).toBeInTheDocument();
-    expect(avatar?.parentElement).toHaveClass('pixel-rounded-xs');
+    expect(avatar?.parentElement).toHaveClass('pixel-rounded-4');
     expect(avatar).toHaveAttribute('data-shape', 'square');
   });
 
@@ -15,6 +15,6 @@ describe('Avatar', () => {
     const { container } = render(<Avatar shape="circle" fallback="RM" />);
     const avatar = container.querySelector('[data-rdna="avatar"]');
     expect(avatar?.className).toContain('rounded-full');
-    expect(avatar?.parentElement).not.toHaveClass('pixel-rounded-xs');
+    expect(avatar?.parentElement).not.toHaveClass('pixel-rounded-4');
   });
 });

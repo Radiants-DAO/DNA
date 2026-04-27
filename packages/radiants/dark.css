@@ -37,15 +37,15 @@
   --color-content-heading: var(--color-pure-white);   /* Headings: pure white */
   --color-content-secondary: oklch(0.9780 0.0295 94.34 / 0.85);          /* was rgba(254, 248, 226, 0.85) */
   --color-content-inverted: var(--color-ink);
-  --color-content-muted: oklch(0.9780 0.0295 94.34 / 0.6);              /* was rgba(254, 248, 226, 0.6) — cream at 60% */
+  --color-content-muted: oklch(0.9126 0.1170 93.68 / 0.6);              /* sun-yellow at 60% */
   --color-content-link: var(--color-sky-blue);       /* Links: lighter sky-blue has good contrast on dark bg */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-edge-primary: oklch(0.9780 0.0295 94.34 / 0.2);                /* was rgba(254, 248, 226, 0.2) — cream at 20% — matches divider */
-  --color-edge-muted: oklch(0.9780 0.0295 94.34 / 0.12);               /* was rgba(254, 248, 226, 0.12) — subtler than primary */
+  --color-edge-primary: oklch(0.9126 0.1170 93.68 / 0.2);                /* sun-yellow at 20% — matches divider */
+  --color-edge-muted: oklch(0.9126 0.1170 93.68 / 0.12);               /* sun-yellow at 12% — subtler than primary */
   --color-edge-hover: oklch(0.9780 0.0295 94.34 / 0.35);               /* was rgba(254, 248, 226, 0.35) — cream at 35% for hover states */
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
@@ -69,7 +69,7 @@
   --color-main: var(--color-cream);                            /* Body text: cream on dark */
   --color-head: var(--color-pure-white);                       /* Headings: pure white on dark */
   --color-sub: oklch(0.9780 0.0295 94.34 / 0.85);             /* Secondary text: cream at 85% */
-  --color-mute: oklch(0.9780 0.0295 94.34 / 0.6);             /* Muted text: cream at 60% */
+  --color-mute: oklch(0.9126 0.1170 93.68 / 0.6);             /* Muted text: sun-yellow at 60% */
   --color-flip: var(--color-cream);                            /* Text on inv surfaces: cream on ink, unchanged in dark */
   --color-link: var(--color-sky-blue);                         /* Links: unchanged */
 
@@ -77,8 +77,8 @@
      SHORT SEMANTIC TOKENS - Borders
      ============================================ */
 
-  --color-line: oklch(0.9780 0.0295 94.34 / 0.2);             /* Primary border: cream at 20% */
-  --color-rule: oklch(0.9780 0.0295 94.34 / 0.12);            /* Muted border: cream at 12% */
+  --color-line: oklch(0.9126 0.1170 93.68 / 0.2);             /* Primary border: sun-yellow at 20% */
+  --color-rule: oklch(0.9126 0.1170 93.68 / 0.12);            /* Muted border: sun-yellow at 12% */
   --color-line-hover: oklch(0.9780 0.0295 94.34 / 0.35);      /* Hover border: cream at 35% */
   --color-focus: var(--color-sun-yellow);                      /* Focus ring: yellow unchanged */
 
@@ -376,7 +376,7 @@
   }
 
   & [data-slot="button-face"][data-mode="solid"] {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
+    background-color: oklch(from var(--btn-tint) 0.24 calc(c * 0.35) h);
     background-image: none;
     color: var(--btn-tint);
     transition: background 150ms ease-out, translate 150ms ease-out;
@@ -384,19 +384,19 @@
     &::after { background: var(--color-rule); }
 
     &:hover {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+      background-color: oklch(from var(--btn-tint) 0.28 calc(c * 0.42) h) !important;
       background-image: none;
       &::after { background: var(--color-line-hover); }
     }
 
     &:active {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-color: oklch(from var(--btn-tint) 0.32 calc(c * 0.5) h) !important;
       background-image: none;
       &::after { background: var(--color-focus); }
     }
 
     &[data-state="selected"] {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-color: oklch(from var(--btn-tint) 0.32 calc(c * 0.5) h) !important;
       background-image: none;
       &::after { background: var(--color-focus); }
     }
@@ -471,42 +471,22 @@
     &::after { background: transparent; transition: background 150ms ease-out; }
 
     &[data-state="selected"] {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
-      background-image:
-        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-        linear-gradient(to top, oklch(0 0 0 / 0.2) 0px, transparent 1px),
-        linear-gradient(to left, oklch(0 0 0 / 0.2) 0px, transparent 1px);
-      color: var(--btn-tint);
-      &::after { background: var(--color-rule); }
+      background-color: var(--btn-fill);
+      color: var(--btn-text);
+      &::after { background: var(--color-line); }
     }
 
     &:hover {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
-      background-image:
-        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to top, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-        linear-gradient(to left, oklch(0 0 0 / 0.3) 0px, transparent 1px);
-      color: var(--btn-tint);
-      &::after { background: var(--color-line-hover); }
+      background-color: var(--btn-fill) !important;
+      color: var(--btn-text);
+      &::after { background: var(--color-line); }
     }
 
     &:active {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
-      background-image:
-        linear-gradient(to bottom, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-        linear-gradient(to right, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
-      color: var(--btn-tint);
-      &::after { background: var(--color-focus); }
+      background-color: var(--btn-fill) !important;
+      color: var(--btn-text);
+      &::after { background: var(--color-line); }
     }
-  }
-
-  /* Flat+quiet — no bevel on hover */
-  & [data-slot="button-face"][data-mode="flat"][data-quiet] {
-    &:hover, &:active { background-image: none; }
   }
 
   /* ============================================
@@ -515,17 +495,24 @@
      Press: cream bg, ink text
      ============================================ */
 
+  & [data-slot="button-face"][data-mode="flat"]:not([data-quiet]) {
+    background-color: oklch(from var(--btn-tint) 0.24 calc(c * 0.35) h);
+    background-image: none;
+    color: var(--btn-tint);
+  }
+
   & [data-slot="button-face"][data-mode="flat"] {
     &:hover {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 10%) !important;
+      background-color: var(--btn-fill) !important;
       background-image: none;
-      color: var(--btn-tint);
+      color: var(--btn-text);
     }
 
-    &:active {
-      background-color: var(--color-cream) !important;
+    &:active,
+    &[data-state="selected"] {
+      background-color: var(--btn-fill) !important;
       background-image: none;
-      color: var(--color-ink);
+      color: var(--btn-text);
     }
   }
 
@@ -600,21 +587,6 @@
   & [data-slot="badge"][data-variant="error"],
   & [data-slot="badge"][data-variant="info"] {
     color: var(--color-ink);
-  }
-
-  /* ============================================
-     ACCORDION — Glow on trigger hover
-     ============================================ */
-
-  & [data-slot="accordion-item"][data-variant="accordion"] {
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
-
-    &:has(button:hover) {
-      border-color: var(--color-line-hover);
-      box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
-    }
   }
 
   /* ============================================
@@ -718,7 +690,7 @@
      hover/active selectors (6x :not() pseudo-classes).
      ============================================ */
 
-  & [data-slot="button-root"] {
+  & [data-rdna="button"] {
     transition: filter 150ms ease-out;
 
     &:hover {
@@ -741,7 +713,7 @@
   }
 
   /* Danger tone — red glow */
-  & [data-slot="button-root"][data-color="danger"] {
+  & [data-rdna="button"][data-color="danger"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
@@ -762,7 +734,7 @@
   }
 
   /* Success tone — mint glow */
-  & [data-slot="button-root"][data-color="success"] {
+  & [data-rdna="button"][data-color="success"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
@@ -783,7 +755,7 @@
   }
 
   /* Info tone — blue glow */
-  & [data-slot="button-root"][data-color="info"] {
+  & [data-rdna="button"][data-color="info"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(0.7701 0.0527 236.81 / 0.3))
@@ -804,7 +776,7 @@
   }
 
   /* Neutral tone — dimmer cream glow */
-  & [data-slot="button-root"][data-color="neutral"] {
+  & [data-rdna="button"][data-color="neutral"] {
     &:hover {
       filter:
         drop-shadow(0 0 3px oklch(0.9126 0.1170 93.68 / 0.15))
@@ -825,7 +797,7 @@
   }
 
   /* Cream tone — warm cream glow */
-  & [data-slot="button-root"][data-color="cream"] {
+  & [data-rdna="button"][data-color="cream"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px var(--glow-cream-hover))
@@ -846,7 +818,7 @@
   }
 
   /* White tone — bright white glow */
-  & [data-slot="button-root"][data-color="white"] {
+  & [data-rdna="button"][data-color="white"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px oklch(1.0 0 0 / 0.25))
@@ -867,7 +839,7 @@
   }
 
   /* Tinted tone — warm sunset glow */
-  & [data-slot="button-root"][data-color="tinted"] {
+  & [data-rdna="button"][data-color="tinted"] {
     &:hover {
       filter:
         drop-shadow(0 0 4px var(--glow-sun-yellow-subtle))
@@ -892,14 +864,14 @@
      ============================================ */
 
   & [data-force-state="hover"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+    background-color: oklch(from var(--btn-tint) 0.28 calc(c * 0.42) h) !important;
     background-image: none;
 
     &::after { background: var(--color-line-hover); }
   }
 
   & [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+    background-color: oklch(from var(--btn-tint) 0.32 calc(c * 0.5) h) !important;
     background-image: none;
 
     &::before { background: var(--btn-tint); }
@@ -915,31 +887,21 @@
   }
 
   & [data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
-    background-image:
-      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-      linear-gradient(to top, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-      linear-gradient(to left, oklch(0 0 0 / 0.3) 0px, transparent 1px);
+    background-color: oklch(from var(--btn-tint) 0.28 calc(c * 0.42) h) !important;
     color: var(--btn-tint);
 
     &::after { background: var(--color-line-hover); }
   }
 
   & [data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
-    background-image:
-      linear-gradient(to bottom, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-      linear-gradient(to right, oklch(0 0 0 / 0.3) 0px, transparent 1px),
-      linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-      linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+    background-color: oklch(from var(--btn-tint) 0.32 calc(c * 0.5) h) !important;
     color: var(--btn-tint);
 
     &::after { background: var(--color-focus); }
   }
 
   & [data-force-state="hover"] [data-slot="button-face"][data-mode="flat"]:not([data-state="selected"]) {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 10%) !important;
+    background-color: oklch(from var(--btn-tint) 0.2 calc(c * 0.25) h) !important;
     background-image: none;
     color: var(--btn-tint);
   }
@@ -982,104 +944,104 @@
     transform: none !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px var(--glow-cream-hover))
       drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px var(--glow-cream-active))
       drop-shadow(0 0 14px var(--glow-sun-yellow)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="danger"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="danger"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
       drop-shadow(0 0 10px var(--glow-sun-red)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="danger"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="danger"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px oklch(0.7429 0.1568 21.43 / 0.4))
       drop-shadow(0 0 14px var(--glow-sun-red)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="success"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="success"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
       drop-shadow(0 0 10px var(--glow-mint)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="success"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="success"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px oklch(0.9312 0.0702 142.51 / 0.4))
       drop-shadow(0 0 14px var(--glow-mint)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="info"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="info"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px oklch(0.7701 0.0527 236.81 / 0.3))
       drop-shadow(0 0 10px var(--glow-sky-blue)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="info"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="info"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px oklch(0.7701 0.0527 236.81 / 0.4))
       drop-shadow(0 0 14px var(--glow-sky-blue)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="neutral"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="neutral"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 3px oklch(0.9126 0.1170 93.68 / 0.15))
       drop-shadow(0 0 8px oklch(0.9126 0.1170 93.68 / 0.08)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="neutral"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="neutral"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px oklch(0.9126 0.1170 93.68 / 0.2))
       drop-shadow(0 0 10px oklch(0.9126 0.1170 93.68 / 0.12)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="cream"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="cream"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px var(--glow-cream-hover))
       drop-shadow(0 0 10px var(--glow-cream-hover)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="cream"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="cream"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px var(--glow-cream-active))
       drop-shadow(0 0 14px var(--glow-cream-active)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="white"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="white"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px oklch(1 0 0 / 0.25))
       drop-shadow(0 0 10px oklch(1 0 0 / 0.12)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="white"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="white"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px oklch(1 0 0 / 0.35))
       drop-shadow(0 0 14px oklch(1 0 0 / 0.18)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"][data-color="tinted"]:not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"][data-color="tinted"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 4px var(--glow-sun-yellow-subtle))
       drop-shadow(0 0 10px var(--glow-sun-yellow-subtle)) !important;
   }
 
-  & [data-force-state="pressed"] [data-slot="button-root"][data-color="tinted"]:not([data-state="selected"]) {
+  & [data-force-state="pressed"] [data-rdna="button"][data-color="tinted"]:not([data-state="selected"]) {
     filter:
       drop-shadow(0 0 6px var(--glow-sun-yellow))
       drop-shadow(0 0 14px var(--glow-sun-yellow-subtle)) !important;
   }
 
-  & [data-force-state="hover"] [data-slot="button-root"]:not([data-mode="text"]):not([data-state="selected"]),
-  & [data-force-state="pressed"] [data-slot="button-root"]:not([data-mode="text"]):not([data-state="selected"]) {
+  & [data-force-state="hover"] [data-rdna="button"]:not([data-mode="text"]):not([data-state="selected"]),
+  & [data-force-state="pressed"] [data-rdna="button"]:not([data-mode="text"]):not([data-state="selected"]) {
     transform: none !important;
     translate: 0 0 !important;
   }
@@ -1161,16 +1123,18 @@
 
   /* ============================================
      PILL TABS (WindowTabs) — [role="tab"] overrides
+     Scoped to capsule mode so chrome tabs keep their
+     wrapper-driven bg-card / bg-accent flip.
      ============================================ */
 
-  & [role="tab"] {
+  & [role="tab"]:not([data-mode="chrome"]) {
     background: transparent;
     color: var(--color-sun-yellow);
     border-color: var(--color-rule);
     transition: filter 150ms ease-out, border-color 150ms ease-out;
   }
 
-  & [role="tab"]:hover {
+  & [role="tab"]:not([data-mode="chrome"]):hover {
     background: transparent;
     border-color: var(--color-line-hover);
     filter:
@@ -1178,7 +1142,7 @@
       drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
   }
 
-  & [role="tab"][aria-selected="true"] {
+  & [role="tab"]:not([data-mode="chrome"])[aria-selected="true"] {
     background: var(--color-accent);
     color: var(--color-ink);
     border-color: var(--color-line);
@@ -1187,43 +1151,48 @@
   }
 
   /* ============================================
-     DOT PATTERN - Invert for dark backgrounds
-     Slider tracks use filter, scrollbar uses swapped SVG
+     CHROME TABS — inactive wrapper flips like the
+     primary solid button: ink-tinted bg + accent text
+     instead of solid yellow. Active tab keeps bg-card.
      ============================================ */
 
-  --dot-pattern-filter: invert(1);
-  --scrollbar-track-bg: url('./assets/scrollbar-background-dark.svg');
+  & [data-slot="tab-chrome-wrapper"][data-state="default"] {
+    background-color: oklch(from var(--color-accent) 0.24 calc(c * 0.35) h) !important;
+    transition: background-color 150ms ease-out, translate 150ms ease-out;
+  }
+
+  & [data-slot="tab-chrome-wrapper"][data-state="default"]:hover {
+    background-color: oklch(from var(--color-accent) 0.28 calc(c * 0.42) h) !important;
+  }
+
+  & [data-slot="tab-chrome-wrapper"][data-state="default"] [data-slot="tab-trigger"] {
+    color: var(--color-accent);
+  }
 
   /* ============================================
-     SCROLLBAR THUMB — Matches primary button pattern:
-     Ink bg, muted border, glow + yellow on hover
+     DOT PATTERN — cream-filled variant of the @rdna/pixel `stagger` tile.
+     Color is baked into the SVG (see base.css for rationale).
      ============================================ */
 
-  &::-webkit-scrollbar-thumb,
-  & *::-webkit-scrollbar-thumb {
-    background: var(--color-ink);
-    border: 0.375rem solid transparent;
-    border-radius: 0.5rem;
-    background-clip: padding-box;
-    box-shadow: inset 0 0 0 1px var(--color-rule);
-    transition: box-shadow 150ms ease-out, background 150ms ease-out;
-  }
+  --scrollbar-track-pat: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20shape-rendering%3D'crispEdges'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'%23FEF8E2'%20d%3D'M1%2C0h1v1h-1ZM5%2C0h1v1h-1ZM3%2C1h1v1h-1ZM7%2C1h1v1h-1ZM1%2C2h1v1h-1ZM5%2C2h1v1h-1ZM3%2C3h1v1h-1ZM7%2C3h1v1h-1ZM1%2C4h1v1h-1ZM5%2C4h1v1h-1ZM3%2C5h1v1h-1ZM7%2C5h1v1h-1ZM1%2C6h1v1h-1ZM5%2C6h1v1h-1ZM3%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
 
-  &::-webkit-scrollbar-thumb:hover,
-  & *::-webkit-scrollbar-thumb:hover {
-    background: var(--color-sun-yellow);
-    border: 0.375rem solid transparent;
-    background-clip: padding-box;
-    box-shadow:
-      inset 0 0 0 1px var(--color-edge-hover),
-      0 0 4px var(--glow-cream-hover),
-      0 0 10px var(--glow-sun-yellow-subtle);
-  }
+  /* ============================================
+     SCROLLBAR THUMB — ink-filled variants of the three-layer SVG tiles.
+     Fill is ink, outline is ink + 12% cream overlay (#2C2A26). Hot state
+     (hover/active) shares --sbthumb-hot-* tiles from base.css.
+     ============================================ */
+
+  --sbbtn-up: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='16' shape-rendering='crispEdges'><path fill='%23FEF8E2' d='M14,6h1v1h-1ZM13,7h3v1h-3ZM12,8h5v1h-5Z'/></svg>");
+  --sbbtn-down: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='16' shape-rendering='crispEdges'><path fill='%23FEF8E2' d='M12,6h5v1h-5ZM13,7h3v1h-3ZM14,8h1v1h-1Z'/></svg>");
+
+  --sbthumb-top: url('./assets/scrollbar-thumb-top-dark.svg');
+  --sbthumb-bot: url('./assets/scrollbar-thumb-bot-dark.svg');
+  --sbthumb-mid: url('./assets/scrollbar-thumb-mid-dark.svg');
 
 
   /* Button — no translate in dark mode (glow replaces lift for all modes) */
-  & [data-slot="button-root"]:hover,
-  & [data-slot="button-root"]:active {
+  & [data-rdna="button"]:hover,
+  & [data-rdna="button"]:active {
     transform: none !important;
     translate: 0 0 !important;
   }
@@ -1250,51 +1219,4 @@
   & [data-slot="badge"][data-variant="info"] {
     text-shadow: none;
   }
-}
-
-/* =============================================================================
-   Dark Mode Pattern Glow — Mouse Follower
-   Patterns use mask-image on background-color. In dark mode, swap to a radial
-   gradient centered on the cursor so pattern dots glow warm near the mouse.
-   JS sets --mouse-x / --mouse-y on the element or a parent container.
-   Without JS (or before first mousemove), patterns render in muted grey.
-   ============================================================================= */
-
-.dark {
-  /* Mouse position — updated by JS, defaults to off-screen */
-  --mouse-x: -9999px;
-  --mouse-y: -9999px;
-
-  /* Glow tuning — override per-instance via inline style */
-  --pat-glow-shape: circle;
-  --pat-glow-color: var(--color-sun-yellow);
-  --pat-glow-mid: oklch(0.6 0.04 85);
-  --pat-glow-mid-stop: 40%;
-  --pat-glow-radius: 180px;
-  --pat-glow-base: oklch(0.45 0.01 85);
-}
-
-.dark .rdna-pat {
-  --pat-fill: radial-gradient(
-    var(--pat-glow-shape) var(--pat-glow-radius) at var(--mouse-x) var(--mouse-y),
-    var(--pat-glow-color) 0%,
-    var(--pat-glow-mid) var(--pat-glow-mid-stop),
-    var(--pat-glow-base) 100%
-  );
-}
-
-/* Click/active burst — brighter + wider radius */
-.dark [data-pat-active] .rdna-pat,
-.dark .rdna-pat.rdna-pat--active {
-  --pat-fill: radial-gradient(
-    var(--pat-glow-shape) calc(var(--pat-glow-radius) * 1.5) at var(--mouse-x) var(--mouse-y),
-    var(--color-sun-yellow) 0%,
-    oklch(0.75 0.08 85) 30%,
-    var(--pat-glow-base) 100%
-  );
-}
-
-/* Escape hatch: flat color patterns that shouldn't glow */
-.dark .rdna-pat--no-glow {
-  --pat-fill: var(--pat-color, var(--color-main));
 }

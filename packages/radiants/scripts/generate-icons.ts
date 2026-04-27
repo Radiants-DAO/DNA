@@ -12,100 +12,87 @@ import {
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { transform } from '@svgr/core';
-import { optimize, type Config as SvgoConfig } from 'svgo';
+import { ICON_16_TO_24, ICON_24_TO_16 } from '../icons/size-map.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
-const NAME_OVERRIDES: Record<string, string> = {
-  'grid-3x3': 'Grid3X3',
-  cd: 'Cd',
-  tv: 'Tv',
-  usb: 'Usb',
-  USDC: 'USDC',
-};
-
 const ICON_ALIASES: Record<string, string> = {
-  refresh: 'refresh1',
-  settings: 'settings-cog',
-  lightning: 'electric',
-  'information-circle': 'info-filled',
-  expand: 'full-screen',
-  collapse: 'minus',
-  'checkmark-filled': 'checkmark',
-  close: 'close',
   check: 'checkmark',
-  copy: 'copy-to-clipboard',
-  copied: 'copied-to-clipboard',
-  trash: 'trash',
+  'checkmark-filled': 'checkmark',
+  'chevron-left': 'chevron-left',
+  'chevron-right': 'chevron-right',
+  close: 'close',
+  collapse: 'col-horizontal',
   comment: 'comments-blank',
-  question: 'question',
-  help: 'question',
+  copied: 'copied-to-clipboard',
+  copy: 'copy-to-clipboard',
   cursor: 'cursor2',
-  'text-cursor': 'cursor-text',
-  pencil: 'pencil',
+  discord: 'discord',
+  download: 'download',
   edit: 'pencil',
+  expand: 'full-screen',
   eye: 'eye',
   'eye-off': 'eye-hidden',
   folder: 'folder-open',
-  plus: 'plus',
-  minus: 'minus',
-  play: 'play',
-  pause: 'pause',
-  search: 'search',
-  download: 'download',
-  upload: 'upload',
-  save: 'save',
-  warning: 'warning-filled',
-  info: 'info',
   globe: 'globe',
+  help: 'question',
   home: 'home',
+  info: 'info',
+  'information-circle': 'info-filled',
+  lightning: 'electric',
   menu: 'hamburger',
-  radiant: 'electric',
-  zap: 'electric',
-  twitter: 'twitter',
-  discord: 'discord',
-  'radiants-logo': 'radiants-logo',
-  radmark: 'radiants-logo',
-  'chevron-left': 'chevron-left',
-  'chevron-right': 'chevron-right',
-  'fill-bucket': 'fill-bucket',
+  pause: 'pause',
+  pencil: 'pencil',
+  play: 'play',
+  plus: 'plus',
+  question: 'question',
   queue: 'queue',
+  radiant: 'electric',
+  refresh: 'refresh1',
   'resize-corner': 'resize-corner',
-};
-
-const SVGO_CONFIG: SvgoConfig = {
-  plugins: [
-    {
-      name: 'preset-default',
-      params: {
-        overrides: {
-          cleanupNumericValues: false,
-          convertPathData: false,
-          removeUselessStrokeAndFill: false,
-          convertColors: {
-            currentColor: true,
-          },
-        },
-      },
-    },
-    {
-      name: 'prefixIds',
-      params: {
-        prefixClassNames: false,
-      },
-    },
-  ],
+  save: 'save',
+  search: 'search',
+  settings: 'settings-cog',
+  'text-cursor': 'cursor-text',
+  trash: 'trash',
+  twitter: 'twitter',
+  upload: 'upload',
+  warning: 'warning-filled',
+  zap: 'electric',
 };
 
 type IconVariant = 16 | 24;
 
 interface IconEntry {
-  componentName: string;
-  fileName: string;
   iconName: string;
-  modulePath: string;
+  importerKey: string;
+  svg: string;
+  viewBox: string;
+  body: string;
+}
+
+interface PreparedManifestEntry {
+  name: string;
+  aliases: string[];
+  availableSets: IconVariant[];
+  importerKeys: Partial<Record<IconVariant, string>>;
+  preferredLargeName?: string;
+  preferredSmallName?: string;
+}
+
+interface ManifestDraft {
+  name: string;
+  aliases: Set<string>;
+  availableSets: Set<IconVariant>;
+  importerKeys: Partial<Record<IconVariant, string>>;
+  preferredLargeName?: string;
+  preferredSmallName?: string;
+}
+
+interface PreparedManifestData {
+  aliases: Record<string, string>;
+  entries: PreparedManifestEntry[];
 }
 
 export interface BuildIconArtifactsOptions {
@@ -125,24 +112,20 @@ export interface WriteIconArtifactsResult {
   removed: string[];
 }
 
-function toPascalCase(value: string): string {
-  return value
-    .split('-')
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
-}
-
-function componentName(stem: string): string {
-  return NAME_OVERRIDES[stem] ?? toPascalCase(stem);
-}
-
 function fileHash(content: string): string {
   return createHash('sha1').update(content).digest('hex');
 }
 
 function renderObjectKey(key: string): string {
-  return /^[A-Za-z_$][\w$]*$/.test(key) ? key : `'${key}'`;
+  return renderStringLiteral(key);
+}
+
+function renderStringLiteral(value: string): string {
+  return `'${value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')}'`;
 }
 
 function listSvgFiles(dir: string): string[] {
@@ -170,11 +153,10 @@ function listFilesRecursive(dir: string, prefix = ''): string[] {
 function pruneEmptyDirectories(dir: string): boolean {
   if (!existsSync(dir)) return true;
 
-  const entries = readdirSync(dir, { withFileTypes: true });
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    pruneEmptyDirectories(join(dir, entry.name));
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      pruneEmptyDirectories(join(dir, entry.name));
+    }
   }
 
   if (readdirSync(dir).length === 0) {
@@ -211,183 +193,294 @@ function pruneGeneratedArtifacts(
   return removed.sort();
 }
 
-function optimizeSvg(svg: string, pathHint: string): string {
-  const result = optimize(svg, {
-    path: pathHint,
-    ...SVGO_CONFIG,
-  });
+function normalizeSvgForInlineComponent(svg: string): string {
+  return svg
+    .replace(/\sfill=(["'])#000(?:000|001)?\1/gi, ' fill="currentColor"')
+    .replace(/\sfill=(["'])black\1/gi, ' fill="currentColor"')
+    .trim();
+}
 
-  if ('data' in result) {
-    return result.data;
+function extractViewBox(svg: string, fallbackSize: IconVariant): string {
+  return (
+    svg.match(/\sviewBox=(["'])(.*?)\1/i)?.[2] ?? `0 0 ${fallbackSize} ${fallbackSize}`
+  );
+}
+
+function extractSvgBody(svg: string): string {
+  return svg
+    .replace(/^[\s\S]*?<svg\b[^>]*>/i, '')
+    .replace(/<\/svg>\s*$/i, '')
+    .trim();
+}
+
+function readIconEntry(dir: string, file: string, variant: IconVariant): IconEntry {
+  const iconName = basename(file, '.svg');
+  const svg = normalizeSvgForInlineComponent(readFileSync(join(dir, file), 'utf8'));
+
+  return {
+    iconName,
+    importerKey: `${variant}px/${iconName}`,
+    svg,
+    viewBox: extractViewBox(svg, variant),
+    body: extractSvgBody(svg),
+  };
+}
+
+function buildVariantEntries(dir: string, variant: IconVariant): IconEntry[] {
+  return listSvgFiles(dir).map((file) => readIconEntry(dir, file, variant));
+}
+
+function buildPreparedManifest(
+  icons16: IconEntry[],
+  icons24: IconEntry[],
+): PreparedManifestData {
+  const draftByName = new Map<string, ManifestDraft>();
+  const draftByLookup = new Map<string, ManifestDraft>();
+  const entries16ByName = new Map(icons16.map((entry) => [entry.iconName, entry]));
+  const entries24ByName = new Map(icons24.map((entry) => [entry.iconName, entry]));
+
+  function getDraft(name: string): ManifestDraft {
+    const existing = draftByName.get(name);
+    if (existing) {
+      return existing;
+    }
+
+    const created: ManifestDraft = {
+      name,
+      aliases: new Set<string>(),
+      availableSets: new Set<IconVariant>(),
+      importerKeys: {},
+    };
+    draftByName.set(name, created);
+    return created;
   }
 
-  throw new Error(`Failed to optimize SVG: ${pathHint}`);
-}
+  for (const entry of icons16) {
+    const draft = getDraft(entry.iconName);
+    draft.availableSets.add(16);
+    draft.importerKeys[16] = entry.importerKey;
+    draft.preferredSmallName ??= entry.iconName;
 
-async function buildComponentModule(
-  svgPath: string,
-  iconName: string,
-  size: IconVariant,
-): Promise<string> {
-  const rawSvg = readFileSync(svgPath, 'utf8');
-  const optimizedSvg = optimizeSvg(rawSvg, svgPath);
-  const component = componentName(iconName);
+    const largeName = ICON_16_TO_24[entry.iconName];
+    const largeEntry = largeName ? entries24ByName.get(largeName) : undefined;
 
-  let code = await transform(
-    optimizedSvg,
-    {
-      plugins: ['@svgr/plugin-jsx'],
-      typescript: true,
-      dimensions: false,
-      expandProps: 'end',
-      prettier: false,
-      svgProps: {
-        fill: 'currentColor',
-      },
-      replaceAttrValues: {
-        '#000': 'currentColor',
-        '#000000': 'currentColor',
-        '#000001': 'currentColor',
-        black: 'currentColor',
-      },
-    },
-    { componentName: component },
+    if (largeEntry) {
+      draft.availableSets.add(24);
+      draft.importerKeys[24] = largeEntry.importerKey;
+      draft.preferredLargeName ??= largeEntry.iconName;
+
+      if (largeEntry.iconName !== draft.name) {
+        draft.aliases.add(largeEntry.iconName);
+      }
+    }
+  }
+
+  for (const entry of icons24) {
+    const smallName = ICON_24_TO_16[entry.iconName];
+    const smallEntry = smallName ? entries16ByName.get(smallName) : undefined;
+
+    if (smallEntry) {
+      const draft = getDraft(smallEntry.iconName);
+      draft.availableSets.add(24);
+      draft.importerKeys[24] = entry.importerKey;
+      draft.preferredLargeName ??= entry.iconName;
+
+      if (entry.iconName !== draft.name) {
+        draft.aliases.add(entry.iconName);
+      }
+
+      continue;
+    }
+
+    const draft = getDraft(entry.iconName);
+    draft.availableSets.add(24);
+    draft.importerKeys[24] = entry.importerKey;
+    draft.preferredLargeName ??= entry.iconName;
+  }
+
+  for (const draft of draftByName.values()) {
+    draftByLookup.set(draft.name, draft);
+
+    if (draft.preferredSmallName) {
+      draftByLookup.set(draft.preferredSmallName, draft);
+    }
+
+    if (draft.preferredLargeName) {
+      draftByLookup.set(draft.preferredLargeName, draft);
+    }
+
+    for (const alias of draft.aliases) {
+      draftByLookup.set(alias, draft);
+    }
+  }
+
+  const preparedAliases = Object.fromEntries(
+    Object.entries(ICON_ALIASES)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .flatMap(([alias, target]) => {
+        const draft = draftByLookup.get(target);
+
+        if (!draft) {
+          return [];
+        }
+
+        if (alias !== draft.name) {
+          draft.aliases.add(alias);
+        }
+        return [[alias, draft.name] as const];
+      }),
   );
 
-  code = code
-    .replace(/^import \* as React from ['"]react['"];\n?/m, '')
-    .replace(
-      /^import type \{ SVGProps \} from ['"]react['"];\n?/m,
-      "import type { IconProps } from '../../types';\n",
-    )
-    .replace(
-      new RegExp(
-        `const ${component} = \\(props: SVGProps<SVGSVGElement>\\) =>\\s*<svg`,
-      ),
-      `export const ${component} = ({ size = ${size}, className = '', ...props }: IconProps) => <svg`,
-    )
-    .replace('<svg ', '<svg width={size} height={size} className={className} ')
-    .replace(`export default ${component};`, `${component}.displayName = '${component}';\n\nexport default ${component};`);
+  const entries = [...draftByName.values()]
+    .map((draft) => ({
+      name: draft.name,
+      aliases: [...draft.aliases].sort(),
+      availableSets: [...draft.availableSets].sort((left, right) => left - right),
+      importerKeys: draft.importerKeys,
+      preferredLargeName: draft.preferredLargeName,
+      preferredSmallName: draft.preferredSmallName,
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name));
 
-  return code.trimEnd() + '\n';
+  return {
+    aliases: preparedAliases,
+    entries,
+  };
 }
 
-function renderHeader(label: string, count: number, dir: string): string {
+function renderHeader(label: string, count: number, source: string): string {
   return `/**
- * AUTO-GENERATED — DO NOT EDIT
+ * AUTO-GENERATED - DO NOT EDIT
  *
  * Generated by: scripts/generate-icons.ts
- * Source:       ${dir} (${count} icons)
- *
- * To regenerate: pnpm generate:icons
+ * Source:       ${source} (${count} icons)
  */`;
 }
 
-function renderLookupBarrel(
-  fileName: string,
-  entries: IconEntry[],
-  opts: {
-    namesConst: string;
-    typeName: string;
-    lookupName: string;
-    dirLabel: string;
-  },
-): string {
-  const exportLines = entries
-    .map((entry) => `export { ${entry.componentName} } from '${entry.modulePath}';`)
-    .join('\n');
-  const importLines = entries
-    .map((entry) => `import { ${entry.componentName} } from '${entry.modulePath}';`)
-    .join('\n');
-  const names = entries.map((entry) => entry.iconName);
-  const lookups = entries
-    .map((entry) => `  '${entry.iconName}': ${entry.componentName},`)
-    .join('\n');
+function renderImporterKeys(importerKeys: Partial<Record<IconVariant, string>>): string {
+  const entries = ([16, 24] as const)
+    .flatMap((variant) => {
+      const key = importerKeys[variant];
+      return key ? [`${variant}: ${renderStringLiteral(key)}`] : [];
+    })
+    .join(', ');
 
-  return `${renderHeader(fileName, entries.length, opts.dirLabel)}
-
-import type { ReactElement } from 'react';
-import type { IconProps } from './types';
-
-${exportLines}
-${entries.length ? '\n' : ''}${importLines}
-
-export const ${opts.namesConst} = ${JSON.stringify(names, null, 2)} as const;
-
-export type ${opts.typeName} = (typeof ${opts.namesConst})[number];
-
-export const ${opts.lookupName}: Record<string, (props: IconProps) => ReactElement> = {
-${lookups}
-};
-`;
+  return `{ ${entries} }`;
 }
 
-function renderAliasesArtifact(): string {
-  const entries = Object.entries(ICON_ALIASES)
+function renderManifestArtifact(data: PreparedManifestData): string {
+  const aliasEntries = Object.entries(data.aliases)
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([alias, name]) => `  ${renderObjectKey(alias)}: '${name}',`)
+    .map(([alias, name]) => `  ${renderObjectKey(alias)}: ${renderStringLiteral(name)},`)
+    .join('\n');
+  const manifestEntries = data.entries
+    .map((entry) => {
+      const lines = [
+        '  {',
+        `    name: ${renderStringLiteral(entry.name)},`,
+        `    aliases: [${entry.aliases.map(renderStringLiteral).join(', ')}],`,
+        `    availableSets: [${entry.availableSets.join(', ')}],`,
+        `    importerKeys: ${renderImporterKeys(entry.importerKeys)},`,
+      ];
+
+      if (entry.preferredLargeName) {
+        lines.push(`    preferredLargeName: ${renderStringLiteral(entry.preferredLargeName)},`);
+      }
+
+      if (entry.preferredSmallName) {
+        lines.push(`    preferredSmallName: ${renderStringLiteral(entry.preferredSmallName)},`);
+      }
+
+      lines.push('  },');
+      return lines.join('\n');
+    })
     .join('\n');
 
-  return `${renderHeader('generated-aliases.ts', Object.keys(ICON_ALIASES).length, 'runtime alias map')}
+  return `${renderHeader('manifest.ts', data.entries.length, 'prepared SVG icon manifest')}
+
+import type { IconSet, PreparedSvgIcon } from './types';
 
 export const ICON_ALIASES = {
-${entries}
+${aliasEntries}
 } as const;
 
 export type IconAliasName = keyof typeof ICON_ALIASES;
+
+export const SVG_ICON_MANIFEST: readonly PreparedSvgIcon[] = [
+${manifestEntries}
+] as const;
+
+const svgIconManifestByLookup = new Map<string, PreparedSvgIcon>();
+
+for (const icon of SVG_ICON_MANIFEST) {
+  svgIconManifestByLookup.set(icon.name, icon);
+
+  for (const alias of icon.aliases) {
+    svgIconManifestByLookup.set(alias, icon);
+  }
+
+  if (icon.preferredSmallName) {
+    svgIconManifestByLookup.set(icon.preferredSmallName, icon);
+  }
+
+  if (icon.preferredLargeName) {
+    svgIconManifestByLookup.set(icon.preferredLargeName, icon);
+  }
+}
+
+for (const [alias, target] of Object.entries(ICON_ALIASES)) {
+  const icon = svgIconManifestByLookup.get(target);
+
+  if (icon) {
+    svgIconManifestByLookup.set(alias, icon);
+  }
+}
+
+export function getPreparedSvgIcon(name: string): PreparedSvgIcon | undefined {
+  return svgIconManifestByLookup.get(name);
+}
+
+export function iconSupportsSet(icon: PreparedSvgIcon, iconSet: IconSet): boolean {
+  return icon.availableSets.includes(iconSet);
+}
 `;
+}
+
+function renderAliasesArtifact(aliasCount: number): string {
+  return `${renderHeader('generated-aliases.ts', aliasCount, 'runtime alias map')}
+
+export { ICON_ALIASES } from './manifest';
+export type { IconAliasName } from './manifest';
+`;
+}
+
+function renderImporterMap(entries: IconEntry[]): string {
+  return entries
+    .map(
+      (entry) =>
+        `  ${renderObjectKey(entry.importerKey)}: () => Promise.resolve({ default: createSvgIcon({ name: ${renderStringLiteral(entry.iconName)}, set: ${entry.importerKey.startsWith('16px/') ? 16 : 24}, viewBox: ${renderStringLiteral(entry.viewBox)}, body: ${renderStringLiteral(entry.body)} }) }),`,
+    )
+    .join('\n');
 }
 
 function renderImportersArtifact(icons16: IconEntry[], icons24: IconEntry[]): string {
-  const map16 = icons16
-    .map(
-      (entry) =>
-        `  ${renderObjectKey(entry.iconName)}: () => import('${entry.modulePath}'),`,
-    )
-    .join('\n');
-  const map24 = icons24
-    .map(
-      (entry) =>
-        `  ${renderObjectKey(entry.iconName)}: () => import('${entry.modulePath}'),`,
-    )
-    .join('\n');
+  return `${renderHeader('generated-importers.ts', icons16.length + icons24.length, 'generated SVG importer maps')}
 
-  return `${renderHeader('generated-importers.ts', icons16.length + icons24.length, 'generated dynamic import maps')}
+import { createSvgIcon } from './svg-component';
 
 export const ICON_IMPORTERS = {
-${map16}
+${renderImporterMap(icons16)}
 } as const;
 
 export const ICON_24_IMPORTERS = {
-${map24}
+${renderImporterMap(icons24)}
+} as const;
+
+export const SVG_ICON_IMPORTERS = {
+  ...ICON_IMPORTERS,
+  ...ICON_24_IMPORTERS,
 } as const;
 `;
-}
-
-async function buildVariantEntries(
-  dir: string,
-  variant: IconVariant,
-): Promise<{ entries: IconEntry[]; files: Record<string, string> }> {
-  const files: Record<string, string> = {};
-  const entries: IconEntry[] = [];
-  const variantDir = variant === 16 ? 'generated/16' : 'generated/24';
-
-  for (const file of listSvgFiles(dir)) {
-    const iconName = basename(file, '.svg');
-    const component = componentName(iconName);
-    const relativeFile = `${variantDir}/${iconName}.tsx`;
-    const modulePath = `./${variantDir}/${iconName}`;
-
-    files[relativeFile] = await buildComponentModule(join(dir, file), iconName, variant);
-    entries.push({
-      componentName: component,
-      fileName: relativeFile,
-      iconName,
-      modulePath,
-    });
-  }
-
-  return { entries, files };
 }
 
 export async function buildIconArtifacts(
@@ -396,35 +489,20 @@ export async function buildIconArtifacts(
   const icons16Dir = options.icons16Dir ?? join(ROOT, 'assets', 'icons', '16px');
   const icons24Dir = options.icons24Dir ?? join(ROOT, 'assets', 'icons', '24px');
 
-  const built16 = await buildVariantEntries(icons16Dir, 16);
-  const built24 = await buildVariantEntries(icons24Dir, 24);
+  const icons16 = buildVariantEntries(icons16Dir, 16);
+  const icons24 = buildVariantEntries(icons24Dir, 24);
+  const manifest = buildPreparedManifest(icons16, icons24);
 
   const files: Record<string, string> = {
-    ...built16.files,
-    ...built24.files,
-    'generated.tsx': renderLookupBarrel('generated.tsx', built16.entries, {
-      namesConst: 'GENERATED_ICON_NAMES',
-      typeName: 'GeneratedIconName',
-      lookupName: 'ICON_BY_NAME',
-      dirLabel: 'assets/icons/16px/*.svg',
-    }),
-    'generated-24.tsx': renderLookupBarrel('generated-24.tsx', built24.entries, {
-      namesConst: 'GENERATED_24_ICON_NAMES',
-      typeName: 'Generated24IconName',
-      lookupName: 'ICON_24_BY_NAME',
-      dirLabel: 'assets/icons/24px/*.svg',
-    }),
-    'generated-aliases.ts': renderAliasesArtifact(),
-    'generated-importers.ts': renderImportersArtifact(
-      built16.entries,
-      built24.entries,
-    ),
+    'manifest.ts': renderManifestArtifact(manifest),
+    'generated-aliases.ts': renderAliasesArtifact(Object.keys(manifest.aliases).length),
+    'generated-importers.ts': renderImportersArtifact(icons16, icons24),
   };
 
   return {
     files,
-    icons16: built16.entries,
-    icons24: built24.entries,
+    icons16,
+    icons24,
   };
 }
 
@@ -450,10 +528,7 @@ export async function writeIconArtifacts(
     written.push(relativePath);
   }
 
-  const removed = pruneGeneratedArtifacts(
-    outputDir,
-    new Set(Object.keys(files).filter((relativePath) => relativePath.startsWith('generated/'))),
-  );
+  const removed = pruneGeneratedArtifacts(outputDir, new Set());
 
   return { written, skipped, removed };
 }
@@ -465,6 +540,6 @@ export async function main() {
   );
 }
 
-if (import.meta.url === new URL(process.argv[1], 'file://').href) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   await main();
 }

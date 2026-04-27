@@ -99,21 +99,18 @@ export function PreviewCardContent({
           data-rdna="previewcard"
           className={`
             z-50
+            p-4
+            pixel-rounded-4 bg-card pixel-shadow-raised
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
           data-variant="preview-card"
         >
-          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
-            <div className="p-4">
-              {children}
-            </div>
-          </div>
+          {children}
         </BasePreviewCard.Popup>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>
   );
 }
-
-export default PreviewCard;

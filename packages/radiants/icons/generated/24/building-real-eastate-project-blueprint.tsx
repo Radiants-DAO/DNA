@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const BuildingRealEastateProjectBlueprint = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M7.49803 4.49902V5.50309H21.5024V20.4984H3.50146V21.5025H22.4999V4.49902H7.49803Z" /><path d="M15.498 10.504H14.501V11.501H15.498V10.504ZM14.5 15.498H13.503V16.502H14.5V15.498ZM13.503 16.502H12.499V17.5H13.503V16.502Z" /><path d="M9.499 17.499H5.503V18.503H12.499V17.499H10.504V12.499H11.501V11.501H13.503V10.504H11.501V8.502H18.503V10.504H16.502V11.501H18.503V17.499H16.502V14.5H14.5V15.498H15.498V18.503H19.501V7.498H9.499V8.502H10.504V11.501H7.498V12.499H9.499V17.499ZM8.502 7.498H7.498V8.502H8.502V7.498ZM3.502 19.501H2.498V20.499H3.502V19.501Z" /><path d="M3.50156 17.4994V16.5019H6.50062V3.50162H5.50312V2.49756H3.50156V3.50162H2.4975V4.49912H1.5V19.501H2.4975V17.4994H3.50156Z" /></g></svg>;
-BuildingRealEastateProjectBlueprint.displayName = 'BuildingRealEastateProjectBlueprint';
-
-export default BuildingRealEastateProjectBlueprint;

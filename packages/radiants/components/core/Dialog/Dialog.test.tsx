@@ -86,7 +86,7 @@ describe('Dialog', () => {
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     // Click the backdrop overlay behind the dialog
-    const backdrop = document.querySelector('.bg-hover');
+    const backdrop = document.querySelector('.pattern-backdrop');
     expect(backdrop).toBeInTheDocument();
     await user.click(backdrop!);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -102,7 +102,7 @@ describe('Dialog', () => {
   test('renders dialog content with the current popup shell classes', () => {
     render(<TestDialog defaultOpen />);
     const dialog = screen.getByRole('dialog');
-    expect(dialog.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
+    expect(dialog.querySelector('.pixel-rounded-6')).toBeInTheDocument();
     expect(dialog.querySelector('.pixel-shadow-floating')).toBeInTheDocument();
   });
 

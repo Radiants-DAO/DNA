@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const GameController = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 8.5H3V7.5H8V6.5H9V7.5H13V8.5H14V11.5H13V12.5H10V11.5H6V12.5H3V11.5H2V8.5ZM3 9.5V10.5H4V11.5H5V10.5H6V9.5H5V8.5H4V9.5H3ZM7 9.5V10.5H9V9.5H7ZM10 9.5V10.5H11V9.5H10ZM11 8.5V9.5H12V8.5H11ZM11 10.5V11.5H12V10.5H11ZM12 9.5V10.5H13V9.5H12ZM8 4.5H9V5.5H8V4.5ZM9 3.5H10V4.5H9V3.5ZM11 3.5H12V4.5H11V3.5ZM13 3.5H14V4.5H13V3.5Z" /></svg>;
-GameController.displayName = 'GameController';
-
-export default GameController;

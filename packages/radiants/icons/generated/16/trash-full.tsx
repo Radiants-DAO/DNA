@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const TrashFull = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 3H4V4H5V3H6V4H7V5H3V4H2V3ZM3 6H12V13H11V14H4V13H3V6ZM4 7V12H5V7H4ZM6 7V12H7V7H6ZM8 7V12H9V7H8ZM10 7V12H11V7H10ZM4 2H5V3H4V2ZM6 2H8V4H7V3H6V2ZM8 4H9V3H10V2H11V5H8V4ZM12 3H14V4H13V5H12V3Z" /></svg>;
-TrashFull.displayName = 'TrashFull';
-
-export default TrashFull;

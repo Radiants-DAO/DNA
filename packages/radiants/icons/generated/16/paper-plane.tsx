@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const PaperPlane = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 7H4V6H6V5H8V4H10V3H12V4H11V5H9V6H8V7H7V8H5V9H3V8H2V7ZM3 10H4V11H3V10ZM5 11H6V12H7V13H6V14H5V11ZM6 10H7V9H8V8H9V7H10V6H11V5H12V4H13V6H12V8H11V10H10V13H8V12H7V11H6V10ZM12 2H14V4H13V3H12V2Z" /></svg>;
-PaperPlane.displayName = 'PaperPlane';
-
-export default PaperPlane;

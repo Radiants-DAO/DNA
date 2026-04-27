@@ -46,6 +46,10 @@
       "types": "./patterns/*.ts",
       "import": "./patterns/*.ts"
     },
+    "./pixel-icons": {
+      "types": "./pixel-icons/index.ts",
+      "import": "./pixel-icons/index.ts"
+    },
     "./blocknote": {
       "types": "./generated/blocknote-blocks.tsx",
       "import": "./generated/blocknote-blocks.tsx"
@@ -108,10 +112,12 @@
   ],
   "license": "GPL-3.0",
   "scripts": {
-    "generate:icons": "node --experimental-strip-types scripts/generate-icons.ts",
+    "generate:patterns": "node --experimental-strip-types scripts/generate-pattern-css.ts",
     "generate:schemas": "node --experimental-strip-types ../preview/src/generate-schemas.ts ./components/core ./meta/index.ts ./schemas/index.ts",
     "generate:figma-contracts": "node --experimental-strip-types scripts/generate-figma-contracts.ts",
-    "generate:pixel-corners": "node scripts/generate-pixel-corners.mjs",
+    "generate:design-md": "node --experimental-strip-types scripts/generate-design-md.ts",
+    "generate:pixel-corners": "node --experimental-strip-types scripts/generate-pixel-corners.ts",
+    "generate:icons": "node --experimental-strip-types scripts/generate-icons.ts",
     "generate:pixel-icon-registry": "node --experimental-strip-types scripts/generate-pixel-icon-registry.ts",
     "generate:tokens": "node --experimental-strip-types scripts/generate-typography-tokens.ts",
     "generate:blocknote": "node --experimental-strip-types scripts/generate-blocknote-blocks.ts",
@@ -124,8 +130,6 @@
     "@blocknote/core": "^0.47.3",
     "@blocknote/react": "^0.47.3",
     "@rdna/preview": "workspace:*",
-    "@svgr/core": "^8.1.0",
-    "@svgr/plugin-jsx": "^8.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -135,11 +139,10 @@
     "eslint": "^9",
     "jsdom": "^28.1.0",
     "next": "16.1.6",
-    "svgo": "^4.0.1",
     "vitest": "^2.1.9"
   },
   "dependencies": {
-    "@base-ui/react": "^1.3.0",
+    "@base-ui/react": "^1.4.1",
     "@chenglou/pretext": "^0.0.4",
     "@rdna/pixel": "workspace:*",
     "class-variance-authority": "^0.7.1",

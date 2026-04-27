@@ -4,6 +4,7 @@ import React, { createContext, use } from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -71,25 +72,11 @@ interface RadioGroupProps {
 const RadioGroupContext = createContext(false);
 
 // ============================================================================
-// Pixel-art Checkmark Icon
+// Checkmark Icon — delegates to RDNA bitmap Icon (16px)
 // ============================================================================
 
 function CheckmarkIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        fill="currentColor"
-        d="M2,8H4V9H5V10H7V9H8V8H9V7H10V6H11V5H12V4H14V6H13V7H12V8H11V9H10V10H9V11H8V12H7V13H5V12H4V11H3V10H2V8Z"
-      />
-    </svg>
-  );
+  return <BitmapIcon name="checkmark" size={16} className={className} />;
 }
 
 // ============================================================================
@@ -157,7 +144,7 @@ export function Checkbox({
                 relative w-5 h-5
                 flex items-center justify-center
                 cursor-pointer
-                outline-none focus-visible:shadow-focused
+                outline-none
               `}
             />
           );
@@ -248,7 +235,7 @@ export function Radio({
             ${state.checked ? 'bg-accent' : 'bg-page'}
             flex items-center justify-center
             cursor-pointer
-            outline-none focus-visible:shadow-focused
+            outline-none
             ${className}
           `}
         />
@@ -315,5 +302,3 @@ export function Radio({
     </label>
   );
 }
-
-export default Checkbox;

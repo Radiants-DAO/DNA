@@ -14,6 +14,17 @@
   --font-size-4xl: 4.209rem;  /* ~67px - base × 1.333⁵ */
   --font-size-5xl: 5.61rem;  /* ~90px - base × 1.333⁶ */
   --font-size-display: 5.61rem;  /* alias: same as 5xl */
+
+  --text-xs: 0.625rem;
+  --text-sm: 0.75rem;
+  --text-base: 1rem;
+  --text-lg: 1.333rem;
+  --text-xl: 1.777rem;
+  --text-2xl: 2.369rem;
+  --text-3xl: 3.157rem;
+  --text-4xl: 4.209rem;
+  --text-5xl: 5.61rem;
+  --text-display: 5.61rem;
 }
 
 @layer base {

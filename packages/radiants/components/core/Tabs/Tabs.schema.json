@@ -65,6 +65,11 @@
       ],
       "default": "none",
       "description": "Show dot pagination indicator alongside tab list"
+    },
+    "showInactiveLabels": {
+      "type": "boolean",
+      "default": false,
+      "description": "Render inactive tab labels alongside icons (default: icon-only when inactive)"
     }
   },
   "slots": {

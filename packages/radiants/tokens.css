@@ -5,6 +5,18 @@
 
 @theme {
   /* ============================================
+     SPACING GRID
+     Override Tailwind v4's default `--spacing: 0.25rem` (which cascades
+     fractional pixels when html font-size isn't a multiple of 4px) with a
+     literal 4px step. Every p-*, m-*, gap-*, h-*, w-*, size-*, inset-*
+     utility now resolves to an integer device-pixel multiple, which
+     matches the rest of the pixel-native system (--pat-cell: 8px,
+     pixel-corner masks, icon grid).
+     ============================================ */
+
+  --spacing: 4px;
+
+  /* ============================================
      BRAND COLORS
      Defined first so semantic tokens below can reference via var()
      ============================================ */
@@ -14,11 +26,10 @@
   --color-pure-black: oklch(0.0000 0.0000 0);           /* was #000000 */
   --color-sun-yellow: oklch(0.9126 0.1170 93.68);       /* was #FCE184 */
   --color-sky-blue: oklch(0.7701 0.0527 236.81);        /* was #95BAD2 */
-  --color-sky-blue-dark: oklch(0.47 0.08 237);           /* WCAG AA compliant on cream bg (~6:1 contrast) */
   --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
   --color-sun-red: oklch(0.7429 0.1568 21.43);          /* was #FF7F7F */
   --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
-  --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
+  --color-pure-white: oklch(99.1% 0.012 91.5);          /* warm cloud white */
 
   /* System Colors */
   --color-success-mint: var(--color-mint);
@@ -47,11 +58,11 @@
   --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
   --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
   --color-flip: var(--color-cream);
-  --color-link: var(--color-sky-blue-dark);
+  --color-link: var(--color-sky-blue);
 
   /* Borders */
   --color-line: var(--color-ink);
-  --color-rule: oklch(0.1641 0.0044 84.59 / 0.2);
+  --color-rule: var(--color-ink);
   --color-line-hover: oklch(0.1641 0.0044 84.59 / 0.3);
   --color-focus: var(--color-sun-yellow);
 
@@ -65,7 +76,7 @@
   --color-content-secondary: oklch(0.1641 0.0044 84.59 / 0.85);  /* was rgba(15, 14, 12, 0.85) */
   --color-content-inverted: var(--color-cream);
   --color-content-muted: oklch(0.1641 0.0044 84.59 / 0.6);    /* was rgba(15, 14, 12, 0.6) */
-  --color-content-link: var(--color-sky-blue-dark);
+  --color-content-link: var(--color-sky-blue);
 
   /* ============================================
      SEMANTIC TOKENS - Edge
@@ -73,7 +84,7 @@
      ============================================ */
 
   --color-edge-primary: var(--color-ink);
-  --color-edge-muted: oklch(0.1641 0.0044 84.59 / 0.2);       /* was rgba(15, 14, 12, 0.2) */
+  --color-edge-muted: var(--color-ink);                     /* muted divider: straight ink */
   --color-edge-hover: oklch(0.1641 0.0044 84.59 / 0.3);       /* was rgba(15, 14, 12, 0.3) — hover state: slightly stronger than muted */
   --color-edge-focus: var(--color-sun-yellow);
 
@@ -119,17 +130,6 @@
   --radius-full: 9999px;
 
   /* ============================================
-     BOX SHADOWS
-     Retro lift effect - sharp pixel-art style shadows
-     ============================================ */
-
-  --shadow-btn: 0 1px 0 0 var(--color-ink);
-  --shadow-btn-hover: 0 3px 0 0 var(--color-ink);
-  --shadow-card: 2px 2px 0 0 var(--color-ink);
-  --shadow-card-lg: 4px 4px 0 0 var(--color-ink);
-  --shadow-inner: inset 0 0 0 1px var(--color-ink);
-
-  /* ============================================
      WINDOW CHROME
      Gradient colors for AppWindow frame
      ============================================ */
@@ -167,9 +167,6 @@
      6-level elevation system per DESIGN.md Section 4.
      Sun Mode: sharp pixel-art offsets (directional).
      Moon Mode: soft ambient glows (overridden in dark.css).
-
-     Old names (shadow-btn, shadow-card, etc.) kept for
-     Phase 2 migration. Remove in Phase 3.
      ============================================ */
 
   --shadow-inset: inset 0 0 0 1px var(--color-ink);
@@ -228,6 +225,10 @@
 
   --touch-target-min: 44px;   /* WCAG AA minimum */
   --touch-target-comfortable: 48px;
+  --touch-target-default: var(--touch-target-comfortable);
+  --density-compact: 0.875;
+  --density-comfortable: 1;
+  --density-scale: var(--density-comfortable);
 
   /* ============================================
      Z-INDEX SCALE

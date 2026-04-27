@@ -155,24 +155,43 @@ This package includes:
 2. Place `Mondwest.woff2` and `Mondwest-Bold.woff2` in your project's fonts directory
 3. The theme will fall back to system fonts if Mondwest is not available
 
+## Pixel Authoring Pipeline
+
+Corners, tiling patterns, and pixel icons are authored in `@rdna/pixel` and then prepared once before Radiants materializes checked-in CSS or registries from that prepared data.
+
+Authoring source-of-truth paths:
+
+- `packages/pixel/src/corners/registry.ts`
+- `packages/pixel/src/patterns/registry.ts`
+- `packages/pixel/src/icons/registry.ts`
+
+Materialized Radiants artifacts:
+
+- `pixel-corners.generated.css`
+- `patterns.css`
+- `pixel-icons/registry.ts`
+
+SVG icons remain a separate prepared-manifest pipeline in `packages/radiants/icons/manifest.ts`.
+
+This is a pre-launch replacement flow. If a legacy adapter or re-export still exists, treat it as compatibility glue for the active RadOS surface, not as the authoring source of truth.
+
 ## Pixel Corners
 
-Pixel corners use **CSS `mask-image`** (via `pixel-rounded-*` classes) and the `px()` API from `@rdna/pixel` for staircase-shaped masks. The `PixelBorder` component provides SVG-based staircase borders.
+Pixel corners use CSS `mask-image` and the `px()` API from `@rdna/pixel` for staircase-shaped masks. Theme-following corners resolve the current `<html data-corner-shape="...">` preference at materialization time; fixed corners stay locked to the authored shape. The `PixelBorder` component provides SVG-based staircase borders when the border itself needs to be visible.
 
 **Key files:**
-- `scripts/pixel-corners.config.mjs` — profiles and variant definitions
-- `scripts/pixel-corners-lib.mjs` — generator library
-- `scripts/generate-pixel-corners.mjs` — CLI that writes `pixel-corners.generated.css`
-- `pixel-corners.css` — imports generated CSS, manual utilities (shadows, focus rings)
+- `packages/pixel/src/corners/registry.ts` — authored corner definitions and named recipes
+- `packages/pixel/src/corners/prepare.ts` — shared prepare step for math-first rasterization plus authored overrides
+- `pixel-corners.css` — shell CSS with manual utilities only
 - `pixel-corners.generated.css` — checked-in generated artifact (do not edit by hand)
 - `components/core/PixelBorder/` — SVG staircase border component
 
-**Regenerate after config changes:**
+**Regenerate after corner-authoring changes:**
 ```bash
 pnpm --filter @rdna/radiants generate:pixel-corners
 ```
 
-**Pixel corners are opt-in.** Standard `rounded-*` classes remain plain Tailwind border-radius. Use `pixel-rounded-xs/sm/md/lg/xl` to apply pixel staircase masks. Wrap in `<PixelBorder>` when visible staircase borders are needed.
+**Pixel corners are opt-in.** Standard `rounded-*` classes remain plain Tailwind border-radius. Use the pixel-corner utilities or `px()` when the surface should render staircase masks. Chrome tabs are the reference theme-following example; explicitly authored surfaces should use fixed bindings when they must not react to the global corner preference.
 
 ## Internal Primitive Engine
 

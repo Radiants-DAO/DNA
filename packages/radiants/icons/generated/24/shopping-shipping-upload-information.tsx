@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const ShoppingShippingUploadInformation = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.5 3.501H21.502V20.505H22.5V3.501ZM21.503 20.505H20.499V21.502H21.503V20.505Z" /><path d="M21.503 2.504H20.499V3.502H21.503V2.504ZM20.498 21.502H3.501V22.5H20.498V21.502ZM18.504 8.502H17.499V7.505H16.502V6.501H15.504V7.505H14.5V8.502H13.503V9.5H12.499V10.504H14.5V15.505H17.499V10.504H19.501V9.5H18.504V8.502ZM18.504 17.499H5.503V18.503H18.504V17.499ZM6.501 15.505H9.5V10.504H11.501V9.5H10.504V8.502H9.5V7.505H8.502V6.501H7.505V7.505H6.501V8.502H5.503V9.5H4.499V10.504H6.501V15.505ZM20.498 1.5H3.501V2.504H20.498V1.5ZM3.502 20.505H2.504V21.502H3.502V20.505ZM3.502 2.504H2.504V3.502H3.502V2.504ZM2.504 3.501H1.5V20.505H2.504V3.501Z" /></g></svg>;
-ShoppingShippingUploadInformation.displayName = 'ShoppingShippingUploadInformation';
-
-export default ShoppingShippingUploadInformation;

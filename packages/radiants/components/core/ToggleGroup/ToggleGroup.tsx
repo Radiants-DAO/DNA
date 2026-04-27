@@ -180,5 +180,3 @@ function ToggleGroupRoot({
 export const ToggleGroup = Object.assign(ToggleGroupRoot, {
   Item: ToggleGroupItem,
 });
-
-export default ToggleGroup;

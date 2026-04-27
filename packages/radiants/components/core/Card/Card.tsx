@@ -13,9 +13,9 @@ import type { CardRounded, CardVariant } from './Card.meta';
 export type { CardRounded, CardVariant };
 
 const CARD_PIXEL_CLASS: Record<CardRounded, string> = {
-  sm: 'pixel-rounded-sm',
-  md: 'pixel-rounded-md',
-  lg: 'pixel-rounded-lg',
+  sm: 'pixel-rounded-6',
+  md: 'pixel-rounded-8',
+  lg: 'pixel-rounded-12',
 };
 
 interface CardProps {
@@ -43,9 +43,9 @@ export const cardVariants = cva(
   {
     variants: {
       rounded: {
-        sm: 'pixel-rounded-sm',
-        md: 'pixel-rounded-md',
-        lg: 'pixel-rounded-lg',
+        sm: 'pixel-rounded-6',
+        md: 'pixel-rounded-8',
+        lg: 'pixel-rounded-12',
       },
     },
     defaultVariants: {
@@ -119,5 +119,3 @@ export function CardFooter({ children, className = '' }: CardSectionProps) {
     </div>
   );
 }
-
-export default Card;

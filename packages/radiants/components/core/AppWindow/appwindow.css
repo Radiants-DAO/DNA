@@ -8,17 +8,104 @@
   @apply absolute;
 }
 
+/* When the window is wrapped in an outer shell (control-surface docks are
+   present), the wrapper is the positioned element — the inner window itself
+   is a normal-flow block so rails can sit as absolute siblings. */
+[data-aw-shell="wrapper"] > [data-aw="window"][data-presentation="window"] {
+  position: relative;
+  inset: auto;
+}
+
+/* ============================================================================
+   Control-surface dock rails
+   ============================================================================ */
+
+[data-aw="control-surface"] {
+  /* Focus-slide + drag-lift both transform this element; 160ms matches the
+     existing shadow-lift timing. */
+  transition: transform 160ms ease-out;
+  will-change: transform;
+}
+
+[data-aw="control-surface-body"],
+[data-aw="control-surface-tab-button"] {
+  background-color: var(--color-window-chrome-from);
+  color: var(--color-main);
+}
+
+[data-aw="control-surface-island"] {
+  background-color: var(--color-page);
+  color: var(--color-main);
+}
+
+/* Collapse = rail slides INTO the window (behind the dialog). Only the cream
+   lip + eject tab stay visible past the window's outer edge. The magic
+   number (8px) matches CONTROL_SURFACE_LIP_PX in AppWindow.tsx — that's how
+   much of the outer rail width stays outside the window on collapse. */
+[data-aw-shell="wrapper"] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="left"] {
+  transform: translateX(calc(100% - 8px));
+}
+[data-aw-shell="wrapper"] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="right"] {
+  transform: translateX(calc(-100% + 8px));
+}
+[data-aw-shell="wrapper"] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="bottom"] {
+  transform: translateY(calc(-100% + 8px));
+}
+
+/* Focus-slide — when the window is NOT focused, open rails also tuck back
+   behind the window (same visual state as collapsed). Closed rails already
+   sit in the peeked state, so this is a no-op for them. */
+[data-aw-shell="wrapper"]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="left"] {
+  transform: translateX(calc(100% - 8px));
+}
+[data-aw-shell="wrapper"]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="right"] {
+  transform: translateX(calc(-100% + 8px));
+}
+[data-aw-shell="wrapper"]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="bottom"] {
+  transform: translateY(calc(-100% + 8px));
+}
+
+/* Drag-lift — the entire composite (window + rails + their shadows) shifts up
+   2px during a drag to match the pre-existing pixel-shadow lift. */
+[data-aw-shell="wrapper"][data-dragging] > [data-aw="window"],
+[data-aw-shell="wrapper"][data-dragging] > [data-aw="control-surface"] {
+  transform: translate(0, -2px);
+}
+
+/* Compose drag-lift with focus-slide / collapsed peek when both are active. */
+[data-aw-shell="wrapper"][data-dragging]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="left"],
+[data-aw-shell="wrapper"][data-dragging] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="left"] {
+  transform: translate(calc(100% - 8px), -2px);
+}
+[data-aw-shell="wrapper"][data-dragging]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="right"],
+[data-aw-shell="wrapper"][data-dragging] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="right"] {
+  transform: translate(calc(-100% + 8px), -2px);
+}
+[data-aw-shell="wrapper"][data-dragging]:not([data-focused]) > [data-aw="control-surface"][data-aw-peek="open"][data-aw-side="bottom"],
+[data-aw-shell="wrapper"][data-dragging] > [data-aw="control-surface"][data-aw-peek="closed"][data-aw-side="bottom"] {
+  transform: translate(0, calc(-100% + 8px - 2px));
+}
+
+
 [data-aw="window"][data-presentation="fullscreen"],
 [data-aw="window"][data-presentation="mobile"] {
   @apply fixed inset-0 border border-line overflow-hidden;
 }
 
 [data-aw="titlebar"] {
-  @apply flex items-center gap-3 pl-1 pr-2 py-1.5 h-fit select-none;
+  @apply relative flex items-center gap-3 pl-1 pr-2 py-1.5 h-fit select-none;
 }
 
 [data-aw="titlebar"][data-draggable="true"] {
   @apply cursor-move;
+}
+
+[data-aw="titlebar-controls"] {
+  @apply flex items-center gap-1 text-head pl-0.5;
+}
+
+[data-aw="titlebar-nav"] {
+  @apply flex-1 min-w-0;
 }
 
 [data-aw="toolbar"] {
@@ -37,32 +124,21 @@
   @apply p-0;
 }
 
+/* Single/bleed layouts are flat — the stage itself is the flex container, no
+   inner layout wrapper exists (see AppWindowContent F4/F14).
+   For multi-column layouts (split/sidebar/three), an inner [data-aw="layout"]
+   owns the flex row + gap. */
 [data-aw="layout"] {
-  @apply flex-1 min-h-0;
-}
-
-[data-aw="layout"][data-layout="single"] {
-  @apply flex flex-col;
-}
-
-[data-aw="layout"][data-layout="split"] {
-  @apply flex gap-1.5;
-}
-
-[data-aw="layout"][data-layout="sidebar"] {
-  @apply flex gap-1.5;
-}
-
-[data-aw="layout"][data-layout="three"] {
-  @apply flex gap-1.5;
-}
-
-[data-aw="layout"][data-layout="bleed"] {
-  @apply h-full flex flex-col;
+  @apply flex-1 min-h-0 flex gap-1.5;
 }
 
 [data-aw="island"] {
   @apply relative min-h-0;
+}
+
+/* Pixel-corner islands place the scroll/fill directly (no separate island-pad wrapper) */
+[data-aw="island"][data-corners="pixel"] {
+  @apply relative;
 }
 
 [data-aw="island-scroll"] {
@@ -75,8 +151,4 @@
 
 [data-aw="island-pad"][data-fill="true"] {
   @apply absolute inset-0 min-h-0 flex flex-col;
-}
-
-[data-aw="banner"] {
-  @apply shrink-0;
 }

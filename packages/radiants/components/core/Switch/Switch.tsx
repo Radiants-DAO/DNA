@@ -116,7 +116,7 @@ export function Switch({
         required={required}
         readOnly={readOnly}
         id={switchId}
-        className={`pixel-rounded-xs inline-block ${trackClasses}`.trim()}
+        className={`pixel-rounded-4 inline-block ${trackClasses}`.trim()}
         data-slot="switch-track"
         data-variant="switch"
         data-checked={checked ? '' : undefined}
@@ -125,7 +125,7 @@ export function Switch({
         <BaseSwitch.Thumb
           data-slot="switch-thumb"
           render={(props) => (
-            <div className={`pixel-rounded-xs ${thumbClasses}`.trim()}>
+            <div className={`pixel-rounded-4 ${thumbClasses}`.trim()}>
               <span {...props} className="absolute inset-0 switch-thumb" />
             </div>
           )}
@@ -136,5 +136,3 @@ export function Switch({
     </div>
   );
 }
-
-export default Switch;

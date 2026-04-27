@@ -46,15 +46,6 @@
         }
       }
     },
-    "sky-blue-dark": {
-      "$type": "color",
-      "$value": "oklch(0.47 0.08 237)",
-      "$extensions": {
-        "rdna": {
-          "srgb": "#276182"
-        }
-      }
-    },
     "sunset-fuzz": {
       "$type": "color",
       "$value": "oklch(0.8546 0.1039 68.93)",
@@ -84,10 +75,10 @@
     },
     "pure-white": {
       "$type": "color",
-      "$value": "oklch(1.0000 0.0000 0)",
+      "$value": "oklch(99.1% 0.012 91.5)",
       "$extensions": {
         "rdna": {
-          "srgb": "#ffffff"
+          "srgb": "#fffcf3"
         }
       }
     },

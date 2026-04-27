@@ -103,7 +103,7 @@
   }
 
   pre {
-    @apply text-sm font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 overflow-x-auto;
+    @apply text-sm font-mono font-normal leading-relaxed text-main bg-depth p-4 overflow-x-auto;
   }
 
   kbd {

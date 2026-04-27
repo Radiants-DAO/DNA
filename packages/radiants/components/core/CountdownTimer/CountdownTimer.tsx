@@ -105,7 +105,7 @@ function Segment({
   );
   if (variant === 'large') {
     return (
-      <div className="pixel-rounded-sm inline-block">
+      <div className="pixel-rounded-6 inline-block">
         {inner}
       </div>
     );
@@ -114,9 +114,9 @@ function Segment({
 }
 
 const COUNTDOWN_PIXEL_CLASS: Record<CountdownVariant, string> = {
-  default: 'pixel-rounded-lg',
-  compact: 'pixel-rounded-sm',
-  large: 'pixel-rounded-lg',
+  default: 'pixel-rounded-12',
+  compact: 'pixel-rounded-6',
+  large: 'pixel-rounded-12',
 };
 
 const valueVariants = cva('font-heading text-main tabular-nums', {
@@ -251,7 +251,6 @@ export function CountdownTimer({
     </div>
   );
 
-  // Render ended state
   if (status === 'ended') {
     return wrap(
       <div data-rdna="countdowntimer" className={containerVariants({ variant })}>
@@ -263,7 +262,6 @@ export function CountdownTimer({
     );
   }
 
-  // Render upcoming state
   if (status === 'upcoming' && startTime) {
     const startRemaining = getTimeRemaining(startTime);
     return wrap(
@@ -298,7 +296,6 @@ export function CountdownTimer({
     );
   }
 
-  // Render active countdown
   return wrap(
     <div data-rdna="countdowntimer" className={containerVariants({ variant })}>
       {label && <p className={labelVariants({ variant })}>{label}</p>}
@@ -330,5 +327,3 @@ export function CountdownTimer({
     </div>
   );
 }
-
-export default CountdownTimer;

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Checkmark } from '../../../icons/generated';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 // ============================================================================
 // Types
@@ -115,7 +115,7 @@ function DefaultSpinner({ size = 24, className = '', completed = false }: Omit<S
       aria-label={completed ? 'Completed' : 'Loading'}
       role="status"
     >
-      {completed ? <Checkmark size={size} /> : LOADER_FRAMES[frameIndex]}
+      {completed ? <BitmapIcon name="checkmark" size={size} /> : LOADER_FRAMES[frameIndex]}
     </div>
   );
 }
@@ -135,5 +135,3 @@ export function Spinner({ variant = 'default', ...props }: SpinnerProps) {
   }
   return <DefaultSpinner {...props} />;
 }
-
-export default Spinner;

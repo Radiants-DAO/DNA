@@ -100,7 +100,7 @@ export function Meter({
   return (
     <BaseMeter.Root data-rdna="meter" value={value} min={min} max={max}>
       <div className={`w-full ${className}`}>
-        <div className="pixel-rounded-xs bg-page w-full">
+        <div className="pixel-rounded-4 bg-page w-full">
           <BaseMeter.Track className={trackVariants()}>
             <BaseMeter.Indicator
               className={`${indicatorVariants({ status })} border-r border-line -mr-px`}
@@ -112,5 +112,3 @@ export function Meter({
     </BaseMeter.Root>
   );
 }
-
-export default Meter;

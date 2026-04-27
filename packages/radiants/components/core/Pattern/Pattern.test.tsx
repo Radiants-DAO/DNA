@@ -57,13 +57,4 @@ describe('Pattern', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  test('normalizes legacy pattern aliases onto the canonical utility class', () => {
-    const { container } = render(<Pattern pat="checker-32" className="w-20 h-20" />);
-
-    const host = container.firstElementChild as HTMLDivElement | null;
-    expect(host).not.toBeNull();
-    expect(host).toHaveClass('rdna-pat');
-    expect(host).toHaveClass('rdna-pat--checkerboard');
-    expect(host).not.toHaveClass('rdna-pat--checker-32');
-  });
 });

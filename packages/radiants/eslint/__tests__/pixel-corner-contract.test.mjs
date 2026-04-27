@@ -5,7 +5,22 @@ import { pixelCorners } from "../contract.mjs";
 describe("pixel-corner contract surface", () => {
   it("exposes trigger classes and the shadow migration map", () => {
     expect(pixelCorners.triggerClasses).toEqual(
-      expect.arrayContaining(["pixel-rounded-xs", "pixel-rounded-md", "pixel-corners"]),
+      expect.arrayContaining([
+        "pixel-rounded-2",
+        "pixel-rounded-8",
+        "pixel-rounded-full",
+        "pixel-corner",
+        "pixel-concave-corner",
+      ]),
+    );
+    expect(pixelCorners.triggerClasses).not.toEqual(
+      expect.arrayContaining([
+        "pixel-rounded-xs",
+        "pixel-rounded-md",
+        "pixel-corners",
+        "pixel-bleed-tl-6",
+        "pixel-bleed-br-12",
+      ]),
     );
     expect(pixelCorners.shadowMigrationMap["shadow-raised"]).toBe("pixel-shadow-raised");
   });

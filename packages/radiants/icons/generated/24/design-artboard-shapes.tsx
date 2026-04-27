@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const DesignArtboardShapes = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.5 3.501H20.499V4.499H22.5V3.501ZM22.5 19.501H20.499V20.499H22.5V19.501ZM20.499 1.5H19.501V3.502H20.499V1.5ZM20.499 20.499H19.501V22.5H20.499V20.499ZM19.501 4.499H4.499V19.501H19.501V4.499ZM18.503 18.503H5.503V5.503H18.503V18.503Z" /><path d="M10.5037 17.4993H17.4993V10.4971H10.5037V17.4993ZM11.5012 11.5011H16.5018V16.5018H11.5012V11.5011Z" /><path d="M7.505 13.503H8.502V14.5H9.5V9.5H14.5V8.502H13.503V7.498H12.499V6.501H8.502V7.498H7.505V8.502H6.501V12.499H7.505V13.503ZM4.499 1.5H3.501V3.502H4.499V1.5ZM4.499 20.499H3.501V22.5H4.499V20.499Z" /><path d="M3.502 3.501H1.5V4.499H3.502V3.501ZM3.502 19.501H1.5V20.499H3.502V19.501Z" /></g></svg>;
-DesignArtboardShapes.displayName = 'DesignArtboardShapes';
-
-export default DesignArtboardShapes;

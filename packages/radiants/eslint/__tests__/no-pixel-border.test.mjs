@@ -15,24 +15,24 @@ describe("rdna/no-pixel-border", () => {
     tester.run("no-pixel-border", rule, {
       valid: [
         { code: '<div className="rounded-md border-line" />' },
-        { code: '<div className="pixel-rounded-xs border-none" />' },
+        { code: '<div className="pixel-rounded-4 border-none" />' },
       ],
       invalid: [
         {
-          code: '<div className="pixel-rounded-xs border-line" />',
+          code: '<div className="pixel-rounded-4 border-line" />',
           errors: [
             {
               messageId: "clippedBorder",
               data: {
                 cls: "border-line",
-                corner: "pixel-rounded-xs",
+                corner: "pixel-rounded-4",
               },
             },
           ],
         },
         {
-          code: '<div className="pixel-corners overflow-hidden" />',
-          errors: [{ messageId: "clippedOverflow", data: { corner: "pixel-corners" } }],
+          code: '<div className="pixel-corner overflow-hidden" />',
+          errors: [{ messageId: "clippedOverflow", data: { corner: "pixel-corner" } }],
         },
       ],
     });

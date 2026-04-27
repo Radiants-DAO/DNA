@@ -3,45 +3,9 @@
 import { memo, useEffect, useState, type ComponentType } from 'react';
 
 import { getIconImporter, resolveIconRequest } from './resolve-icon';
-import type { IconProps as SvgIconProps, IconSet } from './types';
-import type { DynamicIconProps } from '../components/core/Icon/Icon.meta';
+import type { IconProps, IconSet } from './types';
 
-type LoadedIcon = ComponentType<SvgIconProps>;
-const DEFAULT_ICON_BASE_PATH = '/assets/icons';
-
-function normalizeBasePath(basePath: string): string {
-  return basePath.replace(/\/+$/, '') || DEFAULT_ICON_BASE_PATH;
-}
-
-function buildIconAssetUrl(basePath: string, name: string, iconSet: IconSet): string {
-  return `${normalizeBasePath(basePath)}/${iconSet}px/${name}.svg`;
-}
-
-function decorateFetchedSvg(svg: string, className: string): string {
-  if (typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') {
-    return svg;
-  }
-
-  const parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
-  const element = parsed.querySelector('svg');
-
-  if (!element) {
-    return svg;
-  }
-
-  element.setAttribute('width', '100%');
-  element.setAttribute('height', '100%');
-  element.setAttribute('focusable', 'false');
-  element.setAttribute('aria-hidden', 'true');
-
-  if (className) {
-    element.setAttribute('class', className);
-  } else {
-    element.removeAttribute('class');
-  }
-
-  return new XMLSerializer().serializeToString(element);
-}
+type LoadedIcon = ComponentType<IconProps>;
 
 function renderPlaceholder(size: number, className: string, ariaLabel?: string) {
   return (
@@ -58,61 +22,23 @@ function renderPlaceholder(size: number, className: string, ariaLabel?: string) 
   );
 }
 
-/**
- * Dynamic Icon component.
- *
- * The public API stays name-based. Default loading resolves through generated
- * import maps, while non-default `basePath` values retain the fetched SVG
- * compatibility path.
- */
 function IconComponent({
   name,
   size: sizeProp,
   large = false,
   className = '',
   'aria-label': ariaLabel,
-  basePath = DEFAULT_ICON_BASE_PATH,
-}: DynamicIconProps) {
+}: IconProps) {
   const size = sizeProp ?? (large ? 24 : 16);
   const [LoadedIcon, setLoadedIcon] = useState<LoadedIcon | null>(null);
-  const [fetchedSvg, setFetchedSvg] = useState<string | null>(null);
 
   const requestedSet: IconSet = size >= 20 ? 24 : 16;
   const { resolvedName, resolvedSet } = resolveIconRequest(name, requestedSet);
-  const normalizedBasePath = normalizeBasePath(basePath);
-  const shouldFetchFromBasePath = normalizedBasePath !== DEFAULT_ICON_BASE_PATH;
 
   useEffect(() => {
     let cancelled = false;
 
     setLoadedIcon(null);
-    setFetchedSvg(null);
-
-    if (shouldFetchFromBasePath) {
-      fetch(buildIconAssetUrl(normalizedBasePath, resolvedName, resolvedSet))
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((svg) => {
-          if (cancelled) return;
-          setFetchedSvg(svg);
-        })
-        .catch((err) => {
-          if (cancelled) return;
-          console.error(
-            `Failed to fetch icon: ${name} (resolved: ${resolvedName}, set: ${resolvedSet}px, basePath: ${normalizedBasePath})`,
-            err,
-          );
-          setFetchedSvg(null);
-        });
-
-      return () => {
-        cancelled = true;
-      };
-    }
 
     const importer = getIconImporter(resolvedName, resolvedSet);
 
@@ -141,27 +67,7 @@ function IconComponent({
     return () => {
       cancelled = true;
     };
-  }, [name, normalizedBasePath, resolvedName, resolvedSet, shouldFetchFromBasePath]);
-
-  if (shouldFetchFromBasePath) {
-    if (!fetchedSvg) {
-      return renderPlaceholder(size, className, ariaLabel);
-    }
-
-    return (
-      <span
-        aria-label={ariaLabel}
-        aria-hidden={!ariaLabel}
-        style={{
-          width: size,
-          height: size,
-          display: 'inline-block',
-          lineHeight: 0,
-        }}
-        dangerouslySetInnerHTML={{ __html: decorateFetchedSvg(fetchedSvg, className) }}
-      />
-    );
-  }
+  }, [name, resolvedName, resolvedSet]);
 
   if (!LoadedIcon) {
     return renderPlaceholder(size, className, ariaLabel);
@@ -169,6 +75,7 @@ function IconComponent({
 
   return (
     <LoadedIcon
+      name={resolvedName}
       size={size}
       className={className}
       aria-label={ariaLabel}
@@ -179,3 +86,4 @@ function IconComponent({
 }
 
 export const Icon = memo(IconComponent);
+Icon.displayName = 'Icon';

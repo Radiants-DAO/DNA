@@ -15,11 +15,11 @@ export type ToggleSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'none';
 
 const TOGGLE_ROUNDED_TO_PIXEL_CLASS: Record<ToggleRounded, string | null> = {
-  xs: 'pixel-rounded-xs',
-  sm: 'pixel-rounded-sm',
-  md: 'pixel-rounded-md',
-  lg: 'pixel-rounded-lg',
-  xl: 'pixel-rounded-xl',
+  xs: 'pixel-rounded-4',
+  sm: 'pixel-rounded-6',
+  md: 'pixel-rounded-8',
+  lg: 'pixel-rounded-12',
+  xl: 'pixel-rounded-20',
   full: 'pixel-rounded-full',
   none: null,
 };
@@ -53,22 +53,24 @@ interface ToggleProps {
 }
 
 // ============================================================================
-// CVA — face (chip) styling
+// CVA — collapsed toggle (root + face merged to a single node)
 // ============================================================================
 
-export const toggleFaceVariants = cva(
-  `inline-flex items-center justify-center whitespace-nowrap select-none
-   font-mono uppercase tracking-tight leading-none
+export const toggleVariants = cva(
+  `group inline-flex items-center justify-center whitespace-nowrap select-none
+   font-mono uppercase tracking-tight leading-none cursor-pointer
    transition-colors duration-[var(--duration-base)] ease-out
-   bg-depth text-sub hover:text-main
-   data-[state=selected]:bg-main data-[state=selected]:text-page`,
+   bg-depth text-sub hover:text-main outline-none
+   focus-visible:shadow-focused
+   disabled:cursor-not-allowed disabled:opacity-50
+   data-[state=selected]:bg-[var(--btn-fill)] data-[state=selected]:text-[var(--btn-text)]`,
   {
     variants: {
       size: {
         xs: 'h-5 text-xs gap-1 px-1.5 [&_svg]:size-3',
-        sm: 'h-6 text-xs gap-1 px-2 [&_svg]:size-3.5',
-        md: 'h-7 text-xs gap-1 px-2.5 [&_svg]:size-4',
-        lg: 'h-8 text-sm gap-1.5 px-3 [&_svg]:size-4',
+        sm: 'h-6 text-sm gap-1 px-2 [&_svg]:size-3.5',
+        md: 'h-7 text-sm gap-1 px-2.5 [&_svg]:size-4',
+        lg: 'h-8 text-base gap-1.5 px-3 [&_svg]:size-4',
       },
       iconOnly: {
         true: 'px-0',
@@ -116,10 +118,10 @@ export function Toggle({
   const resolvedIcon = typeof icon === 'string' ? <Icon name={icon} /> : icon;
   const pixelClass = TOGGLE_ROUNDED_TO_PIXEL_CLASS[rounded];
 
-  const faceClasses = toggleFaceVariants({
+  const classes = toggleVariants({
     size,
     iconOnly,
-    className,
+    className: `${pixelClass ?? ''} ${className}`.trim().replace(/\s+/g, ' '),
   });
 
   const content: React.ReactNode = iconOnly
@@ -142,26 +144,17 @@ export function Toggle({
           <button
             {...toggleProps}
             data-rdna="toggle"
-            data-slot="toggle-root"
+            data-slot="toggle-face"
             data-state={dataState}
             data-color={tone}
-            className="group cursor-pointer outline-none focus-visible:shadow-focused disabled:cursor-not-allowed disabled:opacity-50"
+            data-size={size}
+            {...(iconOnly ? { 'data-icon-only': '' } : {})}
+            className={classes}
           >
-            <span
-              className={`${pixelClass ? `${pixelClass} inline-flex` : ''} ${faceClasses}`.trim()}
-              data-slot="toggle-face"
-              data-state={dataState}
-              data-color={tone}
-              data-size={size}
-              {...(iconOnly ? { 'data-icon-only': '' } : {})}
-            >
-              {content}
-            </span>
+            {content}
           </button>
         );
       }}
     />
   );
 }
-
-export default Toggle;

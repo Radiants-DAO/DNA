@@ -21,7 +21,6 @@ export const AppWindowMeta = defineComponentMeta<AppWindowProps>()({
     "AppWindow.Toolbar",
     "AppWindow.Content",
     "AppWindow.Island",
-    "AppWindow.Banner",
   ],
   props: {
     id: {
@@ -69,10 +68,6 @@ export const AppWindowMeta = defineComponentMeta<AppWindowProps>()({
     "AppWindow.Island": {
       description:
         "Scrollable content region inside Content. Props: padding ('none' | 'sm' | 'md' | 'lg'), bgClassName, noScroll, corners ('standard' | 'pixel' | 'none'), width, className. Default padding is 'sm' (p-2 = 8px), matching the Content gutter (px-1.5 pb-1.5 = 6px) and inter-island gap (gap-1.5 = 6px). Use 'lg' for long-form text content that needs breathing room. When an Island is used as a sidebar navigation container (tab list, nav menu), use corners='none' — nav containers are layout slots, not visual card surfaces.",
-    },
-    "AppWindow.Banner": {
-      description:
-        "Fixed non-scrolling banner area above Content islands. Useful for status bars, alerts, or sticky headers.",
     },
   },
   examples: [

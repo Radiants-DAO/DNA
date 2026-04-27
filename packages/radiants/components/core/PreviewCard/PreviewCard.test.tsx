@@ -40,7 +40,7 @@ describe('PreviewCard', () => {
     expect(screen.getByText('Preview content')).toBeInTheDocument();
     const popup = screen.getByText('Preview content').closest('[data-rdna="previewcard"]');
     expect(popup).toBeInTheDocument();
-    expect(popup?.querySelector('.pixel-rounded-xs')).toBeInTheDocument();
-    expect(popup?.querySelector('.pixel-shadow-raised')).toBeInTheDocument();
+    expect(popup).toHaveClass('pixel-rounded-4');
+    expect(popup).toHaveClass('pixel-shadow-raised');
   });
 });

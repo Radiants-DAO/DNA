@@ -29,7 +29,7 @@ describe('Combobox', () => {
     render(<TestCombobox />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
     const input = screen.getByRole('combobox');
-    expect(input).toHaveClass('pixel-rounded-xs');
+    expect(input).toHaveClass('pixel-rounded-4');
     expect(input).toHaveClass('bg-page');
   });
 

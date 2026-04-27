@@ -2,12 +2,12 @@
  * rdna/no-clipped-shadow
  *
  * Flags RDNA shadow tokens (shadow-resting, shadow-raised, etc.) when used on
- * or inside pixel-cornered elements (pixel-rounded-* or pixel-corners).
+ * or inside pixel-cornered elements (pixel-rounded-* or pixel-corner).
  * clip-path clips box-shadow — use pixel-shadow-* (filter: drop-shadow) instead.
  *
  * Checks two cases:
- *   1. Same-element: className has both pixel-rounded-* or pixel-corners and shadow-*
- *   2. Ancestor: className has shadow-* and a JSX ancestor has pixel-rounded-* or pixel-corners
+ *   1. Same-element: className has both a pixel corner trigger and shadow-*
+ *   2. Ancestor: className has shadow-* and a JSX ancestor has a pixel corner trigger
  */
 import {
   getClassNameStrings,
@@ -26,7 +26,7 @@ const PIXEL_CORNER_TOKEN_RE = pixelCornerPattern
   : /$a/;
 
 // RDNA shadow tokens that use box-shadow (get clipped by clip-path)
-// Excludes: pixel-shadow-* (correct), shadow-none, shadow-inner, arbitrary shadow-[...]
+// Excludes: pixel-shadow-* (correct), shadow-none, shadow-inset, arbitrary shadow-[...]
 const CLIPPABLE_SHADOW_RE = /(?:^|\s)((?:[\w-]+:)*shadow-(?:surface|resting|lifted|raised|floating|focused|glow-(?:success|error|info)))(?:\s|$)/g;
 
 const rule = {
@@ -34,7 +34,7 @@ const rule = {
     type: 'problem',
     docs: {
       description:
-        'Ban box-shadow tokens on pixel-cornered elements (pixel-rounded-*/pixel-corners); use pixel-shadow-* (filter: drop-shadow) instead',
+        'Ban box-shadow tokens on pixel-cornered elements; use pixel-shadow-* (filter: drop-shadow) instead',
     },
     messages: {
       clippedShadowSameElement:
@@ -73,7 +73,7 @@ function checkElement(context, attrNode) {
 
   // (data-no-clip opt-out removed — no longer needed with pixel-corners opt-in migration)
 
-  // Case 1: Same-element — this element has both pixel-rounded-* or pixel-corners and shadow-*
+  // Case 1: Same-element — this element has both a pixel corner trigger and shadow-*
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
   const cornerMatch = hasPixelCorner ? extractPixelCorner(fullClassName) : null;
 
@@ -168,7 +168,7 @@ function findStringNode(strings, target) {
 
 /**
  * Walk up the JSX ancestor chain looking for a pixel-cornered element.
- * Returns the matched pixel-rounded-* or pixel-corners class name, or null.
+ * Returns the matched pixel corner trigger class name, or null.
  */
 function findAncestorPixelCorner(attrNode) {
   let current = attrNode.parent; // JSXOpeningElement

@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const FilmStrip = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M3 1.5H4V2.5H5V1.5H6V3.5H10V1.5H11V2.5H12V1.5H13V14.5H12V13.5H11V14.5H10V11.5H6V14.5H5V13.5H4V14.5H3V1.5ZM4 3.5V4.5H5V3.5H4ZM4 5.5V6.5H5V5.5H4ZM4 7.5V8.5H5V7.5H4ZM4 9.5V10.5H5V9.5H4ZM4 11.5V12.5H5V11.5H4ZM6 4.5V10.5H10V4.5H6ZM11 3.5V4.5H12V3.5H11ZM11 5.5V6.5H12V5.5H11ZM11 7.5V8.5H12V7.5H11ZM11 9.5V10.5H12V9.5H11ZM11 11.5V12.5H12V11.5H11Z" /></svg>;
-FilmStrip.displayName = 'FilmStrip';
-
-export default FilmStrip;

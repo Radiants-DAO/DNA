@@ -19,7 +19,7 @@ describe('NumberField', () => {
   test('renders with numeric input', () => {
     const { container } = render(<TestNumberField defaultValue={5} />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(container.querySelector('[data-slot="group"], [data-rdna="numberfield"] .pixel-rounded-xs')).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="group"], [data-rdna="numberfield"] .pixel-rounded-4')).toBeInTheDocument();
   });
 
   test('forwards readOnly to the input', () => {

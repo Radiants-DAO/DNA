@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const CopiedToClipboard = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2 3.5H3V13.5H2V3.5ZM3 2.5H5V3.5H3V2.5ZM3 13.5H12V14.5H3V13.5ZM4 5.5H11V6.5H5V11.5H7V12.5H4V5.5ZM5 1.5H10V2.5H9V3.5H10V4.5H5V3.5H6V2.5H5V1.5ZM6 8.5H7V9.5H6V8.5ZM7 9.5H8V10.5H7V9.5ZM8 10.5H9V11.5H8V10.5ZM9 9.5H10V10.5H9V9.5ZM10 2.5H12V3.5H10V2.5ZM10 8.5H11V9.5H10V8.5ZM10 11.5H11V12.5H10V11.5ZM11 7.5H12V8.5H11V7.5ZM12 3.5H13V5.5H12V3.5ZM12 6.5H13V7.5H12V6.5ZM12 8.5H13V13.5H12V8.5ZM13 5.5H14V6.5H13V5.5Z" /></svg>;
-CopiedToClipboard.displayName = 'CopiedToClipboard';
-
-export default CopiedToClipboard;

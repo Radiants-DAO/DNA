@@ -40,7 +40,6 @@ import {
   Toolbar,
   Tooltip,
 } from '../components/core';
-import { Pencil, CodeWindow, Eye } from '../icons';
 import type { RuntimeAttachment } from './types';
 import type { AlertVariant } from '../components/core/Alert/Alert.meta';
 import type { InputSize } from '../components/core/Input/Input.types';
@@ -224,7 +223,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   ContextMenu: {
     component: ContextMenu,
     Demo: () => (
-      <ContextMenu className="flex items-center justify-center pixel-rounded-md p-8">
+      <ContextMenu className="flex items-center justify-center pixel-rounded-8 p-8">
         <span className="text-sm text-mute">Right-click this area</span>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => {}}>Edit</ContextMenuItem>
@@ -533,7 +532,7 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
   ScrollArea: {
     component: ScrollArea,
     Demo: () => (
-      <ScrollArea.Root className="h-48 w-full max-w-[20rem] pixel-rounded-xs">
+      <ScrollArea.Root className="h-48 w-full max-w-[20rem] pixel-rounded-4">
         <div className="p-4 space-y-4">
           {Array.from({ length: 12 }, (_, i) => (
             <p key={i} className="text-sm text-main">
@@ -619,9 +618,9 @@ const customRuntimeAttachments: Record<string, RuntimeAttachment> = {
         <div className="w-full max-w-[24rem]">
           <Tabs defaultValue="design" mode={mode as TabsMode} {...rest}>
             <Tabs.List>
-              <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
-              <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
-              <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
+              <Tabs.Trigger value="design" icon={<Icon name="pencil" />}>Design</Tabs.Trigger>
+              <Tabs.Trigger value="code" icon={<Icon name="code-window" />}>Code</Tabs.Trigger>
+              <Tabs.Trigger value="preview" icon={<Icon name="eye" />}>Preview</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
             <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>

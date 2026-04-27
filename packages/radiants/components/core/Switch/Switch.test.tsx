@@ -53,8 +53,8 @@ describe('Switch', () => {
     const { container } = render(<Switch checked={false} onChange={() => {}} />);
     const el = document.querySelector('[data-variant="switch"]');
     expect(el).toBeInTheDocument();
-    expect(el).toHaveClass('pixel-rounded-xs');
-    expect(container.querySelector('[data-slot="switch-thumb"]')?.parentElement).toHaveClass('pixel-rounded-xs');
+    expect(el).toHaveClass('pixel-rounded-4');
+    expect(container.querySelector('[data-slot="switch-thumb"]')?.parentElement).toHaveClass('pixel-rounded-4');
   });
 
   test('renders with different sizes', () => {
@@ -72,7 +72,7 @@ describe('Switch', () => {
       checked: true,
     });
 
-    expect(classes).not.toMatch(/\bpixel-rounded-xs\b/);
+    expect(classes).not.toMatch(/\bpixel-rounded-4\b/);
     expect(classes).not.toMatch(/\bbg-accent\b/);
     expect(classes).not.toMatch(/\bbg-inv\b/);
   });

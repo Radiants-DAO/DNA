@@ -3,6 +3,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { cva } from 'class-variance-authority';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -54,26 +55,11 @@ interface OptionProps {
 }
 
 // ============================================================================
-// Default Chevron (inline SVG — no external icon dependency)
+// Default Chevron — delegates to RDNA bitmap Icon (16px only)
 // ============================================================================
 
-function DefaultChevron({ size = 14, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
+function DefaultChevron({ className = '' }: { className?: string }) {
+  return <BitmapIcon name="chevron-down" size={16} className={className} />;
 }
 
 // ============================================================================
@@ -143,8 +129,6 @@ function Trigger({
   children,
   chevron,
 }: TriggerProps): ReactNode {
-  const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
-
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
       <BaseSelect.Trigger
@@ -157,7 +141,7 @@ function Trigger({
             size,
             error,
             open: isOpen,
-            className: `pixel-rounded-xs ${fullWidth ? 'w-full' : ''} ${error ? 'pixel-border-danger' : ''} ${className}`.trim(),
+            className: `pixel-rounded-4 ${fullWidth ? 'w-full' : ''} ${error ? 'pixel-border-danger' : ''} ${className}`.trim(),
           });
 
           return (
@@ -180,7 +164,7 @@ function Trigger({
               )}
               <span className="flex-1 h-px bg-line opacity-30" />
               <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
-                {chevron || <DefaultChevron size={chevronSize} />}
+                {chevron || <DefaultChevron />}
               </span>
             </button>
           );
@@ -194,12 +178,10 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
     <BaseSelect.Portal>
       <BaseSelect.Positioner className="z-50">
-        <BaseSelect.Popup className="z-50">
-          <div className={`pixel-rounded-xs bg-page pixel-shadow-raised ${className}`.trim()}>
-            <div className="py-1">
-            {children}
-            </div>
-          </div>
+        <BaseSelect.Popup
+          className={`z-50 py-1 pixel-rounded-4 bg-page pixel-shadow-raised ${className}`.trim()}
+        >
+          {children}
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>
@@ -255,5 +237,3 @@ export function useSelectState({
 }
 
 export const Select = { Provider, Trigger, Content, Option, useSelectState };
-
-export default Select;

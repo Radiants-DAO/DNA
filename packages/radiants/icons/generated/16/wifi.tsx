@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const Wifi = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M1 6.5H2V7.5H1V6.5ZM2 5.5H3V6.5H2V5.5ZM3 4.5H4V5.5H3V4.5ZM3 7.5H4V8.5H3V7.5ZM4 3.5H12V4.5H4V3.5ZM4 6.5H5V7.5H4V6.5ZM5 5.5H11V6.5H5V5.5ZM5 8.5H6V9.5H5V8.5ZM6 7.5H10V8.5H6V7.5ZM6 10.5H7V9.5H9V10.5H10V11.5H9V12.5H7V11.5H6V10.5ZM10 8.5H11V9.5H10V8.5ZM11 6.5H12V7.5H11V6.5ZM12 4.5H13V5.5H12V4.5ZM12 7.5H13V8.5H12V7.5ZM13 5.5H14V6.5H13V5.5ZM14 6.5H15V7.5H14V6.5Z" /></svg>;
-Wifi.displayName = 'Wifi';
-
-export default Wifi;

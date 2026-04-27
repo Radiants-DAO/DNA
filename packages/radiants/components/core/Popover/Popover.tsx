@@ -102,21 +102,18 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
           data-rdna="popover"
           className={`
             z-50
+            p-4
+            pixel-rounded-6 bg-page pixel-shadow-raised
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
           data-variant="popover"
         >
-          <div className={`pixel-rounded-sm bg-page pixel-shadow-raised ${className}`.trim()}>
-            <div className="p-4">
-            {children}
-            </div>
-          </div>
+          {children}
         </BasePopover.Popup>
       </BasePopover.Positioner>
     </BasePopover.Portal>
   );
 }
-
-export default Popover;

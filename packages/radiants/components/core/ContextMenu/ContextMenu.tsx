@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -67,12 +68,10 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
   return (
     <BaseContextMenu.Portal>
       <BaseContextMenu.Positioner sideOffset={4}>
-        <BaseContextMenu.Popup className="z-[1000] min-w-[160px]">
-          <div className={`pixel-rounded-sm bg-page pixel-shadow-raised text-main ${className}`.trim()}>
-            <div className="py-0">
-            {children}
-            </div>
-          </div>
+        <BaseContextMenu.Popup
+          className={`z-[1000] min-w-[160px] pixel-rounded-6 bg-page pixel-shadow-raised text-main ${className}`.trim()}
+        >
+          {children}
         </BaseContextMenu.Popup>
       </BaseContextMenu.Positioner>
     </BaseContextMenu.Portal>
@@ -154,11 +153,9 @@ export function ContextMenuCheckboxItem({
       `.trim()}
     >
       <BaseContextMenu.CheckboxItemIndicator className="w-4 h-4 flex items-center justify-center">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1,5H3V6H4V7H6V6H7V5H8V3H6V5H4V3H2V5Z"/></svg>
+        <BitmapIcon name="checkmark" size={16} />
       </BaseContextMenu.CheckboxItemIndicator>
       {children}
     </BaseContextMenu.CheckboxItem>
   );
 }
-
-export default ContextMenu;

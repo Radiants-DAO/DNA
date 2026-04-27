@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from 'react';
 import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { ModalShell, MODAL_TRIGGER_CLASS } from '../_shared/ModalShell';
+import { PatternBackdrop } from '../_shared/PatternBackdrop';
 
 
 // ============================================================================
@@ -74,16 +76,14 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseAlertDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseAlertDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseAlertDialog.Trigger className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseAlertDialog.Trigger>
   );
@@ -91,6 +91,12 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
 // ============================================================================
 // Content — AlertDialog blocks interaction, no escape-to-close by default
+// ============================================================================
+//
+// Structure (per audit 00-MASTER §3a): the intermediate animation wrapper is
+// LOAD-BEARING — it's the `group-data-[starting-style]` target and carries
+// width + margin. It now also owns the pixel-rounded surface (previously a
+// separate inner card-div), saving one DOM node per open dialog.
 // ============================================================================
 
 interface ContentProps {
@@ -101,9 +107,7 @@ interface ContentProps {
 function Content({ className = '', children }: ContentProps): React.ReactNode {
   return (
     <BaseAlertDialog.Portal>
-      <BaseAlertDialog.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-[var(--duration-base)] ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-      />
+      <PatternBackdrop as={BaseAlertDialog.Backdrop} duration="base" />
       <BaseAlertDialog.Popup
         className="group fixed inset-0 z-50 flex items-center justify-center"
       >
@@ -111,14 +115,14 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           className={`
             relative z-10
             w-full max-w-[32rem] mx-4
+            pixel-rounded-6 bg-page pixel-shadow-floating
             transition-[opacity,transform,filter] duration-[var(--duration-base)] ease-out
             group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95
             group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
+            ${className}
           `.trim()}
         >
-          <div className={`pixel-rounded-sm bg-page pixel-shadow-floating ${className}`.trim()}>
-            {children}
-          </div>
+          {children}
         </div>
       </BaseAlertDialog.Popup>
     </BaseAlertDialog.Portal>
@@ -126,7 +130,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
 }
 
 // ============================================================================
-// Header, Title, Description
+// Header, Title, Description, Body, Footer — shared ModalShell primitives
 // ============================================================================
 
 interface HeaderProps {
@@ -135,11 +139,7 @@ interface HeaderProps {
 }
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
-  return (
-    <div className={`px-6 pt-6 pb-4 border-b border-rule ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Header className={className}>{children}</ModalShell.Header>;
 }
 
 interface TitleProps {
@@ -149,9 +149,9 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseAlertDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
+    <ModalShell.Title as={BaseAlertDialog.Title} className={className}>
       {children}
-    </BaseAlertDialog.Title>
+    </ModalShell.Title>
   );
 }
 
@@ -162,15 +162,11 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseAlertDialog.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
+    <ModalShell.Description as={BaseAlertDialog.Description} className={className}>
       {children}
-    </BaseAlertDialog.Description>
+    </ModalShell.Description>
   );
 }
-
-// ============================================================================
-// Body & Footer
-// ============================================================================
 
 interface BodyProps {
   className?: string;
@@ -178,11 +174,7 @@ interface BodyProps {
 }
 
 function Body({ className = '', children }: BodyProps): React.ReactNode {
-  return (
-    <div className={`px-6 py-4 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Body className={className}>{children}</ModalShell.Body>;
 }
 
 interface FooterProps {
@@ -191,11 +183,7 @@ interface FooterProps {
 }
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
-  return (
-    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Footer className={className}>{children}</ModalShell.Footer>;
 }
 
 // ============================================================================
@@ -211,16 +199,14 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseAlertDialog.Close
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseAlertDialog.Close
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseAlertDialog.Close className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseAlertDialog.Close>
   );
@@ -269,5 +255,3 @@ export const AlertDialog = {
   Close,
   useAlertDialogState,
 };
-
-export default AlertDialog;

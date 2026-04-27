@@ -2,7 +2,7 @@
  * rdna/no-pixel-border
  *
  * Flags `border-*` (non-neutral) and `overflow-hidden` when used on
- * pixel-cornered elements (pixel-rounded-* or pixel-corners).
+ * pixel-cornered elements (pixel-rounded-* or pixel-corner).
  *
  * Why: pixel-rounded-* uses clip-path (corners) + ::after (visible border).
  *   - Adding `border-*` creates a native CSS border that clip-path clips at edges
@@ -44,7 +44,7 @@ const rule = {
     type: 'problem',
     docs: {
       description:
-        'Ban border-* and overflow-hidden on pixel-cornered elements (pixel-rounded-*/pixel-corners). ::after handles borders; clip-path handles overflow.',
+        'Ban border-* and overflow-hidden on pixel-cornered elements. ::after handles borders; clip-path handles overflow.',
     },
     messages: {
       clippedBorder:

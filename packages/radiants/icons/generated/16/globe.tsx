@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const Globe = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M2.5 5.5H3.5V8.5H4.5V10.5H5.5V11.5H6.5V12.5H8.5V11.5H7.5V10.5H6.5V9.5H7.5V8.5H8.5V5.5H9.5V4.5H7.5V3.5H5.5V2.5H10.5V3.5H11.5V4.5H12.5V5.5H13.5V10.5H12.5V6.5H11.5V7.5H10.5V9.5H11.5V10.5H10.5V11.5H9.5V12.5H10.5V13.5H5.5V12.5H4.5V11.5H3.5V10.5H2.5V5.5ZM11.5 4.5H10.5V5.5H11.5V4.5ZM3.5 4.5H4.5V5.5H3.5V4.5ZM4.5 3.5H5.5V4.5H4.5V3.5ZM10.5 11.5H11.5V12.5H10.5V11.5ZM11.5 10.5H12.5V11.5H11.5V10.5Z" /></svg>;
-Globe.displayName = 'Globe';
-
-export default Globe;

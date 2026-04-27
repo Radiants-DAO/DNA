@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
-import { ChevronDown } from '../../../icons/generated';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -80,7 +80,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
   return (
     <BaseCollapsible.Trigger
       className={`
-        pixel-rounded-xs
+        pixel-rounded-4
         group
         w-full flex items-center justify-between
         px-4 py-3
@@ -100,7 +100,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         className="select-none transition-transform duration-[var(--duration-moderate)] ease-out group-data-[panel-open]:rotate-180"
         aria-hidden="true"
       >
-        <ChevronDown size={14} />
+        <BitmapIcon name="chevron-down" size={16} />
       </span>
     </BaseCollapsible.Trigger>
   );
@@ -121,7 +121,7 @@ function Content({ children, className = '' }: ContentProps): React.ReactNode {
         ${className}
       `.trim()}
     >
-      <div className="pixel-rounded-xs px-4 py-3 font-sans text-main bg-card">
+      <div className="pixel-rounded-4 px-4 py-3 font-sans text-main bg-card">
         {children}
       </div>
     </BaseCollapsible.Panel>
@@ -137,5 +137,3 @@ export const Collapsible = {
   Trigger,
   Content,
 };
-
-export default Collapsible;

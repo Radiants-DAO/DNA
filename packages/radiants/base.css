@@ -8,11 +8,47 @@
    ============================================================================ */
 
 :root {
-  --dot-pattern: url('./assets/scrollbar-background.svg');
-  --dot-pattern-filter: none;
-  --scrollbar-track-bg: url('./assets/scrollbar-background.svg');
+  /* Scrollbar track uses a baked-color variant of the @rdna/pixel `stagger`
+     pattern (packages/radiants/patterns.css). WebKit scrollbar pseudo-elements
+     don't support mask-image reliably, so the color is inlined in the SVG
+     rather than applied via mask + background-color. Dark mode swaps to the
+     cream-filled variant below. */
+  --scrollbar-track-pat: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20shape-rendering%3D'crispEdges'%20width%3D'8'%20height%3D'8'%3E%3Cpath%20fill%3D'%230F0E0C'%20d%3D'M1%2C0h1v1h-1ZM5%2C0h1v1h-1ZM3%2C1h1v1h-1ZM7%2C1h1v1h-1ZM1%2C2h1v1h-1ZM5%2C2h1v1h-1ZM3%2C3h1v1h-1ZM7%2C3h1v1h-1ZM1%2C4h1v1h-1ZM5%2C4h1v1h-1ZM3%2C5h1v1h-1ZM7%2C5h1v1h-1ZM1%2C6h1v1h-1ZM5%2C6h1v1h-1ZM3%2C7h1v1h-1ZM7%2C7h1v1h-1Z'%2F%3E%3C%2Fsvg%3E");
+
+  /* Scrollbar thumb tiles — three-layer system (top cap / middle / bottom cap)
+     authored as 27px-wide SVGs. WebKit scrollbar pseudo-elements don't support
+     border-image/clip-path/mask, so padding, outline, and pixel-rounded corners
+     are all baked into the SVGs.
+     Geometry (27px scrollbar, 8px padding each side):
+       cols 0–7, 19–26: transparent padding flanks
+       col 8, 18:       1px ink outline
+       cols 9–17:       9px fill band (cream default, sun-yellow active)
+     Top/bottom caps encode a 3-step pixel-rounded staircase corner.
+     Dark mode overrides the three default vars with ink-filled twins. */
+  --sbthumb-top: url('./assets/scrollbar-thumb-top.svg');
+  --sbthumb-bot: url('./assets/scrollbar-thumb-bot.svg');
+  --sbthumb-mid: url('./assets/scrollbar-thumb-mid.svg');
+
+  /* Hot state (hover/active) — sun-yellow fill. Shared across modes. */
+  --sbthumb-hot-top: url('./assets/scrollbar-thumb-top-hot.svg');
+  --sbthumb-hot-bot: url('./assets/scrollbar-thumb-bot-hot.svg');
+  --sbthumb-hot-mid: url('./assets/scrollbar-thumb-mid-hot.svg');
+
+  /* Scrollbar up/down buttons — ink chevrons centered in a 28×16 canvas.
+     Dark mode overrides both to cream. */
+  --sbbtn-up: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='16' shape-rendering='crispEdges'><path fill='%230F0E0C' d='M14,6h1v1h-1ZM13,7h3v1h-3ZM12,8h5v1h-5Z'/></svg>");
+  --sbbtn-down: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='16' shape-rendering='crispEdges'><path fill='%230F0E0C' d='M12,6h5v1h-5ZM13,7h3v1h-3ZM14,8h1v1h-1Z'/></svg>");
+
+  /* Centered thumb badge — opt-in via `.scrollbar-badged` on a parent. Default
+     is `none` so normal scrollbars stay unadorned. When opted in, the badge
+     stays pinned to the thumb's vertical center as the thumb grows/shrinks. */
+  --sbthumb-badge: none;
+
   --touch-target-default: var(--touch-target-comfortable);
   --density-scale: var(--density-comfortable);
+  /* Unified pixel-engine cell size. 8px × 8-cell pattern = 1 CSS px per cell.
+     Change here to rescale every @rdna/pixel pattern across the system. */
+  --pat-cell: 8px;
 }
 
 /* Density tiers are attribute-driven so any subtree can opt into a different
@@ -42,7 +78,10 @@
    ============================================================================ */
 
 html {
-  font-size: clamp(14px, 0.25vw + 12px, 18px);
+  /* Snap the responsive scale to whole pixels so every rem lands on an integer
+     device pixel. This prevents fractional-pixel cascades into padding/width
+     that cause pixel-corner mask-layer seam artifacts. */
+  font-size: round(clamp(14px, 0.25vw + 12px, 18px), 1px);
 }
 
 html,
@@ -59,6 +98,30 @@ body {
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================================
+   Crisp Raster Rendering — global default
+
+   Nearest-neighbor scaling for all raster/bitmap content so pixel art,
+   sprites, and icons stay sharp regardless of render size or devicePixelRatio.
+   `crisp-edges` is the modern value; `pixelated` is the WebKit fallback.
+   SVGs inherit the SVG `shape-rendering="crispEdges"` attribute authored in
+   the source (see packages/pixel/src/path.ts).
+   ============================================================================ */
+
+img,
+video,
+canvas,
+picture > img,
+[role="img"] {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+svg {
+  shape-rendering: crispEdges;
 }
 
 /* ============================================================================
@@ -82,9 +145,10 @@ body {
    Uses CSS variables from tokens.css for consistency.
    ============================================================================ */
 
-/* Force scrollbars to always be visible - make wider for padding effect */
+/* Force scrollbars to always be visible. 27px width is tuned to the SVG tile
+   geometry (8px padding + 1px outline + 9px fill + 1px outline + 8px padding). */
 ::-webkit-scrollbar {
-  width: 1.75rem; /* Wider invisible container for padding effect */
+  width: 27px;
   height: 0px;
   -webkit-appearance: none;
 }
@@ -95,11 +159,12 @@ body {
   display: none !important;
 }
 
-/* Track - narrow and centered within wider scrollbar */
+/* Track — 8px-wide @rdna/pixel `stagger` tile, centered, repeating vertically.
+   Uses a background-image tile (not mask) because WebKit scrollbar parts
+   don't support mask-image. */
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track-bg) center center / 0.5rem auto repeat-y;
-  background-position: bottom;
-  background-size: 45%;
+  background: var(--scrollbar-track-pat) center top / var(--pat-cell) var(--pat-cell) repeat-y;
+  image-rendering: pixelated;
   -webkit-appearance: none;
 }
 
@@ -107,41 +172,61 @@ body {
 ::-webkit-scrollbar-track:horizontal {
 }
 
-/* Thumb - using border/background-clip method for inset effect */
+/* Thumb — three-layer SVG tile composition + optional centered badge.
+   Layer order (first = topmost): badge, top cap, bottom cap, middle tile.
+   Middle tile is inset 4px top/bottom via calc-sized stretch so it doesn't
+   render behind the caps' transparent staircase pixels (which would fill the
+   corner cut with ink). Since the middle tile is just vertical stripes,
+   vertical stretching is lossless. */
 ::-webkit-scrollbar-thumb {
   background:
-    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgYGD4zzAKAAQTAQCUZZylAAAAAElFTkSuQmCC") repeat 0 0 / 4px 4px,
-    var(--color-cream);
-  border: 0.375rem solid transparent;
-  border-radius: 0.5rem;
+    var(--sbthumb-badge) center center / 19px 38px no-repeat,
+    var(--sbthumb-top) top center / 27px 4px no-repeat,
+    var(--sbthumb-bot) bottom center / 27px 4px no-repeat,
+    var(--sbthumb-mid) center 4px / 27px calc(100% - 8px) no-repeat;
   -webkit-appearance: none;
-  min-height: 2.25rem;
-  background-clip: padding-box;
-  box-shadow: inset 0 0 0 1px var(--color-ink);
+  min-height: 2.5rem;
   image-rendering: pixelated;
 }
 
-/* Thumb hover state */
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-sun-yellow);
-  border: 0.375rem solid transparent;
-  background-clip: padding-box;
-  box-shadow: inset 0 0 0 1px var(--color-ink);
-}
-
-/* Thumb active state */
+/* Hot state (hover/active) — sun-yellow fill, shared across modes. */
+::-webkit-scrollbar-thumb:hover,
 ::-webkit-scrollbar-thumb:active {
-  background: var(--color-sun-yellow);
-  border: 0.375rem solid transparent;
-  background-clip: padding-box;
-  box-shadow: inset 0 0 0 1px var(--color-ink);
+  background:
+    var(--sbthumb-badge) center center / 19px 38px no-repeat,
+    var(--sbthumb-hot-top) top center / 27px 4px no-repeat,
+    var(--sbthumb-hot-bot) bottom center / 27px 4px no-repeat,
+    var(--sbthumb-hot-mid) center 4px / 27px calc(100% - 8px) no-repeat;
 }
 
-/* Scrollbar buttons (arrows) - Hide all buttons */
+/* Opt-in badge variant — add `.scrollbar-badged` to any scroll container
+   (or an ancestor) to render the pixel-art badge on its thumb. */
+.scrollbar-badged {
+  --sbthumb-badge: url('./assets/scrollbar-thumb-badge.svg');
+}
+
+/* Scrollbar up/down buttons — single button per end, pixel-art chevron. */
 ::-webkit-scrollbar-button {
-  display: none !important; /* Hide all arrow buttons */
-  height: 0 !important;
-  width: 0 !important;
+  display: block;
+  height: 1rem;
+  width: 27px;
+  background: transparent center no-repeat;
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar-button:vertical:start:decrement {
+  background-image: var(--sbbtn-up);
+}
+
+::-webkit-scrollbar-button:vertical:end:increment {
+  background-image: var(--sbbtn-down);
+}
+
+/* Hide the double-button-mode variants and any horizontal buttons. */
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement,
+::-webkit-scrollbar-button:horizontal {
+  display: none;
 }
 
 /* Corner where horizontal and vertical scrollbars meet */
@@ -160,12 +245,14 @@ body {
   border-radius: inherit;
   -webkit-mask-image: var(--pat-checkerboard);
   mask-image: var(--pat-checkerboard);
-  -webkit-mask-size: 16px 16px;
-  mask-size: 16px 16px;
+  /* 8px mask × 8-cell pattern = 1px per cell (unified pixel-engine scale). */
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
-  background-color: var(--color-rule);
+  /* Ink checkerboard on cream — mode-stable brand primitives. */
+  background-color: var(--color-ink);
   pointer-events: none;
 }
 
@@ -184,70 +271,80 @@ body {
    Button Tone — Custom properties set by data-color attribute
    ============================================================================ */
 
-[data-slot="button-face"] {
+[data-slot="button-face"],
+[data-slot="toggle-face"] {
   --btn-fill: var(--color-accent);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-accent);
 }
 
-[data-slot="button-face"][data-color="danger"] {
+[data-slot="button-face"][data-color="danger"],
+[data-slot="toggle-face"][data-color="danger"] {
   --btn-fill: var(--color-danger);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-danger);
 }
 
-[data-slot="button-face"][data-color="success"] {
+[data-slot="button-face"][data-color="success"],
+[data-slot="toggle-face"][data-color="success"] {
   --btn-fill: var(--color-success);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-success);
 }
 
-[data-slot="button-face"][data-color="neutral"] {
+[data-slot="button-face"][data-color="neutral"],
+[data-slot="toggle-face"][data-color="neutral"] {
   --btn-fill: var(--color-inv);
   --btn-text: var(--color-flip);
   --btn-tint: var(--color-main);
 }
 
-[data-slot="button-face"][data-color="cream"] {
+[data-slot="button-face"][data-color="cream"],
+[data-slot="toggle-face"][data-color="cream"] {
   --btn-fill: var(--color-cream);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-cream);
 }
 
-[data-slot="button-face"][data-color="white"] {
+[data-slot="button-face"][data-color="white"],
+[data-slot="toggle-face"][data-color="white"] {
   --btn-fill: var(--color-pure-white);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-pure-white);
 }
 
-[data-slot="button-face"][data-color="info"] {
+[data-slot="button-face"][data-color="info"],
+[data-slot="toggle-face"][data-color="info"] {
   --btn-fill: var(--color-sky-blue);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-sky-blue);
 }
 
-[data-slot="button-face"][data-color="tinted"] {
+[data-slot="button-face"][data-color="tinted"],
+[data-slot="toggle-face"][data-color="tinted"] {
   --btn-fill: var(--color-accent-soft);
   --btn-text: var(--color-ink);
   --btn-tint: var(--color-accent-soft);
 }
 
-[data-slot="button-face"][data-color="transparent"] {
+[data-slot="button-face"][data-color="transparent"],
+[data-slot="toggle-face"][data-color="transparent"] {
   --btn-fill: transparent;
   --btn-text: var(--color-main);
   --btn-tint: transparent;
 }
 
-/* Disabled — no bg, pressed position, diagonal-right pattern overlay */
-[data-slot="button-root"][disabled],
-[data-slot="button-root"][aria-disabled="true"],
-[data-slot="button-root"][data-disabled] {
+/* Disabled — no bg, pressed position, diagonal-right pattern overlay.
+   Covers both shapes: (1) face-as-root (Toolbar / NavigationMenu etc. that
+   borrow the face surface directly), and (2) Button's root+face split,
+   where `disabled` lives on the outer [data-rdna="button"]. */
+[data-slot="button-face"][disabled],
+[data-slot="button-face"][aria-disabled="true"],
+[data-slot="button-face"][data-disabled],
+[data-rdna="button"][disabled] [data-slot="button-face"],
+[data-rdna="button"][aria-disabled="true"] [data-slot="button-face"],
+[data-rdna="button"][data-disabled] [data-slot="button-face"] {
   cursor: not-allowed !important;
-}
-
-[data-slot="button-root"][disabled] [data-slot="button-face"],
-[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"],
-[data-slot="button-root"][data-disabled] [data-slot="button-face"] {
   position: relative;
   background-color: transparent !important;
   background-image: none !important;
@@ -257,9 +354,12 @@ body {
   padding-bottom: 0px;
 }
 
-[data-slot="button-root"][disabled] [data-slot="button-face"]::before,
-[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"]::before,
-[data-slot="button-root"][data-disabled] [data-slot="button-face"]::before {
+[data-slot="button-face"][disabled]::before,
+[data-slot="button-face"][aria-disabled="true"]::before,
+[data-slot="button-face"][data-disabled]::before,
+[data-rdna="button"][disabled] [data-slot="button-face"]::before,
+[data-rdna="button"][aria-disabled="true"] [data-slot="button-face"]::before,
+[data-rdna="button"][data-disabled] [data-slot="button-face"]::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -268,19 +368,22 @@ body {
   background-color: var(--color-main);
   -webkit-mask-image: var(--pat-diagonal-right);
   mask-image: var(--pat-diagonal-right);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
-/* Hover — lifts 1px, 1px shadow */
-[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):hover {
+/* Hover — lifts 1px, 1px shadow.
+   Scoped to data-rdna="button" so only the real Button component gets the
+   transform; components that only borrow the face surface (Collapsible,
+   Toolbar, NavigationMenu) are unaffected. */
+[data-rdna="button"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):hover {
   transform: translateY(-1px);
   filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
 /* Press — drops 1px, top shadow */
-[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):active {
+[data-rdna="button"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):active {
   transform: translateY(1px);
   filter: drop-shadow(0 -1px 0 var(--color-ink));
 }
@@ -288,23 +391,23 @@ body {
 
 
 
-[data-slot="button-root"][disabled],
-[data-slot="button-root"][aria-disabled="true"],
-[data-slot="button-root"][data-disabled],
-[data-slot="button-root"][disabled]:hover,
-[data-slot="button-root"][aria-disabled="true"]:hover,
-[data-slot="button-root"][data-disabled]:hover,
-[data-slot="button-root"][disabled]:active,
-[data-slot="button-root"][aria-disabled="true"]:active,
-[data-slot="button-root"][data-disabled]:active {
+[data-rdna="button"][disabled],
+[data-rdna="button"][aria-disabled="true"],
+[data-rdna="button"][data-disabled],
+[data-rdna="button"][disabled]:hover,
+[data-rdna="button"][aria-disabled="true"]:hover,
+[data-rdna="button"][data-disabled]:hover,
+[data-rdna="button"][disabled]:active,
+[data-rdna="button"][aria-disabled="true"]:active,
+[data-rdna="button"][data-disabled]:active {
   filter: none;
   transform: none;
 }
 
 
 /* Selected (toggled/active) — stay pinned, no lift or press transform */
-[data-slot="button-root"][data-state="selected"]:hover,
-[data-slot="button-root"][data-state="selected"]:active {
+[data-rdna="button"][data-state="selected"]:hover,
+[data-rdna="button"][data-state="selected"]:active {
   transform: none;
   filter: none;
 }
@@ -416,8 +519,8 @@ body {
 
 [data-slot="button-face"][data-mode="solid"]:active::before {
   background: var(--color-main);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
   -webkit-mask-image: var(--pat-diagonal-dots);
   mask-image: var(--pat-diagonal-dots);
@@ -449,8 +552,8 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-dust);
   mask-image: var(--pat-dust);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
@@ -458,8 +561,8 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
@@ -467,16 +570,31 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
-/* Flat mode — filled like solid rest, no motion */
+/* Flat mode — filled like solid rest, no motion. Keeps pixel-corner ::after border. */
 [data-slot="button-face"][data-mode="flat"] {
+  position: relative;
   background-color: var(--btn-fill);
   background-image: none;
   color: var(--btn-text);
+}
+
+[data-slot="button-face"][data-mode="flat"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Pattern overlay — transparent at rest, diagonal-dots on press (mirrors solid mode). */
+[data-slot="button-face"][data-mode="flat"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Flat hover — ink bg, cream text (matches dropdown hover pattern) */
@@ -486,15 +604,16 @@ body {
   color: var(--color-flip);
 }
 
-/* Flat press — ink bg, white text (brighter than hover) */
-[data-slot="button-face"][data-mode="flat"]:active {
+/* Flat press — ink bg, cream text (matches hover) */
+[data-slot="button-face"][data-mode="flat"]:active,
+[data-slot="button-face"][data-mode="flat"][data-state="selected"] {
   background-color: var(--color-inv);
   background-image: none;
-  color: var(--color-pure-white);
+  color: var(--color-flip);
 }
 
-[data-slot="button-root"][data-mode="flat"]:hover,
-[data-slot="button-root"][data-mode="flat"]:active {
+[data-rdna="button"][data-mode="flat"]:hover,
+[data-rdna="button"][data-mode="flat"]:active {
   transform: none;
   filter: none;
 }
@@ -519,11 +638,6 @@ body {
 
 [data-slot="button-face"][data-quiet][data-state="selected"] {
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -533,11 +647,6 @@ body {
 
 [data-slot="button-face"][data-quiet]:hover {
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -547,11 +656,6 @@ body {
 
 [data-slot="button-face"][data-quiet]:active {
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -559,10 +663,14 @@ body {
   background: var(--color-line);
 }
 
-/* Flat+quiet — no bevel on hover (flat stays visually static) */
+/* Flat+quiet — no bevel on hover, no press pattern (flat stays visually static) */
 [data-slot="button-face"][data-mode="flat"][data-quiet]:hover,
 [data-slot="button-face"][data-mode="flat"][data-quiet]:active {
   background-image: none;
+}
+
+[data-slot="button-face"][data-mode="flat"][data-quiet]:active::before {
+  background: transparent;
 }
 
 [data-slot="button-face"][data-mode="text"] {
@@ -602,8 +710,8 @@ body {
 
 [data-slot="button-face"][data-mode="solid"][data-state="selected"]::before {
   background: var(--color-ink);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
@@ -618,8 +726,8 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
@@ -628,20 +736,20 @@ body {
    Mirrors interactive button and field states without a separate preview sheet.
    ============================================================================ */
 
-[data-force-state="hover"] [data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
+[data-force-state="hover"] [data-rdna="button"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
   transform: translateY(-1px);
   filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
-[data-force-state="pressed"] [data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
+[data-force-state="pressed"] [data-rdna="button"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):not([data-state="selected"]) {
   transform: translateY(1px);
   filter: drop-shadow(0 -1px 0 var(--color-ink));
 }
 
 [data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"])::before {
   background: var(--color-main);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
   -webkit-mask-image: var(--pat-diagonal-dots);
   mask-image: var(--pat-diagonal-dots);
@@ -651,8 +759,8 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-mist);
   mask-image: var(--pat-mist);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
@@ -660,18 +768,13 @@ body {
   background-color: var(--color-line);
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
-  -webkit-mask-size: 4px 4px;
-  mask-size: 4px 4px;
+  -webkit-mask-size: var(--pat-cell) var(--pat-cell);
+  mask-size: var(--pat-cell) var(--pat-cell);
   image-rendering: pixelated;
 }
 
 [data-force-state="hover"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -681,11 +784,6 @@ body {
 
 [data-force-state="pressed"] [data-slot="button-face"][data-quiet]:not([data-state="selected"]) {
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-inv) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-flip) 50%, transparent) 0px, transparent 1px);
   color: var(--btn-text);
 }
 
@@ -722,7 +820,7 @@ body {
   color: var(--color-ink);
 }
 
-[data-force-state="focus"] [data-slot="button-root"] {
+[data-force-state="focus"] [data-rdna="button"] {
   outline: none !important;
   box-shadow: var(--shadow-focused);
 }
@@ -764,10 +862,6 @@ body {
   box-shadow: 0 0 0 1px var(--color-danger);
 }
 
-[data-force-state="error"] [data-slot="field-root"] {
-  --field-error: 1;
-}
-
 [data-force-state="error"] label {
   color: var(--color-danger);
 }
@@ -807,21 +901,11 @@ body {
 [data-slot="card"][data-variant="default"],
 [data-slot="card"][data-variant="raised"] {
   background-color: var(--color-card);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 25%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 12%, transparent) 0px, transparent 1px);
   color: var(--color-main);
 }
 
 [data-slot="card"][data-variant="inverted"] {
   background-color: var(--color-inv);
-  background-image:
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--color-flip) 6%, transparent) 0px, transparent 1px),
-    linear-gradient(to top, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px),
-    linear-gradient(to left, color-mix(in srgb, var(--color-inv) 30%, transparent) 0px, transparent 1px);
   color: var(--color-flip);
 }
 
@@ -855,10 +939,6 @@ body {
   background: var(--color-page);
 }
 
-[data-slot="accordion-item"][data-variant="accordion"] {
-  background: var(--color-page);
-}
-
 
 /* For elements that need a dark-themed scrollbar */
 .custom-scrollbar-dark::-webkit-scrollbar-track {
@@ -872,71 +952,6 @@ body {
 
 .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
   background: var(--color-sun-yellow);
-}
-
-/* ============================================================================
-   Theme Force — Override semantic tokens on any element
-   Usage: <div data-theme="dark"> or <div data-theme="light">
-   Forces dark/light tokens regardless of global theme.
-   Pair with bg-page for the correct background.
-   ============================================================================ */
-
-[data-theme="dark"] {
-  --color-page: var(--color-ink);
-  --color-inv: var(--color-ink);
-  --color-tinted: oklch(0.3129 0.0389 73.57);
-  --color-card: var(--color-pure-black);
-  --color-depth: oklch(0.22 0.0100 84.59);
-  --color-hover: oklch(0.9126 0.1170 93.68 / 0.08);
-  --color-active: oklch(0.9126 0.1170 93.68 / 0.12);
-
-  --color-main: var(--color-cream);
-  --color-head: var(--color-pure-white);
-  --color-sub: oklch(0.9780 0.0295 94.34 / 0.85);
-  --color-flip: var(--color-cream);
-  --color-mute: oklch(0.9780 0.0295 94.34 / 0.6);
-  --color-link: var(--color-sky-blue);
-
-  --color-line: oklch(0.9780 0.0295 94.34 / 0.2);
-  --color-rule: oklch(0.9780 0.0295 94.34 / 0.12);
-  --color-line-hover: oklch(0.9780 0.0295 94.34 / 0.35);
-  --color-focus: var(--color-sun-yellow);
-
-  --color-accent: var(--color-sun-yellow);
-  --color-accent-inv: var(--color-ink);
-  --color-accent-soft: var(--color-sunset-fuzz);
-  --color-danger: var(--color-sun-red);
-  --color-success: var(--color-mint);
-  --color-warning: var(--color-sun-yellow);
-}
-
-[data-theme="light"] {
-  --color-page: var(--color-cream);
-  --color-inv: var(--color-ink);
-  --color-tinted: var(--color-sunset-fuzz);
-  --color-card: var(--color-pure-white);
-  --color-depth: var(--color-cream);
-  --color-hover: var(--color-sun-yellow);
-  --color-active: var(--color-sun-yellow);
-
-  --color-main: var(--color-ink);
-  --color-head: var(--color-ink);
-  --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
-  --color-flip: var(--color-cream);
-  --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
-  --color-link: var(--color-sky-blue-dark);
-
-  --color-line: var(--color-ink);
-  --color-rule: oklch(0.1641 0.0044 84.59 / 0.2);
-  --color-line-hover: oklch(0.1641 0.0044 84.59 / 0.3);
-  --color-focus: var(--color-sun-yellow);
-
-  --color-accent: var(--color-sun-yellow);
-  --color-accent-inv: var(--color-ink);
-  --color-accent-soft: var(--color-sunset-fuzz);
-  --color-danger: var(--color-sun-red);
-  --color-success: var(--color-mint);
-  --color-warning: var(--color-sun-yellow);
 }
 
 /* =============================================================================
@@ -955,4 +970,28 @@ body {
     outline: 2px solid CanvasText;
     outline-offset: 2px;
   }
+}
+
+/* ============================================================================
+   Brand Stage Gradient — canvas/preview backdrop for brand-showcase surfaces
+   (LogoMaker, PixelPlayground, Lab). Light mode uses the cream → sun-yellow
+   brand wash; dark mode flattens to ink so inverted UI stays flat and calm.
+   Authored as a semantic utility class so components can apply it without
+   touching brand primitives directly in JSX (satisfies rdna/no-hardcoded-colors).
+   ============================================================================ */
+
+.bg-brand-stage {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-cream) 0%,
+    var(--color-sun-yellow) 100%
+  );
+}
+
+.dark .bg-brand-stage {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-page) 0%,
+    var(--color-page) 100%
+  );
 }

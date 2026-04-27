@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const CodingAppsWebsitesProgrammingBrowser = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M2.4975 7.49827H21.5025V20.4986H22.5V3.50171H21.5025V6.50077H2.4975V3.50171H1.5V20.4986H2.4975V7.49827Z" /><path d="M21.503 20.499H2.498V21.503H21.503V20.499ZM4.499 9.5V18.504H19.501V9.5H4.499ZM10.497 14.5H9.5V15.498H8.502V16.502H7.498V15.498H8.502V14.5H9.5V13.503H8.502V12.499H7.498V11.501H8.502V12.499H9.5V13.503H10.497V14.5ZM16.502 14.5H12.499V13.503H16.502V14.5ZM8.502 4.499H7.498V5.503H8.502V4.499ZM6.501 4.499H5.503V5.503H6.501V4.499ZM4.499 4.499H3.502V5.503H4.499V4.499ZM21.503 2.498H2.498V3.502H21.503V2.498Z" /></g></svg>;
-CodingAppsWebsitesProgrammingBrowser.displayName = 'CodingAppsWebsitesProgrammingBrowser';
-
-export default CodingAppsWebsitesProgrammingBrowser;

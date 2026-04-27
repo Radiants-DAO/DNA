@@ -2,39 +2,53 @@ import { writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { bitsToMaskURI, bitsToPath } from '@rdna/pixel';
-
-import { pixelIconSource } from '../pixel-icons/source.ts';
+import { bitsToMaskURI, bitsToPath } from '../../pixel/src/path.ts';
+import { pixelIconRegistry as authoredPixelIconRegistry } from '../../pixel/src/icons/registry.ts';
 
 const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
-   Source: pixel-icons/source.ts + scripts/generate-pixel-icon-registry.ts
+   Authored source: packages/pixel/src/icons/registry.ts
+   Materialized by: packages/radiants/scripts/generate-pixel-icon-registry.ts
    Run: node --experimental-strip-types scripts/generate-pixel-icon-registry.ts
 */`;
 
-function renderEntry(entry: (typeof pixelIconSource)[number]) {
-  const maskImage = bitsToMaskURI(
-    bitsToPath(entry.bits, entry.width, entry.height),
-    entry.width,
-    entry.height,
-  );
+type AuthoredPixelIcon = (typeof authoredPixelIconRegistry)[number];
+type PreparedPixelIcon = AuthoredPixelIcon & {
+  readonly path: string;
+  readonly maskImage: string;
+};
 
+function preparePixelIconRegistry(): readonly PreparedPixelIcon[] {
+  return authoredPixelIconRegistry.map((entry) => {
+    const path = bitsToPath(entry.bits, entry.width, entry.height);
+
+    return {
+      ...entry,
+      path,
+      maskImage: bitsToMaskURI(path, entry.width, entry.height),
+    };
+  });
+}
+
+function renderEntry(entry: PreparedPixelIcon) {
   return `  {
     name: ${JSON.stringify(entry.name)},
     width: ${entry.width},
     height: ${entry.height},
     bits: ${JSON.stringify(entry.bits)},
-    maskImage: ${JSON.stringify(maskImage)},
+    path: ${JSON.stringify(entry.path)},
+    maskImage: ${JSON.stringify(entry.maskImage)},
   },`;
 }
 
 export function renderPixelIconRegistry() {
+  const preparedIcons = preparePixelIconRegistry();
   const lines = [
     GENERATED_FILE_BANNER,
     '',
     "import type { PixelIconEntry, PixelIconName } from './types';",
     '',
     'export const pixelIconRegistry = [',
-    ...pixelIconSource.map(renderEntry),
+    ...preparedIcons.map(renderEntry),
     '] as const satisfies readonly PixelIconEntry[];',
     '',
     'const pixelIconByName = new Map<PixelIconName, PixelIconEntry>(',

@@ -3,6 +3,7 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import { Toolbar as BaseToolbar } from '@base-ui/react/toolbar';
+import { SegmentGroup } from '../_shared/SegmentGroup';
 
 
 // ============================================================================
@@ -62,25 +63,19 @@ interface ToolbarGroupProps {
 // CVA Variants
 // ============================================================================
 
-const toolbarRootVariants = cva(
-  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm px-0.5 py-0.5`,
-  {
-    variants: {
-      orientation: {
-        horizontal: 'flex-row',
-        vertical: 'flex-col',
-      },
-      disabled: {
-        true: 'opacity-50 cursor-not-allowed',
-        false: '',
-      },
+// `disabled` is still Toolbar-specific; layout + surface delegate to
+// SegmentGroup. Root-specific paint / opacity lives here.
+const toolbarRootVariants = cva('', {
+  variants: {
+    disabled: {
+      true: 'opacity-50 cursor-not-allowed',
+      false: '',
     },
-    defaultVariants: {
-      orientation: 'horizontal',
-      disabled: false,
-    },
-  }
-);
+  },
+  defaultVariants: {
+    disabled: false,
+  },
+});
 
 const toolbarButtonVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
@@ -89,7 +84,8 @@ const toolbarButtonVariants = cva(
    transition-[background-color,color] duration-[var(--duration-base)] ease-out
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none
-   h-7 px-2 text-xs gap-2 [&_svg]:size-4`,
+   h-7 px-2 text-xs gap-2 [&_svg]:size-4
+   pixel-rounded-4`,
   {
     variants: {
       variant: {
@@ -103,20 +99,23 @@ const toolbarButtonVariants = cva(
   }
 );
 
-const toolbarSeparatorVariants = cva(
-  'bg-line self-stretch',
-  {
-    variants: {
-      orientation: {
-        horizontal: 'w-px mx-0.5 self-stretch',
-        vertical: 'h-px mx-1',
-      },
+// Separator: base paints line colour. Orientation variants describe
+// the separator's own geometry relative to the parent toolbar:
+//   horizontal toolbar  → vertical line (`w-px self-stretch`)
+//   vertical   toolbar  → horizontal line (`h-px w-full`)
+// The previous `vertical` variant rendered 0-width because it lacked
+// both `w-full` and `self-stretch`. That is the F10 bug.
+const toolbarSeparatorVariants = cva('bg-line', {
+  variants: {
+    orientation: {
+      horizontal: 'w-px self-stretch mx-0.5',
+      vertical: 'h-px w-full my-1',
     },
-    defaultVariants: {
-      orientation: 'horizontal',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+  },
+});
 
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
@@ -124,7 +123,8 @@ const toolbarLinkVariants = cva(
    bg-transparent text-flip
    transition-[background-color,color] duration-[var(--duration-base)] ease-out
    focus-visible:outline-none
-   h-7 px-2 text-xs gap-2 [&_svg]:size-4`
+   h-7 px-2 text-xs gap-2 [&_svg]:size-4
+   pixel-rounded-4`
 );
 
 // ============================================================================
@@ -143,24 +143,29 @@ function ToolbarRoot({
   children,
   className = '',
 }: ToolbarRootProps) {
-  const rootClasses = toolbarRootVariants({
-    orientation,
-    disabled,
-    className: '',
-  });
+  const stateClasses = toolbarRootVariants({ disabled });
 
   return (
     <ToolbarOrientationContext.Provider value={orientation}>
-      <BaseToolbar.Root
+      <SegmentGroup
         orientation={orientation}
-        disabled={disabled}
-        className={`pixel-rounded-sm inline-block ${className} ${rootClasses}`.trim()}
-        data-rdna="toolbar"
-        data-slot="toolbar"
-        data-orientation={orientation}
-      >
-        {children}
-      </BaseToolbar.Root>
+        density="compact"
+        surface="page"
+        corner="sm"
+        className={`${stateClasses} ${className}`.trim()}
+        render={({ className: segClassName }) => (
+          <BaseToolbar.Root
+            orientation={orientation}
+            disabled={disabled}
+            className={segClassName}
+            data-rdna="toolbar"
+            data-slot="toolbar"
+            data-orientation={orientation}
+          >
+            {children}
+          </BaseToolbar.Root>
+        )}
+      />
     </ToolbarOrientationContext.Provider>
   );
 }
@@ -177,7 +182,7 @@ function ToolbarButton({
   return (
     <BaseToolbar.Button
       disabled={disabled}
-      className={`pixel-rounded-xs inline-block ${classes}`.trim()}
+      className={classes}
       onClick={onClick}
       aria-label={ariaLabel}
       data-slot="button-face"
@@ -213,7 +218,7 @@ function ToolbarLink({
     <BaseToolbar.Link
       href={href}
       target={target}
-      className={`pixel-rounded-xs inline-block ${classes}`.trim()}
+      className={classes}
       data-slot="toolbar-link"
     >
       {children}
@@ -226,14 +231,24 @@ function ToolbarGroup({
   children,
   className = '',
 }: ToolbarGroupProps) {
+  const orientation = React.useContext(ToolbarOrientationContext);
   return (
-    <BaseToolbar.Group
-      disabled={disabled}
-      className={`inline-flex items-center gap-0.5 ${className}`.trim()}
-      data-slot="toolbar-group"
-    >
-      {children}
-    </BaseToolbar.Group>
+    <SegmentGroup
+      orientation={orientation}
+      density="none"
+      surface="none"
+      corner="none"
+      className={className}
+      render={({ className: segClassName }) => (
+        <BaseToolbar.Group
+          disabled={disabled}
+          className={segClassName}
+          data-slot="toolbar-group"
+        >
+          {children}
+        </BaseToolbar.Group>
+      )}
+    />
   );
 }
 
@@ -248,5 +263,3 @@ export const Toolbar = {
   Link: ToolbarLink,
   Group: ToolbarGroup,
 };
-
-export default Toolbar;

@@ -85,7 +85,7 @@ describe('no-legacy-color-format', () => {
     const css = `
       --radius-md: 0.5rem;
       --duration-fast: 100ms;
-      --shadow-btn: 0 1px 0 0 var(--color-ink);
+      --shadow-raised: 2px 2px 0 0 var(--color-ink);
     `;
     expect(scanForLegacyColors(css, 'tokens.css')).toEqual([]);
   });

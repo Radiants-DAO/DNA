@@ -84,5 +84,3 @@ export function Breadcrumbs({
     </nav>
   );
 }
-
-export default Breadcrumbs;

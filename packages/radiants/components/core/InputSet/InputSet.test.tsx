@@ -29,14 +29,14 @@ describe('InputSet', () => {
     expect(container.querySelector('[data-rdna="input-set"]')).toBeInTheDocument();
   });
 
-  test('applies the pixel-rounded-xs class to the fieldset shell', () => {
+  test('applies the pixel-rounded-4 class to the fieldset shell', () => {
     const { container } = render(
       <InputSet.Root>
         <InputSet.Legend>Styled</InputSet.Legend>
       </InputSet.Root>
     );
     const fieldset = container.querySelector('[data-rdna="input-set"]');
-    expect(fieldset).toHaveClass('pixel-rounded-xs');
+    expect(fieldset).toHaveClass('pixel-rounded-4');
     expect(fieldset).toHaveClass('bg-transparent');
   });
 

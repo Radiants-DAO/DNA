@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialPencilEdit1 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M15.4978 17.4993V18.4968H16.4953V17.4993H17.4994V3.50146H16.4953V5.50303H7.49811V3.50146H6.50061V17.4993H7.49811V18.4968H8.49561V17.4993H15.4978ZM14.5003 6.50053H16.4953V16.5018H14.5003V6.50053ZM10.4972 6.50053H13.4962V16.5018H10.4972V6.50053ZM7.49811 16.5018V6.50053H9.49967V16.5018H7.49811Z" /><path d="M16.495 2.498H15.498V3.502H16.495V2.498ZM15.498 18.497H14.5V19.501H15.498V18.497ZM12.499 22.5V21.503H13.496V20.499H14.5V19.501H9.5V20.499H10.497V21.503H11.501V22.5H12.499ZM15.498 1.5H8.496V2.498H15.498V1.5ZM9.5 18.497H8.496V19.501H9.5V18.497ZM8.496 2.498H7.498V3.502H8.496V2.498Z" /></g></svg>;
-InterfaceEssentialPencilEdit1.displayName = 'InterfaceEssentialPencilEdit1';
-
-export default InterfaceEssentialPencilEdit1;

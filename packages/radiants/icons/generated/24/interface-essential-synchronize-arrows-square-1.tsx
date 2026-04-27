@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialSynchronizeArrowsSquare1 = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M21.001 6.501H20.003V17.5H21.001V6.501ZM20.003 17.499H18.999V18.497H20.003V17.499ZM20.003 5.497H18.999V6.501H20.003V5.497ZM18.999 4.499H15.002V5.497H18.999V4.499ZM15.002 18.497V15.498H13.998V16.502H13.001V17.499H12.003V18.497H10.999V19.501H12.003V20.498H13.001V21.503H13.998V22.5H15.002V19.501H18.999V18.497H15.002ZM10.999 6.501H12.003V5.497H13.001V4.499H12.003V3.502H10.999V2.498H10.002V1.5H9.004V4.499H5.001V5.497H9.004V8.502H10.002V7.498H10.999V6.501ZM9.004 18.497H5.001V19.501H9.004V18.497ZM5.001 17.499H4.004V18.497H5.001V17.499ZM5.001 5.497H4.004V6.501H5.001V5.497ZM4.004 6.501H3V17.5H4.004V6.501Z" /></g></svg>;
-InterfaceEssentialSynchronizeArrowsSquare1.displayName = 'InterfaceEssentialSynchronizeArrowsSquare1';
-
-export default InterfaceEssentialSynchronizeArrowsSquare1;

@@ -4,7 +4,11 @@ import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva } from 'class-variance-authority';
 import { createCompoundContext } from '../../shared/createCompoundContext';
-import { px } from '@rdna/pixel';
+import { corner, px } from '@rdna/pixel';
+import { useCornerShape } from '../useCornerShape';
+import { useConcaveCorner } from '../useConcaveCorner';
+import { SegmentGroup } from '../_shared/SegmentGroup';
+import { Pattern } from '../Pattern/Pattern';
 
 // ============================================================================
 // Types
@@ -12,9 +16,9 @@ import { px } from '@rdna/pixel';
 
 export type TabsMode = 'capsule' | 'chrome';
 export type TabsPosition = 'top' | 'bottom' | 'left';
-export type TabsTone = 'neutral' | 'accent';
-export type TabsSize = 'sm' | 'md' | 'lg';
-export type TabsAlign = 'left' | 'center' | 'right';
+type TabsTone = 'neutral' | 'accent';
+type TabsSize = 'sm' | 'md' | 'lg';
+type TabsAlign = 'left' | 'center' | 'right';
 
 interface TabsRootProps {
   /** Active tab value (controlled) */
@@ -35,6 +39,8 @@ interface TabsRootProps {
   size?: TabsSize;
   /** Show dot indicator alongside tab list */
   indicator?: 'none' | 'dot';
+  /** Render inactive tab labels alongside icons. Default is false (icon-only when inactive). */
+  showInactiveLabels?: boolean;
   children: React.ReactNode;
   className?: string;
 }
@@ -69,6 +75,7 @@ interface TabsInternalContext {
   tone: TabsTone;
   size: TabsSize;
   indicator: 'none' | 'dot';
+  showInactiveLabels: boolean;
   activeTab: string;
   setActiveTab: (value: string) => void;
   tabValuesRef: React.RefObject<string[]>;
@@ -91,6 +98,7 @@ const {
 export const tabsRootVariants = cva('', {
   variants: {
     position: {
+      // top/bottom share the same flex stack; child order decides visual order.
       top: 'flex flex-col w-full h-full',
       bottom: 'flex flex-col w-full h-full',
       left: 'flex flex-row items-start w-full h-full',
@@ -99,6 +107,9 @@ export const tabsRootVariants = cva('', {
   defaultVariants: { position: 'top' },
 });
 
+// Applies only to the non-capsule, non-chrome paths (position-scoped list
+// styling). Capsule mode uses SegmentGroup; chrome mode hand-builds its
+// alignment string. The dead `mode.chrome` branch has been removed.
 export const tabsListVariants = cva('flex shrink-0', {
   variants: {
     position: {
@@ -106,25 +117,23 @@ export const tabsListVariants = cva('flex shrink-0', {
       bottom: 'flex-row items-center gap-2 px-2 py-2 border-t border-line',
       left: 'flex-col gap-0 p-1 h-full border-r border-line bg-card',
     },
-    mode: {
-      capsule: 'gap-1 py-1 px-1 w-fit',
-      chrome: 'absolute right-2 gap-1 items-end bg-transparent border-none p-0',
-    },
   },
-  defaultVariants: { position: 'top', mode: 'capsule' },
+  defaultVariants: { position: 'top' },
 });
 
 export const tabsTriggerVariants = cva(
   `flex items-center cursor-pointer select-none
    font-heading text-xs uppercase tracking-tight leading-none
    relative shadow-none border-none
-   transition-[border-color,background-color,color,transform,gap,padding,max-width,opacity] duration-[var(--duration-moderate)] ease-out
+   transition-[border-color,background-color,color,transform,opacity] duration-[var(--duration-moderate)] ease-out
    focus-visible:outline-none`,
   {
     variants: {
       mode: {
-        capsule: 'p-1 justify-center',
-        chrome: 'h-8 px-2 justify-center',
+        // Capsule triggers own their own pixel-rounded shape; chrome
+        // triggers delegate shape to the px()-masked wrapper.
+        capsule: 'p-1 justify-center pixel-rounded-4',
+        chrome: 'h-7 px-2 gap-1.5 justify-center bg-transparent',
       },
       size: {
         sm: 'text-xs [&_svg]:size-3.5',
@@ -136,17 +145,6 @@ export const tabsTriggerVariants = cva(
   },
 );
 
-export const tabsContentVariants = cva('@container', {
-  variants: {
-    position: {
-      top: '',
-      bottom: '',
-      left: 'flex-1 min-w-0 h-full overflow-auto',
-    },
-  },
-  defaultVariants: { position: 'top' },
-});
-
 // ============================================================================
 // DotPill — compact dot indicator (reusable)
 // ============================================================================
@@ -156,25 +154,25 @@ function DotPill({ className = '' }: { className?: string }) {
   const tabValues = tabValuesRef.current;
 
   return (
-    <div className={`pixel-rounded-sm bg-main w-fit ${className}`.trim()}>
-      <div className="flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1">
-        {tabValues.map((val) => {
-          const isActive = activeTab === val;
-          return (
-            <button
-              key={val}
-              type="button"
-              aria-label={`Go to ${val}`}
-              onClick={() => setActiveTab(val)}
-              className={`flex-shrink-0 cursor-pointer transition-all duration-[var(--duration-slow)] ease-out border-none p-0 ${
-                isActive
-                  ? 'w-8 h-2 bg-page'
-                  : 'size-2 bg-accent hover:bg-accent/75'
-              }`}
-            />
-          );
-        })}
-      </div>
+    <div
+      className={`pixel-rounded-6 bg-main w-fit flex items-center justify-center h-4 py-0.5 px-1 gap-1 ${className}`.trim()}
+    >
+      {tabValues.map((val) => {
+        const isActive = activeTab === val;
+        return (
+          <button
+            key={val}
+            type="button"
+            aria-label={`Go to ${val}`}
+            onClick={() => setActiveTab(val)}
+            className={`flex-shrink-0 cursor-pointer transition-all duration-[var(--duration-slow)] ease-out border-none p-0 ${
+              isActive
+                ? 'w-8 h-2 bg-page'
+                : 'size-2 bg-accent hover:bg-accent-soft'
+            }`}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -193,6 +191,7 @@ function TabsRoot({
   tone = 'neutral',
   size = 'md',
   indicator = 'none',
+  showInactiveLabels = false,
   children,
   className = '',
 }: TabsRootProps) {
@@ -226,14 +225,14 @@ function TabsRoot({
   }, [isControlled, onValueChange]);
 
   const ctx = useMemo(() => ({
-    mode, position, align, tone, size, indicator,
+    mode, position, align, tone, size, indicator, showInactiveLabels,
     activeTab,
     setActiveTab,
     tabValuesRef,
     tabVersion,
     registerTab,
     unregisterTab,
-  }), [mode, position, align, tone, size, indicator, activeTab, setActiveTab, tabVersion, registerTab, unregisterTab]);
+  }), [mode, position, align, tone, size, indicator, showInactiveLabels, activeTab, setActiveTab, tabVersion, registerTab, unregisterTab]);
 
   const rootClasses = tabsRootVariants({ position, className });
 
@@ -263,21 +262,28 @@ const CHROME_ALIGN_CLASS: Record<TabsAlign, string> = {
 };
 
 function List({ children, className = '' }: TabsListProps) {
-  const { mode, position, align, indicator } = useTabsContext();
-  const listClasses = tabsListVariants({ mode, position, className });
+  const { mode, position, indicator, align } = useTabsContext();
 
-  // Capsule (detached): wrap in a centering container
+  // Capsule (detached): segmented-bar style via SegmentGroup. The
+  // shared primitive supplies layout + radius + surface; the outer
+  // centering `shrink-0 self-center` collapses the old wrapper div.
   if (mode === 'capsule') {
     return (
-      <div className="shrink-0 flex items-center justify-center p-2">
-        <BaseTabs.List
-          activateOnFocus
-          data-slot="tab-list"
-          className={`pixel-rounded-xs bg-card ${listClasses}`.trim()}
-        >
-          {children}
-        </BaseTabs.List>
-      </div>
+      <SegmentGroup
+        surface="card"
+        corner="xs"
+        density="comfortable"
+        className={`shrink-0 self-center my-2 ${className}`.trim()}
+        render={({ className: segClassName }) => (
+          <BaseTabs.List
+            activateOnFocus
+            data-slot="tab-list"
+            className={segClassName}
+          >
+            {children}
+          </BaseTabs.List>
+        )}
+      />
     );
   }
 
@@ -293,6 +299,8 @@ function List({ children, className = '' }: TabsListProps) {
       </BaseTabs.List>
     );
   }
+
+  const listClasses = tabsListVariants({ position, className });
 
   // Sidebar position with dot indicator
   if (position === 'left') {
@@ -319,7 +327,10 @@ function List({ children, className = '' }: TabsListProps) {
 }
 
 function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
-  const { mode, size, registerTab, unregisterTab } = useTabsContext();
+  const { mode, size, showInactiveLabels, registerTab, unregisterTab } = useTabsContext();
+  const cornerShape = useCornerShape();
+  const chromeLeftShoulder = useConcaveCorner({ corner: 'br', radiusPx: 6 });
+  const chromeRightShoulder = useConcaveCorner({ corner: 'bl', radiusPx: 6 });
 
   // Register for DotPill reactivity
   React.useEffect(() => {
@@ -338,7 +349,8 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
         // pattern overlay and lifts on hover. The bg flip lives on the
         // px() masked wrapper so the fill never spills past the pixel
         // corners. The button itself stays transparent and keeps the `group`
-        // class for the pattern-overlay hover selector.
+        // class for the pattern-overlay hover selector. `bg-transparent`
+        // is now part of tabsTriggerVariants.mode.chrome base.
         const chromeBackground = mode === 'chrome'
           ? isActive
             ? 'bg-card'
@@ -346,11 +358,11 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
           : undefined;
         const chromeButtonClasses = mode === 'chrome'
           ? isActive
-            ? 'gap-1.5 bg-transparent z-10'
-            : 'bg-transparent group'
+            ? 'text-main z-10'
+            : 'text-accent-inv group'
           : '';
         const chromeWrapperClasses = mode === 'chrome' && !isActive
-          ? 'translate-y-1 hover:translate-y-0.5 transition-transform duration-[var(--duration-moderate)] ease-out'
+          ? 'group translate-y-0.5 hover:translate-y-0 transition-transform duration-[var(--duration-moderate)] ease-out'
           : undefined;
 
         const buttonEl = (
@@ -361,7 +373,7 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
             data-mode={mode}
             data-size={size}
             data-state={isActive ? 'selected' : 'default'}
-            className={`${classes} ${chromeButtonClasses}`}
+            className={`${classes} ${chromeButtonClasses}`.trim()}
           >
             {icon && (
               <span className="shrink-0 flex items-center justify-center">
@@ -369,36 +381,78 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
               </span>
             )}
 
-            {/* With icon: text expands on active only. Without icon: text always visible. */}
-            {(!icon || isActive) && (
+            {/* With icon: text expands on active only unless showInactiveLabels is set. Without icon: always visible. */}
+            {(!icon || isActive || showInactiveLabels) && (
               <span className="whitespace-nowrap">{children}</span>
-            )}
-
-            {/* Chrome inactive: pattern overlay */}
-            {mode === 'chrome' && !isActive && (
-              <span
-                className="absolute bottom-0 group-hover:-bottom-0.5 left-0 right-0 h-2 transition-all duration-[var(--duration-slow)] ease-out rdna-pat rdna-pat--spray-grid"
-                style={{
-                  ['--pat-color' as string]: 'currentColor',
-                }}
-              />
             )}
           </button>
         );
 
         if (mode === 'chrome') {
-          const pxProps = px(6, 6, 0, 0, { edges: [1, 1, 0, 1] });
+          const pxProps = px({
+            corners: corner.map(corner.flat, {
+              tl: corner.themed(6),
+              tr: corner.themed(6),
+            }),
+            edges: [1, 1, 0, 1],
+            themeShape: cornerShape,
+          });
           return (
             <div
-              className={`${pxProps.className} ${chromeBackground ?? ''} ${chromeWrapperClasses ?? ''}`.trim()}
-              style={pxProps.style as React.CSSProperties}
+              data-slot="tab-chrome-shell"
+              data-state={isActive ? 'selected' : 'default'}
+              className={`group/pixel relative ${chromeWrapperClasses ?? ''}`.trim()}
             >
-              {buttonEl}
+              <div
+                aria-hidden
+                data-slot="tab-chrome-concave-left"
+                className={`${chromeLeftShoulder.className} absolute bottom-0 ${
+                  chromeBackground ?? ''
+                }`.trim()}
+                style={{
+                  ...chromeLeftShoulder.style,
+                  right: 'calc(100% - 1px)',
+                } as React.CSSProperties}
+              />
+              <div
+                aria-hidden
+                data-slot="tab-chrome-concave-right"
+                className={`${chromeRightShoulder.className} absolute bottom-0 ${
+                  chromeBackground ?? ''
+                }`.trim()}
+                style={{
+                  ...chromeRightShoulder.style,
+                  left: 'calc(100% - 1px)',
+                } as React.CSSProperties}
+              />
+              <div
+                data-slot="tab-chrome-wrapper"
+                data-state={isActive ? 'selected' : 'default'}
+                className={`${pxProps.className} ${chromeBackground ?? ''}`.trim()}
+                style={pxProps.style as React.CSSProperties}
+              >
+                {buttonEl}
+                {/* Chrome inactive: pattern overlay. The outer div owns the
+                    absolute positioning; the inner Pattern element can then
+                    safely carry `.rdna-pat` (which enforces position: relative)
+                    without fighting Tailwind's `absolute` utility in the cascade. */}
+                {!isActive && (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-1 group-hover:-bottom-1.5 left-0 right-0 h-2 transition-all duration-[var(--duration-slow)] ease-out text-accent-inv"
+                  >
+                    <Pattern pat="checkerboard" color="currentColor" className="h-full w-full" />
+                  </div>
+                )}
+              </div>
             </div>
           );
         }
 
-        return <div className="pixel-rounded-xs">{buttonEl}</div>;
+        // Capsule (and other non-chrome): pixel-rounded-4 is now on
+        // the button itself (via tabsTriggerVariants.mode.capsule); no
+        // pass-through wrapper div needed.
+        return buttonEl;
       }}
     />
   );
@@ -406,7 +460,10 @@ function Trigger({ value, children, icon, className = '' }: TabsTriggerProps) {
 
 function Content({ value, children, className = '', keepMounted }: TabsContentProps) {
   const { position } = useTabsContext();
-  const classes = tabsContentVariants({ position, className });
+  // Two of three branches of the former CVA were empty strings — a
+  // plain conditional is simpler than CVA here.
+  const positionClasses = position === 'left' ? 'flex-1 min-w-0 h-full overflow-auto' : '';
+  const classes = `@container ${positionClasses} ${className}`.trim();
 
   return (
     <BaseTabs.Panel
@@ -437,5 +494,3 @@ export const Tabs = Object.assign(TabsRoot, {
   Indicator,
   DotPill,
 });
-
-export default Tabs;

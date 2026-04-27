@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const SkullAndCrossbones = ({ size = 16, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" {...props}><path fill="currentColor" d="M1 2.5H2V1.5H4V3.5H5V4.5H4V5.5H3V4.5H1V2.5ZM1 11.5H3V10.5H4V11.5H5V12.5H4V14.5H2V13.5H1V11.5ZM3 6.5H4V5.5H5V4.5H11V5.5H12V6.5H13V9.5H12V10.5H10V12.5H6V10.5H4V9.5H3V6.5ZM4 6.5V8.5H7V6.5H4ZM12 6.5H9V8.5H12V6.5ZM7 9.5V10.5H9V9.5H7ZM11 3.5H12V1.5H14V2.5H15V4.5H13V5.5H12V4.5H11V3.5ZM11 11.5H12V10.5H13V11.5H15V13.5H14V14.5H12V12.5H11V11.5Z" /></svg>;
-SkullAndCrossbones.displayName = 'SkullAndCrossbones';
-
-export default SkullAndCrossbones;

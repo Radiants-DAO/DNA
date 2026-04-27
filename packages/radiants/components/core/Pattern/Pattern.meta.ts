@@ -1,6 +1,7 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+import { PATTERN_REGISTRY, type PatternName } from "@rdna/pixel/patterns";
 
-import type { PatternName } from "../../../patterns";
+const PATTERN_NAMES = PATTERN_REGISTRY.map((pattern) => pattern.name) as PatternName[];
 
 interface PatternProps {
   pat?: PatternName;
@@ -17,20 +18,7 @@ export const PatternMeta = defineComponentMeta<PatternProps>()({
   props: {
     pat: {
       type: "enum",
-      values: [
-        "solid", "empty", "checkerboard", "checkerboard-alt",
-        "pinstripe-v", "pinstripe-v-wide", "pinstripe-h", "pinstripe-h-wide",
-        "diagonal", "diagonal-dots", "diagonal-right",
-        "grid", "brick", "shelf", "columns", "stagger", "diamond",
-        "confetti", "weave", "brick-diagonal", "brick-diagonal-alt",
-        "caret", "trellis", "arch", "cross", "sawtooth", "chevron",
-        "basket", "tweed", "dust", "mist",
-        "scatter", "scatter-alt", "scatter-pair",
-        "rain", "rain-cluster", "spray", "spray-grid", "spray-mixed",
-        "fill-75", "fill-75-rows", "fill-75-sweep", "fill-75-offset",
-        "fill-75-inv", "fill-75-bars",
-        "fill-81", "fill-88", "fill-88-alt", "fill-94", "fill-94-alt", "fill-97",
-      ],
+      values: PATTERN_NAMES,
       description: "Pattern name from the registry",
     },
     color: {

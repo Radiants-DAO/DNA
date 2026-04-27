@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cva } from 'class-variance-authority';
-import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '../../../icons/generated';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 import { Button } from '../Button/Button';
 import { createCompoundContext } from '../../shared/createCompoundContext';
 import type { AlertVariant } from './Alert.meta';
@@ -38,12 +38,12 @@ const {
   useCompoundContext: useAlertVariantContext,
 } = createCompoundContext<AlertVariant>('Alert');
 
-const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; className?: string }> | null> = {
-  default: CommentsBlank,
-  success: Checkmark,
-  warning: WarningFilled,
-  error: CloseFilled,
-  info: InfoFilled,
+const VARIANT_ICON_NAMES: Record<AlertVariant, string | null> = {
+  default: 'comments-blank',
+  success: 'checkmark',
+  warning: 'warning-filled',
+  error: 'close-filled',
+  info: 'info-filled',
 };
 
 // ============================================================================
@@ -74,10 +74,10 @@ export const alertVariants = cva(
 
 function Icon({ children, className = '' }: AlertChildProps): React.ReactElement {
   const variant = useAlertVariantContext();
-  const DefaultIcon = VARIANT_ICONS[variant];
+  const defaultName = VARIANT_ICON_NAMES[variant];
   return (
     <div className={`flex-shrink-0 ${className}`}>
-      {children ?? (DefaultIcon ? <DefaultIcon size={16} /> : null)}
+      {children ?? (defaultName ? <BitmapIcon name={defaultName} size={16} /> : null)}
     </div>
   );
 }
@@ -119,7 +119,7 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
       aria-label="Close alert"
       className={`flex-shrink-0 ${className}`}
     >
-      {children ?? <CloseIcon size={14} />}
+      {children ?? <BitmapIcon name="close" size={16} />}
     </Button>
   );
 }
@@ -131,7 +131,7 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
 function Root({ variant = 'default', children, className = '' }: AlertRootProps): React.ReactElement {
   return (
     <AlertVariantContext value={variant}>
-      <div role="alert" data-rdna="alert" data-variant={variant} className={alertVariants({ variant, className: `pixel-rounded-xs pixel-shadow-raised ${className}`.trim() })}>
+      <div role="alert" data-rdna="alert" data-variant={variant} className={alertVariants({ variant, className: `pixel-rounded-4 pixel-shadow-raised ${className}`.trim() })}>
         <div className="flex items-start gap-3">
           {children}
         </div>
@@ -145,5 +145,3 @@ function Root({ variant = 'default', children, className = '' }: AlertRootProps)
 // ============================================================================
 
 export const Alert = { Root, Icon, Content, Title, Description, Close };
-
-export default Alert;

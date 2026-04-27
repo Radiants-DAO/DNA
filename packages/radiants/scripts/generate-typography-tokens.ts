@@ -60,6 +60,14 @@ function generateCss(): string {
     const comment = scaleComments[tier] ? `  /* ${scaleComments[tier]} */` : '';
     lines.push(`  --font-size-${tier}: ${fmt(rem)}rem;${comment}`);
   }
+
+  // Tailwind v4 reads the --text-* namespace (not --font-size-*) to generate
+  // text-{tier} utilities. Mirror the static scale into --text-* so the
+  // RDNA sizes actually drive .text-xxs / .text-xs / .text-sm / etc.
+  lines.push('');
+  for (const [tier, rem] of Object.entries(staticScale)) {
+    lines.push(`  --text-${tier}: ${fmt(rem)}rem;`);
+  }
   lines.push('}');
   lines.push('');
 

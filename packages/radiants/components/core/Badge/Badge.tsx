@@ -57,7 +57,7 @@ export function Badge({
 }: BadgeProps) {
   return (
     <span
-      className={badgeVariants({ variant, size, className: `pixel-rounded-xs pixel-shadow-raised inline-block ${className}`.trim() })}
+      className={badgeVariants({ variant, size, className: `pixel-rounded-4 pixel-shadow-raised inline-block ${className}`.trim() })}
       data-rdna="badge"
       data-slot="badge"
       data-variant={variant}
@@ -66,5 +66,3 @@ export function Badge({
     </span>
   );
 }
-
-export default Badge;

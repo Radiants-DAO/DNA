@@ -150,6 +150,17 @@ export function getClassNameStrings(node) {
   // Handle: cva("p-4 text-sm"), cn("bg-page", variant), clsx("mt-2")
   if (node.type === 'CallExpression') {
     const callee = node.callee;
+    if (
+      callee.type === 'MemberExpression' &&
+      callee.property &&
+      !callee.computed &&
+      callee.property.type === 'Identifier' &&
+      callee.property.name === 'join' &&
+      callee.object &&
+      callee.object.type === 'ArrayExpression'
+    ) {
+      return getClassNameStrings(callee.object);
+    }
     const name = callee.type === 'Identifier' ? callee.name : null;
     if (!name || !CLASS_BUILDERS.has(name)) return [];
     const results = [];

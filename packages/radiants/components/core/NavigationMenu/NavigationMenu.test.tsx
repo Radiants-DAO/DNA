@@ -28,8 +28,8 @@ describe('NavigationMenu', () => {
     const trigger = screen.getByText('Products').closest('button');
     const link = screen.getByRole('link', { name: 'About' });
 
-    expect(trigger).toHaveClass('pixel-rounded-xs');
-    expect(link).toHaveClass('pixel-rounded-xs');
+    expect(trigger).toHaveClass('pixel-rounded-4');
+    expect(link).toHaveClass('pixel-rounded-4');
     expect(container.querySelector('[data-rdna="navigationmenu"]')).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe('NavigationMenu', () => {
     await waitFor(() => {
       expect(screen.getByText('Flyout content')).toBeInTheDocument();
     });
-    expect(screen.getByText('Flyout content').closest('.pixel-rounded-xs')).toBeInTheDocument();
+    expect(screen.getByText('Flyout content').closest('.pixel-rounded-4')).toBeInTheDocument();
     expect(screen.getByText('Flyout content').closest('.pixel-shadow-raised')).toBeInTheDocument();
   });
 });

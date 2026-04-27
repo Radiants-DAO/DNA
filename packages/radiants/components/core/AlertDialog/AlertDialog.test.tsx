@@ -75,7 +75,7 @@ describe('AlertDialog', () => {
 
     const dialog = screen.getByRole('alertdialog');
     expect(dialog).toBeInTheDocument();
-    expect(dialog.querySelector('.pixel-rounded-sm')).toBeInTheDocument();
+    expect(dialog.querySelector('.pixel-rounded-6')).toBeInTheDocument();
     expect(dialog.querySelector('.pixel-shadow-floating')).toBeInTheDocument();
   });
 });

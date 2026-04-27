@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { NavigationMenu as BaseNavigationMenu } from '@base-ui/react/navigation-menu';
+import { Icon as BitmapIcon } from '../../../icons/Icon';
 
 
 // ============================================================================
@@ -70,26 +71,11 @@ interface NavigationMenuViewportProps {
 }
 
 // ============================================================================
-// Default Chevron (inline SVG — no external icon dependency)
+// Default Chevron — delegates to RDNA bitmap Icon (16px only)
 // ============================================================================
 
-function DefaultChevron({ size = 12, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
+function DefaultChevron({ className = '' }: { className?: string }) {
+  return <BitmapIcon name="chevron-down" size={16} className={className} />;
 }
 
 // ============================================================================
@@ -155,7 +141,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
       data-quiet
       data-color="accent"
       className={`
-        pixel-rounded-xs
+        pixel-rounded-4
         flex items-center gap-1
         px-3 py-2
         font-sans text-sm
@@ -205,7 +191,7 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
       data-color="accent"
       data-state={active ? 'selected' : 'default'}
       className={`
-        pixel-rounded-xs inline-block
+        pixel-rounded-4 inline-block
         block
         px-3 py-2
         font-sans text-sm
@@ -228,14 +214,14 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
       <BaseNavigationMenu.Positioner sideOffset={8}>
         <BaseNavigationMenu.Popup
           className={`
+            pixel-rounded-4 bg-card pixel-shadow-raised
             transition-[opacity,transform] duration-[var(--duration-moderate)] ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
+            ${className}
           `.trim()}
         >
-          <div className={`pixel-rounded-xs bg-card pixel-shadow-raised ${className}`.trim()}>
-            <BaseNavigationMenu.Viewport />
-          </div>
+          <BaseNavigationMenu.Viewport />
         </BaseNavigationMenu.Popup>
       </BaseNavigationMenu.Positioner>
     </BaseNavigationMenu.Portal>
@@ -247,5 +233,3 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
 // ============================================================================
 
 export const NavigationMenu = { Root, List, Item, Trigger, Content, Link, Viewport };
-
-export default NavigationMenu;

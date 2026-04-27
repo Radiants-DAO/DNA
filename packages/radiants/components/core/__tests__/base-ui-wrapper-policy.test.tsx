@@ -10,12 +10,17 @@ it('pins to the installed Base UI version', async () => {
   const pkg = await import('../../../node_modules/@base-ui/react/package.json', {
     assert: { type: 'json' },
   });
-  expect(pkg.default.version).toBe('1.3.0');
+  expect(pkg.default.version).toBe('1.4.1');
 });
 
-it('uses the stable Drawer namespace export (1.3.0+)', async () => {
+it('keeps the stable Drawer namespace export available after the upgrade', async () => {
   const mod = await import('@base-ui/react/drawer');
   expect(mod).toHaveProperty('Drawer');
+});
+
+it('can import the preview OTP field export introduced in 1.4.0', async () => {
+  const mod = await import('@base-ui/react/otp-field');
+  expect(mod).toHaveProperty('OTPFieldPreview');
 });
 
 it('selection cluster exports are intact', async () => {

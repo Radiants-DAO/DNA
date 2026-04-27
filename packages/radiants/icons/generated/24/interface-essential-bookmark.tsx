@@ -1,5 +1,0 @@
-import type { IconProps } from '../../types';
-export const InterfaceEssentialBookmark = ({ size = 24, className = '', ...props }: IconProps) => <svg width={size} height={size} className={className} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><g fill="currentColor"><path d="M22.5 4.499H21.503V20.498H22.5V4.499ZM21.503 20.499H20.498V21.503H21.503V20.499ZM21.503 3.501H20.498V4.499H21.503V3.501ZM20.498 21.502H3.502V22.5H20.498V21.502ZM18.503 17.499H5.503V18.503H18.503V17.499ZM18.503 13.503H5.503V14.5H18.503V13.503ZM18.503 9.5H13.503V10.497H18.503V9.5ZM18.503 6.501H13.503V7.498H18.503V6.501Z" /><path d="M6.501 3.502V10.497H7.498V9.5H8.502V8.502H9.5V9.5H10.497V10.497H11.501V3.502H20.498V2.498H10.497V1.5H4.499V2.498H2.498V3.502H6.501ZM8.502 2.498H9.5V3.502H10.497V5.503H9.5V3.502H8.502V2.498ZM3.502 20.499H2.498V21.503H3.502V20.499ZM2.498 3.501H1.5V20.498H2.498V3.501Z" /></g></svg>;
-InterfaceEssentialBookmark.displayName = 'InterfaceEssentialBookmark';
-
-export default InterfaceEssentialBookmark;

@@ -25,6 +25,9 @@ import noRawLineHeight from './rules/no-raw-line-height.mjs';
 import noRawFontFamily from './rules/no-raw-font-family.mjs';
 import noPatternColorOverride from './rules/no-pattern-color-override.mjs';
 import noArbitraryIconSize from './rules/no-arbitrary-icon-size.mjs';
+import noTranslucentBg from './rules/no-translucent-bg.mjs';
+import noTranslucentInk from './rules/no-translucent-ink.mjs';
+import noBackdropBlur from './rules/no-backdrop-blur.mjs';
 
 const plugin = {
   meta: {
@@ -50,6 +53,9 @@ const plugin = {
     'no-raw-font-family': noRawFontFamily,
     'no-pattern-color-override': noPatternColorOverride,
     'no-arbitrary-icon-size': noArbitraryIconSize,
+    'no-translucent-bg': noTranslucentBg,
+    'no-translucent-ink': noTranslucentInk,
+    'no-backdrop-blur': noBackdropBlur,
   },
   configs: {},
 };
@@ -74,6 +80,9 @@ plugin.configs.recommended = {
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
     'rdna/no-arbitrary-icon-size': 'warn',
+    'rdna/no-translucent-bg': 'warn',
+    'rdna/no-translucent-ink': 'warn',
+    'rdna/no-backdrop-blur': 'warn',
   },
 };
 
@@ -94,6 +103,9 @@ plugin.configs.internals = {
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
     'rdna/no-arbitrary-icon-size': 'warn',
+    'rdna/no-translucent-bg': 'warn',
+    'rdna/no-translucent-ink': 'warn',
+    'rdna/no-backdrop-blur': 'warn',
   },
 };
 
@@ -115,6 +127,9 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-font-family': 'error',
     'rdna/no-pattern-color-override': 'error',
     'rdna/no-arbitrary-icon-size': 'error',
+    'rdna/no-translucent-bg': 'error',
+    'rdna/no-translucent-ink': 'error',
+    'rdna/no-backdrop-blur': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },

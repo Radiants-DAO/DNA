@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from 'react';
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer';
 import { createCompoundContext } from '../../shared/createCompoundContext';
+import { ModalShell, MODAL_TRIGGER_CLASS } from '../_shared/ModalShell';
+import { PatternBackdrop } from '../_shared/PatternBackdrop';
 
 // ============================================================================
 // Types
@@ -87,16 +89,14 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Trigger
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDrawer.Trigger
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDrawer.Trigger className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDrawer.Trigger>
   );
@@ -105,13 +105,22 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 // ============================================================================
 // Content — Base UI Drawer handles portal, focus trap, swipe-to-dismiss
 // ============================================================================
+//
+// Surface rules (audit F9, CLAUDE.md pixel-corners):
+//   - `pixel-rounded-6` renders its visible border via `::after`, so a
+//     `border-*` class would be clipped (rdna/no-pixel-border).
+//   - Box-shadow on a clipped element is also masked, so we must use
+//     `pixel-shadow-floating` instead of `shadow-floating`
+//     (rdna/no-clipped-shadow).
+// Duration token aligned with Sheet (`--duration-moderate`) per audit F10;
+// previously drifted to raw `duration-200`.
 
 // Each direction uses full literal class strings so Tailwind detects them at build time.
 const directionStyles: Record<DrawerDirection, string> = {
-  bottom: 'inset-x-0 bottom-0 w-full max-h-[85vh] pixel-rounded-sm translate-y-0 data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full',
-  top:    'inset-x-0 top-0 w-full max-h-[85vh] pixel-rounded-sm translate-y-0 data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full',
-  left:   'inset-y-0 left-0 h-full w-80 max-w-[90vw] pixel-rounded-sm translate-x-0 data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full',
-  right:  'inset-y-0 right-0 h-full w-80 max-w-[90vw] pixel-rounded-sm translate-x-0 data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full',
+  bottom: 'inset-x-0 bottom-0 w-full max-h-[85vh] pixel-rounded-6 translate-y-0 data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full',
+  top:    'inset-x-0 top-0 w-full max-h-[85vh] pixel-rounded-6 translate-y-0 data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full',
+  left:   'inset-y-0 left-0 h-full w-80 max-w-[90vw] pixel-rounded-6 translate-x-0 data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full',
+  right:  'inset-y-0 right-0 h-full w-80 max-w-[90vw] pixel-rounded-6 translate-x-0 data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full',
 };
 
 // Drag handle position styles per direction
@@ -122,7 +131,6 @@ const handleStyles: Record<DrawerDirection, string> = {
   right:  'my-auto mr-1 ml-3 w-1 h-10',
 };
 
-// Handle container layout per direction
 const handleContainerStyles: Record<DrawerDirection, string> = {
   bottom: 'flex justify-center',
   top:    'flex justify-center',
@@ -142,18 +150,15 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
 
   return (
     <BaseDrawer.Portal>
-      <BaseDrawer.Backdrop
-        className="fixed inset-0 z-50 bg-hover transition-opacity duration-200 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-      />
+      <PatternBackdrop as={BaseDrawer.Backdrop} duration="moderate" />
       <BaseDrawer.Popup
         data-rdna="drawer"
         className={`
           fixed z-50
           ${directionStyles[direction]}
           bg-card
-          border border-line
-          shadow-floating
-          transition-transform duration-200 ease-out
+          pixel-shadow-floating
+          transition-transform duration-[var(--duration-moderate)] ease-out
           ${className}
         `.trim()}
       >
@@ -169,7 +174,9 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
 }
 
 // ============================================================================
-// Header, Title, Description
+// Header, Title, Description, Body, Footer — shared ModalShell primitives
+// Drawer header uses `compact` to preserve the `pt-4` (vs Dialog's `pt-6`).
+// Drawer body is scrollable (flex-1 overflow-auto).
 // ============================================================================
 
 interface HeaderProps {
@@ -178,11 +185,7 @@ interface HeaderProps {
 }
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
-  return (
-    <div className={`px-6 pt-4 pb-4 border-b border-rule ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Header compact className={className}>{children}</ModalShell.Header>;
 }
 
 interface TitleProps {
@@ -192,9 +195,9 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseDrawer.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
+    <ModalShell.Title as={BaseDrawer.Title} className={className}>
       {children}
-    </BaseDrawer.Title>
+    </ModalShell.Title>
   );
 }
 
@@ -205,15 +208,11 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseDrawer.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
+    <ModalShell.Description as={BaseDrawer.Description} className={className}>
       {children}
-    </BaseDrawer.Description>
+    </ModalShell.Description>
   );
 }
-
-// ============================================================================
-// Body & Footer
-// ============================================================================
 
 interface BodyProps {
   className?: string;
@@ -221,11 +220,7 @@ interface BodyProps {
 }
 
 function Body({ className = '', children }: BodyProps): React.ReactNode {
-  return (
-    <div className={`px-6 py-4 flex-1 overflow-auto ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Body scrollable className={className}>{children}</ModalShell.Body>;
 }
 
 interface FooterProps {
@@ -234,11 +229,7 @@ interface FooterProps {
 }
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
-  return (
-    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <ModalShell.Footer className={className}>{children}</ModalShell.Footer>;
 }
 
 // ============================================================================
@@ -254,16 +245,14 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Close
-        className="cursor-pointer focus-visible:outline-none"
+        className={MODAL_TRIGGER_CLASS}
         render={children}
       />
     );
   }
 
   return (
-    <BaseDrawer.Close
-      className="cursor-pointer focus-visible:outline-none"
-    >
+    <BaseDrawer.Close className={MODAL_TRIGGER_CLASS}>
       {children}
     </BaseDrawer.Close>
   );
@@ -312,5 +301,3 @@ export const Drawer = {
   Close,
   useDrawerState,
 };
-
-export default Drawer;

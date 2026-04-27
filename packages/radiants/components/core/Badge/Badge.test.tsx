@@ -6,7 +6,7 @@ describe('Badge', () => {
     render(<Badge>New</Badge>);
     const badge = screen.getByText('New');
 
-    expect(badge).toHaveClass('pixel-rounded-xs');
+    expect(badge).toHaveClass('pixel-rounded-4');
     expect(badge).toHaveClass('pixel-shadow-raised');
     expect(badge).toHaveAttribute('data-rdna', 'badge');
     expect(badge).toHaveAttribute('data-variant', 'default');
