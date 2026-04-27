@@ -18,10 +18,6 @@ test("isRegistryRelevantPath matches the registry surfaces we actually depend on
     true,
   );
   assert.equal(
-    isRegistryRelevantPath("tools/playground/app/playground/registry.tsx"),
-    true,
-  );
-  assert.equal(
     isRegistryRelevantPath("apps/rad-os/components/ui/DesignSystemTab.tsx"),
     true,
   );
@@ -43,7 +39,7 @@ test("shouldRunRegistryGuard only trips when at least one changed path is regist
   assert.equal(
     shouldRunRegistryGuard([
       "README.md",
-      "tools/playground/app/playground/registry.tsx",
+      "apps/rad-os/components/ui/DesignSystemTab.tsx",
     ]),
     true,
   );
@@ -65,7 +61,7 @@ test("pre-commit runs the fast registry checks only when relevant files are stag
     ]),
     {
       run: true,
-      command: ["pnpm", "registry:check:fast"],
+      command: ["pnpm", "registry:generate"],
       reason: "staged_registry_changes",
     },
   );
@@ -74,25 +70,25 @@ test("pre-commit runs the fast registry checks only when relevant files are stag
 test("dev, build, push, and ci each map to the intended registry plan", () => {
   assert.deepEqual(getRegistryPlan("pre-dev"), {
     run: true,
-    command: ["pnpm", "--filter", "@rdna/playground", "registry:generate"],
+    command: ["pnpm", "registry:generate"],
     reason: "dev_start",
   });
 
   assert.deepEqual(getRegistryPlan("pre-build"), {
     run: true,
-    command: ["pnpm", "registry:check:full"],
+    command: ["pnpm", "registry:generate"],
     reason: "build_start",
   });
 
   assert.deepEqual(getRegistryPlan("pre-push"), {
     run: true,
-    command: ["pnpm", "registry:check:full"],
+    command: ["pnpm", "registry:generate"],
     reason: "push_gate",
   });
 
   assert.deepEqual(getRegistryPlan("ci"), {
     run: true,
-    command: ["pnpm", "registry:check:full"],
+    command: ["pnpm", "registry:generate"],
     reason: "ci_gate",
   });
 });

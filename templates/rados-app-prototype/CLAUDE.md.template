@@ -1,8 +1,0 @@
-# __APP_PASCAL_NAME__ Notes
-
-- This is a standalone RadOS desktop shell with one empty app registered.
-- Add apps in `lib/catalog.tsx` — register an id, title, icon, component, and size.
-- Shell components (Desktop, AppWindow, Taskbar, StartMenu) work like the real RadOS.
-- Window state is managed by Zustand in `store/` — windows, preferences, z-index.
-- RDNA components, runtime icons, and tokens are available from `@rdna/radiants`.
-- No WebGL background — just a CSS gradient. Swap in `components/Desktop.tsx` if needed.
