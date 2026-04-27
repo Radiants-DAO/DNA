@@ -2,7 +2,32 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { cva } from 'class-variance-authority';
-import type { ControlSize, MeterColorZones, MeterProps } from '../../primitives/types';
+import type {
+  ControlSize,
+  MeterColorZones,
+  MeterPeakCapColor,
+  MeterProps,
+} from '../../primitives/types';
+
+// ---------------------------------------------------------------------------
+// Semantic peak-cap color → RDNA token map.
+// Callers pass a semantic key; raw CSS is intentionally not supported so the
+// ctrl surface stays free of theme internals. To add a color, extend
+// `MeterPeakCapColor` in primitives/types.ts and add an entry here.
+// ---------------------------------------------------------------------------
+
+const PEAK_CAP_COLOR_MAP: Record<Exclude<MeterPeakCapColor, 'none'>, string> = {
+  accent: 'var(--color-sun-yellow)',
+  danger: 'var(--color-sun-red)',
+  success: 'var(--color-mint)',
+  info: 'var(--color-sky-blue)',
+  neutral: 'var(--color-main)',
+};
+
+function resolvePeakCapColor(value: MeterPeakCapColor): string | undefined {
+  if (value === 'none') return undefined;
+  return PEAK_CAP_COLOR_MAP[value];
+}
 
 // =============================================================================
 // ctrl/Meter — VU-style segmented bar with color gradient
@@ -217,8 +242,9 @@ export function Meter({
   channelLabels,
   colorZones = { low: 0.6, mid: 0.85 },
   glow = false,
-  peakCapColor,
+  peakCapColor = 'accent',
 }: MeterProps) {
+  const peakCapColorValue = resolvePeakCapColor(peakCapColor);
   const isStereo = Array.isArray(value);
   const leftValue = isStereo ? value[0] : value;
   const rightValue = isStereo ? value[1] : value;
@@ -304,7 +330,7 @@ export function Meter({
             zones={colorZones}
             peakHold={peakHoldEnabled}
             glow={glow}
-            peakCapColor={peakCapColor}
+            peakCapColor={peakCapColorValue}
           />
           {isStereo && (
             <ChannelBar
@@ -316,7 +342,7 @@ export function Meter({
               zones={colorZones}
               peakHold={peakHoldEnabled}
               glow={glow}
-              peakCapColor={peakCapColor}
+              peakCapColor={peakCapColorValue}
             />
           )}
         </div>

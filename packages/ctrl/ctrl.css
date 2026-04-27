@@ -2,9 +2,9 @@
    @rdna/ctrl — Control Surface Tokens
    Thin semantic layer over RDNA tokens for control primitives.
 
-   Static values go in @theme. Semantic aliases need BOTH:
+   Static values go in @theme. Mode-aware semantic aliases need BOTH:
    1. A placeholder in @theme (so Tailwind generates utility classes)
-   2. A runtime override in :root, .dark (so var() resolves per color mode)
+   2. A runtime override in :root / .dark (so var() resolves per color mode)
    ============================================================================= */
 
 @import '@rdna/radiants/tokens';
@@ -12,10 +12,8 @@
 /* ── Token registration (Tailwind utility generation) ───────────────────── */
 @theme {
   /* Static — real values, no var() chains */
-  --color-ctrl-cell-bg: oklch(0 0 0 / 0.8);
   --ctrl-cell-gap: 1px;
   --ctrl-row-height: 1.5rem;
-  --color-ctrl-track: oklch(0 0 0 / 0.6);
   --ctrl-disabled-opacity: 0.4;
   --ctrl-size-sm: 2rem;
   --ctrl-size-md: 3rem;
@@ -23,6 +21,8 @@
 
   /* Placeholders — overridden at runtime below, but must exist here
      for Tailwind to generate text-ctrl-*, bg-ctrl-*, border-ctrl-* */
+  --color-ctrl-cell-bg: transparent;
+  --color-ctrl-track: transparent;
   --color-ctrl-fill: transparent;
   --color-ctrl-thumb: transparent;
   --color-ctrl-label: transparent;
@@ -42,10 +42,36 @@
 }
 
 /* ── Runtime values — var() resolved per color mode ─────────────────────── */
-:root, .dark {
+:root {
+  --color-ctrl-cell-bg: var(--color-page);
+  --color-ctrl-track: color-mix(in oklch, var(--color-page) 86%, var(--color-main));
+  --color-ctrl-fill: var(--color-main);
+  --color-ctrl-thumb: var(--color-page);
+  --color-ctrl-label: var(--color-main);
+  --color-ctrl-value: var(--color-main);
+  --color-ctrl-text-active: var(--color-main);
+  --color-ctrl-border-active: var(--color-main);
+  --color-ctrl-border-inactive: var(--color-rule);
+  --color-ctrl-rule: var(--color-rule);
+  --color-ctrl-grid-line: var(--color-rule);
+  --color-ctrl-grid-dot: color-mix(in oklch, var(--color-main) 42%, transparent);
+  --color-ctrl-meter-low: color-mix(in oklch, var(--color-main) 44%, var(--color-page));
+  --color-ctrl-meter-mid: color-mix(in oklch, var(--color-main) 68%, var(--color-page));
+  --color-ctrl-meter-high: var(--color-main);
+  --color-ctrl-glow: transparent;
+  --color-ctrl-hover: var(--color-main);
+  --color-ctrl-active: var(--color-inv);
+  --ctrl-lcd-text-color: var(--color-main);
+  --ctrl-lcd-text-shadow: none;
+  --ctrl-text-glow-active: none;
+}
+
+.dark {
+  --color-ctrl-cell-bg: oklch(0 0 0 / 0.8);
+  --color-ctrl-track: oklch(0 0 0 / 0.6);
   --color-ctrl-fill: var(--color-accent);
   --color-ctrl-thumb: var(--color-page);
-  --color-ctrl-label: color-mix(in oklch, var(--color-main) 50%, transparent);
+  --color-ctrl-label: var(--color-main);
   --color-ctrl-value: var(--color-main);
   --color-ctrl-text-active: var(--color-accent);
   --color-ctrl-border-active: var(--color-accent);
@@ -59,4 +85,13 @@
   --color-ctrl-glow: var(--color-accent);
   --color-ctrl-hover: var(--color-accent);
   --color-ctrl-active: var(--color-inv);
+  --ctrl-lcd-text-color: oklch(1 0 0);
+  --ctrl-lcd-text-shadow:
+    var(--color-sun-yellow) 0 0 0.25px,
+    var(--color-sun-yellow) 0 0 2.25px,
+    var(--color-cream) 0 0 8.25px;
+  --ctrl-text-glow-active:
+    var(--color-ctrl-glow) 0 0 0.5px,
+    var(--color-ctrl-glow) 0 0 3px,
+    var(--color-main) 0 0 10px;
 }

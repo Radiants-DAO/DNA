@@ -19,7 +19,8 @@ export type {
 // Controls (continuous value)
 export { Knob } from './controls/Knob/Knob';
 export { Fader } from './controls/Fader/Fader';
-export { CtrlSlider } from './controls/Slider/Slider';
+export { CtrlSlider, Slider } from './controls/Slider/Slider';
+export type { SliderProps, SliderVariant } from './controls/Slider/Slider';
 export { XYPad } from './controls/XYPad/XYPad';
 export { NumberScrubber } from './controls/NumberScrubber/NumberScrubber';
 export { Ribbon } from './controls/Ribbon/Ribbon';
@@ -44,9 +45,13 @@ export type { Direction, DirectionPadProps } from './selectors/DirectionPad/Dire
 // Readouts (data display / feedback)
 export { Meter } from './readouts/Meter/Meter';
 export { LEDArray } from './readouts/LEDArray/LEDArray';
+export { LEDProgress } from './readouts/LEDProgress/LEDProgress';
+export type { LEDProgressProps } from './readouts/LEDProgress/LEDProgress';
 export { Sparkline } from './readouts/Sparkline/Sparkline';
 export { Waveform } from './readouts/Waveform/Waveform';
 export { Spectrum } from './readouts/Spectrum/Spectrum';
+export { Tooltip, TooltipProvider } from './readouts/Tooltip/Tooltip';
+export type { TooltipProps } from './readouts/Tooltip/Tooltip';
 
 // Layout (panel composition)
 export { Section } from './layout/Section/Section';
@@ -54,5 +59,11 @@ export { PropertyRow } from './layout/PropertyRow/PropertyRow';
 export { ControlPanel, useDensity } from './layout/ControlPanel/ControlPanel';
 export { PanelTitle } from './layout/PanelTitle/PanelTitle';
 export { LayerTreeRow } from './layout/LayerTreeRow/LayerTreeRow';
+export { LayerRow } from './layout/LayerRow/LayerRow';
+export { ActionButton } from './layout/ActionButton/ActionButton';
+export { RegistryRow } from './layout/RegistryRow/RegistryRow';
+export { IconCell } from './selectors/IconCell/IconCell';
 export { LCDScreen } from './layout/LCDScreen/LCDScreen';
 export { TransportPill } from './selectors/TransportPill/TransportPill';
+export { TransportButton } from './selectors/TransportButton/TransportButton';
+export type { TransportButtonProps } from './selectors/TransportButton/TransportButton';

@@ -17,7 +17,7 @@ const scrubberVariants = cva(
     variants: {
       size: {
         sm: 'text-[0.625rem]',
-        md: 'text-xs',
+        md: '',
         lg: 'text-sm',
       },
       disabled: {

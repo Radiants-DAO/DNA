@@ -1,0 +1,31 @@
+/* =============================================================================
+   TransportButton — interactive slot button inside a TransportPill (or
+   standalone). Skeuomorphic: the pill itself paints the slot gradient + bevel;
+   the button is a transparent click target that only renders the icon glyph
+   in the accent colour. Pressed treatment is owned by TransportPill via its
+   `pressedStates` prop, so this button intentionally stays visually inert on
+   hover/press — it only handles focus/disabled.
+   ============================================================================= */
+
+.rdna-transport-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  color: var(--color-accent);
+  image-rendering: pixelated;
+  /* Pixel icons crisp — no sub-pixel smoothing. */
+}
+
+.rdna-transport-button:disabled {
+  cursor: not-allowed;
+  opacity: var(--ctrl-disabled-opacity);
+}
+
+.rdna-transport-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ctrl-glow) inset;
+}

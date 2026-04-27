@@ -20,13 +20,24 @@ interface ButtonStripOption {
 interface ButtonStripProps {
   value: string | string[];
   onChange: (value: string | string[]) => void;
-  options: ButtonStripOption[];
+  options: ReadonlyArray<ButtonStripOption>;
   mode?: 'radio' | 'multi';
   label?: string;
+  ariaLabel?: string;
   disabled?: boolean;
   size?: ControlSize;
+  stretch?: boolean;
+  columns?: 1 | 2 | 3 | 4;
+  invertedStates?: boolean;
   className?: string;
 }
+
+const columnClasses: Record<NonNullable<ButtonStripProps['columns']>, string> = {
+  1: 'grid grid-cols-1',
+  2: 'grid grid-cols-2',
+  3: 'grid grid-cols-3',
+  4: 'grid grid-cols-4',
+};
 
 const itemVariants = cva(
   'flex items-center justify-center font-mono outline-none transition-all duration-fast',
@@ -35,7 +46,7 @@ const itemVariants = cva(
       size: {
         sm: 'min-w-5 min-h-5 px-1 text-[0.5625rem]',
         md: 'min-w-6 min-h-[30px] px-1.5 text-[0.625rem]',
-        lg: 'min-w-7 min-h-7 px-2 text-xs',
+        lg: 'min-w-7 min-h-7 px-2',
       },
     },
     defaultVariants: { size: 'md' },
@@ -48,8 +59,12 @@ export function ButtonStrip({
   options,
   mode = 'radio',
   label,
+  ariaLabel,
   disabled = false,
   size = 'md',
+  stretch = false,
+  columns,
+  invertedStates = false,
   className = '',
 }: ButtonStripProps) {
   const selected = Array.isArray(value) ? value : [value];
@@ -70,6 +85,7 @@ export function ButtonStrip({
       data-rdna="ctrl-button-strip"
       className={[
         'inline-flex flex-col gap-1 select-none',
+        stretch && 'w-full',
         disabled && 'opacity-[--ctrl-disabled-opacity] pointer-events-none',
         className,
       ].filter(Boolean).join(' ')}
@@ -82,10 +98,18 @@ export function ButtonStrip({
 
       <div
         role={mode === 'radio' ? 'radiogroup' : 'group'}
-        className="inline-flex gap-[--ctrl-cell-gap]"
+        aria-label={ariaLabel}
+        className={[
+          columns ? columnClasses[columns] : 'inline-flex',
+          'gap-[--ctrl-cell-gap]',
+          (stretch || columns) && 'w-full',
+        ].filter(Boolean).join(' ')}
       >
         {options.map((opt) => {
           const isActive = selected.includes(opt.value);
+          const stateClass = invertedStates
+            ? (isActive ? 'bg-ctrl-cell-bg text-main' : 'bg-ink text-flip')
+            : (isActive ? 'bg-ink text-flip' : 'bg-ctrl-cell-bg text-main');
           return (
             <button
               key={opt.value}
@@ -97,15 +121,28 @@ export function ButtonStrip({
               onClick={() => toggle(opt.value)}
               className={[
                 itemVariants({ size }),
-                'uppercase tracking-wider',
+                'group relative uppercase tracking-wider',
+                columns && 'w-full',
                 'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ctrl-glow',
-                isActive
-                  ? 'bg-ctrl-cell-bg text-ctrl-value'
-                  : 'bg-ctrl-cell-bg text-ctrl-label hover:text-ctrl-value',
+                stateClass,
               ].filter(Boolean).join(' ')}
-              style={isActive ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
             >
-              {opt.icon ?? opt.label ?? opt.value}
+              {!isActive && !invertedStates && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 hidden group-hover:block"
+                  style={{
+                    backgroundColor: 'var(--color-ctrl-label)',
+                    WebkitMaskImage: 'var(--pat-diagonal)',
+                    maskImage: 'var(--pat-diagonal)',
+                    WebkitMaskSize: '8px 8px',
+                    maskSize: '8px 8px',
+                    WebkitMaskRepeat: 'repeat',
+                    maskRepeat: 'repeat',
+                  }}
+                />
+              )}
+              <span className="relative">{opt.icon ?? opt.label ?? opt.value}</span>
             </button>
           );
         })}

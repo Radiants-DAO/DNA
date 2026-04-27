@@ -31,9 +31,6 @@ export interface IconRadioGroupProps {
   cellHeight?: number;
 }
 
-const GLOW =
-  'var(--color-accent) 0 0 0.5px, var(--color-accent) 0 0 3px, var(--color-accent) 0 0 8px';
-
 export function IconRadioGroup({
   value,
   onValueChange,
@@ -64,7 +61,7 @@ export function IconRadioGroup({
                   style={{
                     height: cellHeight,
                     ...(isActive
-                      ? { color: 'var(--color-accent)', textShadow: GLOW }
+                      ? { color: 'var(--color-main)', textShadow: 'var(--ctrl-text-glow-active)' }
                       : {}),
                   }}
                 >

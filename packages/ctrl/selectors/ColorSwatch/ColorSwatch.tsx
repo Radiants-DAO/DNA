@@ -10,19 +10,30 @@ import type { ControlSize } from '../../primitives/types';
 // Selected: gold border + glow. Unselected: cream 25% border.
 // =============================================================================
 
+type ColorSwatchSize = ControlSize | 'xl';
+
 interface ColorSwatchProps {
   color: string;
   label?: string;
   selected?: boolean;
-  size?: ControlSize;
+  size?: ColorSwatchSize;
+  /**
+   * When true, the swatch rect fills its parent's inline size and keeps a
+   * 1:1 aspect ratio (ignoring `size`). Intended for grid cells where the
+   * swatch should fill the column as a square. Incompatible with `label`.
+   */
+  fill?: boolean;
+  /** Drop the border on the color rect — glow is retained for selection. */
+  borderless?: boolean;
   onClick?: () => void;
   className?: string;
 }
 
-const swatchSize: Record<ControlSize, string> = {
+const swatchSize: Record<ColorSwatchSize, string> = {
   sm: 'size-4',
   md: 'size-6',
   lg: 'size-8',
+  xl: 'size-10',
 };
 
 export function ColorSwatch({
@@ -30,16 +41,21 @@ export function ColorSwatch({
   label,
   selected = false,
   size = 'md',
+  fill = false,
+  borderless = false,
   onClick,
   className = '',
 }: ColorSwatchProps) {
   const interactive = !!onClick;
+  const rectClass = fill ? 'w-full aspect-square' : swatchSize[size];
+  const isTransparent = color === 'transparent' || /^#[0-9a-f]{6}00$/i.test(color);
 
   return (
     <div
       data-rdna="ctrl-color-swatch"
       className={[
-        'inline-flex items-center gap-1.5',
+        'group',
+        fill ? 'flex w-full' : 'inline-flex items-center gap-1.5',
         interactive && 'cursor-pointer',
         className,
       ].filter(Boolean).join(' ')}
@@ -50,26 +66,45 @@ export function ColorSwatch({
       {/* Color rect */}
       <span
         className={[
-          swatchSize[size],
-          'border transition-all duration-fast',
-          selected
-            ? 'border-ctrl-border-active'
-            : 'border-ctrl-border-inactive',
-        ].join(' ')}
-        style={{
-          backgroundColor: color,
-          ...(selected ? { boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)' } : {}),
-        }}
-      />
+          rectClass,
+          'relative transition-colors duration-fast',
+          borderless ? '' : 'border border-ctrl-border-inactive',
+        ].filter(Boolean).join(' ')}
+        style={
+          isTransparent
+            ? {
+                backgroundColor: 'var(--color-pure-black)',
+                backgroundImage:
+                  'linear-gradient(45deg, var(--color-cream) 25%, transparent 25%, transparent 75%, var(--color-cream) 75%), linear-gradient(45deg, var(--color-cream) 25%, transparent 25%, transparent 75%, var(--color-cream) 75%)',
+                backgroundSize: '16px 16px',
+                backgroundPosition: '0 0, 8px 8px',
+              }
+            : { backgroundColor: color }
+        }
+      >
+        {!selected && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 hidden group-hover:block"
+            style={{
+              backgroundColor: 'var(--color-ctrl-label)',
+              WebkitMaskImage: 'var(--pat-diagonal)',
+              maskImage: 'var(--pat-diagonal)',
+              WebkitMaskSize: '8px 8px',
+              maskSize: '8px 8px',
+              WebkitMaskRepeat: 'repeat',
+              maskRepeat: 'repeat',
+            }}
+          />
+        )}
+      </span>
 
-      {label && (
+      {label && !fill && (
         <span
           className={[
-            'font-mono uppercase tracking-wider',
+            'font-mono uppercase tracking-wider text-main',
             size === 'sm' ? 'text-[0.5rem]' : 'text-[0.625rem]',
-            selected ? 'text-ctrl-text-active' : 'text-ctrl-label',
           ].join(' ')}
-          style={selected ? { textShadow: '0 0 8px var(--glow-sun-yellow)' } : undefined}
         >
           {label}
         </span>

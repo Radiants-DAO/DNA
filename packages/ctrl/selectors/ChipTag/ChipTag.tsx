@@ -76,11 +76,11 @@ export function ChipTag({
                 'border',
                 'focus-visible:ring-2 focus-visible:ring-ctrl-glow',
                 isActive
-                  ? 'border-ctrl-border-active text-ctrl-text-active bg-ctrl-cell-bg'
+                  ? 'border-ctrl-border-active text-main bg-ctrl-cell-bg'
                   : 'border-ctrl-border-inactive text-ctrl-label bg-ctrl-cell-bg hover:text-ctrl-value',
               ].filter(Boolean).join(' ')}
               style={isActive ? {
-                textShadow: '0 0 8px var(--glow-sun-yellow)',
+                textShadow: 'var(--ctrl-text-glow-active)',
                 boxShadow: '0 0 6px var(--glow-sun-yellow-subtle)',
               } : undefined}
             >

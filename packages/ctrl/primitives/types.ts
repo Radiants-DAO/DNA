@@ -50,6 +50,19 @@ export interface MeterColorZones {
   mid: number;
 }
 
+/**
+ * Semantic color options for the peak cap (topmost lit cell).
+ * Each maps to an RDNA semantic token internally — callers never pass
+ * raw CSS. To add a color, extend this union and the map in Meter.tsx.
+ */
+export type MeterPeakCapColor =
+  | 'accent'
+  | 'danger'
+  | 'success'
+  | 'info'
+  | 'neutral'
+  | 'none';
+
 export type MeterProps = Omit<ReadoutProps, 'value'> & {
   value: number | [number, number];
   segments?: number;
@@ -64,8 +77,11 @@ export type MeterProps = Omit<ReadoutProps, 'value'> & {
   colorZones?: MeterColorZones;
   /** When true, lit cells emit a yellow LED glow (paper LCD look). */
   glow?: boolean;
-  /** Override color for the topmost lit cell. Defaults to zone color. */
-  peakCapColor?: string;
+  /**
+   * Semantic color for the topmost lit cell. Use `'none'` to disable the
+   * peak-cap override and fall back to the zone color. Defaults to `'accent'`.
+   */
+  peakCapColor?: MeterPeakCapColor;
 };
 
 export interface XYPadProps {

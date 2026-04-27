@@ -1,0 +1,33 @@
+/* =============================================================================
+   Slider — LCD + line variant component tokens.
+
+   Exposed as component-scoped CSS variables so inline `style` values in the
+   TSX can reference them without hardcoding colors. Declared outside of
+   `@theme` because these are component tokens (not Tailwind utility sources)
+   and they must resolve on `:root` / `.dark` directly at runtime.
+
+   Color tokens follow the `--color-ctrl-slider-*` naming convention so the
+   RDNA `no-hardcoded-colors` rule recognises them as semantic color vars.
+   Shadow / gradient composites use `--ctrl-slider-*` since they are not
+   individual color values.
+
+   Shared glow: sun-yellow + cream triple-layer filament. Produces the
+   skeuomorphic "LCD filament" look used in the RadOS Radio panel.
+   ============================================================================= */
+
+:root, .dark {
+  /* Filament glow — sun-yellow + cream, stacked. Applied to `boxShadow`
+     and `textShadow` — not itself a color, so no `--color-*` prefix. */
+  --ctrl-slider-glow:
+    var(--color-sun-yellow) 0 0 0.25px,
+    var(--color-sun-yellow) 0 0 2.25px,
+    var(--color-cream) 0 0 8.25px;
+
+  /* Fill / thumb: pure white maximises filament bloom against the glow. */
+  --color-ctrl-slider-fill: oklch(1 0 0);
+
+  /* Track + ticks derive from sun-yellow so the chrome tones with the glow. */
+  --color-ctrl-slider-track: oklch(from var(--color-sun-yellow) l c h / 0.53);
+  --color-ctrl-slider-endcap: oklch(from var(--color-sun-yellow) l c h / 0.65);
+  --color-ctrl-slider-tick: oklch(from var(--color-sun-yellow) l c h / 0.45);
+}

@@ -1,5 +1,7 @@
 'use client';
 
+import type { Ref } from 'react';
+import { Switch as BaseSwitch } from '@base-ui/react/switch';
 import type { ControlSize } from '../../primitives/types';
 
 // =============================================================================
@@ -19,6 +21,16 @@ type ToggleSize = ControlSize | 'xs';
 interface ToggleProps {
   value: boolean;
   onChange: (value: boolean) => void;
+  id?: string;
+  name?: string;
+  form?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  inputRef?: Ref<HTMLInputElement>;
+  /** Form value submitted when the toggle is on. */
+  valueOn?: string;
+  /** Form value submitted when the toggle is off. */
+  valueOff?: string;
   label?: string;
   /** Label rendered to the LEFT of the track (xs dual-label pattern) */
   leftLabel?: string;
@@ -29,14 +41,24 @@ interface ToggleProps {
   className?: string;
 }
 
+// Track geometry: 1px border + 1px padding + dot on each side, dot can slide
+// dot-width to the opposite end. Total width = 4 + 2*dotPx; height = 4 + dotPx.
 const trackSize: Record<ToggleSize, { track: string; dot: string; translate: string }> = {
-  xs: { track: 'w-4', dot: '', translate: '' },
-  sm: { track: 'w-6 h-2.5', dot: 'size-1.5', translate: 'translate-x-3' },
-  md: { track: 'w-8 h-3', dot: 'size-2', translate: 'translate-x-4' },
-  lg: { track: 'w-9 h-3.5', dot: 'size-2.5', translate: 'translate-x-4' },
+  xs: { track: 'w-5', dot: '', translate: '' },
+  sm: { track: 'w-7 h-4', dot: 'size-3', translate: 'translate-x-3' },
+  md: { track: 'w-9 h-5', dot: 'size-4', translate: 'translate-x-4' },
+  lg: { track: 'w-11 h-6', dot: 'size-5', translate: 'translate-x-5' },
 };
 
-const GLOW = '0 0 0.5px var(--color-ctrl-glow), 0 0 3px var(--color-ctrl-glow)';
+const DIAGONAL_PATTERN_STYLE = {
+  backgroundColor: 'var(--color-ctrl-label)',
+  WebkitMaskImage: 'var(--pat-diagonal)',
+  maskImage: 'var(--pat-diagonal)',
+  WebkitMaskSize: '8px 8px',
+  maskSize: '8px 8px',
+  WebkitMaskRepeat: 'repeat',
+  maskRepeat: 'repeat',
+} as const;
 
 export function Toggle({
   value,
@@ -45,8 +67,16 @@ export function Toggle({
   leftLabel,
   rightLabel,
   disabled = false,
+  readOnly = false,
   size = 'md',
   className = '',
+  id,
+  name,
+  form,
+  required,
+  inputRef,
+  valueOn,
+  valueOff,
 }: ToggleProps) {
   const dims = trackSize[size];
   const isXs = size === 'xs';
@@ -59,53 +89,56 @@ export function Toggle({
   const activeLabel = (active: boolean) => ({
     fontSize: 8,
     lineHeight: '10px',
-    ...(active
-      ? { color: 'var(--color-main)', textShadow: GLOW }
-      : {}),
+    ...(active ? { color: 'var(--color-main)' } : {}),
   });
 
   // --- xs track (inline rectangular) ---
   const xsTrack = (
     <div
-      className="flex items-center shrink-0 cursor-pointer"
+      className="group relative flex items-center shrink-0 cursor-pointer"
       style={{
-        width: 16,
+        width: 20,
+        height: 10,
         padding: 1,
-        border: '1px solid var(--color-ctrl-border-active)',
-        boxShadow: GLOW,
+        border: '1px solid var(--color-ctrl-border-inactive)',
         justifyContent: value ? 'flex-end' : 'flex-start',
+        backgroundColor: value ? 'var(--color-ctrl-cell-bg)' : 'var(--color-ink)',
       }}
     >
+      {!value && (
+        <span aria-hidden className="pointer-events-none absolute inset-0 hidden group-hover:block" style={DIAGONAL_PATTERN_STYLE} />
+      )}
       <div
-        className="shrink-0"
+        className="relative shrink-0"
         style={{
-          width: 6,
-          height: 6,
-          backgroundColor: 'var(--color-main)',
-          boxShadow: GLOW,
+          width: 8,
+          height: 8,
+          backgroundColor: value ? 'var(--color-main)' : 'var(--color-flip)',
         }}
       />
     </div>
   );
 
-  // --- sm/md/lg track (rounded pill) ---
+  // --- sm/md/lg track (rectangular) ---
+  // Geometry: 1px border + 1px padding + center box. Width = 4 + 2*dotPx.
   const standardTrack = (
     <span
       className={[
         dims.track,
-        'relative border transition-all duration-fast',
-        'flex items-center px-0.5',
-        value
-          ? 'border-ctrl-border-active bg-ctrl-fill/20'
-          : 'border-ctrl-border-inactive bg-ctrl-cell-bg',
+        'group relative overflow-hidden border transition-colors duration-fast',
+        'flex items-center p-px',
+        'border-ctrl-border-inactive',
+        value ? 'bg-ctrl-cell-bg' : 'bg-ink',
       ].join(' ')}
-      style={value ? { boxShadow: '0 0 6px var(--color-ctrl-glow)' } : undefined}
     >
+      {!value && (
+        <span aria-hidden className="pointer-events-none absolute inset-0 hidden group-hover:block" style={DIAGONAL_PATTERN_STYLE} />
+      )}
       <span
         className={[
           dims.dot,
-          'transition-transform duration-fast',
-          value ? ['bg-ctrl-thumb', dims.translate].join(' ') : 'bg-ctrl-label translate-x-0',
+          'relative transition-transform duration-fast',
+          value ? ['bg-main', dims.translate].join(' ') : 'bg-flip translate-x-0',
         ].join(' ')}
       />
     </span>
@@ -114,13 +147,19 @@ export function Toggle({
   const track = isXs ? xsTrack : standardTrack;
 
   return (
-    <button
-      type="button"
+    <BaseSwitch.Root
       data-rdna="ctrl-toggle"
-      role="switch"
-      aria-checked={value}
+      id={id}
+      checked={value}
       disabled={disabled}
-      onClick={() => onChange(!value)}
+      readOnly={readOnly}
+      required={required}
+      name={name}
+      form={form}
+      inputRef={inputRef}
+      value={valueOn}
+      uncheckedValue={valueOff}
+      onCheckedChange={(checked) => onChange(checked)}
       className={[
         'inline-flex items-center select-none cursor-pointer outline-none',
         hasDualLabels ? 'gap-1' : 'gap-1.5',
@@ -132,7 +171,7 @@ export function Toggle({
       {/* Dual left label */}
       {hasDualLabels && leftLabel && (
         <span
-          className="shrink-0 text-center font-mono uppercase text-ctrl-label"
+          className="shrink-0 text-center font-mono uppercase text-main"
           style={activeLabel(leftActive)}
         >
           {leftLabel}
@@ -144,7 +183,7 @@ export function Toggle({
       {/* Dual right label */}
       {hasDualLabels && rightLabel && (
         <span
-          className="shrink-0 text-center font-mono uppercase text-ctrl-label"
+          className="shrink-0 text-center font-mono uppercase text-main"
           style={activeLabel(rightActive)}
         >
           {rightLabel}
@@ -153,15 +192,10 @@ export function Toggle({
 
       {/* Standard single label (skipped when dual labels are present) */}
       {!hasDualLabels && label && (
-        <span className={[
-          'font-mono text-[0.625rem] uppercase tracking-wider transition-colors duration-fast',
-          value ? 'text-ctrl-text-active' : 'text-ctrl-label',
-        ].join(' ')}
-          style={value ? { textShadow: '0 0 8px var(--color-ctrl-glow)' } : undefined}
-        >
+        <span className="font-mono text-[0.625rem] uppercase tracking-wider text-main">
           {label}
         </span>
       )}
-    </button>
+    </BaseSwitch.Root>
   );
 }

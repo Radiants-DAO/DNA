@@ -14,6 +14,12 @@
     oklch(0 0 0 / 0.15) 0px -1px 1px inset,
     oklch(0 0 0 / 0.25) 0px 0.5px 0.6px,
     oklch(0 0 0 / 0.3) 0px 2.9px 3.3px -0.4px;
+
+  /* Outer pill shell — matches Paper reference (pure black housing
+     that frames the slot gradient). Same value in light + dark, so
+     no `.dark` override is needed. Declared here so the TSX can
+     read it via `var()` without tripping `no-hardcoded-colors`. */
+  --color-ctrl-transport-shell: oklch(0 0 0);
 }
 
 .dark {

@@ -120,10 +120,9 @@ export function Dropdown({
               // Hover: accent yellow + yellow glow — higher specificity than `active` classes below
               'hover:text-[var(--color-accent)]',
               'hover:[text-shadow:var(--color-accent)_0_0_0.5px,var(--color-accent)_0_0_3px]',
-              // Active (user-adjusted): cream + full glow
+              // Active (user-adjusted): cream + full glow (canonical ctrl active recipe)
               active && 'text-[var(--color-main)]',
-              active &&
-                '[text-shadow:var(--color-accent)_0_0_0.5px,var(--color-accent)_0_0_3px,var(--color-main)_0_0_10px]',
+              active && '[text-shadow:var(--ctrl-text-glow-active)]',
               className,
             ]
               .filter(Boolean)

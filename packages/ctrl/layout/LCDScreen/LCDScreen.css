@@ -1,0 +1,18 @@
+/* LCDScreen substrate token.
+ *
+ * The LCD panel's base color is a pure black "substrate" beneath the
+ * radial sheen and rim highlights — this is the exact Paper reference
+ * value and is intentionally an absolute, not a semantic token (the
+ * LCD metaphor requires a non-mode-flipping black).
+ *
+ * Declared outside of `@theme` because this is a component-scoped
+ * token (not a Tailwind utility source) and it must resolve on
+ * `:root` / `.dark` directly so the inline `style` in the TSX can
+ * read it at runtime.
+ *
+ * Same value in light + dark — the LCD is always black — so no
+ * `.dark` override is needed.
+ */
+:root, .dark {
+  --color-ctrl-lcd-substrate: oklch(0 0 0);
+}

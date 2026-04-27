@@ -1,41 +1,47 @@
 'use client';
 
 import { forwardRef, useRef, useState } from 'react';
-// Controls
-import { Knob } from '@rdna/ctrl/controls/Knob/Knob';
-import { Fader } from '@rdna/ctrl/controls/Fader/Fader';
-import { CtrlSlider } from '@rdna/ctrl/controls/Slider/Slider';
-import { XYPad } from '@rdna/ctrl/controls/XYPad/XYPad';
-import { NumberScrubber } from '@rdna/ctrl/controls/NumberScrubber/NumberScrubber';
-import { Ribbon } from '@rdna/ctrl/controls/Ribbon/Ribbon';
-import { ArcRing } from '@rdna/ctrl/controls/ArcRing/ArcRing';
-import { NumberInput } from '@rdna/ctrl/controls/NumberInput/NumberInput';
-import { ScrubSurface } from '@rdna/ctrl/controls/ScrubSurface/ScrubSurface';
-// Selectors
-import { Dropdown } from '@rdna/ctrl/selectors/Dropdown/Dropdown';
-import { ColorPicker } from '@rdna/ctrl/selectors/ColorPicker/ColorPicker';
-import { IconRadioGroup } from '@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup';
-import { SegmentedControl } from '@rdna/ctrl/selectors/SegmentedControl/SegmentedControl';
-import { Stepper } from '@rdna/ctrl/selectors/Stepper/Stepper';
-import { ButtonStrip } from '@rdna/ctrl/selectors/ButtonStrip/ButtonStrip';
-import { Toggle } from '@rdna/ctrl/selectors/Toggle/Toggle';
-import { ChipTag } from '@rdna/ctrl/selectors/ChipTag/ChipTag';
-import { MatrixGrid } from '@rdna/ctrl/selectors/MatrixGrid/MatrixGrid';
-import { RadialMenu } from '@rdna/ctrl/selectors/RadialMenu/RadialMenu';
-import { ColorSwatch } from '@rdna/ctrl/selectors/ColorSwatch/ColorSwatch';
-// Readouts
-import { Tooltip, TooltipProvider } from '@rdna/ctrl/readouts/Tooltip/Tooltip';
-import { Meter } from '@rdna/ctrl/readouts/Meter/Meter';
-import { LEDArray } from '@rdna/ctrl/readouts/LEDArray/LEDArray';
-import { Sparkline } from '@rdna/ctrl/readouts/Sparkline/Sparkline';
-import { Waveform } from '@rdna/ctrl/readouts/Waveform/Waveform';
-import { Spectrum } from '@rdna/ctrl/readouts/Spectrum/Spectrum';
-// Layout
-import { Section } from '@rdna/ctrl/layout/Section/Section';
-import { PropertyRow } from '@rdna/ctrl/layout/PropertyRow/PropertyRow';
-import { ControlPanel } from '@rdna/ctrl/layout/ControlPanel/ControlPanel';
-import { PanelTitle } from '@rdna/ctrl/layout/PanelTitle/PanelTitle';
-import { LayerTreeRow } from '@rdna/ctrl/layout/LayerTreeRow/LayerTreeRow';
+import {
+  Knob,
+  Fader,
+  Slider,
+  XYPad,
+  NumberScrubber,
+  Ribbon,
+  ArcRing,
+  NumberInput,
+  ScrubSurface,
+} from '@rdna/ctrl/controls';
+import {
+  Dropdown,
+  ColorPicker,
+  IconRadioGroup,
+  SegmentedControl,
+  Stepper,
+  ButtonStrip,
+  Toggle,
+  ChipTag,
+  MatrixGrid,
+  RadialMenu,
+  ColorSwatch,
+} from '@rdna/ctrl/selectors';
+import {
+  Tooltip,
+  TooltipProvider,
+  Meter,
+  LEDArray,
+  LEDProgress,
+  Sparkline,
+  Waveform,
+  Spectrum,
+} from '@rdna/ctrl/readouts';
+import {
+  Section,
+  PropertyRow,
+  ControlPanel,
+  PanelTitle,
+  LayerTreeRow,
+} from '@rdna/ctrl/layout';
 
 import { Agentation } from 'agentation';
 
@@ -73,7 +79,6 @@ const TRAP_POS: Record<Side, React.CSSProperties> = {
   right: { right: -1, top: 0, bottom: 0, width: 24 },
 };
 
-/** Local alias — use ScrubSurface from the ctrl package for the box-model scrub handles. */
 const ScrubTrap = ScrubSurface;
 
 /** Visual pip — the small centered dot/dash inside a side trapezoid. */
@@ -407,7 +412,6 @@ const BRAND_SWATCHES = [
   { value: 'var(--color-sun-red)', label: '#FF7F7F' },
   { value: 'var(--color-mint)', label: '#CEF5CA' },
   { value: 'var(--color-sky-blue)', label: '#95BAD2' },
-  { value: 'var(--color-sky-blue-dark)', label: '#467994' },
   { value: 'var(--color-ink)', label: '#0F0E0C' },
   { value: 'var(--color-pure-white)', label: '#FFFFFF' },
 ];
@@ -467,6 +471,8 @@ export default function CtrlPreview() {
   const [knobVal, setKnobVal] = useState(50);
   const [faderVal, setFaderVal] = useState(70);
   const [sliderVal, setSliderVal] = useState(40);
+  const [lineSliderVal, setLineSliderVal] = useState(65);
+  const [tickSliderVal, setTickSliderVal] = useState(50);
   const [xyVal, setXyVal] = useState({ x: 50, y: 50 });
   const [scrubberVal, setScrubberVal] = useState(42);
   const [ribbonVal, setRibbonVal] = useState(60);
@@ -504,8 +510,25 @@ export default function CtrlPreview() {
               <DemoCard label="Fader">
                 <Fader value={faderVal} onChange={setFaderVal} showValue />
               </DemoCard>
-              <DemoCard label="Slider">
-                <CtrlSlider value={sliderVal} onChange={setSliderVal} showValue />
+              <DemoCard label="Slider (LCD)">
+                <Slider value={sliderVal} onChange={setSliderVal} showValue />
+              </DemoCard>
+              <DemoCard label="Slider (line)">
+                <Slider
+                  value={lineSliderVal}
+                  onChange={setLineSliderVal}
+                  variant="line"
+                  showValue
+                />
+              </DemoCard>
+              <DemoCard label="Slider (ticks + snap)">
+                <Slider
+                  value={tickSliderVal}
+                  onChange={setTickSliderVal}
+                  ticks={5}
+                  snap
+                  showValue
+                />
               </DemoCard>
               <DemoCard label="XY Pad">
                 <XYPad value={xyVal} onChange={setXyVal} showValue />
@@ -597,10 +620,10 @@ export default function CtrlPreview() {
             <div className="flex flex-col gap-6">
               <div className="flex flex-wrap gap-6 items-end">
                 <DemoCard label="Meter">
-                  <Meter value={72} label="Level" showValue />
+                  <Meter value={72} label="Level" showValue peakCapColor="none" />
                 </DemoCard>
                 <DemoCard label="Meter (vertical)">
-                  <Meter value={55} orientation="vertical" label="Vol" />
+                  <Meter value={55} orientation="vertical" label="Vol" peakCapColor="none" />
                 </DemoCard>
                 <DemoCard label="Stereo VU">
                   <Meter
@@ -611,10 +634,14 @@ export default function CtrlPreview() {
                     showScale
                     label="VU"
                     size="lg"
+                    peakCapColor="none"
                   />
                 </DemoCard>
                 <DemoCard label="LED Array">
                   <LEDArray values={[true, true, false, true, false, true, true, false]} label="Status" />
+                </DemoCard>
+                <DemoCard label="LED Progress">
+                  <LEDProgress value={40} max={100} ariaLabel="Playback progress" />
                 </DemoCard>
                 <DemoCard label="Tooltip">
                   <Tooltip content="Hello from Tooltip">

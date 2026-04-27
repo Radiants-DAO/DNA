@@ -1,5 +1,7 @@
 export { Meter } from './Meter/Meter';
 export { LEDArray } from './LEDArray/LEDArray';
+export { LEDProgress } from './LEDProgress/LEDProgress';
+export type { LEDProgressProps } from './LEDProgress/LEDProgress';
 export { Sparkline } from './Sparkline/Sparkline';
 export { Waveform } from './Waveform/Waveform';
 export { Spectrum } from './Spectrum/Spectrum';

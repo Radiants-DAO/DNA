@@ -105,7 +105,7 @@ export function TransportPill({
         height,
         padding: 2,
         gap: 2,
-        backgroundColor: 'oklch(0 0 0)',
+        backgroundColor: 'var(--color-ctrl-transport-shell)',
         ...style,
       }}
     >

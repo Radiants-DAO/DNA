@@ -3,3 +3,5 @@ export { PropertyRow } from './PropertyRow/PropertyRow';
 export { ControlPanel, useDensity } from './ControlPanel/ControlPanel';
 export { PanelTitle } from './PanelTitle/PanelTitle';
 export { LayerTreeRow } from './LayerTreeRow/LayerTreeRow';
+export { LayerRow } from './LayerRow/LayerRow';
+export { ActionButton } from './ActionButton/ActionButton';

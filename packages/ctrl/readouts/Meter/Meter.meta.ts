@@ -20,6 +20,14 @@ export const MeterMeta = defineComponentMeta<MeterProps>()({
     scaleMarks: { type: "array", description: "dB values to mark on the scale (default [0, -12, -48])" },
     channelLabels: { type: "array", description: "Labels for stereo channels, e.g. ['L', 'R']" },
     colorZones: { type: "object", description: "Color zone thresholds { low: number, mid: number } as fractions (default { low: 0.6, mid: 0.85 })" },
+    glow: { type: "boolean", default: false, description: "When true, lit cells emit an LED glow (paper LCD look)" },
+    peakCapColor: {
+      type: "enum",
+      values: ["accent", "danger", "success", "info", "neutral", "none"],
+      default: "accent",
+      description:
+        "Semantic color for the topmost lit cell. Maps internally to RDNA tokens (accent → sun-yellow, danger → sun-red, success → mint, info → sky-blue, neutral → main). Use 'none' to fall back to the zone color.",
+    },
   },
   slots: {},
   tokenBindings: {

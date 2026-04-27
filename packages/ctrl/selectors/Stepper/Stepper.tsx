@@ -24,6 +24,8 @@ interface StepperProps {
   suffix?: React.ReactNode;
   presets?: number[];
   keywordValue?: string;
+  decrementIcon?: React.ReactNode;
+  incrementIcon?: React.ReactNode;
   className?: string;
 }
 
@@ -32,7 +34,7 @@ const buttonVariants = cva(
   {
     variants: {
       size: {
-        sm: 'size-5 text-xs',
+        sm: 'size-5',
         md: 'size-6 text-sm',
         lg: 'size-7 text-base',
       },
@@ -55,6 +57,8 @@ export function Stepper({
   suffix,
   presets,
   keywordValue,
+  decrementIcon,
+  incrementIcon,
   className = '',
 }: StepperProps) {
   const displayValue = formatValue ? formatValue(value) : String(value);
@@ -96,9 +100,9 @@ export function Stepper({
   }, [keywordValue, disabled, displayValue]);
 
   const valueFontSize =
-    size === 'sm' ? 'text-[0.625rem]' : size === 'lg' ? 'text-sm' : 'text-xs';
+    size === 'sm' ? 'text-[0.625rem]' : size === 'lg' ? 'text-sm' : '';
 
-  const glowStyle = { textShadow: '0 0 8px var(--color-ctrl-glow)' };
+  const glowStyle = { textShadow: 'var(--ctrl-text-glow-active)' };
 
   return (
     <div
@@ -116,7 +120,7 @@ export function Stepper({
         <span
           className={[
             'flex items-center justify-center font-mono uppercase tracking-wider px-1.5 min-w-6',
-            'bg-ctrl-cell-bg text-ctrl-text-active min-h-[--ctrl-row-height]',
+            'bg-ctrl-cell-bg text-main min-h-[--ctrl-row-height]',
             valueFontSize,
           ].join(' ')}
           style={glowStyle}
@@ -140,7 +144,7 @@ export function Stepper({
           .filter(Boolean)
           .join(' ')}
       >
-        −
+        {decrementIcon ?? '−'}
       </button>
 
       {/* Value field — editable input, or keyword display */}
@@ -203,7 +207,7 @@ export function Stepper({
           .filter(Boolean)
           .join(' ')}
       >
-        +
+        {incrementIcon ?? '+'}
       </button>
 
       {/* Suffix slot — unit dropdown or other trailing content */}
@@ -223,7 +227,7 @@ export function Stepper({
                 className={[
                   'flex items-center justify-center font-mono px-1.5',
                   'bg-ctrl-cell-bg min-h-[--ctrl-row-height] transition-colors duration-fast',
-                  isActive ? 'text-ctrl-text-active' : 'text-ctrl-label hover:text-ctrl-value',
+                  isActive ? 'text-main' : 'text-ctrl-label hover:text-ctrl-value',
                   valueFontSize,
                 ].join(' ')}
                 style={isActive ? glowStyle : undefined}
