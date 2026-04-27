@@ -1,4 +1,5 @@
 import type { PixelModifyItem } from '@/lib/dotting';
+import { CANVAS_BG_COLOR } from './constants';
 
 export interface RadnomTemplate {
   id: string;
@@ -15,7 +16,6 @@ export interface RadnomManifest {
 }
 
 const MANIFEST_URL = '/templates/radiants.json';
-const BACKGROUND_COLOR = '#fef8e2';
 
 let manifestPromise: Promise<RadnomManifest> | null = null;
 
@@ -51,7 +51,7 @@ export async function pickRandomRadiant(): Promise<PixelModifyItem[][]> {
       row.push({
         rowIndex: originRow + r,
         columnIndex: originCol + c,
-        color: hex || BACKGROUND_COLOR,
+        color: hex || CANVAS_BG_COLOR,
       });
     }
     data.push(row);

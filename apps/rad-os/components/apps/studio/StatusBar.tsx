@@ -15,7 +15,7 @@ export function StatusBar({ dottingRef, activeTool, activeColor }: StatusBarProp
   const toolDef = TOOL_DEFS.find((d) => d.tool === activeTool);
 
   return (
-    <div className="flex items-center gap-4 px-3 py-1.5 shrink-0 border-t border-rule bg-page">
+    <div className="flex items-center gap-4 px-3 py-1.5 shrink-0">
       <span className="font-joystix text-xs text-sub uppercase tabular-nums">
         {dimensions?.columnCount ?? '—'} × {dimensions?.rowCount ?? '—'}
       </span>
