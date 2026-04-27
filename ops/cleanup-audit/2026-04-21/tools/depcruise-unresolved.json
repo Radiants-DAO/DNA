@@ -1,0 +1,494 @@
+[
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/ArcRing/ArcRing"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/Fader/Fader"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/Knob/Knob"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/NumberInput/NumberInput"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/NumberScrubber/NumberScrubber"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/Ribbon/Ribbon"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/ScrubSurface/ScrubSurface"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/Slider/Slider"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/controls/XYPad/XYPad"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/layout/ControlPanel/ControlPanel"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/layout/LayerTreeRow/LayerTreeRow"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/layout/PanelTitle/PanelTitle"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/layout/PropertyRow/PropertyRow"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/layout/Section/Section"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/LEDArray/LEDArray"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/LEDProgress/LEDProgress"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/Meter/Meter"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/Sparkline/Sparkline"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/Spectrum/Spectrum"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/Tooltip/Tooltip"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/readouts/Waveform/Waveform"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/ButtonStrip/ButtonStrip"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/ChipTag/ChipTag"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/ColorPicker/ColorPicker"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/ColorSwatch/ColorSwatch"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/Dropdown/Dropdown"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/MatrixGrid/MatrixGrid"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/RadialMenu/RadialMenu"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/SegmentedControl/SegmentedControl"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/Stepper/Stepper"
+  },
+  {
+    "from": "apps/rad-os/app/ctrl-preview/page.tsx",
+    "to": "@rdna/ctrl/selectors/Toggle/Toggle"
+  },
+  {
+    "from": "apps/rad-os/app/icon-conversion-review/page.tsx",
+    "to": "@/lib/icon-conversion-review"
+  },
+  {
+    "from": "apps/rad-os/app/page.tsx",
+    "to": "@/components/Rad_os/RadOSDesktop"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/AppWindow.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/AppWindow.tsx",
+    "to": "@/lib/windowSizing"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/CommandPalette.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/CommandPalette.tsx",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "@/components/apps/radio/RadioWidget"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "@/components/background/WebGLSun"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "@/hooks/useTypewriter"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "@/lib/mockData/tracks"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/SettingsMenu.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/StartMenu.tsx",
+    "to": "@/hooks/useSafeHover"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/StartMenu.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/StartMenu.tsx",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/ZoomRects.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/InvertModeProvider.tsx",
+    "to": "@/hooks"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/InvertModeProvider.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/RadOSDesktop.tsx",
+    "to": "@/hooks"
+  },
+  {
+    "from": "apps/rad-os/components/apps/BrandApp.tsx",
+    "to": "@/components/apps/brand-assets/LogoMaker"
+  },
+  {
+    "from": "apps/rad-os/components/apps/BrandApp.tsx",
+    "to": "@/components/apps/typography-playground"
+  },
+  {
+    "from": "apps/rad-os/components/apps/BrandApp.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "@/components/apps/pixel-playground"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "@/components/ui/DesignSystemTab"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "@/components/ui/UILibrarySidebar"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "@/hooks/useWindowManager"
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/LogoMaker.tsx",
+    "to": "@/lib/logo-maker"
+  },
+  {
+    "from": "apps/rad-os/components/apps/manifesto/ManifestoBook.tsx",
+    "to": "@/hooks/useContainerSize"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/EditorToolbar.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/constants.ts",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/OneBitCanvas.tsx",
+    "to": "@/hooks"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/OneBitCanvas.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx",
+    "to": "@/hooks"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pretext/PretextPreviewFrame.tsx",
+    "to": "@/hooks/useContainerSize"
+  },
+  {
+    "from": "apps/rad-os/components/apps/radio/Radio.tsx",
+    "to": "@/lib/mockData/tracks"
+  },
+  {
+    "from": "apps/rad-os/components/apps/radio/Radio.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/apps/radio/RadioWidget.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/CanvasArea.tsx",
+    "to": "@/hooks"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/CanvasArea.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/constants.ts",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/EditorToolbar.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/LayerPanel.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/PixelArtEditor.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/StatusBar.tsx",
+    "to": "@/lib/dotting"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/typography-data.ts",
+    "to": "@/lib/asset-downloads"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/TemplatePreview.tsx",
+    "to": "react-draggable"
+  },
+  {
+    "from": "apps/rad-os/components/background/WebGLSun.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/hooks/useHashRouting.ts",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/hooks/useWindowManager.ts",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/hooks/useResolvedColor.ts",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/AboutApp"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/BrandApp"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/goodnews/GoodNewsLegacyApp"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/LabApp"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/manifesto/ManifestoBook"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/ScratchpadApp"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "@/components/apps/studio/PixelArtEditor"
+  },
+  {
+    "from": "apps/rad-os/lib/icon-conversion-review.ts",
+    "to": "server-only"
+  },
+  {
+    "from": "apps/rad-os/store/slices/windowsSlice.ts",
+    "to": "@/lib/apps"
+  },
+  {
+    "from": "apps/rad-os/store/slices/windowsSlice.ts",
+    "to": "@/lib/windowSizing"
+  },
+  {
+    "from": "apps/rad-os/test/ambient-capability.test.ts",
+    "to": "@/lib/apps/catalog"
+  },
+  {
+    "from": "apps/rad-os/test/app-catalog.test.ts",
+    "to": "@/lib/apps/catalog"
+  },
+  {
+    "from": "apps/rad-os/test/app-window.test.tsx",
+    "to": "@/components/Rad_os/AppWindow"
+  },
+  {
+    "from": "apps/rad-os/test/app-window.test.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/test/asset-downloads.test.ts",
+    "to": "@/app/assets/logos/[assetFile]/route"
+  },
+  {
+    "from": "apps/rad-os/test/asset-downloads.test.ts",
+    "to": "@/lib/asset-downloads"
+  },
+  {
+    "from": "apps/rad-os/test/good-news-rollback.test.tsx",
+    "to": "@/components/apps/goodnews/GoodNewsLegacyApp"
+  },
+  {
+    "from": "apps/rad-os/test/hash-routing.test.tsx",
+    "to": "@/hooks/useHashRouting"
+  },
+  {
+    "from": "apps/rad-os/test/hash-routing.test.tsx",
+    "to": "@/store"
+  },
+  {
+    "from": "apps/rad-os/test/lab-app.test.tsx",
+    "to": "@/components/apps/LabApp"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-book-layout.test.tsx",
+    "to": "@/components/apps/pretext/primitive-registry"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-book-layout.test.tsx",
+    "to": "@/components/apps/pretext/primitives/book/book-layout"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-book-layout.test.tsx",
+    "to": "@/components/apps/pretext/primitives/book/BookView"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-broadsheet-layout.test.tsx",
+    "to": "@/components/apps/pretext/primitives/broadsheet/broadsheet-layout"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-bundle-loader.test.ts",
+    "to": "@/components/apps/pretext/load-pretext-bundle"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-bundle-loader.test.ts",
+    "to": "@/components/apps/pretext/primitive-registry"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-doc-contract.test.ts",
+    "to": "@/components/apps/pretext/primitive-registry"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-editorial-layout.test.ts",
+    "to": "@/components/apps/pretext/primitives/editorial/editorial-layout"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-markdown.test.ts",
+    "to": "@/components/apps/pretext/markdown"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-renderer.test.tsx",
+    "to": "@/components/apps/pretext/PretextDocumentView"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-renderer.test.tsx",
+    "to": "@/components/apps/pretext/PretextPreviewFrame"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-renderer.test.tsx",
+    "to": "@/components/apps/pretext/primitive-registry"
+  },
+  {
+    "from": "apps/rad-os/test/pretext-serialization.test.ts",
+    "to": "@/components/apps/pretext/serialization"
+  },
+  {
+    "from": "apps/rad-os/test/scratchpad-rollback.test.tsx",
+    "to": "@/components/apps/ScratchpadApp"
+  },
+  {
+    "from": "apps/rad-os/test/typography-data.test.ts",
+    "to": "@/components/apps/typography-playground/typography-data"
+  },
+  {
+    "from": "apps/rad-os/test/windows-slice.test.ts",
+    "to": "@/store/slices/windowsSlice"
+  }
+]

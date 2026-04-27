@@ -1,0 +1,54 @@
+{
+  "audit_date": "2026-04-21",
+  "branch": "feat/logo-asset-maker",
+  "graph_updated": "2026-04-21T20:29:15",
+  "scope": {
+    "included": ["apps/rad-os", "packages/radiants", "packages/ctrl", "packages/pixel", "packages/preview", "packages/create", "scripts", "eslint.rdna.config.mjs", "knip.json", "turbo.json", "pnpm-workspace.yaml", "package.json"],
+    "excluded": ["archive/", "ops/", "references/", "fonts/", "docs/", "ideas/", "templates/", "node_modules/", ".next/", ".turbo/", ".code-review-graph/", ".playwright-mcp/"]
+  },
+  "in_flight_files_ignored": [
+    "apps/rad-os/app/globals.css",
+    "apps/rad-os/app/unused-review/page.tsx",
+    "apps/rad-os/components/apps/pattern-playground/*",
+    "packages/radiants/components/core/AppWindow/AppWindow.test.tsx",
+    "packages/radiants/components/core/AppWindow/AppWindow.tsx",
+    "packages/radiants/components/core/AppWindow/appwindow.css",
+    "packages/radiants/dark.css",
+    "packages/radiants/pattern-shadows.css"
+  ],
+  "tool_outputs": {
+    "knip": {
+      "json": "ops/cleanup-audit/2026-04-21/tools/knip.json",
+      "txt": "ops/cleanup-audit/2026-04-21/tools/knip.txt",
+      "summary": "26 unused files, N unused exports, N unused deps, N unresolved"
+    },
+    "dependency_cruiser": {
+      "json": "ops/cleanup-audit/2026-04-21/tools/depcruise.json",
+      "validate": "ops/cleanup-audit/2026-04-21/tools/depcruise-validate.txt",
+      "metrics": "ops/cleanup-audit/2026-04-21/tools/depcruise-metrics.txt",
+      "parsed_cross_pkg_deep": "ops/cleanup-audit/2026-04-21/tools/depcruise-cross-pkg-deep.json",
+      "parsed_unresolved": "ops/cleanup-audit/2026-04-21/tools/depcruise-unresolved.json",
+      "parsed_orphans": "ops/cleanup-audit/2026-04-21/tools/depcruise-orphans.json",
+      "summary": "786 modules / 1206 deps / 0 cycles / 125 real cross-pkg deep imports / 32 unresolved @rdna/* / 25 orphans"
+    }
+  },
+  "lanes": [
+    { "id": 1, "name": "dedup",          "dir": "stage1",       "cap": 20 },
+    { "id": 2, "name": "types",          "dir": "stage1",       "cap": 20 },
+    { "id": 3, "name": "dead-code",      "dir": "stage1",       "cap": 20 },
+    { "id": 4, "name": "cycles",         "dir": "stage1",       "cap": 5  },
+    { "id": 5, "name": "weak-types",     "dir": "stage1",       "cap": 20 },
+    { "id": 6, "name": "defensive",      "dir": "stage1",       "cap": 20 },
+    { "id": 7, "name": "legacy",         "dir": "stage1",       "cap": 20 },
+    { "id": 8, "name": "comments",       "dir": "stage1",       "cap": 20 },
+    { "id": 9, "name": "react-practices","dir": "stage1",       "cap": 20 },
+    { "id": 10,"name": "rdna-drift",     "dir": "rdna-drift",   "cap": 25 },
+    { "id": "T1", "name": "tools-knip",       "dir": "tools/stage1", "cap": 40 },
+    { "id": "T2", "name": "tools-depcruise",  "dir": "tools/stage1", "cap": 30 }
+  ],
+  "output_schema": {
+    "required_fields": ["id", "file", "line", "severity", "category", "finding", "suggested_fix", "estimated_effort", "cross_lane_hits"],
+    "severity_enum": ["crit", "high", "med", "low"],
+    "effort_enum": ["XS", "S", "M", "L"]
+  }
+}

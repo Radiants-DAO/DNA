@@ -1,0 +1,502 @@
+[
+  {
+    "from": "apps/rad-os/app/icon-conversion-review/IconConversionReviewClient.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/AppWindow.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Desktop.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/Taskbar.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/SettingsMenu.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/SettingsMenu.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/StartMenu.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/StartMenu.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/RadOSDesktop.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/WindowTitleBar.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/Rad_os/WindowTitleBar.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/AboutApp.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/BrandApp.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/BrandApp.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/colors-tab/ColorsSubNav.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/LabApp.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/ScratchpadApp.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx",
+    "to": "packages/radiants/generated/blocknote-blocks.tsx"
+  },
+  {
+    "from": "apps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/scratchpad/RdnaSlashMenu.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/LogoMaker.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/LogoMaker.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/goodnews/GoodNewsLegacyApp.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/EditorToolbar.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/ModeNav.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/PixelCodeOutput.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/RegistryList.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/ToolPalette.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/ToolPalette.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/radio/Radio.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/radio/Radio.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/TransportButton/TransportButton.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/ColorPalette.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/EditorToolbar.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/EditorToolbar.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/LayerPanel.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/LayerPanel.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/PixelArtEditor.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/ToolPalette.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/studio/ToolPalette.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/SubTabNav.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/TypeManual.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/apps/typography-playground/TypeStyles.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/ui/DesignSystemTab.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/ui/DesignSystemTab.tsx",
+    "to": "packages/radiants/registry/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/ui/ui-library/browser-state.ts",
+    "to": "packages/radiants/registry/index.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Alert/Alert.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/AlertDialog/AlertDialog.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/AppWindow/AppWindow.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Avatar/Avatar.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Badge/Badge.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Button/Button.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Card/Card.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Checkbox/Checkbox.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Checkbox/Radio.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Collapsible/Collapsible.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Combobox/Combobox.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/ContextMenu/ContextMenu.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/CountdownTimer/CountdownTimer.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Dialog/Dialog.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Drawer/Drawer.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/DropdownMenu/DropdownMenu.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Icon/Icon.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Input/Input.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Input/TextArea.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/InputSet/InputSet.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Menubar/Menubar.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Meter/Meter.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/NavigationMenu/NavigationMenu.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/NumberField/NumberField.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Pattern/Pattern.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Popover/Popover.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/PreviewCard/PreviewCard.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/ScrollArea/ScrollArea.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Select/Select.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Separator/Separator.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Sheet/Sheet.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Slider/Slider.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Spinner/Spinner.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Switch/Switch.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Tabs/Tabs.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Toast/Toast.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Toggle/Toggle.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/ToggleGroup/ToggleGroup.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Toolbar/Toolbar.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/components/core/Tooltip/Tooltip.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "apps/rad-os/components/ui/UILibrarySidebar.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/components/ui/ui-library/ComponentCodeOutput.tsx",
+    "to": "packages/radiants/components/core/index.ts"
+  },
+  {
+    "from": "apps/rad-os/lib/apps/catalog.tsx",
+    "to": "packages/radiants/icons/runtime.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/ArcRing/ArcRing.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/Fader/Fader.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/Knob/Knob.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/NumberScrubber/NumberScrubber.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/Ribbon/Ribbon.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/Slider/Slider.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/controls/XYPad/XYPad.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/layout/ControlPanel/ControlPanel.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/layout/PropertyRow/PropertyRow.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/layout/Section/Section.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/LEDArray/LEDArray.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/LEDProgress/LEDProgress.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/Meter/Meter.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/Sparkline/Sparkline.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/Spectrum/Spectrum.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/readouts/Waveform/Waveform.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/ButtonStrip/ButtonStrip.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/ChipTag/ChipTag.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/MatrixGrid/MatrixGrid.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/RadialMenu/RadialMenu.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/SegmentedControl/SegmentedControl.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/Stepper/Stepper.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/Toggle/Toggle.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/ctrl/selectors/TransportButton/TransportButton.meta.ts",
+    "to": "packages/preview/src/define-component-meta.ts"
+  },
+  {
+    "from": "packages/radiants/scripts/generate-pattern-css.ts",
+    "to": "packages/pixel/src/path.ts"
+  },
+  {
+    "from": "packages/radiants/scripts/generate-pattern-css.ts",
+    "to": "packages/pixel/src/patterns/registry.ts"
+  },
+  {
+    "from": "packages/radiants/scripts/generate-pixel-icon-registry.ts",
+    "to": "packages/pixel/src/icons/registry.ts"
+  },
+  {
+    "from": "packages/radiants/scripts/generate-pixel-icon-registry.ts",
+    "to": "packages/pixel/src/path.ts"
+  }
+]

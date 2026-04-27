@@ -1,43 +1,38 @@
-## Session Status — 2026-04-10 (Ctrl NumberInput + IconRadioGroup + Tooltip)
+## Session Status — 2026-04-24 13:40
 
-**Plan:** `~/.claude/plans/melodic-wiggling-dongarra.md` (Visual Fidelity Pass)
-**Branch:** main (clean)
-**Working surface:** `apps/rad-os/app/ctrl-preview/page.tsx` — Layout Inspector Panel
+**Plan:** no active plan (ad-hoc Studio rail refactor extending `docs/plans/2026-03-27-rdna-controls-library.md`)
+**Branch:** `feat/logo-asset-maker`
 
-### Completed this session
-- [x] **NumberInput** — `packages/ctrl/controls/NumberInput/NumberInput.tsx` wraps `@base-ui/react/number-field`. Uses `NumberField.Root` + `NumberField.ScrubArea` (horizontal pointer-lock scrub, 2px sensitivity) + `NumberField.Input`. Cell shape matches Dropdown trigger (24px, black bg). Props: `value`, `onValueChange`, `min/max/step/smallStep/largeStep`, `placeholder`, `active`, `prefix`, `suffix`, `pixelSensitivity`, `format`.
-- [x] **Tooltip** — `packages/ctrl/readouts/Tooltip/Tooltip.tsx` wraps `@base-ui/react/tooltip` with dark cell styling (8px uppercase cream on black, pixel-art drop shadow). Exports `Tooltip` + `TooltipProvider`. Children render via `cloneElement(child, triggerProps)` so it works with any single React element trigger.
-- [x] **IconRadioGroup** — `packages/ctrl/selectors/IconRadioGroup/IconRadioGroup.tsx` wraps `@base-ui/react/radio-group` + `@base-ui/react/radio`. Each item = 20px-tall black cell with icon centered; active = accent color + glow. Every item auto-wrapped in a ctrl `Tooltip` for hover discovery.
-- [x] **Dropdown.hideLabel** prop — Dropdown trigger now supports `hideLabel` so the suffix can be a caret-only (▾) control in keyword mode.
-- [x] **ctrl-preview wired** —
-  - W row: `KeywordCell` (FILL/FIT/AUTO) OR `NumberInput` (numeric) based on unit. Unit dropdown uses `hideLabel` in keyword mode, `hideCaret` in numeric mode. Switching unit flips the cell mode.
-  - H row: same pattern (defaults to `10 VH`).
-  - MIN/MAX cells: `NumberInput` with `placeholder="-"` and `SuffixLabel` showing "MIN"/"MAX" text.
-  - Icon strip: `IconRadioGroup` with 5 options (Visible/Resize/Position/Float/Auto) + tooltips.
-  - Whole page wrapped in `TooltipProvider`.
-- [x] Flex min-w-0 chain added through box-model visualizer so NumberInput cells shrink to panel width (353px).
-- [x] Typecheck clean across `packages/ctrl` and `apps/rad-os`.
-- [x] Verified in browser: dropdown popup opens, mode switching works (FILL → PX flips to numeric cell), tooltips render on hover, radio selection updates.
+### Completed
+- [x] Ripped rails: replaced cream-lip + yellow cross-rails with a single rounded drawer (`pixel-rounded-md`) + inner dark-mode LCD island
+- [x] Content-driven width via `RailContentMeasurer` + `maxWidth` prop; content-driven height via in-flow drawer (no `bottom` anchor)
+- [x] Top-aligned rails at `TOP_INSET + toolbarHeight`; drawer tucks `TUCK_PX` (8) into window; extra 4px anchored padding + checkerboard window-shadow strip
+- [x] Drop shadow uses main window's `pat-pixel-shadow` + inline `translate(0, 4px)` (uniform across sides)
+- [x] Drawer padding halved to `p-1`; island padding removed; drawer bg flipped to `bg-accent` (yellow everywhere)
+- [x] Multi-slot-per-side: `useControlSurfaceSlot` now keys by `React.useId()`; vertical surfaces stack via `verticalStackOffsets` (measured height + chrome + 8px gap)
+- [x] Footer converted to `StudioBottomRail` (status + grid toggle + canvas + history) with @rdna/ctrl components
+- [x] Studio layout: Tools rail (single col) + Colors rail both on LEFT; Layers/Export on right; Status on bottom
+- [x] Expand tabs moved to top of each rail; text rotated via `writing-mode` (bottom faces drawer on both sides); tabs widened `TAB_TUCK_PX` (12) + `zIndex: -1` so they sit behind their drawer
+- [x] 32/32 AppWindow tests pass after each batch
 
-### Remaining (backlog from earlier session)
-- [ ] Refactor PanelTitle (L-shape trailing rule)
-- [ ] Refactor Section (header controls slot)
-- [ ] Refactor PropertyRow (multi-cell grid)
-- [ ] Build Toggle micro-size (16px) for Section MIN/MAX
-- [ ] Namespace migration: `--ctrl-*` → `--color-ctrl-*` so Tailwind utilities pick them up
-- [ ] Replace Trap/LabelCell inline helpers with refactored ctrl primitives
-- [ ] Padding/Margin labeled bars (new Paper selection shows MARGIN / BORDER / PADDING as labeled horizontal bars instead of just trapezoids)
+### In Progress
+- ~none~ — last batch uncommitted
+
+### Remaining (follow-ups)
+- [ ] Bottom rail tab still uses a centered `Button`; align with new top-of-rail vertical tab convention if wanted
+- [ ] `window-shadow` checkerboard strip is 4px — verify it's visible now that drawer padding is 4 (may be flush with tuck)
+- [ ] RDNA lint baseline (pre-existing `color-mix` in `packages/radiants/dark.css`)
+- [ ] Decide whether `eject tab` should live on the rail's outer corner or remain top-anchored for bottom dock
 
 ### Next Action
-> User-directed. Likely the new Paper selection: MARGIN/BORDER/PADDING labeled bars, or continue on Section/PropertyRow refactors.
+> Verify visually in browser: two stacked left-side drawers (Tools + Colors) with vertical "TOOLS" / "COLORS" labels on tabs; right-side Layers drawer with "LAYERS" tab; bottom Status rail; each tab tucks ~12px behind its drawer.
 
-### What to test
-- [ ] `localhost:3000/ctrl-preview` — drag a numeric cell (H=10) to scrub; click FILL dropdown → pick PX → type a number; hover an icon to see tooltip; click a different radio.
-- [ ] Keyboard a11y on NumberField inputs (arrow keys to step).
+### What to Test
+- [ ] Open Studio — confirm Tools + Colors drawers stack vertically on the left with the 8px gap
+- [ ] Each vertical tab: text bottom faces the drawer (bottom-left on right rails, bottom-right on left rails)
+- [ ] Tab's drawer-facing edge hidden behind drawer; chevron flips with open/closed state
+- [ ] Drop shadow drops straight down (no horizontal offset) for all docks
+- [ ] Drawer bg is yellow (`bg-accent`) in light + dark mode
 
-### Key learnings
-1. BaseUI `NumberField.ScrubArea` handles pointer-lock drag natively — no custom hook needed for numeric scrubbing.
-2. `NumberField` is strictly numeric (`value: number | null`); for mixed text/keyword cells, composite at the page level with a separate `KeywordCell`.
-3. BaseUI Tooltip.Trigger must wrap its target via render prop + `cloneElement` so the child element receives the trigger's event handlers.
-4. Flex containers need `min-w-0` all the way down the chain — otherwise children demand their content width and overflow.
-5. `Dropdown` with `hideLabel` gives a compact caret-only trigger; `hideCaret` gives label-only — combine as needed per layout.
+### Team Status
+No active agents.

@@ -1,0 +1,25 @@
+# Lane 7 — Legacy Patterns (2026-04-21)
+
+**Seed:** grep for deprecated patterns, MEMORY.md legacy list (text-xs, pure-white, cream-vs-accent, banned tokens, `no-removed-aliases`), expired lint-disable exceptions (`expires:` < 2026-04-21).
+**Cap:** 20.
+**Total findings:** 9.
+
+| # | ID | File | Line | Severity | Category | Finding | Suggested fix | Effort | Cross-lane |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | LEGACY-001 | `packages/radiants/components/core/AppWindow/AppWindow.tsx` | 12, 20, 25, 38, 82, 93, 101, 109, 114, 120, 122, 1182 | high | dead-public-api | 11 unused exported types + 1 unused default export. Previous audit's wave 6 flagged `AppWindow.Body/Split/Pane` + `useTabsState` deprecation removal as pending-approval — this is the same hot zone still unresolved. | Complete the wave-6 removal now that in-flight AppWindow edits on the branch are about to land. | M | TYPE-001, T1-KNIP-unused |
+| 2 | LEGACY-002 | `packages/radiants/components/core/Tabs/Tabs.tsx` | 15-19, 451 | med | dead-public-api | 5 type aliases + re-export barrel at line 451 — the same per-component `<Name>Props` duplication pattern that last audit deferred as TYPE-004. | Include in the per-component TYPE-004 sweep. | S | TYPE-002 |
+| 3 | LEGACY-003 | `packages/radiants/dark.css` + `packages/radiants/base.css` + `apps/rad-os/app/ctrl-preview/page.tsx:413` + `apps/rad-os/components/apps/brand-assets/colors-tab/FibonacciMosaic.tsx:162` | multiple | med | pure-white-leakage | 12 raw references to `var(--color-pure-white)` across source — MEMORY.md notes "pure-white remap" as a deprecated pattern to eliminate. Some are intentional (dark-mode active states); `ctrl-preview:413` and `FibonacciMosaic:162` look like literal-color constants that should bind to semantic tokens. | Audit each usage; replace with `--color-inv` or `--color-content-heading` where possible. Keep in dark.css where mode-flip is the point. | M | RDNA-DRIFT-03 |
+| 4 | LEGACY-004 | `apps/rad-os/components/apps/brand-assets/colors-tab/ColorCards.tsx` | 12 exceptions on `expires:2027-01-01 issue:DNA-001` | med | catch-all-exception | 12 rdna-disable lines on a "brand-showcase" rationale, all pointing at `DNA-001` (a placeholder issue). The file was blanket-exempted rather than solving the rule. | Revisit: DNA-001 is not a real issue. Either file a real ticket per component or refactor `ColorCards.tsx` to use semantic tokens so the disables go away. | M | RDNA-DRIFT-05 |
+| 5 | LEGACY-005 | `apps/rad-os/components/apps/brand-assets/colors-tab/FibonacciMosaic.tsx` | 8 exceptions on `expires:2027-01-01 issue:DNA-001` | med | catch-all-exception | Same pattern — brand-showcase file blanket-exempted. | Same as LEGACY-004. | M | RDNA-DRIFT-05 |
+| 6 | LEGACY-006 | `apps/rad-os/components/apps/radio/RadioDisc.tsx` | 90, 92, 178, 190, 201, 220, 254 | low | crt-effects-exceptions | 7 `rdna/no-hardcoded-colors` exceptions on `issue:DNA-999` — file implements a CRT visual effect that genuinely can't use semantic tokens. | Keep, but `DNA-999` looks like a placeholder. Replace with a real "CRT visual effect exception" issue ID + give the file a top-of-file comment so future readers don't try to "fix" it. | S | |
+| 7 | LEGACY-007 | `apps/rad-os/components/apps/brand-assets/LogoMaker.tsx` | 350, 385, 514 | low | legacy-rdna-disables | 3 `prefer-rdna-components` disables — each is a real "component chrome is too heavy for a thumbnail button" case. Effort-inefficient to fix. | Keep; rename `issue:DNA-002` to something tracking. | XS | RDNA-DRIFT-06 |
+| 8 | LEGACY-008 | `apps/rad-os/components/apps/brand-assets/colors-tab/ColorCards.tsx:103, 186` + `FibonacciMosaic.tsx:267, 303, 355` | various | low | interactive-row-raw-button | `rdna/prefer-rdna-components` disables on "copy-row-interactive" and "tile-button" — 5 sites using raw `<button>` for row-click behavior. A11y concern as much as legacy. | Introduce an `<InteractiveRow>` wrapper primitive in radiants to own the pattern, then delete exceptions. | M | REACT-003 |
+| 9 | LEGACY-009 | `knip.json` + `packages/radiants/eslint/lib/no-legacy-color-format.mjs` (ignored file) | — | low | stale-ignored-path | knip's config ignores `eslint/lib/no-legacy-color-format.mjs` but the underlying path no longer needs exemption (rule re-homed). | Remove from `knip.json` ignoreFiles. See `tools/knip.txt` for the full 22-item configuration-hints list. | XS | DEAD-008 |
+
+## No expired exceptions in source
+
+All `rdna/*` exception `expires:` dates are `2026-12-31`, `2027-01-01`, or `2027+`. None have expired as of 2026-04-21. The earlier grep hits showing `2026-02-30` / `2026-03-06` / `2026-04-01` were from test fixtures inside `packages/radiants/eslint/__tests__/` (expected, part of rule test data, ignore).
+
+## Wave-8 dependency-prune still pending
+
+Prior audit's Wave 8 (`pnpm install` motion×2 + ts-node removal) was marked pending-approval. Not re-inspected; check `packages/radiants/package.json` and `apps/rad-os/package.json` manually before applying Wave 8 — the branch landed intermediate changes.

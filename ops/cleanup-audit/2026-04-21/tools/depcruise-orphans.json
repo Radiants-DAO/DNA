@@ -1,0 +1,102 @@
+[
+  {
+    "from": "apps/rad-os/app/apple-icon.tsx",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/app/icon.tsx",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/components/apps/brand-assets/colors-tab/types.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/components/apps/pixel-playground/types.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/components/apps/pretext/types.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/hooks/useSafeHover.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/lib/asset-downloads.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/lib/dotting/utils/stack.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/lib/dotting/utils/types.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/lib/mockData/tracks.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/lib/windowSizing.ts",
+    "to": null
+  },
+  {
+    "from": "apps/rad-os/test/setup.ts",
+    "to": null
+  },
+  {
+    "from": "packages/ctrl/controls/ScrubSurface/ScrubSurface.tsx",
+    "to": null
+  },
+  {
+    "from": "packages/ctrl/primitives/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/ctrl/selectors/ColorPicker/ColorPicker.tsx",
+    "to": null
+  },
+  {
+    "from": "packages/pixel/src/corners/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/pixel/src/icons/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/pixel/src/patterns/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/pixel/src/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/preview/src/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/radiants/blocknote/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/radiants/icons/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/radiants/pixel-icons/types.ts",
+    "to": null
+  },
+  {
+    "from": "packages/radiants/test/setup.ts",
+    "to": null
+  },
+  {
+    "from": "packages/radiants/vitest.config.ts",
+    "to": null
+  }
+]

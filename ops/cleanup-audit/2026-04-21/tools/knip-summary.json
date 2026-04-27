@@ -1,0 +1,1497 @@
+{
+  "unusedFiles": [
+    "packages/ctrl/controls/Knob/Knob.meta.ts",
+    "packages/ctrl/controls/ArcRing/ArcRing.meta.ts",
+    "packages/ctrl/controls/NumberScrubber/NumberScrubber.meta.ts",
+    "packages/ctrl/controls/Fader/Fader.meta.ts",
+    "packages/ctrl/controls/Slider/Slider.meta.ts",
+    "packages/ctrl/controls/XYPad/XYPad.meta.ts",
+    "packages/ctrl/layout/ControlPanel/ControlPanel.meta.ts",
+    "packages/ctrl/controls/ScrubSurface/ScrubSurface.tsx",
+    "packages/ctrl/controls/Ribbon/Ribbon.meta.ts",
+    "packages/ctrl/layout/PropertyRow/PropertyRow.meta.ts",
+    "packages/ctrl/layout/Section/Section.meta.ts",
+    "packages/ctrl/readouts/LEDProgress/LEDProgress.meta.ts",
+    "packages/ctrl/readouts/Meter/Meter.meta.ts",
+    "packages/ctrl/readouts/Spectrum/Spectrum.meta.ts",
+    "packages/ctrl/readouts/Waveform/Waveform.meta.ts",
+    "packages/ctrl/selectors/ButtonStrip/ButtonStrip.meta.ts",
+    "packages/ctrl/selectors/ColorPicker/ColorPicker.tsx",
+    "packages/ctrl/readouts/Sparkline/Sparkline.meta.ts",
+    "packages/ctrl/readouts/LEDArray/LEDArray.meta.ts",
+    "packages/ctrl/selectors/MatrixGrid/MatrixGrid.meta.ts",
+    "packages/ctrl/selectors/RadialMenu/RadialMenu.meta.ts",
+    "packages/ctrl/selectors/SegmentedControl/SegmentedControl.meta.ts",
+    "packages/ctrl/selectors/Stepper/Stepper.meta.ts",
+    "packages/ctrl/selectors/TransportButton/TransportButton.meta.ts",
+    "packages/ctrl/selectors/Toggle/Toggle.meta.ts",
+    "packages/radiants/test/icon-public-types.typecheck.tsx"
+  ],
+  "unusedExports": {
+    "packages/radiants/components/core/Alert/Alert.tsx": [
+      {
+        "name": "default",
+        "line": 149,
+        "col": 16,
+        "pos": 4522
+      }
+    ],
+    "packages/radiants/components/core/AppWindow/AppWindow.tsx": [
+      {
+        "name": "default",
+        "line": 1182,
+        "col": 16,
+        "pos": 36958
+      }
+    ],
+    "packages/radiants/components/core/Badge/Badge.tsx": [
+      {
+        "name": "default",
+        "line": 70,
+        "col": 16,
+        "pos": 1864
+      }
+    ],
+    "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx": [
+      {
+        "name": "default",
+        "line": 88,
+        "col": 16,
+        "pos": 2349
+      }
+    ],
+    "packages/radiants/components/core/Button/Button.tsx": [
+      {
+        "name": "default",
+        "line": 330,
+        "col": 16,
+        "pos": 10648
+      }
+    ],
+    "packages/radiants/components/core/Card/Card.tsx": [
+      {
+        "name": "default",
+        "line": 123,
+        "col": 16,
+        "pos": 3107
+      }
+    ],
+    "packages/radiants/components/core/Checkbox/Checkbox.tsx": [
+      {
+        "name": "default",
+        "line": 306,
+        "col": 16,
+        "pos": 8566
+      }
+    ],
+    "packages/radiants/components/core/ContextMenu/ContextMenu.tsx": [
+      {
+        "name": "default",
+        "line": 165,
+        "col": 16,
+        "pos": 4557
+      }
+    ],
+    "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx": [
+      {
+        "name": "default",
+        "line": 334,
+        "col": 16,
+        "pos": 9648
+      }
+    ],
+    "packages/radiants/components/core/Input/Input.tsx": [
+      {
+        "name": "default",
+        "line": 348,
+        "col": 16,
+        "pos": 9366
+      }
+    ],
+    "packages/radiants/components/core/InputSet/InputSet.tsx": [
+      {
+        "name": "default",
+        "line": 69,
+        "col": 16,
+        "pos": 1986
+      }
+    ],
+    "packages/radiants/components/core/Spinner/Spinner.tsx": [
+      {
+        "name": "default",
+        "line": 139,
+        "col": 16,
+        "pos": 4449
+      }
+    ],
+    "packages/radiants/components/core/Select/Select.tsx": [
+      {
+        "name": "default",
+        "line": 243,
+        "col": 16,
+        "pos": 6648
+      }
+    ],
+    "packages/radiants/components/core/Slider/Slider.tsx": [
+      {
+        "namespace": "SliderModule",
+        "name": "default",
+        "line": 197,
+        "col": 16,
+        "pos": 7005
+      }
+    ],
+    "packages/radiants/components/core/Switch/Switch.tsx": [
+      {
+        "name": "default",
+        "line": 140,
+        "col": 16,
+        "pos": 3910
+      }
+    ],
+    "packages/radiants/components/core/Tabs/Tabs.tsx": [
+      {
+        "name": "default",
+        "line": 461,
+        "col": 16,
+        "pos": 14934
+      }
+    ],
+    "packages/radiants/components/core/Tooltip/Tooltip.tsx": [
+      {
+        "name": "default",
+        "line": 118,
+        "col": 16,
+        "pos": 3340
+      }
+    ],
+    "packages/radiants/components/core/Popover/Popover.tsx": [
+      {
+        "name": "default",
+        "line": 122,
+        "col": 16,
+        "pos": 3599
+      }
+    ],
+    "packages/radiants/components/core/Sheet/Sheet.tsx": [
+      {
+        "name": "default",
+        "line": 254,
+        "col": 16,
+        "pos": 7808
+      }
+    ],
+    "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx": [
+      {
+        "name": "default",
+        "line": 334,
+        "col": 16,
+        "pos": 9877
+      }
+    ],
+    "packages/radiants/components/core/AlertDialog/AlertDialog.tsx": [
+      {
+        "name": "default",
+        "line": 259,
+        "col": 16,
+        "pos": 7843
+      }
+    ],
+    "packages/radiants/components/core/Dialog/Dialog.tsx": [
+      {
+        "name": "default",
+        "line": 264,
+        "col": 16,
+        "pos": 7908
+      }
+    ],
+    "packages/radiants/components/core/Drawer/Drawer.tsx": [
+      {
+        "name": "default",
+        "line": 306,
+        "col": 16,
+        "pos": 9723
+      }
+    ],
+    "packages/radiants/components/core/ScrollArea/ScrollArea.tsx": [
+      {
+        "name": "default",
+        "line": 57,
+        "col": 16,
+        "pos": 1221
+      }
+    ],
+    "packages/radiants/components/core/Collapsible/Collapsible.tsx": [
+      {
+        "name": "default",
+        "line": 141,
+        "col": 16,
+        "pos": 3811
+      }
+    ],
+    "packages/radiants/components/core/Separator/Separator.tsx": [
+      {
+        "name": "default",
+        "line": 89,
+        "col": 16,
+        "pos": 2583
+      }
+    ],
+    "packages/radiants/components/core/Toggle/Toggle.tsx": [
+      {
+        "name": "toggleFaceVariants",
+        "line": 59,
+        "col": 14,
+        "pos": 1855
+      },
+      {
+        "name": "default",
+        "line": 167,
+        "col": 16,
+        "pos": 5025
+      }
+    ],
+    "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx": [
+      {
+        "name": "default",
+        "line": 184,
+        "col": 16,
+        "pos": 4851
+      }
+    ],
+    "packages/radiants/components/core/Toolbar/Toolbar.tsx": [
+      {
+        "name": "default",
+        "line": 267,
+        "col": 16,
+        "pos": 7015
+      }
+    ],
+    "packages/radiants/components/core/Avatar/Avatar.tsx": [
+      {
+        "name": "default",
+        "line": 112,
+        "col": 16,
+        "pos": 2891
+      }
+    ],
+    "packages/radiants/components/core/PreviewCard/PreviewCard.tsx": [
+      {
+        "name": "default",
+        "line": 119,
+        "col": 16,
+        "pos": 3470
+      }
+    ],
+    "packages/radiants/components/core/Meter/Meter.tsx": [
+      {
+        "name": "default",
+        "line": 116,
+        "col": 16,
+        "pos": 3381
+      }
+    ],
+    "packages/radiants/components/core/NumberField/NumberField.tsx": [
+      {
+        "name": "default",
+        "line": 233,
+        "col": 16,
+        "pos": 5730
+      }
+    ],
+    "packages/radiants/components/core/Menubar/Menubar.tsx": [
+      {
+        "name": "default",
+        "line": 220,
+        "col": 16,
+        "pos": 5675
+      }
+    ],
+    "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx": [
+      {
+        "name": "default",
+        "line": 237,
+        "col": 16,
+        "pos": 6777
+      }
+    ],
+    "packages/radiants/components/core/Combobox/Combobox.tsx": [
+      {
+        "name": "default",
+        "line": 300,
+        "col": 16,
+        "pos": 8399
+      }
+    ],
+    "packages/radiants/components/core/PixelBorder/index.ts": [
+      {
+        "name": "pixelCornerClipPath",
+        "line": 6,
+        "col": 3,
+        "pos": 93
+      }
+    ],
+    "packages/radiants/icons/size-map.ts": [
+      {
+        "name": "is16pxIcon",
+        "line": 145,
+        "col": 17,
+        "pos": 6749
+      }
+    ],
+    "packages/radiants/eslint/contract.mjs": [
+      {
+        "name": "EMPTY_CONTRACT",
+        "line": 5,
+        "col": 14,
+        "pos": 108
+      },
+      {
+        "name": "contract",
+        "line": 74,
+        "col": 14,
+        "pos": 2393
+      }
+    ],
+    "packages/radiants/eslint/rdna-disable-comment-utils.mjs": [
+      {
+        "name": "parseExceptionMetadata",
+        "line": 37,
+        "col": 17,
+        "pos": 1282
+      },
+      {
+        "name": "normalizeCommentText",
+        "line": 208,
+        "col": 17,
+        "pos": 5458
+      }
+    ],
+    "packages/radiants/components/core/PixelBorder/PixelBorder.tsx": [
+      {
+        "name": "pixelCornerClipPath",
+        "line": 164,
+        "col": 17,
+        "pos": 4480
+      }
+    ],
+    "packages/ctrl/selectors/ChipTag/ChipTag.meta.ts": [
+      {
+        "name": "ChipTagMeta",
+        "line": 15,
+        "col": 14,
+        "pos": 393
+      }
+    ],
+    "packages/radiants/components/core/AppWindow/WindowManagerMenu.tsx": [
+      {
+        "name": "default",
+        "line": 182,
+        "col": 16,
+        "pos": 5695
+      }
+    ],
+    "packages/radiants/components/core/_shared/SegmentGroup.tsx": [
+      {
+        "name": "segmentGroupVariants",
+        "line": 21,
+        "col": 14,
+        "pos": 915
+      },
+      {
+        "name": "default",
+        "line": 111,
+        "col": 16,
+        "pos": 3265
+      }
+    ],
+    "packages/radiants/components/core/_shared/ModalShell.tsx": [
+      {
+        "name": "default",
+        "line": 153,
+        "col": 16,
+        "pos": 5716
+      }
+    ],
+    "packages/radiants/components/core/_shared/PatternBackdrop.tsx": [
+      {
+        "name": "default",
+        "line": 80,
+        "col": 16,
+        "pos": 2744
+      }
+    ],
+    "packages/radiants/eslint/utils.mjs": [
+      {
+        "name": "ARBITRARY_COLOR_CLASS",
+        "line": 14,
+        "col": 14,
+        "pos": 587
+      },
+      {
+        "name": "STANDARD_RADIUS_CLASS",
+        "line": 31,
+        "col": 14,
+        "pos": 1854
+      },
+      {
+        "name": "VIEWPORT_BREAKPOINT_PREFIX",
+        "line": 46,
+        "col": 14,
+        "pos": 2594
+      }
+    ],
+    "packages/radiants/icons/manifest.ts": [
+      {
+        "name": "ICON_ALIASES",
+        "line": 17,
+        "col": 14,
+        "pos": 668
+      },
+      {
+        "name": "SVG_ICON_MANIFEST",
+        "line": 64,
+        "col": 14,
+        "pos": 1762
+      },
+      {
+        "name": "iconSupportsSet",
+        "line": 5312,
+        "col": 17,
+        "pos": 128703
+      }
+    ]
+  },
+  "types": {
+    "packages/radiants/components/core/AppWindow/AppWindow.tsx": [
+      {
+        "name": "SnapRegion",
+        "line": 12,
+        "col": 15,
+        "pos": 444
+      },
+      {
+        "name": "AppWindowPosition",
+        "line": 20,
+        "col": 18,
+        "pos": 701
+      },
+      {
+        "name": "AppWindowSize",
+        "line": 25,
+        "col": 18,
+        "pos": 767
+      },
+      {
+        "name": "AppWindowProps",
+        "line": 38,
+        "col": 18,
+        "pos": 990
+      },
+      {
+        "name": "AppWindowBodyProps",
+        "line": 82,
+        "col": 18,
+        "pos": 2481
+      },
+      {
+        "name": "AppWindowNavProps",
+        "line": 93,
+        "col": 18,
+        "pos": 2718
+      },
+      {
+        "name": "AppWindowNavItemProps",
+        "line": 101,
+        "col": 18,
+        "pos": 2970
+      },
+      {
+        "name": "AppWindowToolbarProps",
+        "line": 109,
+        "col": 18,
+        "pos": 3201
+      },
+      {
+        "name": "AppWindowContentProps",
+        "line": 114,
+        "col": 18,
+        "pos": 3296
+      },
+      {
+        "name": "ContentLayout",
+        "line": 120,
+        "col": 13,
+        "pos": 3412
+      },
+      {
+        "name": "AppWindowIslandProps",
+        "line": 122,
+        "col": 18,
+        "pos": 3498
+      }
+    ],
+    "packages/radiants/components/core/Card/Card.tsx": [
+      {
+        "name": "CardRounded",
+        "line": 13,
+        "col": 15,
+        "pos": 375
+      },
+      {
+        "name": "CardVariant",
+        "line": 13,
+        "col": 28,
+        "pos": 388
+      }
+    ],
+    "packages/radiants/components/core/Switch/Switch.tsx": [
+      {
+        "name": "SwitchProps",
+        "line": 13,
+        "col": 15,
+        "pos": 437
+      },
+      {
+        "name": "SwitchSize",
+        "line": 13,
+        "col": 28,
+        "pos": 450
+      }
+    ],
+    "packages/radiants/components/core/Tabs/Tabs.tsx": [
+      {
+        "name": "TabsAlign",
+        "line": 19,
+        "col": 13,
+        "pos": 778
+      },
+      {
+        "name": "TabsRootProps",
+        "line": 451,
+        "col": 15,
+        "pos": 14745
+      },
+      {
+        "name": "TabsListProps",
+        "line": 451,
+        "col": 30,
+        "pos": 14760
+      },
+      {
+        "name": "TabsTriggerProps",
+        "line": 451,
+        "col": 45,
+        "pos": 14775
+      },
+      {
+        "name": "TabsContentProps",
+        "line": 451,
+        "col": 63,
+        "pos": 14793
+      }
+    ],
+    "packages/radiants/components/core/Popover/Popover.tsx": [
+      {
+        "name": "PopoverProps",
+        "line": 12,
+        "col": 15,
+        "pos": 396
+      },
+      {
+        "name": "PopoverPosition",
+        "line": 12,
+        "col": 29,
+        "pos": 410
+      }
+    ],
+    "packages/radiants/components/core/Dialog/Dialog.tsx": [
+      {
+        "name": "DialogProps",
+        "line": 15,
+        "col": 15,
+        "pos": 625
+      }
+    ],
+    "packages/radiants/components/core/Avatar/Avatar.tsx": [
+      {
+        "name": "AvatarShape",
+        "line": 12,
+        "col": 15,
+        "pos": 412
+      },
+      {
+        "name": "AvatarSize",
+        "line": 12,
+        "col": 28,
+        "pos": 425
+      }
+    ],
+    "packages/radiants/components/core/Combobox/Combobox.tsx": [
+      {
+        "name": "ComboboxProps",
+        "line": 13,
+        "col": 15,
+        "pos": 457
+      }
+    ],
+    "packages/radiants/components/core/AppWindow/WindowManagerMenu.tsx": [
+      {
+        "name": "WindowManagerMenuProps",
+        "line": 17,
+        "col": 18,
+        "pos": 317
+      }
+    ],
+    "packages/radiants/components/core/_shared/SegmentGroup.tsx": [
+      {
+        "name": "SegmentGroupVariants",
+        "line": 62,
+        "col": 13,
+        "pos": 2111
+      },
+      {
+        "name": "SegmentGroupProps",
+        "line": 64,
+        "col": 18,
+        "pos": 2195
+      }
+    ],
+    "packages/radiants/components/core/_shared/ModalShell.tsx": [
+      {
+        "name": "ShellHeaderProps",
+        "line": 50,
+        "col": 18,
+        "pos": 2660
+      },
+      {
+        "name": "ShellBodyProps",
+        "line": 68,
+        "col": 18,
+        "pos": 3261
+      },
+      {
+        "name": "ShellFooterProps",
+        "line": 89,
+        "col": 18,
+        "pos": 3936
+      },
+      {
+        "name": "ShellTitleProps",
+        "line": 114,
+        "col": 18,
+        "pos": 4776
+      },
+      {
+        "name": "ShellDescriptionProps",
+        "line": 128,
+        "col": 18,
+        "pos": 5104
+      }
+    ],
+    "packages/radiants/components/core/_shared/PatternBackdrop.tsx": [
+      {
+        "name": "BackdropDuration",
+        "line": 26,
+        "col": 13,
+        "pos": 1116
+      },
+      {
+        "name": "PatternBackdropProps",
+        "line": 50,
+        "col": 18,
+        "pos": 1888
+      }
+    ],
+    "packages/radiants/icons/manifest.ts": [
+      {
+        "name": "IconAliasName",
+        "line": 62,
+        "col": 13,
+        "pos": 1705
+      }
+    ],
+    "packages/ctrl/selectors/ChipTag/ChipTag.tsx": [
+      {
+        "name": "ChipTagProps",
+        "line": 10,
+        "col": 15,
+        "pos": 353
+      }
+    ],
+    "packages/radiants/icons/Icon.tsx": [
+      {
+        "name": "IconProps",
+        "line": 10,
+        "col": 18,
+        "pos": 246
+      }
+    ],
+    "packages/radiants/registry/PropControls.tsx": [
+      {
+        "name": "PropControlsProps",
+        "line": 35,
+        "col": 18,
+        "pos": 1076
+      }
+    ],
+    "packages/radiants/components/core/Avatar/Avatar.meta.ts": [
+      {
+        "name": "AvatarProps",
+        "line": 6,
+        "col": 18,
+        "pos": 193
+      }
+    ],
+    "packages/radiants/components/core/Card/Card.meta.ts": [
+      {
+        "name": "CardProps",
+        "line": 6,
+        "col": 18,
+        "pos": 201
+      }
+    ],
+    "packages/radiants/components/core/Icon/Icon.meta.ts": [
+      {
+        "name": "DynamicIconProps",
+        "line": 3,
+        "col": 18,
+        "pos": 93
+      }
+    ],
+    "packages/radiants/pixel-icons/source.ts": [
+      {
+        "name": "PixelGrid",
+        "line": 1,
+        "col": 15,
+        "pos": 14
+      },
+      {
+        "name": "PixelIconSourceEntry",
+        "line": 4,
+        "col": 26,
+        "pos": 159
+      },
+      {
+        "name": "PixelIconName",
+        "line": 5,
+        "col": 3,
+        "pos": 183
+      }
+    ],
+    "packages/radiants/icons/resolve-name.ts": [
+      {
+        "name": "ResolvedIconRequest",
+        "line": 15,
+        "col": 18,
+        "pos": 507
+      }
+    ],
+    "packages/radiants/registry/contract-fields.ts": [
+      {
+        "name": "ContractFieldSource",
+        "line": 3,
+        "col": 13,
+        "pos": 65
+      }
+    ]
+  },
+  "duplicates": {
+    "packages/radiants/components/core/Alert/Alert.tsx": [
+      [
+        {
+          "name": "Alert",
+          "line": 147,
+          "col": 14,
+          "pos": 4446
+        },
+        {
+          "name": "default",
+          "line": 149,
+          "col": 16,
+          "pos": 4522
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Badge/Badge.tsx": [
+      [
+        {
+          "name": "Badge",
+          "line": 52,
+          "col": 17,
+          "pos": 1480
+        },
+        {
+          "name": "default",
+          "line": 70,
+          "col": 16,
+          "pos": 1864
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx": [
+      [
+        {
+          "name": "Breadcrumbs",
+          "line": 32,
+          "col": 17,
+          "pos": 795
+        },
+        {
+          "name": "default",
+          "line": 88,
+          "col": 16,
+          "pos": 2349
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Button/Button.tsx": [
+      [
+        {
+          "name": "Button",
+          "line": 177,
+          "col": 17,
+          "pos": 6325
+        },
+        {
+          "name": "default",
+          "line": 330,
+          "col": 16,
+          "pos": 10648
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Card/Card.tsx": [
+      [
+        {
+          "name": "Card",
+          "line": 67,
+          "col": 17,
+          "pos": 1779
+        },
+        {
+          "name": "default",
+          "line": 123,
+          "col": 16,
+          "pos": 3107
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Checkbox/Checkbox.tsx": [
+      [
+        {
+          "name": "Checkbox",
+          "line": 86,
+          "col": 17,
+          "pos": 2778
+        },
+        {
+          "name": "default",
+          "line": 306,
+          "col": 16,
+          "pos": 8566
+        }
+      ]
+    ],
+    "packages/radiants/components/core/ContextMenu/ContextMenu.tsx": [
+      [
+        {
+          "name": "ContextMenu",
+          "line": 57,
+          "col": 17,
+          "pos": 1387
+        },
+        {
+          "name": "default",
+          "line": 165,
+          "col": 16,
+          "pos": 4557
+        }
+      ]
+    ],
+    "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx": [
+      [
+        {
+          "name": "DropdownMenu",
+          "line": 46,
+          "col": 17,
+          "pos": 1630
+        },
+        {
+          "name": "default",
+          "line": 334,
+          "col": 16,
+          "pos": 9648
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Input/Input.tsx": [
+      [
+        {
+          "name": "Input",
+          "line": 334,
+          "col": 14,
+          "pos": 9002
+        },
+        {
+          "name": "default",
+          "line": 348,
+          "col": 16,
+          "pos": 9366
+        }
+      ]
+    ],
+    "packages/radiants/components/core/InputSet/InputSet.tsx": [
+      [
+        {
+          "name": "InputSet",
+          "line": 64,
+          "col": 14,
+          "pos": 1936
+        },
+        {
+          "name": "default",
+          "line": 69,
+          "col": 16,
+          "pos": 1986
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Spinner/Spinner.tsx": [
+      [
+        {
+          "name": "Spinner",
+          "line": 132,
+          "col": 17,
+          "pos": 4261
+        },
+        {
+          "name": "default",
+          "line": 139,
+          "col": 16,
+          "pos": 4449
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Select/Select.tsx": [
+      [
+        {
+          "name": "Select",
+          "line": 241,
+          "col": 14,
+          "pos": 6567
+        },
+        {
+          "name": "default",
+          "line": 243,
+          "col": 16,
+          "pos": 6648
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Slider/Slider.tsx": [
+      [
+        {
+          "name": "Slider",
+          "line": 54,
+          "col": 17,
+          "pos": 1943
+        },
+        {
+          "name": "default",
+          "line": 197,
+          "col": 16,
+          "pos": 7005
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Switch/Switch.tsx": [
+      [
+        {
+          "name": "Switch",
+          "line": 69,
+          "col": 17,
+          "pos": 2083
+        },
+        {
+          "name": "default",
+          "line": 140,
+          "col": 16,
+          "pos": 3910
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Tabs/Tabs.tsx": [
+      [
+        {
+          "name": "Tabs",
+          "line": 453,
+          "col": 14,
+          "pos": 14827
+        },
+        {
+          "name": "default",
+          "line": 461,
+          "col": 16,
+          "pos": 14934
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Tooltip/Tooltip.tsx": [
+      [
+        {
+          "name": "Tooltip",
+          "line": 116,
+          "col": 14,
+          "pos": 3272
+        },
+        {
+          "name": "default",
+          "line": 118,
+          "col": 16,
+          "pos": 3340
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Popover/Popover.tsx": [
+      [
+        {
+          "name": "Popover",
+          "line": 24,
+          "col": 17,
+          "pos": 909
+        },
+        {
+          "name": "default",
+          "line": 122,
+          "col": 16,
+          "pos": 3599
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Sheet/Sheet.tsx": [
+      [
+        {
+          "name": "Sheet",
+          "line": 51,
+          "col": 17,
+          "pos": 1748
+        },
+        {
+          "name": "default",
+          "line": 254,
+          "col": 16,
+          "pos": 7808
+        }
+      ]
+    ],
+    "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx": [
+      [
+        {
+          "name": "CountdownTimer",
+          "line": 216,
+          "col": 17,
+          "pos": 5498
+        },
+        {
+          "name": "default",
+          "line": 334,
+          "col": 16,
+          "pos": 9877
+        }
+      ]
+    ],
+    "packages/radiants/components/core/AlertDialog/AlertDialog.tsx": [
+      [
+        {
+          "name": "AlertDialog",
+          "line": 246,
+          "col": 14,
+          "pos": 7690
+        },
+        {
+          "name": "default",
+          "line": 259,
+          "col": 16,
+          "pos": 7843
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Dialog/Dialog.tsx": [
+      [
+        {
+          "name": "Dialog",
+          "line": 251,
+          "col": 14,
+          "pos": 7765
+        },
+        {
+          "name": "default",
+          "line": 264,
+          "col": 16,
+          "pos": 7908
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Drawer/Drawer.tsx": [
+      [
+        {
+          "name": "Drawer",
+          "line": 293,
+          "col": 14,
+          "pos": 9580
+        },
+        {
+          "name": "default",
+          "line": 306,
+          "col": 16,
+          "pos": 9723
+        }
+      ]
+    ],
+    "packages/radiants/components/core/ScrollArea/ScrollArea.tsx": [
+      [
+        {
+          "name": "ScrollArea",
+          "line": 52,
+          "col": 14,
+          "pos": 1167
+        },
+        {
+          "name": "default",
+          "line": 57,
+          "col": 16,
+          "pos": 1221
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Collapsible/Collapsible.tsx": [
+      [
+        {
+          "name": "Collapsible",
+          "line": 135,
+          "col": 14,
+          "pos": 3746
+        },
+        {
+          "name": "default",
+          "line": 141,
+          "col": 16,
+          "pos": 3811
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Separator/Separator.tsx": [
+      [
+        {
+          "name": "Separator",
+          "line": 60,
+          "col": 17,
+          "pos": 1865
+        },
+        {
+          "name": "default",
+          "line": 89,
+          "col": 16,
+          "pos": 2583
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Toggle/Toggle.tsx": [
+      [
+        {
+          "name": "Toggle",
+          "line": 101,
+          "col": 17,
+          "pos": 3292
+        },
+        {
+          "name": "default",
+          "line": 167,
+          "col": 16,
+          "pos": 5025
+        }
+      ]
+    ],
+    "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx": [
+      [
+        {
+          "name": "ToggleGroup",
+          "line": 180,
+          "col": 14,
+          "pos": 4759
+        },
+        {
+          "name": "default",
+          "line": 184,
+          "col": 16,
+          "pos": 4851
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Toolbar/Toolbar.tsx": [
+      [
+        {
+          "name": "Toolbar",
+          "line": 259,
+          "col": 14,
+          "pos": 6863
+        },
+        {
+          "name": "default",
+          "line": 267,
+          "col": 16,
+          "pos": 7015
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Avatar/Avatar.tsx": [
+      [
+        {
+          "name": "Avatar",
+          "line": 66,
+          "col": 17,
+          "pos": 1931
+        },
+        {
+          "name": "default",
+          "line": 112,
+          "col": 16,
+          "pos": 2891
+        }
+      ]
+    ],
+    "packages/radiants/components/core/PreviewCard/PreviewCard.tsx": [
+      [
+        {
+          "name": "PreviewCard",
+          "line": 31,
+          "col": 17,
+          "pos": 993
+        },
+        {
+          "name": "default",
+          "line": 119,
+          "col": 16,
+          "pos": 3470
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Meter/Meter.tsx": [
+      [
+        {
+          "name": "Meter",
+          "line": 88,
+          "col": 17,
+          "pos": 2594
+        },
+        {
+          "name": "default",
+          "line": 116,
+          "col": 16,
+          "pos": 3381
+        }
+      ]
+    ],
+    "packages/radiants/components/core/NumberField/NumberField.tsx": [
+      [
+        {
+          "name": "NumberField",
+          "line": 223,
+          "col": 14,
+          "pos": 5611
+        },
+        {
+          "name": "default",
+          "line": 233,
+          "col": 16,
+          "pos": 5730
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Menubar/Menubar.tsx": [
+      [
+        {
+          "name": "Menubar",
+          "line": 218,
+          "col": 14,
+          "pos": 5591
+        },
+        {
+          "name": "default",
+          "line": 220,
+          "col": 16,
+          "pos": 5675
+        }
+      ]
+    ],
+    "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx": [
+      [
+        {
+          "name": "NavigationMenu",
+          "line": 235,
+          "col": 14,
+          "pos": 6688
+        },
+        {
+          "name": "default",
+          "line": 237,
+          "col": 16,
+          "pos": 6777
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Combobox/Combobox.tsx": [
+      [
+        {
+          "name": "Combobox",
+          "line": 298,
+          "col": 14,
+          "pos": 8300
+        },
+        {
+          "name": "default",
+          "line": 300,
+          "col": 16,
+          "pos": 8399
+        }
+      ]
+    ],
+    "packages/radiants/components/core/AppWindow/WindowManagerMenu.tsx": [
+      [
+        {
+          "name": "WindowManagerMenu",
+          "line": 71,
+          "col": 17,
+          "pos": 1858
+        },
+        {
+          "name": "default",
+          "line": 182,
+          "col": 16,
+          "pos": 5695
+        }
+      ]
+    ],
+    "packages/radiants/components/core/_shared/SegmentGroup.tsx": [
+      [
+        {
+          "name": "SegmentGroup",
+          "line": 82,
+          "col": 17,
+          "pos": 2847
+        },
+        {
+          "name": "default",
+          "line": 111,
+          "col": 16,
+          "pos": 3265
+        }
+      ]
+    ],
+    "packages/radiants/components/core/_shared/ModalShell.tsx": [
+      [
+        {
+          "name": "ModalShell",
+          "line": 145,
+          "col": 14,
+          "pos": 5630
+        },
+        {
+          "name": "default",
+          "line": 153,
+          "col": 16,
+          "pos": 5716
+        }
+      ]
+    ],
+    "packages/radiants/components/core/_shared/PatternBackdrop.tsx": [
+      [
+        {
+          "name": "PatternBackdrop",
+          "line": 65,
+          "col": 17,
+          "pos": 2325
+        },
+        {
+          "name": "default",
+          "line": 80,
+          "col": 16,
+          "pos": 2744
+        }
+      ]
+    ],
+    "packages/radiants/components/core/Toast/Toast.tsx": [
+      [
+        {
+          "name": "ToastProvider",
+          "line": 68,
+          "col": 17,
+          "pos": 2208
+        },
+        {
+          "name": "default",
+          "line": 272,
+          "col": 16,
+          "pos": 8741
+        }
+      ]
+    ],
+    "packages/pixel/src/corners/runtime.ts": [
+      [
+        {
+          "name": "clampCornerRadii",
+          "line": 61,
+          "col": 17,
+          "pos": 1725
+        },
+        {
+          "name": "fitCornerRadii",
+          "line": 76,
+          "col": 14,
+          "pos": 2081
+        }
+      ]
+    ]
+  },
+  "enumMembers": {},
+  "unlisted": {},
+  "unresolved": {},
+  "dependencies": {},
+  "devDependencies": {
+    "packages/ctrl/package.json": [
+      {
+        "name": "@testing-library/jest-dom",
+        "line": 29,
+        "col": 6,
+        "pos": 766
+      },
+      {
+        "name": "@testing-library/react",
+        "line": 30,
+        "col": 6,
+        "pos": 809
+      },
+      {
+        "name": "@testing-library/user-event",
+        "line": 31,
+        "col": 6,
+        "pos": 850
+      }
+    ],
+    "packages/radiants/package.json": [
+      {
+        "name": "@blocknote/core",
+        "line": 128,
+        "col": 6,
+        "pos": 3521
+      },
+      {
+        "name": "svgo",
+        "line": 140,
+        "col": 6,
+        "pos": 3912
+      }
+    ]
+  }
+}

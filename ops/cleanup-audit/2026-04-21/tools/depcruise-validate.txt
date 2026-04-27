@@ -1,0 +1,2551 @@
+
+  [33mwarn[39m no-orphans: [1mpackages/radiants/vitest.config.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/radiants/test/setup.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/radiants/pixel-icons/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/radiants/icons/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/radiants/blocknote/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/preview/src/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/pixel/src/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/pixel/src/patterns/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/pixel/src/icons/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/pixel/src/corners/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/ctrl/selectors/ColorPicker/ColorPicker.tsx[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/ctrl/primitives/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mpackages/ctrl/controls/ScrubSurface/ScrubSurface.tsx[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/test/setup.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/lib/windowSizing.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/lib/mockData/tracks.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/lib/dotting/utils/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/lib/dotting/utils/stack.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/lib/asset-downloads.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/hooks/useSafeHover.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/components/apps/pretext/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/components/apps/pixel-playground/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/components/apps/brand-assets/colors-tab/types.ts[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/app/icon.tsx[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m no-orphans: [1mapps/rad-os/app/apple-icon.tsx[22m
+[2m    Orphan module (no importers; likely dead or misplaced)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/test/resolve-name.test.ts[22m → [1mpackages/radiants/icons/resolve-name.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/test/Icon.test.ts[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/test/icon-public-types.typecheck.tsx[22m → [1mpackages/radiants/icons/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/scripts/generate-pixel-icon-registry.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/scripts/generate-pixel-icon-registry.ts[22m → [1mpackages/pixel/src/icons/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/scripts/generate-pattern-css.ts[22m → [1mpackages/pixel/src/patterns/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/scripts/generate-pattern-css.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Tooltip/Tooltip.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Toolbar/Toolbar.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Toggle/Toggle.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Toast/Toast.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Tabs/Tabs.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Switch/Switch.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Spinner/Spinner.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Slider/Slider.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Sheet/Sheet.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Separator/Separator.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Select/Select.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/ScrollArea/ScrollArea.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/PreviewCard/PreviewCard.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Popover/Popover.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Pattern/Pattern.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/NumberField/NumberField.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Meter/Meter.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Menubar/Menubar.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/InputSet/InputSet.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Input/TextArea.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Input/Input.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Icon/Icon.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Drawer/Drawer.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Dialog/Dialog.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/ContextMenu/ContextMenu.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Combobox/Combobox.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Collapsible/Collapsible.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Checkbox/Radio.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Checkbox/Checkbox.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Card/Card.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Button/Button.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Badge/Badge.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Avatar/Avatar.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/AppWindow/AppWindow.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/AlertDialog/AlertDialog.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/schemas/index.ts[22m → [1mpackages/radiants/components/core/Alert/Alert.schema.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/runtime-attachments.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/PropControls.tsx[22m → [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/PropControls.tsx[22m → [1mpackages/radiants/components/core/Toggle/Toggle.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/useShowcaseProps.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/PropControls.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/preview-states.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/build-registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/index.ts[22m → [1mpackages/radiants/registry/build-registry-metadata.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/build-registry.ts[22m → [1mpackages/radiants/registry/runtime-attachments.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/build-registry.ts[22m → [1mpackages/radiants/registry/build-registry-metadata.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/build-registry-metadata.ts[22m → [1mpackages/radiants/registry/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/build-registry-metadata.ts[22m → [1mpackages/radiants/registry/contract-fields.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/runtime-coverage.test.ts[22m → [1mpackages/radiants/registry/runtime-attachments.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/runtime-coverage.test.ts[22m → [1mpackages/radiants/registry/build-registry-metadata.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/runtime-auto-components.test.ts[22m → [1mpackages/radiants/registry/runtime-attachments.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/runtime-auto-components.test.ts[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/registry.test.ts[22m → [1mpackages/radiants/registry/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/registry-metadata.test.ts[22m → [1mpackages/radiants/registry/contract-fields.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/registry-metadata.test.ts[22m → [1mpackages/radiants/registry/build-registry-metadata.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/PropControls.test.tsx[22m → [1mpackages/radiants/registry/PropControls.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-states.test.ts[22m → [1mpackages/radiants/registry/preview-states.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-state-authoring.test.ts[22m → [1mpackages/radiants/components/core/Toggle/Toggle.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-state-authoring.test.ts[22m → [1mpackages/radiants/components/core/Select/Select.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-state-authoring.test.ts[22m → [1mpackages/radiants/components/core/Input/Input.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-state-authoring.test.ts[22m → [1mpackages/radiants/components/core/Combobox/Combobox.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/registry/__tests__/preview-state-authoring.test.ts[22m → [1mpackages/radiants/components/core/Button/Button.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Tooltip/Tooltip.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Toolbar/Toolbar.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Toggle/Toggle.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Toast/Toast.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Tabs/Tabs.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Switch/Switch.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Spinner/Spinner.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Slider/Slider.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Sheet/Sheet.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Separator/Separator.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Select/Select.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/ScrollArea/ScrollArea.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/PreviewCard/PreviewCard.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Popover/Popover.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Pattern/Pattern.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/NumberField/NumberField.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Meter/Meter.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Menubar/Menubar.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/InputSet/InputSet.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Input/TextArea.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Input/Input.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Icon/Icon.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Drawer/Drawer.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Dialog/Dialog.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/ContextMenu/ContextMenu.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Combobox/Combobox.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Collapsible/Collapsible.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Checkbox/Radio.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Checkbox/Checkbox.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Card/Card.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Button/Button.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Breadcrumbs/Breadcrumbs.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Badge/Badge.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Avatar/Avatar.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/AppWindow/AppWindow.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/AlertDialog/AlertDialog.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/meta/index.ts[22m → [1mpackages/radiants/components/core/Alert/Alert.meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/runtime.ts[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/runtime.ts[22m → [1mpackages/radiants/icons/DesktopIcons.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/resolve-name.ts[22m → [1mpackages/radiants/icons/manifest.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/index.ts[22m → [1mpackages/radiants/icons/size-map.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/index.ts[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/icons/Icon.tsx[22m → [1mpackages/radiants/icons/resolve-name.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/generated/blocknote-blocks.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/eslint/contract.mjs[22m → [1mpackages/radiants/generated/eslint-contract.json[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tooltip/Tooltip.test.tsx[22m → [1mpackages/radiants/components/core/Tooltip/Tooltip.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tooltip/Tooltip.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toolbar/Toolbar.tsx[22m → [1mpackages/radiants/components/core/_shared/SegmentGroup.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toolbar/Toolbar.test.tsx[22m → [1mpackages/radiants/components/core/Toolbar/Toolbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toolbar/Toolbar.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.tsx[22m → [1mpackages/radiants/components/core/Toggle/Toggle.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.test.tsx[22m → [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toggle/Toggle.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toggle/Toggle.test.tsx[22m → [1mpackages/radiants/components/core/Toggle/Toggle.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toggle/Toggle.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toast/Toast.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toast/Toast.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toast/Toast.tsx[22m → [1mpackages/radiants/components/core/Alert/Alert.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toast/Toast.test.tsx[22m → [1mpackages/radiants/components/core/Toast/Toast.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Toast/Toast.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m → [1mpackages/radiants/components/core/useCornerShape.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m → [1mpackages/radiants/components/core/_shared/SegmentGroup.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tabs/Tabs.test.tsx[22m → [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Tabs/Tabs.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Switch/Switch.test.tsx[22m → [1mpackages/radiants/components/core/Switch/Switch.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Switch/Switch.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Spinner/Spinner.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Spinner/Spinner.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Slider/Slider.test.tsx[22m → [1mpackages/radiants/components/core/Slider/Slider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Slider/Slider.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Sheet/Sheet.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Sheet/Sheet.tsx[22m → [1mpackages/radiants/components/core/_shared/PatternBackdrop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Sheet/Sheet.tsx[22m → [1mpackages/radiants/components/core/_shared/ModalShell.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Sheet/Sheet.test.tsx[22m → [1mpackages/radiants/components/core/Sheet/Sheet.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Sheet/Sheet.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Separator/Separator.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Select/Select.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Select/Select.test.tsx[22m → [1mpackages/radiants/components/core/Select/Select.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Select/Select.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ScrollArea/ScrollArea.test.tsx[22m → [1mpackages/radiants/components/core/ScrollArea/ScrollArea.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ScrollArea/ScrollArea.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PreviewCard/PreviewCard.test.tsx[22m → [1mpackages/radiants/components/core/PreviewCard/PreviewCard.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PreviewCard/PreviewCard.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Popover/Popover.test.tsx[22m → [1mpackages/radiants/components/core/Popover/Popover.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Popover/Popover.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PixelTransition/PixelTransition.test.tsx[22m → [1mpackages/radiants/components/core/PixelTransition/PixelTransition.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PixelIcon/PixelIcon.test.tsx[22m → [1mpackages/radiants/components/core/PixelIcon/PixelIcon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PixelBorder/PixelBorder.test.tsx[22m → [1mpackages/radiants/components/core/PixelBorder/PixelBorder.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/PixelBorder/index.ts[22m → [1mpackages/radiants/components/core/PixelBorder/PixelBorder.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Pattern/Pattern.test.tsx[22m → [1mpackages/radiants/components/core/Pattern/Pattern.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Pattern/Pattern.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/NumberField/NumberField.test.tsx[22m → [1mpackages/radiants/components/core/NumberField/NumberField.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/NumberField/NumberField.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.test.tsx[22m → [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Meter/Meter.test.tsx[22m → [1mpackages/radiants/components/core/Meter/Meter.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Meter/Meter.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Menubar/Menubar.test.tsx[22m → [1mpackages/radiants/components/core/Menubar/Menubar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Menubar/Menubar.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/InputSet/InputSet.test.tsx[22m → [1mpackages/radiants/components/core/InputSet/InputSet.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/InputSet/InputSet.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Input/TextArea.meta.ts[22m → [1mpackages/radiants/components/core/Input/Input.types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Input/TextArea.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Input/Input.test.tsx[22m → [1mpackages/radiants/components/core/Input/Input.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Input/Input.meta.ts[22m → [1mpackages/radiants/components/core/Input/Input.types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Input/Input.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Tooltip/Tooltip.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Toolbar/Toolbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/ToggleGroup/ToggleGroup.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Toggle/Toggle.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Toast/Toast.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Switch/Switch.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Spinner/Spinner.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Slider/Slider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Sheet/Sheet.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Separator/Separator.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Select/Select.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/ScrollArea/ScrollArea.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/PreviewCard/PreviewCard.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Popover/Popover.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/PixelTransition/PixelTransition.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/PixelIcon/PixelIcon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/PixelBorder/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Pattern/Pattern.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/NumberField/NumberField.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/NavigationMenu/NavigationMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Meter/Meter.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Menubar/Menubar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/InputSet/InputSet.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Input/Input.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Icon/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Drawer/Drawer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Dialog/Dialog.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/ContextMenu/ContextMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Combobox/Combobox.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Collapsible/Collapsible.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Checkbox/Checkbox.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Card/Card.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Button/Button.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Badge/Badge.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Avatar/Avatar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/AlertDialog/AlertDialog.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/index.ts[22m → [1mpackages/radiants/components/core/Alert/Alert.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Icon/Icon.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Icon/Icon.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.test.tsx[22m → [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/DropdownMenu/DropdownMenu.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Drawer/Drawer.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Drawer/Drawer.tsx[22m → [1mpackages/radiants/components/core/_shared/PatternBackdrop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Drawer/Drawer.tsx[22m → [1mpackages/radiants/components/core/_shared/ModalShell.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Drawer/Drawer.test.tsx[22m → [1mpackages/radiants/components/core/Drawer/Drawer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Drawer/Drawer.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Dialog/Dialog.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Dialog/Dialog.tsx[22m → [1mpackages/radiants/components/core/_shared/PatternBackdrop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Dialog/Dialog.tsx[22m → [1mpackages/radiants/components/core/_shared/ModalShell.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Dialog/Dialog.test.tsx[22m → [1mpackages/radiants/components/core/Dialog/Dialog.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Dialog/Dialog.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.test.tsx[22m → [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/CountdownTimer/CountdownTimer.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ContextMenu/ContextMenu.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ContextMenu/ContextMenu.test.tsx[22m → [1mpackages/radiants/components/core/ContextMenu/ContextMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/ContextMenu/ContextMenu.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Combobox/Combobox.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Combobox/Combobox.test.tsx[22m → [1mpackages/radiants/components/core/Combobox/Combobox.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Combobox/Combobox.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Collapsible/Collapsible.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Collapsible/Collapsible.test.tsx[22m → [1mpackages/radiants/components/core/Collapsible/Collapsible.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Collapsible/Collapsible.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Checkbox/Radio.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Checkbox/Checkbox.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Checkbox/Checkbox.test.tsx[22m → [1mpackages/radiants/components/core/Checkbox/Checkbox.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Checkbox/Checkbox.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Card/Card.test.tsx[22m → [1mpackages/radiants/components/core/Card/Card.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Card/Card.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Button/Button.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Button/Button.test.tsx[22m → [1mpackages/radiants/components/core/Button/Button.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Button/Button.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Breadcrumbs/Breadcrumbs.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Badge/Badge.test.tsx[22m → [1mpackages/radiants/components/core/Badge/Badge.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Badge/Badge.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Avatar/Avatar.test.tsx[22m → [1mpackages/radiants/components/core/Avatar/Avatar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Avatar/Avatar.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/WindowManagerMenu.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/WindowManagerMenu.tsx[22m → [1mpackages/radiants/components/core/Button/Button.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m → [1mpackages/radiants/components/core/Tooltip/Tooltip.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m → [1mpackages/radiants/components/core/Tabs/Tabs.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m → [1mpackages/radiants/components/core/ScrollArea/ScrollArea.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m → [1mpackages/radiants/components/core/Button/Button.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m → [1mpackages/radiants/components/core/AppWindow/WindowManagerMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.test.tsx[22m → [1mpackages/radiants/components/core/AppWindow/AppWindow.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AppWindow/AppWindow.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AlertDialog/AlertDialog.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AlertDialog/AlertDialog.tsx[22m → [1mpackages/radiants/components/core/_shared/PatternBackdrop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AlertDialog/AlertDialog.tsx[22m → [1mpackages/radiants/components/core/_shared/ModalShell.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AlertDialog/AlertDialog.test.tsx[22m → [1mpackages/radiants/components/core/AlertDialog/AlertDialog.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/AlertDialog/AlertDialog.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Alert/Alert.tsx[22m → [1mpackages/radiants/icons/Icon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Alert/Alert.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Alert/Alert.tsx[22m → [1mpackages/radiants/components/core/Button/Button.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Alert/Alert.test.tsx[22m → [1mpackages/radiants/components/core/Alert/Alert.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/Alert/Alert.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/__tests__/useCornerShape.test.tsx[22m → [1mpackages/radiants/components/core/useCornerShape.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/__tests__/smoke.test.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/__tests__/icons-package.test.tsx[22m → [1mpackages/radiants/icons/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/__tests__/createCompoundContext.test.tsx[22m → [1mpackages/radiants/components/shared/createCompoundContext.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/components/core/__tests__/base-ui-wrapper-policy.test.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Toolbar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/ToggleGroup.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Tabs.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Switch.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Slider.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Select.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/ScrollArea.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Pattern.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/NumberField.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/InputSet.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Icon.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/CountdownTimer.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Collapsible.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Card.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Breadcrumbs.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/radiants/blocknote/renders/Alert.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/preview/src/index.ts[22m → [1mpackages/preview/src/PreviewPage.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/preview/src/index.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/preview/src/__tests__/generate-schemas.test.ts[22m → [1mpackages/preview/src/generate-schemas.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/preview/src/__tests__/component-meta.test.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/transition.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/shapes.ts[22m → [1mpackages/pixel/src/generate.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/renderer.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/px.ts[22m → [1mpackages/pixel/src/corners/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/px.ts[22m → [1mpackages/pixel/src/corners/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/patterns/prepare.ts[22m → [1mpackages/pixel/src/patterns/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/patterns/prepare.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/patterns.ts[22m → [1mpackages/pixel/src/patterns/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/patterns.ts[22m → [1mpackages/pixel/src/patterns/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/mask.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/mask.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/transition.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/renderer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/px.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/patterns.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/mask.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/import.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/icons.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/generate.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/corners.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/corner-sets.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/corner-border.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/index.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/import.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons/prepare.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons/prepare.ts[22m → [1mpackages/pixel/src/icons/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons/convert.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons/convert.ts[22m → [1mpackages/pixel/src/import.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons/BitmapIcon.tsx[22m → [1mpackages/pixel/src/icons/generated-registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons.ts[22m → [1mpackages/pixel/src/icons/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons.ts[22m → [1mpackages/pixel/src/icons/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons.ts[22m → [1mpackages/pixel/src/icons/generated-registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons.ts[22m → [1mpackages/pixel/src/icons/convert.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/icons.ts[22m → [1mpackages/pixel/src/icons/BitmapIcon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/runtime.ts[22m → [1mpackages/pixel/src/corners/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/registry.ts[22m → [1mpackages/pixel/src/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/prepare.ts[22m → [1mpackages/pixel/src/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/prepare.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/prepare.ts[22m → [1mpackages/pixel/src/generate.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/prepare.ts[22m → [1mpackages/pixel/src/corners/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners/prepare.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners.ts[22m → [1mpackages/pixel/src/corners/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners.ts[22m → [1mpackages/pixel/src/corners/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners.ts[22m → [1mpackages/pixel/src/corners/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corners.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/corner-sets.ts[22m → [1mpackages/pixel/src/generate.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/transition.test.ts[22m → [1mpackages/pixel/src/transition.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/shapes.test.ts[22m → [1mpackages/pixel/src/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/shapes.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/renderer.test.ts[22m → [1mpackages/pixel/src/renderer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/renderer.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/px.test.ts[22m → [1mpackages/pixel/src/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/px.test.ts[22m → [1mpackages/pixel/src/px.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/pixel-icon-prepare.test.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/pixel-icon-prepare.test.ts[22m → [1mpackages/pixel/src/icons.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/patterns.test.ts[22m → [1mpackages/pixel/src/patterns.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/pattern-prepare.test.ts[22m → [1mpackages/pixel/src/patterns.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/pattern-prepare.test.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/path.test.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/mask.test.ts[22m → [1mpackages/pixel/src/path.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/mask.test.ts[22m → [1mpackages/pixel/src/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/import.test.ts[22m → [1mpackages/pixel/src/import.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/icon-convert.test.ts[22m → [1mpackages/pixel/src/icons.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/generate.test.ts[22m → [1mpackages/pixel/src/generate.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/generate.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corners.test.ts[22m → [1mpackages/pixel/src/corners.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corners.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-sets.test.ts[22m → [1mpackages/pixel/src/corner-sets.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-sets.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-runtime.test.ts[22m → [1mpackages/pixel/src/px.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-runtime.test.ts[22m → [1mpackages/pixel/src/corners/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-runtime.test.ts[22m → [1mpackages/pixel/src/corners/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-runtime.test.ts[22m → [1mpackages/pixel/src/corners/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-prepare.test.ts[22m → [1mpackages/pixel/src/corners/registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-prepare.test.ts[22m → [1mpackages/pixel/src/corners/prepare.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/corner-border.test.ts[22m → [1mpackages/pixel/src/corner-border.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/core.test.ts[22m → [1mpackages/pixel/src/core.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/bitmap-icon.test.tsx[22m → [1mpackages/pixel/src/icons/generated-registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/pixel/src/__tests__/bitmap-icon.test.tsx[22m → [1mpackages/pixel/src/icons/BitmapIcon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/TransportButton/TransportButton.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/TransportButton/TransportButton.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/Toggle/Toggle.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/Stepper/Stepper.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/SegmentedControl/SegmentedControl.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/RadialMenu/RadialMenu.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/MatrixGrid/MatrixGrid.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/ChipTag/ChipTag.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/selectors/ButtonStrip/ButtonStrip.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/Waveform/Waveform.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/Spectrum/Spectrum.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/Sparkline/Sparkline.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/Meter/Meter.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/LEDProgress/LEDProgress.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/readouts/LEDArray/LEDArray.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/layout/Section/Section.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/layout/PropertyRow/PropertyRow.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/layout/ControlPanel/ControlPanel.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/XYPad/XYPad.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/Slider/Slider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/Ribbon/Ribbon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/NumberScrubber/NumberScrubber.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/Knob/Knob.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/Fader/Fader.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/index.ts[22m → [1mpackages/ctrl/controls/ArcRing/ArcRing.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/XYPad/XYPad.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/Slider/Slider.tsx[22m → [1mpackages/ctrl/controls/Slider/Slider.css[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/Slider/Slider.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/Ribbon/Ribbon.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/NumberScrubber/NumberScrubber.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/Knob/Knob.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/XYPad/XYPad.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/Slider/Slider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/Ribbon/Ribbon.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/NumberScrubber/NumberScrubber.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/NumberInput/NumberInput.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/Knob/Knob.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/Fader/Fader.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/index.ts[22m → [1mpackages/ctrl/controls/ArcRing/ArcRing.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/Fader/Fader.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/ctrl/controls/ArcRing/ArcRing.meta.ts[22m → [1mpackages/preview/src/define-component-meta.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/scaffold.ts[22m → [1mpackages/create/src/template.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/scaffold.ts[22m → [1mpackages/create/src/names.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/index.ts[22m → [1mpackages/create/src/template.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/index.ts[22m → [1mpackages/create/src/scaffold.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/index.ts[22m → [1mpackages/create/src/names.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/cli.ts[22m → [1mpackages/create/src/scaffold.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/cli.ts[22m → [1mpackages/create/src/names.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/__tests__/template.test.ts[22m → [1mpackages/create/src/template.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/__tests__/scaffold.test.ts[22m → [1mpackages/create/src/scaffold.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mpackages/create/src/__tests__/names.test.ts[22m → [1mpackages/create/src/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/patternDef.ts[22m → [1mapps/rad-os/lib/logo-maker/colors.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/ratios.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/rasterize.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/patternDef.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/logoPaths.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/composeLogoSvg.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/index.ts[22m → [1mapps/rad-os/lib/logo-maker/colors.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/composeLogoSvg.ts[22m → [1mapps/rad-os/lib/logo-maker/patternDef.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/composeLogoSvg.ts[22m → [1mapps/rad-os/lib/logo-maker/logoPaths.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/composeLogoSvg.ts[22m → [1mapps/rad-os/lib/logo-maker/colors.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/__tests__/ratios.test.ts[22m → [1mapps/rad-os/lib/logo-maker/ratios.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/__tests__/patternDef.test.ts[22m → [1mapps/rad-os/lib/logo-maker/patternDef.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/__tests__/patternDef.test.ts[22m → [1mapps/rad-os/lib/logo-maker/colors.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/__tests__/composeLogoSvg.test.ts[22m → [1mapps/rad-os/lib/logo-maker/composeLogoSvg.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/logo-maker/__tests__/composeLogoSvg.test.ts[22m → [1mapps/rad-os/lib/logo-maker/colors.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/utils/position.ts[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/utils/data.ts[22m → [1mapps/rad-os/lib/dotting/utils/position.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/utils/data.ts[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/utils/data.ts[22m → [1mapps/rad-os/lib/dotting/utils/error.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/index.ts[22m → [1mapps/rad-os/lib/dotting/components/Dotting.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/index.ts[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useLayers.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useHandlers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useGrids.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useHandlers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useData.ts[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useData.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useHandlers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useBrush.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useHandlers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/useBrush.ts[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useLayers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useHandlers.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useGrids.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useDotting.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useData.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/hooks/index.ts[22m → [1mapps/rad-os/lib/dotting/hooks/useBrush.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/helpers/PixelChangeRecords.ts[22m → [1mapps/rad-os/lib/dotting/utils/identifier.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/helpers/DottingDataLayer.ts[22m → [1mapps/rad-os/lib/dotting/utils/observer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/helpers/DottingDataLayer.ts[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Dotting.tsx[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Dotting.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Dotting.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Dotting.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/position.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/helpers/PixelChangeRecords.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/BaseLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/GridLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/shapes.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/GridLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/GridLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/GridLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/BaseLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/validation.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/touch.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/queue.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/position.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/identifier.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/eventDispatcher.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/error.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/GridLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/SelectAreaMoveAction.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/LayerReorderAction.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/LayerCreateDeleteAction.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/ColorSizeChangeAction.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/ColorChangeAction.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/Editor.tsx[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/math.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m → [1mapps/rad-os/lib/dotting/helpers/DottingDataLayer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/BaseLayer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/BaseLayer.tsx[22m → [1mapps/rad-os/lib/dotting/utils/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/components/Canvas/BaseLayer.tsx[22m → [1mapps/rad-os/lib/dotting/components/Canvas/config.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/SelectAreaMoveAction.ts[22m → [1mapps/rad-os/lib/dotting/components/Canvas/types.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/SelectAreaMoveAction.ts[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/LayerReorderAction.ts[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/LayerCreateDeleteAction.ts[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/ColorSizeChangeAction.ts[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/dotting/actions/ColorChangeAction.ts[22m → [1mapps/rad-os/lib/dotting/actions/Action.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/apps/index.ts[22m → [1mapps/rad-os/lib/apps/catalog.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/UILibrarySidebar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/UILibrarySidebar.tsx[22m → [1mapps/rad-os/components/ui/ui-library/ComponentCodeOutput.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/UILibrarySidebar.tsx[22m → [1mapps/rad-os/components/ui/ui-library/browser-state.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/ui-library/ComponentCodeOutput.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/ui-library/ComponentCodeOutput.tsx[22m → [1mapps/rad-os/components/ui/ui-library/component-code-gen.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/ui-library/browser-state.ts[22m → [1mpackages/radiants/registry/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/DesignSystemTab.tsx[22m → [1mpackages/radiants/registry/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/DesignSystemTab.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/ui/DesignSystemTab.tsx[22m → [1mapps/rad-os/components/ui/ui-library/browser-state.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/WindowTitleBar.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/WindowTitleBar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1mapps/rad-os/components/Rad_os/SettingsMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/SettingsMenu.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/SettingsMenu.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m → [1mapps/rad-os/components/Rad_os/InvertModeProvider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m → [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m → [1mapps/rad-os/components/Rad_os/CommandPalette.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/InvertModeProvider.tsx[22m → [1mapps/rad-os/components/Rad_os/InvertOverlay.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/WindowTitleBar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/InvertModeProvider.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/index.ts[22m → [1mapps/rad-os/components/Rad_os/AppWindow.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1mapps/rad-os/components/Rad_os/ZoomRects.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1mapps/rad-os/components/Rad_os/AppWindow.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/Rad_os/AppWindow.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/UsageGuide.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/type-manual-copy.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/UsageGuide.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/layouts/SpecimenLayout.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/layouts/EditorialLayout.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypeStyles.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypeManual.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/TypeManual.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/SubTabNav.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/PlaygroundControls.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/SpecimenLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/SpecimenLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/type-manual-copy.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/MagazineLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/MagazineLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/type-manual-copy.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/BroadsheetLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/layouts/BroadsheetLayout.tsx[22m → [1mapps/rad-os/components/apps/typography-playground/type-manual-copy.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/index.ts[22m → [1mapps/rad-os/components/apps/typography-playground/TypographyPlayground.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/typography-playground/index.ts[22m → [1mapps/rad-os/components/apps/typography-playground/SubTabNav.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/ToolPalette.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/ToolPalette.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/ToolPalette.tsx[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/StatusBar.tsx[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/radnom.ts[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/ToolPalette.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/StatusBar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/radnom.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/EditorToolbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/ColorPalette.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1mapps/rad-os/components/apps/studio/CanvasArea.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/LayerPanel.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/LayerPanel.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/EditorToolbar.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/EditorToolbar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/EditorToolbar.tsx[22m → [1mapps/rad-os/components/apps/studio/LayerPanel.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/ColorPalette.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/ColorPalette.tsx[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/studio/CanvasArea.tsx[22m → [1mapps/rad-os/components/apps/studio/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/ScratchpadApp.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/ScratchpadApp.tsx[22m → [1mapps/rad-os/components/apps/scratchpad/use-scratchpad-docs.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/ScratchpadApp.tsx[22m → [1mapps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx[22m → [1mpackages/radiants/generated/blocknote-blocks.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx[22m → [1mapps/rad-os/components/apps/scratchpad/scratchpad-theme.css[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/scratchpad/ScratchpadEditor.tsx[22m → [1mapps/rad-os/components/apps/scratchpad/RdnaSlashMenu.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/scratchpad/RdnaSlashMenu.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/RadioWidget.tsx[22m → [1mapps/rad-os/components/apps/radio/Radio.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/RadioEffectsRow.tsx[22m → [1mapps/rad-os/components/apps/radio/styles.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/videos.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/useWebAudioEffects.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/styles.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/RadioVisualizer.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/RadioFrame.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/RadioEffectsRow.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1mapps/rad-os/components/apps/radio/RadioDisc.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/serialization.ts[22m → [1mapps/rad-os/components/apps/pretext/primitive-registry.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/editorial/EditorialView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/useFontsReady.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/editorial/EditorialView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/editorial/editorial-layout.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/editorial/editorial-layout.ts[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/prepared-text-cache.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/broadsheet/BroadsheetView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/useFontsReady.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/broadsheet/BroadsheetView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/broadsheet/broadsheet-layout.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/broadsheet/broadsheet-layout.ts[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/prepared-text-cache.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/book/BookView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/useFontsReady.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/book/BookView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/book/book-layout.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/primitives/book/book-layout.ts[22m → [1mapps/rad-os/components/apps/pretext/primitives/shared/prepared-text-cache.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/PretextPreviewFrame.tsx[22m → [1mapps/rad-os/components/apps/pretext/PretextDocumentView.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/PretextDocumentView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/editorial/EditorialView.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/PretextDocumentView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/broadsheet/BroadsheetView.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/PretextDocumentView.tsx[22m → [1mapps/rad-os/components/apps/pretext/primitives/book/BookView.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/PretextDocumentView.tsx[22m → [1mapps/rad-os/components/apps/pretext/markdown.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pretext/load-pretext-bundle.ts[22m → [1mapps/rad-os/components/apps/pretext/serialization.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/ToolPalette.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/ToolPalette.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/ToolPalette.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/RegistryList.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/RegistryList.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/PixelThumb.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/previews/ModePreview.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/previews/PatternPreview.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/previews/ModePreview.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/previews/IconPreview.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/previews/ModePreview.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/previews/CornerPreview.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/ToolPalette.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/RegistryList.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/previews/ModePreview.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/PixelCodeOutput.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/OneBitCanvas.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/ModeNav.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/EditorToolbar.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/bits-from-layer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelCodeOutput.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/PixelCodeOutput.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/pixel-code-gen.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/pixel-code-gen.ts[22m → [1mapps/rad-os/components/apps/pixel-playground/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/ModeNav.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/ModeNav.tsx[22m → [1mapps/rad-os/components/apps/pixel-playground/constants.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/index.ts[22m → [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/EditorToolbar.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/__tests__/pixel-code-gen.test.ts[22m → [1mapps/rad-os/components/apps/pixel-playground/pixel-code-gen.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/pixel-playground/__tests__/bits-from-layer.test.ts[22m → [1mapps/rad-os/components/apps/pixel-playground/bits-from-layer.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/ManifestoBook.tsx[22m → [1mapps/rad-os/components/apps/manifesto/manifesto-layout.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/ManifestoBook.tsx[22m → [1mapps/rad-os/components/apps/manifesto/manifesto-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/ManifestoBook.tsx[22m → [1mapps/rad-os/components/apps/manifesto/ForwardPage.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/ManifestoBook.tsx[22m → [1mapps/rad-os/components/apps/manifesto/CoverPage.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/manifesto-layout.ts[22m → [1mapps/rad-os/components/apps/pretext/primitives/book/book-layout.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/manifesto/ForwardPage.tsx[22m → [1mapps/rad-os/components/apps/manifesto/manifesto-data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/goodnews/GoodNewsLegacyApp.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/LogoMaker.tsx[22m → [1mpackages/radiants/icons/runtime.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/LogoMaker.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/SemanticView.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/SemanticView.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorCards.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/index.ts[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/FibonacciMosaic.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/SemanticView.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/FibonacciMosaic.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsTab.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsSubNav.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorsSubNav.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorDetail.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/data.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorDetail.tsx[22m → [1mapps/rad-os/components/apps/brand-assets/colors-tab/ColorCards.tsx[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/components/apps/AboutApp.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [33mwarn[39m deep-import-into-package: [1mapps/rad-os/app/icon-conversion-review/IconConversionReviewClient.tsx[22m → [1mpackages/radiants/components/core/index.ts[22m
+[2m    Cross-package deep import (bypasses entry point)[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/windows-slice.test.ts[22m → [1m@/store/slices/windowsSlice[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/typography-data.test.ts[22m → [1m@/components/apps/typography-playground/typography-data[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/scratchpad-rollback.test.tsx[22m → [1m@/components/apps/ScratchpadApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-serialization.test.ts[22m → [1m@/components/apps/pretext/serialization[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-renderer.test.tsx[22m → [1m@/components/apps/pretext/primitive-registry[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-renderer.test.tsx[22m → [1m@/components/apps/pretext/PretextPreviewFrame[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-renderer.test.tsx[22m → [1m@/components/apps/pretext/PretextDocumentView[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-markdown.test.ts[22m → [1m@/components/apps/pretext/markdown[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-editorial-layout.test.ts[22m → [1m@/components/apps/pretext/primitives/editorial/editorial-layout[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-doc-contract.test.ts[22m → [1m@/components/apps/pretext/primitive-registry[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-bundle-loader.test.ts[22m → [1m@/components/apps/pretext/primitive-registry[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-bundle-loader.test.ts[22m → [1m@/components/apps/pretext/load-pretext-bundle[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-broadsheet-layout.test.tsx[22m → [1m@/components/apps/pretext/primitives/broadsheet/broadsheet-layout[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-book-layout.test.tsx[22m → [1m@/components/apps/pretext/primitives/book/BookView[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-book-layout.test.tsx[22m → [1m@/components/apps/pretext/primitives/book/book-layout[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/pretext-book-layout.test.tsx[22m → [1m@/components/apps/pretext/primitive-registry[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/lab-app.test.tsx[22m → [1m@/components/apps/LabApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/hash-routing.test.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/hash-routing.test.tsx[22m → [1m@/hooks/useHashRouting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/good-news-rollback.test.tsx[22m → [1m@/components/apps/goodnews/GoodNewsLegacyApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/asset-downloads.test.ts[22m → [1m@/lib/asset-downloads[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/asset-downloads.test.ts[22m → [1m@/app/assets/logos/[assetFile]/route[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/app-window.test.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/app-window.test.tsx[22m → [1m@/components/Rad_os/AppWindow[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/app-catalog.test.ts[22m → [1m@/lib/apps/catalog[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/test/ambient-capability.test.ts[22m → [1m@/lib/apps/catalog[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/store/slices/windowsSlice.ts[22m → [1m@/lib/windowSizing[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/store/slices/windowsSlice.ts[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/icon-conversion-review.ts[22m → [1mserver-only[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/studio/PixelArtEditor[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/ScratchpadApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/manifesto/ManifestoBook[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/LabApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/goodnews/GoodNewsLegacyApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/BrandApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/lib/apps/catalog.tsx[22m → [1m@/components/apps/AboutApp[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/hooks/useWindowManager.ts[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/hooks/useResolvedColor.ts[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/hooks/useHashRouting.ts[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/ZoomRects.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1m@/lib/mockData/tracks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Taskbar.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/StartMenu.tsx[22m → [1m@/hooks/useSafeHover[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/SettingsMenu.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/RadOSDesktop.tsx[22m → [1m@/hooks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/InvertModeProvider.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/InvertModeProvider.tsx[22m → [1m@/hooks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1m@/hooks/useTypewriter[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1m@/components/background/WebGLSun[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/Desktop.tsx[22m → [1m@/components/apps/radio/RadioWidget[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/CommandPalette.tsx[22m → [1m@/lib/apps[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/CommandPalette.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/AppWindow.tsx[22m → [1m@/lib/windowSizing[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/Rad_os/AppWindow.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/background/WebGLSun.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/typography-playground/typography-data.ts[22m → [1m@/lib/asset-downloads[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/typography-playground/TemplatePreview.tsx[22m → [1mreact-draggable[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/StatusBar.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/PixelArtEditor.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/LayerPanel.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/EditorToolbar.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/constants.ts[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/CanvasArea.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/studio/CanvasArea.tsx[22m → [1m@/hooks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/radio/RadioWidget.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1m@/store[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/radio/Radio.tsx[22m → [1m@/lib/mockData/tracks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pretext/PretextPreviewFrame.tsx[22m → [1m@/hooks/useContainerSize[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/PixelPlayground.tsx[22m → [1m@/hooks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/OneBitCanvas.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/OneBitCanvas.tsx[22m → [1m@/hooks[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/EditorToolbar.tsx[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/pixel-playground/constants.ts[22m → [1m@/lib/dotting[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/manifesto/ManifestoBook.tsx[22m → [1m@/hooks/useContainerSize[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1m@/components/ui/UILibrarySidebar[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1m@/components/ui/DesignSystemTab[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/LabApp.tsx[22m → [1m@/components/apps/pixel-playground[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1m@/hooks/useWindowManager[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1m@/components/apps/typography-playground[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/BrandApp.tsx[22m → [1m@/components/apps/brand-assets/LogoMaker[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/components/apps/brand-assets/LogoMaker.tsx[22m → [1m@/lib/logo-maker[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/page.tsx[22m → [1m@/components/Rad_os/RadOSDesktop[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/icon-conversion-review/page.tsx[22m → [1m@/lib/icon-conversion-review[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/Toggle/Toggle[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/Stepper/Stepper[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/SegmentedControl/SegmentedControl[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/RadialMenu/RadialMenu[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/MatrixGrid/MatrixGrid[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/IconRadioGroup/IconRadioGroup[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/Dropdown/Dropdown[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/ColorSwatch/ColorSwatch[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/ColorPicker/ColorPicker[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/ChipTag/ChipTag[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/selectors/ButtonStrip/ButtonStrip[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/Waveform/Waveform[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/Tooltip/Tooltip[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/Spectrum/Spectrum[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/Sparkline/Sparkline[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/Meter/Meter[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/LEDProgress/LEDProgress[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/readouts/LEDArray/LEDArray[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/layout/Section/Section[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/layout/PropertyRow/PropertyRow[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/layout/PanelTitle/PanelTitle[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/layout/LayerTreeRow/LayerTreeRow[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/layout/ControlPanel/ControlPanel[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/XYPad/XYPad[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/Slider/Slider[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/ScrubSurface/ScrubSurface[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/Ribbon/Ribbon[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/NumberScrubber/NumberScrubber[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/NumberInput/NumberInput[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/Knob/Knob[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/Fader/Fader[22m
+[2m    Import cannot be resolved[22m
+
+  [31merror[39m not-to-unresolvable: [1mapps/rad-os/app/ctrl-preview/page.tsx[22m → [1m@rdna/ctrl/controls/ArcRing/ArcRing[22m
+[2m    Import cannot be resolved[22m
+
+[31m
+x 849 dependency violations (123 errors, 726 warnings). 786 modules, 1206 dependencies cruised.
+[39m

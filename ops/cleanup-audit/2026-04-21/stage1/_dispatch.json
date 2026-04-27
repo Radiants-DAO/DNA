@@ -1,0 +1,27 @@
+{
+  "audit": "2026-04-21",
+  "branch": "feat/logo-asset-maker",
+  "mode": "inline-single-agent",
+  "graph_updated": "2026-04-21T20:29:15",
+  "lanes_run": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "T1", "T2"],
+  "findings_total": 79,
+  "by_severity": { "crit": 1, "high": 16, "med": 27, "low": 35 },
+  "rollup": "ops/cleanup-audit/2026-04-21/ROLLUP.md",
+  "tool_outputs_verified": {
+    "knip_json": "tools/knip.json",
+    "knip_txt": "tools/knip.txt",
+    "depcruise_json": "tools/depcruise.json",
+    "depcruise_validate": "tools/depcruise-validate.txt",
+    "depcruise_metrics": "tools/depcruise-metrics.txt",
+    "depcruise_parsed": ["tools/depcruise-cross-pkg-deep.json", "tools/depcruise-orphans.json", "tools/depcruise-unresolved.json"],
+    "depcruise_config": "tools/depcruise.config.cjs"
+  },
+  "graphviz_svg": "skipped — dot not installed on host; text + json sufficient",
+  "cycles_found": 0,
+  "cross_lane_hot_files": [
+    { "file": "apps/rad-os/app/ctrl-preview/page.tsx", "lanes": 6, "type": "refactor target" },
+    { "file": "packages/radiants/components/core/AppWindow/AppWindow.tsx", "lanes": 6, "type": "refactor target" },
+    { "file": "apps/rad-os/components/apps/brand-assets/colors-tab/ColorCards.tsx", "lanes": 3, "type": "pattern decision" },
+    { "file": "apps/rad-os/components/apps/brand-assets/colors-tab/FibonacciMosaic.tsx", "lanes": 3, "type": "pattern decision" }
+  ]
+}

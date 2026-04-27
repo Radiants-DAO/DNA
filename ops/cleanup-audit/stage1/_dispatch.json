@@ -1,9 +1,0 @@
-{
-  "dispatched_at": "2026-04-16",
-  "branch": "main",
-  "head": "d658b2b568bdb0ff4921f83c4ada8bcedd76df55",
-  "dirty_files": [],
-  "knip_installed": false,
-  "madge_installed": false,
-  "notes": "Clean working tree at dispatch. Agents manually trace; no static-analysis tools available."
-}

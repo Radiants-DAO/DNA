@@ -1,0 +1,201 @@
+[93m[4mUnused files[24m[39m (26)
+packages/ctrl/controls/ArcRing/ArcRing.meta.ts                   
+packages/ctrl/controls/Fader/Fader.meta.ts                       
+packages/ctrl/controls/Knob/Knob.meta.ts                         
+packages/ctrl/controls/NumberScrubber/NumberScrubber.meta.ts     
+packages/ctrl/controls/Ribbon/Ribbon.meta.ts                     
+packages/ctrl/controls/ScrubSurface/ScrubSurface.tsx             
+packages/ctrl/controls/Slider/Slider.meta.ts                     
+packages/ctrl/controls/XYPad/XYPad.meta.ts                       
+packages/ctrl/layout/ControlPanel/ControlPanel.meta.ts           
+packages/ctrl/layout/PropertyRow/PropertyRow.meta.ts             
+packages/ctrl/layout/Section/Section.meta.ts                     
+packages/ctrl/readouts/LEDArray/LEDArray.meta.ts                 
+packages/ctrl/readouts/LEDProgress/LEDProgress.meta.ts           
+packages/ctrl/readouts/Meter/Meter.meta.ts                       
+packages/ctrl/readouts/Sparkline/Sparkline.meta.ts               
+packages/ctrl/readouts/Spectrum/Spectrum.meta.ts                 
+packages/ctrl/readouts/Waveform/Waveform.meta.ts                 
+packages/ctrl/selectors/ButtonStrip/ButtonStrip.meta.ts          
+packages/ctrl/selectors/ColorPicker/ColorPicker.tsx              
+packages/ctrl/selectors/MatrixGrid/MatrixGrid.meta.ts            
+packages/ctrl/selectors/RadialMenu/RadialMenu.meta.ts            
+packages/ctrl/selectors/SegmentedControl/SegmentedControl.meta.ts
+packages/ctrl/selectors/Stepper/Stepper.meta.ts                  
+packages/ctrl/selectors/Toggle/Toggle.meta.ts                    
+packages/ctrl/selectors/TransportButton/TransportButton.meta.ts  
+packages/radiants/test/icon-public-types.typecheck.tsx           
+[93m[4mUnused devDependencies[24m[39m (5)
+@testing-library/jest-dom    packages/ctrl/package.json:29:6     
+@testing-library/react       packages/ctrl/package.json:30:6     
+@testing-library/user-event  packages/ctrl/package.json:31:6     
+@blocknote/core              packages/radiants/package.json:128:6
+svgo                         packages/radiants/package.json:140:6
+[93m[4mUnused exports[24m[39m (56)
+ChipTagMeta                                        packages/ctrl/selectors/ChipTag/ChipTag.meta.ts:15:14                
+default                                  variable  packages/radiants/components/core/_shared/ModalShell.tsx:153:16      
+default                                  function  packages/radiants/components/core/_shared/PatternBackdrop.tsx:80:16  
+segmentGroupVariants                               packages/radiants/components/core/_shared/SegmentGroup.tsx:21:14     
+default                                  function  packages/radiants/components/core/_shared/SegmentGroup.tsx:111:16    
+default                                  variable  packages/radiants/components/core/Alert/Alert.tsx:149:16             
+default                                  variable  packages/radiants/components/core/AlertDialog/AlertDialog.tsx:259:16 
+default                                  variable  packages/radiants/components/core/AppWindow/AppWindow.tsx:1182:16    
+default                                  function  …ages/radiants/components/core/AppWindow/WindowManagerMenu.tsx:182:16
+default                                  function  packages/radiants/components/core/Avatar/Avatar.tsx:112:16           
+default                                  function  packages/radiants/components/core/Badge/Badge.tsx:70:16              
+default                                  function  packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx:88:16  
+default                                  function  packages/radiants/components/core/Button/Button.tsx:330:16           
+default                                  function  packages/radiants/components/core/Card/Card.tsx:123:16               
+default                                  function  packages/radiants/components/core/Checkbox/Checkbox.tsx:306:16       
+default                                  variable  packages/radiants/components/core/Collapsible/Collapsible.tsx:141:16 
+default                                  variable  packages/radiants/components/core/Combobox/Combobox.tsx:300:16       
+default                                  function  packages/radiants/components/core/ContextMenu/ContextMenu.tsx:165:16 
+default                                  function  …es/radiants/components/core/CountdownTimer/CountdownTimer.tsx:334:16
+default                                  variable  packages/radiants/components/core/Dialog/Dialog.tsx:264:16           
+default                                  variable  packages/radiants/components/core/Drawer/Drawer.tsx:306:16           
+default                                  function  …ckages/radiants/components/core/DropdownMenu/DropdownMenu.tsx:334:16
+default                                  variable  packages/radiants/components/core/Input/Input.tsx:348:16             
+default                                  variable  packages/radiants/components/core/InputSet/InputSet.tsx:69:16        
+default                                  variable  packages/radiants/components/core/Menubar/Menubar.tsx:220:16         
+default                                  function  packages/radiants/components/core/Meter/Meter.tsx:116:16             
+default                                  variable  …es/radiants/components/core/NavigationMenu/NavigationMenu.tsx:237:16
+default                                  variable  packages/radiants/components/core/NumberField/NumberField.tsx:233:16 
+pixelCornerClipPath                                packages/radiants/components/core/PixelBorder/index.ts:6:3           
+pixelCornerClipPath                      function  packages/radiants/components/core/PixelBorder/PixelBorder.tsx:164:17 
+default                                  function  packages/radiants/components/core/Popover/Popover.tsx:122:16         
+default                                  function  packages/radiants/components/core/PreviewCard/PreviewCard.tsx:119:16 
+default                                  variable  packages/radiants/components/core/ScrollArea/ScrollArea.tsx:57:16    
+default                                  variable  packages/radiants/components/core/Select/Select.tsx:243:16           
+default                                  function  packages/radiants/components/core/Separator/Separator.tsx:89:16      
+default                                  function  packages/radiants/components/core/Sheet/Sheet.tsx:254:16             
+default                     SliderModu…  function  packages/radiants/components/core/Slider/Slider.tsx:197:16           
+default                                  function  packages/radiants/components/core/Spinner/Spinner.tsx:139:16         
+default                                  function  packages/radiants/components/core/Switch/Switch.tsx:140:16           
+default                                  variable  packages/radiants/components/core/Tabs/Tabs.tsx:461:16               
+toggleFaceVariants                                 packages/radiants/components/core/Toggle/Toggle.tsx:59:14            
+default                                  function  packages/radiants/components/core/Toggle/Toggle.tsx:167:16           
+default                                  variable  packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx:184:16 
+default                                  variable  packages/radiants/components/core/Toolbar/Toolbar.tsx:267:16         
+default                                  variable  packages/radiants/components/core/Tooltip/Tooltip.tsx:118:16         
+EMPTY_CONTRACT                                     packages/radiants/eslint/contract.mjs:5:14                           
+contract                                           packages/radiants/eslint/contract.mjs:74:14                          
+parseExceptionMetadata                   function  packages/radiants/eslint/rdna-disable-comment-utils.mjs:37:17        
+normalizeCommentText                     function  packages/radiants/eslint/rdna-disable-comment-utils.mjs:208:17       
+ARBITRARY_COLOR_CLASS                              packages/radiants/eslint/utils.mjs:14:14                             
+STANDARD_RADIUS_CLASS                              packages/radiants/eslint/utils.mjs:31:14                             
+VIEWPORT_BREAKPOINT_PREFIX                         packages/radiants/eslint/utils.mjs:46:14                             
+ICON_ALIASES                                       packages/radiants/icons/manifest.ts:17:14                            
+SVG_ICON_MANIFEST                                  packages/radiants/icons/manifest.ts:64:14                            
+iconSupportsSet                          function  packages/radiants/icons/manifest.ts:5312:17                          
+is16pxIcon                               function  packages/radiants/icons/size-map.ts:145:17                           
+[93m[4mUnused exported types[24m[39m (48)
+ChipTagProps            type       packages/ctrl/selectors/ChipTag/ChipTag.tsx:10:15                      
+ShellHeaderProps        interface  packages/radiants/components/core/_shared/ModalShell.tsx:50:18         
+ShellBodyProps          interface  packages/radiants/components/core/_shared/ModalShell.tsx:68:18         
+ShellFooterProps        interface  packages/radiants/components/core/_shared/ModalShell.tsx:89:18         
+ShellTitleProps         interface  packages/radiants/components/core/_shared/ModalShell.tsx:114:18        
+ShellDescriptionProps   interface  packages/radiants/components/core/_shared/ModalShell.tsx:128:18        
+BackdropDuration        type       packages/radiants/components/core/_shared/PatternBackdrop.tsx:26:13    
+PatternBackdropProps    interface  packages/radiants/components/core/_shared/PatternBackdrop.tsx:50:18    
+SegmentGroupVariants    type       packages/radiants/components/core/_shared/SegmentGroup.tsx:62:13       
+SegmentGroupProps       interface  packages/radiants/components/core/_shared/SegmentGroup.tsx:64:18       
+SnapRegion              type       packages/radiants/components/core/AppWindow/AppWindow.tsx:12:15        
+AppWindowPosition       interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:20:18        
+AppWindowSize           interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:25:18        
+AppWindowProps          interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:38:18        
+AppWindowBodyProps      interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:82:18        
+AppWindowNavProps       interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:93:18        
+AppWindowNavItemProps   interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:101:18       
+AppWindowToolbarProps   interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:109:18       
+AppWindowContentProps   interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:114:18       
+ContentLayout           type       packages/radiants/components/core/AppWindow/AppWindow.tsx:120:13       
+AppWindowIslandProps    interface  packages/radiants/components/core/AppWindow/AppWindow.tsx:122:18       
+WindowManagerMenuProps  interface  packages/radiants/components/core/AppWindow/WindowManagerMenu.tsx:17:18
+AvatarProps             interface  packages/radiants/components/core/Avatar/Avatar.meta.ts:6:18           
+AvatarShape             type       packages/radiants/components/core/Avatar/Avatar.tsx:12:15              
+AvatarSize              type       packages/radiants/components/core/Avatar/Avatar.tsx:12:28              
+CardProps               interface  packages/radiants/components/core/Card/Card.meta.ts:6:18               
+CardRounded             type       packages/radiants/components/core/Card/Card.tsx:13:15                  
+CardVariant             type       packages/radiants/components/core/Card/Card.tsx:13:28                  
+ComboboxProps           type       packages/radiants/components/core/Combobox/Combobox.tsx:13:15          
+DialogProps             type       packages/radiants/components/core/Dialog/Dialog.tsx:15:15              
+DynamicIconProps        interface  packages/radiants/components/core/Icon/Icon.meta.ts:3:18               
+PopoverProps            type       packages/radiants/components/core/Popover/Popover.tsx:12:15            
+PopoverPosition         type       packages/radiants/components/core/Popover/Popover.tsx:12:29            
+SwitchProps             type       packages/radiants/components/core/Switch/Switch.tsx:13:15              
+SwitchSize              type       packages/radiants/components/core/Switch/Switch.tsx:13:28              
+TabsAlign               type       packages/radiants/components/core/Tabs/Tabs.tsx:19:13                  
+TabsRootProps           type       packages/radiants/components/core/Tabs/Tabs.tsx:451:15                 
+TabsListProps           type       packages/radiants/components/core/Tabs/Tabs.tsx:451:30                 
+TabsTriggerProps        type       packages/radiants/components/core/Tabs/Tabs.tsx:451:45                 
+TabsContentProps        type       packages/radiants/components/core/Tabs/Tabs.tsx:451:63                 
+IconProps               interface  packages/radiants/icons/Icon.tsx:10:18                                 
+IconAliasName           type       packages/radiants/icons/manifest.ts:62:13                              
+ResolvedIconRequest     interface  packages/radiants/icons/resolve-name.ts:15:18                          
+PixelGrid               type       packages/radiants/pixel-icons/source.ts:1:15                           
+PixelIconSourceEntry    type       packages/radiants/pixel-icons/source.ts:4:26                           
+PixelIconName           type       packages/radiants/pixel-icons/source.ts:5:3                            
+ContractFieldSource     type       packages/radiants/registry/contract-fields.ts:3:13                     
+PropControlsProps       interface  packages/radiants/registry/PropControls.tsx:35:18                      
+[93m[4mDuplicate exports[24m[39m (41)
+clampCornerRadii|fitCornerRadii  packages/pixel/src/corners/runtime.ts                              
+ModalShell|default               packages/radiants/components/core/_shared/ModalShell.tsx           
+PatternBackdrop|default          packages/radiants/components/core/_shared/PatternBackdrop.tsx      
+SegmentGroup|default             packages/radiants/components/core/_shared/SegmentGroup.tsx         
+Alert|default                    packages/radiants/components/core/Alert/Alert.tsx                  
+AlertDialog|default              packages/radiants/components/core/AlertDialog/AlertDialog.tsx      
+WindowManagerMenu|default        packages/radiants/components/core/AppWindow/WindowManagerMenu.tsx  
+Avatar|default                   packages/radiants/components/core/Avatar/Avatar.tsx                
+Badge|default                    packages/radiants/components/core/Badge/Badge.tsx                  
+Breadcrumbs|default              packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx      
+Button|default                   packages/radiants/components/core/Button/Button.tsx                
+Card|default                     packages/radiants/components/core/Card/Card.tsx                    
+Checkbox|default                 packages/radiants/components/core/Checkbox/Checkbox.tsx            
+Collapsible|default              packages/radiants/components/core/Collapsible/Collapsible.tsx      
+Combobox|default                 packages/radiants/components/core/Combobox/Combobox.tsx            
+ContextMenu|default              packages/radiants/components/core/ContextMenu/ContextMenu.tsx      
+CountdownTimer|default           packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx
+Dialog|default                   packages/radiants/components/core/Dialog/Dialog.tsx                
+Drawer|default                   packages/radiants/components/core/Drawer/Drawer.tsx                
+DropdownMenu|default             packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx    
+Input|default                    packages/radiants/components/core/Input/Input.tsx                  
+InputSet|default                 packages/radiants/components/core/InputSet/InputSet.tsx            
+Menubar|default                  packages/radiants/components/core/Menubar/Menubar.tsx              
+Meter|default                    packages/radiants/components/core/Meter/Meter.tsx                  
+NavigationMenu|default           packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx
+NumberField|default              packages/radiants/components/core/NumberField/NumberField.tsx      
+Popover|default                  packages/radiants/components/core/Popover/Popover.tsx              
+PreviewCard|default              packages/radiants/components/core/PreviewCard/PreviewCard.tsx      
+ScrollArea|default               packages/radiants/components/core/ScrollArea/ScrollArea.tsx        
+Select|default                   packages/radiants/components/core/Select/Select.tsx                
+Separator|default                packages/radiants/components/core/Separator/Separator.tsx          
+Sheet|default                    packages/radiants/components/core/Sheet/Sheet.tsx                  
+Slider|default                   packages/radiants/components/core/Slider/Slider.tsx                
+Spinner|default                  packages/radiants/components/core/Spinner/Spinner.tsx              
+Switch|default                   packages/radiants/components/core/Switch/Switch.tsx                
+Tabs|default                     packages/radiants/components/core/Tabs/Tabs.tsx                    
+ToastProvider|default            packages/radiants/components/core/Toast/Toast.tsx                  
+Toggle|default                   packages/radiants/components/core/Toggle/Toggle.tsx                
+ToggleGroup|default              packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx      
+Toolbar|default                  packages/radiants/components/core/Toolbar/Toolbar.tsx              
+Tooltip|default                  packages/radiants/components/core/Tooltip/Tooltip.tsx              
+[33m[4mConfiguration hints[24m (22)[39m
+packages/ctrl                                  …p.json  [90mAdd [97mentry[90m and/or refine [97mproject[90m files in [97mworkspaces["packages/c[90m…[39m
+.component-contracts.example                   …p.json  [90mRemove from [97mignore[90m[39m                                              
+**/.DS_Store                                   …p.json  [90mRemove from [97mignore[90m[39m                                              
+**/.next/**                                    …p.json  [90mRemove from [97mignore[90m[39m                                              
+**/.turbo/**                                   …p.json  [90mRemove from [97mignore[90m[39m                                              
+contract/system.ts              …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+…ib/no-legacy-color-format.mjs  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+…tterns/pretext-hyphenation.ts  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+patterns/pretext-justify.ts     …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+patterns/pretext-prepare.ts     …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+patterns/pretext-type-scale.ts  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+…s/generate-figma-contracts.ts  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+scripts/generate-icons.ts       …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+…ts/generate-pixel-corners.mjs  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+…generate-typography-tokens.ts  …ges/radiants  …p.json  [90mRemove from [97mignoreFiles[90m[39m                                         
+...4 more similar hints                                 [90m[39m                                                                
+tools/*                                        …p.json  [90mRemove from [97mignoreWorkspaces[90m[39m                                    
+templates/*                                    …p.json  [90mRemove from [97mignoreWorkspaces[90m[39m                                    
+@chenglou/pretext               …ges/radiants  …p.json  [90mRemove from [97mignoreDependencies[90m[39m                                  
