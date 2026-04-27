@@ -1,0 +1,492 @@
+[
+  {
+    "id": "playground-ops",
+    "invocations": 59,
+    "last_used": "2026-03-25T19:02:15.248Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 9
+  },
+  {
+    "id": "wf-execute",
+    "invocations": 29,
+    "last_used": "2026-03-30T03:22:24.805Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 21
+  },
+  {
+    "id": "wf-brainstorm",
+    "invocations": 26,
+    "last_used": "2026-04-11T05:32:45.201Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 24
+  },
+  {
+    "id": "wf-plan",
+    "invocations": 21,
+    "last_used": "2026-04-12T00:58:41.543Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 20
+  },
+  {
+    "id": "op-status",
+    "invocations": 19,
+    "last_used": "2026-04-11T23:01:08.861Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 17
+  },
+  {
+    "id": "skill-creator",
+    "invocations": 18,
+    "last_used": "2026-03-28T23:40:48.831Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 14
+  },
+  {
+    "id": "op-team",
+    "invocations": 5,
+    "last_used": "2026-03-30T07:39:03.905Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 3
+  },
+  {
+    "id": "qc-visual",
+    "invocations": 5,
+    "last_used": "2026-03-30T07:27:35.693Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 5
+  },
+  {
+    "id": "finishing-a-development-branch",
+    "invocations": 4,
+    "last_used": "2026-03-23T03:17:57.070Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 4
+  },
+  {
+    "id": "qc-qa",
+    "invocations": 4,
+    "last_used": "2026-03-15T20:06:10.389Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 4
+  },
+  {
+    "id": "compound-knowledge",
+    "invocations": 3,
+    "last_used": "2026-03-22T22:22:10.486Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 3
+  },
+  {
+    "id": "figma-use",
+    "invocations": 3,
+    "last_used": "2026-03-31T19:23:49.633Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 3
+  },
+  {
+    "id": "op-deploy",
+    "invocations": 2,
+    "last_used": "2026-04-02T13:44:38.170Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 2
+  },
+  {
+    "id": "playground-qa",
+    "invocations": 2,
+    "last_used": "2026-03-17T23:21:48.150Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "playground-start",
+    "invocations": 2,
+    "last_used": "2026-03-23T18:35:16.177Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 2
+  },
+  {
+    "id": "pretext",
+    "invocations": 2,
+    "last_used": "2026-03-30T03:01:44.720Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 2
+  },
+  {
+    "id": "pretext-editorial-patterns",
+    "invocations": 2,
+    "last_used": "2026-03-30T03:01:45.149Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 2
+  },
+  {
+    "id": "requesting-code-review",
+    "invocations": 2,
+    "last_used": "2026-03-16T16:33:41.407Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 2
+  },
+  {
+    "id": "frontend-slides",
+    "invocations": 1,
+    "last_used": "2026-03-07T21:01:28.331Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "op-checkpoint",
+    "invocations": 1,
+    "last_used": "2026-03-18T01:25:48.157Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "p-code-import",
+    "invocations": 1,
+    "last_used": "2026-03-31T20:08:23.748Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "typography",
+    "invocations": 1,
+    "last_used": "2026-03-29T01:30:37.927Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "typography-audit",
+    "invocations": 1,
+    "last_used": "2026-03-29T01:31:06.639Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "typography-scale",
+    "invocations": 1,
+    "last_used": "2026-03-29T01:30:22.931Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": "web-typography",
+    "invocations": 1,
+    "last_used": "2026-03-29T01:30:55.997Z",
+    "user_slash_invocations": 0,
+    "sessions_touched": 1
+  },
+  {
+    "id": ".system:skill-creator",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": ".system:skill-installer",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "collab-canvas",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "helius",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "metaplex",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "p-brand-import",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "p-component-import",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "p-content",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "p-design-doc",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "p-figma-to-paper",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "pinocchio-development",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "qc-debug",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "receiving-code-review",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "solana-agent-kit",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "solana-anchor-claude-skill",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "solana-dev-skill",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "solana-kit",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "solana-kit-migration",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "surfpool",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "tailwind-v4-shadcn",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "test-driven-development",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "vercel-composition-patterns",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "vercel-react-best-practices",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "vercel-react-native-skills",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "verification-before-completion",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "voice-to-content",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "vulnhunter",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "web-design-guidelines",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "zustand-state-management",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "zz-code-recon",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "apply-design-system",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "audit-design-system",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "augment-multi-agent-figma",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "cc-figma-component",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "cc-figma-tokens",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "edit-figma-design",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-code-connect-components",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-create-design-system-rules",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-create-new-file",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-generate-design",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-generate-library",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "figma-implement-design",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "fix-design-system-finding",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "rad-spacing",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  },
+  {
+    "id": "sync-figma-token",
+    "invocations": 0,
+    "last_used": null,
+    "user_slash_invocations": 0,
+    "sessions_touched": 0
+  }
+]

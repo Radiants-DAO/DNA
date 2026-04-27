@@ -1,0 +1,414 @@
+[
+  {
+    "finding_id": "WEAK-001",
+    "agent_area": "weak_type_strengthening",
+    "title": "ComponentMeta<any> in contract-fields type alias",
+    "classification": "weak_type",
+    "confidence": 0.95,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/contract-fields.ts", "lines": "3-19" }
+    ],
+    "summary": "ContractFieldSource uses Partial<Pick<ComponentMeta<any>, ...>>. ComponentMeta<TProps = Record<string, unknown>> has a defaulted type parameter, and the fields being picked (name, description, props, replaces, pixelCorners, shadowSystem, styleOwnership, structuralRules, density, composition, wraps, a11y) do NOT depend on TProps. Using `any` defeats the purpose and triggers no-explicit-any.",
+    "proposed_action": "Replace `ComponentMeta<any>` with plain `ComponentMeta` (uses the default `Record<string, unknown>` generic). None of the picked fields use TProps, so the parameter is free to use the default.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants",
+      "pnpm lint --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/contract-fields.ts"
+    ]
+  },
+  {
+    "finding_id": "WEAK-002",
+    "agent_area": "weak_type_strengthening",
+    "title": "ComponentType<any> in preview ComponentRegistry",
+    "classification": "weak_type",
+    "confidence": 0.90,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/preview/src/PreviewPage.tsx", "lines": "7" }
+    ],
+    "summary": "`type ComponentRegistry = Record<string, ComponentType<any>>` uses ComponentType<any>. PreviewPage renders registered components with no props (`<Component />`), so an explicit prop shape is unnecessary. React's ComponentType defaults to ComponentType<{}>, but here we store components with varied prop signatures and render them parameter-less.",
+    "proposed_action": "Replace `ComponentType<any>` with `ComponentType<Record<string, unknown>>`. Matches the default TProps elsewhere in @rdna/preview and allows any component to be stored without resorting to `any`. (Alternative: `ComponentType` without a parameter — but the explicit Record form is more consistent with @rdna/preview's own conventions.)",
+    "canonical_owner": "packages/preview",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/preview"
+    ],
+    "edit_scope": [
+      "packages/preview/src/PreviewPage.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-003",
+    "agent_area": "weak_type_strengthening",
+    "title": "Input.Validity render-prop uses Record<string, unknown> instead of FieldValidityState",
+    "classification": "weak_type",
+    "confidence": 0.93,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/components/core/Input/Input.tsx", "lines": "75-77" },
+      { "file": "node_modules/.pnpm/@base-ui+react@1.3.0_*/node_modules/@base-ui/react/esm/field/validity/FieldValidity.d.ts", "lines": "11-34" }
+    ],
+    "summary": "InputValidityProps declares `children: (state: { validity: Record<string, unknown> }) => React.ReactNode`. The component delegates to BaseField.Validity, whose children signature is `(state: FieldValidityState) => React.ReactNode` with `validity: FieldValidityData['state']` (the concrete base-ui validity object). `Record<string, unknown>` throws away the known shape.",
+    "proposed_action": "Import `FieldValidity` namespace or `FieldValidityState` from `@base-ui/react/field` and retype InputValidityProps as `{ children: (state: FieldValidity.State) => React.ReactNode }`. This mirrors the upstream type exactly and removes the weak Record.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/components/core/Input/Input.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-004",
+    "agent_area": "weak_type_strengthening",
+    "title": "BlockNote block generator emits `any` for render callbacks",
+    "classification": "weak_type",
+    "confidence": 0.92,
+    "blast_radius": "medium",
+    "evidence": [
+      { "file": "packages/radiants/scripts/generate-blocknote-blocks.ts", "lines": "179-194" },
+      { "file": "packages/radiants/blocknote/types.ts", "lines": "8-13" },
+      { "file": "packages/radiants/generated/blocknote-blocks.tsx", "lines": "49,60,73,101,114,130,145,167,178,189,200,211,222,233,244,268,279,301,312,326,337,348,359,370,395,408,435,446,457,479,490,504" }
+    ],
+    "summary": "The generator writes `render: (props: any) => ...` and `render: ({ contentRef }: any) => ...` into the auto-generated blocknote-blocks.tsx. The comment claims BlockNote generics are too deep, but the repo already ships a hand-rolled adapter type — `BlockNoteRenderProps` in packages/radiants/blocknote/types.ts — that every render function (e.g. renderAlertBlock, renderCardBlock) already consumes as its parameter type. The `any` just re-widens an already narrow shape.",
+    "proposed_action": "Update generate-blocknote-blocks.ts to (a) emit `import type { BlockNoteRenderProps } from '../blocknote/types';` into generated/blocknote-blocks.tsx, and (b) replace the three `as any` literals with `BlockNoteRenderProps`. For `{ contentRef }`, the destructured parameter typed as `BlockNoteRenderProps` still works because BlockNoteRenderProps has contentRef. Re-run `pnpm --filter @rdna/radiants generate:blocknote` afterward to refresh the generated file.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm --filter @rdna/radiants generate:blocknote",
+      "pnpm turbo typecheck --filter=@rdna/radiants",
+      "pnpm lint --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/scripts/generate-blocknote-blocks.ts",
+      "packages/radiants/generated/blocknote-blocks.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-005",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Alert Demo coerces variant via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.85,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "97" },
+      { "file": "packages/radiants/components/core/Alert/Alert.tsx", "lines": "14-20" }
+    ],
+    "summary": "`<Alert.Root variant={variant as any} ...>` coerces a string-typed Demo prop into Alert's narrow AlertVariant union ('default' | 'success' | 'warning' | 'error' | 'info'). AlertVariant is declared locally in Alert.tsx but is not exported, forcing registry Demo to reach for `any`.",
+    "proposed_action": "Export `AlertVariant` from packages/radiants/components/core/Alert/Alert.tsx (named type export), import it in runtime-attachments.tsx, and replace `variant as any` with `variant as AlertVariant`. Alternatively use `React.ComponentProps<typeof Alert.Root>['variant']` to avoid a new export.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/components/core/Alert/Alert.tsx",
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-006",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Drawer Demo coerces direction via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "282" }
+    ],
+    "summary": "`<Drawer.Provider ... direction={direction as any}>` — the direction prop is narrowed on Drawer.Provider but the Demo signature treats it as unknown and casts to `any`.",
+    "proposed_action": "Replace with `direction as React.ComponentProps<typeof Drawer.Provider>['direction']`. This pulls the exact union from Drawer.Provider's prop surface without needing to export a new named type.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-007",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — DropdownMenuContent side coerced via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "312" }
+    ],
+    "summary": "`{...(position ? { side: position as any } : {})}` — DropdownMenuContent's side prop is a narrow union ('top'|'right'|'bottom'|'left' per base-ui). Demo widens the input to `unknown` then casts to any.",
+    "proposed_action": "Replace `position as any` with `position as React.ComponentProps<typeof DropdownMenuContent>['side']`. Resolves at compile time; no new exports needed.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-008",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Input Demo coerces size via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.94,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "329" },
+      { "file": "packages/radiants/components/core/Input/Input.types.ts", "lines": "1-4" }
+    ],
+    "summary": "`<Input ... {...(size ? { size: size as any } : {})} ...>`. InputSize (`'sm' | 'md' | 'lg'`) is already publicly exported from Input.types.ts.",
+    "proposed_action": "Replace `size as any` with `size as InputSize`. Import `InputSize` from '../components/core/Input/Input.types' at the top of runtime-attachments.tsx.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-009",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Icon Demo `name as any` and `className as any`",
+    "classification": "weak_type",
+    "confidence": 0.92,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "361,364" },
+      { "file": "packages/radiants/icons/Icon.tsx", "lines": "8-21" }
+    ],
+    "summary": "Icon's `name` prop is already declared `name: string` and `className?: string`. The Demo coerces via `as any` despite no narrower type on the Icon side.",
+    "proposed_action": "Replace `name as any` with `name as string` and `className as any` with `className as string`. No upstream changes needed — Icon already accepts these scalar types.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-010",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — NavigationMenu.Root orientation via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "413" }
+    ],
+    "summary": "`{...(orientation ? { orientation: orientation as any } : {})}` — NavigationMenu.Root accepts 'horizontal' | 'vertical' (base-ui union). Demo widens then casts to any.",
+    "proposed_action": "Replace with `orientation as React.ComponentProps<typeof NavigationMenu.Root>['orientation']`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-011",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Select.Trigger size via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.84,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "553" }
+    ],
+    "summary": "`<Select.Trigger ... size={size as any} ...>` — Select's size prop follows the same 'sm'|'md'|'lg' convention used across the package.",
+    "proposed_action": "Replace `size as any` with `size as React.ComponentProps<typeof Select.Trigger>['size']`. Resolves at compile time.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-012",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Slider Demo size via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "601" }
+    ],
+    "summary": "`<Slider ... {...(size ? { size: size as any } : {})} ...>`.",
+    "proposed_action": "Replace `size as any` with `size as React.ComponentProps<typeof Slider>['size']`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-013",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Switch Demo size + labelPosition via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "609" }
+    ],
+    "summary": "`<Switch ... {...(size ? { size: size as any } : {})} {...(labelPosition ? { labelPosition: labelPosition as any } : {})} ...>`.",
+    "proposed_action": "Use `React.ComponentProps<typeof Switch>['size']` and `['labelPosition']` respectively. Compile-time lookup, no new exports.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-014",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Tabs Demo mode via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.95,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "618" },
+      { "file": "packages/radiants/components/core/Tabs/Tabs.tsx", "lines": "13" }
+    ],
+    "summary": "`<Tabs defaultValue=\"design\" mode={mode as any} ...>` — `TabsMode` = `'capsule' | 'chrome'` is already publicly exported from Tabs.tsx.",
+    "proposed_action": "Import `TabsMode` from '../components/core/Tabs/Tabs' in runtime-attachments.tsx and replace with `mode as TabsMode`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-015",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — ToggleGroup Demo variant via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.80,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "670" }
+    ],
+    "summary": "`<ToggleGroup ... {...(variant ? { variant: variant as any } : {})} ...>`.",
+    "proposed_action": "Replace `variant as any` with `variant as React.ComponentProps<typeof ToggleGroup>['variant']`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-016",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Toolbar.Root orientation via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "682" }
+    ],
+    "summary": "`<Toolbar.Root {...(orientation ? { orientation: orientation as any } : {})} ...>`.",
+    "proposed_action": "Replace with `orientation as React.ComponentProps<typeof Toolbar.Root>['orientation']`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-017",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Tooltip Demo position via `as any`",
+    "classification": "weak_type",
+    "confidence": 0.82,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "700" }
+    ],
+    "summary": "`<Tooltip content={...} {...(position ? { position: position as any } : {})} ...>`.",
+    "proposed_action": "Replace with `position as React.ComponentProps<typeof Tooltip>['position']`.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=@rdna/radiants"
+    ],
+    "edit_scope": [
+      "packages/radiants/registry/runtime-attachments.tsx"
+    ]
+  },
+  {
+    "finding_id": "WEAK-018",
+    "agent_area": "weak_type_strengthening",
+    "title": "Vendored Dotting engine: @ts-nocheck on eight files (keep as-is)",
+    "classification": "weak_type",
+    "confidence": 0.90,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "apps/rad-os/lib/dotting/components/Canvas/DataLayer.tsx", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/components/Canvas/Editor.tsx", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/components/Canvas/InteractionLayer.tsx", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/components/Dotting.tsx", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/utils/data.ts", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/utils/eventDispatcher.ts", "lines": "1-2" },
+      { "file": "apps/rad-os/lib/dotting/utils/math.ts", "lines": "1" },
+      { "file": "apps/rad-os/lib/dotting/utils/stack.ts", "lines": "1" }
+    ],
+    "summary": "Eight files in the vendored Dotting canvas engine start with `// @ts-nocheck`. Four are annotated as `— vendored canvas engine; strict null checks deferred` / `— vendored Dotting component; optional props pass-through`. These are the only @ts-nocheck suppressions in the repo and each file is a non-trivial legacy port. Also contains one `(...args: any[]) => void` type and one `as any // this is to forestall typescript error` — all guarded by the file-level nocheck so they do not leak weak types to consumers.",
+    "proposed_action": "keep_with_reason. Do NOT remove these suppressions during this cleanup pass — this is a vendored/legacy engine that would need a dedicated typing migration (separate from the cleanup audit). Recommend: (a) add explicit `// eslint-disable-next-line rdna/require-exception-metadata` stubs with owner and an issue reference to track the eventual migration, and (b) confirm these files are not re-exported with looser types; internal usage is already walled off.",
+    "canonical_owner": "apps/rad-os",
+    "blocked_by": [],
+    "verification": [
+      "pnpm turbo typecheck --filter=rad-os"
+    ],
+    "edit_scope": []
+  },
+  {
+    "finding_id": "WEAK-019",
+    "agent_area": "weak_type_strengthening",
+    "title": "runtime-attachments.tsx — Breadcrumbs Demo separator cast uses `as string` narrowing — NOT weak",
+    "classification": "weak_type",
+    "confidence": 0.60,
+    "blast_radius": "low",
+    "evidence": [
+      { "file": "packages/radiants/registry/runtime-attachments.tsx", "lines": "150,329,405,553,609,700" }
+    ],
+    "summary": "The many `as string`, `as boolean`, `as number`, `as 16 | 24` casts in runtime-attachments.tsx are NOT `as any`. They coerce `Record<string, unknown>` Demo props into concrete scalar types for forwarding. Included here for completeness: reviewers sometimes conflate these with weak typing.",
+    "proposed_action": "keep_with_reason. These are already the target shape and are only needed because the Demo signature intentionally accepts `Record<string, unknown>` (registry dispatch). A broader cleanup (e.g., typed Demo signatures parameterized by component props) would eliminate them, but is out of scope for this audit and used in fewer than 3 cross-cutting sites.",
+    "canonical_owner": "packages/radiants",
+    "blocked_by": [],
+    "verification": [],
+    "edit_scope": []
+  }
+]

@@ -1,0 +1,982 @@
+[
+  {
+    "id": ".system:skill-creator",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/.system/skill-creator",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/.system/skill-creator/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "skill-creator",
+      "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Codex's capabilities with specialized knowledge, workflows, or tool integrations."
+    },
+    "size_bytes": 18664,
+    "size_lines": 369,
+    "mtime": "2026-02-26T00:40:26.756Z"
+  },
+  {
+    "id": ".system:skill-installer",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/.system/skill-installer",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/.system/skill-installer/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "skill-installer",
+      "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos)."
+    },
+    "size_bytes": 3366,
+    "size_lines": 59,
+    "mtime": "2026-02-26T00:40:26.757Z"
+  },
+  {
+    "id": "collab-canvas",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/collab-canvas",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/collab-canvas/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": null,
+      "description": null
+    },
+    "size_bytes": 7597,
+    "size_lines": 217,
+    "mtime": "2026-04-12T01:16:16.679Z"
+  },
+  {
+    "id": "compound-knowledge",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/compound-knowledge",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/compound-knowledge/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "compound-knowledge",
+      "description": "Use after solving a non-trivial problem to document the solution for future reuse"
+    },
+    "size_bytes": 3033,
+    "size_lines": 120,
+    "mtime": "2026-01-30T20:37:51.261Z"
+  },
+  {
+    "id": "finishing-a-development-branch",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/finishing-a-development-branch",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/finishing-a-development-branch/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "finishing-a-development-branch",
+      "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup"
+    },
+    "size_bytes": 4089,
+    "size_lines": 197,
+    "mtime": "2026-02-25T23:30:57.838Z"
+  },
+  {
+    "id": "frontend-slides",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/frontend-slides",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/frontend-slides/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "frontend-slides",
+      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices."
+    },
+    "size_bytes": 11797,
+    "size_lines": 220,
+    "mtime": "2026-03-04T19:24:59.489Z"
+  },
+  {
+    "id": "helius",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/helius",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/helius/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "helius",
+      "description": "Comprehensive guide for Helius - Solana's leading RPC and API infrastructure provider. Covers RPC nodes, DAS (Digital Asset Standard) API, Enhanced Transactions, Priority Fees, Webhooks, ZK Compression, LaserStream gRPC, and the Helius SDK for building high-performance Solana applications"
+    },
+    "size_bytes": 19109,
+    "size_lines": 681,
+    "mtime": "2026-02-27T22:07:19.338Z"
+  },
+  {
+    "id": "metaplex",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/metaplex",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/metaplex/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "metaplex",
+      "description": "Complete Metaplex Protocol guide for Solana NFTs and digital assets. Covers Core (next-gen NFTs), Token Metadata, Bubblegum (compressed NFTs), Candy Machine, Genesis (token launches), MPL-Hybrid, Inscriptions, DAS API, and the Umi framework. The single source of truth for all Metaplex integrations."
+    },
+    "size_bytes": 24860,
+    "size_lines": 944,
+    "mtime": "2026-02-27T22:07:19.357Z"
+  },
+  {
+    "id": "op-checkpoint",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/op-checkpoint",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/op-checkpoint/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "op-checkpoint",
+      "description": "Named snapshots with instant rollback for safe iteration. Use when user says \"checkpoint\", \"save state\", \"save this\", \"undo\", \"revert\", \"restore\", \"go back to\", \"it was working before\", \"roll back\", \"put it back\", \"undo that last step\", or before risky multi-file changes (refactors, sweeping CSS, animation experiments). Trigger phrases include \"save checkpoint\", \"undo last change\", \"it was working before\", \"revert to\", \"diff since checkpoint\"."
+    },
+    "size_bytes": 7133,
+    "size_lines": 191,
+    "mtime": "2026-02-26T16:07:19.491Z"
+  },
+  {
+    "id": "op-deploy",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/op-deploy",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/op-deploy/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "op-deploy",
+      "description": "Deploy projects to Vercel or restart local dev servers. Trigger on: deploy, push to vercel, push to prod, push to prev, redeploy, deploy to preview, deploy to prod, deploy to localhost, kill the server and restart, redepploy, prev. Handles named targets (preview, prod, localhost), monorepo awareness, and post-deploy URL confirmation."
+    },
+    "size_bytes": 4308,
+    "size_lines": 132,
+    "mtime": "2026-02-25T19:35:19.086Z"
+  },
+  {
+    "id": "op-status",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/op-status",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/op-status/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "op-status",
+      "description": "Structured session progress tracker with disk persistence. Outputs completed/in-progress/remaining tasks, next action, and what to test. Survives context overflow via file persistence. Trigger on \"where are we\", \"what's next\", \"what's left\", \"status\", \"recap\", \"what should I test\", \"session status\", \"where are we at in the plan\", \"what features should work\", \"good to continue\", \"good to move on\"."
+    },
+    "size_bytes": 5050,
+    "size_lines": 134,
+    "mtime": "2026-02-25T19:35:23.221Z"
+  },
+  {
+    "id": "op-team",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/op-team",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/op-team/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "op-team",
+      "description": "Spawn parallel reviewer or fixer agents with pre-defined personas and structured output. Use when the user says \"spawn a team to review\", \"spawn pm subagent\", \"create a team to review\", \"spawn agents to fix\", \"spawn reviewers\", \"review team\", \"spawn fixers for these items\", or wants multiple coordinated agents reviewing code, plans, or designs simultaneously."
+    },
+    "size_bytes": 6994,
+    "size_lines": 182,
+    "mtime": "2026-02-25T19:35:26.871Z"
+  },
+  {
+    "id": "p-brand-import",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-brand-import",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-brand-import/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-brand-import",
+      "description": ">"
+    },
+    "size_bytes": 8901,
+    "size_lines": 154,
+    "mtime": "2026-03-04T19:18:33.445Z"
+  },
+  {
+    "id": "p-code-import",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-code-import",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-code-import/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-code-import",
+      "description": ">"
+    },
+    "size_bytes": 4839,
+    "size_lines": 109,
+    "mtime": "2026-03-04T17:14:50.206Z"
+  },
+  {
+    "id": "p-component-import",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-component-import",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-component-import/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-component-import",
+      "description": ">"
+    },
+    "size_bytes": 4779,
+    "size_lines": 92,
+    "mtime": "2026-03-04T17:24:12.960Z"
+  },
+  {
+    "id": "p-content",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-content",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-content/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-content",
+      "description": ">"
+    },
+    "size_bytes": 3487,
+    "size_lines": 87,
+    "mtime": "2026-03-04T17:15:04.156Z"
+  },
+  {
+    "id": "p-design-doc",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-design-doc",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-design-doc/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-design-doc",
+      "description": ">"
+    },
+    "size_bytes": 3924,
+    "size_lines": 119,
+    "mtime": "2026-03-04T16:16:47.159Z"
+  },
+  {
+    "id": "p-figma-to-paper",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/p-figma-to-paper",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/p-figma-to-paper/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "p-figma-to-paper",
+      "description": ">"
+    },
+    "size_bytes": 2794,
+    "size_lines": 72,
+    "mtime": "2026-03-04T16:25:24.022Z"
+  },
+  {
+    "id": "pinocchio-development",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/pinocchio-development",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/pinocchio-development/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "pinocchio-development",
+      "description": "Comprehensive guide for building high-performance Solana programs using Pinocchio - the zero-dependency, zero-copy framework. Covers account validation, CPI patterns, optimization techniques, and migration from Anchor."
+    },
+    "size_bytes": 16384,
+    "size_lines": 647,
+    "mtime": "2026-02-27T22:07:19.368Z"
+  },
+  {
+    "id": "playground-ops",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/playground-ops",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/playground-ops/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "playground-ops",
+      "description": ">"
+    },
+    "size_bytes": 11629,
+    "size_lines": 279,
+    "mtime": "2026-03-17T22:34:41.321Z"
+  },
+  {
+    "id": "playground-qa",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/playground-qa",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/playground-qa/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "playground-qa",
+      "description": "Validate playground component registry completeness — checks that all components are registered, all schema variant values are rendered in demos, and flags coverage gaps. Use when the user says \"/playground-qa\", \"check playground coverage\", \"are all variants rendered\", \"registry audit\", \"check component demos\", or wants to verify the playground accurately represents the design system."
+    },
+    "size_bytes": 13783,
+    "size_lines": 214,
+    "mtime": "2026-03-19T01:03:35.023Z"
+  },
+  {
+    "id": "playground-start",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/playground-start",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/playground-start/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "playground-start",
+      "description": ">"
+    },
+    "size_bytes": 2638,
+    "size_lines": 66,
+    "mtime": "2026-03-17T00:16:10.292Z"
+  },
+  {
+    "id": "pretext",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/pretext",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/pretext/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "pretext",
+      "description": "Guide for @chenglou/pretext — canvas-based text measurement and layout without DOM reflow. Use when building multi-column text layouts, text-around-obstacles, chat bubbles, accordions, newspaper/magazine layouts, or any feature that needs to know text dimensions without triggering browser reflow. Triggers on: imports from @chenglou/pretext, mentions of 'pretext', 'text layout without DOM', 'text reflow', 'text wrapping around images', 'multi-column text flow', 'measure text height', or 'layoutNextLine'. Also use when building draggable elements that text should flow around."
+    },
+    "size_bytes": 19397,
+    "size_lines": 471,
+    "mtime": "2026-03-28T23:18:36.338Z"
+  },
+  {
+    "id": "pretext-editorial-patterns",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/pretext-editorial-patterns",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/pretext-editorial-patterns/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "pretext-editorial-patterns",
+      "description": "Advanced layout recipes for @chenglou/pretext — editorial engine patterns including circle obstacle avoidance, drop caps, pull quotes, DOM pooling for 60fps, rich inline mixed-font layout, masonry height prediction, and bubble shrinkwrap. Use when building newspaper/magazine layouts, chat bubbles, card grids, rich text editors, or any complex pretext composition beyond basic text measurement. Triggers on: 'editorial layout', 'newspaper layout', 'drop cap', 'pull quote', 'text around circle', 'DOM pooling pretext', 'masonry pretext', 'bubble shrinkwrap', 'rich inline text', 'mixed font layout', 'pretext editorial', 'magazine layout', 'text reflow 60fps'."
+    },
+    "size_bytes": 32863,
+    "size_lines": 1029,
+    "mtime": "2026-03-29T08:20:42.253Z"
+  },
+  {
+    "id": "qc-debug",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/qc-debug",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/qc-debug/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "qc-debug",
+      "description": ">"
+    },
+    "size_bytes": 9372,
+    "size_lines": 229,
+    "mtime": "2026-02-25T23:30:48.385Z"
+  },
+  {
+    "id": "qc-qa",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/qc-qa",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/qc-qa/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "qc-qa",
+      "description": "Three-pass design system linter for RDNA/DNA theme projects. Catches hardcoded colors, Tailwind v4 max-w traps, token chain bugs, z-index/pointer-events issues, icon source violations, CSS unit inconsistency, missing dark mode overrides, motion violations, viewport breakpoint misuse, typography drift, and missing component schema/dna files. Triggers on \"rdna qa\", \"design system check\", \"token audit\", \"check styles\", \"lint tokens\", \"check consistency\", \"rdna-qa\", or when reviewing CSS/component changes in DNA theme packages."
+    },
+    "size_bytes": 6419,
+    "size_lines": 176,
+    "mtime": "2026-02-25T19:35:02.889Z"
+  },
+  {
+    "id": "qc-visual",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/qc-visual",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/qc-visual/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "qc-visual",
+      "description": ">"
+    },
+    "size_bytes": 6242,
+    "size_lines": 170,
+    "mtime": "2026-03-02T15:53:56.069Z"
+  },
+  {
+    "id": "receiving-code-review",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/receiving-code-review",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/receiving-code-review/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "receiving-code-review",
+      "description": "Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation"
+    },
+    "size_bytes": 6314,
+    "size_lines": 214,
+    "mtime": "2026-01-29T20:52:02.649Z"
+  },
+  {
+    "id": "requesting-code-review",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/requesting-code-review",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/requesting-code-review/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "requesting-code-review",
+      "description": "Use when completing tasks, implementing major features, or before merging to verify work meets requirements"
+    },
+    "size_bytes": 2664,
+    "size_lines": 106,
+    "mtime": "2026-02-25T19:35:40.941Z"
+  },
+  {
+    "id": "skill-creator",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/skill-creator",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/skill-creator/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "skill-creator",
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, update or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy."
+    },
+    "size_bytes": 32370,
+    "size_lines": 480,
+    "mtime": "2026-03-05T15:46:46.179Z"
+  },
+  {
+    "id": "solana-agent-kit",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/solana-agent-kit",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/solana-agent-kit/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "solana-agent-kit",
+      "description": "Comprehensive guide for building AI agents that interact with Solana blockchain using SendAI's Solana Agent Kit. Covers 60+ actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns."
+    },
+    "size_bytes": 15333,
+    "size_lines": 575,
+    "mtime": "2026-02-27T22:07:19.387Z"
+  },
+  {
+    "id": "solana-anchor-claude-skill",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/solana-anchor-claude-skill",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/solana-anchor-claude-skill/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "solana-anchor-claude-skill",
+      "description": "Use when working on Solana Anchor programs, including Rust program files, TypeScript tests, and Anchor.toml configuration. Designed to create minimal, reusable code without unecessary duplication."
+    },
+    "size_bytes": 14412,
+    "size_lines": 361,
+    "mtime": "2026-02-27T22:07:02.502Z"
+  },
+  {
+    "id": "solana-dev-skill",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/solana-dev-skill",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/solana-dev-skill/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "solana-dev",
+      "description": "End-to-end Solana development playbook (Jan 2026). Prefer Solana Foundation framework-kit (@solana/client + @solana/react-hooks) for React/Next.js UI. Prefer @solana/kit for all new client/RPC/transaction code. When legacy dependencies require web3.js, isolate it behind @solana/web3-compat (or @solana/web3.js as a true legacy fallback). Covers wallet-standard-first connection (incl. ConnectorKit), Anchor/Pinocchio programs, Codama-based client generation, LiteSVM/Mollusk/Surfpool testing, and security checklists."
+    },
+    "size_bytes": 4105,
+    "size_lines": 90,
+    "mtime": "2026-02-27T22:07:01.823Z"
+  },
+  {
+    "id": "solana-kit",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/solana-kit",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/solana-kit/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "solana-kit",
+      "description": "Complete guide for @solana/kit - the modern, tree-shakeable, zero-dependency JavaScript SDK from Anza. Covers RPC connections, signers, transaction building with pipe, signing, sending, and account fetching with full TypeScript support."
+    },
+    "size_bytes": 15132,
+    "size_lines": 510,
+    "mtime": "2026-02-27T22:07:19.391Z"
+  },
+  {
+    "id": "solana-kit-migration",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/solana-kit-migration",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/solana-kit-migration/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "solana-kit-migration",
+      "description": "Helps developers understand when to use @solana/kit vs @solana/web3.js (v1), provides migration guidance, API mappings, and handles edge cases for Solana JavaScript SDK transitions"
+    },
+    "size_bytes": 10861,
+    "size_lines": 347,
+    "mtime": "2026-02-27T22:07:19.389Z"
+  },
+  {
+    "id": "surfpool",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/surfpool",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/surfpool/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "surfpool",
+      "description": "Complete Surfpool development environment for Solana - drop-in replacement for solana-test-validator with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio. The fastest way to develop and test Solana programs."
+    },
+    "size_bytes": 11770,
+    "size_lines": 518,
+    "mtime": "2026-02-27T22:07:19.397Z"
+  },
+  {
+    "id": "tailwind-v4-shadcn",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/tailwind-v4-shadcn",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/tailwind-v4-shadcn/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "tailwind-v4-shadcn",
+      "description": "|"
+    },
+    "size_bytes": 19212,
+    "size_lines": 666,
+    "mtime": "2026-01-29T20:52:02.658Z"
+  },
+  {
+    "id": "test-driven-development",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/test-driven-development",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/test-driven-development/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "test-driven-development",
+      "description": "Use when implementing any feature or bugfix, before writing implementation code"
+    },
+    "size_bytes": 9867,
+    "size_lines": 372,
+    "mtime": "2026-01-29T20:52:02.662Z"
+  },
+  {
+    "id": "vercel-composition-patterns",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/vercel-composition-patterns",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/vercel-composition-patterns/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "vercel-composition-patterns",
+      "description": null
+    },
+    "size_bytes": 2886,
+    "size_lines": 90,
+    "mtime": "2026-01-29T20:52:02.664Z"
+  },
+  {
+    "id": "vercel-react-best-practices",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/vercel-react-best-practices",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/vercel-react-best-practices/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "vercel-react-best-practices",
+      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements."
+    },
+    "size_bytes": 6165,
+    "size_lines": 137,
+    "mtime": "2026-01-29T20:52:02.667Z"
+  },
+  {
+    "id": "vercel-react-native-skills",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/vercel-react-native-skills",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/vercel-react-native-skills/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "vercel-react-native-skills",
+      "description": null
+    },
+    "size_bytes": 4439,
+    "size_lines": 122,
+    "mtime": "2026-01-29T03:32:49.453Z"
+  },
+  {
+    "id": "verification-before-completion",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/verification-before-completion",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/verification-before-completion/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "verification-before-completion",
+      "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always"
+    },
+    "size_bytes": 4201,
+    "size_lines": 140,
+    "mtime": "2026-01-29T20:52:02.685Z"
+  },
+  {
+    "id": "voice-to-content",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/voice-to-content",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/voice-to-content/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "voice-to-content",
+      "description": ">"
+    },
+    "size_bytes": 6052,
+    "size_lines": 102,
+    "mtime": "2026-03-06T06:07:54.111Z"
+  },
+  {
+    "id": "vulnhunter",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/vulnhunter",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/vulnhunter/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "vulnhunter",
+      "description": "Security vulnerability detection and variant analysis skill. Use when hunting for dangerous APIs, footgun patterns, error-prone configurations, and vulnerability variants across codebases. Combines sharp edges detection with variant hunting methodology."
+    },
+    "size_bytes": 9192,
+    "size_lines": 308,
+    "mtime": "2026-02-27T22:07:19.402Z"
+  },
+  {
+    "id": "web-design-guidelines",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/web-design-guidelines",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/web-design-guidelines/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "web-design-guidelines",
+      "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\"."
+    },
+    "size_bytes": 1231,
+    "size_lines": 40,
+    "mtime": "2026-01-29T20:52:02.685Z"
+  },
+  {
+    "id": "wf-brainstorm",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/wf-brainstorm",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/wf-brainstorm/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "wf-brainstorm",
+      "description": "Use when exploring a feature idea or problem before planning implementation"
+    },
+    "size_bytes": 3144,
+    "size_lines": 119,
+    "mtime": "2026-02-26T02:34:50.539Z"
+  },
+  {
+    "id": "wf-execute",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/wf-execute",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/wf-execute/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "wf-execute",
+      "description": "Use when you have a written implementation plan to execute in a separate session with review checkpoints"
+    },
+    "size_bytes": 3347,
+    "size_lines": 104,
+    "mtime": "2026-02-26T02:34:50.545Z"
+  },
+  {
+    "id": "wf-plan",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/wf-plan",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/wf-plan/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "wf-plan",
+      "description": "Use when you have a spec or requirements for a multi-step task, before touching code"
+    },
+    "size_bytes": 5006,
+    "size_lines": 162,
+    "mtime": "2026-02-26T02:34:50.542Z"
+  },
+  {
+    "id": "zustand-state-management",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/zustand-state-management",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/zustand-state-management/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "zustand-state-management",
+      "description": "|"
+    },
+    "size_bytes": 13683,
+    "size_lines": 463,
+    "mtime": "2026-01-29T20:52:02.689Z"
+  },
+  {
+    "id": "zz-code-recon",
+    "scope": "global",
+    "path": "/Users/rivermassey/.claude/skills/zz-code-recon",
+    "skill_md_path": "/Users/rivermassey/.claude/skills/zz-code-recon/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "zz-code-recon",
+      "description": "Deep architectural context building for security audits. Use when conducting security reviews, building codebase understanding, mapping trust boundaries, or preparing for vulnerability analysis. Inspired by Trail of Bits methodology."
+    },
+    "size_bytes": 15038,
+    "size_lines": 488,
+    "mtime": "2026-02-27T22:07:19.403Z"
+  },
+  {
+    "id": "apply-design-system",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/apply-design-system",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/apply-design-system/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": null,
+      "description": null
+    },
+    "size_bytes": 10268,
+    "size_lines": 216,
+    "mtime": "2026-03-31T18:43:51.822Z"
+  },
+  {
+    "id": "audit-design-system",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/audit-design-system",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/audit-design-system/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "audit-design-system",
+      "description": "Audit a Figma screen or component for design-system integration drift, including missing shared components, local overrides, and unbound tokens."
+    },
+    "size_bytes": 10482,
+    "size_lines": 236,
+    "mtime": "2026-03-31T18:43:51.823Z"
+  },
+  {
+    "id": "augment-multi-agent-figma",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/augment-multi-agent-figma",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/augment-multi-agent-figma/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": "figma-augment-parallel",
+      "description": null
+    },
+    "size_bytes": 2602,
+    "size_lines": 62,
+    "mtime": "2026-03-31T18:43:51.823Z"
+  },
+  {
+    "id": "cc-figma-component",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/cc-figma-component",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/cc-figma-component/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "cc-figma-component",
+      "description": "Generate a Figma component set from a component contract. Use when the user wants to build or update a Figma component from a contract definition — e.g. 'build the Button Figma component', 'generate Figma component from contract', 'sync the Accordion to Figma', 'create component variants in Figma'. PREREQUISITE: the cc-figma-tokens skill must have been run first — Primitive and Semantic variable collections must exist in the target Figma file. Requires the figma-use and figma-generate-library skills."
+    },
+    "size_bytes": 23614,
+    "size_lines": 446,
+    "mtime": "2026-03-31T18:43:51.823Z"
+  },
+  {
+    "id": "cc-figma-tokens",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/cc-figma-tokens",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/cc-figma-tokens/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "cc-figma-tokens",
+      "description": "Build or update Figma variable collections (Primitives and Semantic) from component-contracts token files. Use when the user wants to sync their design token definitions into Figma as native variables — e.g. 'build the token library', 'sync tokens to Figma', 'create Figma variables from tokens', 'update the variable collections'. This skill is a PREREQUISITE for cc-figma-component — tokens must exist in Figma before components can be built. Requires the figma-use and figma-generate-library skills."
+    },
+    "size_bytes": 10322,
+    "size_lines": 236,
+    "mtime": "2026-03-31T18:43:51.824Z"
+  },
+  {
+    "id": "edit-figma-design",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/edit-figma-design",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/edit-figma-design/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "edit-figma-design",
+      "description": "Create or update Figma designs directly from a written product or UI description using the Figma MCP authoring tools. Use when the user wants a mockup, wireframe, screen, component, flow, or concept designed in Figma from text, or wants to iterate on an existing Figma file from textual feedback. Despite the name, this skill can start from a new blank file or edit an existing one. Do not use for capture-based workflows that turn a running page into Figma; use `figma-generate-design` for those, and use `implement-design` for code implementation requests. Requires Figma MCP server connection."
+    },
+    "size_bytes": 9787,
+    "size_lines": 217,
+    "mtime": "2026-03-31T18:43:51.824Z"
+  },
+  {
+    "id": "figma-code-connect-components",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-code-connect-components",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-code-connect-components/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-code-connect-components",
+      "description": "Connects Figma design components to code components using Code Connect mapping tools. Use when user says \"code connect\", \"connect this component to code\", \"map this component\", \"link component to code\", \"create code connect mapping\", or wants to establish mappings between Figma designs and code implementations. For canvas writes via `use_figma`, use `figma-use`."
+    },
+    "size_bytes": 4644,
+    "size_lines": 90,
+    "mtime": "2026-03-31T18:43:51.825Z"
+  },
+  {
+    "id": "figma-create-design-system-rules",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-create-design-system-rules",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-create-design-system-rules/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-create-design-system-rules",
+      "description": "Generates custom design system rules for the user's codebase. Use when user says \"create design system rules\", \"generate rules for my project\", \"set up design rules\", \"customize design system guidelines\", or wants to establish project-specific conventions for Figma-to-code workflows. Requires Figma MCP server connection."
+    },
+    "size_bytes": 2978,
+    "size_lines": 71,
+    "mtime": "2026-03-31T18:43:51.825Z"
+  },
+  {
+    "id": "figma-create-new-file",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-create-new-file",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-create-new-file/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-create-new-file",
+      "description": "Create a new blank Figma file. Use when the user wants to create a new Figma design or FigJam file, or when you need a new file before calling use_figma. Handles plan resolution via whoami if needed. Usage — /figma-create-new-file [editorType] [fileName] (e.g. /figma-create-new-file figjam My Whiteboard)"
+    },
+    "size_bytes": 2652,
+    "size_lines": 61,
+    "mtime": "2026-03-31T18:43:51.825Z"
+  },
+  {
+    "id": "figma-generate-design",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-generate-design",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-generate-design/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-generate-design",
+      "description": "Create or update full-page screens in Figma by leveraging published design systems. Triggers on \"write to Figma\", \"create in Figma from code\", \"push page to Figma\", \"create a screen\", \"build a landing page in Figma\", \"update the Figma screen to match code\"."
+    },
+    "size_bytes": 2205,
+    "size_lines": 45,
+    "mtime": "2026-03-31T18:43:51.826Z"
+  },
+  {
+    "id": "figma-generate-library",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-generate-library",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-generate-library/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-generate-library",
+      "description": "Build professional-grade design systems in Figma that match code. Orchestrates multi-phase workflows across 20-100+ use_figma calls. Triggers on \"create design system in Figma\", \"sync tokens to Figma\", \"build component library\", \"generate Figma library from code\"."
+    },
+    "size_bytes": 4088,
+    "size_lines": 119,
+    "mtime": "2026-03-31T18:43:51.826Z"
+  },
+  {
+    "id": "figma-implement-design",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-implement-design",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-implement-design/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "figma-implement-design",
+      "description": "Translates Figma designs into production-ready code with 1:1 visual fidelity. Use when implementing UI from Figma files, when user mentions \"implement design\", \"generate code\", \"implement component\", \"build Figma design\", \"code this design\", or wants to create code from a Figma file. For canvas writes via `use_figma`, use `figma-use`."
+    },
+    "size_bytes": 5761,
+    "size_lines": 135,
+    "mtime": "2026-03-31T18:43:51.827Z"
+  },
+  {
+    "id": "figma-use",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-use",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/figma-use/SKILL.md",
+    "managed_by_npx": false,
+    "frontmatter": {
+      "name": null,
+      "description": null
+    },
+    "size_bytes": 8358,
+    "size_lines": 206,
+    "mtime": "2026-03-31T18:43:51.827Z"
+  },
+  {
+    "id": "fix-design-system-finding",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/fix-design-system-finding",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/fix-design-system-finding/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "fix-design-system-finding",
+      "description": "Fix a specific design-system integration finding in a Figma screen or component, including missing shared components, local overrides, and unbound tokens."
+    },
+    "size_bytes": 7593,
+    "size_lines": 166,
+    "mtime": "2026-03-31T18:43:51.829Z"
+  },
+  {
+    "id": "rad-spacing",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/rad-spacing",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/rad-spacing/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "rad-spacing",
+      "description": "Use for Figma layout work when creating new screens, refactoring spacing, standardizing hierarchy, or spacing nested components. Apply hierarchical spacing using the Gestalt principle of proximity so outer containers get proportionally more spacing than inner elements, using 8px/4px increments from the file's library variables."
+    },
+    "size_bytes": 5160,
+    "size_lines": 67,
+    "mtime": "2026-03-31T18:43:51.830Z"
+  },
+  {
+    "id": "sync-figma-token",
+    "scope": "project-dna",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/sync-figma-token",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.claude/skills/sync-figma-token/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "sync-figma-token",
+      "description": "Sync design tokens between code and Figma variables with strict drift reporting, mandatory approval gate, safe delta apply, and persisted reports."
+    },
+    "size_bytes": 3705,
+    "size_lines": 133,
+    "mtime": "2026-03-31T18:43:51.830Z"
+  },
+  {
+    "id": "typography",
+    "scope": "project-agents",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "typography",
+      "description": "Apply professional typography principles to create readable, hierarchical, and aesthetically refined interfaces. Use when setting type scales, choosing fonts, adjusting spacing, designing text-heavy layouts, implementing dark mode typography, or when asked about readability, font pairing, line height, measure, typographic hierarchy, variable fonts, font loading, or OpenType features."
+    },
+    "size_bytes": 11449,
+    "size_lines": 445,
+    "mtime": "2026-03-31T18:43:51.813Z"
+  },
+  {
+    "id": "typography-audit",
+    "scope": "project-agents",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography-audit",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography-audit/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "typography-audit",
+      "description": "Audits web typography for punctuation, font selection, sizing, spacing, OpenType features, hierarchy, layout, typeface pairing, brand identity, and display type. Use when writing CSS/HTML for text, selecting or pairing typefaces, reviewing typography in web designs, configuring font-feature-settings, building a type system, or auditing typographic quality. Triggers on tasks involving font-family, font-size, line-height, letter-spacing, @font-face, font pairing, or typographic correctness."
+    },
+    "size_bytes": 3001,
+    "size_lines": 82,
+    "mtime": "2026-03-31T18:43:51.789Z"
+  },
+  {
+    "id": "typography-scale",
+    "scope": "project-agents",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography-scale",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/typography-scale/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "typography-scale",
+      "description": "Create a modular typography scale with size, weight, and line-height relationships."
+    },
+    "size_bytes": 1374,
+    "size_lines": 44,
+    "mtime": "2026-03-31T18:43:51.813Z"
+  },
+  {
+    "id": "web-typography",
+    "scope": "project-agents",
+    "path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/web-typography",
+    "skill_md_path": "/Users/rivermassey/Desktop/dev/DNA-pixel-art/.agents/skills/web-typography/SKILL.md",
+    "managed_by_npx": true,
+    "frontmatter": {
+      "name": "web-typography",
+      "description": "Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design."
+    },
+    "size_bytes": 26975,
+    "size_lines": 397,
+    "mtime": "2026-03-31T18:43:51.816Z"
+  }
+]
