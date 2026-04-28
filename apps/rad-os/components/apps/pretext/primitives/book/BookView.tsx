@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
+import Image from 'next/image';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { BookSettings } from '../../types';
@@ -62,7 +63,13 @@ function renderPageElement(el: BookPageEl, key: string) {
         <div
           key={key}
           className="absolute bg-head"
-          style={{ left: el.x, top: el.y, width: el.w, height: 1 }}
+          style={{
+            ['--pretext-rule-thickness' as string]: '1px',
+            left: el.x,
+            top: el.y,
+            width: el.w,
+            height: 'var(--pretext-rule-thickness)',
+          } as CSSProperties}
         />
       );
 
@@ -70,17 +77,26 @@ function renderPageElement(el: BookPageEl, key: string) {
       return (
         <div
           key={key}
-          className="absolute bg-head opacity-20"
-          style={{ left: el.x, top: el.y, width: 1, height: el.h }}
+          className="absolute bg-line"
+          style={{
+            ['--pretext-rule-thickness' as string]: '1px',
+            left: el.x,
+            top: el.y,
+            width: 'var(--pretext-rule-thickness)',
+            height: el.h,
+          } as CSSProperties}
         />
       );
 
     case 'image':
       return (
-        <img
+        <Image
           key={key}
           src={el.src}
           alt={el.alt}
+          width={Math.max(1, Math.round(el.w))}
+          height={Math.max(1, Math.round(el.h))}
+          unoptimized
           className="absolute object-cover"
           style={{ left: el.x, top: el.y, width: el.w, height: el.h }}
         />
@@ -127,7 +143,7 @@ export function BookView({
           <div
             key={pageIndex}
             data-testid="pretext-book-page"
-            className="relative overflow-hidden border border-[var(--color-line)] bg-card shadow-sm"
+            className="relative overflow-hidden border border-line bg-card shadow-sm"
             style={{ width: settings.pageWidth, height: settings.pageHeight }}
           >
             {page.els.length === 1 && page.els[0]?.kind === 'section-title'

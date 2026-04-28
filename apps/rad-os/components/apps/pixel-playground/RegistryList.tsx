@@ -1,6 +1,7 @@
 'use client';
 
 import type { PixelGrid } from '@rdna/pixel';
+import { CompactRowButton } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import { PixelThumb } from './PixelThumb';
 
@@ -18,39 +19,37 @@ export function RegistryList({
   return (
     <ul className="flex flex-col px-3 pb-3">
       <li>
-        {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:list-row-button-chrome-too-heavy owner:design expires:2027-01-01 issue:DNA-001 */}
-        <button
-          type="button"
+        <CompactRowButton
           onClick={() => onSelect(null)}
-          className={`w-full flex items-center gap-2 px-2 py-1 text-left hover:bg-depth ${
-            selectedName === null ? 'bg-depth text-main' : 'text-mute'
-          }`}
+          selected={selectedName === null}
+          className={`font-mono ${selectedName === null ? 'bg-depth text-main' : 'text-mute'}`}
           aria-label="New blank"
+          leading={(
+            <span className="flex size-5 items-center justify-center">
+              <Icon name="plus" />
+            </span>
+          )}
         >
-          <span className="w-5 h-5 shrink-0 flex items-center justify-center">
-            <Icon name="plus" />
-          </span>
-          <span className="font-mono text-xs truncate">New</span>
-        </button>
+          New
+        </CompactRowButton>
       </li>
       {entries.map((entry) => {
         const selected = selectedName === entry.name;
         return (
           <li key={entry.name}>
-            {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:list-row-button-chrome-too-heavy owner:design expires:2027-01-01 issue:DNA-001 */}
-            <button
-              type="button"
+            <CompactRowButton
               onClick={() => onSelect(entry)}
-              className={`w-full flex items-center gap-2 px-2 py-1 text-left hover:bg-depth ${
-                selected ? 'bg-depth text-main' : 'text-mute'
-              }`}
+              selected={selected}
+              className={`font-mono ${selected ? 'bg-depth text-main' : 'text-mute'}`}
               aria-label={entry.name}
+              leading={(
+                <span className="flex size-5 items-center justify-center">
+                  <PixelThumb grid={entry} size={20} />
+                </span>
+              )}
             >
-              <span className="w-5 h-5 shrink-0 flex items-center justify-center">
-                <PixelThumb grid={entry} size={20} />
-              </span>
-              <span className="font-mono text-xs truncate">{entry.name}</span>
-            </button>
+              {entry.name}
+            </CompactRowButton>
           </li>
         );
       })}

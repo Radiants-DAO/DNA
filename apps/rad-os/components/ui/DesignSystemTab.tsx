@@ -27,7 +27,7 @@ function DeferredSectionPlaceholder({
     <div
       className={`flex items-center justify-center border border-dashed border-rule bg-depth px-3 py-4 ${minHeightClass}`}
     >
-      <span className="font-mono text-[10px] uppercase tracking-wide text-mute">
+      <span className="font-mono text-xs uppercase tracking-wide text-mute">
         {label}
       </span>
     </div>
@@ -89,7 +89,7 @@ function ComponentShowcaseCard({
         <p className="text-base text-sub">{entry.description}</p>
 
         {!hasPreview ? null : (
-          // eslint-disable-next-line rdna/prefer-rdna-components -- reason:preview-click-capture owner:design expires:2027-01-01 issue:DNA-001
+          // eslint-disable-next-line rdna/prefer-rdna-components -- reason:design-system-preview-click-capture owner:design-system expires:2027-01-01 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#design-system-preview-click-capture
           <div className="border-t border-rule pt-3" onClick={handlePreviewClick} onKeyDown={undefined} role="presentation">
             <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
             {isReady ? (

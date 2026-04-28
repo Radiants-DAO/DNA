@@ -190,7 +190,7 @@ export function PixelPlaygroundControls({
         <div
           role="radiogroup"
           aria-label="Brush tool"
-          className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px"
+          className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px"
         >
           <div className="col-span-2 flex h-6 items-center justify-center bg-ctrl-cell-bg font-mono text-xs uppercase text-main">
             {activeToolLabel}
@@ -224,7 +224,7 @@ export function PixelPlaygroundControls({
       >
         <div
           data-rdna="pixel-canvas-pane"
-          className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px"
+          className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px"
           role="group"
           aria-label="Canvas controls"
         >
@@ -327,7 +327,7 @@ export function PixelPlaygroundControls({
               >
                 {resolvedCornerPreviewSettings.pixelScale}
               </span>
-              <span className="font-mono text-ctrl-label text-[0.5rem] uppercase tracking-wider">
+              <span className="font-mono text-ctrl-label text-xs uppercase tracking-wider">
                 X
               </span>
             </PropertyRow>
@@ -366,7 +366,7 @@ export function PixelPlaygroundControls({
               <ToggleGroup.Item value="grid">Grid</ToggleGroup.Item>
               <ToggleGroup.Item value="list">List</ToggleGroup.Item>
             </ToggleGroup>
-            <span className="font-mono text-[0.625rem] uppercase tracking-normal text-mute">
+            <span className="font-mono text-xs uppercase tracking-normal text-mute">
               {libraryCount} found
             </span>
           </div>
@@ -430,22 +430,27 @@ export function PixelPlaygroundControls({
             aria-label="Registry entries"
             aria-describedby={libraryHintId}
             className={[
-              'min-h-0 flex-1 bg-white',
+              'min-h-0 flex-1 bg-page',
               libraryView === 'grid'
                 ? 'grid grid-cols-[repeat(auto-fill,minmax(3rem,1fr))] content-start gap-2 p-2'
                 : 'flex flex-col gap-px p-2',
             ].join(' ')}
           >
-            <button
+            <Button
               type="button"
               role="radio"
               aria-checked={selectedEntryName === null}
               aria-label="New"
+              mode="flat"
+              tone="neutral"
+              rounded="none"
+              textOnly
+              fullWidth
               onClick={() => onSelectEntry(null)}
               className={
                 libraryView === 'grid'
                   ? [
-                      'flex aspect-square items-center justify-center bg-white text-ink transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
+                      'flex aspect-square items-center justify-center bg-page text-main transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
                       selectedEntryName === null ? 'text-main' : 'text-mute hover:text-main',
                     ].join(' ')
                   : [
@@ -456,11 +461,11 @@ export function PixelPlaygroundControls({
             >
               <Icon name="plus" />
               {libraryView === 'list' && (
-                <span className="max-w-full truncate font-mono text-[0.625rem] uppercase tracking-normal">
+                <span className="max-w-full truncate font-mono text-xs uppercase tracking-normal">
                   New
                 </span>
               )}
-            </button>
+            </Button>
             {usesIconInventoryLibrary
               ? filteredIconEntries.map((entry) => {
                   const selected = selectedEntryName === entry.name;
@@ -468,18 +473,23 @@ export function PixelPlaygroundControls({
                   const isMappingSource = iconMappingState?.source24Name === entry.name;
                   const isMappingTarget = iconMappingState?.target16Name === entry.name;
                   return (
-                    <button
+                    <Button
                       key={entry.key}
                       type="button"
                       role="radio"
                       aria-checked={selected}
                       aria-label={`${entry.size === 24 ? '21px' : '16px'} ${entry.name}`}
                       title={entry.name}
+                      mode="flat"
+                      tone="neutral"
+                      rounded="none"
+                      textOnly
+                      fullWidth
                       onClick={() => onSelectIconLibraryEntry?.(entry)}
                       className={
                         libraryView === 'grid'
                           ? [
-                              'relative flex aspect-square items-center justify-center bg-white transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
+                              'relative flex aspect-square items-center justify-center bg-page transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
                               selected || isMappingSource || isMappingTarget
                                 ? 'text-main'
                                 : 'text-mute hover:text-main',
@@ -498,38 +508,43 @@ export function PixelPlaygroundControls({
                         bg={libraryView === 'grid' ? 'white' : undefined}
                       />
                       {libraryView === 'grid' && (
-                        <span className="absolute bottom-1 right-1 bg-page px-1 font-mono text-[0.5rem] leading-3 text-mute">
+                        <span className="absolute bottom-1 right-1 bg-page px-1 font-mono text-xs leading-3 text-mute">
                           {entry.size === 24 ? '21' : '16'}
                         </span>
                       )}
                       {libraryView === 'list' && (
                         <>
-                          <span className="shrink-0 font-mono text-[0.5rem] uppercase tracking-normal text-mute">
+                          <span className="shrink-0 font-mono text-xs uppercase tracking-normal text-mute">
                             {entry.size === 24 ? '21' : '16'}px
                           </span>
-                          <span className="max-w-full truncate font-mono text-[0.625rem] uppercase tracking-normal">
+                          <span className="max-w-full truncate font-mono text-xs uppercase tracking-normal">
                             {entry.name}
                           </span>
                         </>
                       )}
-                    </button>
+                    </Button>
                   );
                 })
               : filteredRegistryEntries.map((entry) => {
               const selected = selectedEntryName === entry.name;
               return (
-                <button
+                <Button
                   key={entry.name}
                   type="button"
                   role="radio"
                   aria-checked={selected}
                   aria-label={entry.name}
                   title={entry.name}
+                  mode="flat"
+                  tone="neutral"
+                  rounded="none"
+                  textOnly
+                  fullWidth
                   onClick={() => onSelectEntry(entry)}
                   className={
                     libraryView === 'grid'
                       ? [
-                          'flex aspect-square items-center justify-center bg-white transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
+                          'flex aspect-square items-center justify-center bg-page transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-ctrl-glow',
                           selected ? 'text-main' : 'text-mute hover:text-main',
                         ].join(' ')
                       : [
@@ -544,11 +559,11 @@ export function PixelPlaygroundControls({
                     bg={libraryView === 'grid' ? 'white' : undefined}
                   />
                   {libraryView === 'list' && (
-                    <span className="max-w-full truncate font-mono text-[0.625rem] uppercase tracking-normal">
+                    <span className="max-w-full truncate font-mono text-xs uppercase tracking-normal">
                       {entry.name}
                     </span>
                   )}
-                </button>
+                </Button>
               );
             })}
           </ScrollArea.Root>
@@ -601,7 +616,7 @@ export function PixelPlaygroundControls({
               decrementIcon={<Icon name="chevron-left" />}
               incrementIcon={<Icon name="chevron-right" />}
               suffix={
-                <span className="flex items-center px-1 font-mono text-ctrl-label text-[0.5rem] uppercase tracking-wider">
+                <span className="flex items-center px-1 font-mono text-ctrl-label text-xs uppercase tracking-wider">
                   PX
                 </span>
               }

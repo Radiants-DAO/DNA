@@ -68,7 +68,7 @@ export function ZoomRects() {
   const { from, to } = zoomAnimation;
 
   return (
-    <div className="fixed inset-0 z-[9999] pointer-events-none">
+    <div className="fixed inset-0 z-system pointer-events-none">
       {Array.from({ length: STEP_COUNT }, (_, i) => {
         const t = i / (STEP_COUNT - 1);
         // Show current step + 2 trailing for the ghosting effect

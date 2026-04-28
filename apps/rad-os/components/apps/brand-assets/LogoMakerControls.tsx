@@ -214,12 +214,12 @@ export function LogoMakerControls({
         <div className="flex flex-col gap-1 px-1">
           <div className="flex items-center justify-between">
             <span
-              className="font-mono text-ctrl-text-active text-[0.625rem] tabular-nums"
+              className="font-mono text-ctrl-text-active text-xs tabular-nums"
               style={{ textShadow: '0 0 8px var(--color-ctrl-glow)' }}
             >
               {sizeReadout}
             </span>
-            <span className="font-mono text-ctrl-label text-[0.5rem] uppercase tracking-wider">
+            <span className="font-mono text-ctrl-label text-xs uppercase tracking-wider">
               {sizeUnit}
             </span>
           </div>
@@ -234,7 +234,7 @@ export function LogoMakerControls({
             ariaLabel="Size"
           />
           {sizeTicks && sizeTicks.length > 0 && (
-            <div className="flex justify-between font-mono text-ctrl-label text-[0.5rem] tabular-nums">
+            <div className="flex justify-between font-mono text-ctrl-label text-xs tabular-nums">
               {sizeTicks.map((t) => (
                 <span key={t}>{t}</span>
               ))}
@@ -445,4 +445,3 @@ export function LogoMakerControls({
     </ControlPanel>
   );
 }
-

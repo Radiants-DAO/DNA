@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   ActionButton,
   ButtonStrip,
+  NumberInput,
   PropertyRow,
 } from '@rdna/ctrl';
 import { AppWindow } from '@rdna/radiants/components/core';
@@ -45,8 +46,8 @@ function DitherBandStack({ ramp, pixelScale }: DitherBandStackProps) {
           aria-hidden
           style={{
             position: 'absolute',
-            left: 0,
-            right: 0,
+            left: '0%',
+            right: '0%',
             top: `${(band.index / ramp.steps) * 100}%`,
             height: `${100 / ramp.steps}%`,
             backgroundColor: 'var(--color-window-chrome-from)',
@@ -110,19 +111,17 @@ export function DitherTab() {
             />
           </PropertyRow>
           <PropertyRow label="STEPS" chrome="flush" size="xl" divider={false}>
-            <input
-              type="number"
+            <NumberInput
               value={steps}
-              onChange={(event) => {
-                const parsed = Number.parseInt(event.currentTarget.value, 10);
-                if (!Number.isFinite(parsed)) return;
-                const next = Math.max(2, Math.min(64, Math.round(parsed)));
-                setSteps(next);
+              onValueChange={(value) => {
+                if (value == null || !Number.isFinite(value)) return;
+                setSteps(Math.max(2, Math.min(64, Math.round(value))));
               }}
               min={2}
               max={64}
               step={1}
-              className="min-h-[--ctrl-row-height] flex-1 bg-transparent font-mono text-[0.625rem] text-ctrl-text-active outline-none"
+              active
+              className="flex-1"
             />
           </PropertyRow>
         </StudioRailDropdown>
@@ -197,7 +196,7 @@ export function DitherTab() {
               className="w-full"
             />
           </PropertyRow>
-          <pre className="max-h-[22rem] overflow-auto whitespace-pre-wrap bg-ctrl-cell-bg p-2 font-mono text-[0.625rem] leading-4 text-ctrl-label">
+          <pre className="max-h-[22rem] overflow-auto whitespace-pre-wrap bg-ctrl-cell-bg p-2 font-mono text-xs leading-4 text-ctrl-label">
             {code}
           </pre>
         </StudioRailDropdown>
@@ -208,17 +207,17 @@ export function DitherTab() {
           collapsedTooltip="Details"
         >
           <PropertyRow label="BANDS" chrome="flush" size="xl" divider={false}>
-            <span className="font-mono text-[0.625rem] text-ctrl-text-active">
+            <span className="font-mono text-xs text-ctrl-text-active">
               {bandCount}
             </span>
           </PropertyRow>
           <PropertyRow label="TILE" chrome="flush" size="xl" divider={false}>
-            <span className="font-mono text-[0.625rem] text-ctrl-text-active">
+            <span className="font-mono text-xs text-ctrl-text-active">
               {tilePx}px
             </span>
           </PropertyRow>
           <PropertyRow label="DIRECTION" chrome="flush" size="xl" divider={false}>
-            <span className="font-mono text-[0.625rem] uppercase text-ctrl-text-active">
+            <span className="font-mono text-xs uppercase text-ctrl-text-active">
               {direction}
             </span>
           </PropertyRow>
@@ -265,10 +264,10 @@ export function DitherTab() {
         >
           <section
             aria-labelledby="pixel-lab-dither-title"
-            className="grid h-full min-h-0 grid-rows-[auto_1fr] bg-pure-black text-ctrl-label"
+            className="grid h-full min-h-0 grid-rows-[auto_1fr] bg-inv text-ctrl-label"
           >
             <header className="border-b border-rule px-3 py-2">
-              <p className="font-mono text-[10px] uppercase tracking-normal text-ctrl-muted">
+              <p className="font-mono text-xs uppercase tracking-normal text-ctrl-muted">
                 Dither
               </p>
               <h2
@@ -284,7 +283,7 @@ export function DitherTab() {
               style={{ backgroundColor: 'var(--color-window-chrome-to)' }}
             >
               <DitherBandStack ramp={ramp} pixelScale={pixelScale} />
-              <dl className="absolute inset-x-0 bottom-0 grid grid-cols-3 border-t border-rule bg-ctrl-cell-bg/80 font-mono text-[0.625rem] uppercase tracking-normal">
+              <dl className="absolute inset-x-0 bottom-0 grid grid-cols-3 border-t border-rule bg-ctrl-cell-bg font-mono text-xs uppercase tracking-normal">
                 <div className="flex items-center justify-between gap-2 border-r border-rule px-2 py-1">
                   <dt className="text-ctrl-label">BANDS</dt>
                   <dd className="text-ctrl-text-active">{bandCount}</dd>

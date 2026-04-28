@@ -87,9 +87,9 @@ export function RadioDisc({
         className,
       ].filter(Boolean).join(' ')}
       style={{
-        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:video-backdrop-true-black owner:rad-os expires:2026-12-31 issue:DNA-999
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:video-backdrop-true-black owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         backgroundColor: 'oklch(0 0 0)',
-        // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-bubble-shading owner:rad-os expires:2026-12-31 issue:DNA-999
+        // eslint-disable-next-line rdna/no-hardcoded-colors, rdna/no-raw-shadow -- reason:paper-design-bubble-shading owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         boxShadow: [
           // Outer cast shadow so the bubble reads as "sitting" on the LCD.
           '0 6px 14px oklch(0 0 0 / 0.55)',
@@ -112,7 +112,6 @@ export function RadioDisc({
         width="0"
         height="0"
         className="absolute pointer-events-none"
-        style={{ position: 'absolute', width: 0, height: 0 }}
       >
         <defs>
           <filter id="radio-fisheye" x="0" y="0" width="100%" height="100%">
@@ -175,7 +174,7 @@ export function RadioDisc({
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
           backgroundImage:
             'repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0 0 0 / 0.15) 2px, oklch(0 0 0 / 0.15) 4px)',
           mixBlendMode: 'multiply',
@@ -187,7 +186,7 @@ export function RadioDisc({
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-fisheye-vignette owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-fisheye-vignette owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
           background:
             'radial-gradient(circle at center, transparent 40%, oklch(0 0 0 / 0.35) 80%, oklch(0 0 0 / 0.7) 100%)',
         }}
@@ -198,7 +197,7 @@ export function RadioDisc({
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-glass-specular owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-glass-specular owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
           background:
             'radial-gradient(ellipse 60% 45% at 32% 24%, oklch(1 0 0 / 0.18) 0%, oklch(1 0 0 / 0.06) 35%, transparent 70%)',
           mixBlendMode: 'screen',
@@ -217,7 +216,7 @@ export function RadioDisc({
         {ticks.map((t) => {
           const isLit = t.index < litCount;
           const isPlayhead = isPlaying && isLit && t.index === litCount - 1;
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-tick-palette owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-tick-palette owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
           const litColor = 'oklch(0.76 0.14 85)';
           const dimColor = 'color-mix(in oklch, var(--color-cream) 28%, transparent)';
           const playheadColor = 'var(--color-cream)';
@@ -251,7 +250,7 @@ export function RadioDisc({
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-reticle owner:rad-os expires:2026-12-31 issue:DNA-999
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:paper-design-reticle owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
           backgroundImage: [
             'linear-gradient(to bottom, transparent 0, transparent calc(50% - 0.5px), oklch(0.76 0.14 85 / 0.22) calc(50% - 0.5px), oklch(0.76 0.14 85 / 0.22) calc(50% + 0.5px), transparent calc(50% + 0.5px))',
             'linear-gradient(to right, transparent 0, transparent calc(50% - 0.5px), oklch(0.76 0.14 85 / 0.22) calc(50% - 0.5px), oklch(0.76 0.14 85 / 0.22) calc(50% + 0.5px), transparent calc(50% + 0.5px))',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Button } from '@rdna/radiants/components/core';
+import { Button, TextArea } from '@rdna/radiants/components/core';
 import { useRadOSStore } from '@/store';
 import type { MonolithGradientMapValues } from '@/store/slices/preferencesSlice';
 
@@ -284,12 +284,12 @@ export function MonolithThemeTuner() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-[960] w-[22rem] max-w-[calc(100vw-2rem)] pointer-events-auto">
+    <div className="fixed bottom-4 right-4 z-system w-[22rem] max-w-[calc(100vw-2rem)] pointer-events-auto">
       <Button size="sm" onClick={() => setIsOpen((current) => !current)}>
         MONOLITH TUNER
       </Button>
       {isOpen ? (
-        <div className="mt-2 max-h-[calc(100vh-6rem)] overflow-auto border border-line bg-page p-3 text-main pixel-rounded-6 pixel-shadow-floating">
+        <div className="mt-2 max-h-[calc(100vh-6rem)] overflow-auto bg-page p-3 text-main pixel-rounded-6 pixel-shadow-floating">
           <div className="mb-3 flex items-center justify-between gap-2">
             <div className="font-joystix text-sm uppercase">Theme Knobs</div>
             <div className="flex gap-2">
@@ -304,10 +304,10 @@ export function MonolithThemeTuner() {
           <div className="mb-2 mt-4 font-mondwest text-xs uppercase text-mute">Light Gradient Map</div>
           <ControlGroup controls={GRADIENT_CONTROLS} values={values} onChange={handleChange} />
 
-          <textarea
+          <TextArea
             readOnly
             value={output}
-            className="mt-3 h-52 w-full resize-none border border-line bg-depth p-2 font-mono text-xs text-main"
+            className="mt-3 h-52 resize-none font-mono text-xs"
             aria-label="Copyable Monolith theme tuning output"
           />
         </div>

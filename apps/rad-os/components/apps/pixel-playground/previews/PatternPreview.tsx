@@ -24,11 +24,11 @@ export function PatternPreview({ grid }: PatternPreviewProps) {
     <>
       {grid ? (
         <div
+          data-rdna-brand-primitive
           className="h-full min-h-0 w-full"
           style={{
             /* The preview surface IS the authored asset — brand primitives are
              * intentional here so the tile is mode-stable. */
-            /* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:pattern-preview-surface-brand-primitive owner:design expires:2027-01-01 issue:DNA-001 */
             backgroundColor: 'var(--color-cream)',
             imageRendering: 'pixelated',
           }}
@@ -51,12 +51,12 @@ export function PatternPreview({ grid }: PatternPreviewProps) {
               >
                 {rects.map((r, i) => (
                   <rect
+                    data-rdna-brand-primitive
                     key={i}
                     x={r.x}
                     y={r.y}
                     width={r.w}
                     height={r.h}
-                    /* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:pattern-preview-surface-brand-primitive owner:design expires:2027-01-01 issue:DNA-001 */
                     fill="var(--color-ink)"
                   />
                 ))}

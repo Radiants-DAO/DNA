@@ -43,6 +43,7 @@ export function ComponentCodeOutput({ entry, propValues }: ComponentCodeOutputPr
           <Button
             size="sm"
             icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
+            aria-label={copied ? 'Copied to clipboard' : 'Copy component code to clipboard'}
             onClick={handleCopy}
           >
             {copied ? 'Copied!' : 'Copy'}

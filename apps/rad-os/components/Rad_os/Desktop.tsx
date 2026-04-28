@@ -69,25 +69,25 @@ export function Desktop({ className = '' }: DesktopProps) {
     <div className={`fixed inset-0 overflow-hidden ${className}`.trim()}>
       {/* Background Layer - Ambient wallpaper in widget mode, WebGL sun otherwise */}
       {AmbientWallpaper ? (
-        <div className="absolute inset-0 z-0 bg-inv">
+        <div className="absolute inset-0 z-base bg-inv">
           <AmbientWallpaper />
         </div>
       ) : (
-        <div className="rados-wallpaper absolute inset-0 z-0 bg-accent dark:bg-page">
+        <div className="rados-wallpaper absolute inset-0 z-base bg-accent dark:bg-page">
           <WebGLSun />
           <MonolithWallpaper />
         </div>
       )}
 
       {/* Background Watermark */}
-      <div className="rados-watermark absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
+      <div className="rados-watermark absolute inset-0 flex items-center justify-center z-base text-main pointer-events-none text-center">
         <div className="rados-watermark-lockup relative">
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mx-auto dark-glow-logo" />
         </div>
       </div>
 
       {/* Top bar — Start + app launchers, marquee slot, settings */}
-      <div className="absolute top-0 left-0 right-0 z-[200] pt-2 px-2">
+      <div className="absolute top-0 left-0 right-0 z-chrome pt-2 px-2">
         <Taskbar />
       </div>
 
@@ -96,7 +96,7 @@ export function Desktop({ className = '' }: DesktopProps) {
       <RadioWidget />
 
       {/* Windows Container - sits above icons but below taskbar */}
-      <div className="absolute inset-0 z-[100] pointer-events-none">
+      <div className="absolute inset-0 z-windows pointer-events-none">
         {[...windows]
           .filter((w) => w.isOpen)
           .sort((a, b) => (a.zIndex || 100) - (b.zIndex || 100))
@@ -135,7 +135,7 @@ export function Desktop({ className = '' }: DesktopProps) {
 
       {/* Floating widget panel (above everything when in widget mode) */}
       {ambient && AmbientWidget && (
-        <div className="fixed top-4 right-4 z-[950] pointer-events-auto">
+        <div className="fixed top-4 right-4 z-system pointer-events-auto">
           <AmbientWidget appId={ambient.app.id} onExit={() => toggleWidget(ambient.app.id)} />
         </div>
       )}

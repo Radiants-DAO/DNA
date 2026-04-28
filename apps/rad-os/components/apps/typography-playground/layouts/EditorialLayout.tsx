@@ -101,7 +101,7 @@ function FontRole({ font, role }: { font: string; role: string }) {
 
 export function EditorialLayout() {
   return (
-    <div className="text-main min-h-full overflow-y-auto">
+    <div className="text-main h-full min-h-0 overflow-y-auto">
       <div className="max-w-[36rem] mx-auto px-6 py-8 space-y-8">
 
         {/* ── Year numeral — Joystix (The Shout) ── */}
@@ -114,7 +114,6 @@ export function EditorialLayout() {
 
         {/* ── Title — Blackletter (The Ceremony) ── */}
         <header className="border-b-2 border-main pb-4">
-          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:editorial-specimen-display-size owner:design-system expires:2026-12-31 issue:DNA-001 */}
           <h1 className="font-display text-main leading-tight" style={{ fontSize: 'var(--font-size-4xl)' }}>
             First Things First
           </h1>
@@ -139,8 +138,7 @@ export function EditorialLayout() {
         <div className="relative">
           <span
             className="float-left mr-2 font-display text-main leading-none"
-            // eslint-disable-next-line rdna/no-hardcoded-typography,rdna/no-raw-line-height -- reason:drop-cap-requires-precise-sizing owner:design-system expires:2026-12-31 issue:DNA-001
-            style={{ fontSize: '4rem', lineHeight: 0.85 }}
+            style={{ fontSize: 'var(--font-size-4xl)', lineHeight: 'var(--leading-none)' }}
           >
             W
           </span>
@@ -209,11 +207,9 @@ export function EditorialLayout() {
 
         {/* ── Colophon — Waves Tiny CPC (The Whisper) ── */}
         <div className="border-t border-line pt-4 pb-2 text-center">
-          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:colophon-micro-text-below-scale owner:design-system expires:2026-12-31 issue:DNA-001 */}
           <p className="font-tiny text-xs text-mute leading-relaxed tracking-wide">
             Set in Radiants — Waves Blackletter CPC · Joystix Monospace · Mondwest · PixelCode · Pixeloid Sans · Waves Tiny CPC
           </p>
-          {/* eslint-disable-next-line rdna/no-hardcoded-typography -- reason:colophon-micro-text-below-scale owner:design-system expires:2026-12-31 issue:DNA-001 */}
           <p className="font-tiny text-xs text-mute/40 mt-1 tracking-wider">
             RDNA Design System · Six voices, one vocabulary
           </p>

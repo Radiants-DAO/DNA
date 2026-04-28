@@ -82,6 +82,21 @@ vi.mock('@rdna/radiants/components/core', () => {
         {children}
       </button>
     ),
+    CompactRowButton: ({
+      children,
+      selected,
+      onClick,
+      ...props
+    }: React.ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) => (
+      <button
+        type="button"
+        data-selected={selected ? 'true' : 'false'}
+        onClick={onClick}
+        {...props}
+      >
+        {children}
+      </button>
+    ),
     Input: ({
       value = '',
       onChange,

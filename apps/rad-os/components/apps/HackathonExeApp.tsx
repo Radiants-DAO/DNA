@@ -1,7 +1,8 @@
 'use client';
 
-import { Badge, Button } from '@rdna/radiants/components/core';
+import { AppWindow, Badge, Button } from '@rdna/radiants/components/core';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { type AppProps } from '@/lib/apps';
 
 const TABS = [
   { id: 'winners', label: 'Winners' },
@@ -39,7 +40,7 @@ function PanelHeader({ eyebrow, title, copy }: { eyebrow: string; title: string;
     <header className="space-y-3">
       <Badge variant="info" size="sm">{eyebrow}</Badge>
       <div>
-        <h1 className="font-heading text-4xl text-head leading-none tracking-tight">
+        <h1 className="font-heading text-3xl text-head leading-tight tracking-normal">
           {title}
         </h1>
         <p className="mt-3 max-w-2xl font-mondwest text-base text-mute">
@@ -58,11 +59,11 @@ function WinnersPanel() {
         title="Hackathon.EXE"
         copy="Campaign launch surface for winners, submissions, and the permanent Monolith archive inside RadOS."
       />
-        <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 @md:grid-cols-3">
         {WINNERS.map((winner) => (
           <article
             key={winner.title}
-            className="pixel-rounded-6 border border-line bg-card/95 p-4 shadow-floating"
+            className="pixel-rounded-6 bg-card p-4 pixel-shadow-floating"
           >
             <p className="font-mono text-xs uppercase text-accent">{winner.title}</p>
             <h2 className="mt-3 font-heading text-xl text-head">{winner.project}</h2>
@@ -70,7 +71,7 @@ function WinnersPanel() {
           </article>
         ))}
       </div>
-      <div className="pixel-rounded-6 border border-line bg-depth p-4">
+      <div className="pixel-rounded-6 bg-depth p-4">
         <p className="font-mono text-sm uppercase text-accent">Launch behavior</p>
         <p className="mt-2 font-mondwest text-sm text-main">
           Visiting <span className="font-mono text-accent">#monolith</span> switches the whole
@@ -89,9 +90,9 @@ function SubmissionsPanel() {
         title="Projects to wire in"
         copy="This MVP reserves the first-class RadOS app surface. The next pass should connect final content, media, and links."
       />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 @sm:grid-cols-2">
         {SUBMISSIONS.map((item) => (
-          <div key={item} className="pixel-rounded-6 border border-rule bg-card p-4">
+          <div key={item} className="pixel-rounded-6 bg-card p-4">
             <p className="font-mono text-sm uppercase text-main">{item}</p>
           </div>
         ))}
@@ -121,13 +122,16 @@ function ArchivePanel() {
   );
 }
 
-export default function HackathonExeApp({ windowId }: { windowId: string }) {
+export default function HackathonExeApp({ windowId }: AppProps) {
   const { getActiveTab, setActiveTab } = useWindowManager();
   const activeTab = getActiveTab(windowId) ?? 'winners';
 
   return (
-    <div className="monolith-campaign-surface monolith-scanline monolith-boot h-full overflow-auto bg-page p-4 text-main">
-      <div className="relative z-[2] mx-auto flex min-h-full max-w-5xl flex-col gap-5">
+    <AppWindow.Content
+      layout="single"
+      className="monolith-campaign-surface monolith-scanline monolith-boot h-full min-h-0 overflow-auto bg-page p-4 text-main"
+    >
+      <div className="relative mx-auto flex min-h-full max-w-5xl flex-col gap-5">
         <nav className="flex flex-wrap gap-2">
           {TABS.map((tab) => (
             <Button
@@ -146,6 +150,6 @@ export default function HackathonExeApp({ windowId }: { windowId: string }) {
         {activeTab === 'archive' ? <ArchivePanel /> : null}
         {activeTab !== 'submissions' && activeTab !== 'archive' ? <WinnersPanel /> : null}
       </div>
-    </div>
+    </AppWindow.Content>
   );
 }

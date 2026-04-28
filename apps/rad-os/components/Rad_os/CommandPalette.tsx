@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Command as Cmdk } from 'cmdk';
 import {
+  DialogDescription,
+  DialogTitle,
+} from '@radix-ui/react-dialog';
+import {
   APP_CATALOG,
   START_MENU_CATEGORIES,
   START_MENU_LINKS,
@@ -39,6 +43,10 @@ export function CommandPalette() {
       className="cmdk-shell"
     >
       <div className="cmdk-surface pixel-rounded-6 pixel-shadow-floating bg-page">
+        <DialogTitle className="sr-only">Launch app</DialogTitle>
+        <DialogDescription className="sr-only">
+          Search apps and links, then choose an item to open it.
+        </DialogDescription>
         <Cmdk.Input
           placeholder="LAUNCH AN APP..."
           className="cmdk-input"

@@ -41,6 +41,4 @@ export interface FibTile {
   tones: readonly (BrandColor | ExtendedColor)[];
 }
 
-export type HierarchyMode = 'light' | 'dark';
-
 export type ColorsSubTab = 'palette' | 'semantic';

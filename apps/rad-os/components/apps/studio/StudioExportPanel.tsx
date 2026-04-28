@@ -38,6 +38,8 @@ interface StudioExportPanelProps {
 }
 
 const SCALE_VALUES: ReadonlyArray<ExportScale> = [1, 2, 4, 8];
+const railSegmentedControlClassName =
+  'h-full [&_[role=radiogroup]]:h-full [&_[role=radio]]:!min-h-6 [&_[role=radio]]:!max-h-6';
 
 function triggerDownload(filename: string, blobOrUrl: Blob | string) {
   const url = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl);
@@ -209,6 +211,7 @@ export function StudioExportPanel({
           value={format}
           chrome="flush"
           stretch
+          className={railSegmentedControlClassName}
           onChange={(v) => setFormat(v as ExportFormat)}
           options={[
             { value: 'png', label: 'PNG' },
@@ -229,6 +232,7 @@ export function StudioExportPanel({
           value={String(scale)}
           chrome="flush"
           stretch
+          className={railSegmentedControlClassName}
           onChange={(v) => {
             const n = Number(v) as ExportScale;
             if (SCALE_VALUES.includes(n)) setScale(n);
@@ -254,7 +258,7 @@ export function StudioExportPanel({
       </PropertyRow>
 
       <div
-        className="flex min-h-6 max-h-6 items-stretch gap-px bg-ink"
+        className="flex min-h-6 max-h-6 items-stretch gap-px bg-ctrl-border-inactive"
         role="group"
         aria-label="Export actions"
       >

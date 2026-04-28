@@ -68,7 +68,7 @@ export function StudioRightRail({
         collapsedIcon={<Icon name="grid-3x3" />}
         collapsedTooltip="Layers"
       >
-        <div className="flex max-h-[12rem] flex-col gap-px overflow-y-auto">
+        <div className="flex max-h-[12rem] w-full min-w-0 max-w-full flex-col gap-px overflow-y-auto">
           {displayLayers.map((layer, visualIdx) => {
             const isFirst = visualIdx === 0;
             const isLast = visualIdx === displayLayers.length - 1;
@@ -83,6 +83,7 @@ export function StudioRightRail({
                 canDelete={canDelete}
                 chrome="flush"
                 actionSize="md"
+                className="w-full min-w-0 [&:has(input:focus)_[role=toolbar]]:hidden"
                 onSelect={() => onSelectLayer(layer.id)}
                 onToggleVisible={() => onToggleLayerVisibility(layer.id)}
                 onMoveUp={() => onMoveLayerUp(layer.id)}

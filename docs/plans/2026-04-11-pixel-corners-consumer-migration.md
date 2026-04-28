@@ -11,7 +11,7 @@
 - `generatePixelCornerBorder(R)` in `@rdna/pixel` — cell-center rasterization matching user's hand-drawn SVG fixtures at R=4/6/8/12/16/20
 - `PixelBorder` component rewritten to consume it (per-corner radii, per-edge flags, container clamp via ResizeObserver)
 - 10 PixelBorder tests + 9 generator tests + 6 SVG fixtures all passing
-- Live preview page at `/pixel-corners`
+- Live preview page at `/dev/pixel-corners`
 - Previous commit on this branch: the per-corner + edges + clamp feature
 
 **Tech Stack:** React 19, TypeScript, Tailwind v4, Vitest, @testing-library/react, pnpm workspaces

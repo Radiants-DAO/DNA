@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
+import Image from 'next/image';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { EditorialSettings } from '../../types';
@@ -35,8 +36,9 @@ function renderElement(element: EditorialLayoutElement, key: string) {
             top: element.y,
             whiteSpace: 'pre',
             font: element.font,
-            lineHeight: `${element.lh}px`,
-          }}
+            ['--pretext-line-height' as string]: `${element.lh}px`,
+            lineHeight: 'var(--pretext-line-height)',
+          } as CSSProperties}
         >
           {element.text}
         </div>
@@ -55,9 +57,10 @@ function renderElement(element: EditorialLayoutElement, key: string) {
             fontFamily: element.fontFamily,
             fontSize: element.fontSize,
             fontWeight: element.fontWeight,
-            lineHeight: `${element.lh}px`,
+            ['--pretext-line-height' as string]: `${element.lh}px`,
+            lineHeight: 'var(--pretext-line-height)',
             textAlign: element.center ? 'center' : undefined,
-          }}
+          } as CSSProperties}
         >
           {element.text}
         </div>
@@ -75,8 +78,9 @@ function renderElement(element: EditorialLayoutElement, key: string) {
             height: element.h,
             fontFamily: element.fontFamily,
             fontSize: element.fontSize,
-            lineHeight: 0.85,
-          }}
+            ['--pretext-line-height' as string]: '0.85',
+            lineHeight: 'var(--pretext-line-height)',
+          } as CSSProperties}
         >
           {element.letter}
         </div>
@@ -94,8 +98,9 @@ function renderElement(element: EditorialLayoutElement, key: string) {
             height: element.h,
             fontFamily: element.fontFamily,
             fontSize: element.fontSize,
-            lineHeight: `${element.lh}px`,
-          }}
+            ['--pretext-line-height' as string]: `${element.lh}px`,
+            lineHeight: 'var(--pretext-line-height)',
+          } as CSSProperties}
         >
           {element.lines.map((line, index) => (
             <div key={`${key}-line-${index}`}>{line}</div>
@@ -105,10 +110,13 @@ function renderElement(element: EditorialLayoutElement, key: string) {
 
     case 'image':
       return (
-        <img
+        <Image
           key={key}
           src={element.src}
           alt={element.alt}
+          width={Math.max(1, Math.round(element.w))}
+          height={Math.max(1, Math.round(element.h))}
+          unoptimized
           className="absolute border border-line object-cover"
           style={{
             left: element.x,
@@ -125,11 +133,12 @@ function renderElement(element: EditorialLayoutElement, key: string) {
           key={key}
           className="absolute bg-line"
           style={{
+            ['--pretext-rule-thickness' as string]: '1px',
             left: element.x,
             top: element.y,
             width: element.w,
-            height: 1,
-          }}
+            height: 'var(--pretext-rule-thickness)',
+          } as CSSProperties}
         />
       );
   }

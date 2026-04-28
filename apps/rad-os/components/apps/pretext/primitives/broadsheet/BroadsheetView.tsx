@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
+import Image from 'next/image';
 import type { PreparedTextWithSegments } from '@chenglou/pretext';
 import type { PretextBlock } from '../../markdown';
 import type { BroadsheetSettings } from '../../types';
@@ -48,11 +49,12 @@ function renderElement(
             fontFamily: element.family,
             fontSize: element.fontSize,
             fontWeight: element.bold ? 700 : 400,
-            lineHeight: `${element.lh}px`,
+            ['--pretext-line-height' as string]: `${element.lh}px`,
+            lineHeight: 'var(--pretext-line-height)',
             textAlign: element.align,
             textTransform: element.uppercase ? 'uppercase' : undefined,
             letterSpacing: element.letterSpacing,
-          }}
+          } as CSSProperties}
         >
           {element.text}
         </div>
@@ -85,8 +87,9 @@ function renderElement(
             width: bodyFontSize * 2.4,
             height: bodyFontSize * 4,
             fontSize: bodyFontSize * 2.4,
-            lineHeight: 1,
-          }}
+            ['--pretext-line-height' as string]: '1',
+            lineHeight: 'var(--pretext-line-height)',
+          } as CSSProperties}
         >
           {element.letter}
         </div>
@@ -105,9 +108,10 @@ function renderElement(
             fontFamily: element.family,
             fontSize: element.fontSize,
             fontWeight: element.bold ? 700 : 400,
-            lineHeight: `${element.lh}px`,
+            ['--pretext-line-height' as string]: `${element.lh}px`,
+            lineHeight: 'var(--pretext-line-height)',
             textAlign: element.center ? 'center' : undefined,
-          }}
+          } as CSSProperties}
         >
           {element.text}
         </div>
@@ -115,10 +119,13 @@ function renderElement(
 
     case 'hero':
       return (
-        <img
+        <Image
           key={key}
           src={element.src}
           alt=""
+          width={Math.max(1, Math.round(element.w))}
+          height={Math.max(1, Math.round(element.h))}
+          unoptimized
           className="absolute border border-line object-cover"
           style={{
             left: element.x,
@@ -135,11 +142,12 @@ function renderElement(
           key={key}
           className="absolute bg-head"
           style={{
+            ['--pretext-rule-thickness' as string]: '1px',
             left: element.x,
             top: element.y + topOffset,
             width: element.w,
-            height: 1,
-          }}
+            height: 'var(--pretext-rule-thickness)',
+          } as CSSProperties}
         />
       );
   }

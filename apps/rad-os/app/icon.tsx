@@ -7,6 +7,7 @@ export default function Icon() {
   return new ImageResponse(
     (
       <div
+        data-rdna-brand-primitive
         style={{
           width: '100%',
           height: '100%',
@@ -14,6 +15,7 @@ export default function Icon() {
           alignItems: 'center',
           justifyContent: 'center',
           background: '#FCE184',
+          // eslint-disable-next-line rdna/no-raw-radius -- reason:brand-icon-renderer-requires-pixel-perfect-radius owner:design-system expires:2027-01-01 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#brand-icon-rendering
           borderRadius: 4,
         }}
       >

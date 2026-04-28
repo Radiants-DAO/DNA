@@ -17,13 +17,16 @@ export function RadioWidget() {
 
   return (
     <div
+      data-rdna-window-layout="outside-app-window"
       aria-hidden={!widgetOpen}
-      className="fixed z-[80] pointer-events-none"
+      className="fixed z-desktop pointer-events-none"
       style={{
+        ['--radio-widget-top' as string]: '56px',
+        ['--radio-widget-right' as string]: '16px',
         // Anchor below the taskbar (top-0 pt-4, ≈40px tall) and flush with
         // the right-dock settings area (taskbar has px-4 = 16px gutter).
-        top: 56,
-        right: 16,
+        top: 'var(--radio-widget-top)',
+        right: 'var(--radio-widget-right)',
         transform: widgetOpen
           ? 'translateX(0)'
           : 'translateX(calc(100% + 32px))',

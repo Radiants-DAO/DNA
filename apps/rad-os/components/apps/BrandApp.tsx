@@ -64,18 +64,13 @@ export function BrandApp({ windowId }: AppProps) {
       {activeTab === 'logos' && <LogoMakerCanvas state={logoState} />}
       {activeTab === 'colors' && <ColorsTab />}
       {activeTab === 'fonts' && (
-        /* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */
-        <AppWindow.Content className="bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
-          <AppWindow.Island corners="pixel" padding="none" className="@container">
+        <AppWindow.Content data-rdna-brand-surface="primitive" className="bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
+          <AppWindow.Island corners="pixel" padding="none" noScroll className="@container flex flex-col">
             <div className="shrink-0 px-3 py-2 border-b border-line bg-card flex items-center gap-3">
               <SubTabNav active={typoSubTab} onChange={setTypoSubTab} />
             </div>
             <div className="flex-1 min-h-0">
-              <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0">
-                  <TypographyPlayground activeSubTab={typoSubTab} />
-                </div>
-              </div>
+              <TypographyPlayground activeSubTab={typoSubTab} />
             </div>
           </AppWindow.Island>
         </AppWindow.Content>

@@ -38,7 +38,10 @@ describe('PixelPlayground tab layout', () => {
     expect(controlsSource).not.toContain("variant === 'editToolbar'");
     expect(controlsSource).toContain('aria-label="Canvas controls"');
     expect(controlsSource).toContain('ariaLabel="Canvas size"');
-    expect(controlsSource).toContain(
+    expect(controlsSource).toContain('IconCell,');
+    expect(controlsSource).toContain('<IconCell');
+    expect(controlsSource).toContain('className="grid grid-cols-5 gap-[--ctrl-cell-gap] px-1"');
+    expect(controlsSource).not.toContain(
       'className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px"',
     );
   });

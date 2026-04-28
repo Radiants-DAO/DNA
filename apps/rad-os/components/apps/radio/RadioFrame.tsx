@@ -25,15 +25,21 @@ export function RadioFrame({ children, className = '', style }: RadioFrameProps)
       data-drag-handle=""
       className={['dark relative flex flex-col overflow-hidden', className].filter(Boolean).join(' ')}
       style={{
-        width: 277,
+        ['--radio-frame-width' as string]: '277px',
+        ['--radio-frame-padding-bottom' as string]: '8.5px',
+        width: 'var(--radio-frame-width)',
         // Height is intrinsic — driven by the transport pill + LCD stack.
         // Bottom padding matches the LCD's side gap ((277 - 260) / 2 = 8.5)
         // so the dark frame material wraps uniformly around the LCD.
-        paddingBottom: 8.5,
+        paddingBottom: 'var(--radio-frame-padding-bottom)',
         // Paper ORBITER DARK: gentle 32px top, large 136px bowl-shaped bottom.
+        // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-frame-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         borderTopLeftRadius: 32,
+        // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-frame-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         borderTopRightRadius: 32,
+        // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-frame-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         borderBottomLeftRadius: 136,
+        // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-frame-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
         borderBottomRightRadius: 136,
         backgroundImage: [
           'url(https://app.paper.design/file-assets/01KP7YATPHZNBNEC215AM9958W/3VVBRZ1DW67PP068JSK3FPWHDM.svg)',

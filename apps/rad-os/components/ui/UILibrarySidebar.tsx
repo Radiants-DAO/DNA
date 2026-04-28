@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import type { RegistryEntry } from '@rdna/radiants/registry';
-import { Input } from '@rdna/radiants/components/core';
+import { CompactRowButton, Input } from '@rdna/radiants/components/core';
 import { ComponentCodeOutput } from './ui-library/ComponentCodeOutput';
 import {
   type GroupedCategory,
@@ -73,21 +73,21 @@ export function UILibraryNavigator({
                 {group.label}
               </span>
             </div>
-            {group.entries.map((entry) => (
-              // eslint-disable-next-line rdna/prefer-rdna-components -- reason:navigator-list-item owner:design expires:2027-01-01 issue:DNA-001
-              <button
-                key={entry.name}
-                type="button"
-                onClick={() => handleSelect(entry)}
-                className={`w-full text-left px-3 py-1.5 font-mono text-xs cursor-pointer transition-colors ${
-                  selectedEntry?.name === entry.name
-                    ? 'bg-accent text-flip font-bold'
-                    : 'text-main hover:bg-hover'
-                }`}
-              >
-                {entry.name}
-              </button>
-            ))}
+            {group.entries.map((entry) => {
+              const selected = selectedEntry?.name === entry.name;
+              return (
+                <CompactRowButton
+                  key={entry.name}
+                  onClick={() => handleSelect(entry)}
+                  selected={selected}
+                  className={`px-3 py-1.5 font-mono ${
+                    selected ? 'bg-accent text-flip font-bold' : 'text-main'
+                  }`}
+                >
+                  {entry.name}
+                </CompactRowButton>
+              );
+            })}
           </div>
         ))}
         {grouped.length === 0 && (

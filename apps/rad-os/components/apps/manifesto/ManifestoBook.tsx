@@ -12,6 +12,7 @@ import {
   type PageEl,
   type PaginationResult,
 } from './manifesto-layout';
+import { Button } from '@rdna/radiants/components/core';
 import { CoverPage } from './CoverPage';
 import { ForwardPage } from './ForwardPage';
 
@@ -299,7 +300,13 @@ function renderElement(
         <div
           key={idx}
           className="absolute bg-head"
-          style={{ left: el.x, top: el.y, width: el.w, height: 1 }}
+          style={{
+            ['--manifesto-rule-thickness' as string]: '1px',
+            left: el.x,
+            top: el.y,
+            width: el.w,
+            height: 'var(--manifesto-rule-thickness)',
+          } as React.CSSProperties}
         />
       );
 
@@ -307,8 +314,14 @@ function renderElement(
       return (
         <div
           key={`col-rule-${idx}`}
-          className="absolute bg-head opacity-20"
-          style={{ left: el.x, top: el.y, width: 1, height: el.h }}
+          className="absolute bg-line"
+          style={{
+            ['--manifesto-rule-thickness' as string]: '1px',
+            left: el.x,
+            top: el.y,
+            width: 'var(--manifesto-rule-thickness)',
+            height: el.h,
+          } as React.CSSProperties}
         />
       );
   }
@@ -531,25 +544,31 @@ export function ManifestoBook() {
 
       {/* Page indicator */}
       <div className="flex items-center gap-3 py-2 text-mute font-joystix text-xs select-none">
-        <button
+        <Button
           type="button"
-          className="px-2 py-1 disabled:opacity-30"
+          size="sm"
+          mode="flat"
+          tone="neutral"
+          textOnly
           disabled={currentPage === 0}
           onClick={goPrev}
           aria-label="Previous page"
         >
           &larr;
-        </button>
+        </Button>
         <span className="min-w-[5rem] text-center">{pageLabel}</span>
-        <button
+        <Button
           type="button"
-          className="px-2 py-1 disabled:opacity-30"
+          size="sm"
+          mode="flat"
+          tone="neutral"
+          textOnly
           disabled={currentPage >= totalPages - 1}
           onClick={goNext}
           aria-label="Next page"
         >
           &rarr;
-        </button>
+        </Button>
       </div>
     </div>
   );

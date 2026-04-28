@@ -41,9 +41,9 @@ function createEmptyLayer(): LayerProps {
 }
 
 function layerIdToLabel(id: string): string {
-  if (id === 'default') return 'Layer 1';
+  if (id === 'default') return 'L1';
   const m = /^layer-(\d+)$/.exec(id);
-  if (m) return `Layer ${m[1]}`;
+  if (m) return `L${m[1]}`;
   return id;
 }
 
@@ -296,7 +296,7 @@ export default function PixelArtEditor() {
             <div
               role="radiogroup"
               aria-label="Brush color"
-              className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px"
+              className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px"
             >
               {state.colorsRailProps.paletteColors.map((c) => (
                 <CtrlColorSwatch
@@ -326,7 +326,7 @@ export default function PixelArtEditor() {
   const layersSlot = useMemo(
     () => ({
       side: 'right' as const,
-      maxWidth: 320,
+      maxWidth: 172,
       label: 'Layers',
       hideTab: true,
       isOpen: true,

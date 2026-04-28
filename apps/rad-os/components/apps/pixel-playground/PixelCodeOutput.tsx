@@ -46,7 +46,7 @@ export function PixelCodeOutput({
     return (
       <OutputShell title="OUTPUT">
         <div className="flex min-h-[6rem] flex-1 items-center justify-center px-3 py-4">
-          <p className="text-center font-mono text-[0.625rem] uppercase tracking-normal text-mute">
+          <p className="text-center font-mono text-xs uppercase tracking-normal text-mute">
             Draw something to see its output
           </p>
         </div>
@@ -112,6 +112,7 @@ function OutputShell({
             size="sm"
             mode="flat"
             icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
+            aria-label={copied ? 'Copied to clipboard' : 'Copy output to clipboard'}
             onClick={onCopy}
           >
             {copied ? 'Copied' : 'Copy'}

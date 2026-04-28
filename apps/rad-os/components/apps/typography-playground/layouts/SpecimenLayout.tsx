@@ -288,9 +288,8 @@ function TypeScaleGrid() {
               {label}
             </span>
             <div
-              className="bg-main"
+              className="h-0.5 bg-main"
               style={{
-                height: '2px',
                 width: `calc(${rem} * 6)`,
               }}
             />
@@ -307,7 +306,7 @@ function TypeScaleGrid() {
 
 export function SpecimenLayout() {
   return (
-    <div className="text-main min-h-full overflow-y-auto">
+    <div className="text-main h-full min-h-0 overflow-y-auto">
       {/* Page header */}
       <div className="px-5 pt-5 pb-4 border-b-2 border-main">
         <div className="flex items-end justify-between gap-4">

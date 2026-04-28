@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useEffect } from 'react';
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import type { DefaultReactSuggestionItem, SuggestionMenuProps } from '@blocknote/react';
 
@@ -84,8 +85,7 @@ export function RdnaSlashMenu({
   return (
     <div
       ref={menuRef}
-      className="rdna-slash-menu bg-card border border-line overflow-y-auto py-1 shadow-lg"
-      style={{ maxHeight: 320, minWidth: 220 }}
+      className="rdna-slash-menu max-h-80 min-w-56 bg-card border border-line overflow-y-auto py-1 shadow-lg"
     >
       {[...groups.entries()].map(([group, groupItems]) => (
         <div key={group}>
@@ -101,14 +101,19 @@ export function RdnaSlashMenu({
             const idx = runningIdx++;
             const isSelected = idx === selectedIndex;
             return (
-              <button
+              <Button
                 key={item.title}
+                type="button"
                 data-selected={isSelected || undefined}
-                className="rdna-slash-item w-full flex items-center gap-3 px-3 py-1.5 text-left transition-colors"
-                style={{
-                  background: isSelected ? 'oklch(from var(--color-accent) l c h / 0.10)' : undefined,
-                  color: isSelected ? 'var(--color-accent)' : undefined,
-                }}
+                fullWidth
+                size="sm"
+                mode="flat"
+                tone="neutral"
+                textOnly
+                className={[
+                  'rdna-slash-item flex items-center gap-3 px-3 py-1.5 text-left transition-colors',
+                  isSelected ? 'bg-accent-soft text-accent' : '',
+                ].filter(Boolean).join(' ')}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => onItemClick?.(item)}
               >
@@ -135,7 +140,7 @@ export function RdnaSlashMenu({
                     {item.badge}
                   </span>
                 )}
-              </button>
+              </Button>
             );
           })}
         </div>

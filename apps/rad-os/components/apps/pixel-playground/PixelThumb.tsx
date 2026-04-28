@@ -24,8 +24,7 @@ export function PixelThumb({
       aria-hidden
       style={{ imageRendering: 'pixelated' }}
     >
-      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:pixel-thumb-preview-surface owner:logo-maker expires:2027-01-01 issue:DNA-001 */}
-      <rect width={grid.width} height={grid.height} fill={bg} />
+      <rect data-rdna-brand-primitive width={grid.width} height={grid.height} fill={bg} />
       <path d={d} fill="currentColor" />
     </svg>
   );

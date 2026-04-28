@@ -22,6 +22,7 @@
     "@chenglou/pretext": "^0.0.4",
     "@mantine/core": "^8.3.18",
     "@mantine/hooks": "^8.3.18",
+    "@radix-ui/react-dialog": "1.1.15",
     "@rdna/ctrl": "workspace:*",
     "@rdna/monolith": "workspace:*",
     "@rdna/pixel": "workspace:*",

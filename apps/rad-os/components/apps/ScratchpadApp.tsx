@@ -4,7 +4,7 @@ import { Component, useState } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { type AppProps } from '@/lib/apps';
-import { AppWindow, Menubar } from '@rdna/radiants/components/core';
+import { AppWindow, Button, Input, Menubar } from '@rdna/radiants/components/core';
 import { useScratchpadDocs } from './scratchpad/use-scratchpad-docs';
 
 interface EditorErrorBoundaryProps {
@@ -43,15 +43,18 @@ class EditorErrorBoundary extends Component<
       return (
         <div className="flex h-full items-center justify-center gap-2 text-sm text-mute">
           <span>Document was corrupted.</span>
-          <button
-            className="text-accent underline"
+          <Button
+            size="sm"
+            mode="flat"
+            tone="accent"
+            textOnly
             onClick={() => {
               this.props.onReset();
               this.setState({ hasError: false });
             }}
           >
             Reset
-          </button>
+          </Button>
         </div>
       );
     }
@@ -112,11 +115,11 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
       <div className="relative flex h-full flex-col">
         <div className="relative shrink-0">
           <div
-            className="absolute left-0 right-0 top-0 z-10 h-1 rdna-pat rdna-pat--diagonal-dots"
+            className="absolute left-0 right-0 top-0 z-desktop h-1 rdna-pat rdna-pat--diagonal-dots"
             style={{ ['--pat-color' as string]: 'var(--color-ink)' }}
           />
           <div
-            className="absolute left-0 right-0 top-1 z-10 h-1 rdna-pat rdna-pat--spray-grid"
+            className="absolute left-0 right-0 top-1 z-desktop h-1 rdna-pat rdna-pat--spray-grid"
             style={{ ['--pat-color' as string]: 'var(--color-ink)' }}
           />
         </div>
@@ -156,33 +159,41 @@ export function ScratchpadApp({ windowId: _windowId }: AppProps) {
         {rename.isOpen ? (
           <div className="flex shrink-0 items-center gap-2 border-b border-line bg-card px-3 py-2">
             <span className="font-joystix text-sm text-mute">Rename:</span>
-            <input
-              className="flex-1 border border-line bg-page px-2 py-1 text-sm text-main outline-none"
-              style={{ fontFamily: 'var(--font-sans)' }}
-              value={rename.value}
-              onChange={(event) => rename.setValue(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  rename.confirm();
-                }
-                if (event.key === 'Escape') {
-                  rename.cancel();
-                }
-              }}
-              autoFocus
-            />
-            <button
-              className="px-2 py-1 text-sm text-accent"
+            <div className="min-w-0 flex-1">
+              <Input
+                size="sm"
+                fullWidth
+                value={rename.value}
+                onChange={(event) => rename.setValue(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    rename.confirm();
+                  }
+                  if (event.key === 'Escape') {
+                    rename.cancel();
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <Button
+              size="sm"
+              mode="flat"
+              tone="accent"
+              textOnly
               onClick={rename.confirm}
             >
               Save
-            </button>
-            <button
-              className="px-2 py-1 text-sm text-mute"
+            </Button>
+            <Button
+              size="sm"
+              mode="flat"
+              tone="neutral"
+              textOnly
               onClick={rename.cancel}
             >
               Cancel
-            </button>
+            </Button>
           </div>
         ) : null}
 

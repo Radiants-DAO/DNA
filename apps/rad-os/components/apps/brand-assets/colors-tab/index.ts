@@ -6,6 +6,5 @@ export type {
   SemanticCategory,
   FibSlot,
   FibTile,
-  HierarchyMode,
   ColorsSubTab,
 } from './types';

@@ -2,7 +2,8 @@
 
 import { type AppProps } from '@/lib/apps';
 import { AppWindow } from '@rdna/radiants/components/core';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   prepareWithSegments,
   layout,
@@ -284,6 +285,7 @@ function DropCapBox({
   } as const;
 
   return (
+    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:goodnews-dropcap-art-button owner:rad-os expires:2027-01-01 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#goodnews-print-art-rendering
     <button
       type="button"
       className="absolute text-head"
@@ -295,8 +297,13 @@ function DropCapBox({
         justifyContent: 'center',
         boxSizing: 'border-box',
         width: Math.ceil(glyphWidth / size) * size + size * 4 + borderWidth * 2,
-        padding: `${size * 2}px ${size * 2}px 0`,
-        border: `${borderWidth}px solid var(--color-line)`,
+        ['--goodnews-dropcap-padding' as string]: `${size * 2}px`,
+        paddingTop: 'var(--goodnews-dropcap-padding)',
+        paddingRight: 'var(--goodnews-dropcap-padding)',
+        paddingLeft: 'var(--goodnews-dropcap-padding)',
+        borderWidth,
+        borderStyle: 'solid',
+        borderColor: 'var(--color-line)',
         overflow: 'hidden',
         appearance: 'none',
         background: 'none',
@@ -312,7 +319,7 @@ function DropCapBox({
       <div
         style={{
           position: 'absolute',
-          inset: 0,
+          inset: '0%',
           backgroundColor: 'var(--color-accent)',
         }}
       />
@@ -321,7 +328,7 @@ function DropCapBox({
           className="rdna-pat"
           style={{
             position: 'absolute',
-            inset: 0,
+            inset: '0%',
             ['--_pat' as string]: `var(${PAT_TOKENS[patternIndex]})`,
             ['--pat-color' as string]: 'var(--color-ink)',
             ['--pat-mask-size' as string]: `${maskSize} ${maskSize}`,
@@ -1124,8 +1131,8 @@ export function GoodNewsLegacyApp(_props: AppProps) {
   return (
     <AppWindow.Content layout="bleed">
       <div className="relative h-full">
-        <div className="absolute left-0 right-0 top-0 z-10 h-1 rdna-pat rdna-pat--diagonal-dots" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
-        <div className="absolute left-0 right-0 top-1 z-10 h-1 rdna-pat rdna-pat--spray-grid" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
+        <div className="absolute left-0 right-0 top-0 z-desktop h-1 rdna-pat rdna-pat--diagonal-dots" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
+        <div className="absolute left-0 right-0 top-1 z-desktop h-1 rdna-pat rdna-pat--spray-grid" style={{ ['--pat-color' as string]: 'var(--color-ink)' }} />
         <div
           ref={containerRef}
           className="h-full overflow-y-auto border-t border-line bg-card"
@@ -1133,7 +1140,10 @@ export function GoodNewsLegacyApp(_props: AppProps) {
           {result ? (
             <div
               className="relative"
-              style={{ height: result.mastheadHeight + result.height + 32 }}
+              style={{
+                ['--goodnews-page-height' as string]: `${result.mastheadHeight + result.height + 32}px`,
+                height: 'var(--goodnews-page-height)',
+              } as CSSProperties}
             >
               {ruleXs.map((ruleX, index) => (
                 <div
@@ -1142,9 +1152,10 @@ export function GoodNewsLegacyApp(_props: AppProps) {
                   style={{
                     left: ruleX,
                     top: result.mastheadHeight,
-                    width: 1,
+                    ['--goodnews-rule-thickness' as string]: '1px',
+                    width: 'var(--goodnews-rule-thickness)',
                     height: result.height,
-                  }}
+                  } as CSSProperties}
                 />
               ))}
 
@@ -1168,11 +1179,12 @@ export function GoodNewsLegacyApp(_props: AppProps) {
                           fontFamily: element.family,
                           fontSize: element.fontSize,
                           fontWeight: element.bold ? 700 : 400,
-                          lineHeight: `${element.lh}px`,
+                          ['--goodnews-line-height' as string]: `${element.lh}px`,
+                          lineHeight: 'var(--goodnews-line-height)',
                           textAlign: element.align,
                           textTransform: element.uppercase ? 'uppercase' : undefined,
                           letterSpacing: element.letterSpacing,
-                        }}
+                        } as CSSProperties}
                       >
                         {element.text}
                       </div>
@@ -1225,9 +1237,10 @@ export function GoodNewsLegacyApp(_props: AppProps) {
                               : 'var(--font-sans)',
                           fontSize: element.fontSize,
                           fontWeight: element.bold ? 700 : 400,
-                          lineHeight: `${element.lh}px`,
+                          ['--goodnews-line-height' as string]: `${element.lh}px`,
+                          lineHeight: 'var(--goodnews-line-height)',
                           textAlign: element.center ? 'center' : undefined,
-                        }}
+                        } as CSSProperties}
                       >
                         {element.text}
                       </div>
@@ -1245,10 +1258,12 @@ export function GoodNewsLegacyApp(_props: AppProps) {
                           height: element.h,
                         }}
                       >
-                        <img
+                        <Image
                           src="/tabloid/hero-image.png"
                           alt=""
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          fill
+                          sizes={`${Math.round(element.w)}px`}
+                          className="object-cover"
                         />
                       </div>
                     );
@@ -1262,8 +1277,9 @@ export function GoodNewsLegacyApp(_props: AppProps) {
                           left: element.x,
                           top: element.y + topOffset,
                           width: element.w,
-                          height: 1,
-                        }}
+                          ['--goodnews-rule-thickness' as string]: '1px',
+                          height: 'var(--goodnews-rule-thickness)',
+                        } as CSSProperties}
                       />
                     ) : null;
 

@@ -653,7 +653,7 @@ export function PixelPlayground({
   if (usesInlineWorkbench) {
     return (
       <AppWindow.Content layout="single" className="bg-brand-stage">
-        <div className="flex-1 min-h-0 min-w-0 p-2">
+        <div className="flex-1 min-h-0 min-w-0">
           <AppWindow.Island
             corners="pixel"
             padding="none"
@@ -677,7 +677,7 @@ export function PixelPlayground({
 
   return (
     <AppWindow.Content layout="single" className="bg-brand-stage">
-      <div className="flex-1 min-h-0 min-w-0 p-2">
+      <div className="flex-1 min-h-0 min-w-0">
         <AppWindow.Island
           corners="pixel"
           padding="none"

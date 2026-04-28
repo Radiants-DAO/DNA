@@ -180,7 +180,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="absolute top-full left-0 mt-2 z-10"
+      className="absolute top-full left-0 mt-2 z-menus"
       onPointerMove={appHover.onContainerMove}
     >
       <div

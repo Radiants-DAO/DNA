@@ -43,7 +43,7 @@ export function CanvasTab() {
           collapsedTooltip="Canvas"
         >
           <ControlPanel density="compact" className="!p-0">
-            <div className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px">
+            <div className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px">
               <span className="col-span-2 flex h-8 items-center justify-center bg-ctrl-cell-bg font-mono text-xs text-main uppercase tabular-nums">
                 64 × 64
               </span>
@@ -76,7 +76,7 @@ export function CanvasTab() {
             <div className="flex h-6 items-center justify-center bg-ctrl-cell-bg font-mono text-xs uppercase text-main">
               Pen
             </div>
-            <div className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px">
+            <div className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px">
               {RESERVED_TOOLS.map(([icon, label]) => (
                 <IconCell key={label} label={label} size="xl" chromeless disabled>
                   <Icon name={icon} large={icon.includes('interface-essential') || icon.includes('design-')} />
@@ -93,7 +93,7 @@ export function CanvasTab() {
           <ControlPanel density="compact" className="!p-0">
             <div
               aria-label="Reserved brush colors"
-              className="grid w-fit grid-cols-[40px_40px] gap-px bg-ink pl-px pr-[2px] py-px"
+              className="grid w-fit grid-cols-[40px_40px] gap-px bg-ctrl-border-inactive pl-px pr-0.5 py-px"
             >
               {CANVAS_COLORS.map((color, index) => (
                 <CtrlColorSwatch
@@ -122,7 +122,7 @@ export function CanvasTab() {
         >
           {['Layer 3', 'Layer 2', 'Layer 1'].map((label) => (
             <PropertyRow key={label} label={label.toUpperCase()} chrome="flush" size="xl" divider={false}>
-              <span className="font-mono text-[0.625rem] uppercase text-ctrl-label">Reserved</span>
+              <span className="font-mono text-xs uppercase text-ctrl-label">Reserved</span>
             </PropertyRow>
           ))}
         </StudioRailDropdown>
@@ -132,10 +132,10 @@ export function CanvasTab() {
           collapsedTooltip="Details"
         >
           <PropertyRow label="SIZE" chrome="flush" size="xl" divider={false}>
-            <span className="font-mono text-[0.625rem] text-ctrl-text-active">64 x 64</span>
+            <span className="font-mono text-xs text-ctrl-text-active">64 x 64</span>
           </PropertyRow>
           <PropertyRow label="MODE" chrome="flush" size="xl" divider={false}>
-            <span className="font-mono text-[0.625rem] uppercase text-ctrl-label">Canvas</span>
+            <span className="font-mono text-xs uppercase text-ctrl-label">Canvas</span>
           </PropertyRow>
         </StudioRailDropdown>
       </StudioRailSection>
@@ -146,7 +146,7 @@ export function CanvasTab() {
   const bottomPanel = useMemo(
     () => (
       <ControlPanel density="compact" className="w-full">
-        <div className="grid gap-px font-mono text-[0.625rem] uppercase tracking-normal sm:grid-cols-4">
+        <div className="grid gap-px font-mono text-xs uppercase tracking-normal @sm:grid-cols-4">
           {['64 x 64', 'Zoom 100%', 'Tool pen', 'Layer 1'].map((label) => (
             <div key={label} className="bg-ctrl-cell-bg px-2 py-1 text-ctrl-label">
               {label}

@@ -5,6 +5,7 @@ import { corner, px } from '@rdna/pixel';
 import {
   AppWindow,
   Button,
+  CompactRowButton,
   Slider,
   Switch,
 } from '@rdna/radiants/components/core';
@@ -171,11 +172,11 @@ function ThemePreview({ theme }: { theme: RadOSTheme }) {
         </div>
       </div>
       <div
-        className="absolute bottom-0 right-0 h-full w-14 opacity-70"
+        className="absolute bottom-0 right-0 h-full w-14"
         style={{
           backgroundColor: preview.raised,
           backgroundImage:
-            'linear-gradient(45deg, transparent 25%, rgb(255 255 255 / 0.25) 25%, rgb(255 255 255 / 0.25) 50%, transparent 50%, transparent 75%, rgb(255 255 255 / 0.25) 75%)',
+            'linear-gradient(45deg, transparent 25%, var(--color-line) 25%, var(--color-line) 50%, transparent 50%, transparent 75%, var(--color-line) 75%)',
           backgroundSize: '14px 14px',
         }}
       />
@@ -220,16 +221,14 @@ function CornerShapeStrip({
       <SectionHeading>Corner Shape</SectionHeading>
       <div className="mt-4 flex flex-col gap-3">
         {CORNER_SHAPES.map((shape) => (
-          <button
+          <CompactRowButton
             key={shape.value}
-            type="button"
-            className="grid grid-cols-[3.5rem_1fr] items-center gap-3 text-left"
-            aria-pressed={value === shape.value}
+            selected={value === shape.value}
+            leading={<CornerPreview shape={shape.value} active={value === shape.value} />}
             onClick={() => onChange(shape.value)}
           >
-            <CornerPreview shape={shape.value} active={value === shape.value} />
-            <span className="font-mondwest text-sm text-main">{shape.label}</span>
-          </button>
+            {shape.label}
+          </CompactRowButton>
         ))}
       </div>
     </div>
@@ -250,7 +249,7 @@ function DisplayModeControl({
   return (
     <div>
       <SectionHeading>Display</SectionHeading>
-      <div className="mt-4 w-[72px]">
+      <div className="mt-4 w-18">
         <div className="flex gap-2">
           <Button
             type="button"
@@ -291,7 +290,7 @@ function DisplayModeControl({
           Auto
         </Button>
       </div>
-      <div className="mt-5 flex w-[72px] flex-col gap-2">
+      <div className="mt-5 flex w-18 flex-col gap-2">
         <span className="font-mondwest text-sm text-main">Reduce Motion</span>
         <Switch
           checked={reduceMotion}
@@ -344,17 +343,22 @@ function ThemeSelector({
   return (
     <div>
       <SectionHeading>Theme</SectionHeading>
-      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-4 @md:grid-cols-3">
         {THEMES.map((themeOption) => {
           const active = value === themeOption.value;
           return (
-            <button
+            <Button
               key={themeOption.value}
               type="button"
+              mode="flat"
+              rounded="sm"
+              textOnly
+              fullWidth
               className={[
-                'overflow-hidden border-2 p-3 text-left transition-colors',
+                'block overflow-hidden border-2 p-3 text-left transition-colors',
                 active ? 'border-main bg-main text-page' : 'border-line bg-page text-main',
               ].join(' ')}
+              active={active}
               aria-pressed={active}
               onClick={() => onChange(themeOption.value)}
             >
@@ -365,7 +369,7 @@ function ThemeSelector({
               <span className={['mt-1 block text-center font-mondwest text-xs', active ? 'text-page' : 'text-mute'].join(' ')}>
                 {themeOption.description}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -406,7 +410,7 @@ function PreferencesPane() {
 
   return (
     <AppWindow.Island corners="pixel" padding="none" className="min-h-0">
-      <div className="grid grid-cols-1 gap-5 p-4 md:grid-cols-[13rem_5rem_minmax(12rem,1fr)]">
+      <div className="grid grid-cols-1 gap-5 p-4 @md:grid-cols-[13rem_5rem_minmax(12rem,1fr)]">
         <CornerShapeStrip value={cornerShape} onChange={setCornerShape} />
         <DisplayModeControl
           value={displayMode}
@@ -416,7 +420,7 @@ function PreferencesPane() {
         />
         <VolumeControl value={volume} onChange={setVolume} />
 
-        <div className="md:col-span-3">
+        <div className="@md:col-span-3">
           <div className="space-y-3 border-t border-line pt-4">
             <div className="flex items-center justify-between gap-4">
               <span className="font-mondwest text-base text-main">Delete Data</span>
@@ -433,7 +437,7 @@ function PreferencesPane() {
           </div>
         </div>
 
-        <div className="border-t border-line pt-4 md:col-span-3">
+        <div className="border-t border-line pt-4 @md:col-span-3">
           <ThemeSelector value={theme} onChange={setTheme} />
         </div>
       </div>

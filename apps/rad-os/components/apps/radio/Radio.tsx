@@ -164,22 +164,33 @@ export function Radio() {
         <LCDScreen
           padding="none"
           style={{
-            width: 260,
-            padding: '12px 8px 8px',
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            ['--radio-lcd-width' as string]: '260px',
+            ['--radio-lcd-padding-top' as string]: '12px',
+            ['--radio-lcd-padding-inline' as string]: '8px',
+            ['--radio-lcd-padding-bottom' as string]: '8px',
+            ['--radio-lcd-margin' as string]: 'auto',
+            ['--radio-lcd-gap' as string]: '8px',
+            width: 'var(--radio-lcd-width)',
+            paddingTop: 'var(--radio-lcd-padding-top)',
+            paddingRight: 'var(--radio-lcd-padding-inline)',
+            paddingBottom: 'var(--radio-lcd-padding-bottom)',
+            paddingLeft: 'var(--radio-lcd-padding-inline)',
+            marginLeft: 'var(--radio-lcd-margin)',
+            marginRight: 'var(--radio-lcd-margin)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            gap: 8,
+            gap: 'var(--radio-lcd-gap)',
             // Match the frame's bowl-shaped bottom so the LCD clips cleanly
             // against it. Top stays square.
+            // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-lcd-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
             borderBottomLeftRadius: 128,
+            // eslint-disable-next-line rdna/no-raw-radius -- reason:radio-lcd-bowl-radius owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
             borderBottomRightRadius: 128,
           }}
         >
           {/* Header: spectrum strip + Time | Title | Time (tight group, gap 4) */}
-          <div className="flex flex-col self-stretch" style={{ gap: 4 }}>
+          <div className="flex flex-col self-stretch gap-1">
             {/* 32-LED progress strip */}
             <RadioVisualizer
               currentTime={currentTime}
@@ -197,11 +208,12 @@ export function Radio() {
           </div>
 
           {/* Music note icon + VOLUME slider + volume pct */}
-          <div className="flex items-center self-stretch" style={{ gap: 6 }}>
+          <div className="flex items-center self-stretch gap-1.5">
             <span
               aria-hidden
               className="inline-flex text-accent"
               style={{
+                // eslint-disable-next-line rdna/no-raw-shadow -- reason:radio-lcd-icon-glow owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
                 filter:
                   'drop-shadow(0 0 0.25px var(--color-sun-yellow)) drop-shadow(0 0 2.25px var(--color-sun-yellow)) drop-shadow(0 0 8.25px var(--color-cream))',
               }}
@@ -236,7 +248,7 @@ export function Radio() {
           {/* Circular video window — inset inside the LCD's 8px padding.
               Negative top margin pulls it up so the bubble tucks under the
               effects row, tightening the LCD stack. */}
-          <div className="self-stretch" style={{ marginTop: -16 }}>
+          <div className="-mt-4 self-stretch">
             <RadioDisc
               currentTime={currentTime}
               duration={currentTrack.duration}

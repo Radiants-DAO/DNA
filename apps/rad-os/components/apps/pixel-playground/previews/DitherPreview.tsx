@@ -29,8 +29,8 @@ function BandStack({ ramp, pixelScale }: BandStackProps) {
           aria-hidden
           style={{
             position: 'absolute',
-            left: 0,
-            right: 0,
+            left: '0%',
+            right: '0%',
             top: `${(band.index / ramp.steps) * 100}%`,
             height: `${100 / ramp.steps}%`,
             backgroundColor: 'var(--color-window-chrome-from)',
@@ -162,6 +162,7 @@ export function DitherPreview() {
           <Button
             size="sm"
             icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
+            aria-label={copied ? 'Copied to clipboard' : 'Copy dither output to clipboard'}
             onClick={handleCopy}
           >
             {copied ? 'Copied!' : 'Copy'}

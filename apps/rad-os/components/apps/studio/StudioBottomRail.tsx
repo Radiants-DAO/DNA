@@ -66,7 +66,7 @@ export function StudioBottomRail({
   const isHorizontal = orientation === 'horizontal';
   const islandClassName = isHorizontal ? 'flex-1' : '';
   const statusReadout = (
-    <div className="flex h-8 w-full flex-1 items-stretch justify-center gap-px bg-ink">
+    <div className="flex h-8 w-full flex-1 items-stretch justify-center gap-px bg-ctrl-border-inactive">
       <span className="flex flex-1 items-center justify-center bg-ctrl-cell-bg font-mono text-xs text-main uppercase tabular-nums">
         {dimensions?.columnCount ?? '—'} × {dimensions?.rowCount ?? '—'}
       </span>
