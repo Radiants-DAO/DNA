@@ -3,6 +3,26 @@
 Core 1-bit pixel utilities for masks, renderers, transitions, dither, icons,
 patterns, and pixel corners.
 
+## Public API
+
+`@rdna/pixel` publishes built TypeScript/ESM subpaths from `dist/`:
+
+| Subpath | Provides |
+| --- | --- |
+| `@rdna/pixel` | Main barrel: core grid helpers, renderers, masks, transitions, corner helpers, dither helpers, patterns, icons, and public types. |
+| `@rdna/pixel/core` | Grid parsing, validation, mirroring, hex conversion, and bit diff helpers. |
+| `@rdna/pixel/renderer` | Canvas rendering helpers: `paintGrid`, `paintTiledGrid`, and `createGridCanvas`. |
+| `@rdna/pixel/import` | SVG-to-grid import helpers and import report types. |
+| `@rdna/pixel/transition` | Transition frame interpolation and flip ordering helpers. |
+| `@rdna/pixel/corners` | Corner authoring, preparation, runtime materialization, shape registration, and concave helpers. |
+| `@rdna/pixel/dither` | Bayer matrix helpers, dither ramps, prepared dither bands, and `DitherRampOptions`. |
+| `@rdna/pixel/patterns` | Pattern registry access and pattern preparation helpers. |
+| `@rdna/pixel/icons` | Bitmap icon registry, icon lookup, SVG conversion, and React `BitmapIcon`. |
+
+Public root types include `PixelGrid`, corner recipe/materialization types,
+`MaskAsset`, `MaskHostStyle`, dither types such as `BayerMatrixSize`,
+`DitherDirection`, and `DitherRampOptions`, pattern types, and pixel icon types.
+
 ## Pixel Corners
 
 The current corner model is `normalize -> prepare -> materialize`.

@@ -23,10 +23,6 @@
       "types": "./dist/renderer.d.ts",
       "import": "./dist/renderer.js"
     },
-    "./svg": {
-      "types": "./dist/svg.d.ts",
-      "import": "./dist/svg.js"
-    },
     "./import": {
       "types": "./dist/import.d.ts",
       "import": "./dist/import.js"
@@ -50,10 +46,6 @@
     "./icons": {
       "types": "./dist/icons.d.ts",
       "import": "./dist/icons.js"
-    },
-    "./shapes": {
-      "types": "./dist/shapes.d.ts",
-      "import": "./dist/shapes.js"
     }
   },
   "scripts": {
