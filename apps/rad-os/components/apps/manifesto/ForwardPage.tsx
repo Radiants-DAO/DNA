@@ -60,19 +60,26 @@ export function ForwardPage({ pageWidth, pageHeight }: ForwardPageProps) {
 
   if (!headingBlock || !blocks) return <div style={{ width: pageWidth, height: pageHeight }} />;
 
-  // Total content height: heading + gap + paragraphs with gaps between
   const paragraphGap = 16;
   const headingGap = 24;
-  let totalH = headingBlock.totalHeight + headingGap;
-  for (let i = 0; i < blocks.length; i++) {
-    totalH += blocks[i]!.totalHeight;
-    if (i < blocks.length - 1) totalH += paragraphGap;
-  }
+  const bodyHeight = blocks.reduce(
+    (total, block, index) =>
+      total + block.totalHeight + (index < blocks.length - 1 ? paragraphGap : 0),
+    0,
+  );
+  const totalH = headingBlock.totalHeight + headingGap + bodyHeight;
 
   const startY = (pageHeight - totalH) / 2;
   const startX = (pageWidth - maxTextW) / 2;
-
-  let cursorY = startY;
+  const bodyStartY = startY + headingBlock.totalHeight + headingGap;
+  const bodyBlocks = blocks.reduce<Array<{ block: LaidOutBlock; y: number }>>(
+    (positions, block) => {
+      const previous = positions.at(-1);
+      const y = previous ? previous.y + previous.block.totalHeight + paragraphGap : bodyStartY;
+      return [...positions, { block, y }];
+    },
+    [],
+  );
 
   return (
     <div className="relative bg-card" style={{ width: pageWidth, height: pageHeight }}>
@@ -83,7 +90,7 @@ export function ForwardPage({ pageWidth, pageHeight }: ForwardPageProps) {
           className="absolute text-head"
           style={{
             left: startX + (maxTextW - line.width) / 2,
-            top: cursorY + line.y,
+            top: startY + line.y,
             whiteSpace: 'pre',
             font: headingBlock.font,
           }}
@@ -91,12 +98,9 @@ export function ForwardPage({ pageWidth, pageHeight }: ForwardPageProps) {
           {line.text}
         </div>
       ))}
-      {(() => { cursorY += headingBlock.totalHeight + headingGap; return null; })()}
 
       {/* Body paragraphs — centered block, left-aligned text */}
-      {blocks.map((block, bi) => {
-        const blockY = cursorY;
-        cursorY += block.totalHeight + (bi < blocks.length - 1 ? paragraphGap : 0);
+      {bodyBlocks.map(({ block, y: blockY }, bi) => {
         return block.lines.map((line, li) => (
           <div
             key={`p${bi}-${li}`}

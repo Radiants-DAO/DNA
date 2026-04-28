@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons/runtime';
 import { LCDScreen, Slider, TransportButton, TransportPill } from '@rdna/ctrl';
@@ -107,12 +107,13 @@ export function Radio() {
 
   const channelTracks = getTracksByChannel(currentChannel);
   const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
+  const trackCount = channelTracks.length;
 
   const { audioRef } = useRadioAudio();
   const { leftLevelRef, rightLevelRef } = useWebAudioEffects(audioRef, { slow, reverb });
 
-  const handlePrev = useCallback(() => prevTrack(channelTracks.length), [prevTrack, channelTracks.length]);
-  const handleNext = useCallback(() => nextTrack(channelTracks.length), [nextTrack, channelTracks.length]);
+  const handlePrev = () => prevTrack(trackCount);
+  const handleNext = () => nextTrack(trackCount);
 
   // Momentary press state for skip buttons (pressed only while pointer is down).
   // Play/pause uses the persistent `isPlaying` flag for its pressed state.

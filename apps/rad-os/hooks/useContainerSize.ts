@@ -15,7 +15,19 @@ export function useContainerSize(defaultWidth = 448, defaultHeight = 704) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    setSize({ width: el.clientWidth || defaultWidth, height: el.clientHeight || defaultHeight });
+
+    const scheduleFrame =
+      typeof window.requestAnimationFrame === 'function'
+        ? window.requestAnimationFrame
+        : (callback: FrameRequestCallback) => window.setTimeout(callback, 0);
+    const cancelFrame =
+      typeof window.cancelAnimationFrame === 'function'
+        ? window.cancelAnimationFrame
+        : window.clearTimeout;
+    const frame = scheduleFrame(() => {
+      setSize({ width: el.clientWidth || defaultWidth, height: el.clientHeight || defaultHeight });
+    });
+
     const ro = new ResizeObserver((entries) => {
       const rect = entries[0]?.contentRect;
       if (rect && rect.width > 0 && rect.height > 0) {
@@ -23,7 +35,10 @@ export function useContainerSize(defaultWidth = 448, defaultHeight = 704) {
       }
     });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      cancelFrame(frame);
+      ro.disconnect();
+    };
   }, [defaultWidth, defaultHeight]);
 
   return [ref, size] as const;

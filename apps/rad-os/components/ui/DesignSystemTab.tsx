@@ -175,8 +175,6 @@ export function DesignSystemTab({
   const activeCategory = propCategory ?? localCategory;
   const { filtered, grouped } = useRegistryBrowserEntries(search, activeCategory);
 
-  let showcaseIndex = 0;
-
   return (
     <div ref={scrollRootRef} className="h-full overflow-auto">
       <div className="flex flex-col gap-4 p-5">
@@ -219,15 +217,17 @@ export function DesignSystemTab({
       )}
 
       <div className="flex flex-col gap-6">
-        {grouped.map((group) => (
+        {grouped.map((group, groupIndex) => (
           <div key={group.category} className="flex flex-col gap-3">
             <div className="flex items-end justify-between border-b border-rule pb-3 gap-4 mt-8">
               <h2 className="text-main leading-tight">{group.label}</h2>
             </div>
             <div className="columns-1 @3xl:columns-2 @7xl:columns-3 gap-3">
-              {group.entries.map((entry) => {
-                const eager = showcaseIndex < initialInteractiveCards;
-                showcaseIndex += 1;
+              {group.entries.map((entry, entryIndex) => {
+                const priorEntryCount = grouped
+                  .slice(0, groupIndex)
+                  .reduce((total, priorGroup) => total + priorGroup.entries.length, 0);
+                const eager = priorEntryCount + entryIndex < initialInteractiveCards;
 
                 return (
                   <div key={entry.name} id={`component-${entry.name}`} className="break-inside-avoid mb-3">

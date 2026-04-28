@@ -54,7 +54,6 @@ export function RadioDisc({
 }: RadioDiscProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const onEndedRef = useRef(onVideoEnded);
-  onEndedRef.current = onVideoEnded;
 
   const progress = duration > 0 ? Math.max(0, Math.min(1, currentTime / duration)) : 0;
 
@@ -67,6 +66,10 @@ export function RadioDisc({
 
   const litCount =
     progress >= 0.98 ? TICK_COUNT : Math.min(TICK_COUNT, Math.round(progress * TICK_COUNT));
+
+  useEffect(() => {
+    onEndedRef.current = onVideoEnded;
+  }, [onVideoEnded]);
 
   useEffect(() => {
     const video = videoRef.current;

@@ -78,7 +78,7 @@ export function parseContent(md: string): ManifestoElement[] {
     }
 
     // Everything else → paragraph (extract triggers, then collapse whitespace)
-    let text = block;
+    const text = block;
 
     // Extract image triggers: {{phrase||src}}
     const triggers: ImageTrigger[] = [];
