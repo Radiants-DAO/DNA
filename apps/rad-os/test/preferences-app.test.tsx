@@ -36,29 +36,34 @@ describe('PreferencesApp', () => {
   });
 
   it('renders the designed general preference sections', () => {
-    render(<PreferencesApp windowId="preferences" />);
+    render(<PreferencesApp />);
 
-    expect(screen.getByRole('tab', { name: /General/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Themes/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Speaker Volume' })).toBeInTheDocument();
-    expect(screen.getByText('Master RadOS audio output.')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Display Mode' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Reduce Motion' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Invert Overlay' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Pixel Scale' })).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: /Radiants/i })).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: /Monolith/i })).toBeInTheDocument();
-    expect(screen.queryByRole('radio', { name: /SKR/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Corner Shape' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Display' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Speaker' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Theme' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Round' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Chamfer' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Scallop' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Light display mode' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dark display mode' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Auto' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Radiants/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /SKR/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /MONOLITH/i })).toBeInTheDocument();
   });
 
-  it('updates invert mode and pixel scale controls from the pane', async () => {
+  it('updates display, corner, and theme controls from the pane', async () => {
     const user = userEvent.setup();
-    render(<PreferencesApp windowId="preferences" />);
+    render(<PreferencesApp />);
 
-    await user.click(screen.getByRole('checkbox', { name: /Invert overlay/i }));
-    await user.click(screen.getByRole('radio', { name: '3x' }));
+    await user.click(screen.getByRole('button', { name: 'Dark display mode' }));
+    await user.click(screen.getByRole('button', { name: 'Round' }));
+    await user.click(screen.getByRole('button', { name: /SKR/i }));
 
-    expect(useRadOSStore.getState().invertMode).toBe(true);
-    expect(useRadOSStore.getState().pixelScale).toBe(3);
+    expect(useRadOSStore.getState().darkModeAuto).toBe(false);
+    expect(useRadOSStore.getState().darkMode).toBe(true);
+    expect(useRadOSStore.getState().cornerShape).toBe('circle');
+    expect(useRadOSStore.getState().theme).toBe('skr');
   });
 });
