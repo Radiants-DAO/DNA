@@ -2,6 +2,8 @@
 
 [data-aw="window"] {
   @apply pointer-events-auto flex flex-col p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus;
+  container-name: app-window;
+  container-type: inline-size;
 }
 
 [data-aw="window"][data-presentation="window"] {
@@ -130,6 +132,21 @@
    owns the flex row + gap. */
 [data-aw="layout"] {
   @apply flex-1 min-h-0 flex gap-1.5;
+}
+
+@container app-window (max-width: 44rem) {
+  [data-aw="layout"][data-aw-responsive-layout="collapse-inline"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  [data-aw="layout"][data-aw-responsive-layout="collapse-inline"] > * {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex-basis: auto;
+    flex-shrink: 1;
+  }
 }
 
 [data-aw="island"] {

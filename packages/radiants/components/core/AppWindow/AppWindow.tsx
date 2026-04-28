@@ -919,7 +919,11 @@ function AppWindowContent({ children, layout = 'single', className = '' }: AppWi
         data-content-padding={chrome?.contentPadding ? 'true' : 'false'}
       >
         {needsInnerLayout ? (
-          <div data-aw="layout" data-layout={layout}>
+          <div
+            data-aw="layout"
+            data-layout={layout}
+            data-aw-responsive-layout="collapse-inline"
+          >
             {children}
           </div>
         ) : (
@@ -1538,6 +1542,7 @@ function AppWindow({
       data-app-window={id}
       data-aw="window"
       data-presentation={presentation}
+      data-aw-responsive-container="app-window"
       data-chromeless={isChromelessWindow ? 'true' : undefined}
       data-fullscreen={presentation === 'fullscreen' ? 'true' : undefined}
       data-resizable={!isChromelessWindow && isWindowPresentation && resizable ? 'true' : undefined}

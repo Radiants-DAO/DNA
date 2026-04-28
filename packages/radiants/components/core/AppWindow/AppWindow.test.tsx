@@ -507,6 +507,33 @@ describe('AppWindow', () => {
       expect(container.querySelector('[data-aw="layout"][data-layout="split"]')).toBeInTheDocument();
     });
 
+    test('multi-column layouts expose AppWindow container breakpoint hooks', () => {
+      const { container } = render(
+        <AppWindow id="test" title="Test" contentPadding={false}>
+          <AppWindow.Content layout="three">
+            <AppWindow.Island>One</AppWindow.Island>
+            <AppWindow.Island>Two</AppWindow.Island>
+            <AppWindow.Island>Three</AppWindow.Island>
+          </AppWindow.Content>
+        </AppWindow>,
+      );
+
+      expect(screen.getByRole('dialog', { name: 'Test' })).toHaveAttribute(
+        'data-aw-responsive-container',
+        'app-window',
+      );
+      expect(container.querySelector('[data-aw="layout"]')).toHaveAttribute(
+        'data-aw-responsive-layout',
+        'collapse-inline',
+      );
+
+      const css = readFileSync('components/core/AppWindow/appwindow.css', 'utf8');
+      expect(css).toContain('container-name: app-window');
+      expect(css).toContain('@container app-window');
+      expect(css).toContain('data-aw-responsive-layout="collapse-inline"');
+      expect(css).toContain('flex-direction: column');
+    });
+
     test('sidebar layout renders fixed-width + flexible islands', () => {
       render(
         <AppWindow id="test" title="Test" contentPadding={false}>
