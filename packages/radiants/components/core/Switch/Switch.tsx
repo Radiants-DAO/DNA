@@ -98,7 +98,7 @@ export function Switch({
   const labelEl = label ? (
     <label
       htmlFor={switchId}
-      className={`font-sans text-base text-main select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`font-sans text-base text-main select-none ${disabled ? 'cursor-not-allowed text-mute' : 'cursor-pointer'}`}
     >
       {label}
     </label>

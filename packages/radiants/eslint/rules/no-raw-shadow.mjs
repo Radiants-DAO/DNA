@@ -83,7 +83,7 @@ function checkStyleObject(context, valueNode) {
         if (hasOnlyTokenizedDropShadows(staticString)) continue;
       }
       context.report({
-        node: val,
+        node: prop,
         messageId: 'hardcodedShadowStyle',
       });
       continue;
@@ -94,7 +94,7 @@ function checkStyleObject(context, valueNode) {
       (key === 'boxShadow' || context.sourceCode.getText(val).includes('drop-shadow('))
     ) {
       context.report({
-        node: val,
+        node: prop,
         messageId: 'hardcodedShadowStyle',
       });
     }

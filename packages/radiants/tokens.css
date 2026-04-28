@@ -56,7 +56,7 @@
   --color-main: var(--color-ink);
   --color-head: var(--color-ink);           /* = main in light; pure-white in dark */
   --color-sub: oklch(0.1641 0.0044 84.59 / 0.85);
-  --color-mute: oklch(0.1641 0.0044 84.59 / 0.6);
+  --color-mute: var(--color-ink);
   --color-flip: var(--color-cream);
   --color-link: var(--color-sky-blue);
 

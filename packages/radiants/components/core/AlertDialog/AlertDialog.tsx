@@ -109,7 +109,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
     <BaseAlertDialog.Portal>
       <PatternBackdrop as={BaseAlertDialog.Backdrop} duration="base" />
       <BaseAlertDialog.Popup
-        className="group fixed inset-0 z-50 flex items-center justify-center"
+        className="group fixed inset-0 z-modals flex items-center justify-center"
       >
         <div
           className={`

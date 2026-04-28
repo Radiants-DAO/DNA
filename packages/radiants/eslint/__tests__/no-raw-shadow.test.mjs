@@ -109,6 +109,26 @@ describe('rdna/no-raw-shadow', () => {
     expect(messages).toHaveLength(0);
   });
 
+  it('honors next-line exceptions on multiline filter properties', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-shadow', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-shadow': 'error' },
+    };
+
+    const messages = linter.verify(
+      `<div style={{
+        // eslint-disable-next-line rdna/no-raw-shadow -- reason:radio-lcd-icon-glow owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
+        filter:
+          "drop-shadow(0 0 0.25px var(--color-sun-yellow)) drop-shadow(0 0 2.25px var(--color-sun-yellow))",
+      }} />`,
+      config
+    );
+
+    expect(messages).toHaveLength(0);
+  });
+
   it('allows tokenized shadow values in computed style keys and clean class-builder calls', () => {
     const linter = new Linter({ configType: 'eslintrc' });
     linter.defineRule('rdna/no-raw-shadow', rule);

@@ -145,7 +145,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
         `.trim()}
       />
       <BaseCombobox.Trigger
-        className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer z-10"
+        className="absolute inset-y-0 right-0 z-desktop flex cursor-pointer items-center pr-2"
       >
         <BaseCombobox.Icon className="text-mute">
           <BitmapIcon name="chevron-down" size={16} />

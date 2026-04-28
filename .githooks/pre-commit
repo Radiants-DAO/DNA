@@ -3,6 +3,7 @@
 set -e
 
 node scripts/registry-guard.mjs pre-commit "$@"
+pnpm lint:design-system:staged
 
 # Temporarily disable the deadcode/knip gate in pre-commit.
 # Re-enable ad hoc with: RDNA_ENABLE_KNIP_HOOK=1 git commit ...

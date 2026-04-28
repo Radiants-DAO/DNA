@@ -35,6 +35,8 @@ describe('rdna/no-hardcoded-spacing', () => {
         { code: '<div className="mt-[1.5rem]" />' },
         { code: '<div className="p-[2rem]" />' },
         { code: '<div className="gap-[1rem]" />' },
+        // Tokenized CSS vars — allowed.
+        { code: '<div className="gap-[--ctrl-cell-gap]" />' },
         // CSS math functions — allowed (responsive)
         { code: '<div className="p-[clamp(1rem,2vw,2rem)]" />' },
         { code: '<div className="gap-[calc(1rem+4px)]" />' },

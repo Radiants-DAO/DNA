@@ -1,40 +1,54 @@
 /**
  * rdna/no-arbitrary-icon-size
  *
- * Enforces that <Icon> only uses size={16} or size={24} (or the `large` prop).
+ * Enforces that <Icon> uses the supported rendered icon sizes.
  * Flags:
- *   - size={n} where n is not 16 or 24
+ *   - size={n} where n is not an approved literal size
  *   - any usage of the removed `iconSet` prop
  *   - size={16} as redundant (it's the default)
  *   - size={24} as prefer-large
  */
 import { isRadiantsInternal } from '../utils.mjs';
 
-const VALID_SIZES = new Set([16, 24]);
+const DEFAULT_ALLOWED_SIZES = [16, 21, 24];
 
 const rule = {
   meta: {
     type: 'suggestion',
     docs: {
       description:
-        'Restrict Icon size to 16 or 24 and ban removed iconSet prop',
+        'Restrict Icon size to approved literal sizes and ban removed iconSet prop',
     },
     messages: {
       arbitrarySize:
-        'Icon size must be 16 or 24, got {{value}}. Use default (16px) or `large` (24px).',
-      redundantSize16:
+        'Icon size must be one of {{allowed}}, got {{value}}. Use the approved bitmap icon sizes.',
+      preferDefaultSize:
         'size={16} is the default — remove it.',
       preferLarge:
         'Prefer `large` prop over size={24}.',
       bannedIconSet:
         'The `iconSet` prop has been removed. Size now determines the icon set directly.',
       dynamicSize:
-        'Icon size must be a literal 16 or 24, not a dynamic expression.',
+        'Icon size must be an approved literal size, not a dynamic expression.',
     },
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowedSizes: {
+            type: 'array',
+            items: { type: 'number' },
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
 
   create(context) {
+    const options = context.options[0] || {};
+    const allowedSizes = new Set(options.allowedSizes || DEFAULT_ALLOWED_SIZES);
+    const allowedList = [...allowedSizes].sort((a, b) => a - b).join(', ');
     const filename = context.filename || context.getFilename();
     if (isRadiantsInternal(filename)) return {};
 
@@ -62,14 +76,14 @@ const rule = {
               if (expr.type === 'Literal' && typeof expr.value === 'number') {
                 const val = expr.value;
 
-                if (!VALID_SIZES.has(val)) {
+                if (!allowedSizes.has(val)) {
                   context.report({
                     node: attr,
                     messageId: 'arbitrarySize',
-                    data: { value: String(val) },
+                    data: { value: String(val), allowed: allowedList },
                   });
                 } else if (val === 16) {
-                  context.report({ node: attr, messageId: 'redundantSize16' });
+                  context.report({ node: attr, messageId: 'preferDefaultSize' });
                 } else if (val === 24) {
                   context.report({ node: attr, messageId: 'preferLarge' });
                 }
@@ -87,11 +101,11 @@ const rule = {
               typeof attr.value.value === 'string'
             ) {
               const parsed = Number(attr.value.value);
-              if (!Number.isNaN(parsed) && !VALID_SIZES.has(parsed)) {
+              if (!Number.isNaN(parsed) && !allowedSizes.has(parsed)) {
                 context.report({
                   node: attr,
                   messageId: 'arbitrarySize',
-                  data: { value: attr.value.value },
+                  data: { value: attr.value.value, allowed: allowedList },
                 });
               }
             }

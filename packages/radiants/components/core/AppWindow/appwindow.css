@@ -113,11 +113,11 @@
 }
 
 [data-aw="stage"] {
-  @apply flex flex-col flex-1 min-h-0 px-1.5 pb-1.5;
+  @apply flex flex-col flex-1 min-h-0 p-0;
 }
 
 [data-aw="stage"][data-content-padding="true"] {
-  @apply pb-2;
+  @apply px-1.5 pb-2;
 }
 
 [data-aw="stage"][data-layout="bleed"] {
@@ -142,7 +142,7 @@
 }
 
 [data-aw="island-scroll"] {
-  @apply absolute inset-0 overflow-hidden;
+  @apply absolute inset-0 overflow-y-auto overflow-x-hidden;
 }
 
 [data-aw="island-pad"] {

@@ -139,13 +139,13 @@ export function Slider({
             disabled ? 'pointer-events-none' : 'cursor-pointer',
           ].filter(Boolean).join(' ')}
         >
-          <div className={`pixel-rounded-4 bg-cream ${vertical ? 'h-full' : 'w-full'}`}>
+          <div className={`pixel-rounded-4 bg-page ${vertical ? 'h-full' : 'w-full'}`}>
             <BaseSlider.Track
               className={trackClasses}
               data-slot="slider-track"
             >
               <BaseSlider.Indicator
-                className="z-[0] bg-accent pointer-events-none"
+                className="z-base bg-accent pointer-events-none"
                 style={indicatorStyle}
               />
               {snapPoints?.map((p) => (

@@ -114,7 +114,9 @@ export function PixelTransition({
       height={height}
       style={{
         ...style,
+        // eslint-disable-next-line rdna/no-raw-layout-values -- reason:pixel-transition-canvas-css-size owner:design-system expires:2027-01-01 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#pixel-rendering-internals
         width: `${width}px`,
+        // eslint-disable-next-line rdna/no-raw-layout-values -- reason:pixel-transition-canvas-css-size owner:design-system expires:2027-01-01 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#pixel-rendering-internals
         height: `${height}px`,
         display: 'inline-block',
         imageRendering: 'pixelated',

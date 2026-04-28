@@ -74,7 +74,7 @@ const numberInputVariants = cva(
    placeholder:text-mute text-center
    focus:bg-card
    focus-visible:outline-none
-   disabled:opacity-50 disabled:cursor-not-allowed
+   disabled:bg-depth disabled:text-mute disabled:cursor-not-allowed
    h-8 px-2 text-sm w-full min-w-0`
 );
 
@@ -84,7 +84,7 @@ const stepButtonVariants = cva(
    text-accent-inv font-sans text-sm
    hover:bg-inv hover:text-flip
    focus-visible:outline-none
-   disabled:opacity-50 disabled:cursor-not-allowed
+   disabled:bg-depth disabled:text-mute disabled:cursor-not-allowed
    h-8 w-8 shrink-0 cursor-pointer select-none`
 );
 
@@ -92,7 +92,7 @@ function StepGlyph({ children }: { children: React.ReactNode }): React.ReactNode
   return (
     <span
       aria-hidden="true"
-      className="inline-flex items-center justify-center text-[12px] leading-none"
+      className="inline-flex items-center justify-center text-xs leading-none"
       style={{ fontFamily: 'var(--font-pixel-code)' }}
     >
       {children}

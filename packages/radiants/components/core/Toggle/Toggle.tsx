@@ -62,7 +62,7 @@ export const toggleVariants = cva(
    transition-colors duration-[var(--duration-base)] ease-out
    bg-depth text-sub hover:text-main outline-none
    focus-visible:shadow-focused
-   disabled:cursor-not-allowed disabled:opacity-50
+   disabled:cursor-not-allowed disabled:bg-depth disabled:text-mute
    data-[state=selected]:bg-[var(--btn-fill)] data-[state=selected]:text-[var(--btn-text)]`,
   {
     variants: {

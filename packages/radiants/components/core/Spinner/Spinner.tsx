@@ -109,8 +109,7 @@ function DefaultSpinner({ size = 24, className = '', completed = false }: Omit<S
         height: size,
         fontSize: size,
         fontFamily: 'var(--font-mono)',
-        // eslint-disable-next-line rdna/no-raw-line-height -- reason:spinner-animation-vertical-centering owner:design-system expires:2027-01-01 issue:DNA-999
-        lineHeight: 1,
+        lineHeight: 'var(--leading-none)',
       }}
       aria-label={completed ? 'Completed' : 'Loading'}
       role="status"

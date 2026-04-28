@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -59,6 +60,20 @@ describe('AppWindow', () => {
     expect(wrapper?.querySelector('.pat-pixel-shadow > .pat-pixel-shadow__fill')).toBeInTheDocument();
     expect(dialog).toHaveAttribute('data-resizable', 'true');
     expect(dialog.querySelectorAll('[data-resize-handle]')).toHaveLength(8);
+  });
+
+  test('caps window shell height inside the desktop viewport margin', () => {
+    render(
+      <AppWindow id="about" title="About" size={{ width: 600, height: 900 }}>
+        <AppWindow.Content>
+          <AppWindow.Island>Body content</AppWindow.Island>
+        </AppWindow.Content>
+      </AppWindow>,
+    );
+
+    const wrapper = screen.getByRole('dialog', { name: 'About' }).parentElement as HTMLElement;
+    expect(wrapper).toHaveAttribute('data-aw-shell', 'wrapper');
+    expect(wrapper.style.maxHeight).toBe('736px');
   });
 
   test('configures draggable cancel selectors for titlebar controls and tabs', () => {
@@ -337,8 +352,18 @@ describe('AppWindow', () => {
       const island = container.querySelector('[data-aw="island"]');
       const islandPad = container.querySelector('[data-aw="island-pad"]');
       expect(islandPad).toBeInTheDocument();
+      expect(island).toHaveAttribute('data-scroll-owner', 'island');
       // min-h-0 is owned by CSS ([data-aw="island"]), not duplicated inline
       expect(island?.getAttribute('data-aw')).toBe('island');
+    });
+
+    test('keeps the default Island scroll owner vertically scrollable in CSS', () => {
+      const css = readFileSync('components/core/AppWindow/appwindow.css', 'utf8');
+      const block = css.match(/\[data-aw="island-scroll"\]\s*{(?<body>[^}]+)}/)?.groups?.body ?? '';
+
+      expect(block).toContain('overflow-y-auto');
+      expect(block).toContain('overflow-x-hidden');
+      expect(block).not.toContain('overflow-hidden');
     });
 
     test('renders with standard corners (rounded + border) and bg-card by default', () => {
@@ -371,6 +396,7 @@ describe('AppWindow', () => {
 
       const island = container.querySelector('.test-pixel-island');
       expect(island).toBeInTheDocument();
+      expect(island).toHaveAttribute('data-scroll-owner', 'content');
       expect(island).toHaveClass('pixel-rounded-6');
       expect(island).toHaveClass('bg-card');
       expect(island?.className).not.toContain('border');
@@ -437,6 +463,18 @@ describe('AppWindow', () => {
 
       expect(warn).toHaveBeenCalledWith(expect.stringContaining('AppWindow.Content'));
       warn.mockRestore();
+    });
+
+    test('only applies stage gutters when contentPadding is enabled', () => {
+      const css = readFileSync('components/core/AppWindow/appwindow.css', 'utf8');
+      const baseBlock = css.match(/\[data-aw="stage"\]\s*{(?<body>[^}]+)}/)?.groups?.body ?? '';
+      const paddedBlock = css.match(/\[data-aw="stage"\]\[data-content-padding="true"\]\s*{(?<body>[^}]+)}/)?.groups?.body ?? '';
+
+      expect(baseBlock).toContain('p-0');
+      expect(baseBlock).not.toContain('px-1.5');
+      expect(baseBlock).not.toContain('pb-1.5');
+      expect(paddedBlock).toContain('px-1.5');
+      expect(paddedBlock).toContain('pb-2');
     });
 
     test('single layout adds gutters around island', () => {

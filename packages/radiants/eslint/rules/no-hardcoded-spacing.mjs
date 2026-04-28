@@ -28,6 +28,9 @@ function isResponsiveArbitraryValue(cls) {
   const bracketMatch = cls.match(/\[([^\]]+)\]/);
   if (!bracketMatch) return false;
   const inner = bracketMatch[1];
+  // Tokenized CSS vars are allowed in arbitrary Tailwind spacing utilities,
+  // e.g. gap-[--ctrl-cell-gap].
+  if (/^--[a-z0-9-]+$/.test(inner)) return true;
   // Allow percentage values: 8%, 50%, etc.
   if (/%$/.test(inner)) return true;
   // Allow rem values: 1.5rem, 2rem, etc.

@@ -31,9 +31,16 @@ describe('eslint-plugin-rdna plugin shape', () => {
     'no-removed-aliases',
     'no-hardcoded-spacing',
     'prefer-rdna-components',
+    'prefer-ctrl-components',
     'no-raw-radius',
     'no-raw-shadow',
-    'no-hardcoded-motion',
+    'no-inline-svg-icons',
+    'no-raw-layout-values',
+    'no-z-index-literals',
+    'no-dynamic-tailwind-token-construction',
+    'no-unregistered-design-token-vars',
+    'no-appwindow-scroll-conflict',
+    'require-icon-button-label',
   ];
 
   it('recommended config includes all expected rules', () => {
@@ -46,9 +53,11 @@ describe('eslint-plugin-rdna plugin shape', () => {
   it('recommended config does not include scope-specific rules', () => {
     const configRules = Object.keys(plugin.configs.recommended.rules);
     expect(configRules).not.toContain('rdna/no-viewport-breakpoints-in-window-layout');
+    expect(configRules).not.toContain('rdna/no-viewport-units-in-window-layout');
     expect(configRules).not.toContain('rdna/no-mixed-style-authority');
     expect(configRules).not.toContain('rdna/require-exception-metadata');
     expect(configRules).not.toContain('rdna/no-broad-rdna-disables');
+    expect(configRules).not.toContain('rdna/no-hardcoded-motion');
   });
 
   // Rules in internals (core component authoring)
@@ -61,7 +70,8 @@ describe('eslint-plugin-rdna plugin shape', () => {
     expect(configRules).toContain('rdna/no-hardcoded-colors');
     expect(configRules).toContain('rdna/no-raw-radius');
     expect(configRules).toContain('rdna/no-raw-shadow');
-    expect(configRules).toContain('rdna/no-hardcoded-motion');
+    expect(configRules).toContain('rdna/no-inline-svg-icons');
+    expect(configRules).not.toContain('rdna/no-hardcoded-motion');
     expect(configRules).not.toContain('rdna/require-exception-metadata');
     expect(configRules).not.toContain('rdna/no-broad-rdna-disables');
   });

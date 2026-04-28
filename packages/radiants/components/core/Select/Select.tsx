@@ -70,7 +70,7 @@ export const selectTriggerVariants = cva(
   `flex items-center w-full
    font-sans
    focus-visible:outline-none
-   disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
+   disabled:bg-depth disabled:text-mute disabled:cursor-not-allowed cursor-pointer`,
   {
     variants: {
       size: {
@@ -162,7 +162,7 @@ function Trigger({
                   className="text-main data-[placeholder]:text-mute"
                 />
               )}
-              <span className="flex-1 h-px bg-line opacity-30" />
+              <span className="flex-1 h-px bg-line" />
               <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
                 {chevron || <DefaultChevron />}
               </span>
@@ -177,9 +177,9 @@ function Trigger({
 function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
     <BaseSelect.Portal>
-      <BaseSelect.Positioner className="z-50">
+      <BaseSelect.Positioner className="z-menus">
         <BaseSelect.Popup
-          className={`z-50 py-1 pixel-rounded-4 bg-page pixel-shadow-raised ${className}`.trim()}
+          className={`z-menus py-1 pixel-rounded-4 bg-page pixel-shadow-raised ${className}`.trim()}
         >
           {children}
         </BaseSelect.Popup>
@@ -197,7 +197,7 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
         w-full px-3 py-2
         font-sans text-sm text-left
         text-main
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
+        ${disabled ? 'cursor-not-allowed text-mute' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
         focus-visible:outline-none
         data-[selected]:bg-accent data-[selected]:text-accent-inv
         ${className}

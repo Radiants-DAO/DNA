@@ -209,10 +209,10 @@
     },
     "mute": {
       "$type": "color",
-      "$value": "oklch(0.1641 0.0044 84.59 / 0.6)",
+      "$value": "{color.ink}",
       "$extensions": {
         "modes": {
-          "light": "oklch(0.1641 0.0044 84.59 / 0.6)",
+          "light": "{color.ink}",
           "dark": "oklch(0.9126 0.1170 93.68 / 0.6)"
         },
         "rdna": {

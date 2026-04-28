@@ -294,7 +294,7 @@ interface AppWindowToolbarProps {
 }
 
 interface AppWindowContentProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   layout?: ContentLayout;
 }
@@ -435,7 +435,7 @@ function getMaxWindowSize(viewportBottomInset: number, viewportMargin: number): 
 
   return {
     width: Math.floor(window.innerWidth - viewportMargin * 2),
-    height: Math.floor(window.innerHeight - viewportBottomInset),
+    height: Math.floor(window.innerHeight - viewportBottomInset - viewportMargin * 2),
   };
 }
 
@@ -508,7 +508,7 @@ function ResizeHandles({
       {RESIZE_HANDLES.map(({ dir, className }) => (
         <div
           key={dir}
-          className={`absolute z-10 ${className}`}
+          className={`absolute z-desktop ${className}`}
           data-resize-handle={dir}
           style={{ touchAction: 'none' }}
           onPointerDown={(event) => onPointerDown(event, dir)}
@@ -748,6 +748,7 @@ function AppWindowTitleBar({
                 target={actionButton.target}
                 rel={actionButton.target === '_blank' ? 'noopener noreferrer' : undefined}
                 onClick={actionButton.onClick}
+                aria-label={actionButton.text}
               >
                 {actionButton.text}
               </Button>
@@ -758,6 +759,7 @@ function AppWindowTitleBar({
                 icon={actionButton.iconName ?? undefined}
                 className="shrink-0"
                 onClick={actionButton.onClick}
+                aria-label={actionButton.text}
               >
                 {actionButton.text}
               </Button>
@@ -881,6 +883,7 @@ function AppWindowIsland({
       data-aw="island"
       data-corners={corners}
       data-scroll={noScroll ? 'none' : 'auto'}
+      data-scroll-owner={noScroll ? 'content' : 'island'}
       data-pad={padding}
     >
       {noScroll ? (
@@ -1512,7 +1515,7 @@ function AppWindow({
           top: TITLE_BAR_HEIGHT + toolbarHeight,
           bottom: CHROME_PADDING,
           width: group[0].width ?? group[0].maxWidth ?? DEFAULT_CONTROL_SURFACE_WIDTH,
-          zIndex: 5,
+          zIndex: 'var(--z-index-desktop)',
         }}
       >
         {group.map((s) => renderInsetSurface(s))}
@@ -1550,8 +1553,7 @@ function AppWindow({
             <div
               aria-hidden
               data-appwindow-chrome-dither
-              className="pointer-events-none"
-              style={{ position: 'absolute', inset: 0 }}
+              className="absolute inset-0 pointer-events-none"
             >
               {CHROME_DITHER_BANDS.bands.map((band) => {
                 const tilePx =
@@ -1563,8 +1565,8 @@ function AppWindow({
                     data-appwindow-chrome-dither-band={band.index}
                     style={{
                       position: 'absolute',
-                      left: 0,
-                      right: 0,
+                      left: '0%',
+                      right: '0%',
                       top: `${(band.index / CHROME_DITHER_BANDS.steps) * 100}%`,
                       height: `${100 / CHROME_DITHER_BANDS.steps}%`,
                       backgroundColor: 'var(--color-window-chrome-from)',
@@ -1584,11 +1586,9 @@ function AppWindow({
           {!focused && isWindowPresentation ? (
             <div
               aria-hidden
-              className="z-20 pointer-events-none rdna-pat rdna-pat--diagonal-dots"
+              className="absolute inset-0 z-desktop pointer-events-none rdna-pat rdna-pat--diagonal-dots"
               style={{
                 ['--pat-color' as string]: 'var(--color-ink)',
-                position: 'absolute',
-                inset: 0,
               }}
             />
           ) : null}
@@ -2041,7 +2041,7 @@ function AppWindow({
             top: snapPreviewRect.y,
             width: snapPreviewRect.width,
             height: snapPreviewRect.height,
-            zIndex: 9999,
+            zIndex: 'var(--z-index-system)',
           }}
         />
       ) : null}

@@ -208,7 +208,7 @@ function ToastViewportInternal({ rawToasts, renderIcon, renderCloseIcon }: Toast
 
   return (
     <BaseToast.Viewport
-      className="fixed top-4 right-4 z-[400] flex flex-col gap-2 w-[24rem] pointer-events-none"
+      className="fixed top-4 right-4 z-toasts flex w-[24rem] flex-col gap-2 pointer-events-none"
     >
       {rawToasts.map((toast) => (
         <ToastItem

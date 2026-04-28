@@ -83,6 +83,7 @@ const ARBITRARY_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fi
 /** All valid semantic color token suffixes (the part after `--color-` or after a Tailwind utility prefix). */
 const SEMANTIC_COLOR_SUFFIXES = new Set(semanticColorSuffixes);
 const SEMANTIC_COLOR_SUFFIX_RE = { test: (s) => SEMANTIC_COLOR_SUFFIXES.has(s) };
+const CTRL_COLOR_SUFFIX_RE = /^ctrl-[a-z0-9-]+$/;
 const COLOR_FUNCTION_RE = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|device-cmyk)\s*\(/i;
 const CSS_VAR_RE = /var\(\s*(--[^),\s]+)[^)]*\)/gi;
 const CSS_NAMED_COLOR_KEYWORDS = new Set([
@@ -267,8 +268,8 @@ const rule = {
   create(context) {
     return {
       JSXAttribute(node) {
-        if (node.name.name === 'className') checkClassNameValue(context, node.value);
-        if (node.name.name === 'style') checkStyleObject(context, node.value);
+        if (node.name.name === 'className') checkClassNameValue(context, node.value, node);
+        if (node.name.name === 'style') checkStyleObject(context, node.value, node);
       },
       CallExpression(node) {
         if (!isInsideClassNameAttribute(node)) checkClassNameValue(context, node);
@@ -277,8 +278,9 @@ const rule = {
   },
 };
 
-function checkClassNameValue(context, valueNode) {
+function checkClassNameValue(context, valueNode, attributeNode = null) {
   if (!valueNode) return;
+  if (isBrandPrimitiveDisplaySurface(attributeNode)) return;
   const strings = getClassNameStrings(valueNode);
   for (const { value, node } of strings) {
     findAndReportDisallowedColorUtilities(context, node, value);
@@ -436,9 +438,10 @@ function getNamedColorSuggestion(prefix) {
   return 'bg-page';
 }
 
-function checkStyleObject(context, valueNode) {
+function checkStyleObject(context, valueNode, attributeNode = null) {
   const expr = getStyleObjectExpression(valueNode);
   if (!expr) return;
+  if (isBrandPrimitiveDisplaySurface(attributeNode)) return;
 
   for (const prop of expr.properties) {
     const key = getObjectPropertyKey(prop);
@@ -450,7 +453,7 @@ function checkStyleObject(context, valueNode) {
     if (str === null) {
       if (!isDynamicTemplateLiteral(val)) continue;
       context.report({
-        node: val,
+        node: prop,
         messageId: 'hardcodedColorStyle',
         data: { raw: context.sourceCode.getText(val) },
       });
@@ -459,12 +462,31 @@ function checkStyleObject(context, valueNode) {
 
     if (containsDisallowedColorStyleValue(str)) {
       context.report({
-        node: val,
+        node: prop,
         messageId: 'hardcodedColorStyle',
         data: { raw: str },
       });
     }
   }
+}
+
+function isBrandPrimitiveDisplaySurface(attributeNode) {
+  const openingElement = attributeNode?.parent;
+  if (!openingElement || openingElement.type !== 'JSXOpeningElement') return false;
+
+  return openingElement.attributes.some((attr) => {
+    if (attr.type !== 'JSXAttribute') return false;
+    const name = attr.name?.name;
+    if (name === 'data-rdna-brand-primitive') return true;
+    if (name !== 'data-rdna-brand-surface') return false;
+
+    if (!attr.value) return true;
+    if (attr.value.type === 'Literal') return attr.value.value === 'primitive';
+    if (attr.value.type === 'JSXExpressionContainer' && attr.value.expression.type === 'Literal') {
+      return attr.value.expression.value === 'primitive';
+    }
+    return false;
+  });
 }
 
 function stripModifierPrefixes(token) {
@@ -487,7 +509,7 @@ function looksLikeArbitraryColorValue(value) {
 }
 
 function isAllowedSemanticColorSuffix(suffix) {
-  return SEMANTIC_COLOR_SUFFIX_RE.test(suffix);
+  return SEMANTIC_COLOR_SUFFIX_RE.test(suffix) || CTRL_COLOR_SUFFIX_RE.test(suffix);
 }
 
 function isClearlyNonColorUtility(prefix, suffix) {
@@ -572,7 +594,10 @@ function isPureSemanticColorVarReference(value) {
 
 function isAllowedSemanticColorVarName(varName) {
   const match = varName.match(/^--color-(.+)$/);
-  return match ? SEMANTIC_COLOR_SUFFIXES.has(match[1]) : false;
+  if (match) {
+    return SEMANTIC_COLOR_SUFFIXES.has(match[1]) || CTRL_COLOR_SUFFIX_RE.test(match[1]);
+  }
+  return /^--ctrl-[a-z0-9-]+$/.test(varName);
 }
 
 function getSemanticColorVarName(value) {

@@ -23,6 +23,9 @@ describe('rdna/no-hardcoded-colors', () => {
         // New semantic suffixes from generated contract
         { code: '<div className="bg-surface-primary text-content-primary border-edge-primary" />' },
         { code: '<div className="bg-action-primary text-status-success" />' },
+        // @rdna/ctrl token utilities are part of the RDNA design-system surface.
+        { code: '<div className="bg-ctrl-cell-bg text-ctrl-text-active border-ctrl-border-inactive focus-visible:outline-ctrl-glow" />' },
+        { code: '<div style={{ textShadow: "var(--ctrl-text-glow-active)", color: "var(--color-ctrl-label)" }} />' },
         // CSS keywords with semantic meaning remain allowed
         { code: '<div className="bg-transparent text-current border-inherit" />' },
         // Non-color arbitrary values — not this rule's job
@@ -39,6 +42,10 @@ describe('rdna/no-hardcoded-colors', () => {
         { code: '<div style={{ width: "#0F0E0C" }} />' },
         // SVG color properties — not falsely skipped
         // (backgroundImage and stopColor are tested below as invalid)
+        // Brand primitive display surfaces intentionally render primitive swatches.
+        { code: '<div data-rdna-brand-primitive className="bg-ink text-cream hover:bg-sun-yellow/20" />' },
+        { code: '<div data-rdna-brand-surface="primitive" style={{ backgroundColor: "var(--color-sun-yellow)", color: "#0F0E0C" }} />' },
+        { code: '<div data-rdna-brand-surface={"primitive"} style={{ backgroundImage: "linear-gradient(#fff, #000)" }} />' },
       ],
       invalid: [
         // Arbitrary hex in Tailwind class
@@ -192,6 +199,26 @@ describe('rdna/no-hardcoded-colors', () => {
     const messages = linter.verify('<div style={{ color: `#0F0E0C` }} />', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedColorStyle');
+  });
+
+  it('honors next-line exceptions on multiline style properties', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify(
+      `<div style={{
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:https://github.com/Radiants-DAO/DNA/blob/main/docs/solutions/tooling/rdna-approved-exceptions.md#radio-disc-crt-glass-art-rendering
+        backgroundImage:
+          "repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0 0 0 / 0.15) 2px, oklch(0 0 0 / 0.15) 4px)",
+      }} />`,
+      config
+    );
+
+    expect(messages).toHaveLength(0);
   });
 
   it('flags computed literal color style keys', () => {

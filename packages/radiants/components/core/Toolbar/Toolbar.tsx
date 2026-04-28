@@ -82,7 +82,7 @@ const toolbarButtonVariants = cva(
    cursor-pointer select-none
    bg-transparent text-flip
    transition-[background-color,color] duration-[var(--duration-base)] ease-out
-   disabled:opacity-50 disabled:cursor-not-allowed
+   disabled:text-mute disabled:cursor-not-allowed
    focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4
    pixel-rounded-4`,

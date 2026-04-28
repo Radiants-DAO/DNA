@@ -246,7 +246,7 @@ Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → 
 | `--color-main` | `var(--color-ink)` | `var(--color-cream)` |
 | `--color-head` | `var(--color-ink)` | `var(--color-pure-white)` |
 | `--color-sub` | `oklch(0.1641 0.0044 84.59 / 0.85)` | `oklch(0.9780 0.0295 94.34 / 0.85)` |
-| `--color-mute` | `oklch(0.1641 0.0044 84.59 / 0.6)` | `oklch(0.9126 0.1170 93.68 / 0.6)` |
+| `--color-mute` | `var(--color-ink)` | `oklch(0.9126 0.1170 93.68 / 0.6)` |
 | `--color-flip` | `var(--color-cream)` | `var(--color-cream)` |
 | `--color-link` | `var(--color-sky-blue)` | `var(--color-sky-blue)` |
 | `--color-content-primary` | `var(--color-ink)` | `var(--color-cream)` |
@@ -1042,27 +1042,36 @@ These rules are exported by `eslint-plugin-rdna`. Rule names map 1:1 to policy; 
 <!-- BEGIN GENERATED:eslint-rules -->
 | Rule | Enforces | recommended | internals | recommended-strict |
 |---|---|---|---|---|
-| `rdna/no-arbitrary-icon-size` | Restrict Icon size to 16 or 24 and ban removed iconSet prop | warn | warn | error |
-| `rdna/no-backdrop-blur` | Ban backdrop-blur utilities and backdrop-filter in style props. RDNA chrome is opaque. | warn | warn | error |
+| `rdna/no-appwindow-scroll-conflict` | Ban conflicting or unbounded scroll ownership in AppWindow layouts | warn | warn | error |
+| `rdna/no-arbitrary-icon-size` | Restrict Icon size to approved literal sizes and ban removed iconSet prop | error | error | error |
+| `rdna/no-backdrop-blur` | Ban backdrop-blur utilities and backdrop-filter in style props. RDNA chrome is opaque. | error | error | error |
 | `rdna/no-broad-rdna-disables` | Ban broad or same-line eslint-disable comments for rdna/* rules; only eslint-disable-next-line is allowed | — | — | — |
-| `rdna/no-clipped-shadow` | Ban box-shadow tokens on pixel-cornered elements; use pixel-shadow-* (filter: drop-shadow) instead | warn | warn | error |
-| `rdna/no-hardcoded-colors` | Ban non-semantic color usage; require RDNA semantic color tokens | warn | warn | error |
-| `rdna/no-hardcoded-motion` | Ban arbitrary duration/easing values; require RDNA motion tokens | warn | warn | error |
+| `rdna/no-clipped-shadow` | Ban box-shadow tokens on pixel-cornered elements; use pixel-shadow-* (filter: drop-shadow) instead | error | error | error |
+| `rdna/no-dynamic-tailwind-token-construction` | Ban dynamic Tailwind token construction in className/class builders | warn | warn | error |
+| `rdna/no-hardcoded-colors` | Ban non-semantic color usage; require RDNA semantic color tokens | error | error | error |
+| `rdna/no-hardcoded-motion` | Ban arbitrary duration/easing values; require RDNA motion tokens | — | — | — |
 | `rdna/no-hardcoded-spacing` | Ban arbitrary spacing bracket values; allow standard Tailwind scale utilities | warn | warn | error |
-| `rdna/no-hardcoded-typography` | Ban arbitrary font sizes/weights; require RDNA typography tokens | warn | warn | error |
+| `rdna/no-hardcoded-typography` | Ban arbitrary font sizes/weights; require RDNA typography tokens | error | error | error |
+| `rdna/no-inline-svg-icons` | Ban raw inline/SVG icon sources; use RDNA bitmap-backed Icon assets | error | error | error |
 | `rdna/no-mixed-style-authority` | Ban mixing local semantic color utilities with theme-targeted data-variant hooks | — | — | — |
 | `rdna/no-pattern-color-override` | Ban hardcoded colors on pattern-mode buttons and rdna-pat elements — use semantic tokens so dark/light mode works correctly | warn | warn | error |
-| `rdna/no-pixel-border` | Ban border-* and overflow-hidden on pixel-cornered elements. ::after handles borders; clip-path handles overflow. | warn | warn | error |
+| `rdna/no-pixel-border` | Ban border-* and overflow-hidden on pixel-cornered elements. ::after handles borders; clip-path handles overflow. | error | error | error |
 | `rdna/no-raw-font-family` | Ban hardcoded font-family in style props; require RDNA font tokens | warn | warn | error |
-| `rdna/no-raw-line-height` | Ban arbitrary line-height values; require RDNA leading tokens | warn | warn | error |
-| `rdna/no-raw-radius` | Ban arbitrary and standard Tailwind border-radius values; require pixel-rounded-* classes | warn | warn | error |
-| `rdna/no-raw-shadow` | Ban arbitrary shadow values; require RDNA elevation/shadow tokens | warn | warn | error |
+| `rdna/no-raw-layout-values` | Ban fixed arbitrary layout sizing/positioning values | warn | warn | error |
+| `rdna/no-raw-line-height` | Ban arbitrary line-height values; require RDNA leading tokens | error | error | error |
+| `rdna/no-raw-radius` | Ban arbitrary and standard Tailwind border-radius values; require pixel-rounded-* classes | error | error | error |
+| `rdna/no-raw-shadow` | Ban arbitrary shadow values; require RDNA elevation/shadow tokens | error | error | error |
 | `rdna/no-removed-aliases` | Ban removed RDNA token aliases | warn | warn | error |
-| `rdna/no-translucent-bg` | Ban translucent bg utilities (bg-*/N). Chrome surfaces must be opaque — use semantic tokens (bg-depth, bg-card, bg-tinted, bg-accent-soft, bg-line). | warn | warn | error |
+| `rdna/no-translucent-bg` | Ban translucent bg utilities (bg-*/N). Chrome surfaces must be opaque — use semantic tokens (bg-depth, bg-card, bg-tinted, bg-accent-soft, bg-line). | error | error | error |
 | `rdna/no-translucent-ink` | Ban semi-transparent ink/black styling. Use opaque semantic surfaces instead. | warn | warn | error |
+| `rdna/no-unregistered-design-token-vars` | Ban references to unknown RDNA design-token CSS variables | warn | warn | error |
 | `rdna/no-viewport-breakpoints-in-window-layout` | Ban viewport breakpoint prefixes in window layout; use container queries instead | — | — | — |
+| `rdna/no-viewport-units-in-window-layout` | Ban viewport units and fixed positioning in RadOS window layouts | — | — | — |
+| `rdna/no-z-index-literals` | Ban numeric z-index classes and style literals; use named RDNA layer tokens | warn | warn | error |
+| `rdna/prefer-ctrl-components` | Prefer @rdna/ctrl primitives inside data-ctrl-surface control surfaces | warn | warn | error |
 | `rdna/prefer-rdna-components` | Prefer RDNA components over raw HTML elements | warn | off | error |
 | `rdna/require-exception-metadata` | Require valid reason, owner, expires, and issue metadata on rdna/* eslint-disable-next-line comments | — | — | — |
+| `rdna/require-icon-button-label` | Require accessible labels for icon-only controls | error | error | error |
 <!-- END GENERATED:eslint-rules -->
 
 Repo-local governance rules such as exception metadata and broad-disable checks are exported by the plugin but are scoped by the repository ESLint config. Use owner slugs `design-system`, `frontend-platform`, and `rad-os` for new exceptions unless the owning team has published a narrower slug.
@@ -1084,6 +1093,7 @@ Exception policy:
 - `issue` MUST be either a `DNA-123` style ticket id or a full `https://...` URL.
 - `expires` MUST be a real UTC date in `YYYY-MM-DD` form. Dates earlier than today are invalid.
 - New `rdna/*` exceptions are reported in CI and require explicit code-review approval.
+- Design-owned exceptions that are intentional rendering surfaces, not cleanup debt, are tracked in `docs/solutions/tooling/rdna-approved-exceptions.md`.
 
 ### Scope
 

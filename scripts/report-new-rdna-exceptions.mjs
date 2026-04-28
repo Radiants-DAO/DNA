@@ -13,6 +13,17 @@ const SOURCE_GLOBS = [
   ':(glob)**/*.cjs',
 ];
 
+const SOURCE_EXCLUDES = [
+  ':(exclude)apps/rad-os/app/dev/**',
+  ':(exclude)**/__tests__/**',
+  ':(exclude)**/*.test.ts',
+  ':(exclude)**/*.test.tsx',
+  ':(exclude)**/*.test.js',
+  ':(exclude)**/*.test.jsx',
+  ':(exclude)**/*.test.mjs',
+  ':(exclude)**/*.test.cjs',
+];
+
 export function parseCliArgs(argv = process.argv) {
   const args = new Map();
   for (let index = 2; index < argv.length; index += 2) {
@@ -48,11 +59,11 @@ export function resolveReportDiffSpec(args) {
 
 export function buildReportDiffArgs(diffSpec, execGitFn = execGit) {
   if (diffSpec.mode === 'range') {
-    return ['diff', '--unified=0', ...diffSpec.refs, '--', ...SOURCE_GLOBS];
+    return ['diff', '--unified=0', ...diffSpec.refs, '--', ...SOURCE_GLOBS, ...SOURCE_EXCLUDES];
   }
 
   const mergeBase = execGitFn(['merge-base', diffSpec.headRef, diffSpec.baseRef]).trim();
-  return ['diff', '--unified=0', `${mergeBase}...${diffSpec.headRef}`, '--', ...SOURCE_GLOBS];
+  return ['diff', '--unified=0', `${mergeBase}...${diffSpec.headRef}`, '--', ...SOURCE_GLOBS, ...SOURCE_EXCLUDES];
 }
 
 export function main(argv = process.argv, execGitFn = execGit) {
@@ -80,6 +91,7 @@ function execGit(argsList) {
   return execFileSync('git', argsList, {
     cwd: process.cwd(),
     encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 }

@@ -117,7 +117,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
     <BaseDialog.Portal>
       <PatternBackdrop as={BaseDialog.Backdrop} duration="base" />
       <BaseDialog.Popup
-        className="group fixed inset-0 z-50 flex items-center justify-center"
+        className="group fixed inset-0 z-modals flex items-center justify-center"
       >
         <div
           className={`

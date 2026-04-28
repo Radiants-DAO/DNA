@@ -16,6 +16,7 @@ import noRawRadius from './rules/no-raw-radius.mjs';
 import noRawShadow from './rules/no-raw-shadow.mjs';
 import noHardcodedMotion from './rules/no-hardcoded-motion.mjs';
 import noViewportBreakpointsInWindowLayout from './rules/no-viewport-breakpoints-in-window-layout.mjs';
+import noViewportUnitsInWindowLayout from './rules/no-viewport-units-in-window-layout.mjs';
 import requireExceptionMetadata from './rules/require-exception-metadata.mjs';
 import noMixedStyleAuthority from './rules/no-mixed-style-authority.mjs';
 import noBroadRdnaDisables from './rules/no-broad-rdna-disables.mjs';
@@ -28,6 +29,14 @@ import noArbitraryIconSize from './rules/no-arbitrary-icon-size.mjs';
 import noTranslucentBg from './rules/no-translucent-bg.mjs';
 import noTranslucentInk from './rules/no-translucent-ink.mjs';
 import noBackdropBlur from './rules/no-backdrop-blur.mjs';
+import noInlineSvgIcons from './rules/no-inline-svg-icons.mjs';
+import noRawLayoutValues from './rules/no-raw-layout-values.mjs';
+import noZIndexLiterals from './rules/no-z-index-literals.mjs';
+import preferCtrlComponents from './rules/prefer-ctrl-components.mjs';
+import noDynamicTailwindTokenConstruction from './rules/no-dynamic-tailwind-token-construction.mjs';
+import noUnregisteredDesignTokenVars from './rules/no-unregistered-design-token-vars.mjs';
+import requireIconButtonLabel from './rules/require-icon-button-label.mjs';
+import noAppwindowScrollConflict from './rules/no-appwindow-scroll-conflict.mjs';
 
 const plugin = {
   meta: {
@@ -44,6 +53,7 @@ const plugin = {
     'no-raw-shadow': noRawShadow,
     'no-hardcoded-motion': noHardcodedMotion,
     'no-viewport-breakpoints-in-window-layout': noViewportBreakpointsInWindowLayout,
+    'no-viewport-units-in-window-layout': noViewportUnitsInWindowLayout,
     'require-exception-metadata': requireExceptionMetadata,
     'no-mixed-style-authority': noMixedStyleAuthority,
     'no-broad-rdna-disables': noBroadRdnaDisables,
@@ -56,6 +66,14 @@ const plugin = {
     'no-translucent-bg': noTranslucentBg,
     'no-translucent-ink': noTranslucentInk,
     'no-backdrop-blur': noBackdropBlur,
+    'no-inline-svg-icons': noInlineSvgIcons,
+    'no-raw-layout-values': noRawLayoutValues,
+    'no-z-index-literals': noZIndexLiterals,
+    'prefer-ctrl-components': preferCtrlComponents,
+    'no-dynamic-tailwind-token-construction': noDynamicTailwindTokenConstruction,
+    'no-unregistered-design-token-vars': noUnregisteredDesignTokenVars,
+    'require-icon-button-label': requireIconButtonLabel,
+    'no-appwindow-scroll-conflict': noAppwindowScrollConflict,
   },
   configs: {},
 };
@@ -66,46 +84,60 @@ const plugin = {
 plugin.configs.recommended = {
   plugins: { rdna: plugin },
   rules: {
-    'rdna/no-hardcoded-colors': 'warn',
-    'rdna/no-hardcoded-typography': 'warn',
+    'rdna/no-hardcoded-colors': 'error',
+    'rdna/no-hardcoded-typography': 'error',
     'rdna/no-removed-aliases': 'warn',
     'rdna/no-hardcoded-spacing': 'warn',
     'rdna/prefer-rdna-components': 'warn',
-    'rdna/no-raw-radius': 'warn',
-    'rdna/no-raw-shadow': 'warn',
-    'rdna/no-hardcoded-motion': 'warn',
-    'rdna/no-clipped-shadow': 'warn',
-    'rdna/no-pixel-border': 'warn',
-    'rdna/no-raw-line-height': 'warn',
+    'rdna/prefer-ctrl-components': 'warn',
+    'rdna/no-raw-radius': 'error',
+    'rdna/no-raw-shadow': 'error',
+    'rdna/no-clipped-shadow': 'error',
+    'rdna/no-pixel-border': 'error',
+    'rdna/no-raw-line-height': 'error',
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
-    'rdna/no-arbitrary-icon-size': 'warn',
-    'rdna/no-translucent-bg': 'warn',
+    'rdna/no-arbitrary-icon-size': 'error',
+    'rdna/no-translucent-bg': 'error',
     'rdna/no-translucent-ink': 'warn',
-    'rdna/no-backdrop-blur': 'warn',
+    'rdna/no-backdrop-blur': 'error',
+    'rdna/no-inline-svg-icons': 'error',
+    'rdna/require-icon-button-label': 'error',
+    'rdna/no-raw-layout-values': 'warn',
+    'rdna/no-z-index-literals': 'warn',
+    'rdna/no-dynamic-tailwind-token-construction': 'warn',
+    'rdna/no-unregistered-design-token-vars': 'warn',
+    'rdna/no-appwindow-scroll-conflict': 'warn',
   },
 };
 
 plugin.configs.internals = {
   plugins: { rdna: plugin },
   rules: {
-    'rdna/no-hardcoded-colors': 'warn',
-    'rdna/no-hardcoded-typography': 'warn',
+    'rdna/no-hardcoded-colors': 'error',
+    'rdna/no-hardcoded-typography': 'error',
     'rdna/no-removed-aliases': 'warn',
     'rdna/no-hardcoded-spacing': 'warn',
     'rdna/prefer-rdna-components': 'off',
-    'rdna/no-raw-radius': 'warn',
-    'rdna/no-raw-shadow': 'warn',
-    'rdna/no-hardcoded-motion': 'warn',
-    'rdna/no-clipped-shadow': 'warn',
-    'rdna/no-pixel-border': 'warn',
-    'rdna/no-raw-line-height': 'warn',
+    'rdna/prefer-ctrl-components': 'warn',
+    'rdna/no-raw-radius': 'error',
+    'rdna/no-raw-shadow': 'error',
+    'rdna/no-clipped-shadow': 'error',
+    'rdna/no-pixel-border': 'error',
+    'rdna/no-raw-line-height': 'error',
     'rdna/no-raw-font-family': 'warn',
     'rdna/no-pattern-color-override': 'warn',
-    'rdna/no-arbitrary-icon-size': 'warn',
-    'rdna/no-translucent-bg': 'warn',
+    'rdna/no-arbitrary-icon-size': 'error',
+    'rdna/no-translucent-bg': 'error',
     'rdna/no-translucent-ink': 'warn',
-    'rdna/no-backdrop-blur': 'warn',
+    'rdna/no-backdrop-blur': 'error',
+    'rdna/no-inline-svg-icons': 'error',
+    'rdna/require-icon-button-label': 'error',
+    'rdna/no-raw-layout-values': 'warn',
+    'rdna/no-z-index-literals': 'warn',
+    'rdna/no-dynamic-tailwind-token-construction': 'warn',
+    'rdna/no-unregistered-design-token-vars': 'warn',
+    'rdna/no-appwindow-scroll-conflict': 'warn',
   },
 };
 
@@ -120,7 +152,6 @@ plugin.configs['recommended-strict'] = {
     'rdna/prefer-rdna-components': 'error',
     'rdna/no-raw-radius': 'error',
     'rdna/no-raw-shadow': 'error',
-    'rdna/no-hardcoded-motion': 'error',
     'rdna/no-clipped-shadow': 'error',
     'rdna/no-pixel-border': 'error',
     'rdna/no-raw-line-height': 'error',
@@ -130,8 +161,17 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-translucent-bg': 'error',
     'rdna/no-translucent-ink': 'error',
     'rdna/no-backdrop-blur': 'error',
+    'rdna/no-inline-svg-icons': 'error',
+    'rdna/require-icon-button-label': 'error',
+    'rdna/no-raw-layout-values': 'error',
+    'rdna/no-z-index-literals': 'error',
+    'rdna/prefer-ctrl-components': 'error',
+    'rdna/no-dynamic-tailwind-token-construction': 'error',
+    'rdna/no-unregistered-design-token-vars': 'error',
+    'rdna/no-appwindow-scroll-conflict': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
+    // no-viewport-units-in-window-layout follows the same scoped RadOS rule.
   },
 };
 

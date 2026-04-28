@@ -23,8 +23,19 @@ const inScopePrefixes = [
   'apps/rad-os/',
 ];
 
+const ignoredPrefixes = [
+  'apps/rad-os/app/dev/',
+];
+
+const ignoredPatterns = [
+  /(^|\/)__tests__\//,
+  /\.test\.(?:ts|tsx|js|jsx|mjs|cjs)$/,
+];
+
 const targetFiles = stagedFiles.filter(f =>
   inScopePrefixes.some(prefix => f.startsWith(prefix))
+  && !ignoredPrefixes.some(prefix => f.startsWith(prefix))
+  && !ignoredPatterns.some(pattern => pattern.test(f))
 );
 
 // --- Token CSS color-format check ---

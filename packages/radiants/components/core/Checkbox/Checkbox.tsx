@@ -103,7 +103,7 @@ export function Checkbox({
     <label
       className={`
         inline-flex items-center gap-2 cursor-pointer
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${disabled ? 'cursor-not-allowed text-mute' : ''}
         ${className}
       `}
       data-rdna="checkbox"
@@ -250,7 +250,7 @@ export function Radio({
   if (inGroup) {
     return (
       <label
-        className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'cursor-not-allowed text-mute' : ''}`}
       >
         {radioRoot}
         {label && (
@@ -279,7 +279,7 @@ export function Radio({
 
   return (
     <label
-      className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'cursor-not-allowed text-mute' : ''}`}
     >
       <BaseRadioGroup
         {...(isControlled

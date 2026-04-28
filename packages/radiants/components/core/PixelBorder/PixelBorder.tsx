@@ -286,6 +286,7 @@ export function PixelBorderEdges({
   };
 
   const edgeBase: React.CSSProperties = {
+    ['--pixel-border-edge-width' as string]: '1px',
     position: 'absolute',
     background: color,
     pointerEvents: 'none',
@@ -335,7 +336,7 @@ export function PixelBorderEdges({
             top: -offset,
             left: r.tl - offset,
             right: r.tr - offset,
-            height: 1,
+            height: 'var(--pixel-border-edge-width)',
           }}
         />
       )}
@@ -346,7 +347,7 @@ export function PixelBorderEdges({
             right: -offset,
             top: r.tr - offset,
             bottom: r.br - offset,
-            width: 1,
+            width: 'var(--pixel-border-edge-width)',
           }}
         />
       )}
@@ -357,7 +358,7 @@ export function PixelBorderEdges({
             bottom: -offset,
             left: r.bl - offset,
             right: r.br - offset,
-            height: 1,
+            height: 'var(--pixel-border-edge-width)',
           }}
         />
       )}
@@ -368,7 +369,7 @@ export function PixelBorderEdges({
             left: -offset,
             top: r.tl - offset,
             bottom: r.bl - offset,
-            width: 1,
+            width: 'var(--pixel-border-edge-width)',
           }}
         />
       )}

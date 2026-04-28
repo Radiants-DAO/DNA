@@ -265,7 +265,7 @@ function InputControl({
   if (hasIcon) {
     return (
       <div className={fullWidth ? 'relative w-full' : 'relative'}>
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute z-10">
+        <div className="absolute left-3 top-1/2 z-desktop -translate-y-1/2 pointer-events-none text-mute">
           {icon}
         </div>
         {wrappedInput}

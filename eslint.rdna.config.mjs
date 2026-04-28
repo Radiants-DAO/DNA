@@ -41,7 +41,10 @@ export default [
       '**/.next/**',
       '**/.turbo/**',
       '**/generated/**',
+      '**/*.test.{ts,tsx,js,jsx,mjs,cjs}',
+      '**/__tests__/**',
       'apps/rad-os/lib/dotting/**',
+      'apps/rad-os/app/dev/**',
       'apps/rad-os/app/pixel-corners/page.tsx',
     ],
   },
@@ -90,11 +93,11 @@ export default [
   {
     files: [
       'apps/rad-os/components/apps/**/*.{ts,tsx}',
-      'apps/rad-os/components/Rad_os/**/*.{ts,tsx}',
     ],
     plugins: { rdna },
     rules: {
-      'rdna/no-viewport-breakpoints-in-window-layout': 'warn',
+      'rdna/no-viewport-breakpoints-in-window-layout': 'error',
+      'rdna/no-viewport-units-in-window-layout': 'error',
     },
   },
   // Ctrl package — control surface primitives (same rules as radiants internals)

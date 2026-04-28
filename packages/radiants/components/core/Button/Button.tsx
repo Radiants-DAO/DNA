@@ -250,7 +250,7 @@ export function Button({
     content = (
       <>
         {children}
-        {children && <span className="flex-1 h-px bg-line opacity-30" />}
+        {children && <span className="flex-1 h-px bg-line" />}
         {resolvedIcon}
       </>
     );
@@ -339,7 +339,8 @@ export function IconButton({
   icon,
   size = 'md',
   quiet = true,
+  'aria-label': ariaLabel,
   ...props
 }: IconButtonProps) {
-  return <Button size={size} quiet={quiet} iconOnly icon={icon} {...props} />;
+  return <Button size={size} quiet={quiet} iconOnly icon={icon} aria-label={ariaLabel} {...props} />;
 }

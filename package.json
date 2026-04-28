@@ -8,7 +8,7 @@
     "dev:raw": "turbo dev",
     "build": "node scripts/with-registry-guard.mjs pre-build turbo build",
     "build:raw": "turbo build",
-    "lint": "turbo lint",
+    "lint": "turbo lint && pnpm lint:design-system",
     "test": "pnpm test:ci",
     "test:ci": "turbo test:ci && pnpm test:scripts && pnpm check:design-md-drift",
     "test:full": "turbo test && pnpm test:scripts",

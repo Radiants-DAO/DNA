@@ -82,7 +82,7 @@ function TooltipRoot({
             data-rdna="tooltip"
             role="tooltip"
             className={`
-              z-[1000]
+              z-menus
               pointer-events-none
               pixel-rounded-4 bg-inv
               px-2 py-1
