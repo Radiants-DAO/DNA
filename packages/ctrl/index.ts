@@ -23,6 +23,8 @@ export { CtrlSlider, Slider } from './controls/Slider/Slider';
 export type { SliderProps, SliderVariant } from './controls/Slider/Slider';
 export { XYPad } from './controls/XYPad/XYPad';
 export { NumberScrubber } from './controls/NumberScrubber/NumberScrubber';
+export { NumberInput } from './controls/NumberInput/NumberInput';
+export type { NumberInputProps } from './controls/NumberInput/NumberInput';
 export { Ribbon } from './controls/Ribbon/Ribbon';
 export { ArcRing } from './controls/ArcRing/ArcRing';
 
