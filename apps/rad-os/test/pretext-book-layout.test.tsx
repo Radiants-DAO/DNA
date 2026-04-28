@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createDefaultSettings } from '@/components/apps/pretext/primitive-registry';
 import type { PretextBlock } from '@/components/apps/pretext/markdown';
 import { BookView } from '@/components/apps/pretext/primitives/book/BookView';
@@ -17,6 +17,10 @@ const LONG_PARAGRAPH = Array.from(
   () =>
     'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 ).join(' ');
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('paginateBookLayout', () => {
   it('creates additional pages when content exceeds the page height', () => {
